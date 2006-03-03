@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001887]: Can't record anything from MIC with Acer 1641 (ALC260)
-Date: Fri, 3 Mar 2006 01:44:17 +0100
-Message-ID: <e7f3b618b9806a405c4b6695ba546374@bugtrack.alsa-project.org>
+Date: Fri, 3 Mar 2006 01:53:48 +0100
+Message-ID: <7e4a0f321a8de6513e40e73a9dae3605@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D68716C
-	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2006 01:44:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2A3F1AA
+	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2006 01:53:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10.2
 Kernel Version:             2.6.15.4
 ======================================================================
 Date Submitted:             03-01-2006 22:35 CET
-Last Modified:              03-03-2006 01:44 CET
+Last Modified:              03-03-2006 01:53 CET
 ======================================================================
 Summary:                    Can't record anything from MIC with Acer 1641
 (ALC260)
@@ -61,55 +61,6 @@ i can hear sound from the mic but i cannot record it.
 ======================================================================
 
 ----------------------------------------------------------------------
- jwoithe - 03-03-06 00:02 
-----------------------------------------------------------------------
-Er-ku: unmuting both "capture" and "capture 1" will not case capture to
-consist of a sum of these two.  As I've explained in another post,
-"capture 1" only comes into play if your software allows you to select a
-pcm other than pcm0.  The switches in alsamixer are simply mutes - they do
-not "select" the capture channel for capture as such.  The selecting of
-one or the other is done by the recording software, and a lot of recording
-software doesn't let you specify something other than the default - which
-will always be "capture" on these chipsets.
-
-grattemedi: the output from amixer is indeed interesting, although I'll
-have to check the output on my laptop to ensure nothing funny is going on.
- I agree with you in that the amixer output does make it look like the
-capture channels are still muted.
-
-The "m" key in alsamixer will not do anything, as you have noticed.  If
-however you highlight the "Capture" channel and press the space bar, you
-should see the series of dashes (below the level bar) change to "CAPTURE".
- If you haven't tried this, could you please do so and let us know the
-results?
-
-The hexdump is also interesting and not at all what I would have expected.
- Rather than 0x7f7f all over the place I would have expected numbers just
-above or just below 0.  0x7f is of course the midpoint of an 8 bit range,
-so if you were recording in 8 bit mode to an unsigned format this would
-probably be expected.
-
-Hmm, the header of the wav file you've hexdumped does indeed indicate that
-you were capturing in 8 bit mode (at 8kHz too).  At least that explains
-the data.  It is also consistent with the capture channel still being
-muted.  It might also explain the lack of data - I've never tested the
-ALC260 in mono unsigned 8 bit
-mode at 8 kHz and I don't know how successful this would be.
-
-In light of this, you may with to try the following command line when
-doing the tests noted above:
-
-  rec -c 2 -f s -r 44100 -s w test.wav
-
-This should result in a stereo recording made at 44100 Hz with signed 16
-bit samples - a format which is known to work with this codec.  That is,
-so long as the above command line doesn't contain a silly typo. :)
-
-Er-ku: when you did your recording tests, were you using "rec" similarly
-to grattemedi?  If so, odds are that you captured in 8 bit mode at 8 kHz
-and this could partly explain the poor recording quality you noted.
-
-----------------------------------------------------------------------
  grattemedi - 03-03-06 01:44 
 ----------------------------------------------------------------------
 I'm so sorry to have disturb you for such a thing.Finally it was the space
@@ -123,6 +74,20 @@ The record in 44100 Hz works very good and quality is perfect, but rec
 with no option like you said cause a bad quality sound as it's in 8kHz.
 
 Thank you very much for your patience.
+
+----------------------------------------------------------------------
+ jwoithe - 03-03-06 01:53 
+----------------------------------------------------------------------
+grattemedi: Glad to have helped and to hear that things are now working for
+you.  It's good to get another acknowledgement that the revised driver
+works on your laptop.
+
+The bad sound quality when using rec without options is actually due to
+two things.  One is certainly the 8 kHz sampling rate, as you say.  The
+other possibly more significant issue is the 8 bit recording.  8 bit audio
+sounds terrible regardless of the sampling frequency.
+
+Anyway, it's good to hear that this issue is sorted.  It can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -144,6 +109,7 @@ Date Modified  Username       Field                    Change
 03-02-06 18:21 grattemedi     Note Added: 0008325                          
 03-03-06 00:02 jwoithe        Note Added: 0008328                          
 03-03-06 01:44 grattemedi     Note Added: 0008330                          
+03-03-06 01:53 jwoithe        Note Added: 0008331                          
 ======================================================================
 
 
