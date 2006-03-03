@@ -1,18 +1,14 @@
-From: Gilles =?iso-8859-1?Q?PI=C9TRI?= <contact@gilouweb.com>
-Subject: Re: hda-intel and Acer TravelMate 4062 LMi
-Date: Fri, 3 Mar 2006 15:19:22 +0100 (CET)
-Message-ID: <51402.81.250.186.122.1141395562.squirrel@mail.eclaireurs.org>
-References: <1141047723.8504.4.camel@lepetit.gilouweb.com> from "Gilles      
-    PIÉTRI" at Feb 27, 2006 02:42:03 PM      
-    <200602280132.k1S1WUNu021958@auster.physics.adelaide.edu.au>   
-    <43172.86.203.46.202.1141091943.squirrel@mail.eclaireurs.org>
-    <39815.81.250.186.122.1141388677.squirrel@mail.eclaireurs.org>
-    <44083BF6.50205@cr.vu.lt>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
+Date: Fri, 3 Mar 2006 15:43:54 +0100
+Message-ID: <25f7fad499575f7ef91efccfd5fc2625@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <44083BF6.50205@cr.vu.lt>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2267B193
+	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2006 15:43:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,83 +18,161 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rimas Kudelis <rimas.kudelis@cr.vu.lt>
-Cc: Gilles =?iso-8859-1?Q?PI=C9TRI?= <contact@gilouweb.com>, alsa-devel@lists.sourceforge.net, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, Rimas Kudelis <rq@akl.lt>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Le Ven 3 mars 2006 13:52, Rimas Kudelis a =E9crit :
-> Hello, Gilles,
->
->>> The subsystem ID is  1025:008f
->>>
->> I've updated to CVS, and I think I lost a few things :
->> Using switches on the previous "test" version, I could switch the line
->> on,
->> and the speakers/headphone off (I don't remember how, but I could), I
->> can't do that anymore.
->>
-> Do you still load the module with "model=3Dtest" option? If you do, I
-> don't quite understand the problems but well, nevermind. Try loading it
-> with a "model=3Dacer" option. You should get much less controls - just
-> those that work (or should work) on an Acer notebook. Set the "Line
-> jack" control to Line In, and the "Mic jack" control to Mic 50pc. Unmut=
-e
-> and increase volume in all channels. Try playing some audio file then.
-> If you hear it (the sound should now be redirected to the internal
-> speakers or the headphone jack, if there's anything plugged in). If it
-> works, try loading the module without any parameters and see if your
-> notebook is autodetected, as it should be.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
+======================================================================
+Reported By:                chrmue
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1733
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               SuSE Linux 10.0
+Kernel Version:             2.6.13-15
+======================================================================
+Date Submitted:             01-11-2006 07:23 CET
+Last Modified:              03-03-2006 15:43 CET
+======================================================================
+Summary:                    Intel HDA Modem ?
+Description: 
+I want to use my HDA Softmodem in Linux, is there any development on a HDA
+Modem Module ?
 
-Well I may have been not clear enough, sorry.
-When I used the model=3Dtest thing, on the previous version with the old
-patch, I had a lot of controls I could play with, lot of them inactive or
-weird, and one thing I managed to do was to enable the line out, while
-disabling the internal speakers / headphone. Now with the new version, I
-can't do that anymore. So maybe something was disabled and could still
-bring a "feature". This is not THE important thing, but it could be nice
-to have it if it's possible.
-My notebook is autodected or so do I think, how can I be sure ? (it
-ignores the model=3Dxxx things, and dmesg does not tell me about the mode=
-l
-the module uses, though I remember seeing this info..
+cat /proc/asound/card0/codec#1 gives me:
+Codec: Generic 11c1 ID 3026
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x70500
 
->
->
->> I also have a problem with the CD, but I'm not sure it's alsa related =
-:
->> xmms plays CD silently (no output at all, does not show any sound
->> activity
->> while playing), whereas VLC can play CDs fine, but I think it does not
->> use
->> ALSA (though configured to output on ALSA), because the CD switch has =
-no
->> effect on it.
->>
-> This Audio CD problem has been discussed on the list. I have a suspicio=
-n
-> that maybe Acers are expecting your software to do Audio CD decoding (a=
-s
-> opposed to the CD drive itself). If you load the module with
-> "model=3Dacer" parameter, you'll see the CD volume control in the mixer=
-.
-> Be aware that it does NOT affect CD playback volume (yet?), so don't ge=
-t
-> stressed about it. ;)
+In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
 
-OK, not a big deal though, I don't have that much CDs to play ;)
+If there is development on this i would like to participate to get it
+going, because i dont't want to have a windows-installation on my Notebook
+(Acer TravelMate 8104) just for getting my mails at my parents house,
+where there is only analog telephone.
+======================================================================
 
-[snip]
-> One last thing (just not to miss a silly thing): if you edited the
-> patch_realtek.c previously, you should rename/delete, and then retrieve
-> a fresh copy of it from the CVS, because simple "cvs update" won't
-> retrieve it for you if you have edited it before.
->
+----------------------------------------------------------------------
+ chrmue - 01-16-06 20:19 
+----------------------------------------------------------------------
+thanks for the file! (the downloading problem was Internet Explorer
+related! It seems that IE has problems getting small plain-text files!!!
+That's another reason for getting this Modem to work in Linux!!!)
 
-No problem, it was in another directory, and the patch was properly
-updated ;)
+I applied it to the 1.0.11rc2 of alsa-driver release (had no CVS handy and
+didn't wanted to download 15MB with analog) - seemed to fit well there
+too.
+And it worked! - i couldn't test it at this moment because i ran into
+other problems with my wlan-card. In the end i had to apply irqpoll as
+kernel-parameter, and while testing this my system once froze at booting
+printing this message hundrets of times:
 
-Gilou
+Jan 16 11:36:19 schmuckstueck kernel: ALSA
+/usr/src/alsa/alsa-driver-1.0.11rc2/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:520:
+azx_get_response timeout
+
+After i got the irq-problem fixed this was gone (my wlan now works well
+too! but still i need the modem at my parents...)
+btw: now the message appears again when starting jackd but doesn't freeze
+(even jack is working!)
+so i didn't bother anymore, but could this happen because i used the
+release not the CVS? or is this irq-related?
+
+anyway - my system now works fine with all hardware (had to patch yenta
+too, but this is another story).
+
+back to the modem aplay -l now gives me:
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: ALC880 Analog [ALC880 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Intel [HDA Intel], device 1: ALC880 Digital [ALC880 Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Intel [HDA Intel], device 6: Si3054 Modem [Si3054 Modem]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+
+-- Yipiiee!
+But i went off-hook on bootup, which i found out was KMix! IT turned the
+new recognized switch "Off-hook" on by default (this was the same with the
+IEC958-Switch as i got to the release where it was introduced), so i
+turned it off shut down kde (to save this settting) and voila! (good thing
+that i saw the switches this moment!)
+
+Then i got slmodemd running (just "slmodemd -a" didn't work - it assumes
+modem:1 by default, but "slmodemd -a modem:0" works well!)
+After a few tries i found out that i had to disconnect the telephone line
+after an connection (or attempt) else NO DIALTONE was the result. I looked
+at the switches in alsamixer and found out that the Off-hook switch STAYS
+ON after slmodemd has got an disconnect (on serial side there is no
+problem - on disconnect slmodemd gives NO CARRIER and gets back to
+AT-Command mode and after switching the Off-hook switch off in alsamixer
+or temporarily disconnecting the telephone-line i can connect again)
+
+Now i got to: "connecting to my ISP via pppd"
+After some unsuccessful tries, i found out that i had to switch Caller-Id
+off for connecting to my ISP - What's this switch good for?
+So i got CONNECTED!!!! momentary sending this message over it!
+
+For the Off-hook-thing i got " disconnect "amixer sset Off-hook off >
+/dev/null" " in my /etc/ppp/options, but this only works with pppd, which
+is okay for me. (it just prevents me from staying off-hook after pppd has
+disconnected by timeout, because i was fallen asleep viewing a website at
+6 o' clock in the morning)
+
+A good thing would be also to hear the negotiation process in the speakers
+(in Windows there is a helper-program - agrsmmsg.exe . I suppose it
+captures the sound from modem-line and plays it back thru the normal PCM
+until connected. If I don't start this exe in windows i don't hear the
+negotiation too (but get connected anyway))
+
+But this far THANK YOU very very much. It is a good thing to got my
+Notebook working with all hardware i need in linux, so again thank you for
+the modem.
+
+PS: speed is quite good: i get connections with 40-48kbit/s (as negotiated
+speed) - at the moment 46667 - and downloading an 1.5MB file was done with
+4.3KByte/s. In Windows i got 52kbit/s most times, but 40 is absolutely
+okay for me. The download seemed to "hang" temporarily sometimes, but the
+connection was stable. I suppose this is slmodemd-related (same with the
+speed), but okay for me. (I think i saw these "hang"s in windows too, so
+maybe it's my ISP...)
+
+----------------------------------------------------------------------
+ lrupn - 03-03-06 15:43 
+----------------------------------------------------------------------
+Is this patch integrated in to CVS now?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-11-06 07:23 chrmue         New Issue                                    
+01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
+01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
+01-11-06 07:42 rlrevell       Note Added: 0007559                          
+01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
+            
+01-11-06 23:35 sashak         Note Added: 0007571                          
+01-12-06 00:00 sashak         Note Added: 0007574                          
+01-12-06 00:02 sashak         Issue Monitored: sashak                      
+01-12-06 05:35 chrmue         Note Added: 0007581                          
+01-13-06 00:16 sashak         Note Added: 0007598                          
+01-16-06 20:19 chrmue         Note Added: 0007692                          
+01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
+03-03-06 15:43 lrupn          Note Added: 0008341                          
+======================================================================
+
 
 
 
