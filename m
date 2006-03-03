@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
-Date: Fri, 3 Mar 2006 07:18:29 +0100
-Message-ID: <2bae370e60a68b11b367ab5c282ee2c5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001766]: jackd : ALSA: cannot set period size to 1024 frames for capture
+Date: Fri, 3 Mar 2006 08:12:26 +0100
+Message-ID: <4f0df4b9ccbecae967a7884a9406b460@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 043A616C
-	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2006 07:18:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3176194
+	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2006 08:12:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,158 +24,131 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766> 
 ======================================================================
 Reported By:                Raymond
 Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1726
+Issue ID:                   1766
 Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-08-2006 17:41 CET
-Last Modified:              03-03-2006 07:18 CET
+Date Submitted:             01-21-2006 05:02 CET
+Last Modified:              03-03-2006 08:12 CET
 ======================================================================
-Summary:                    Front and Rear channels swap after first play when
-playing Surround40 on au8830
+Summary:                    jackd : ALSA: cannot set period size to 1024 frames
+for capture
 Description: 
-The front and rear channels are correct for playing Surround40 only at the
-first time after the driver is loaded. 
+snd_pcm_hw_params_get_channels_max() return 4 for capture stream
 
-The front and rear channels (Surround40) always swapped afterward using
-speaker-test or xine. 
+static struct snd_pcm_hardware snd_vortex_playback_hw_adb = {
+	.info =
+	    (SNDRV_PCM_INFO_MMAP | /* SNDRV_PCM_INFO_RESUME | */
+	     SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_INTERLEAVED |
+	     SNDRV_PCM_INFO_MMAP_VALID),
+	.formats =
+	    SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U8 |
+	    SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW,
+	.rates = SNDRV_PCM_RATE_CONTINUOUS,
+	.rate_min = 5000,
+	.rate_max = 48000,
+	.channels_min = 1,
+#ifdef CHIP_AU8830
+	.channels_max = 4,
+#else
+	.channels_max = 2,
+#endif
+	.buffer_bytes_max = 0x10000,
+	.period_bytes_min = 0x1,
+	.period_bytes_max = 0x1000,
+	.periods_min = 2,
+	.periods_max = 32,
+};
 
-Playing stereo sound is OK.
+static int
+vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int
+type)
+{
+	stream_t *stream;
+	int i, en;
+	
+	if ((nr_ch == 3)
+	    || ((dir == SNDRV_PCM_STREAM_CAPTURE) && (nr_ch > 2)))
+		return -EBUSY;
 
+therefore jackd fail with "ALSA: cannot set period size to 1024 frames for
+capture"
 
- speaker-test -c4 -D hw:0,0
+jackd -d alsa hw:0 -S
+jackd 0.100.9
+
+...
  
-speaker-test 1.0.11rc2
- 
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-Time per period = 11.856821
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
+JACK compiled with System V SHM support.
+loading driver ..
+creating alsa driver ... hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|16bit
+control device hw:0
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+ALSA: cannot set period size to 1024 frames for capture
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+no message buffer overruns
 
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001724 au88x0 PCM configuration problem - buff...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-28-06 04:42 
+ Raymond - 03-01-06 07:55 
 ----------------------------------------------------------------------
-xine seem to work but mplayer does not, center can be sent to device 2
-instead of device 0
+The patch "snd_vortex_capture_hw_adb" fix the reported bug.
 
-<confdir:pcm/surround51.conf>
-
-AU8830.pcm.surround51.0 {
-	@args [ CARD ]
-	@args.CARD {
-		type string
-	}
-	type multi
-	slaves [
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.surround40.0:CARD=" $CARD
-				]
-			}
-			channels 4
-		}
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.surround40.0:CARD=" $CARD
-				]
-			}
-			channels 1
-		}
-		{
-			pcm {
-				@func concat
-				strings [
-					"cards.AU8830.pcm.surround40.0:CARD=" $CARD
-				]
-			}
-			channels 1
-		}
-	]
-	bindings [
-		{ slave 0 channel 0 }
-		{ slave 0 channel 1 }
-		{ slave 0 channel 2 }
-		{ slave 0 channel 3 }
-		{ slave 1 channel 0 }
-		{ slave 2 channel 0 }
-	]
-}
+Are the any jack application support 4 channel playback ?
 
 ----------------------------------------------------------------------
- Raymond - 03-03-06 07:18 
+ Raymond - 03-03-06 08:12 
 ----------------------------------------------------------------------
-As hook function is called when snd_xxx_pcm_open(), using hook and
-subdevice volume control cannot provide a true "front" and "rear" device
-since the hardware mixer is allocated at snd_xxx_hw_params().
+What is a SND_PCM_TYPE_METER pcm ?
+
+http://alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___scope.html
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-06 17:41 Raymond        New Issue                                    
-01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
-01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
-    
-02-04-06 06:26 Raymond        Note Added: 0007912                          
-02-10-06 05:36 ponchick       Note Added: 0007987                          
-02-10-06 06:32 Raymond        Note Added: 0007991                          
-02-10-06 10:50 ponchick       Note Added: 0007998                          
-02-10-06 11:25 Raymond        Note Added: 0008000                          
-02-10-06 13:49 Raymond        Note Added: 0008003                          
-02-10-06 13:56 Raymond        Note Edited: 0008003                         
-02-12-06 07:48 Raymond        Note Edited: 0008003                         
-02-12-06 10:12 Raymond        Note Edited: 0008000                         
-02-16-06 05:37 ponchick       Note Added: 0008085                          
-02-16-06 08:12 Raymond        Note Added: 0008088                          
-02-16-06 10:12 Raymond        Note Added: 0008090                          
-02-16-06 10:28 Raymond        Note Edited: 0008090                         
-02-16-06 16:07 Raymond        Note Added: 0008097                          
-02-17-06 03:35 ponchick       Note Added: 0008104                          
-02-17-06 04:28 Raymond        Note Added: 0008105                          
-02-17-06 04:35 Raymond        Note Edited: 0008105                         
-02-17-06 05:56 Raymond        Note Edited: 0008105                         
-02-17-06 06:09 Raymond        Note Edited: 0008105                         
-02-26-06 07:22 ponchick       Note Added: 0008198                          
-02-26-06 13:28 Raymond        Note Added: 0008200                          
-02-26-06 14:08 Raymond        Note Edited: 0008200                         
-02-27-06 06:57 ponchick       Note Added: 0008216                          
-02-27-06 14:09 Raymond        Note Added: 0008222                          
-02-28-06 04:42 Raymond        Note Added: 0008239                          
-03-03-06 07:18 Raymond        Note Added: 0008334                          
+01-21-06 05:02 Raymond        New Issue                                    
+01-21-06 05:25 rlrevell       Note Added: 0007735                          
+01-21-06 05:36 rlrevell       Note Deleted: 0007735                        
+01-21-06 07:36 Raymond        Note Added: 0007736                          
+01-21-06 07:41 Raymond        Note Edited: 0007736                         
+01-21-06 07:59 rlrevell       Note Added: 0007737                          
+01-23-06 10:36 Raymond        Note Added: 0007761                          
+01-23-06 10:42 Raymond        Note Edited: 0007761                         
+01-24-06 11:25 Raymond        Note Added: 0007773                          
+01-28-06 02:23 Raymond        Note Added: 0007816                          
+01-31-06 13:49 perex          Relationship added       related to 0001724  
+02-04-06 05:49 Raymond        File Added: au88x0_pcm_channels.patch             
+      
+02-04-06 06:14 Raymond        Note Added: 0007911                          
+02-18-06 08:34 Raymond        Note Added: 0008117                          
+02-20-06 15:32 Raymond        Note Edited: 0007773                         
+02-27-06 05:07 Raymond        Note Added: 0008213                          
+02-27-06 05:14 rlrevell       Note Added: 0008214                          
+02-27-06 05:55 Raymond        Note Added: 0008215                          
+02-27-06 09:30 Raymond        Note Added: 0008220                          
+02-27-06 09:32 Raymond        Note Edited: 0008220                         
+02-27-06 19:15 rlrevell       Note Added: 0008228                          
+02-28-06 02:44 Raymond        Note Edited: 0008215                         
+02-28-06 07:08 Raymond        Note Added: 0008241                          
+03-01-06 07:55 Raymond        Note Added: 0008274                          
+03-03-06 08:12 Raymond        Note Added: 0008335                          
 ======================================================================
 
 
