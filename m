@@ -1,26 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: PCM driver only plays tiny portion of clip
-Date: Fri, 03 Mar 2006 03:45:43 -0500
-Message-ID: <1141375544.3042.103.camel@mindpipe>
-References: <47411.217.150.108.178.1141139656.squirrel@newgolddream.dyndns.info>
-	 <20060228170824.GA24675@turing.informatik.uni-halle.de>
-	 <61111.217.150.108.178.1141148175.squirrel@newgolddream.dyndns.info>
-	 <1141240231.9233.11.camel@localhost.localdomain>
-	 <1141241474.5860.183.camel@mindpipe>
-	 <1141242058.9233.17.camel@localhost.localdomain>
-	 <1141243152.5860.197.camel@mindpipe>
-	 <1141244926.9233.32.camel@localhost.localdomain>
-	 <1141245699.5860.224.camel@mindpipe>
-	 <1141332564.9233.6.camel@localhost.localdomain>
-	 <20060303072743.GB8569@turing.informatik.uni-halle.de>
-	 <1141371753.9229.0.camel@localhost.localdomain>
-	 <1141373567.3042.84.camel@mindpipe>
-	 <1141373843.9229.4.camel@localhost.localdomain>
+From: Zach Visagie <zavisagie@yahoo.com>
+Subject: maya 44 pci
+Date: Fri, 3 Mar 2006 01:22:12 -0800 (PST)
+Message-ID: <20060303092212.1506.qmail@web34407.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/alternative; boundary="0-317069127-1141377732=:575"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1141373843.9229.4.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -30,26 +15,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-03-03 at 08:17 +0000, Adrian McMenamin wrote:
-> I need a thread because the SH DMAC routine that does the DMA handling
-> is not atomic and therefore cannot be started from the trigger
-> callback.
-> The idea is that the interrupt handler reschedules the worker thread
-> which is sleeping in an endless loop... something is very wrong with
-> it
-> all at the moment though as it causes kernel panics 
+--0-317069127-1141377732=:575
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Actually this raises an interesting question - if the hardware has no
-real DMA and must rely on the copy/silence callbacks to transfer the
-data, what should be done in the trigger callback when the PCM is
-started?
+Hi
+=20
+ Has anybody got this card working?
+=20
+ I am willing to help the development effort on getting it up and running=
+, but am unsure of how to get the ball rolling. Help anybody?
+=20
+ Zach
+=20
+ =20
+=20
 
-Lee
+	=09
+---------------------------------
+Yahoo! Mail
+Bring photos to life! New PhotoMail  makes sharing a breeze.=20
+--0-317069127-1141377732=:575
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
+<div id=3D"RTEContent">Hi<br> <br> Has anybody got this card working?<br>=
+ <br> I am willing to help the development effort on getting it up and ru=
+nning, but am unsure of how to get the ball rolling. Help anybody?<br> <b=
+r> Zach<br> <br> &nbsp;<br> </div><p>
+		<hr size=3D1>Yahoo! Mail<br>
+Bring photos to life! <a href=3D"http://pa.yahoo.com/*http://us.rd.yahoo.=
+com/evt=3D39174/*http://photomail.mail.yahoo.com">New PhotoMail </a> make=
+s sharing a breeze.=20
+
+--0-317069127-1141377732=:575--
 
 
 -------------------------------------------------------
