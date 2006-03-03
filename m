@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: PCM driver only plays tiny portion of clip
-Date: Fri, 03 Mar 2006 03:18:36 -0500
-Message-ID: <1141373916.3042.87.camel@mindpipe>
+Date: Fri, 03 Mar 2006 03:36:14 -0500
+Message-ID: <1141374975.3042.97.camel@mindpipe>
 References: <47411.217.150.108.178.1141139656.squirrel@newgolddream.dyndns.info>
 	 <20060228170824.GA24675@turing.informatik.uni-halle.de>
 	 <61111.217.150.108.178.1141148175.squirrel@newgolddream.dyndns.info>
@@ -19,8 +19,8 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id AD277187
-	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2006 09:18:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 104F2187
+	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2006 09:36:16 +0100 (MET)
 In-Reply-To: <1141371753.9229.0.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -58,27 +58,20 @@ On Fri, 2006-03-03 at 07:42 +0000, Adrian McMenamin wrote:
 > kernel thread sleep and then wake up on the interrupt
 > 
 
-Hmm, maybe the work should be done in the copy callback:
+Also see
 
-copy and silence callbacks
-These callbacks are not mandatory, and can be omitted in most cases.
-These callbacks are used when the hardware buffer cannot be on the
-normal memory space. Some chips have their own buffer on the hardware
-which is not mappable. In such a case, you have to transfer the data
-manually from the memory buffer to the hardware buffer. Or, if the
-buffer is non-contiguous on both physical and virtual memory spaces,
-these callbacks must be defined, too. 
+http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x1401.htm
 
-If these two callbacks are defined, copy and set-silence operations are
-done by them. The detailed will be described in the later section Buffer
-and Memory Management. 
+External Hardware Buffers
+Some chips have their own hardware buffers and the DMA transfer from the
+host memory is not available. In such a case, you need to either 1)
+copy/set the audio data directly to the external hardware buffer, or 2)
+make an intermediate buffer and copy/set the data from it to the
+external hardware buffer in interrupts (or in tasklets, preferably). 
 
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x639.htm#PCM-INTERFACE-OPERATORS-COPY-SILENCE
+Doesn't this describe your hardware exactly?
 
 Lee
-
-
-
 
 
 
