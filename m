@@ -1,14 +1,14 @@
-From: David Vrabel <dvrabel@arcom.com>
-Subject: [PATCH] ALSA: CS5535: shorter delays when accessing AC'97 codec registers
-Date: Fri, 03 Mar 2006 16:09:51 +0000
-Message-ID: <44086A4F.1040403__13702.5700453252$1141402310$gmane$org@arcom.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
+Date: Fri, 3 Mar 2006 17:36:10 +0100
+Message-ID: <b7d46f41f93e4288057ff086662b88b4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060803090207050707030804"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from webapps.arcom.com (webapps.arcom.com [194.200.159.168])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 572FD1A9
-	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2006 17:09:53 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C42391A9
+	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2006 17:36:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,77 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: jayakumar.alsa@gmail.com
-Cc: Linux Kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060803090207050707030804
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 
-The 10 ms sleeps while waiting for AC'97 codec register reads/writes to
-complete are excessive given the maxmium time is one AC'97 frame (~21 us).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
+======================================================================
+Reported By:                iq79
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1259
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.12-gentoo-r1
+======================================================================
+Date Submitted:             07-15-2005 18:18 CEST
+Last Modified:              03-03-2006 17:36 CET
+======================================================================
+Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
+from AUX in
+Description: 
+I am unable to unmute the internal AUX-in header of my Audigy4Pro.
 
-With AC'97 codecs with integrated touchscreens (like the UCB1400) this
-improves the interactive performance of the touchscreen.
+- I played around with all (Playback/Capture) mixer settings in alsamixer
+but I couldn't find a configuration which gives me sound from AUX-in.
 
-David Vrabel
--- 
-David Vrabel, Design Engineer
+- I tried loading emu10k1 module with several extin/exout combinations.
+That didn't help, too.
+======================================================================
 
-Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
-Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
+----------------------------------------------------------------------
+ iq79 - 03-02-06 23:00 
+----------------------------------------------------------------------
+Yes, I did try a recent version.
 
---------------060803090207050707030804
-Content-Type: text/plain;
- name="alsa-cs5535-quicker-ac97-register-accesses"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-cs5535-quicker-ac97-register-accesses"
+cat /proc/asound/version
 
-ALSA: CS5535: shorter delays when accessing AC'97 codec registers
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
 
-The 10 ms sleeps while waiting for AC'97 codec register reads/writes to
-complete are excessive given the maxmium time is one AC'97 frame (~21 us).
+----------------------------------------------------------------------
+ pzad - 03-03-06 17:36 
+----------------------------------------------------------------------
+What ac97 codec is on your soundcard ?
 
-With AC'97 codecs with integrated touchscreens (like the UCB1400) this
-improves the interactive performance of the touchscreen.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-15-05 18:18 iq79           New Issue                                    
+07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
+07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
+07-15-05 19:49 pzad           Note Added: 0005483                          
+07-15-05 19:50 pzad           Note Edited: 0005483                         
+07-15-05 23:40 iq79           Note Added: 0005484                          
+07-16-05 16:31 jdthood        Note Added: 0005496                          
+07-16-05 18:36 iq79           File Added: amixer_output                    
+07-16-05 18:38 iq79           Note Added: 0005500                          
+07-20-05 05:32 jcdutton       Note Added: 0005532                          
+03-01-06 10:46 iq79           Note Added: 0008278                          
+03-01-06 18:02 rlrevell       Note Added: 0008286                          
+03-02-06 23:00 iq79           Note Added: 0008327                          
+03-03-06 17:36 pzad           Note Added: 0008342                          
+======================================================================
 
-Signed-off-by: David Vrabel <dvrabel@arcom.com>
 
-Index: linux-2.6-working/sound/pci/cs5535audio/cs5535audio.c
-===================================================================
---- linux-2.6-working.orig/sound/pci/cs5535audio/cs5535audio.c	2006-03-02 16:12:52.000000000 +0000
-+++ linux-2.6-working/sound/pci/cs5535audio/cs5535audio.c	2006-03-03 15:47:30.000000000 +0000
-@@ -62,7 +62,7 @@
- 		tmp = cs_readl(cs5535au, ACC_CODEC_CNTL);
- 		if (!(tmp & CMD_NEW))
- 			break;
--		msleep(10);
-+		udelay(1);
- 	} while (--timeout);
- 	if (!timeout)
- 		snd_printk(KERN_ERR "Failure writing to cs5535 codec\n");
-@@ -80,14 +80,14 @@
- 	regdata |= CMD_NEW;
- 
- 	cs_writel(cs5535au, ACC_CODEC_CNTL, regdata);
--	wait_till_cmd_acked(cs5535au, 500);
-+	wait_till_cmd_acked(cs5535au, 50);
- 
- 	timeout = 50;
- 	do {
- 		val = cs_readl(cs5535au, ACC_CODEC_STATUS);
- 		if ((val & STS_NEW) && reg == (val >> 24))
- 			break;
--		msleep(10);
-+		udelay(1);
- 	} while (--timeout);
- 	if (!timeout)
- 		snd_printk(KERN_ERR "Failure reading cs5535 codec\n");
-
---------------060803090207050707030804--
 
 
 -------------------------------------------------------
