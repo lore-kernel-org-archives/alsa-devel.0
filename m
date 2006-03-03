@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001872]: Riptide firmware loading fails on my hardware
-Date: Fri, 3 Mar 2006 02:12:23 +0100
-Message-ID: <77838070c9a1e4eaf7ffbdf2a5debd4b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001865]: Typo in writing an ALSA-driver
+Date: Fri, 3 Mar 2006 02:15:50 +0100
+Message-ID: <440ec95679f17a573e9046c230bd6db0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A41B1AB
-	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2006 02:12:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E6751156
+	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2006 02:15:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1872> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1865> 
 ======================================================================
-Reported By:                hobbified
+Reported By:                Henne
 Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1872
+Issue ID:                   1865
 Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   text
 Priority:                   normal
 Status:                     resolved
-Distribution:               Ubuntu
-Kernel Version:             Various, this data from 2.6.15-rc2-ck2
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-23-2006 03:10 CET
-Last Modified:              03-03-2006 02:12 CET
+Date Submitted:             02-21-2006 18:30 CET
+Last Modified:              03-03-2006 02:15 CET
 ======================================================================
-Summary:                    Riptide firmware loading fails on my hardware
+Summary:                    Typo in writing an ALSA-driver
 Description: 
-When I try to use the snd-riptide module on this machine (actually a
-friend's), it fails to load the firmware properly, and so the module
-doesn't initialize. The device has PCI ID 127a:4310, which isn't in the
-PCI database, but the other function of the same device has ID 4311, which
-reports as a Riptide modem. It's an onboard device in an HP Presario. The
-problem is the same on 1.0.10 and 1.0.11rc3, but I used rc3 to produce the
-debugging output below. Also, I used the 'riptide.hex' firmware from the
-linuxant distribution (riptide-0.6lnxtbeta03122800), which I verified to
-be the same as in the Windows driver.
+In example 6.1 (struct snd_kcontrol_new) is a typo:
+
+.private_values has to be .private_value
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 15:52 
+ Henne - 03-03-06 00:58 
 ----------------------------------------------------------------------
-Try the CVS version.  Some bugs on riptide driver were fixed, including the
-support of a differentl model.
-
-----------------------------------------------------------------------
- hobbified - 03-03-06 02:06 
-----------------------------------------------------------------------
-That did it. Beautiful! Thanks.
+Allright,
+this one can be closed!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-06 03:10 hobbified      New Issue                                    
-02-23-06 03:10 hobbified      File Added: log.txt                          
-02-23-06 03:10 hobbified      Distribution              => Ubuntu          
-02-23-06 03:10 hobbified      Kernel Version            => Various, this data
-from 2.6.15-rc2-ck2
-02-23-06 09:22 hobbified      Issue Monitored: hobbified                    
-03-02-06 15:52 tiwai          Note Added: 0008313                          
-03-03-06 02:06 hobbified      Note Added: 0008332                          
-03-03-06 02:12 rlrevell       Status                   new => resolved     
-03-03-06 02:12 rlrevell       Resolution               open => fixed       
-03-03-06 02:12 rlrevell       Assigned To               => rlrevell        
+02-21-06 18:30 Henne          New Issue                                    
+02-21-06 18:39 Henne          File Added: typo.diff                        
+02-21-06 19:13 Henne          File Added: typo_new.diff                    
+03-03-06 00:58 Henne          Note Added: 0008329                          
+03-03-06 02:15 rlrevell       Status                   new => resolved     
+03-03-06 02:15 rlrevell       Resolution               open => fixed       
+03-03-06 02:15 rlrevell       Assigned To               => rlrevell        
 ======================================================================
 
 
