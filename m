@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001603]: via8235 no sound since kernel 2.6.13
-Date: Sat, 4 Mar 2006 14:23:41 +0100
-Message-ID: <dfd3b29bafc687f8caed01ebbec4309d@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] ALSA-Configuration.txt: snd-hda-intel: document model=basic
+Date: Sat, 4 Mar 2006 16:00:57 +0100
+Message-ID: <20060304150057.GZ9295@stusta.de>
+References: <87wtfhx7rm.fsf@nurf.casa> <s5hzmkcsv38.wl%tiwai@suse.de> <87slq3x3w1.fsf@nurf.casa> <s5hu0ajrbxv.wl%tiwai@suse.de> <87fym3w7m3.fsf@nurf.casa> <s5h3bi2a26o.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 34CBA183
-	for <alsa-devel@alsa-project.org>; Sat,  4 Mar 2006 14:23:42 +0100 (MET)
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E6F151B0
+	for <alsa-devel@alsa-project.org>; Sat,  4 Mar 2006 16:00:57 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <s5h3bi2a26o.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +20,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Otavio Salvador <otavio@debian.org>, linux-kernel@vger.kernel.org, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Mar 01, 2006 at 11:29:03AM +0100, Takashi Iwai wrote:
+> At Tue, 28 Feb 2006 17:28:36 -0300,
+> Otavio Salvador wrote:
+> > 
+> > Takashi Iwai <tiwai@suse.de> writes:
+> > 
+> > > At Tue, 28 Feb 2006 05:51:26 -0300,
+> > > Otavio Salvador wrote:
+> > >> 
+> > >> > This kind of problem is likely due to a broken BIOS.  The current code
+> > >> > parses the default pin configuration set up via BIOS while the older
+> > >> > version used  the fixed pin assignment (depending on the codec chip,
+> > >> > though).
+> > >> > In most cases, it can be recovered by specifying a proper model module
+> > >> > option.  See ALSA-Configuration.txt for details.
+> > >> 
+> > >> I wasn't able to do it.
+> > >
+> > > Didn't it worked?  Which module parameter did you use?
+> > 
+> > I tried model=hp, model=fujistsu and priority_fix={1,2}. Neither did
+> > it work.
+> 
+> Try model=basic.  It's the old default.
+> (seems that it's missing in the documentation...)
 
-The following issue has been REOPENED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1603> 
-======================================================================
-Reported By:                picobyte
-Assigned To:                rlrevell
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1603
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               slackware 10.2
-Kernel Version:             2.6.13 - 2.6.14.2
-======================================================================
-Date Submitted:             11-27-2005 15:06 CET
-Last Modified:              03-04-2006 14:23 CET
-======================================================================
-Summary:                    via8235 no sound since kernel 2.6.13
-Description: 
-I have no sound after a kernel upgrade. I seem to have lost it in 2.6.13.
-Sound was available in 2.6.12. 2.6.14.2 didn't give sound either. The
-problem is in 1.0.9b and 1.0.10. The modules are loaded as supposed
-without error messages and alsamixer is set to volume.
-======================================================================
+What about the patch below for 2.6.16?
 
-----------------------------------------------------------------------
- picobyte - 03-01-06 19:27 
-----------------------------------------------------------------------
-It wasn't the kernel upgrade, but the upgrade to alsa 1.0.11-rc2.
+> Takashi
 
-----------------------------------------------------------------------
- picobyte - 03-04-06 14:23 
-----------------------------------------------------------------------
-I am sorry to have to report that the problem is back. I reinstalled
-alsa-1.0.10  by mistake by installing packages from the Slackware-current
-tree. reinstalling alsa-1.0.11-rc2 did not help. I posted the last message
-because I found out that the kernel version was not related to the
-problem.
+cu
+Adrian
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-27-05 15:06 picobyte       New Issue                                    
-11-27-05 15:06 picobyte       Distribution              => slackware 10.2  
-11-27-05 15:06 picobyte       Kernel Version            => 2.6.13 - 2.6.14.2
-12-31-05 03:38 rlrevell       Note Added: 0007330                          
-01-18-06 00:38 picobyte       Note Added: 0007704                          
-01-18-06 00:38 picobyte       Issue Monitored: picobyte                    
-01-18-06 00:39 picobyte       Issue End Monitor: picobyte                    
-01-18-06 00:41 picobyte       Note Edited: 0007704                         
-03-01-06 19:27 picobyte       Note Added: 0008287                          
-03-01-06 19:39 rlrevell       Status                   new => resolved     
-03-01-06 19:39 rlrevell       Fixed in Version          => 1.0.11rc3       
-03-01-06 19:39 rlrevell       Resolution               open => fixed       
-03-01-06 19:39 rlrevell       Assigned To               => rlrevell        
-03-04-06 14:23 picobyte       Status                   resolved => feedback
-03-04-06 14:23 picobyte       Resolution               fixed => reopened   
-03-04-06 14:23 picobyte       Note Added: 0008348                          
-======================================================================
+
+<--  snip  -->
+
+
+Document the model=basic option in the snd-hda-intel driver.
+
+
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+
+--- linux-2.6.16-rc5-mm2-full/Documentation/sound/alsa/ALSA-Configuration.txt.old	2006-03-04 15:52:50.000000000 +0100
++++ linux-2.6.16-rc5-mm2-full/Documentation/sound/alsa/ALSA-Configuration.txt	2006-03-04 15:57:10.000000000 +0100
+@@ -705,6 +705,7 @@
+ 			$CONFIG_SND_DEBUG=y
+ 
+ 	ALC260
++	  basic		base mode
+ 	  hp		HP machines
+ 	  fujitsu	Fujitsu S7020
+ 
 
 
 
