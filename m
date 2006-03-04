@@ -1,14 +1,14 @@
-From: Marcos Guglielmetti <marcospcmusica@yahoo.com.ar>
-Subject: Reporting SB Live! bug: line's right channel not capturing with some kernels - modules
-Date: Fri, 3 Mar 2006 21:58:19 +0100
-Message-ID: <200603032158.20596.marcospcmusica@yahoo.com.ar>
-Reply-To: marcospcmusica@yahoo.com.ar
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001662]: No audio output in a laptop with hda-intel....
+Date: Sat, 4 Mar 2006 03:32:28 +0100
+Message-ID: <af87811e0bb1a0f0f1566b4ea710aa1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 520A0158
+	for <alsa-devel@alsa-project.org>; Sat,  4 Mar 2006 03:32:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +18,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-	This is really odd:
-
-With these kernel and alsa versions: The SB live! line's capture works 
-fine
-(it captures form both left and right channels)
-
-Linux 2.6.11-1-386 #1 Mon Apr 25 01:18:07 UTC 2005 i686 GNU/Linux
-
-Alsa version:
-
-apt-cache policy alsa-base
-alsa-base:
-  Installed: 1.0.9b-4
-
-------------------------------------------------------
-
-Using these kernel and alsa versions: The SB live! line's capture works 
-bad:
-(it captures only from the line's left channel)
-
-Linux 2.6.14-1-multimedia-386 #1 PREEMPT Sat Dec 10 16:52:12 CET 2005 
-i686 GNU/Linux
-
-Also with 2.6.13-1-multimedia-386 from aGNUla /DeMuDi
-
-apt-cache policy alsa-base
-alsa-base:
-  Installed: 1.0.10-1
--------------------------------------------------------
-Here it fails too:
-
-uname -a
-Linux 030users 2.6.15.4-rt #1 PREEMPT Fri Feb 17 18:55:02 EET 2006 i686 
-GNU/Linux
-
-apt-cache policy alsa-base
-alsa-base:
-  Installed: 1.0.9b-4
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1662> 
+======================================================================
+Reported By:                shl
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1662
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.13.4
+======================================================================
+Date Submitted:             12-20-2005 11:18 CET
+Last Modified:              03-04-2006 03:32 CET
+======================================================================
+Summary:                    No audio output in a laptop with hda-intel....
+Description: 
+Hy, I managed to install the hda-intel on my laptop but my big problem is
+:
+The speakers inside the laptop work correctly but everytime I try to plug
+a headset or some external speaker in the output used normally for it, I'd
+the same result : no sound in the laptop'speakers AND no sound at all in
+the external speakers. So after looking a long long time about that
+problem, I didn't find anything. So maybe the function is not yet
+implemented ? If it's the case, is it possible to do it because it'll be
+very usefull for a lot of people ! Thanks for advance and don't hesitate
+to send me a mail if I missed something ...
 
 
---------------------------------
+======================================================================
 
-	Someone knows what is happening with this odd problem?
+----------------------------------------------------------------------
+ JeanJean - 01-08-06 14:06 
+----------------------------------------------------------------------
+Sorry i dont understand solution, what did you have done ?
+I have Asus A6Vc with  Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller As sound card and have the same
+problem (I use debian unstable with kernel 2.6.1.14 and Alsa 1.0.10)
 
-	
+JeanJean
 
 
--- 
-Marcos Guglielmetti  
-Coordinador del desarrollo de Musix GNU+Linux 
-(www.musix.org.ar) 
-Mirrors: (www.musix.distrux.net) (www.pc-musica.com.ar/musix) 
-(www.k-maleon.com/musix)
 
-	
-	
-		
-___________________________________________________________ 
-1GB gratis, Antivirus y Antispam 
-Correo Yahoo!, el mejor correo web del mundo 
-http://correo.yahoo.com.ar 
+----------------------------------------------------------------------
+ nutz - 03-04-06 03:32 
+----------------------------------------------------------------------
+man i love you!
+
+we've been trying to fix this issue for months - a friend of mine and me
+on his laptop.
+thank you soooooooooo much!!!!
+finally this system is a-okay. thanks thanks thanks thanks thanks!
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-20-05 11:18 shl            New Issue                                    
+12-20-05 11:18 shl            Distribution              => Gentoo Linux    
+12-20-05 11:18 shl            Kernel Version            => 2.6.13.4        
+12-20-05 11:19 shl            Issue Monitored: shl                         
+12-20-05 11:19 shl            Issue End Monitor: shl                       
+12-23-05 01:59 shl            Issue Monitored: shl                         
+12-23-05 02:04 shl            Note Added: 0007130                          
+01-08-06 13:54 JeanJean       Note Added: 0007525                          
+01-08-06 14:06 JeanJean       Note Edited: 0007525                         
+03-04-06 03:32 nutz           Note Added: 0008345                          
+======================================================================
 
 
 
