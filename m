@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001545]: Flash player hangs in Firefox when using aoss
-Date: Sat, 4 Mar 2006 19:15:21 +0100
-Message-ID: <6bc72193a64e535c380b7eac4994a971@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: [PATCH] Add support for Acer TravelMate and
+Date: Sat, 04 Mar 2006 16:37:19 -0500
+Message-ID: <1141508239.14714.9.camel@mindpipe>
+References: <200603012249.k21MnHs8018585@auster.physics.adelaide.edu.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22408173
-	for <alsa-devel@alsa-project.org>; Sat,  4 Mar 2006 19:15:21 +0100 (MET)
+In-Reply-To: <200603012249.k21MnHs8018585@auster.physics.adelaide.edu.au>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: Rimas Kudelis <rq@akl.lt>, alsa-devel@lists.sourceforge.net, Paulo Matias <syscoder@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2006-03-02 at 09:19 +1030, Jonathan Woithe wrote:
+> > >> I would not be surprised if some vendors were leaving out the DAC from
+> > >> their CD drives, and expect you to play audio CDs in digital mode.  I
+> > >> believe this is how Windows Media Player works by default (it also
+> > >> allows it to generate visual effects from the CD audio).
+> > >>     
+> > > Ah, right.  I wasn't aware of that.  If that's its default behaviour then
+> > > perhaps the Acers do expect the OS to use digital mode for playing CDs. If
+> > > this proves to be the case then we'll revise the "acer" model to omit the CD
+> > > controls.
+> > I believe the Gnome CD player and Sound Juicer applications do that too.
+> > I think they, just like all other Gnome apps, use the Gstreamer
+> > framework. And I can even see a reason for that - most soundcards only
+> > have one set of pins for a CD (i.e. only one cd channel) meanwhile many
+> > new desktops come with two CD drives. Add to this what Lee has
+> > mentioned, and you get quite a set of reasons to use software to extract
+> > audio.
+> 
+> Except it sucks CPU cycles away from more useful tasks and is less capable
+> of correcting errors in realtime (at least in my experience).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1545> 
-======================================================================
-Reported By:                smagoun
-Assigned To:                
-======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1545
-Category:                   
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-11-2005 21:30 CET
-Last Modified:              03-04-2006 19:15 CET
-======================================================================
-Summary:                    Flash player hangs in Firefox when using aoss
-Description: 
-I'm trying to get aoss to work with Firefox 1.5b2 and the Flash 7 plugin on
-an XScale (PXA 270) running Linux 2.6.13.4. Problem is, the browser hangs
-when navigating off a page that has Flash w/ sounds. The problem only
-happens when using aoss. GDB reports that the browser's hung up in
-snd_pcm_wait_nocheck, called from snd_pcm_dmix_drain.
+I think the "killer app" for this setup is players like iTunes that let
+you pop in a CD and play and rip it simultaneously.  It also seems like
+it would be easier on the battery to rip the CD at full speed then play
+it back from RAM than to keep the drive spinning at 1x for the duration.
 
-This sounds a bit like
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306, which was
-reportedly fixed in ALSA
-1.0.9a. I'm using the 1.0.9b drivers from 2.6.13.4 (plus patches for the
-AC97 that were subsequently rolled into 2.6.14). Upgrading alsa-oss and
-alsa-libs to 1.0.10rc3 didn't fix the problem.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001559 hang in snd_pcm_drain()
-======================================================================
-
-----------------------------------------------------------------------
- gvy - 03-04-06 16:32 
-----------------------------------------------------------------------
-See #1559 which is reportedly fixed in 1.0.11rc1.
-
-----------------------------------------------------------------------
- gvy - 03-04-06 19:15 
-----------------------------------------------------------------------
-http://www.alsa-project.org/changes/v1-0-10--v1-0-11rc1.txt
-search for 1559
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-11-05 21:30 smagoun        New Issue                                    
-12-22-05 11:43 ikonst         Issue Monitored: ikonst                      
-12-22-05 11:43 ikonst         Note Added: 0007122                          
-03-04-06 16:32 gvy            Note Added: 0008349                          
-03-04-06 16:33 gvy            Issue Monitored: gvy                         
-03-04-06 19:07 rlrevell       Relationship added       related to 0001559  
-03-04-06 19:15 gvy            Note Added: 0008353                          
-======================================================================
-
+Lee
 
 
 
