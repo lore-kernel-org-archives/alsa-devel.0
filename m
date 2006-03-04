@@ -1,15 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: =?iso-8859-1?Q?[ALSA_-_driver_0001889]:_ESI_Juli@_on_1.0.10_bad_sound_=C6?=
- =?iso-8859-1?Q?=C5_44100_(no_high_freq),_but_on_1.0.10rc2_everything_OK!?=
-Date: Sat, 4 Mar 2006 18:55:09 +0100
-Message-ID: <c356afbbc8bb4034f981871a6010f3bd@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001545]: Flash player hangs in Firefox when using aoss
+Date: Sat, 4 Mar 2006 19:07:59 +0100
+Message-ID: <aaee6c7df3097baefd1048aa7aaf36c5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB0F3178
-	for <alsa-devel@alsa-project.org>; Sat,  4 Mar 2006 18:55:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 210EF173
+	for <alsa-devel@alsa-project.org>; Sat,  4 Mar 2006 19:08:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,51 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been set as RELATED TO issue 0001559.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1889> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1545> 
 ======================================================================
-Reported By:                CannabiASM
+Reported By:                smagoun
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1889
-Category:                   PCI - ice1724
+Project:                    ALSA - liboss
+Issue ID:                   1545
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             03-04-2006 08:14 CET
-Last Modified:              03-04-2006 18:55 CET
+Date Submitted:             11-11-2005 21:30 CET
+Last Modified:              03-04-2006 19:07 CET
 ======================================================================
-Summary:                    ESI Juli@ on 1.0.10 bad sound фе 44100 (no high
-freq), but on 1.0.10rc2 everything OK!
+Summary:                    Flash player hangs in Firefox when using aoss
 Description: 
-На версии alsa-drivers-1.0.10rc2 с чистотой звука всё отлично: чистый,
-детальный, пространственный. Пробовал 1.0.10 и 1.0.11rc3 - звук в 44100
-сухой, глухой, бубнящий, практически без высоких частот...
-Если использовать jack (jackd -R -d alsa -d "hw:1" -D -p 256 -r 192000 -H
--M) с чистотой звука всё нормально (в 192000 даже пространственнее звучит
-чем 1.0.10rc2), но он со щелчками, по видимому из-за передискретизации
-44100 в 192000. Пока откатил назад на 1.0.10rc2.
-От версии остальных пакетов (libs, oss, tools...) не зависит.
-Проверялось на 2.6.14 и 2.6.15.4 ядрах.
+I'm trying to get aoss to work with Firefox 1.5b2 and the Flash 7 plugin on
+an XScale (PXA 270) running Linux 2.6.13.4. Problem is, the browser hangs
+when navigating off a page that has Flash w/ sounds. The problem only
+happens when using aoss. GDB reports that the browser's hung up in
+snd_pcm_wait_nocheck, called from snd_pcm_dmix_drain.
+
+This sounds a bit like
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306, which was
+reportedly fixed in ALSA
+1.0.9a. I'm using the 1.0.9b drivers from 2.6.13.4 (plus patches for the
+AC97 that were subsequently rolled into 2.6.14). Upgrading alsa-oss and
+alsa-libs to 1.0.10rc3 didn't fix the problem.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001559 hang in snd_pcm_drain()
 ======================================================================
 
 ----------------------------------------------------------------------
- CannabiASM - 03-04-06 18:55 
+ ikonst - 12-22-05 11:43 
 ----------------------------------------------------------------------
-Проверил звук на 1.0.10rc3 - тоже всё впорядке. По видимому, что-то
-нарушено в связи с добавлением регуляторов громкости.
+I'm using libasound2 1.0.10 on kernel 2.6.14 and this problem is present.
+
+----------------------------------------------------------------------
+ gvy - 03-04-06 16:32 
+----------------------------------------------------------------------
+See #1559 which is reportedly fixed in 1.0.11rc1.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-06 08:14 CannabiASM     New Issue                                    
-03-04-06 18:55 CannabiASM     Note Added: 0008351                          
+11-11-05 21:30 smagoun        New Issue                                    
+12-22-05 11:43 ikonst         Issue Monitored: ikonst                      
+12-22-05 11:43 ikonst         Note Added: 0007122                          
+03-04-06 16:32 gvy            Note Added: 0008349                          
+03-04-06 16:33 gvy            Issue Monitored: gvy                         
+03-04-06 19:07 rlrevell       Relationship added       related to 0001559  
 ======================================================================
 
 
