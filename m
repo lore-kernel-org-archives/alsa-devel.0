@@ -1,16 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] ALSA-Configuration.txt: snd-hda-intel: document model=basic
-Date: Sat, 4 Mar 2006 16:00:57 +0100
-Message-ID: <20060304150057.GZ9295@stusta.de>
-References: <87wtfhx7rm.fsf@nurf.casa> <s5hzmkcsv38.wl%tiwai@suse.de> <87slq3x3w1.fsf@nurf.casa> <s5hu0ajrbxv.wl%tiwai@suse.de> <87fym3w7m3.fsf@nurf.casa> <s5h3bi2a26o.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - liboss 0001545]: Flash player hangs in Firefox when using aoss
+Date: Sat, 4 Mar 2006 16:32:42 +0100
+Message-ID: <20e1475cac3d5df2397db7f1275cfa2c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E6F151B0
-	for <alsa-devel@alsa-project.org>; Sat,  4 Mar 2006 16:00:57 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <s5h3bi2a26o.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9C6218E
+	for <alsa-devel@alsa-project.org>; Sat,  4 Mar 2006 16:32:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,62 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Otavio Salvador <otavio@debian.org>, linux-kernel@vger.kernel.org, perex@suse.cz, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 01, 2006 at 11:29:03AM +0100, Takashi Iwai wrote:
-> At Tue, 28 Feb 2006 17:28:36 -0300,
-> Otavio Salvador wrote:
-> > 
-> > Takashi Iwai <tiwai@suse.de> writes:
-> > 
-> > > At Tue, 28 Feb 2006 05:51:26 -0300,
-> > > Otavio Salvador wrote:
-> > >> 
-> > >> > This kind of problem is likely due to a broken BIOS.  The current code
-> > >> > parses the default pin configuration set up via BIOS while the older
-> > >> > version used  the fixed pin assignment (depending on the codec chip,
-> > >> > though).
-> > >> > In most cases, it can be recovered by specifying a proper model module
-> > >> > option.  See ALSA-Configuration.txt for details.
-> > >> 
-> > >> I wasn't able to do it.
-> > >
-> > > Didn't it worked?  Which module parameter did you use?
-> > 
-> > I tried model=hp, model=fujistsu and priority_fix={1,2}. Neither did
-> > it work.
-> 
-> Try model=basic.  It's the old default.
-> (seems that it's missing in the documentation...)
 
-What about the patch below for 2.6.16?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1545> 
+======================================================================
+Reported By:                smagoun
+Assigned To:                
+======================================================================
+Project:                    ALSA - liboss
+Issue ID:                   1545
+Category:                   
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-11-2005 21:30 CET
+Last Modified:              03-04-2006 16:32 CET
+======================================================================
+Summary:                    Flash player hangs in Firefox when using aoss
+Description: 
+I'm trying to get aoss to work with Firefox 1.5b2 and the Flash 7 plugin on
+an XScale (PXA 270) running Linux 2.6.13.4. Problem is, the browser hangs
+when navigating off a page that has Flash w/ sounds. The problem only
+happens when using aoss. GDB reports that the browser's hung up in
+snd_pcm_wait_nocheck, called from snd_pcm_dmix_drain.
 
-> Takashi
+This sounds a bit like
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306, which was
+reportedly fixed in ALSA
+1.0.9a. I'm using the 1.0.9b drivers from 2.6.13.4 (plus patches for the
+AC97 that were subsequently rolled into 2.6.14). Upgrading alsa-oss and
+alsa-libs to 1.0.10rc3 didn't fix the problem.
+======================================================================
 
-cu
-Adrian
+----------------------------------------------------------------------
+ ikonst - 12-22-05 11:43 
+----------------------------------------------------------------------
+I'm using libasound2 1.0.10 on kernel 2.6.14 and this problem is present.
 
+----------------------------------------------------------------------
+ gvy - 03-04-06 16:32 
+----------------------------------------------------------------------
+See #1559 which is reportedly fixed in 1.0.11rc1.
 
-<--  snip  -->
-
-
-Document the model=basic option in the snd-hda-intel driver.
-
-
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-
---- linux-2.6.16-rc5-mm2-full/Documentation/sound/alsa/ALSA-Configuration.txt.old	2006-03-04 15:52:50.000000000 +0100
-+++ linux-2.6.16-rc5-mm2-full/Documentation/sound/alsa/ALSA-Configuration.txt	2006-03-04 15:57:10.000000000 +0100
-@@ -705,6 +705,7 @@
- 			$CONFIG_SND_DEBUG=y
- 
- 	ALC260
-+	  basic		base mode
- 	  hp		HP machines
- 	  fujitsu	Fujitsu S7020
- 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-11-05 21:30 smagoun        New Issue                                    
+12-22-05 11:43 ikonst         Issue Monitored: ikonst                      
+12-22-05 11:43 ikonst         Note Added: 0007122                          
+03-04-06 16:32 gvy            Note Added: 0008349                          
+======================================================================
 
 
 
