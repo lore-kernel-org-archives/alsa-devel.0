@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001892]: User-space _output_ devices
-Date: Sun, 5 Mar 2006 08:06:25 +0100
-Message-ID: <b2fed61fdb10269cd2a33db326df4a3a@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0001893]: ESI Waveterminal u24 works
+Date: Sun, 5 Mar 2006 10:09:00 +0100
+Message-ID: <bdbe70d9edec5bd668c0ed16ec4e65aa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1699415E
-	for <alsa-devel@alsa-project.org>; Sun,  5 Mar 2006 08:06:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDB05176
+	for <alsa-devel@alsa-project.org>; Sun,  5 Mar 2006 10:09:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,40 +24,34 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1892> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1893> 
 ======================================================================
-Reported By:                zeurkous
+Reported By:                yonatan
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1892
-Category:                   1_OTHERS
-Reproducibility:            N/A
+Project:                    ALSA - WWW server
+Issue ID:                   1893
+Category:                   soundcard matrix
+Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               N/A
-Kernel Version:             N/A
 ======================================================================
-Date Submitted:             03-05-2006 08:06 CET
-Last Modified:              03-05-2006 08:06 CET
+Date Submitted:             03-05-2006 10:09 CET
+Last Modified:              03-05-2006 10:09 CET
 ======================================================================
-Summary:                    User-space _output_ devices
+Summary:                    ESI Waveterminal u24 works
 Description: 
-This may sound a bit weird, but a feature i would like is a way for a
-user-space program to access the ALSA output driver interface (preferably
-as a device). Personally i'm designing a few simple sound output devices
-such as via the parallel port and the like, and the current ALSA output
-driver interface is AFAICS really heavily bloated for just getting an
-8-bit sample and writing it as a simple value to a port....
+I haven't tested too thoroughly, but playback works fine with alsaplayer
+(after modprobe snd-usb-audio). I think it can be added to the matrix.
+
+Thank you ALSA people.. bye.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-05-06 08:06 zeurkous       New Issue                                    
-03-05-06 08:06 zeurkous       Distribution              => N/A             
-03-05-06 08:06 zeurkous       Kernel Version            => N/A             
+03-05-06 10:09 yonatan        New Issue                                    
 ======================================================================
 
 
