@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
-Date: Mon, 6 Mar 2006 00:03:41 +0100
-Message-ID: <1b9108dfee270083e6dedc29f23f2a4d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001786]: Speaker produce sound even head phone is plugged in
+Date: Sun, 5 Mar 2006 08:06:43 +0100
+Message-ID: <bbd27f9ce37b1fdd48f009c6944fa8e8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AFFD41D4
-	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2006 00:03:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17B0515E
+	for <alsa-devel@alsa-project.org>; Sun,  5 Mar 2006 08:06:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,85 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1838> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1786> 
 ======================================================================
-Reported By:                graabein
+Reported By:                siukamming
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1838
+Issue ID:                   1786
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15-1.1831_FC4smp
+Distribution:               Debain unstable
+Kernel Version:             2.6.14(Debain version) , 2.6.15(customized version)
 ======================================================================
-Date Submitted:             02-10-2006 23:27 CET
-Last Modified:              03-06-2006 00:03 CET
+Date Submitted:             01-27-2006 04:10 CET
+Last Modified:              03-05-2006 08:06 CET
 ======================================================================
-Summary:                    Unknown model for ALC880 again, First International
-Computer p4m-915gd1 no sound
+Summary:                    Speaker produce sound even head phone is plugged in
 Description: 
-I'm unable to get any sound on my FIC p4m-915gd1 motherboard's built-in
-sound. There are no error messages and I can play content all I want, I
-just don't get any sound.
-
-The manufacturer's page lists the hardware as "Intel HDA, Azalia 8
-Channel, Realtek ALC880":
-http://www.fic.com.tw/product/motherboard/intel/p4m-915gd1.aspx
-
-I've found other, similar reports here in the bug tracker (#1460, #1563,
-#1589), including reports that this problem was resolved as of 1.0.11rc1.
-
-Accordingly, I tried compiling alsa from cvs sources as of today, but this
-made no difference. I still have no sound.
-
+On my notebook Dell 630M(915GM + sigmatel 9200), the speaker still produce
+sound even headphone is plugged in. Now the speaker and headphone produce
+sound simultaneously. Suppose the speaker stop to produce sound as
+headphone is plugged in. 
+I tested Windows. The speaker really stop produce sound as headphone is
+plugged in. So it should be the driver problem. 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-19-06 05:55 
+ toshio - 03-02-06 18:09 
 ----------------------------------------------------------------------
-I believe the ALC880 data sheet is available on the web and the workings of
-ALSA drivers are explained by the "writing an alsa driver" document
+tiwai: I don't mind that. But, as you said, maybe it's better to discuss
+this with the author, the alsa version in the latest kernel has other
+issues and requires other modifications to get going. See bug id 1843 and
+somehow it mutes the lines out so those need to be renabled too. Luckily
+those functions are already coded so they need to be added to
+initialisation code...
 
 ----------------------------------------------------------------------
- graabein - 03-06-06 00:03 
+ nemisis3 - 03-05-06 08:06 
 ----------------------------------------------------------------------
-I've spent entirely too much time on getting 1.0.11/CVS to work, but I'm
-giving up on that now.
+Seconded on a Dell B120. Looking online, linux-laptops, linux-questions
+this
+is a common problem with Dell laptops. Please fix as I can't listen to the
 
-Marijn Schouten was right, something broke, at least with regard to this
-driver, since 1.0.10.
-
-I now have a fully working card, both analog and S/PDIF digital. What I
-did was to start with the 1.0.10 source tarball, apply the patch from bug
-#1563 and then apply my own patch.
-
-As far as I'm concerned this bug has been resolved. Whatever's going on
-with 1.0.11rc3 is a whole other kettle of fish. ;-)
+radio at work.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-10-06 23:27 graabein       New Issue                                    
-02-10-06 23:27 graabein       Distribution              => Fedora Core 4   
-02-10-06 23:27 graabein       Kernel Version            => 2.6.15-1.1831_FC4smp
-02-10-06 23:38 graabein       Note Added: 0008010                          
-02-15-06 23:46 Eugene Seppel  Issue Monitored: Eugene Seppel                    
-02-15-06 23:46 Eugene Seppel  Note Added: 0008081                          
-02-16-06 17:08 Marijn SchoutenNote Added: 0008098                          
-02-16-06 17:10 Marijn SchoutenNote Edited: 0008098                         
-02-16-06 18:36 er-ku          Note Added: 0008101                          
-02-16-06 23:06 graabein       Note Added: 0008103                          
-02-17-06 10:47 Marijn SchoutenNote Added: 0008107                          
-02-17-06 16:31 Eugene Seppel  Note Added: 0008108                          
-02-19-06 02:03 graabein       Note Added: 0008127                          
-02-19-06 05:47 graabein       Note Added: 0008128                          
-02-19-06 05:50 graabein       File Added: ficpatch.diff                    
-02-19-06 05:55 rlrevell       Note Added: 0008129                          
-03-06-06 00:03 graabein       Note Added: 0008360                          
+01-27-06 04:10 siukamming     New Issue                                    
+01-27-06 04:10 siukamming     File Added: codec#0                          
+01-27-06 04:10 siukamming     Distribution              => Debain unstable 
+01-27-06 04:10 siukamming     Kernel Version            => 2.6.14(Debain
+version) , 2.6.15(customized version)
+02-20-06 08:26 toshio         Note Added: 0008143                          
+02-20-06 08:29 toshio         Issue Monitored: toshio                      
+02-25-06 08:15 toshio         Note Added: 0008185                          
+03-01-06 05:32 siukamming     Note Added: 0008270                          
+03-02-06 10:51 adoroar        Note Added: 0008295                          
+03-02-06 10:51 adoroar        Note Edited: 0008295                         
+03-02-06 10:52 adoroar        Note Edited: 0008295                         
+03-02-06 11:06 toshio         File Added: unsol-patch.tar.bz2                   
+
+03-02-06 11:09 toshio         Note Added: 0008296                          
+03-02-06 11:10 toshio         Note Deleted: 0008185                        
+03-02-06 11:50 tiwai          Note Added: 0008297                          
+03-02-06 12:54 toshio         Note Added: 0008300                          
+03-02-06 12:58 tiwai          Note Added: 0008301                          
+03-02-06 14:50 adoroar        Note Added: 0008306                          
+03-02-06 18:09 toshio         Note Added: 0008324                          
+03-05-06 08:06 nemisis3       Note Added: 0008356                          
 ======================================================================
 
 
