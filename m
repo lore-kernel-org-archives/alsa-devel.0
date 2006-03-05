@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001884]: alsaconf don't find Realtek ALC850 onboard soundchip on ASUS A8V Deluxe when Creative X-Fi XtremeMusic is pluged in
-Date: Sun, 5 Mar 2006 21:39:02 +0100
-Message-ID: <506eec0e05a4955afcab0cf8dd805578@bugtrack.alsa-project.org>
+Date: Sun, 5 Mar 2006 21:39:21 +0100
+Message-ID: <524e026304d4aa2529712033f0f7882c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02EF21D6
-	for <alsa-devel@alsa-project.org>; Sun,  5 Mar 2006 21:39:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8766C1D6
+	for <alsa-devel@alsa-project.org>; Sun,  5 Mar 2006 21:39:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1884> 
 ======================================================================
@@ -35,9 +35,11 @@ Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     closed
 Distribution:               Debian 4.0.2-5
 Kernel Version:             2.6.12
+Resolution:                 reopened
+Fixed in Version:           
 ======================================================================
 Date Submitted:             02-28-2006 15:18 CET
 Last Modified:              03-05-2006 21:39 CET
@@ -83,6 +85,7 @@ Date Modified  Username       Field                    Change
 03-05-06 21:39 rlrevell       Status                   resolved => feedback
 03-05-06 21:39 rlrevell       Resolution               not an issue => reopened
 03-05-06 21:39 rlrevell       Note Added: 0008358                          
+03-05-06 21:39 rlrevell       Status                   feedback => closed  
 ======================================================================
 
 
