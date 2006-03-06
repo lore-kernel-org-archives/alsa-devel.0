@@ -1,7 +1,7 @@
 From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 Subject: Re: kernel threads etc
-Date: Mon, 06 Mar 2006 23:29:10 +0000
-Message-ID: <1141687750.9230.24.camel__37852.0685284913$1141687826$gmane$org@localhost.localdomain>
+Date: Mon, 06 Mar 2006 23:38:24 +0000
+Message-ID: <1141688305.9230.26.camel__9193.28041277385$1141688376$gmane$org@localhost.localdomain>
 References: <1141684061.9230.15.camel@localhost.localdomain>
 	 <1141686718.25487.76.camel@mindpipe>
 Mime-Version: 1.0
@@ -9,8 +9,8 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E9E0E195
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 00:29:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7E88719A
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 00:38:28 +0100 (MET)
 In-Reply-To: <1141686718.25487.76.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -34,13 +34,13 @@ On Mon, 2006-03-06 at 18:11 -0500, Lee Revell wrote:
 > 
 > Lee
 
-Because what the documents actually say is: "Some chips have their own
-hardware buffers and the DMA transfer from the host memory is not
-available."
+Reading through the notes it states:
 
-Well, DMA is very much available. Though I can see that: "Another case
-is that the chip uses a PCI memory-map region for the buffer" could be
-similar.
+"The third argument (pos) points the current position offset in frames."
+
+Presumably that means the position in the playback ring buffer? It's not
+at all clear. 
+
 
 
 
