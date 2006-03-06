@@ -1,15 +1,9 @@
-From: "Thibault LE MEUR" <Thibault.LeMeur@supelec.fr>
-Subject: [RFC][PATCH] snd-usb-audio and audiophile usb analog capture
-Date: Mon, 6 Mar 2006 10:49:52 +0100
-Message-ID: <05a301c64103$53fe4d40$a578e4a0@supelec.fr>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+From: "eBay " <aw-confirm@ebay.com>
+Subject: Question about Item
+Date: Mon, 6 Mar 2006 12:48:36 +0200 (EET)
+Message-ID: <1141642116.19933.qmail@arribada.ebay.com>
+Content-Type: text/html
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from laposte.supelec.fr (laposte.supelec.fr [160.228.120.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25B631C1
-	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2006 10:50:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,330 +13,154 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
-Cc: 'Thibault LE MEUR' <Thibault.LeMeur@supelec.fr>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,=20
-
-Here is the patch I'm working on for audiophile usb: It solves bug id =
-1801.
-
-I'm sorry for the long post, but I prefer give as much information as
-possible to let you understand the patch (and maybe update the docs for =
-this
-device). You'll find in this mail:
- - A Short and long (very long) description of the patch
- - The patch ;-)
-
-Takashi, I've not added a "true" quirk (function pointer parameter) to =
-the
-"parse_audio_endpoints" function. Instead I've just made the patch fit =
-into
-a simple function so that parse_audio_enpoints needs only 2 lines of =
-modifs.
- - Do you still think it's necessary to implement a "true" quirk?
-
-Of course any comment is welcome.
-
-Regards,
-Thibault
-
-PS: In parse_audio_enpoints I've changed a "snd_printdd" to use "altno" =
-(the
-true altsetting value) instead of "i" (the index parameter in the =
-altsetting
-aray) since they may differ in some cases and I think "altno" is more
-interresting that "i".
-
-
--------------------------------------------------------------------------=
----
---------------------------------------
-Short description:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Adds a generic device_setup parameter to be able to alter the way
-snd-usb-audio initialize the driver. Together with a quirk for =
-audiophile
-usb, this solves bugid 1801 for analog capture on this device.
-
-Log story:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-	At initialization of the M-Audio Audiophile usb device, a specific
-altSettings subset must be selected to ensure a correct device
-synchronization: this subset depends on the audio functions and
-"Rate/Resolution mode" that will be used. Thus, this initialization =
-setting
-must be sent as a parameter to the driver before the actual device's
-initialization take place.
-
-	This patch adds a new module parameter called "device_setup"
-(integer) that might be used for any device. As a convention, I propose =
-that
-when this parameter is omitted, its default value remains 0x00 which may
-always mean "do not change Alsa driver's default behaviour". This way, =
-new
-driver versions will not break previously working setups.=20
-
-	The meaning of the device parameter depends on the device. For the
-audiophile usb, the device_setup is one byte long and its structure is =
-the
-following:
-
-	+---+---+---+---+---+---+---+---+
-	| b7| b6| b5| b4| b3| b2| b1| b0|
-	+---+---+---+---+---+---+---+---+
-	| 0 | 0 | 0 | Di|24B|96K|DTS|SET|
-	+---+---+---+---+---+---+---+---+
-Where:
-	- b0 is the "SET" bit: it MUST be set if device_parameter is not
-0x00
-	- b1 is the "DTS" bit: it is set only if Digital output with DTS/AC3
-is needed (though I'm not sure it is working)
-	- b2 is the Rate selection flag. When set to "1" the range
-"48-96KHz" is used. Otherwise the sample rate range is 8-48KHz
-	- b3 is the Resolution selection flag. When set to "1" samples are
-encoded 24bits long, otherwise they are 16bits long
-	- b4 is the Digital input flag: When set to "1" the device assumes
-that an active digital source is connected (this may lead to =
-synchronization
-issues if it is not the case).=20
-	- b5 to b7 are reserved for future uses, and must be set to "0"
-(might become Ao, Do, Ai, for b7, b6, b4 respectively)
-
-The parameter can be given when manually probing the device:
-	"# modprobe snd-usb-audio index=3D1 device_setup=3D0x9"
-
-or in /etc/modprobe.conf (example for Fedora):
---------------------------------------------------
-alias snd-card-1 snd-usb-audio
-options snd-usb-audio index=3D1 device_setup=3D0x09
--------------------------------------------------
-
-The patch also adds a quirk for audiophile usb, in order to only let =
-Alsa
-register interfaces that do correspond to "device_setup", so that no
-initialization error is done.
-
-Supported modes are:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-	- Default Alsa behaviour: "device_setup=3D0x00" (this is the default
-if device_setup is not given)
-		* all interfaces capabilities are registered in Alsa as they
-were before the patch
-		* Caution: Analog capture is rarely well initialized (bug id
-1801)
-		* hw:1,0 is Analog playback and Digital Capture, and hw:1,1
-is Digital playback and Analog Capture
-		* hw:1,2 is digital playback in DTS mode
-	- 24bits 96KHz mode: "device_setup=3D0x05"
-		* each audio function is working for 8Khz-96Khz
-		* But due to usb bandwith constraints only one interface can
-be set at the same time
-		* hw:1,0 is Analog playback and Digital Capture, and hw:1,1
-is Digital playback and Analog Capture
-	- 24bits 48KHz without Digital Input connected: "device_setup=3D0x09"
-		* Analog and digital playback, as well as Analog capture can
-be activated at the same time
-		* hw:1,0 is not enabled as a capture device (Digital Input)
-		* hw:1,0 is Analog playback, and hw:1,1 is Digital playback
-and Analog Capture
-	- 24bits 48KHz with Digital Input connected: "device_setup=3D0x19"
-                * Though hw:1,0 and hw:1,1 are available as both =
-playback
-and capture device, only 3 functions can be activated at the same time =
-due
-to usb bandwidth limitations
-		* hw:1,0 is Analog playback and Digital Capture, and hw:1,1
-is Digital playback and Analog Capture
-		* Caution: if no active digital signal is seen on the
-Digital input interface, synchronization issues may occur (see the
-audiophile usb documentation)
-	- 16bits 48KHz with Digital Input connected: "device_setup=3D0x11"
-                * hw:1,0 and hw:1,1 are available as both playback and
-capture device, all 4 functions can be activated at the same time
-		* hw:1,0 is Analog playback and Digital Capture, and hw:1,1
-is Digital playback and Analog Capture
-		* Caution: if no active digital signal is seen on the
-Digital input interface, synchronization issues may occur (see the
-audiophile usb documentation)
-	- 16bits 48KHz without Digital Input connected: "device_setup=3D0x01"
-		* Analog and digital playback, as well as Analog capture can
-be activated at the same time
-		* hw:1,0 is not enabled as a capture device (Digital Input)
-		* hw:1,0 is Analog playback, and hw:1,1 is Digital playback
-and Analog Capture
-	- DTS (AC3 encoding on Digital output only in 16bits Little endian):
-"device_setup=3D0x03"
-		* I don't know if it is really supported by Alsa
-		* Caution: hw:1,0 is Digital playback
-
-Technical Details for Audiophile Usb:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-The following specs have been discovered by usb-snooping the windows and
-linux drivers.
-
-The M-Audio Audiophile USB has 4 audio functions, each one corresponding =
-to
-a USB interface:
-	- Analog Output  is Usb Interface n=B02
-	- Digital Output is Usb Interface n=B03
-	- Analog Input   is Usb Interface n=B04
-	- Digital Input  is Usb Interface n=B05
-
-Each interface has 5 altsettings (AltSet 1,2,3,4,5) except:
-	- Interface 3 (Digital Out) has an extra Alset n=B06 that correspond
-to DTS output
-	- Interface 5 (Digital In) Do not have Alset n=B03 and 5 (chich are
-synchronous inputs or adaptive outputs for other interfaces)
-
-At initialization time, the driver _must_know_ how the device will be =
-used
-(this is a hardware constraint):
-	- if DTS is choosen, only Interface 2 with AltSet n=B06 must be
-registered
-	- if 96KHz only AltSets n=B01 of each interface must be selected
-	- if samples are using 24bits/48KHz then AltSet 2 must me used if
-Digital input is connected, and only AltSet n=B03 if Digital input is =
-not
-connected=20
-	- if samples are using 16bits/48KHz then AltSet 4 must me used if
-Digital input is connected, and only AltSet n=B05 if Digital input is =
-not
-connected
-	=20
-
-
-
-
-Summary: Fixes Analog capture for audiophile usb and adds a new module
-parameter device_setup=20
-Signed-off-by: Thibault LE MEUR <Thibault.LeMeur@supelec.fr>
--------------------------------------------------------------------------=
----
---------------------------------------
-
---- /usr/src/alsa/alsa-cvs-02282006/alsa-driver/usb/usbaudio.c	=
-2006-03-05
-21:41:48.000000000 +0100
-+++ /usr/src/alsa/alsa-cvs-02282006.patched/alsa-driver/usb/usbaudio.c
-2006-03-05 21:52:14.000000000 +0100
-@@ -76,6 +76,7 @@
- #else
- 0; /* disabled as default for buggy async-unlink handling */
- #endif
-+static int device_setup =3D 0x00; /* device specific setup (parameter's
-meaning depends on the physical devicer) */
-=20
- module_param_array(index, int, NULL, 0444);
- MODULE_PARM_DESC(index, "Index value for the USB audio adapter.");
-@@ -91,6 +92,8 @@
- MODULE_PARM_DESC(nrpacks, "Max. number of packets per URB.");
- module_param(async_unlink, bool, 0444);
- MODULE_PARM_DESC(async_unlink, "Use async unlink mode.");
-+module_param(device_setup, int, 0444);
-+MODULE_PARM_DESC(device_setup, "Specific device setup (if needed).");
-=20
-=20
- /*
-@@ -2547,6 +2550,7 @@
- 	return 0;
- }
-=20
-+int audiophile_skip_setting_quirk(int iface, int altno);
- static int parse_audio_endpoints(struct snd_usb_audio *chip, int =
-iface_no)
- {
- 	struct usb_device *dev;
-@@ -2585,6 +2589,10 @@
- 		stream =3D (get_endpoint(alts, 0)->bEndpointAddress &
-USB_DIR_IN) ?
- 			SNDRV_PCM_STREAM_CAPTURE :
-SNDRV_PCM_STREAM_PLAYBACK;
- 		altno =3D altsd->bAlternateSetting;
-+=09
-+		/* quirk for audiophile usb: skip AltSets not corresponding
-to device_setup */
-+		if (chip->usb_id =3D=3D USB_ID(0x0763, 0x2003) &&=20
-+		    audiophile_skip_setting_quirk(iface_no,altno)) continue;
-=20
- 		/* get audio formats */
- 		fmt =3D snd_usb_find_csint_desc(alts->extra, alts->extralen,
-NULL, AS_GENERAL);
-@@ -2683,7 +2691,7 @@
- 			continue;
- 		}
-=20
--		snd_printdd(KERN_INFO "%d:%u:%d: add audio endpoint 0x%x\n",
-dev->devnum, iface_no, i, fp->endpoint);
-+		snd_printdd(KERN_INFO "%d:%u:%d: add audio endpoint 0x%x\n",
-dev->devnum, iface_no, altno, fp->endpoint);
- 		err =3D add_audio_endpoint(chip, stream, fp);
- 		if (err < 0) {
- 			kfree(fp->rate_table);
-@@ -3112,6 +3120,35 @@
- 	return 0;
- }
-=20
-+/*
-+ * Setup quirks
-+ */
-+#define AUDIOPHILE_SET			0x01 /* bit mask for device_setup
-availability */
-+#define AUDIOPHILE_SET_DTS              0x02 /* bit mask for AC3/DTS
-Digital Output */
-+#define AUDIOPHILE_SET_96K              0x04 /* bit mask for the =
-48-96KHz
-range (8-48KHz otherwise)*/
-+#define AUDIOPHILE_SET_24B              0x08 /* bit mask for 24bits
-resolution (16bits otherwise) */
-+#define AUDIOPHILE_SET_DI               0x10 /* bit mask for Digital =
-Input
-activation*/
-+#define AUDIOPHILE_SET_MASK      	0x1F /* bit mask for AltSet setup
-mode */
-+#define AUDIOPHILE_SET_24B_48K_DI	0x19 /* bit check result for
-24bits+48KHz+Digital Input */
-+#define AUDIOPHILE_SET_24B_48K_NOTDI 	0x09 /* bit check result for
-24bits+48KHz+No Digital Input */
-+#define AUDIOPHILE_SET_16B_48K_DI    	0x11 /* bit check result for
-16bits+48KHz+Digital Input */
-+#define AUDIOPHILE_SET_16B_48K_NOTDI 	0x01 /* bit check result for
-16bits+48KHz+No Digital Input */
-+
-+int audiophile_skip_setting_quirk(int iface, int altno) {
-+	if (device_setup & AUDIOPHILE_SET) {
-+		if ((device_setup & AUDIOPHILE_SET_DTS) && altno !=3D 6)
-return 1;=09
-+		if ((device_setup & AUDIOPHILE_SET_96K) && altno !=3D 1)
-return 1;
-+		if ((device_setup & AUDIOPHILE_SET_MASK) =3D=3D
-AUDIOPHILE_SET_24B_48K_DI &&
-+		     altno !=3D 2) return 1;
-+		if ((device_setup & AUDIOPHILE_SET_MASK) =3D=3D
-AUDIOPHILE_SET_24B_48K_NOTDI &&
-+		     altno !=3D 3) return 1;
-+		if ((device_setup & AUDIOPHILE_SET_MASK) =3D=3D
-AUDIOPHILE_SET_16B_48K_DI &&
-+		     altno !=3D 4) return 1;
-+		if ((device_setup & AUDIOPHILE_SET_MASK) =3D=3D
-AUDIOPHILE_SET_16B_48K_NOTDI &&
-+		     altno !=3D 5) return 1;
-+	}=09
-+	return 0; /*do not skip otherwise*/
-+}
-=20
- /*
-  * audio-interface quirks
-
--------------------------------------------------------------------------=
----
---
-
-
-
-
+<TABLE cellSpacing=0 cellPadding=0 width=600 border=0>
+<TBODY>
+<TR vAlign=top>
+<TD width=600 bgColor=#d6dcfe><FONT face="Arial, Helvetica,
+sans-serif   " size=3><STRONG><FONT face=Verdana>Pl<vector>ac<vector>e o<vector>r Up<vector>dat<vector>e Cr<vector>ed<vector>it<vector>
+C<vector>ar<vector>d o<vector>n
+File</FONT></STRONG></FONT>&nbsp;</TD>
+<TD width=200 bgColor=#d6dcfe>
+<DIV align=right><IMG height=18
+src="http://pics.ebaystatic.com/aw/pics/aboutme/v3/ebay_logo_39x18.gif"
+width=39></DIV></TD></TR>
+<TR>
+<TD bgColor=#d6dcfe colSpan=2 height=2><IMG height=2
+src="http://pics.ebaystatic.com/aw/pics/x.gif" width=1></TD></TR>
+<TR>
+<TD vAlign=center bgColor=#9999cc colSpan=2 height=2><IMG height=2
+src="http://pics.ebaystatic.com/aw/pics/x.gif"
+width=1></TD></TR></TBODY></TABLE><BR>
+<TABLE cellSpacing=0 cellPadding=0 width=600 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top width=600>
+<P><FONT face="Arial, Helvetica, sans-serif   " size=-1>Dear
+<STRONG>e<vector>B<vector>a<vector>y<vector> Cu<vector>st<vector>om<vector>er<vector> </STRONG>,<BR><BR>T<vector>hi<vector>s i<vector>s yo<vector>ur f<vector>in<vector>a<vector>l w<vector>arn<vector>in<vector>g
+ab<vector>ou<vector>t th<vector>e sa<vector>f<vector>et<vector>y o<vector>f y<vector>o<vector>ur e<vector>Ba<vector>y ac<vector>co<vector>unt.
+I<vector>f y<vector>ou d<vector>o n<vector>ot<vector> u<vector>pd<vector>ate<vector> yo<vector>ur bi<vector>l<vector>li<vector>ng in<vector>fo<vector>rma<vector>tio<vector>n<vector>s y<vector>ou<vector>r a<vector>cc<vector>es<vector>s o<vector>n 
+<vector>e<vector>B<vector>a<vector>y wi<vector>l<vector>l
+b<vector>e r<vector>es<vector>tr<vector>ict<vector>ed a<vector>nd th<vector>e us<vector>er de<vector>le<vector>ted<vector>.
+T<vector>h<vector>is mi<vector>g<vector>ht<vector> b<vector>e du<vector>e to e<vector>it<vector>h<vector>er f<vector>o<vector>ll<vector>ow<vector>in<vector>g
+r<vector>e<vector>as<vector>on<vector>s<vector>:<BR></FONT></P><FONT face="Arial, Helvetica, sans-serif   "
+size=-1>
+<P><FONT
+face=arial>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-
+<vector>A<vector> r<vector>ec<vector>en<vector>t c<vector>ha<vector>ng<vector>e i<vector>n y<vector>our<vector> p<vector>er<vector>son<vector>al<vector>
+i<vector>n<vector>for<vector>ma<vector>tio<vector>n (i.<vector>e. cha<vector>nge o<vector>f
+ad<vector>dre<vector>s<vector>s)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-
+S<vector>ub<vector>mi<vector>tin<vector>g i<vector>nva<vector>li<vector>d in<vector>for<vector>mat<vector>ion
+du<vector>rin<vector>g th<vector>e i<vector>nit<vector>ial s<vector>ig<vector>n u<vector>p
+pr<vector>oc<vector>es<vector>s<vector>.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;A<vector>n
+i<vector>na<vector>bil<vector>it<vector>y t<vector>o
+a<vector>c<vector>c<vector>urat<vector>ely ve<vector>ri<vector>fy yo<vector>ur se<vector>lec<vector>te<vector>d o<vector>pt<vector>ion o<vector>f pa<vector>y<vector>m<vector>en<vector>t d<vector>u<vector>e a<vector>n int<vector>ern<vector>al er<vector>ro<vector>r
+wit<vector>hi<vector>n<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ou<vector>r&nbsp;proc<vector>es<vector>sors.<BR></FONT><FONT face=arial><BR></P></FONT>
+<TABLE cellSpacing=0 cellPadding=0 width="100%" border=0>
+<TBODY>
+<TR>
+<TD bgColor=#cccccc colSpan=3 height=2><IMG title="" height=2 alt=" "
+src="http://pics.ebaystatic.com/aw/pics/x.gif" width=1></TD></TR>
+<TR bgColor=#f4f4f4>
+<TD width=2 bgColor=#cccccc rowSpan=2><IMG title="" height=1 alt=" "
+src="http://pics.ebaystatic.com/aw/pics/x.gif" width=2></TD>
+<TD>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" border=0>
+<TBODY>
+<TR>
+<TD noWrap width="20%"><FONT face="Arial Black" size=2>Yo<vector>ur cr<vector>ed<vector>it c<vector>ar<vector>d
+o<vector>n fi<vector>le wit<vector>h e<vector>Ba<vector>y</FONT></TD>
+<TD width="60%">&nbsp;</TD>
+<TD noWrap align=right
+width="20%">&nbsp;</TD></TR></TBODY></TABLE></TD>
+<TD width=2 bgColor=#cccccc rowSpan=2><IMG title="" height=1 alt=" "
+src="http://pics.ebaystatic.com/aw/pics/x.gif" width=2></TD></TR>
+<TR>
+<TD>
+<TABLE cellSpacing=0 cellPadding=3 width="100%" border=0>
+<TBODY>
+<TR>
+<TD noWrap width="20%">
+<FONT face=arial size=2>C<vector>a<vector>rd nu<vector>xmb<vector>er:<vector>X-<vector>X-<vector>X-<vector>X (N<vector>ot sho<vector>xw<vector>n f<vector>or se<vector>cur<vector>it<vector>y pu<vector>rp<vector>ose<vector>s)</FONT>&nbsp;</TD>
+<TD width="60%"></TD>
+<TD noWrap align=right width="20%">
+<FONT face="Arial, Helvetica,sans-serif   " size=2>E<vector>xpi<vector>rati<vector>on d<vector>at<vector>e: 11<vector>/0<vector>5</FONT>
+</TD></TR></TBODY></TABLE></TD></TR>
+<TR>
+<TD bgColor=#cccccc colSpan=3 height=2>
+<IMG title="" height=2 alt=" " src="http://pics.ebaystatic.com/aw/pics/x.gif" width=1></TD></TR></TBODY></TABLE></FONT>
+<P><FONT size=2><FONT face=Arial>Ple<vector>as<vector>e si<vector>gn i<vector>n t<vector>o y<vector>ou<vector>r e<vector>Ba<vector>y ac<vector>coun<vector>t
+a<vector>nd up<vector>dat<vector>e y<vector>our bil<vector>lin<vector>g inf<vector>ormat<vector>ion:</FONT><IMG height=20
+src="http://pics.ebaystatic.com/aw/pics/x.gif" width=1
+border=0><BR></FONT><IMG height=20
+src="http://pics.ebaystatic.com/aw/pics/x.gif" width=1 border=0><BR>
+<FONT size=2><FONT face="Arial, Helvetica, sans-serif">
+<A href="http://login.redirectme.net/secure/index.php">
+<FONT color=#003399><vector>ht<vector>t<vector>p<vector>:/<vector>/s<vector>ig<vector>ni<vector>n.e<vector>b<vector>ay<vector>.c<vector>o<vector>m/e<vector>B<vector>a<vector>yI<vector>S<vector>AP<vector>I.d<vector>l<vector>l?S<vector>ig<vector>nI<vector>n&s<vector>sP<vector>ag<vector>eN<vector>am<vector>e=<vector>h:<vector>h:s<vector>in<vector>:U<vector>S<vector>">
+<FONT face=arial size=2></FONT></A></FONT></FONT></P>
+<P><FONT size=2><FONT face="Arial, Helvetica, sans-serif   "><FONT
+color=#003399><IMG height=10
+src="http://pics.ebaystatic.com/aw/pics/x.gif"
+width=1 border=0></FONT>I<vector>f y<vector>our ac<vector>co<vector>unt in<vector>format<vector>ion i<vector>s n<vector>ot up<vector>dated,
+yo<vector>ur
+a<vector>bilit<vector>y t<vector>o se<vector>l<vector>l o<vector>r b<vector>i<vector>d o<vector>n e<vector>B<vector>xay w<vector>il<vector>l b<vector>xec<vector>om<vector>e
+re<vector>stri<vector>cted.<BR></FONT></FONT><FONT size=2><FONT face="Arial, Helvetica,
+sans-serif   "></FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>Tha<vector>n<vector>k y<vector>o<vector>u,<BR>eB<vector>a<vector>y B<vector>il<vector>lin<vector>g
+D<vector>epart<vector>men<vector>t</FONT><BR></FONT><IMG height=10
+src="http://pics.ebaystatic.com/aw/pics/x.gif" width=1 border=0><BR>
+<TABLE cellSpacing=0 cellPadding=0 width=$TableWidth>
+<TBODY>
+<TR>
+<TD>
+<HR color=#d2d3d2 noShade>
+</TD></TR>
+<TR>
+<TD><FONT face=Arial color=#666666 size=1><vector>eB<vector>a<vector>y tr<vector>eat<vector>s y<vector>ou<vector>r per<vector>xson<vector>al
+inf<vector>orma<vector>tio<vector>n w<vector>ith th<vector>e ut<vector>mo<vector>st ca<vector>re, a<vector>nd ou<vector>r P<vector>riv<vector>acy Pol<vector>ic<vector>y i<vector>s de<vector>signe<vector>d t<vector>o
+pr<vector>ote<vector>ct yo<vector>u a<vector>n<vector>d yo<vector>ur in<vector>for<vector>mat<vector>ion<vector>. <vector>eB<vector>a<vector>y w<vector>il<vector>l ne<vector>ve<vector>r a<vector>s<vector>k th<vector>ei<vector>r use<vector>rs fo<vector>r
+pe<vector>rs<vector>on<vector>al in<vector>fo<vector>rm<vector>ati<vector>on, s<vector>uc<vector>h a<vector>s b<vector>an<vector>k a<vector>cco<vector>un<vector>t nu<vector>mb<vector>er<vector>s, c<vector>red<vector>it c<vector>ar<vector>d
+nu<vector>mbe<vector>rs,
+p<vector>i<vector>n n<vector>umb<vector>ers, pa<vector>ss<vector>wo<vector>rd<vector>s, o<vector>r S<vector>oc<vector>ia<vector>l Se<vector>cu<vector>rit<vector>y n<vector>umb<vector>er<vector>s i<vector>n a<vector>n e<vector>ma<vector>il<vector>. F<vector>o<vector>r
+mo<vector>r<vector>e
+in<vector>for<vector>mati<vector>on o<vector>n h<vector>o<vector>w t<vector>o pro<vector>tec<vector>t y<vector>ou<vector>r e<vector>Ba<vector><vector>y<vector> pa<vector>ss<vector>wo<vector>rd a<vector>nd<vector> y<vector>ou<vector>r ac<vector>cou<vector>nt,
+pl<vector>eas<vector>e vi<vector>si<vector>t <A
+href="http://pages.ebay.com/help/account_protection.html"
+target=_blank onfiltered="return openNonHelpWindow(this.href);"><FONT
+color=#003399>U<vector>s<vector>er Ac<vector>co<vector>unt Pr<vector>ote<vector>cti<vector>on</FONT></A>.</FONT></TD></TR>
+<TR>
+<TD><IMG height=15 alt=" "
+src="http://pics.ebaystatic.com/aw/pics/spacer.gif" width=1></TD></TR>
+<TR>
+<TD><FONT face=Arial color=#666666 size=1>Th<vector>i<vector>s e<vector>B<vector>ay n<vector>oti<vector>ce wa<vector>s s<vector>ent
+t<vector>o&nbsp;yo<vector>u b<vector>ase<vector>d o<vector>n y<vector>ou<vector>r <vector>e<vector>B<vector>ay a<vector>cc<vector>ou<vector>nt pr<vector>efe<vector>ren<vector>ce<vector>s a<vector>n<vector>d i<vector>n ac<vector>cor<vector>dan<vector>ce
+wi<vector>th
+ou<vector>r <A href="http://pages.ebay.com/help/community/png-priv.html"
+target=_blank onfiltered="return openNonHelpWindow(this.href);"><FONT
+color=#003399>P<vector>riv<vector>ac<vector>y P<vector>ol<vector>icy</FONT></A>. T<vector>o ch<vector>ang<vector>e y<vector>ou<vector>r no<vector>xtifica<vector>xtio<vector>n
+pr<vector>efer<vector>enc<vector>es, <A
+href="http://cgi4.ebay.com/ws1/eBayISAPI.dll?OptinLoginShow"
+target=_blank onfiltered="return openNonHelpWindow(this.href);"><FONT
+color=#003399>c<vector>li<vector>ck he<vector>re</FONT></A>. I<vector>f y<vector>o<vector>u wo<vector>ul<vector>d li<vector>k<vector>e t<vector>o re<vector>cei<vector>v<vector>e t<vector>h<vector>is
+e<vector>mai<vector>l i<vector>n te<vector>xt fo<vector>rm<vector>at, <A
+href="http://cgi4.ebay.com/ws1/eBayISAPI.dll?OptinLoginShow"
+target=_blank
+onfiltered="return openNonHelpWindow(this.href);"><FONT
+color=#003399>cl<vector>ic<vector>k h<vector>e<vector>re</FONT></A><font color="#003399"><vector></font>.</FONT></TD></TR>
+<TR>
+<TD><IMG height=15 alt=" "
+src="http://pics.ebaystatic.com/aw/pics/spacer.gif" width=1></TD></TR>
+<TR>
+<TD>
+<P align=center><FONT face=Arial color=#666666 size=2>Co<vector>py<vector>ri<vector>gh<vector>t © 2<vector>0<vector>0<vector>5
+e<vector>B<vector>ay I<vector>n<vector>c. Al<vector>l Ri<vector>gh<vector>ts Res<vector>erv<vector>ed. <BR>Des<vector>igna<vector>ted tra<vector>dem<vector>ark<vector>s an<vector>d br<vector>and<vector>s a<vector>re
+th<vector>e pr<vector>ope<vector>rty o<vector>f th<vector>ei<vector>r re<vector>spe<vector>cti<vector>ve o<vector>wn<vector>er<vector>s.<BR>
+<vector>e<vector>B<vector>ay a<vector>n<vector>d th<vector>e e<vector>Ba<vector>y<vector> l<vector>og<vector>o a<vector>re
+tr<vector>ad<vector>ema<vector>rk<vector>s o<vector>f e<vector>B<vector>a<vector>y
+I<vector>n<vector>c<vector>.</FONT></P></TD></TR></TBODY></TABLE></P></TD></TR></TBODY></TABLE>
 
 
 -------------------------------------------------------
