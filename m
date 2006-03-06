@@ -1,14 +1,16 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: kernel threads etc
-Date: Mon, 06 Mar 2006 22:27:41 +0000
-Message-ID: <1141684061.9230.15.camel__43922.8707728491$1141684133$gmane$org@localhost.localdomain>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: kernel threads etc
+Date: Mon, 06 Mar 2006 18:11:58 -0500
+Message-ID: <1141686718.25487.76.camel@mindpipe>
+References: <1141684061.9230.15.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8B441137
-	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2006 23:27:45 +0100 (MET)
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A193816C
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 00:12:07 +0100 (MET)
+In-Reply-To: <1141684061.9230.15.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,40 +20,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linux-sh <linuxsh-dev@lists.sourceforge.net>
-Cc: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have an interrupt handler in my sound driver that calls this:
+On Mon, 2006-03-06 at 22:27 +0000, Adrian McMenamin wrote:
+> I have an interrupt handler in my sound driver that calls this:
 
-dreamcastcard->sleep_aicahw = 1;
-wake_up_interruptible(&aicahw);
+You never explained why you want to create a kernel thread rather than
+implementing copy/silence callbacks like the docs say.
 
-
-which is meant to wake up this code in a workqueue:
-
-do{
-	wait_event_interruptible(aicahw, (dreamcastcard->sleep_aicahw > 0));
-	if (dreamcastcard->sleep_aicahw == 2) return; /* end of the road
-signalled */
-	snd_printk("The AICA is awake\n");
-	/* write to the lower or upper area of the ring buffer? */
-	buffer_size= frames_to_bytes(runtime, runtime->buffer_size);
-	if (buffer_size > 16384) transfer_size = 16384;
-	else transfer_size = buffer_size;
-	err = dma_xfer(0, runtime->dma_area, 0x11000 + (dreamcastcard->upper) *
-0x4000, transfer_size, 5);
-	if (err) goto dma_fail;
-	dreamcastcard->upper = 0;
-	dreamcastcard->sleep_aicahw = 0;
-} while (1);
-
-
-But while I know the interrupt is being fired and trapped (cheating with
-printk), I never see the "The AICA is awake" - is there something wrong
-with sleeping inside a kernel thread in this way or some other foible I
-should be aware of?
-
+Lee
 
 
 
