@@ -1,7 +1,7 @@
-From: "eBay " <aw-confirm@ebay.com>
-Subject: Question about Item
-Date: Mon, 6 Mar 2006 12:48:36 +0200 (EET)
-Message-ID: <1141642116.19933.qmail@arribada.ebay.com>
+From: "eBay " <service@ebay.com>
+Subject: Message from Accounts Department
+Date: Mon, 6 Mar 2006 13:31:26 +0200 (EET)
+Message-ID: <1141644686.13656.qmail@arribada.ebay.com>
 Content-Type: text/html
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
