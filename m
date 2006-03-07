@@ -1,11 +1,14 @@
-From: "Thibault LE MEUR" <Thibault.LeMeur@supelec.fr>
-Subject: [RFC][PATCH] snd-usb-audio and audiophile usb analog capture
-Date: Tue, 7 Mar 2006 18:30:44 +0100
-Message-ID: <062401c6420c$e0cb2bd0$a578e4a0@supelec.fr>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: [PATCH] Make polypaudio plugin thread safe
+Date: Tue, 07 Mar 2006 18:44:11 +0100
+Message-ID: <440DC66B.9080109@cendio.se>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0625_01C64215.428F93D0"
+ boundary="------------040704070402090700030402"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C07C51B8
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 18:44:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,337 +18,899 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: 'Takashi Iwai' <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
+--------------040704070402090700030402
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-------=_NextPart_000_0625_01C64215.428F93D0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Add a mutex to make sure that the Polypaudio plugin is thread safe.
 
-Hi,=20
-
-(I've sent this mail yesterday and it seems to have been lost =
-somewhere...
-Thus, I repost it now).
-
-Here is the patch I've developped for audiophile usb: It solves bug id =
-1801.
-
-Sorry for the long post, but I prefer to give as much information as
-possible in order to explain the patch and maybe update the docs for =
-this
-device.
-
-You'll find in this mail:
- - The patch ;-)
- - A Short and long (very long) description of it
-
-Takashi,
-I've not added a "true" quirk (function pointer parameter) to the
-"parse_audio_endpoints" function. Instead I've just made the quirk fit =
-into
-a simple function so that parse_audio_enpoints needs only 2 lines of =
-patch.
- - Do you still think it's necessary to implement a "true" quirk?
-
-Of course any comment is welcome.
-
-Regards,
-Thibault
-
-Note that:
-* In parse_audio_enpoints I've changed a "snd_printdd" to use "altno" =
-(the
-true altsetting value) instead of "i" (the index parameter in the =
-altsetting
-array) since they may differ in some cases and I think "altno" is more
-interresting that "i".
-* Patch is against the "cvs-02282006" usbaudio.c file (after a first =
-make).
+Signed-off-by: Pierre Ossman <ossman@cendio.se>
 
 
-Summary: Fixes Analog capture for audiophile usb and adds a new module
-parameter device_setup=20
-Signed-off-by: Thibault LE MEUR <Thibault.LeMeur@supelec.fr>
+--------------040704070402090700030402
+Content-Type: text/x-patch;
+ name="alsa-plugins-polyp-thread-safe.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa-plugins-polyp-thread-safe.patch"
 
--------------------------------------------------------------------------=
----
--------------------------------------
-Short description:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Adds a generic device_setup parameter to be able to alter the way
-snd-usb-audio initialize the driver. Together with a quirk for =
-audiophile
-usb, this solves bugid 1801 for analog capture on this device.
-
-Log story:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-	At initialization of the M-Audio Audiophile usb device, a specific
-altSettings subset must be selected to ensure a correct device
-synchronization: this subset depends on the audio functions and
-"Rate/Resolution mode" that will be used. Thus, this initialization =
-setting
-must be sent as a parameter to the driver before the actual device's
-initialization take place.
-
-	This patch adds a new module parameter called "device_setup"
-(integer) that might be used for any device. As a convention, I propose =
-that
-when this parameter is omitted, its default value remains 0x00 which may
-always mean "do not change Alsa driver's default behaviour". This way, =
-new
-driver versions will not break previously working setups.=20
-
-	The meaning of the device parameter depends on the device. For the
-audiophile usb, the device_setup is one byte long and its structure is =
-the
-following:
-
-	+---+---+---+---+---+---+---+---+
-	| b7| b6| b5| b4| b3| b2| b1| b0|
-	+---+---+---+---+---+---+---+---+
-	| 0 | 0 | 0 | Di|24B|96K|DTS|SET|
-	+---+---+---+---+---+---+---+---+
-Where:
-	- b0 is the "SET" bit: it MUST be set if device_parameter is not
-0x00
-	- b1 is the "DTS" bit: it is set only if Digital output with DTS/AC3
-is needed (though I'm not sure it is working)
-	- b2 is the Rate selection flag. When set to "1" the range
-"48-96KHz" is used. Otherwise the sample rate range is 8-48KHz
-	- b3 is the Resolution selection flag. When set to "1" samples are
-encoded 24bits long, otherwise they are 16bits long
-	- b4 is the Digital input flag: When set to "1" the device assumes
-that an active digital source is connected (this may lead to =
-synchronization
-issues if it is not the case).=20
-	- b5 to b7 are reserved for future uses, and must be set to "0"
-(might become Ao, Do, Ai, for b7, b6, b4 respectively)
-
-The parameter can be given when manually probing the device:
-	"# modprobe snd-usb-audio index=3D1 device_setup=3D0x9"
-
-or in /etc/modprobe.conf (example for Fedora):
---------------------------------------------------
-alias snd-card-1 snd-usb-audio
-options snd-usb-audio index=3D1 device_setup=3D0x09
--------------------------------------------------
-
-The patch also adds a quirk for audiophile usb, in order to only let =
-Alsa
-register interfaces that do correspond to "device_setup", so that no
-initialization error is done.
-
-Supported modes are:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-	- Default Alsa behaviour: "device_setup=3D0x00" (this is the default
-if device_setup is not given)
-		* all interfaces capabilities are registered in Alsa as they
-were before the patch
-		* Caution: Analog capture is rarely well initialized (bug id
-1801)
-		* hw:1,0 is Analog playback and Digital Capture, and hw:1,1
-is Digital playback and Analog Capture
-		* hw:1,2 is digital playback in DTS mode
-	- 24bits 96KHz mode: "device_setup=3D0x05"
-		* each audio function is working for 8Khz-96Khz
-		* But due to usb bandwith constraints only one interface can
-be set at the same time
-		* hw:1,0 is Analog playback and Digital Capture, and hw:1,1
-is Digital playback and Analog Capture
-	- 24bits 48KHz without Digital Input connected: "device_setup=3D0x09"
-		* Analog and digital playback, as well as Analog capture can
-be activated at the same time
-		* hw:1,0 is not enabled as a capture device (Digital Input)
-		* hw:1,0 is Analog playback, and hw:1,1 is Digital playback
-and Analog Capture
-	- 24bits 48KHz with Digital Input connected: "device_setup=3D0x19"
-                * Though hw:1,0 and hw:1,1 are available as both =
-playback
-and capture device, only 3 functions can be activated at the same time =
-due
-to usb bandwidth limitations
-		* hw:1,0 is Analog playback and Digital Capture, and hw:1,1
-is Digital playback and Analog Capture
-		* Caution: if no active digital signal is seen on the
-Digital input interface, synchronization issues may occur (see the
-audiophile usb documentation)
-	- 16bits 48KHz with Digital Input connected: "device_setup=3D0x11"
-                * hw:1,0 and hw:1,1 are available as both playback and
-capture device, all 4 functions can be activated at the same time
-		* hw:1,0 is Analog playback and Digital Capture, and hw:1,1
-is Digital playback and Analog Capture
-		* Caution: if no active digital signal is seen on the
-Digital input interface, synchronization issues may occur (see the
-audiophile usb documentation)
-	- 16bits 48KHz without Digital Input connected: "device_setup=3D0x01"
-		* Analog and digital playback, as well as Analog capture can
-be activated at the same time
-		* hw:1,0 is not enabled as a capture device (Digital Input)
-		* hw:1,0 is Analog playback, and hw:1,1 is Digital playback
-and Analog Capture
-	- DTS (AC3 encoding on Digital output only in 16bits Little endian):
-"device_setup=3D0x03"
-		* I don't know if it is really supported by Alsa
-		* Caution: hw:1,0 is Digital playback
-
-Technical Details for Audiophile Usb: =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-I got the following specs by usb-snooping the windows and linux drivers.
-
-The M-Audio Audiophile USB has 4 audio functions, each one corresponding =
-to
-a USB interface:
-	- Analog Output  is Usb Interface n=B02
-	- Digital Output is Usb Interface n=B03
-	- Analog Input   is Usb Interface n=B04
-	- Digital Input  is Usb Interface n=B05
-
-Each interface has 5 altsettings (AltSet 1,2,3,4,5) except:
-	- Interface 3 (Digital Out) has an extra Alset n=B06 that correspond
-to DTS output
-	- Interface 5 (Digital In) does not have Alset n=B03 and 5 (which
-corresponds to synchronous inputs or adaptive outputs on other =
-interfaces)
-
-At initialization time, the driver _must_know_ how the device will be =
-used
-(this is a hardware constraint):
-	- if DTS is choosen, only Interface 2 with AltSet n=B06 must be
-registered
-	- if 96KHz only AltSets n=B01 of each interface must be selected
-	- if samples are using 24bits/48KHz then AltSet 2 must me used if
-Digital input is connected, and only AltSet n=B03 if Digital input is =
-not
-connected=20
-	- if samples are using 16bits/48KHz then AltSet 4 must me used if
-Digital input is connected, and only AltSet n=B05 if Digital input is =
-not
-connected
--------------------------------------------------------------------------=
----
---------------------------
-
-------=_NextPart_000_0625_01C64215.428F93D0
-Content-Type: application/octet-stream;
-	name="usbaudio.c-audiophile.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="usbaudio.c-audiophile.patch"
-
---- usbaudio.c	2006-03-05 21:41:48.000000000 +0100
-+++ /usr/src/alsa/alsa-cvs-02282006.patched/alsa-driver/usb/usbaudio.c	=
-2006-03-05 21:52:14.000000000 +0100
-@@ -76,6 +76,7 @@
- #else
- 0; /* disabled as default for buggy async-unlink handling */
- #endif
-+static int device_setup =3D 0x00; /* device specific setup (parameter's =
-meaning depends on the physical devicer) */
-=20
- module_param_array(index, int, NULL, 0444);
- MODULE_PARM_DESC(index, "Index value for the USB audio adapter.");
-@@ -91,6 +92,8 @@
- MODULE_PARM_DESC(nrpacks, "Max. number of packets per URB.");
- module_param(async_unlink, bool, 0444);
- MODULE_PARM_DESC(async_unlink, "Use async unlink mode.");
-+module_param(device_setup, int, 0444);
-+MODULE_PARM_DESC(device_setup, "Specific device setup (if needed).");
-=20
-=20
- /*
-@@ -2547,6 +2550,7 @@
- 	return 0;
- }
-=20
-+int audiophile_skip_setting_quirk(int iface, int altno);
- static int parse_audio_endpoints(struct snd_usb_audio *chip, int =
-iface_no)
- {
- 	struct usb_device *dev;
-@@ -2585,6 +2589,10 @@
- 		stream =3D (get_endpoint(alts, 0)->bEndpointAddress & USB_DIR_IN) ?
- 			SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
- 		altno =3D altsd->bAlternateSetting;
-+=09
-+		/* quirk for audiophile usb: skip AltSets not corresponding to =
-device_setup */
-+		if (chip->usb_id =3D=3D USB_ID(0x0763, 0x2003) &&=20
-+		    audiophile_skip_setting_quirk(iface_no,altno)) continue;
-=20
- 		/* get audio formats */
- 		fmt =3D snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL, =
-AS_GENERAL);
-@@ -2683,7 +2691,7 @@
- 			continue;
- 		}
-=20
--		snd_printdd(KERN_INFO "%d:%u:%d: add audio endpoint 0x%x\n", =
-dev->devnum, iface_no, i, fp->endpoint);
-+		snd_printdd(KERN_INFO "%d:%u:%d: add audio endpoint 0x%x\n", =
-dev->devnum, iface_no, altno, fp->endpoint);
- 		err =3D add_audio_endpoint(chip, stream, fp);
- 		if (err < 0) {
- 			kfree(fp->rate_table);
-@@ -3112,6 +3120,35 @@
- 	return 0;
- }
-=20
-+/*
-+ * Setup quirks
-+ */
-+#define AUDIOPHILE_SET			0x01 /* bit mask for device_setup availability =
-*/
-+#define AUDIOPHILE_SET_DTS              0x02 /* bit mask for AC3/DTS =
-Digital Output */
-+#define AUDIOPHILE_SET_96K              0x04 /* bit mask for the =
-48-96KHz range (8-48KHz otherwise)*/
-+#define AUDIOPHILE_SET_24B              0x08 /* bit mask for 24bits =
-resolution (16bits otherwise) */
-+#define AUDIOPHILE_SET_DI               0x10 /* bit mask for Digital =
-Input activation*/
-+#define AUDIOPHILE_SET_MASK      	0x1F /* bit mask for AltSet setup =
-mode */
-+#define AUDIOPHILE_SET_24B_48K_DI	0x19 /* bit check result for =
-24bits+48KHz+Digital Input */
-+#define AUDIOPHILE_SET_24B_48K_NOTDI 	0x09 /* bit check result for =
-24bits+48KHz+No Digital Input */
-+#define AUDIOPHILE_SET_16B_48K_DI    	0x11 /* bit check result for =
-16bits+48KHz+Digital Input */
-+#define AUDIOPHILE_SET_16B_48K_NOTDI 	0x01 /* bit check result for =
-16bits+48KHz+No Digital Input */
+diff -up polyp.orig/ctl_polyp.c polyp/ctl_polyp.c
+--- polyp.orig/ctl_polyp.c	2006-02-27 20:25:38.000000000 +0100
++++ polyp/ctl_polyp.c	2006-03-07 18:35:50.000000000 +0100
+@@ -20,6 +20,8 @@
+ 
+ #include <sys/poll.h>
+ 
++#include <pthread.h>
 +
-+int audiophile_skip_setting_quirk(int iface, int altno) {
-+	if (device_setup & AUDIOPHILE_SET) {
-+		if ((device_setup & AUDIOPHILE_SET_DTS) && altno !=3D 6) return 1;=09
-+		if ((device_setup & AUDIOPHILE_SET_96K) && altno !=3D 1) return 1;
-+		if ((device_setup & AUDIOPHILE_SET_MASK) =3D=3D =
-AUDIOPHILE_SET_24B_48K_DI &&
-+		     altno !=3D 2) return 1;
-+		if ((device_setup & AUDIOPHILE_SET_MASK) =3D=3D =
-AUDIOPHILE_SET_24B_48K_NOTDI &&
-+		     altno !=3D 3) return 1;
-+		if ((device_setup & AUDIOPHILE_SET_MASK) =3D=3D =
-AUDIOPHILE_SET_16B_48K_DI &&
-+		     altno !=3D 4) return 1;
-+		if ((device_setup & AUDIOPHILE_SET_MASK) =3D=3D =
-AUDIOPHILE_SET_16B_48K_NOTDI &&
-+		     altno !=3D 5) return 1;
-+	}=09
-+	return 0; /*do not skip otherwise*/
-+}
-=20
- /*
-  * audio-interface quirks
+ #include <alsa/asoundlib.h>
+ #include <alsa/control_external.h>
+ 
+@@ -41,6 +43,8 @@ typedef struct snd_ctl_polyp {
+ 
+     int subscribed;
+     int updated;
++
++    pthread_mutex_t mutex;
+ } snd_ctl_polyp_t;
+ 
+ #define SOURCE_VOL_NAME "Capture Volume"
+@@ -159,11 +163,15 @@ static int polyp_elem_count(snd_ctl_ext_
+ 
+     assert(ctl);
+ 
++    pthread_mutex_lock(&ctl->mutex);
++
+     if (ctl->source)
+         count += 2;
+     if (ctl->sink)
+         count += 2;
+ 
++    pthread_mutex_unlock(&ctl->mutex);
++
+     return count;
+ }
+ 
+@@ -176,6 +184,8 @@ static int polyp_elem_list(snd_ctl_ext_t
+ 
+     snd_ctl_elem_id_set_interface(id, SND_CTL_ELEM_IFACE_MIXER);
+ 
++    pthread_mutex_lock(&ctl->mutex);
++
+     if (ctl->source) {
+         if (offset == 0)
+             snd_ctl_elem_id_set_name(id, SOURCE_VOL_NAME);
+@@ -184,6 +194,8 @@ static int polyp_elem_list(snd_ctl_ext_t
+     } else
+         offset += 2;
+ 
++    pthread_mutex_unlock(&ctl->mutex);
++
+     if (offset == 2)
+         snd_ctl_elem_id_set_name(id, SINK_VOL_NAME);
+     else if (offset == 3)
+@@ -215,24 +227,28 @@ static int polyp_get_attribute(snd_ctl_e
+     int *type, unsigned int *acc, unsigned int *count)
+ {
+     snd_ctl_polyp_t *ctl = ext->private_data;
+-    int err;
++    int err = 0;
+ 
+-    assert(ctl && ctl->p);
++    assert(ctl);
+ 
+     if (key > 3)
+         return -EINVAL;
+ 
++    pthread_mutex_lock(&ctl->mutex);
++
++    assert(ctl->p);
++
+     err = polyp_finish_poll(ctl->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_check_connection(ctl->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_update_volume(ctl);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     if (key & 1)
+         *type = SND_CTL_ELEM_TYPE_BOOLEAN;
+@@ -248,7 +264,10 @@ static int polyp_get_attribute(snd_ctl_e
+     else
+         *count = 1;
+ 
+-    return 0;
++finish:
++    pthread_mutex_unlock(&ctl->mutex);
++
++    return err;
+ }
+ 
+ static int polyp_get_integer_info(snd_ctl_ext_t *ext, snd_ctl_ext_key_t key,
+@@ -265,22 +284,26 @@ static int polyp_read_integer(snd_ctl_ex
+     long *value)
+ {
+     snd_ctl_polyp_t *ctl = ext->private_data;
+-    int err, i;
++    int err = 0, i;
+     pa_cvolume *vol = NULL;
+ 
+-    assert(ctl && ctl->p);
++    assert(ctl);
++
++    pthread_mutex_lock(&ctl->mutex);
++
++    assert(ctl->p);
+ 
+     err = polyp_finish_poll(ctl->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_check_connection(ctl->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_update_volume(ctl);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     switch (key) {
+     case 0:
+@@ -296,7 +319,8 @@ static int polyp_read_integer(snd_ctl_ex
+         *value = !ctl->sink_muted;
+         break;
+     default:
+-        return -EINVAL;
++        err = -EINVAL;
++        goto finish;
+     }
+ 
+     if (vol) {
+@@ -304,30 +328,37 @@ static int polyp_read_integer(snd_ctl_ex
+             value[i] = vol->values[i];
+     }
+ 
+-    return 0;
++finish:
++    pthread_mutex_unlock(&ctl->mutex);
++
++    return err;
+ }
+ 
+ static int polyp_write_integer(snd_ctl_ext_t *ext, snd_ctl_ext_key_t key,
+     long *value)
+ {
+     snd_ctl_polyp_t *ctl = ext->private_data;
+-    int err, i;
++    int err = 0, i;
+     pa_operation *o;
+     pa_cvolume *vol = NULL;
+ 
+-    assert(ctl && ctl->p && ctl->p->context);
++    assert(ctl);
++
++    pthread_mutex_lock(&ctl->mutex);
++
++    assert(ctl->p && ctl->p->context);
+ 
+     err = polyp_finish_poll(ctl->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_check_connection(ctl->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_update_volume(ctl);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     switch (key) {
+     case 0:
+@@ -335,7 +366,7 @@ static int polyp_write_integer(snd_ctl_e
+         break;
+     case 1:
+         if (!!ctl->source_muted == !*value)
+-            return 0;
++            goto finish;
+         ctl->source_muted = !*value;
+         break;
+     case 2:
+@@ -343,11 +374,12 @@ static int polyp_write_integer(snd_ctl_e
+         break;
+     case 3:
+         if (!!ctl->sink_muted == !*value)
+-            return 0;
++            goto finish;
+         ctl->sink_muted = !*value;
+         break;
+     default:
+-        return -EINVAL;
++        err = -EINVAL;
++        goto finish;
+     }
+ 
+     if (vol) {
+@@ -356,7 +388,7 @@ static int polyp_write_integer(snd_ctl_e
+                 break;
+ 
+         if (i == vol->channels)
+-            return 0;
++            goto finish;
+ 
+         for (i = 0;i < vol->channels;i++)
+             vol->values[i] = value[i];
+@@ -379,9 +411,14 @@ static int polyp_write_integer(snd_ctl_e
+     err = polyp_wait_operation(ctl->p, o);
+     pa_operation_unref(o);
+     if (err < 0)
+-        return err;
++        goto finish;
++
++    err = 1;
+ 
+-    return 1;
++finish:
++    pthread_mutex_unlock(&ctl->mutex);
++
++    return err;
+ }
+ 
+ static void polyp_subscribe_events(snd_ctl_ext_t *ext, int subscribe)
+@@ -390,7 +427,11 @@ static void polyp_subscribe_events(snd_c
+ 
+     assert(ctl);
+ 
++    pthread_mutex_lock(&ctl->mutex);
++
+     ctl->subscribed = !!(subscribe & SND_CTL_EVENT_MASK_VALUE);
++
++    pthread_mutex_unlock(&ctl->mutex);
+ }
+ 
+ static int polyp_read_event(snd_ctl_ext_t *ext, snd_ctl_elem_id_t *id,
+@@ -398,11 +439,14 @@ static int polyp_read_event(snd_ctl_ext_
+ {
+     snd_ctl_polyp_t *ctl = ext->private_data;
+     int offset;
++    int err = -EAGAIN;
+ 
+     assert(ctl);
+ 
++    pthread_mutex_lock(&ctl->mutex);
++
+     if (!ctl->updated || !ctl->subscribed)
+-        return -EAGAIN;
++        goto finish;
+ 
+     if (ctl->source)
+         offset = 2;
+@@ -425,16 +469,30 @@ static int polyp_read_event(snd_ctl_ext_
+ 
+     *event_mask = SND_CTL_EVENT_MASK_VALUE;
+ 
+-    return 1;
++    err = 0;
++
++finish:
++    pthread_mutex_unlock(&ctl->mutex);
++
++    return err;
+ }
+ 
+ static int polyp_ctl_poll_descriptors_count(snd_ctl_ext_t *ext)
+ {
+ 	snd_ctl_polyp_t *ctl = ext->private_data;
++	int count;
++
++    assert(ctl);
++
++    pthread_mutex_lock(&ctl->mutex);
++
++    assert(ctl->p);
++
++    count = polyp_poll_descriptors_count(ctl->p);
+ 
+-    assert(ctl && ctl->p);
++    pthread_mutex_unlock(&ctl->mutex);
+ 
+-    return polyp_poll_descriptors_count(ctl->p);
++    return count;
+ }
+ 
+ static int polyp_ctl_poll_descriptors(snd_ctl_ext_t *ext, struct pollfd *pfd, unsigned int space)
+@@ -443,35 +501,49 @@ static int polyp_ctl_poll_descriptors(sn
+ 
+ 	snd_ctl_polyp_t *ctl = ext->private_data;
+ 
+-    assert(ctl && ctl->p);
++    assert(ctl);
++
++    pthread_mutex_lock(&ctl->mutex);
++
++    assert(ctl->p);
+ 
+     num = polyp_poll_descriptors(ctl->p, pfd, space);
+     if (num < 0)
+-        return num;
++        goto finish;
+ 
+     if (ctl->updated)
+         pa_mainloop_wakeup(ctl->p->mainloop);
+ 
++finish:
++    pthread_mutex_unlock(&ctl->mutex);
++
+     return num;
+ }
+ 
+ static int polyp_ctl_poll_revents(snd_ctl_ext_t *ext, struct pollfd *pfd, unsigned int nfds, unsigned short *revents)
+ {
+ 	snd_ctl_polyp_t *ctl = ext->private_data;
+-	int err;
++	int err = 0;
++
++    assert(ctl);
++
++    pthread_mutex_lock(&ctl->mutex);
+ 
+-    assert(ctl && ctl->p);
++    assert(ctl->p);
+ 
+     err = polyp_poll_revents(ctl->p, pfd, nfds, revents);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     *revents = 0;
+ 
+     if (ctl->updated)
+         *revents |= POLLIN;
+ 
+-    return 0;
++finish:
++    pthread_mutex_unlock(&ctl->mutex);
++
++    return err;
+ }
+ 
+ static void polyp_close(snd_ctl_ext_t *ext)
+@@ -488,6 +560,8 @@ static void polyp_close(snd_ctl_ext_t *e
+     if (ctl->sink)
+         free(ctl->sink);
+ 
++    pthread_mutex_destroy(&ctl->mutex);
++
+ 	free(ctl);
+ }
+ 
+@@ -529,6 +603,7 @@ SND_CTL_PLUGIN_DEFINE_FUNC(polyp)
+ 	int err;
+ 	snd_ctl_polyp_t *ctl;
+     pa_operation *o;
++    pthread_mutexattr_t mutexattr;
+ 
+ 	snd_config_for_each(i, next, conf) {
+ 		snd_config_t *n = snd_config_iterator_entry(i);
+@@ -582,6 +657,11 @@ SND_CTL_PLUGIN_DEFINE_FUNC(polyp)
+     if (err < 0)
+         goto error;
+ 
++    pthread_mutexattr_init(&mutexattr);
++    pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);
++    pthread_mutex_init(&ctl->mutex, &mutexattr);
++    pthread_mutexattr_destroy(&mutexattr);
++
+     if (source)
+         ctl->source = strdup(source);
+     else if (device)
+Common subdirectories: polyp.orig/CVS and polyp/CVS
+Only in polyp: .deps
+Only in polyp: Makefile
+Only in polyp: Makefile.in
+diff -up polyp.orig/pcm_polyp.c polyp/pcm_polyp.c
+--- polyp.orig/pcm_polyp.c	2006-03-07 18:39:00.000000000 +0100
++++ polyp/pcm_polyp.c	2006-03-07 18:42:13.000000000 +0100
+@@ -21,6 +21,8 @@
+ #include <stdio.h>
+ #include <sys/poll.h>
+ 
++#include <pthread.h>
++
+ #include <alsa/asoundlib.h>
+ #include <alsa/pcm_external.h>
+ 
+@@ -44,6 +46,8 @@ typedef struct snd_pcm_polyp {
+     pa_sample_spec ss;
+     unsigned int frame_size;
+     pa_buffer_attr buffer_attr;
++
++    pthread_mutex_t mutex;
+ } snd_pcm_polyp_t;
+ 
+ static void update_ptr(snd_pcm_polyp_t *pcm)
+@@ -67,17 +71,21 @@ static int polyp_start(snd_pcm_ioplug_t 
+ {
+ 	snd_pcm_polyp_t *pcm = io->private_data;
+ 	pa_operation *o;
+-	int err;
++	int err = 0;
+ 
+-    assert(pcm && pcm->p && pcm->stream);
++    assert(pcm);
++
++    pthread_mutex_lock(&pcm->mutex);
++
++    assert(pcm->p && pcm->stream);
+ 
+     err = polyp_finish_poll(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_check_connection(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     o = pa_stream_cork(pcm->stream, 0, NULL, NULL);
+     assert(o);
+@@ -86,27 +94,36 @@ static int polyp_start(snd_pcm_ioplug_t 
+ 
+     pa_operation_unref(o);
+ 
+-    if (err < 0)
+-        return -EIO;
++    if (err < 0) {
++        err = -EIO;
++        goto finish;
++    }
+ 
+-	return 0;
++finish:
++    pthread_mutex_unlock(&pcm->mutex);
++
++	return err;
+ }
+ 
+ static int polyp_stop(snd_pcm_ioplug_t *io)
+ {
+ 	snd_pcm_polyp_t *pcm = io->private_data;
+ 	pa_operation *o;
+-	int err;
++	int err = 0;
++
++    assert(pcm);
++
++    pthread_mutex_lock(&pcm->mutex);
+ 
+-    assert(pcm && pcm->p && pcm->stream);
++    assert(pcm->p && pcm->stream);
+ 
+     err = polyp_finish_poll(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_check_connection(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     o = pa_stream_flush(pcm->stream, NULL, NULL);
+     assert(o);
+@@ -115,8 +132,10 @@ static int polyp_stop(snd_pcm_ioplug_t *
+ 
+     pa_operation_unref(o);
+ 
+-    if (err < 0)
+-        return -EIO;
++    if (err < 0) {
++        err = -EIO;
++        goto finish;
++    }
+ 
+     o = pa_stream_cork(pcm->stream, 1, NULL, NULL);
+     assert(o);
+@@ -125,27 +144,36 @@ static int polyp_stop(snd_pcm_ioplug_t *
+ 
+     pa_operation_unref(o);
+ 
+-    if (err < 0)
+-        return -EIO;
++    if (err < 0) {
++        err = -EIO;
++        goto finish;
++    }
+ 
+-	return 0;
++finish:
++    pthread_mutex_unlock(&pcm->mutex);
++
++	return err;
+ }
+ 
+ int polyp_drain(snd_pcm_ioplug_t *io)
+ {
+     snd_pcm_polyp_t *pcm = io->private_data;
+ 	pa_operation *o;
+-	int err;
++	int err = 0;
++
++    assert(pcm);
+ 
+-    assert(pcm && pcm->p && pcm->stream);
++    pthread_mutex_lock(&pcm->mutex);
++
++    assert(pcm->p && pcm->stream);
+ 
+     err = polyp_finish_poll(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_check_connection(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     o = pa_stream_drain(pcm->stream, NULL, NULL);
+     assert(o);
+@@ -154,34 +182,48 @@ int polyp_drain(snd_pcm_ioplug_t *io)
+ 
+     pa_operation_unref(o);
+ 
+-    if (err < 0)
+-        return -EIO;
++    if (err < 0) {
++        err = -EIO;
++        goto finish;
++    }
+ 
+-    return 0;
++finish:
++    pthread_mutex_unlock(&pcm->mutex);
++
++	return err;
+ }
+ 
+ static snd_pcm_sframes_t polyp_pointer(snd_pcm_ioplug_t *io)
+ {
+ 	snd_pcm_polyp_t *pcm = io->private_data;
+-	int err;
++	int err = 0;
+ 
+-    assert(pcm && pcm->p && pcm->stream);
++    assert(pcm);
++
++    pthread_mutex_lock(&pcm->mutex);
++
++    assert(pcm->p && pcm->stream);
+ 
+     err = polyp_finish_poll(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_check_connection(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     update_ptr(pcm);
+ 
+     err = polyp_start_poll(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
++
++	err = snd_pcm_bytes_to_frames(io->pcm, pcm->ptr);
+ 
+-	return snd_pcm_bytes_to_frames(io->pcm, pcm->ptr);
++finish:
++    pthread_mutex_unlock(&pcm->mutex);
++
++	return err;
+ }
+ 
+ static snd_pcm_sframes_t polyp_write(snd_pcm_ioplug_t *io,
+@@ -191,17 +233,21 @@ static snd_pcm_sframes_t polyp_write(snd
+ {
+ 	snd_pcm_polyp_t *pcm = io->private_data;
+ 	const char *buf;
+-	int err;
++	int err = 0;
+ 
+-    assert(pcm && pcm->p && pcm->stream);
++    assert(pcm);
++
++    pthread_mutex_lock(&pcm->mutex);
++
++    assert(pcm->p && pcm->stream);
+ 
+     err = polyp_finish_poll(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_check_connection(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     /* Make sure the buffer pointer is in sync */
+     update_ptr(pcm);
+@@ -215,7 +261,12 @@ static snd_pcm_sframes_t polyp_write(snd
+     /* Make sure the buffer pointer is in sync */
+     update_ptr(pcm);
+ 
+-    return size;
++    err = size;
++
++finish:
++    pthread_mutex_unlock(&pcm->mutex);
++
++	return err;
+ }
+ 
+ static snd_pcm_sframes_t polyp_read(snd_pcm_ioplug_t *io,
+@@ -226,17 +277,21 @@ static snd_pcm_sframes_t polyp_read(snd_
+ 	snd_pcm_polyp_t *pcm = io->private_data;
+ 	void *dst_buf, *src_buf;
+ 	size_t remain_size, frag_length;
+-	int err;
++	int err = 0;
++
++    assert(pcm);
+ 
+-    assert(pcm && pcm->p && pcm->stream);
++    pthread_mutex_lock(&pcm->mutex);
++
++    assert(pcm->p && pcm->stream);
+ 
+     err = polyp_finish_poll(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     err = polyp_check_connection(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     /* Make sure the buffer pointer is in sync */
+     update_ptr(pcm);
+@@ -270,37 +325,64 @@ static snd_pcm_sframes_t polyp_read(snd_
+     /* Make sure the buffer pointer is in sync */
+     update_ptr(pcm);
+ 
+-    return size - (remain_size / pcm->frame_size);
++    err = size - (remain_size / pcm->frame_size);
++
++finish:
++    pthread_mutex_unlock(&pcm->mutex);
++
++	return err;
+ }
+ 
+ static int polyp_pcm_poll_descriptors_count(snd_pcm_ioplug_t *io)
+ {
+ 	snd_pcm_polyp_t *pcm = io->private_data;
++	int count;
++
++    assert(pcm);
++
++    pthread_mutex_lock(&pcm->mutex);
++
++    assert(pcm->p);
+ 
+-    assert(pcm && pcm->p);
++    count = polyp_poll_descriptors_count(pcm->p);
+ 
+-    return polyp_poll_descriptors_count(pcm->p);
++    pthread_mutex_unlock(&pcm->mutex);
++
++	return count;
+ }
+ 
+ static int polyp_pcm_poll_descriptors(snd_pcm_ioplug_t *io, struct pollfd *pfd, unsigned int space)
+ {
+ 	snd_pcm_polyp_t *pcm = io->private_data;
++	int err;
++
++    assert(pcm);
++
++    pthread_mutex_lock(&pcm->mutex);
++
++    assert(pcm->p);
+ 
+-    assert(pcm && pcm->p);
++    err = polyp_poll_descriptors(pcm->p, pfd, space);
+ 
+-    return polyp_poll_descriptors(pcm->p, pfd, space);
++    pthread_mutex_unlock(&pcm->mutex);
++
++	return err;
+ }
+ 
+ static int polyp_pcm_poll_revents(snd_pcm_ioplug_t *io, struct pollfd *pfd, unsigned int nfds, unsigned short *revents)
+ {
+ 	snd_pcm_polyp_t *pcm = io->private_data;
+-	int err;
++	int err = 0;
+ 
+-    assert(pcm && pcm->p);
++    assert(pcm);
++
++    pthread_mutex_lock(&pcm->mutex);
++
++    assert(pcm->p);
+ 
+     err = polyp_poll_revents(pcm->p, pfd, nfds, revents);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     *revents = 0;
+ 
+@@ -319,20 +401,26 @@ static int polyp_pcm_poll_revents(snd_pc
+             *revents |= POLLIN;
+     }
+ 
+-    return 0;
++finish:
++    pthread_mutex_unlock(&pcm->mutex);
++
++	return err;
+ }
+ 
+ static int polyp_prepare(snd_pcm_ioplug_t *io)
+ {
+     snd_pcm_polyp_t *pcm = io->private_data;
+-    int err;
+-    pa_stream_state_t state;
++    int err = 0;
++
++    assert(pcm);
+ 
+-    assert(pcm && pcm->p);
++    pthread_mutex_lock(&pcm->mutex);
++
++    assert(pcm->p);
+ 
+     err = polyp_finish_poll(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     if (pcm->stream) {
+         pa_stream_disconnect(pcm->stream);
+@@ -343,7 +431,7 @@ static int polyp_prepare(snd_pcm_ioplug_
+ 
+     err = polyp_check_connection(pcm->p);
+     if (err < 0)
+-        return err;
++        goto finish;
+ 
+     assert(pcm->stream == NULL);
+ 
+@@ -363,21 +451,29 @@ static int polyp_prepare(snd_pcm_ioplug_
+         fprintf(stderr, "*** POLYPAUDIO: Unable to create stream.\n");
+         pa_stream_unref(pcm->stream);
+         pcm->stream = NULL;
+-        return err;
++        goto finish;
+     }
+ 
+     pcm->last_size = 0;
+     pcm->ptr = 0;
+     pcm->offset = 0;
+ 
+-    return 0;
++finish:
++    pthread_mutex_unlock(&pcm->mutex);
++
++	return err;
+ }
+ 
+ static int polyp_hw_params(snd_pcm_ioplug_t *io, snd_pcm_hw_params_t *params)
+ {
+     snd_pcm_polyp_t *pcm = io->private_data;
++	int err = 0;
++
++    assert(pcm);
+ 
+-    assert(pcm && pcm->p && !pcm->stream);
++    pthread_mutex_lock(&pcm->mutex);
++
++    assert(pcm->p && !pcm->stream);
+ 
+     pcm->frame_size = (snd_pcm_format_physical_width(io->format) * io->channels) / 8;
+ 
+@@ -406,7 +502,8 @@ static int polyp_hw_params(snd_pcm_ioplu
+     default:
+         fprintf(stderr, "*** POLYPAUDIO: unsupported format %s\n",
+             snd_pcm_format_name(io->format));
+-        return -EINVAL;
++        err = -EINVAL;
++        goto finish;
+     }
+ 
+     pcm->ss.rate = io->rate;
+@@ -418,7 +515,10 @@ static int polyp_hw_params(snd_pcm_ioplu
+     pcm->buffer_attr.minreq = io->period_size * pcm->frame_size;
+     pcm->buffer_attr.fragsize = io->period_size * pcm->frame_size;
+ 
+-    return 0;
++finish:
++    pthread_mutex_unlock(&pcm->mutex);
++
++	return err;
+ }
+ 
+ static int polyp_close(snd_pcm_ioplug_t *io)
+@@ -439,6 +539,8 @@ static int polyp_close(snd_pcm_ioplug_t 
+     if (pcm->device)
+         free(pcm->device);
+ 
++    pthread_mutex_destroy(&pcm->mutex);
++
+ 	free(pcm);
+ 
+ 	return 0;
+@@ -543,6 +645,7 @@ SND_PCM_PLUGIN_DEFINE_FUNC(polyp)
+ 	const char *device = NULL;
+ 	int err;
+ 	snd_pcm_polyp_t *pcm;
++    pthread_mutexattr_t mutexattr;
+ 
+ 	snd_config_for_each(i, next, conf) {
+ 		snd_config_t *n = snd_config_iterator_entry(i);
+@@ -585,6 +688,11 @@ SND_PCM_PLUGIN_DEFINE_FUNC(polyp)
+     if (err < 0)
+         goto error;
+ 
++    pthread_mutexattr_init(&mutexattr);
++    pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);
++    pthread_mutex_init(&pcm->mutex, &mutexattr);
++    pthread_mutexattr_destroy(&mutexattr);
++
+ 	pcm->io.version = SND_PCM_IOPLUG_VERSION;
+ 	pcm->io.name = "ALSA <-> Polypaudio PCM I/O Plugin";
+ 	pcm->io.poll_fd = -1;
+diff -up polyp.orig/polyp.c polyp/polyp.c
+--- polyp.orig/polyp.c	2006-03-07 18:39:00.000000000 +0100
++++ polyp/polyp.c	2006-03-07 17:28:02.000000000 +0100
+@@ -174,7 +174,9 @@ int polyp_wait_operation(snd_polyp_t *p,
+     assert(p && o && (p->state == POLYP_STATE_READY));
+ 
+     while (pa_operation_get_state(o) == PA_OPERATION_RUNNING) {
++        p->state = POLYP_STATE_POLLING;
+         err = pa_mainloop_iterate(p->mainloop, 1, NULL);
++        p->state = POLYP_STATE_READY;
+         if (err < 0)
+             return err;
+     }
 
-------=_NextPart_000_0625_01C64215.428F93D0--
-
-
+--------------040704070402090700030402--
 
 
 -------------------------------------------------------
