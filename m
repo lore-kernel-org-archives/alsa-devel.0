@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001896]: Extreme noise on Asus Laptop ( SiS 7012 )
-Date: Tue, 7 Mar 2006 17:19:43 +0100
-Message-ID: <95ec9ca8a888b317df513ed28d9a4cd5@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Mix two mono streams into one stereo.
+Date: Tue, 07 Mar 2006 11:23:51 -0500
+Message-ID: <1141748631.767.13.camel@mindpipe>
+References: <1141737495.6054.6.camel@jazc.fedora>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 08E021C5
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 17:19:43 +0100 (MET)
+In-Reply-To: <1141737495.6054.6.camel@jazc.fedora>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Juan Zapatero <jazc@gmvsistemas.es>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-03-07 at 13:18 +0000, Juan Zapatero wrote:
+> I need some help with this. I have written a VoIP application which
+> captures audio from a microphone input, and plays audio coming through
+> the network to de audio output.
+> 
+> This application is intended to run on a system with a sound-card that
+> has only one stereo output, and two different audio streams have to be
+> played both at the same time through this stereo output. So I need to
+> mix both mono streams into one stereo stream using ALSA Api.
+> 
+> How is this possible?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1896> 
-======================================================================
-Reported By:                lbenini
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1896
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             from 2.6.14 to 2.6.16
-======================================================================
-Date Submitted:             03-07-2006 17:18 CET
-Last Modified:              03-07-2006 17:19 CET
-======================================================================
-Summary:                    Extreme noise on Asus Laptop ( SiS 7012 )
-Description: 
-I've configurated audio card and driver recognize it.
-I can hear music but with an extreme loud noise.
-(well more noise than music :-P)
+Just use JACK, this exposes the two output channels as independent
+ports, and write your app as a JACK client (or multiple clients)
 
-
-======================================================================
-
-----------------------------------------------------------------------
- lbenini - 03-07-06 17:19 
-----------------------------------------------------------------------
-Not alone....
-[Post in italian but identical problem]
-http://forums.gentoo.org/viewtopic-t-438284.html
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-07-06 17:18 lbenini        New Issue                                    
-03-07-06 17:18 lbenini        Kernel Version            => from 2.6.14 to 2.6.16
-03-07-06 17:19 lbenini        Note Added: 0008370                          
-======================================================================
-
+Lee
 
 
 
