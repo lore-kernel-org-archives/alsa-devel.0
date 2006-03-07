@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001895]: nvidia 6150 --- desparate attempt fails at  snd_verbose_printk
-Date: Tue, 7 Mar 2006 21:53:33 +0100
-Message-ID: <84b3f298ee707e3d767a4d2ce36b98ae@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: kernel threads etc
+Date: Tue, 07 Mar 2006 21:19:42 +0000
+Message-ID: <1141766382.9232.10.camel@localhost.localdomain>
+References: <1141684061.9230.15.camel@localhost.localdomain>
+	 <1141686718.25487.76.camel@mindpipe>
+	 <1141687750.9230.24.camel@localhost.localdomain>
+	 <1141688891.25487.91.camel@mindpipe>
+	 <1141690313.9230.32.camel@localhost.localdomain>
+	 <1141690930.25487.104.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 986EE1A1
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 21:53:33 +0100 (MET)
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8B819196
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 22:19:46 +0100 (MET)
+In-Reply-To: <1141690930.25487.104.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,104 +25,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-03-06 at 19:22 -0500, Lee Revell wrote:
+> On Tue, 2006-03-07 at 00:11 +0000, Adrian McMenamin wrote:
+> > It transfers - without CPU intervention - memory from the SH4 (main
+> > CPU)
+> > memory to the ARM7 (sound processing chip) memory (ie the playback
+> > ring
+> > buffer). The function simply sets the register values and off it goes
+> > 
+> > 
+> 
+> OK - so it's the same DMA I am familiar with, it just needs to be
+> reprogrammed every period - IOW you can't tell it "repeatedly transfer
+> audio to this location until I tell you to stop".
+> 
+> If this is the case then I would say forget about the kernel thread and
+> the copy/silence callbacks - just do all the work in the interrupt
+> handler.
+> 
+OK. I am doing this (dealing with it in the interrupt handler) and so
+far it seems to work quite well, though it is still stuck in an endless
+loop, but I have a fair idea why, but i'm not sure how to deal with it.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1895> 
-======================================================================
-Reported By:                iaw4
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1895
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.15.5
-======================================================================
-Date Submitted:             03-07-2006 03:24 CET
-Last Modified:              03-07-2006 21:53 CET
-======================================================================
-Summary:                    nvidia 6150 --- desparate attempt fails at 
-snd_verbose_printk
-Description: 
+Right now this is what happens:
 
-I am trying to make the built-in sound on the ASUS A8N CSM VM (nvidia
-6150) to work.  apparently, a realtek 880 might also work.  I was told
-that the NFORCE drivers do not support it.  it seems to be some variant of
-intel high-definition audio.  I was hoping the latest ALSA would support
-it.  (Right wrong?)
+0. Create a DMA buffer in SH4 space - this is used as the source for the
+dma transfer (the target is in the ARM7's memory space). Alsa seems to
+fill up this buffer easily enough
 
-So, I downloaded the most recent ALSA distribution.  My linux kernel is
-linux-2.6.15.5.  I read the ALSA docs.  [by the way, most docs talk about
-having to have the soundcore enabled.  this is unclear, because I do not
-believe this is how the kernel 2.6.15.5 calls this anymore.  I think all
-that is meant here is that the very top selection of sound in the kernel
-must be on, which would be CONFIG_SOUND=y in this kernel.  not sure.]
+1. Fill the ring buffer completely with first DMA transfer (ring buffer
+has space for 8 periods) on receiving the SNDDRV_PCM_TRIGGER_START, then
+start the ARM7 playback
 
-The new ALSA compilation and installation works great.  Alas, now I want
-to try the intel driver next, which depends on snd_ac97_codec.  alas,
-despite a completely fresh installation, upon a "modprobe snd_ac97_codec",
-it fails to find snd_verbose_printk.  I thought modprobe could insert
-dependencies automatically.  either I am wrong here, or there is a
-dependency that is not marked appropriately.
+2. ARM7 fires interrupt on SH4 bus every time period is played
 
-======================================================================
+3. SH4 interrupt handler counts interrupts - have 4 elapsed? if yes then
+fill up first half of ring buffer - have 8 elapsed? then fill up second
+half
 
-----------------------------------------------------------------------
- iaw4 - 03-07-06 21:45 
-----------------------------------------------------------------------
-indeed, I do have an ad1986a.  (its in /proc/asound/card0/codec#0.)  the
-realtek suggestion came straight from an nvidia engineer [who I told my
-board name to], but I guess some 6150s have different codecs.
+4. However the data in the DMA buffer never seems to change - ie I just
+play the same 8 periods worth of sound, and the buffer never fills up
+with new material from the user space/application/alsa middle layer -
+and the calling app blocks ad infinitum, because clearly it is never
+told to send any more data
 
-in the alsa-devel archive, do I look for the codec, motherboard, etc.?  do
-you remember a good keyword to search for?  if not, don't worry---I will
-find it.
 
-[dear er-ku: neither the model=asus or position_fix=? parameters make any
-difference in getting rid of the noise.]
-
-regards,
-
-/iaw
-
-----------------------------------------------------------------------
- rlrevell - 03-07-06 21:53 
-----------------------------------------------------------------------
-It's best to search for codec + driver because most bugs only apply to a
-specific combination.
-
-Make sure that the module is seeing the parameters:
-
-cat /sys/module/snd_hda_intel/parameters/position_fix
-
-etc
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-07-06 03:24 iaw4           New Issue                                    
-03-07-06 03:24 iaw4           Distribution              => gentoo          
-03-07-06 03:24 iaw4           Kernel Version            => 2.6.15.5        
-03-07-06 06:27 stevenellis    Issue Monitored: stevenellis                    
-03-07-06 06:30 stevenellis    Note Added: 0008361                          
-03-07-06 19:03 iaw4           Note Added: 0008371                          
-03-07-06 19:21 rlrevell       Note Added: 0008372                          
-03-07-06 20:24 iaw4           Note Added: 0008374                          
-03-07-06 20:37 Arnaud Patard  Note Added: 0008375                          
-03-07-06 20:38 Arnaud Patard  Note Edited: 0008375                         
-03-07-06 20:39 er-ku          Note Added: 0008376                          
-03-07-06 21:45 iaw4           Note Added: 0008377                          
-03-07-06 21:53 rlrevell       Note Added: 0008378                          
-======================================================================
-
+How do I fix this?
 
 
 
