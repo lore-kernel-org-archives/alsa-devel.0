@@ -1,10 +1,17 @@
-From: Juan Zapatero <jazc@gmvsistemas.es>
-Subject: Mix two mono streams into one stereo.
-Date: Tue, 07 Mar 2006 13:18:15 +0000
-Message-ID: <1141737495.6054.6.camel@jazc.fedora>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: Re: [RFC][PATCH] Transparent network support through
+ polypaudio
+Date: Tue, 07 Mar 2006 15:01:48 +0100
+Message-ID: <440D924C.5090507@cendio.se>
+References: <43F09D76.9060004@cendio.se> <20060214094741.GA8943@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_1141734013-18730-180"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DB041BC
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 15:01:50 +0100 (MET)
+In-Reply-To: <20060214094741.GA8943@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,49 +21,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format...
+Clemens Ladisch wrote:
+> 
+> And you're speaking with mplayer's ALSA driver maintainer.
+> Is there anything wrong with mplayer?  ;-)
+> 
 
-------------=_1141734013-18730-180
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I can now answer yes to this! :)
 
-I need some help with this. I have written a VoIP application which
-captures audio from a microphone input, and plays audio coming through
-the network to de audio output.
+This little snippet causes me grief:
 
-This application is intended to run on a system with a sound-card that
-has only one stereo output, and two different audio streams have to be
-played both at the same time through this stereo output. So I need to
-mix both mono streams into one stereo stream using ALSA Api.
+     if ((err = snd_card_next(&cards)) < 0 || cards < 0)
+     {
+       mp_msg(MSGT_AO,MSGL_ERR,"alsa-init: no soundcards found: %s\n", 
+snd_strerror(err));
+       return(0);
+     }
 
-How is this possible?
+mplayer does not require an actual, physical sound card (which is what 
+this detects), so please don't check for one.
 
-Juan Zapatero.
-
-
-______________________
-Este mensaje, y en su caso, cualquier fichero anexo al mismo,
- puede contener informacion clasificada por su emisor como confidencial
- en el marco de su Sistema de Gestion de Seguridad de la 
-Informacion siendo para uso exclusivo del destinatario, quedando 
-prohibida su divulgacion copia o distribucion a terceros sin la 
-autorizacion expresa del remitente. Si Vd. ha recibido este mensaje 
- erroneamente, se ruega lo notifique al remitente y proceda a su borrado. 
-Gracias por su colaboracion.
-______________________
-This message including any attachments may contain confidential 
-information, according to our Information Security Management System,
- and intended solely for a specific individual to whom they are addressed.
- Any unauthorised copy, disclosure or distribution of this message
- is strictly forbidden. If you have received this transmission in error,
- please notify the sender immediately and delete it.
-______________________
-
-------------=_1141734013-18730-180--
+Rgds
+-- 
+Pierre Ossman                Telephone: +46-13-21 46 00
+Cendio AB                    Web: http://www.cendio.com
 
 
 -------------------------------------------------------
