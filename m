@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001895]: nvidia 6150 --- desparate attempt fails at  snd_verbose_printk
-Date: Tue, 7 Mar 2006 20:39:59 +0100
-Message-ID: <0a6ff0d90fa6db7c0bd6cd399bb08007@bugtrack.alsa-project.org>
+Date: Tue, 7 Mar 2006 21:45:59 +0100
+Message-ID: <8392502fcf6ea26fe89046a4dd45c3b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32D461B9
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 20:39:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 650B91B9
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 21:45:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.15.5
 ======================================================================
 Date Submitted:             03-07-2006 03:24 CET
-Last Modified:              03-07-2006 20:39 CET
+Last Modified:              03-07-2006 21:45 CET
 ======================================================================
 Summary:                    nvidia 6150 --- desparate attempt fails at 
 snd_verbose_printk
@@ -69,25 +69,27 @@ dependency that is not marked appropriately.
 ======================================================================
 
 ----------------------------------------------------------------------
- Arnaud Patard - 03-07-06 20:38 
-----------------------------------------------------------------------
-your mobo (a8n csm vm) has a ad1986a codec from analog and not realtek
-alc880. This one is on some nforce 430 mobo from Gigabyte. Look at
-alsa-devel archive and also at this bugzilla, you'll find at least a
-workaround for the noise. 
-
-As regards the position_fix= module parameter, you don't need it for
-recent versions of alsa iirc.
-
-(if you want to be sure of what codec you have, look at the
-/proc/asound/codec/card0/codec#0 file)
-
-
-
-----------------------------------------------------------------------
  er-ku - 03-07-06 20:39 
 ----------------------------------------------------------------------
 try model=asus instead of model=3stack-digout
+
+----------------------------------------------------------------------
+ iaw4 - 03-07-06 21:45 
+----------------------------------------------------------------------
+indeed, I do have an ad1986a.  (its in /proc/asound/card0/codec#0.)  the
+realtek suggestion came straight from an nvidia engineer [who I told my
+board name to], but I guess some 6150s have different codecs.
+
+in the alsa-devel archive, do I look for the codec, motherboard, etc.?  do
+you remember a good keyword to search for?  if not, don't worry---I will
+find it.
+
+[dear er-ku: neither the model=asus or position_fix=? parameters make any
+difference in getting rid of the noise.]
+
+regards,
+
+/iaw
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,6 +105,7 @@ Date Modified  Username       Field                    Change
 03-07-06 20:37 Arnaud Patard  Note Added: 0008375                          
 03-07-06 20:38 Arnaud Patard  Note Edited: 0008375                         
 03-07-06 20:39 er-ku          Note Added: 0008376                          
+03-07-06 21:45 iaw4           Note Added: 0008377                          
 ======================================================================
 
 
