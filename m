@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001895]: nvidia 6150 --- desparate attempt fails at  snd_verbose_printk
-Date: Tue, 7 Mar 2006 20:37:40 +0100
-Message-ID: <d2e4697d26fce149e7bcd0dc43104ab5@bugtrack.alsa-project.org>
+Date: Tue, 7 Mar 2006 20:39:59 +0100
+Message-ID: <0a6ff0d90fa6db7c0bd6cd399bb08007@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 164E51B9
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 20:37:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32D461B9
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 20:39:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.15.5
 ======================================================================
 Date Submitted:             03-07-2006 03:24 CET
-Last Modified:              03-07-2006 20:37 CET
+Last Modified:              03-07-2006 20:39 CET
 ======================================================================
 Summary:                    nvidia 6150 --- desparate attempt fails at 
 snd_verbose_printk
@@ -69,29 +69,10 @@ dependency that is not marked appropriately.
 ======================================================================
 
 ----------------------------------------------------------------------
- iaw4 - 03-07-06 20:24 
+ Arnaud Patard - 03-07-06 20:38 
 ----------------------------------------------------------------------
-ok...explains how not to get the insertion error.  thanks.
-
-alas, the other two issues remain.  (I tried position_fix'es from 0 to
-3.)
-
-[a] the high-pitched tone, which kills usage of alsa;
-[b] the crash if the sound mixer is used during play (ok, I can use the
-volume on my stereo, instead.  not great, but livable).
-
-does anyone know how to get rid of the high pitched sine tone in the
-background?
-
-sincerely,
-
-/iaw
-
-----------------------------------------------------------------------
- Arnaud Patard - 03-07-06 20:37 
-----------------------------------------------------------------------
-n csm your mobo (a8n csm vm) has a ad1986a codec from analog and not
-realtek alc880. This one is on some nforce 430 mobo from Gigabyte. Look at
+your mobo (a8n csm vm) has a ad1986a codec from analog and not realtek
+alc880. This one is on some nforce 430 mobo from Gigabyte. Look at
 alsa-devel archive and also at this bugzilla, you'll find at least a
 workaround for the noise. 
 
@@ -100,6 +81,13 @@ recent versions of alsa iirc.
 
 (if you want to be sure of what codec you have, look at the
 /proc/asound/codec/card0/codec#0 file)
+
+
+
+----------------------------------------------------------------------
+ er-ku - 03-07-06 20:39 
+----------------------------------------------------------------------
+try model=asus instead of model=3stack-digout
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -113,6 +101,8 @@ Date Modified  Username       Field                    Change
 03-07-06 19:21 rlrevell       Note Added: 0008372                          
 03-07-06 20:24 iaw4           Note Added: 0008374                          
 03-07-06 20:37 Arnaud Patard  Note Added: 0008375                          
+03-07-06 20:38 Arnaud Patard  Note Edited: 0008375                         
+03-07-06 20:39 er-ku          Note Added: 0008376                          
 ======================================================================
 
 
