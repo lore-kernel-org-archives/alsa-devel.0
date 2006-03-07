@@ -1,105 +1,89 @@
-From: "√Œ§√§»§Ø•ﬁ•¨•∏•Û" <mailer_fr@mweb.mailyes.net>
-Subject: test
-Date: Tue, 7 Mar 2006 21:59:25 +0000 (UTC)
-Message-ID: <20060307214352.9269.qmail@m23.mailyes.net>
-Reply-To: delivery_rt <mailer_rt@mweb.mailyes.net>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: 2.6.15-rt18, alsa sequencer, rosegarden -> alsa hangs
+Date: Tue, 07 Mar 2006 14:03:20 -0800
+Message-ID: <1141769000.5565.21.camel@cmn3.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset= ISO-2022-JP
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from m23.mailyes.net (m23.mailyes.net [125.187.32.224])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FE9B1B8
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 22:58:49 +0100 (MET)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-2022-JP
-Content-Transfer-Encoding: 7bit
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Date: 2006-03-08 05:40:01
-To: alsa-devel <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751481AbWCGWDf@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ingo Molnar <mingo@elte.hu>, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+Cc: cc@ccrma.Stanford.EDU, nando@ccrma.Stanford.EDU
 List-Id: alsa-devel@alsa-project.org
 
-$B>!$?$;$F$_$;$^$9!*(B   
-   
-$BBG$A;RJg=8$GqY$5$l$?J}!"%Q%A%s%3!"%Q%A%9%m$GIi$1(B 
-$B$F$$$kJ}I,8+$G$9!#(B 
+Hi all, I don't know where to go from here...
 
-   
-$B;d6&$O!"ETFb$r5rE@$K;vA0$KA49q$N%Q%A%s%3E9$rE0Dl(B 
-$BD4::$7!"$=$NF|@_Dj$,$$$$Bf(B($BM%=(Bf(B)$B$rDs6!$7$F$*$j(B 
-$B$^$9!#$=$NB>K?%a!<%+!<$+$i$N>pJs$r<h$j07$C$F$$$F(B 
-$B>e!9$N@.2L$r>e$2$F$*$j$^$9!#$3$l$J$i$P$*5RMM$K>p(B 
-$BJs$rDs6!$7$F$bCQ$:$+$7$/$J$/!"G<F@$7$FD:$1$k$H$3(B 
-$B$m$^$G@.2L$,$"$,$C$?$H;W$C$F$*$j$^$9!#(B 
+I'm trying to get a 2.6.15-rt18 kernel going and I'm finding a big
+showstopper in the alsa sequencer, presumably at the kernel module
+level. This is -rt18 with PREEMPT_RT and high resolution timers enabled,
+plus either alsa kernel drivers from 1.0.10 (latest stable release) or
+1.0.11rc3. Same problem for both. I initially thought that the
+snd-rtctimer kernel module was a problem so the latest tests were done
+with that module disabled so that the alsa sequencer is using the system
+timer for timing (HZ == 1000 for this kernel). 
 
-http://agk777.com 
-$B7HBSHG(B
-http://agk777.com/m/
+The symptoms are as follows:
+  - start jack using qjackctl
+  - start qsynth (gui front end for fluidsynth, a synth)
+  - start rosegarden (midi sequencer and audio recorder)
+  - load a midi file into rosegarden
+  - midi file plays successfully
+  - close rosegarden
+at this point one of the threads of rosegarden fails to exit and stays
+forever in the process list, in a ps axuw it shows as:
 
-$B%Q%A%s%3E9$N@_Dj$N$$$$Bf(B($BM%=(Bf(B)$B$rEv$F$k;v$=$NB>(B 
-$B$N%.%c%s%V%k$H0c$C$FHs$K$J$i$J$$$/$i$$4JC1$J;v$G(B 
-$B$9!#;vA0$K$=$N%Q%A%s%3E9$N=PJ}(B($B$$$$@_DjBf$rF~$l$k(B 
-$B>l=j(B)$B$rF|!9!"E0DlE*$KD4::$7!"$=$NE9$=$NE9$NJJ$5$((B 
-$BDO$a$P<+$:$HM%=(Bf$O8+$D$1$i$l$^$9!#(B 
+nando 5484 0.0 0.0 0 0 pts/1    D    13:32   0:00 [rosegardenseque]
 
-http://agk777.com 
-$B7HBSHG(B
-http://agk777.com/m/
+Anything else that I try to stop that touches the alsa sequencer never
+dies (qjackctl, vkeybd, qsynth, etc). Anything I try to start that tries
+to use it does not start. This happened with two widely different
+versions of rosegarden (1.0 and 1.2.3) - I have not yet tried with other
+alsa sequencer clients - I tried different kernel builds and alsa builds
+before giving up, the cycle is long when I include the frequent reboots.
+I can browse around in /proc/asound/seq but a:
+  cat /proc/asound/clients
+hangs forever (unkillable). Obviously I can't unload the alsa subsystem
+to try again. At this point my only recourse to recover is a reboot
+(which hangs when trying to stop the alsa subsystem - so the reset key
+is the only option). 
 
-$B@5D>!"M%=(Bf$r8+$D$1$i$l$k$N$O#1#0BfDxEY$G$9!#$G(B 
-$B$9$N$G!"3FETF;I\8)$K?M?t@)8B$r@_$1$5$;$FD:$$$F$^(B 
-$B$9!#OH$,Kd$^$j<!Bh$a@Z$j$H$5$;$F$$$?$@$-$^$9!#(B 
-$B>pJsDs6!CO0h$OA49q$G$9!##1#8:P0J>e$NJ}$G$"$l$PC/(B 
-$B$G$b=PMh$^$9!#(B 
+There are no kernel oops or messages either in dmesg
+or /var/log/messages that I can see. 
 
-$BK\Ev$N>pJs$rDs6!CW$7$^$9!#(B 
-$B>\$7$/$O2<5-$N%"%I%l%9$X(B 
+Booting into 2.6.14 with the latest -rt patch for that branch does not
+show the problem (using alsa kernel modules from 1.0.10 stable). 
 
-http://agk777.com 
-$B7HBSHG(B
-http://agk777.com/m/
+The problem happens with at least three completely different soundcards
+and two different kernel builds (one kind of vanilla, the other derived
+from the latest fc4 kernel configuration and patches).
 
-$B#37n$N>pJsDs6!%Q%A%s%3!"%9%m%C%H5!<o(B 
-   
-$B!!!!!!!!!!!!!!%Q%A%s%3(B 
-$B!z(B  $B#C#R(B  $B$Q$A$s$3(B  $B?e8M2+Lg(B  $B#M#6#7(B  $B#T#F#1(B 
-$B!z(B  $B#C#R(B  $BL@F|$,$"$k$5(B  $B$h$7$b$H%o!<%k%I(B  $B#S#F(B-$B#T(B   
-$B!z(B  $B#C#R(B  $BBg3$J*8l(B  $B#M#5#6(B 
-   
-$B%a%$%s$O#C#RBg3$J*8l$K$J$j$^$9!#(B 
-   
-$B!!!!!!!!!!!!!!(B  $B%9%m%C%H(B 
-$B!z(B  $B2!G&!*HVD9(B 
-$B!z(B  $B%"%i%8%s%(%\%j%e(B-$B%7%g%s(B 
-$B!z(B  $B%G%S%k%^%s#3(B 
-$B!z(B  $BKLEM$N7}(B 
-$B!z(B  $B%8%c%0%i!<#T#M(B 
+So it would look like an interaction between the newest -rt patches and
+the alsa sequencer timing. Weird because while rosegarden is up and
+running it plays midi sequences with no apparent problems, it is only
+when it exits that things get completely messed up. 
 
-http://agk777.com 
-$B7HBSHG(B
-http://agk777.com/m/   
-   
-$B>pJsM_$7$$J}!"%Q%A%s%3!"%9%m%C%H$G@83h$7$?$$J}!"(B 
-$B40A4L5NA$G$46(NO$$$?$7$^$9!#@'Hs!"$*?=$79~$_2<(B 
-$B$5$$!#B~:#$*?=$79~$_D:$$$?J}!"@hCe#5#0L>MM$KG/(B 
-$B;O%-%c%s%Z!<%s$K$D$-$*G/6L#1#0K|1_Ds6!$5$;$FD:(B 
-$B$-$^$9!#$*?=$79~$_$N:]!"96N,4uK>5!<o$NMs$K9g$$(B 
-$B8@MU!X=U0lHV!Y$H$*F~$l2<$5$$!#(B 
+Suggestions appreciated...
+-- Fernando
 
-http://agk777.com 
-$B7HBSHG(B
-http://agk777.com/m/
+# cat /proc/asound/seq/timer
+Timer for queue 0 : system timer
+  Period time : 0.001000000
+  Skew : 65536 / 65536
 
+[rosegarden is still there.....]
+# cat /proc/asound/seq/queues
+queue 0: [Rosegarden queue]
+owned by client    : 130
+lock status        : Locked
+queued time events : 0
+queued tick events : 0
+timer state        : Running
+timer PPQ          : 96
+current tempo      : 500000
+current BPM        : 120
+current time       : 1617.680000000 s
+current tick       : 318130
 
--------------------------------------------------------
-This SF.Net email is sponsored by xPML, a groundbreaking scripting language
-that extends applications into web and mobile media. Attend the live webcast
-and join the prime developer group breaking into this new coding territory!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
+# cat /proc/asound/seq/drivers
+snd-seq-oss,loaded,0
+snd-seq-midi,loaded,1
