@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: kernel threads etc
-Date: Mon, 06 Mar 2006 19:22:09 -0500
-Message-ID: <1141690930.25487.104.camel@mindpipe>
+Date: Mon, 06 Mar 2006 19:26:49 -0500
+Message-ID: <1141691210.25487.110.camel@mindpipe>
 References: <1141684061.9230.15.camel@localhost.localdomain>
 	 <1141686718.25487.76.camel@mindpipe>
 	 <1141687750.9230.24.camel@localhost.localdomain>
@@ -12,8 +12,8 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 5D1FB1A1
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 01:22:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 693141A1
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 01:26:53 +0100 (MET)
 In-Reply-To: <1141690313.9230.32.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -29,27 +29,20 @@ Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 On Tue, 2006-03-07 at 00:11 +0000, Adrian McMenamin wrote:
-> It transfers - without CPU intervention - memory from the SH4 (main
-> CPU)
-> memory to the ARM7 (sound processing chip) memory (ie the playback
-> ring
-> buffer). The function simply sets the register values and off it goes
-> 
+> > When I think of soundcard DMA I mean that you tell the card where in
+> > host memory the buffer is, then to start the DMA, and from then on,
+> > until you stop it, the device will automatically write audio into
+> that
+> > area of host memory until you tell it to stop.
+> > 
+> By buffer you mean the sound card buffer? I don't have that luxury I'm
+> afraid. I've got real dma though, just not of that kind.
 > 
 
-OK - so it's the same DMA I am familiar with, it just needs to be
-reprogrammed every period - IOW you can't tell it "repeatedly transfer
-audio to this location until I tell you to stop".
-
-If this is the case then I would say forget about the kernel thread and
-the copy/silence callbacks - just do all the work in the interrupt
-handler.
+Modern PCI soundcards don't have any buffers of their own - all they can
+do is DMA to/from host memory.
 
 Lee
-
-
-
-
 
 
 
