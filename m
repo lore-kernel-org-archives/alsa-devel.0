@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001892]: User-space _output_ devices
-Date: Tue, 7 Mar 2006 15:24:48 +0100
-Message-ID: <84d2f66093c600394f122010b614726c@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001545]: Flash player hangs in Firefox when using aoss
+Date: Tue, 7 Mar 2006 15:25:59 +0100
+Message-ID: <a43051b458ecc95373082d064afc59aa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DC8614F
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 15:24:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D776150
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 15:25:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1892> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1545> 
 ======================================================================
-Reported By:                zeurkous
-Assigned To:                tiwai
+Reported By:                smagoun
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1892
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Project:                    ALSA - liboss
+Issue ID:                   1545
+Category:                   
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               N/A
-Kernel Version:             N/A
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             03-05-2006 08:06 CET
-Last Modified:              03-07-2006 15:24 CET
+Date Submitted:             11-11-2005 21:30 CET
+Last Modified:              03-07-2006 15:25 CET
 ======================================================================
-Summary:                    User-space _output_ devices
+Summary:                    Flash player hangs in Firefox when using aoss
 Description: 
-This may sound a bit weird, but a feature i would like is a way for a
-user-space program to access the ALSA output driver interface (preferably
-as a device). Personally i'm designing a few simple sound output devices
-such as via the parallel port and the like, and the current ALSA output
-driver interface is AFAICS really heavily bloated for just getting an
-8-bit sample and writing it as a simple value to a port....
+I'm trying to get aoss to work with Firefox 1.5b2 and the Flash 7 plugin on
+an XScale (PXA 270) running Linux 2.6.13.4. Problem is, the browser hangs
+when navigating off a page that has Flash w/ sounds. The problem only
+happens when using aoss. GDB reports that the browser's hung up in
+snd_pcm_wait_nocheck, called from snd_pcm_dmix_drain.
+
+This sounds a bit like
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306, which was
+reportedly fixed in ALSA
+1.0.9a. I'm using the 1.0.9b drivers from 2.6.13.4 (plus patches for the
+AC97 that were subsequently rolled into 2.6.14). Upgrading alsa-oss and
+alsa-libs to 1.0.10rc3 didn't fix the problem.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001559 hang in snd_pcm_drain()
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-07-06 15:24 
+ gvy - 03-04-06 19:15 
 ----------------------------------------------------------------------
-Use extplug alsa-lib PCM plugin.  It's designed for an external user-space
-driver.
-You can find examples in alsa-plugins package.
+http://www.alsa-project.org/changes/v1-0-10--v1-0-11rc1.txt
+search for 1559
+
+----------------------------------------------------------------------
+ tiwai - 03-07-06 15:25 
+----------------------------------------------------------------------
+Did you try alsa-lib and alsa-oss CVS version?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-05-06 08:06 zeurkous       New Issue                                    
-03-05-06 08:06 zeurkous       Distribution              => N/A             
-03-05-06 08:06 zeurkous       Kernel Version            => N/A             
-03-07-06 15:24 tiwai          Status                   new => resolved     
-03-07-06 15:24 tiwai          Resolution               open => fixed       
-03-07-06 15:24 tiwai          Assigned To               => tiwai           
-03-07-06 15:24 tiwai          Note Added: 0008365                          
+11-11-05 21:30 smagoun        New Issue                                    
+12-22-05 11:43 ikonst         Issue Monitored: ikonst                      
+12-22-05 11:43 ikonst         Note Added: 0007122                          
+03-04-06 16:32 gvy            Note Added: 0008349                          
+03-04-06 16:33 gvy            Issue Monitored: gvy                         
+03-04-06 19:07 rlrevell       Relationship added       related to 0001559  
+03-04-06 19:15 gvy            Note Added: 0008353                          
+03-07-06 15:25 tiwai          Note Added: 0008366                          
 ======================================================================
 
 
