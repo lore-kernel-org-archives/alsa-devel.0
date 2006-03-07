@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001883]: NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804 sound - snd-intel8x0)
-Date: Tue, 7 Mar 2006 15:15:49 +0100
-Message-ID: <28954219f8e86528cc42ab23286fdb56@bugtrack.alsa-project.org>
+Date: Tue, 7 Mar 2006 15:20:50 +0100
+Message-ID: <ff5101d03e4fbb287b90fe7cafd01f16@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18A0214F
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 15:15:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5673114F
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 15:20:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo / Ubuntu
 Kernel Version:             kernel-2.6.15
 ======================================================================
 Date Submitted:             02-27-2006 09:03 CET
-Last Modified:              03-07-2006 15:15 CET
+Last Modified:              03-07-2006 15:20 CET
 ======================================================================
 Summary:                    NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804
 sound - snd-intel8x0)
@@ -70,12 +70,6 @@ Feb 12 19:46:31 tux ACPI: PCI interrupt for device 0000:00:04.0 disabled
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-02-06 15:29 
-----------------------------------------------------------------------
-Did you try the old kernel with the new ALSA version?  I bet it will work,
-i.e. rather a kernel ACPI problem.
-
-----------------------------------------------------------------------
  samael - 03-07-06 15:15 
 ----------------------------------------------------------------------
 No, I just try kernel-2.6.14/15 ALSA-1.0.10/11 - no sound!
@@ -84,6 +78,12 @@ Now I'm using Ubuntu-5.10 (kernel-2.6.12)......
 
 Do You think that it's kernel problem? 
 Must I post it as a kernel bug?
+
+----------------------------------------------------------------------
+ tiwai - 03-07-06 15:20 
+----------------------------------------------------------------------
+Try the latest ALSA with 2.6.10 kernel.
+If it doesn't work, we need to debug it.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -94,6 +94,7 @@ Date Modified  Username       Field                    Change
 02-27-06 09:04 samael         Issue Monitored: samael                      
 03-02-06 15:29 tiwai          Note Added: 0008309                          
 03-07-06 15:15 samael         Note Added: 0008363                          
+03-07-06 15:20 tiwai          Note Added: 0008364                          
 ======================================================================
 
 
