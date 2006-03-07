@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001897]: Audio Driver crashes immediatly after login, sound is crackling
-Date: Tue, 7 Mar 2006 19:23:23 +0100
-Message-ID: <68a547f69c869b6d94fd56689d334a18@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001895]: nvidia 6150 --- desparate attempt fails at  snd_verbose_printk
+Date: Tue, 7 Mar 2006 20:24:37 +0100
+Message-ID: <e60b915b66d8cb9c9f427ab57cc94cc4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02BE21A3
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 19:23:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FE4F1B9
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 20:24:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,45 +24,86 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1897> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1895> 
 ======================================================================
-Reported By:                dgopi81
-Assigned To:                tiwai
+Reported By:                iaw4
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1897
-Category:                   PCI - hda-intel
+Issue ID:                   1895
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.15.5
 ======================================================================
-Date Submitted:             03-07-2006 19:04 CET
-Last Modified:              03-07-2006 19:23 CET
+Date Submitted:             03-07-2006 03:24 CET
+Last Modified:              03-07-2006 20:24 CET
 ======================================================================
-Summary:                    Audio Driver crashes immediatly after login, sound
-is crackling
+Summary:                    nvidia 6150 --- desparate attempt fails at 
+snd_verbose_printk
 Description: 
-the sound driver crashes immediatly on logging as root and unable to
-restart, but oss drivers works and sound is fine. when logged as normal
-user alsa driver works but sound is choppy and crackling, oss drivers
-works fine and sound quality is good but applications doesn't detect oss
-and no audio playback in oss mode.
+
+I am trying to make the built-in sound on the ASUS A8N CSM VM (nvidia
+6150) to work.  apparently, a realtek 880 might also work.  I was told
+that the NFORCE drivers do not support it.  it seems to be some variant of
+intel high-definition audio.  I was hoping the latest ALSA would support
+it.  (Right wrong?)
+
+So, I downloaded the most recent ALSA distribution.  My linux kernel is
+linux-2.6.15.5.  I read the ALSA docs.  [by the way, most docs talk about
+having to have the soundcore enabled.  this is unclear, because I do not
+believe this is how the kernel 2.6.15.5 calls this anymore.  I think all
+that is meant here is that the very top selection of sound in the kernel
+must be on, which would be CONFIG_SOUND=y in this kernel.  not sure.]
+
+The new ALSA compilation and installation works great.  Alas, now I want
+to try the intel driver next, which depends on snd_ac97_codec.  alas,
+despite a completely fresh installation, upon a "modprobe snd_ac97_codec",
+it fails to find snd_verbose_printk.  I thought modprobe could insert
+dependencies automatically.  either I am wrong here, or there is a
+dependency that is not marked appropriately.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-07-06 19:23 
+ rlrevell - 03-07-06 19:21 
 ----------------------------------------------------------------------
-You don't give NEARLY enough information for this bug report to be useful
+Um, you can't just literally pass "position_fix=", you have to set it to
+something, like "position_fix=1" or 0 or 2 or 3 or whatever.
+
+----------------------------------------------------------------------
+ iaw4 - 03-07-06 20:24 
+----------------------------------------------------------------------
+ok...explains how not to get the insertion error.  thanks.
+
+alas, the other two issues remain.  (I tried position_fix'es from 0 to
+3.)
+
+[a] the high-pitched tone, which kills usage of alsa;
+[b] the crash if the sound mixer is used during play (ok, I can use the
+volume on my stereo, instead.  not great, but livable).
+
+does anyone know how to get rid of the high pitched sine tone in the
+background?
+
+sincerely,
+
+/iaw
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-07-06 19:04 dgopi81        New Issue                                    
-03-07-06 19:04 dgopi81        Kernel Version            => 2.6             
-03-07-06 19:23 rlrevell       Note Added: 0008373                          
+03-07-06 03:24 iaw4           New Issue                                    
+03-07-06 03:24 iaw4           Distribution              => gentoo          
+03-07-06 03:24 iaw4           Kernel Version            => 2.6.15.5        
+03-07-06 06:27 stevenellis    Issue Monitored: stevenellis                    
+03-07-06 06:30 stevenellis    Note Added: 0008361                          
+03-07-06 19:03 iaw4           Note Added: 0008371                          
+03-07-06 19:21 rlrevell       Note Added: 0008372                          
+03-07-06 20:24 iaw4           Note Added: 0008374                          
 ======================================================================
 
 
