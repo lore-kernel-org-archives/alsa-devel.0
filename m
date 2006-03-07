@@ -1,20 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: kernel threads etc
-Date: Mon, 06 Mar 2006 19:26:49 -0500
-Message-ID: <1141691210.25487.110.camel@mindpipe>
-References: <1141684061.9230.15.camel@localhost.localdomain>
-	 <1141686718.25487.76.camel@mindpipe>
-	 <1141687750.9230.24.camel@localhost.localdomain>
-	 <1141688891.25487.91.camel@mindpipe>
-	 <1141690313.9230.32.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001895]: nvidia 6150 --- desparate attempt fails at  snd_verbose_printk
+Date: Tue, 7 Mar 2006 03:24:48 +0100
+Message-ID: <f79424cb86451b1e81791a49e3cb1eed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 693141A1
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 01:26:53 +0100 (MET)
-In-Reply-To: <1141690313.9230.32.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 701591B7
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 03:24:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,25 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-03-07 at 00:11 +0000, Adrian McMenamin wrote:
-> > When I think of soundcard DMA I mean that you tell the card where in
-> > host memory the buffer is, then to start the DMA, and from then on,
-> > until you stop it, the device will automatically write audio into
-> that
-> > area of host memory until you tell it to stop.
-> > 
-> By buffer you mean the sound card buffer? I don't have that luxury I'm
-> afraid. I've got real dma though, just not of that kind.
-> 
 
-Modern PCI soundcards don't have any buffers of their own - all they can
-do is DMA to/from host memory.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1895> 
+======================================================================
+Reported By:                iaw4
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1895
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.15.5
+======================================================================
+Date Submitted:             03-07-2006 03:24 CET
+Last Modified:              03-07-2006 03:24 CET
+======================================================================
+Summary:                    nvidia 6150 --- desparate attempt fails at 
+snd_verbose_printk
+Description: 
 
-Lee
+I am trying to make the built-in sound on the ASUS A8N CSM VM (nvidia
+6150) to work.  apparently, a realtek 880 might also work.  I was told
+that the NFORCE drivers do not support it.  it seems to be some variant of
+intel high-definition audio.  I was hoping the latest ALSA would support
+it.  (Right wrong?)
+
+So, I downloaded the most recent ALSA distribution.  My linux kernel is
+linux-2.6.15.5.  I read the ALSA docs.  [by the way, most docs talk about
+having to have the soundcore enabled.  this is unclear, because I do not
+believe this is how the kernel 2.6.15.5 calls this anymore.  I think all
+that is meant here is that the very top selection of sound in the kernel
+must be on, which would be CONFIG_SOUND=y in this kernel.  not sure.]
+
+The new ALSA compilation and installation works great.  Alas, now I want
+to try the intel driver next, which depends on snd_ac97_codec.  alas,
+despite a completely fresh installation, upon a "modprobe snd_ac97_codec",
+it fails to find snd_verbose_printk.  I thought modprobe could insert
+dependencies automatically.  either I am wrong here, or there is a
+dependency that is not marked appropriately.
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-07-06 03:24 iaw4           New Issue                                    
+03-07-06 03:24 iaw4           Distribution              => gentoo          
+03-07-06 03:24 iaw4           Kernel Version            => 2.6.15.5        
+======================================================================
+
 
 
 
