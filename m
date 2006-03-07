@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001545]: Flash player hangs in Firefox when using aoss
-Date: Tue, 7 Mar 2006 15:25:59 +0100
-Message-ID: <a43051b458ecc95373082d064afc59aa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001883]: NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804 sound - snd-intel8x0)
+Date: Tue, 7 Mar 2006 15:30:02 +0100
+Message-ID: <78684755264dc123c89cd93bc2ac3d8e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D776150
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 15:25:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 022D0195
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 15:30:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1545> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1883> 
 ======================================================================
-Reported By:                smagoun
+Reported By:                samael
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1545
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1883
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo / Ubuntu
+Kernel Version:             kernel-2.6.15
 ======================================================================
-Date Submitted:             11-11-2005 21:30 CET
-Last Modified:              03-07-2006 15:25 CET
+Date Submitted:             02-27-2006 09:03 CET
+Last Modified:              03-07-2006 15:30 CET
 ======================================================================
-Summary:                    Flash player hangs in Firefox when using aoss
+Summary:                    NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804
+sound - snd-intel8x0)
 Description: 
-I'm trying to get aoss to work with Firefox 1.5b2 and the Flash 7 plugin on
-an XScale (PXA 270) running Linux 2.6.13.4. Problem is, the browser hangs
-when navigating off a page that has Flash w/ sounds. The problem only
-happens when using aoss. GDB reports that the browser's hung up in
-snd_pcm_wait_nocheck, called from snd_pcm_dmix_drain.
+AMD64 3000+ on K8N4-E Delux motherboard
+(NFORCE-CK804 sound - snd-intel8x0)
 
-This sounds a bit like
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306, which was
-reportedly fixed in ALSA
-1.0.9a. I'm using the 1.0.9b drivers from 2.6.13.4 (plus patches for the
-AC97 that were subsequently rolled into 2.6.14). Upgrading alsa-oss and
-alsa-libs to 1.0.10rc3 didn't fix the problem.
+ALSA-1.0.2/4 - sound works perfect!! After 1.0.4 - NO SOUND!!
+GSI 21 (level, low) -> IRQ 18
+Feb 12 19:46:31 tux PCI: Setting latency timer of device 0000:00:04.0 to
+64 
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+...............................................
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux AC'97 0 does not respond - RESET
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux AC'97 0 access is not valid [0xffffffff], removing
+mixer. Feb 12 19:46:31 tux Unable to initialize codec #0
+Feb 12 19:46:31 tux ACPI: PCI interrupt for device 0000:00:04.0 disabled
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001559 hang in snd_pcm_drain()
-======================================================================
 
 ----------------------------------------------------------------------
- gvy - 03-04-06 19:15 
+ tiwai - 03-07-06 15:20 
 ----------------------------------------------------------------------
-http://www.alsa-project.org/changes/v1-0-10--v1-0-11rc1.txt
-search for 1559
+Try the latest ALSA with 2.6.10 kernel.
+If it doesn't work, we need to debug it.
 
 ----------------------------------------------------------------------
- tiwai - 03-07-06 15:25 
+ samael - 03-07-06 15:30 
 ----------------------------------------------------------------------
-Did you try alsa-lib and alsa-oss CVS version?
+Oh, I forgot!!!
+
+I try kernel-2.6.15 with ALSA-1.0.4  -- the same - NO SOUND!!!
+but kernel-2.6.10 with ALSA-1.0.4 -OK!
+
+Now I'm using kernel-2.6.12 with ALSA-1.0.9b - OK!
+
+Thus, it's kernel-2.6.15 problem :(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-11-05 21:30 smagoun        New Issue                                    
-12-22-05 11:43 ikonst         Issue Monitored: ikonst                      
-12-22-05 11:43 ikonst         Note Added: 0007122                          
-03-04-06 16:32 gvy            Note Added: 0008349                          
-03-04-06 16:33 gvy            Issue Monitored: gvy                         
-03-04-06 19:07 rlrevell       Relationship added       related to 0001559  
-03-04-06 19:15 gvy            Note Added: 0008353                          
-03-07-06 15:25 tiwai          Note Added: 0008366                          
+02-27-06 09:03 samael         New Issue                                    
+02-27-06 09:03 samael         Distribution              => Gentoo / Ubuntu 
+02-27-06 09:03 samael         Kernel Version            => kernel-2.6.15   
+02-27-06 09:04 samael         Issue Monitored: samael                      
+03-02-06 15:29 tiwai          Note Added: 0008309                          
+03-07-06 15:15 samael         Note Added: 0008363                          
+03-07-06 15:20 tiwai          Note Added: 0008364                          
+03-07-06 15:30 samael         Note Added: 0008367                          
 ======================================================================
 
 
