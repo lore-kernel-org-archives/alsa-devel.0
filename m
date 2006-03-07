@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001883]: NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804 sound - snd-intel8x0)
-Date: Tue, 7 Mar 2006 15:20:50 +0100
-Message-ID: <ff5101d03e4fbb287b90fe7cafd01f16@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001892]: User-space _output_ devices
+Date: Tue, 7 Mar 2006 15:24:48 +0100
+Message-ID: <84d2f66093c600394f122010b614726c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5673114F
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 15:20:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DC8614F
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2006 15:24:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,79 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1883> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1892> 
 ======================================================================
-Reported By:                samael
-Assigned To:                
+Reported By:                zeurkous
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1883
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   1892
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo / Ubuntu
-Kernel Version:             kernel-2.6.15
+Status:                     resolved
+Distribution:               N/A
+Kernel Version:             N/A
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-27-2006 09:03 CET
-Last Modified:              03-07-2006 15:20 CET
+Date Submitted:             03-05-2006 08:06 CET
+Last Modified:              03-07-2006 15:24 CET
 ======================================================================
-Summary:                    NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804
-sound - snd-intel8x0)
+Summary:                    User-space _output_ devices
 Description: 
-AMD64 3000+ on K8N4-E Delux motherboard
-(NFORCE-CK804 sound - snd-intel8x0)
-
-ALSA-1.0.2/4 - sound works perfect!! After 1.0.4 - NO SOUND!!
-GSI 21 (level, low) -> IRQ 18
-Feb 12 19:46:31 tux PCI: Setting latency timer of device 0000:00:04.0 to
-64 
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-...............................................
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux AC'97 0 does not respond - RESET
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux AC'97 0 access is not valid [0xffffffff], removing
-mixer. Feb 12 19:46:31 tux Unable to initialize codec #0
-Feb 12 19:46:31 tux ACPI: PCI interrupt for device 0000:00:04.0 disabled
+This may sound a bit weird, but a feature i would like is a way for a
+user-space program to access the ALSA output driver interface (preferably
+as a device). Personally i'm designing a few simple sound output devices
+such as via the parallel port and the like, and the current ALSA output
+driver interface is AFAICS really heavily bloated for just getting an
+8-bit sample and writing it as a simple value to a port....
 ======================================================================
 
 ----------------------------------------------------------------------
- samael - 03-07-06 15:15 
+ tiwai - 03-07-06 15:24 
 ----------------------------------------------------------------------
-No, I just try kernel-2.6.14/15 ALSA-1.0.10/11 - no sound!
-Next was kernel-2.6.10 and 2.6.12 (with ALSA) - everything is OK!
-Now I'm using Ubuntu-5.10 (kernel-2.6.12)......
-
-Do You think that it's kernel problem? 
-Must I post it as a kernel bug?
-
-----------------------------------------------------------------------
- tiwai - 03-07-06 15:20 
-----------------------------------------------------------------------
-Try the latest ALSA with 2.6.10 kernel.
-If it doesn't work, we need to debug it.
+Use extplug alsa-lib PCM plugin.  It's designed for an external user-space
+driver.
+You can find examples in alsa-plugins package.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-27-06 09:03 samael         New Issue                                    
-02-27-06 09:03 samael         Distribution              => Gentoo / Ubuntu 
-02-27-06 09:03 samael         Kernel Version            => kernel-2.6.15   
-02-27-06 09:04 samael         Issue Monitored: samael                      
-03-02-06 15:29 tiwai          Note Added: 0008309                          
-03-07-06 15:15 samael         Note Added: 0008363                          
-03-07-06 15:20 tiwai          Note Added: 0008364                          
+03-05-06 08:06 zeurkous       New Issue                                    
+03-05-06 08:06 zeurkous       Distribution              => N/A             
+03-05-06 08:06 zeurkous       Kernel Version            => N/A             
+03-07-06 15:24 tiwai          Status                   new => resolved     
+03-07-06 15:24 tiwai          Resolution               open => fixed       
+03-07-06 15:24 tiwai          Assigned To               => tiwai           
+03-07-06 15:24 tiwai          Note Added: 0008365                          
 ======================================================================
 
 
