@@ -1,11 +1,14 @@
-From: Louis E Garcia II <louisg00@bellsouth.net>
-Subject: New laptop question
-Date: Wed, 08 Mar 2006 17:37:16 -0500
-Message-ID: <1141857436.9200.4.camel@soncomputer>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
+Date: Thu, 9 Mar 2006 00:30:10 +0100
+Message-ID: <c3dcdf37b9d1009be3463e1c21ae1830@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 780A91D3
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 00:30:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,21 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Looking at the HP Compaq nx9420, looks interesting. New hardware and
-linux can be hit or miss but I think all this hardware is supported.
-What I'm concerned about is audio, have no clue if ALSA supports it.
 
-Sorry if this is not the proper list. Maybe a hardware specific list
-would be appropriate. 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
+======================================================================
+Reported By:                kiwi
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1898
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 5 test3
+Kernel Version:             2.6.15-1.2009.4.2_FC5
+======================================================================
+Date Submitted:             03-09-2006 00:30 CET
+Last Modified:              03-09-2006 00:30 CET
+======================================================================
+Summary:                    no sound from headphones or speakers on asus a6km
+laptop
+Description: 
+The headphone port and the speakers just don't work. Seems like there is
+some control hidden in the mixer which is muted. 
+By setting the master and pcm volume at 100% I can hear just some static
+on song beats only on headphones. Speakers always stay mute.
+I can only get sound by attaching the headphones to line-in and enabling
+"shared" surround mode.
 
-PremierSound High Definition Audio support w/24-bit audio DAC,
-Digital EQ, Advanced audio power management,line out/headphone
-jack, microphone jack, integrated microphone
+Same issues with a knoppix 4.0.2.
 
--Thanks
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-09-06 00:30 kiwi           New Issue                                    
+03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
+03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
+======================================================================
+
 
 
 
