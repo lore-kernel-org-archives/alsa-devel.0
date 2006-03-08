@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001863]: Roland ua-20 stops working
-Date: Wed, 8 Mar 2006 18:48:50 +0100
-Message-ID: <e5e01e10a5d479468d201a349a9b623c@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Reducing spam on alsa-devel
+Date: Wed, 08 Mar 2006 12:51:38 -0500
+Message-ID: <1141840298.767.163.camel@mindpipe>
+References: <440F1811.8060900@redfish-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9594F1E0
-	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2006 18:48:50 +0100 (MET)
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7A0001E0
+	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2006 18:51:41 +0100 (MET)
+In-Reply-To: <440F1811.8060900@redfish-solutions.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,79 +20,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2006-03-08 at 10:44 -0700, Philip Prindeville wrote:
+> Anyone know how to contact the list administrator?  I tried sending
+> an email to alsa-devel-request but never heard back.
+> 
+> I'd like to work with him/her to improve the SpamAssassin settings
+> and cut down on some of the spam we're seeing on this list.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1863> 
-======================================================================
-Reported By:                ldk_linux
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1863
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Debian Sarge, SUSE Linux OSS
-Kernel Version:             2.6.15
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             02-21-2006 13:25 CET
-Last Modified:              03-08-2006 18:48 CET
-======================================================================
-Summary:                    Roland ua-20 stops working
-Description: 
-With the usb-audio alsa driver shipped with kernel 2.6.15 this unit (Roland
-ua-20 audio & midi interface) stops working. Under a standard vanilla
-kernel alsa clients (xmms, alsaplayer, jack) reports "unable to set hw
-parameters" and quit. Under the kernel from the jacklab project
-(http://jacklab.net/) no error message is visualized, all seems to work
-but there is no audio output.
+There is very little spam on this list (less than 10%).  I doubt it can
+all be eliminated without some false positives.
 
-I've tested the unit with 2.6.12 and 2.6.13 kernels and it works
-perfectly.
-======================================================================
+Anyway check the message headers for instructions.
 
-----------------------------------------------------------------------
- ldk_linux - 03-08-06 13:26 
-----------------------------------------------------------------------
-I've experimented with a standard vanilla 2.6.15.5 kernel on Debian Sarge
-and this time it seems to work. No need to upgrade to the latest drivers.
-Additionally, the alsa version shipped with this kernel (1.0.10rc3)
-appears to be the same that gave problems previously... However, note that
-the other time I was using kernel 2.6.15.1.
-So... have there been some changes in the alsa sources between 2.6.15.1
-and 2.6.15.5 not followed by changes in version number?
-
-----------------------------------------------------------------------
- rlrevell - 03-08-06 18:48 
-----------------------------------------------------------------------
-Yes, USB audio was broken in kernel 2.6.15.1 and fixed in a later stable
-release.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-21-06 13:25 ldk_linux      New Issue                                    
-02-21-06 13:25 ldk_linux      Distribution              => Debian Sarge, SUSE
-Linux OSS
-02-21-06 13:25 ldk_linux      Kernel Version            => 2.6.15          
-02-22-06 15:33 ldk_linux      Note Added: 0008158                          
-02-22-06 15:36 ldk_linux      Note Edited: 0008158                         
-02-22-06 16:06 lemeur         Note Added: 0008159                          
-02-24-06 17:17 ldk_linux      Note Added: 0008180                          
-03-08-06 13:26 ldk_linux      Note Added: 0008380                          
-03-08-06 18:48 rlrevell       Note Added: 0008383                          
-03-08-06 18:48 rlrevell       Status                   assigned => resolved
-03-08-06 18:48 rlrevell       Resolution               open => fixed       
-======================================================================
-
+Lee
 
 
 
