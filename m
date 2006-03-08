@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001895]: nvidia 6150 --- desparate attempt fails at  snd_verbose_printk
-Date: Wed, 8 Mar 2006 15:11:18 +0100
-Message-ID: <6288e62253299fe67a94b5d7e1284e3a@bugtrack.alsa-project.org>
+Date: Wed, 8 Mar 2006 15:28:23 +0100
+Message-ID: <079ad9c6f71aaefde0d50ed5ee1057fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 595E41D9
-	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2006 15:11:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BA351D9
+	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2006 15:28:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.15.5
 ======================================================================
 Date Submitted:             03-07-2006 03:24 CET
-Last Modified:              03-08-2006 15:11 CET
+Last Modified:              03-08-2006 15:28 CET
 ======================================================================
 Summary:                    nvidia 6150 --- desparate attempt fails at 
 snd_verbose_printk
@@ -67,23 +67,6 @@ dependencies automatically.  either I am wrong here, or there is a
 dependency that is not marked appropriately.
 
 ======================================================================
-
-----------------------------------------------------------------------
- stevenellis - 03-08-06 00:12 
-----------------------------------------------------------------------
-Sorry about the bad copy/paste with the position_fix option. I did mean to
-say "position_fix=1"
-
-I have the same issues with alsa 1.0.11rc3 and a 2.6.15.6 kernel. Unless I
-apply the patch to disable analog surround I get a high pitch squeal and
-any volume change results in mute on both analog and digital outputs.
-
-With the patch from http://quaggaspace.org/a8nvm/a8nvmsound.patch, I can
-change the volume, no issues with digital, and analog stereo works.
-
-I haven't tried all of the combinations of postion_fix and model at this
-stage as the hardware is supposed to be the family media center, and I can
-only get so much time a week for debugging.
 
 ----------------------------------------------------------------------
  iaw4 - 03-08-06 15:11 
@@ -161,6 +144,12 @@ stream_tag, 0,
                 snd_hda_codec_setup_stream(codec, mout->dig_out_nid, 0, 0,
 0);
 
+----------------------------------------------------------------------
+ tiwai - 03-08-06 15:28 
+----------------------------------------------------------------------
+Try the patch ad1986a-2ch-model.diff with ALSA CVS version, and pass
+"model=2ch".
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -179,6 +168,7 @@ Date Modified  Username       Field                    Change
 03-07-06 21:53 rlrevell       Note Added: 0008378                          
 03-08-06 00:12 stevenellis    Note Added: 0008379                          
 03-08-06 15:11 iaw4           Note Added: 0008381                          
+03-08-06 15:28 tiwai          Note Added: 0008382                          
 ======================================================================
 
 
