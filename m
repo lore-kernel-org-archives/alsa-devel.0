@@ -1,13 +1,11 @@
-From: Nicolas Pitre <nico@cam.org>
-Subject: Re: iPAQ H5xxx audio driver
-Date: Wed, 08 Mar 2006 17:32:08 -0500 (EST)
-Message-ID: <Pine.LNX.4.64.0603081728000.20617@localhost.localdomain>
-References: <1141857195.24748.37.camel@localhost.localdomain>
+From: Louis E Garcia II <louisg00@bellsouth.net>
+Subject: New laptop question
+Date: Wed, 08 Mar 2006 17:37:16 -0500
+Message-ID: <1141857436.9200.4.camel@soncomputer>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1141857195.24748.37.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,32 +15,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Manuel Jander <manuel.jander@gmail.com>
-Cc: Alsa-devel list <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 8 Mar 2006, Manuel Jander wrote:
+Looking at the HP Compaq nx9420, looks interesting. New hardware and
+linux can be hit or miss but I think all this hardware is supported.
+What I'm concerned about is audio, have no clue if ALSA supports it.
 
-> Playing around with the ..._MMAP and ..._MMAP_VALID info changed
-> somewhat the segfaulting behaviour, so I guess that kernel mmap
-> functionality could be part of the problem. For some few times aplay did
-> even work without segfaulting, when the ...MMAP_VALID flag was removed
-> from the info field.
-> 
-> The iPAQ does not seem to have a PCI bus and the current ALSA driver
-> tree does not compile cleanly for this target (requires some few
-> preprocessor macro changes). I'm using (at least I think I do so) ISA
-> bus coherent memory allocation methods for the DMA buffers.
-> 
-> I'm using familiar's linux 2.4.19-rmk6-hh37 kernel on a iPAQ H5550 ...
+Sorry if this is not the proper list. Maybe a hardware specific list
+would be appropriate. 
 
-I'd strongly suggest you study the drivers present in linux/sound/arm/ 
-in a recent 2.6.x kernels.  On ARM you need to use ARM specific 
-functions to allocate coherent memory to be used with DMA and you might 
-have to backport those to 2.4 for proper ALSA support.
+PremierSound High Definition Audio support w/24-bit audio DAC,
+Digital EQ, Advanced audio power management,line out/headphone
+jack, microphone jack, integrated microphone
 
+-Thanks
 
-Nicolas
 
 
 -------------------------------------------------------
