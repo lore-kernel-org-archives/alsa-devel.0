@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001662]: No audio output in a laptop with hda-intel....
-Date: Wed, 8 Mar 2006 20:44:18 +0100
-Message-ID: <017f45edbf73ae80c0f9d6fce889fb25@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
+Date: Wed, 8 Mar 2006 20:45:47 +0100
+Message-ID: <7387909d63c44f601b144edd9f5aa876@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5F861C5
-	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2006 20:44:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D785E1C5
+	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2006 20:45:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,118 +24,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1662> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
 ======================================================================
-Reported By:                shl
-Assigned To:                tiwai
+Reported By:                robertdavid
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1662
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   feature
+Issue ID:                   1744
+Category:                   PCI - ice1724
+Reproducibility:            sometimes
+Severity:                   tweak
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.13.4
+Status:                     new
+Distribution:               Gentoo linux
+Kernel Version:             2.6.14-archck-r7
 ======================================================================
-Date Submitted:             12-20-2005 11:18 CET
-Last Modified:              03-08-2006 20:44 CET
+Date Submitted:             01-13-2006 22:16 CET
+Last Modified:              03-08-2006 20:45 CET
 ======================================================================
-Summary:                    No audio output in a laptop with hda-intel....
+Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
+chanel work and sound is quick...
 Description: 
-Hy, I managed to install the hda-intel on my laptop but my big problem is
-:
-The speakers inside the laptop work correctly but everytime I try to plug
-a headset or some external speaker in the output used normally for it, I'd
-the same result : no sound in the laptop'speakers AND no sound at all in
-the external speakers. So after looking a long long time about that
-problem, I didn't find anything. So maybe the function is not yet
-implemented ? If it's the case, is it possible to do it because it'll be
-very usefull for a lot of people ! Thanks for advance and don't hesitate
-to send me a mail if I missed something ...
-
-
+Im very glad that was added support for Prodigy, but there is still only
+two channel working (7,8), the others are silent (tryed all volume
+settings).
+The sound from 7,8 chanel is good in case of quality, but is faster than
+it should be (turn off Multi Track Rate Locking didnt do anything).
+I've tryed mpalyer and XMMS, both the same.
+I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
+Prodigy 7.1LT) 
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001090 Support for new Prodigy 7.1 LT
 ======================================================================
 
 ----------------------------------------------------------------------
- er-ku - 03-04-06 10:56 
+ robertdavid - 01-26-06 23:40 
 ----------------------------------------------------------------------
-Actually, you can help the developers make the module autodetect the card.
-All you have to do is to provide a tiny bit of information they need.
-Here's how:
+I dont think it's only your TV-card, what makes the sound bad, I feel the
+sound litlle bit strange, maybe its my subjective feeling,,
 
-1) go to terminal, and run "lspci -nvd 8086:2668" in it. You should get
-something like this:
+Did you tryed other chanels? 5.1, just plug in stereo to rear, centr
+channel (if you dont have 5.1 system)
 
-$ lspci -nvd 8086:2668
-0000:00:1b.0 Class 0403: 8086:2668 (rev 04)
-    Subsystem: 10cf:1326
-    Flags: bus master, fast devsel, latency 0, IRQ 17
-    Memory at b0000000 (64-bit, non-prefetchable) [size=16k]
-    Capabilities: <available only to root>
+I dont know how strong is the headphone AMP and how could be boost under
+windows, but I thinkt its not souch powerfull as it should be, I cant use
+more than 100% master, 70% PCM, if more the sound becames "cracky" and I
+dont think its soch as much loud (I have H.P. Sennheiser HD200 64ohm) and
+this card should be done for H.P. like this... Im not deaf but sometimes
+feel that I want turn the wolume little up..
 
-2) paste the output of the command as a comment here, in this bugreport.
-Also, please check if all the controls in  mixer are working as expected,
-and tell if they are.
+How can I fiddle with the wolume settings in driver?? Im not a programmer
+but undestand elektonics, and I think this is because there is set higher
+level of input to AMP than it should be, and than turn the AMP little
+up,,, 
 
-After you do this, you may expect the driver to work automagically,
-without tweaking the modules.d/alsa file, in the next version.
-
-
+And there realy need to be synchronized the sound with real time,, its not
+xmms mistake, it does also mplayer
 
 ----------------------------------------------------------------------
- nutz - 03-08-06 20:44 
+ robertdavid - 03-08-06 20:45 
 ----------------------------------------------------------------------
-okay here it goes:
-# lspci -vs 00:1b.0
-00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
-        Subsystem: ASUSTeK Computer Inc. Unknown device 1173
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at febf8000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-
-# lspci -vns 00:1b.0
-00:1b.0 0403: 8086:2668 (rev 04)
-        Subsystem: 1043:1173
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at febf8000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-
-
-thanks again
+I found out that if I set sampling freq to 24k the sound speed is as long
+as it should be.. (dont heat any sound quality demage?!?! in less than 22k
+the demage can be heard)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-20-05 11:18 shl            New Issue                                    
-12-20-05 11:18 shl            Distribution              => Gentoo Linux    
-12-20-05 11:18 shl            Kernel Version            => 2.6.13.4        
-12-20-05 11:19 shl            Issue Monitored: shl                         
-12-20-05 11:19 shl            Issue End Monitor: shl                       
-12-23-05 01:59 shl            Issue Monitored: shl                         
-12-23-05 02:04 shl            Note Added: 0007130                          
-01-08-06 13:54 JeanJean       Note Added: 0007525                          
-01-08-06 14:06 JeanJean       Note Edited: 0007525                         
-03-04-06 03:32 nutz           Note Added: 0008345                          
-03-04-06 10:45 er-ku          Note Added: 0008347                          
-03-04-06 10:48 er-ku          Note Edited: 0008347                         
-03-04-06 10:49 er-ku          Note Edited: 0008347                         
-03-04-06 10:56 er-ku          Note Edited: 0008347                         
-03-08-06 20:44 nutz           Note Added: 0008384                          
+01-13-06 22:16 robertdavid    New Issue                                    
+01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
+01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
+01-14-06 00:13 drfindley      File Added: asound.state                     
+01-14-06 00:15 drfindley      Note Added: 0007650                          
+01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
+01-14-06 00:28 robertdavid    Note Added: 0007651                          
+01-14-06 00:29 robertdavid    Note Edited: 0007651                         
+01-14-06 18:09 robertdavid    Note Added: 0007654                          
+01-15-06 19:18 Anho Ki        Note Added: 0007667                          
+01-17-06 01:21 Anho Ki        Note Added: 0007694                          
+01-17-06 01:48 rlrevell       Relationship added       related to 0001090  
+01-17-06 09:24 Anho Ki        File Added: prodigy71.patch                    
+01-17-06 09:24 Anho Ki        Issue Monitored: Anho Ki                     
+01-17-06 09:38 Anho Ki        Note Added: 0007695                          
+01-17-06 11:13 robertdavid    Note Added: 0007696                          
+01-17-06 16:39 tinez          Issue Monitored: tinez                       
+01-18-06 23:42 Anho Ki        Note Added: 0007717                          
+01-22-06 00:20 msmigiel       Issue Monitored: msmigiel                    
+01-23-06 18:23 Demosthenes    Issue Monitored: Demosthenes                    
+01-24-06 06:38 mccart         Issue Monitored: mccart                      
+01-25-06 12:17 Anho Ki        Note Added: 0007780                          
+01-26-06 23:40 robertdavid    Note Added: 0007794                          
+03-08-06 20:45 robertdavid    Note Added: 0008385                          
 ======================================================================
 
 
