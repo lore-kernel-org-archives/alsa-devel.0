@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Thu, 9 Mar 2006 20:09:16 +0100
-Message-ID: <18397d74332c0fd3756237b9dfa31f53@bugtrack.alsa-project.org>
+Date: Thu, 9 Mar 2006 21:02:33 +0100
+Message-ID: <104201d243b55f7a73bc26000868dcc3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5B6A1B2
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 20:09:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F32D0195
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 21:02:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5 test3
 Kernel Version:             2.6.15-1.2009.4.2_FC5
 ======================================================================
 Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              03-09-2006 20:09 CET
+Last Modified:              03-09-2006 21:02 CET
 ======================================================================
 Summary:                    no sound from headphones or speakers on asus a6km
 laptop
@@ -57,18 +57,18 @@ Same issues with a knoppix 4.0.2.
 ======================================================================
 
 ----------------------------------------------------------------------
- kiwi - 03-09-06 16:41 
-----------------------------------------------------------------------
-A link to the ac97 codec specs:
-http://www.realtek.com.tw/downloads/downloads1-3.aspx?spec=True&compamodel=ALC650
-
-----------------------------------------------------------------------
  michele26x1 - 03-09-06 20:09 
 ----------------------------------------------------------------------
 Same problem,same laptop(A6KmQ024).My frind has write issue n° 0001896...my
 distro is gentoo 2005.1,kernel 2.6.15-r7..Sound only from headphones but
 disturbed and distorted.
 ready to help
+
+----------------------------------------------------------------------
+ kiwi - 03-09-06 21:02 
+----------------------------------------------------------------------
+Does anyone know how to change ac97 registers by hand without recompiling
+the whole thing? Is it possible?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -79,6 +79,7 @@ Date Modified  Username       Field                    Change
 03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
 03-09-06 16:41 kiwi           Note Added: 0008391                          
 03-09-06 20:09 michele26x1    Note Added: 0008396                          
+03-09-06 21:02 kiwi           Note Added: 0008397                          
 ======================================================================
 
 
