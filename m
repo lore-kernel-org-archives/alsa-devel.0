@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001900]: alsactl stores incorrect values; overwrites non-writable file; does not set emu10k1 mixer
-Date: Thu, 9 Mar 2006 17:38:36 +0100
-Message-ID: <b9086ea0e01dab395d2a566aa4f5d64d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001841]: Mixer not working  / fujitsu laptop V2060 with HDA intel & AD1986A
+Date: Thu, 9 Mar 2006 18:23:48 +0100
+Message-ID: <f793c32605148b5a565a455d51d6895b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C0EEC1AB
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 17:38:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECD511A7
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 18:23:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1900> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1841> 
 ======================================================================
-Reported By:                covex
-Assigned To:                
+Reported By:                fchevalier
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1900
-Category:                   alsactl
-Reproducibility:            sometimes
-Severity:                   minor
+Project:                    ALSA - driver
+Issue ID:                   1841
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-09-2006 17:38 CET
-Last Modified:              03-09-2006 17:38 CET
+Date Submitted:             02-11-2006 14:13 CET
+Last Modified:              03-09-2006 18:23 CET
 ======================================================================
-Summary:                    alsactl stores incorrect values; overwrites
-non-writable file; does not set emu10k1 mixer
+Summary:                    Mixer not working  / fujitsu laptop V2060 with HDA
+intel & AD1986A
 Description: 
-I have one main problem with alsa and emu10k1 based SB Live! card. 
+Hi all,
 
-It's some time ago I notice that very often (not always) after reboot my
-sound card has setup strange values in mixer (e.g wave volume is righ 75
-and left 0, see attached asound.state). First I thought it's some
-application setting these nonsenses but it's not true - those values are
-set SOMETIMES on module removal at reboot.
+I am unable to use mixer settings on my laptop.
+Basically ALSA correctly detects HDA intel, Analog device chip. Mixer
+settings are there but changing volume, muting/unmuting does not make any
+difference. Playing  mp3 file with xmms sometimes i can hear some sound,
+but not loud enough.
+I tried with the latest ALSA version available, still not luck :-(
 
-What I noticed during digging around:
-1) Always on user logout I have message in log: ainit: Operation not
-permitted
-It is not specified what operation.
-2) see this situation:
-# modprobe -r snd-emu10k1
-# modprobe --ignore-install snd-emu10k1 && alsactl restore 0
-/usr/sbin/alsactl: load_state:1250: Cannot find soundcard '0'...
-The only thing that works is:
-# modprobe --ignore-install snd-emu10k1; sleep 1; alsactl restore 0
-As the first one is very common situation in all modprobe.conf setups I
-see this as fairly bad problem.
+Can anyone help ?
 
-3) I set permitions of /etc/asound.state to r--r--r-- to protect it from
-being overwriten but issuing alsactl store overwrites this file!
-
-None of these explain why, on module removal the asound is filled with
-incorrect values (asound.state is attached). 
-BTW: there are three states in that file - for CK804 (it is nForce4
-chipset with internal AC97 disabled), for Unknown (guh?!) and Live (finaly
-correct).
-
-
+Fabien
 ======================================================================
+
+----------------------------------------------------------------------
+ fchevalier - 03-09-06 17:01 
+----------------------------------------------------------------------
+Looks like afterwards this is a duplicated of bug id 1531...
+
+----------------------------------------------------------------------
+ tiwai - 03-09-06 18:23 
+----------------------------------------------------------------------
+Could you check whether the attached patch works with "model=3stack" module
+option?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-06 17:38 covex          New Issue                                    
-03-09-06 17:38 covex          File Added: asound.state.wrong                    
+02-11-06 14:13 fchevalier     New Issue                                    
+03-09-06 17:01 fchevalier     Note Added: 0008392                          
+03-09-06 18:23 tiwai          Note Added: 0008393                          
 ======================================================================
 
 
