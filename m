@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001063]: master volume change and mute only affect front speakers on sound blaster live
-Date: Thu, 9 Mar 2006 00:44:55 +0100
-Message-ID: <f36e96ad5588396743c2617fa9cf23a0@bugtrack.alsa-project.org>
+From: John Shillinglaw <ianchas@sc.rr.com>
+Subject: Re: Roland SCP-55 Soundcanvas ALSA Driver
+Date: Thu, 09 Mar 2006 01:29:08 -0500
+Message-ID: <1141885748.7625.21.camel@Pippin.home>
+References: <1141197867.923.8.camel@Pippin.home>
+	 <s5h3bhtrw2m.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E10491DA
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 00:44:55 +0100 (MET)
+In-Reply-To: <s5h3bhtrw2m.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I'm just getting started on this driver. I started by modeling my
+driver's functions from the vxpocket and pdaudiocf drivers, and need to
+update the source published on the internet. I'm focusing on the mpu401
+part first.
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1063> 
-======================================================================
-Reported By:                borge3
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1063
-Category:                   alsamixer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
-======================================================================
-Date Submitted:             04-18-2005 13:03 CEST
-Last Modified:              03-09-2006 00:44 CET
-======================================================================
-Summary:                    master volume change and mute only affect front
-speakers on sound blaster live
-Description: 
-master volume change and mute only affect front speakers, rear speakers are
-affected by "wave surround"
+Anyway, the mpu part has the standard io port of 330, and has an
+hardware buffer.
 
-the sound card is a "sound blister live!"
+The audio apparently has an io port of 201. It's specs are 2 channels of
+digital in/out audio at 44.1 mhz. Each channel is independently settable
+at 44.1, 22.05, and 11.025. I'm not sure about any other details about
+the audio portion of the card.
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000148 Master volume only controls front output
-======================================================================
+The soundcanvas's synth responds to midi messages sent from the
+computer, and I think also from the midi in port. Overall card settings
+such as master volume, pan, etc can be set by sending midi messages to
+the card.
 
-----------------------------------------------------------------------
- adamk75 - 04-21-05 12:42 
-----------------------------------------------------------------------
-This is a known bug... Already reported a year ago as
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154
+And so, getting the midi part of alsa working is the most important part
+of the driver.
 
-Lee Revell thought he'd have it working real soon now back in February. 
-Please continue being patient and I'm sure it'll get done.
-
-----------------------------------------------------------------------
- rlrevell - 03-09-06 00:44 
-----------------------------------------------------------------------
-Closing, too many dupes.  See bug #154
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-05 13:03 borge3         New Issue                                    
-04-18-05 20:18 rlrevell       Relationship added       duplicate of 0000148
-04-21-05 12:42 adamk75        Note Added: 0004551                          
-03-09-06 00:44 rlrevell       Status                   new => closed       
-03-09-06 00:44 rlrevell       Note Added: 0008386                          
-======================================================================
+On Wed, 2006-03-08 at 12:54 +0100, Takashi Iwai wrote:
+> At Wed, 01 Mar 2006 02:24:26 -0500,
+> John Shillinglaw wrote:
+> > 
+> > Hello, 
+> > 
+> > Some time ago, I posted a request about help developing a driver for
+> > Roland's SCP-55 Soundcanvas pcmcia card which has 2 digital audio in/out
+> > channels, MPU-401 compatible MIDI in/out, and a wave table synth module.
+> > 
+> > I've made some progress and have created a webpage to document my work:
+> > http://linuxtech.netfirms.com
+> 
+> Hmm, scp55.c and scp55.h from the web look strange...
+> Do you have any information about the audio stuff of this card?
 
 
 
