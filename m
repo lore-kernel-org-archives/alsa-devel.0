@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Thu, 9 Mar 2006 16:41:35 +0100
-Message-ID: <827fe3d4c8368d9a01de55a6a793399a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001841]: Mixer not working  / fujitsu laptop V2060 with HDA intel & AD1986A
+Date: Thu, 9 Mar 2006 17:01:25 +0100
+Message-ID: <2e69568a03a68dbcc9c2bd11f26b6473@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 593FE1A1
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 16:41:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FD721AB
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 17:01:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1841> 
 ======================================================================
-Reported By:                kiwi
-Assigned To:                
+Reported By:                fchevalier
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1898
-Category:                   PCI - intel8x0
+Issue ID:                   1841
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 5 test3
-Kernel Version:             2.6.15-1.2009.4.2_FC5
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              03-09-2006 16:41 CET
+Date Submitted:             02-11-2006 14:13 CET
+Last Modified:              03-09-2006 17:01 CET
 ======================================================================
-Summary:                    no sound from headphones or speakers on asus a6km
-laptop
+Summary:                    Mixer not working  / fujitsu laptop V2060 with HDA
+intel & AD1986A
 Description: 
-The headphone port and the speakers just don't work. Seems like there is
-some control hidden in the mixer which is muted. 
-By setting the master and pcm volume at 100% I can hear just some static
-on song beats only on headphones. Speakers always stay mute.
-I can only get sound by attaching the headphones to line-in and enabling
-"shared" surround mode.
+Hi all,
 
-Same issues with a knoppix 4.0.2.
+I am unable to use mixer settings on my laptop.
+Basically ALSA correctly detects HDA intel, Analog device chip. Mixer
+settings are there but changing volume, muting/unmuting does not make any
+difference. Playing  mp3 file with xmms sometimes i can hear some sound,
+but not loud enough.
+I tried with the latest ALSA version available, still not luck :-(
 
+Can anyone help ?
+
+Fabien
 ======================================================================
 
 ----------------------------------------------------------------------
- kiwi - 03-09-06 16:41 
+ fchevalier - 03-09-06 17:01 
 ----------------------------------------------------------------------
-A link to the ac97 codec specs:
-http://www.realtek.com.tw/downloads/downloads1-3.aspx?spec=True&compamodel=ALC650
+Looks like afterwards this is a duplicated of bug id 1531...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-06 00:30 kiwi           New Issue                                    
-03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
-03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
-03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
-03-09-06 16:41 kiwi           Note Added: 0008391                          
+02-11-06 14:13 fchevalier     New Issue                                    
+03-09-06 17:01 fchevalier     Note Added: 0008392                          
 ======================================================================
 
 
