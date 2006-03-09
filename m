@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Thu, 9 Mar 2006 11:34:10 +0100
-Message-ID: <6c9297ea939eb310d0ddaa505635dbdf@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000919]: Master volume doesn't control rear speakers...
+Date: Thu, 9 Mar 2006 11:35:21 +0100
+Message-ID: <b59e127a96a0564565fe288bf0625379@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FE861DF
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 11:34:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64FAF128
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 11:35:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,42 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=919> 
 ======================================================================
-Reported By:                wzzrd
+Reported By:                adamk75
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   154
+Issue ID:                   919
 Category:                   2_mixer
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     assigned
 ======================================================================
-Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              03-09-2006 11:34 CET
+Date Submitted:             02-18-2005 12:41 CET
+Last Modified:              03-09-2006 11:35 CET
 ======================================================================
-Summary:                    Master volume only controls front output (emu10k1)
+Summary:                    Master volume doesn't control rear speakers...
 Description: 
-Setting the alsamixer Master Volume slider only controls the front two
-speakers. The rear speakers have to be controlled with the Wave Surround
-setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
-bug. If I'm wrong putting it here, sorry.
-
-It would be very convenient to be able to control all four speakers with
-the Master Volume setting and to have a Front and Rear slider to control
-the front and rear speakers individually.
+If I adjust the master volume in alsamixer, the rear speaker volume isn't
+affected at all.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0000176 Master volume does not alters center, L...
-has duplicate       0000786 Master can't handle all channel
-has duplicate       0001256 surround51: Master Volume control and M...
-has duplicate       0001071 Help with Volume Controls
+related to          0000154 Master volume only controls front outpu...
 related to          0000172 Master volume control only controls fro...
-related to          0000919 Master volume doesn't control rear spea...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-20-05 22:05 
+ tiwai - 02-18-05 15:02 
 ----------------------------------------------------------------------
-Sorry, I don't have time to work on this.  Please bug the ALSA developers
-to get the abstract mixer layer finished.
+Also, this register controls the master volume of the mixing among PCM and
+input signals from Line, Mic, etc (although its output is routed only to
+Front).
 
 ----------------------------------------------------------------------
- muffty - 03-09-06 11:34 
+ muffty - 03-09-06 11:35 
 ----------------------------------------------------------------------
 Please, take a look at
 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172. I added a
@@ -77,44 +68,24 @@ possible solution there.
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-04 17:31 wzzrd          New Issue                                    
-03-23-04 18:42 perex          View Status              @0@ => public       
-03-23-04 18:42 perex          Description Updated                          
-03-23-04 18:42 perex          Additional Information Updated                    
-03-23-04 18:43 perex          Status                   new => assigned     
-03-23-04 18:43 perex          Assigned To               => perex           
-03-26-04 20:21 djtm           Note Added: 0000708                          
-04-19-04 02:47 tarball        Issue Monitored: tarball                     
-04-19-04 21:23 perex          Relationship added       has duplicate 0000176
-05-24-04 22:51 delmonico      Note Added: 0001199                          
-10-22-04 16:44 perex          Relationship added       related to 0000172  
-10-23-04 01:09 djtm           Note Added: 0002253                          
-10-23-04 01:09 djtm           File Added: alsavol.sh                       
-10-23-04 01:10 djtm           Note Edited: 0002253                         
-11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
-01-04-05 21:01 Miwer          Note Added: 0003081                          
-01-04-05 21:11 rlrevell       Note Added: 0003082                          
-01-04-05 21:29 pzad           Note Added: 0003083                          
-01-04-05 21:38 rlrevell       Note Added: 0003084                          
-01-04-05 22:30 pzad           Note Added: 0003085                          
-01-04-05 22:38 rlrevell       Note Added: 0003086                          
-01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
-01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
-01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
-01-27-05 01:00 adamk75        Note Added: 0003418                          
-02-01-05 22:57 adamk75        Note Added: 0003475                          
-02-03-05 20:20 rlrevell       Note Added: 0003493                          
-02-17-05 22:01 adamk75        Note Added: 0003642                          
-02-17-05 22:59 rlrevell       Note Added: 0003646                          
-02-17-05 23:28 adamk75        Note Added: 0003647                          
-02-22-05 09:56 perex          Relationship added       related to 0000919  
-05-20-05 20:39 Miwer          Issue Monitored: Miwer                       
-05-20-05 22:02 Miwer          Note Added: 0004699                          
-05-20-05 22:05 rlrevell       Note Added: 0004700                          
-07-13-05 18:56 rlrevell       Relationship added       has duplicate 0001256
-07-16-05 17:11 jdthood        Relationship added       has duplicate 0001071
-09-02-05 19:55 blueSceaDa     Issue Monitored: blueSceaDa                    
-03-09-06 11:34 muffty         Note Added: 0008388                          
+02-18-05 12:41 adamk75        New Issue                                    
+02-18-05 13:00 tiwai          Note Added: 0003650                          
+02-18-05 13:06 adamk75        Note Added: 0003651                          
+02-18-05 14:32 tiwai          Note Added: 0003652                          
+02-18-05 14:41 adamk75        Note Added: 0003653                          
+02-18-05 15:00 tiwai          Note Added: 0003654                          
+02-18-05 15:02 tiwai          Note Added: 0003655                          
+02-22-05 09:56 perex          Relationship added       related to 0000154  
+02-22-05 09:57 perex          Relationship added       related to 0000172  
+02-22-05 09:57 perex          Status                   new => assigned     
+02-22-05 09:57 perex          Assigned To               => perex           
+02-22-05 09:58 perex          Project                  ALSA - driver => ALSA -
+lib
+02-22-05 09:58 perex          Severity                 major => feature    
+02-22-05 09:58 perex          Category                 PCI - ymfpci => mixer
+02-22-05 09:58 perex          Description Updated                          
+02-22-05 09:58 perex          Steps to Reproduce Updated                    
+03-09-06 11:35 muffty         Note Added: 0008389                          
 ======================================================================
 
 
