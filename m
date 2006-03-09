@@ -1,14 +1,18 @@
-From: "Hank Ivy" <hankivy@hot.rr.com>
-Subject: RE: cannot find input file: src/pcm/makefile.in
-Date: Thu, 9 Mar 2006 11:47:02 -0600
-Message-ID: <001101c643a1$7dc47320$6401a8c0@XP1>
-References: <s5hbqwfmsex.wl%tiwai@suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [ALSA - lib 0000172]: Master volume control
+	only	controls front speakers
+Date: Thu, 09 Mar 2006 12:47:57 -0500
+Message-ID: <1141926478.13319.47.camel@mindpipe>
+References: <5a34d592565296e6d7412e415db906b7@bugtrack.alsa-project.org>
+	 <1141925554.13319.37.camel@mindpipe>  <s5h8xrjms7w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbqwfmsex.wl%tiwai@suse.de>
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 93F7B1AB
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 18:48:00 +0100 (MET)
+In-Reply-To: <s5h8xrjms7w.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,55 +22,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-See response at end of message.
-
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Thursday, March 09, 2006 11:37 AM
-To: Hank Ivy
-Cc: alsa-devel@lists.sourceforge.net
- 
-At Thu, 9 Mar 2006 11:28:54 -0600,
-Hank Ivy wrote:
+On Thu, 2006-03-09 at 18:40 +0100, Takashi Iwai wrote:
+> Could you forward the patch to alsa-devel so that we can review and
+> fix it?
 > 
-> Regardless of the error message, I thank all of you.  Now my Linux
-> system has sound.  How do you recommend that I keep my sound software
-up
-> to date?
+> alsa-user is not a right place to post a patch intended for merging to
+> upstream...
 > 
-> I have a riptide combo sound/modem/game-port card.
-> I checked out the ALSA CVS source.
-> 
-> The alsa-driver, and alsa-kernel directories seemed to compile and
-> install ok.  The PySol game plays music, and has sound effects.
-> 
-> The "./cvscompile" command in the alsa-lib directory ran a long time,
-> and stopped with the following error message.
-> config.status: error: cannot find input file: src/pcm/makefile.in
-> 
-> The "./cvscompile --disable-pcm" command in the alsa-lib directory ran
-a
-> long time, and stopped with the same error message.
-> 
-> The "./cvscompile" command in the alsa-utils directory seemed to
-compile
-> and install ok.
 
-Likely a problem of automake / autoconf.
-Which versions do you have?  automake-1.9.x should work.
+It's attached to bug #172:
 
-Takashi
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172
+https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=1085&type=bug
 
-Hank Ivy reply:
-I have an up to date Mandriva distribution.
-The command "automake --version" reports "automake (GNU automake)
-1.7.9".
-
-
+Lee
 
 
 
