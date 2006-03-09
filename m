@@ -1,18 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [ALSA - lib 0000172]: Master volume control
-	only	controls front speakers
-Date: Thu, 09 Mar 2006 12:47:57 -0500
-Message-ID: <1141926478.13319.47.camel@mindpipe>
-References: <5a34d592565296e6d7412e415db906b7@bugtrack.alsa-project.org>
-	 <1141925554.13319.37.camel@mindpipe>  <s5h8xrjms7w.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001901]: alsactl: man page has nothing about 'power' command
+Date: Thu, 9 Mar 2006 19:16:35 +0100
+Message-ID: <95e3da60fdbfa209b344f97e6e66fc07@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 93F7B1AB
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 18:48:00 +0100 (MET)
-In-Reply-To: <s5h8xrjms7w.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C31391B2
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 19:16:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,24 +18,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-03-09 at 18:40 +0100, Takashi Iwai wrote:
-> Could you forward the patch to alsa-devel so that we can review and
-> fix it?
-> 
-> alsa-user is not a right place to post a patch intended for merging to
-> upstream...
-> 
 
-It's attached to bug #172:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1901> 
+======================================================================
+Reported By:                jdthood
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1901
+Category:                   alsactl
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             03-09-2006 19:16 CET
+Last Modified:              03-09-2006 19:16 CET
+======================================================================
+Summary:                    alsactl: man page has nothing about 'power' command
+Description: 
+Man page for alsactl has nothing about the 'power'
+command, which 'alsactl --help' refers to.
+======================================================================
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172
-https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=1085&type=bug
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-09-06 19:16 jdthood        New Issue                                    
+======================================================================
 
-Lee
 
 
 
