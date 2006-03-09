@@ -1,46 +1,56 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [alsa-cvslog] CVS: alsa-kernel/usb usbaudio.c,1.172,1.173
-Date: Thu, 09 Mar 2006 16:49:46 -0500
-Message-ID: <1141940987.13319.71.camel@mindpipe>
-References: <E1FHG2j-0001sX-Ln@sc8-pr-cvs1.sourceforge.net>
+From: Marek Peca <marek@tynska.cuni.cz>
+Subject: Re: [Alsa-user] Re: Audigy 2 ZS Notebook -- can not hear nor record
+ analog in
+Date: Thu, 9 Mar 2006 21:56:17 +0000 (   )
+Message-ID: <Pine.LNX.4.10.10603092151060.12936-100000@tynska.cuni.cz>
+References: <Pine.LNX.4.10.10603092043480.12936-100000@tynska.cuni.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751918AbWCIVtt@vger.kernel.org>
-In-Reply-To: <E1FHG2j-0001sX-Ln@sc8-pr-cvs1.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <cladisch@users.sourceforge.net>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.10.10603092043480.12936-100000@tynska.cuni.cz>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-03-08 at 23:58 -0800, Clemens Ladisch wrote:
-> +static const char *usb_error_string(int err)
-> +{
-> +	switch (err) {
-> +	case -ENODEV:
-> +		return "no device";
-> +	case -ENOENT:
-> +		return "endpoint not enabled";
-> +	case -EPIPE:
-> +		return "endpoint stalled";
-> +	case -ENOSPC:
-> +		return "not enough bandwidth";
-> +	case -ESHUTDOWN:
-> +		return "device disabled";
-> +	case -EHOSTUNREACH:
-> +		return "device suspended";
-> +	case -EINVAL:
-> +	case -EAGAIN:
-> +	case -EFBIG:
-> +	case -EMSGSIZE:
-> +		return "internal error";
-> +	default:
-> +		return "unknown error";
-> +	}
-> +}
+Hello,
 
-Shouldn't a generic facility be created for this?  After all these are
-standard error codes and it seem like other parts of the kernel might
-want to do user friendly error reporting.
+as I see in diff for /alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c
+between version 1.80 and 1.81, you added
 
-Lee
+----------------------------------------------------------
+/* Enable GPIOs
+ * GPIO0: Unknown
+ * GPIO1: Speakers-enabled.
+ * GPIO2: Unknown
+ * GPIO3: Unknown
+ * GPIO4: IEC958 Output on.
+ * GPIO5: Unknown
+ * GPIO6: Unknown
+ * GPIO7: Unknown
+ */
+outl(0x76, emu->port + A_IOCFG); /* Windows uses 0x3f76 */
+----------------------------------------------------------
+
+does it mean, that you have reverse-engineered, that Windows drivers
+outputs value 0x3f76 on this port? Do you think, that other values
+can switch analog line-input (mic,...) on?
+
+Thank you very much.
+Marek P.
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
