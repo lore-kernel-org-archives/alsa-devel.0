@@ -1,18 +1,14 @@
-From: "Gunhild Lomanto" <gunhildlom@aegonusa.com>
-Subject: Re: ParayImcy news
-Date: Thu, 9 Mar 2006 09:40:58 -0500
-Message-ID: <000001c64387$7af83290$7965a8c0@esn66>
-Reply-To: "Gunhild Lomanto" <gunhildlom@aegonusa.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
+Date: Thu, 9 Mar 2006 16:41:35 +0100
+Message-ID: <827fe3d4c8368d9a01de55a6a793399a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C6435D.92222A90"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22A7B1AE
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 15:43:42 +0100 (MET)
-Received: from runbox.com (unknown [60.20.178.122])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 6BFDA99377
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 15:43:17 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 593FE1A1
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 16:41:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,67 +21,56 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C6435D.92222A90
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
+======================================================================
+Reported By:                kiwi
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1898
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 5 test3
+Kernel Version:             2.6.15-1.2009.4.2_FC5
+======================================================================
+Date Submitted:             03-09-2006 00:30 CET
+Last Modified:              03-09-2006 16:41 CET
+======================================================================
+Summary:                    no sound from headphones or speakers on asus a6km
+laptop
+Description: 
+The headphone port and the speakers just don't work. Seems like there is
+some control hidden in the mixer which is muted. 
+By setting the master and pcm volume at 100% I can hear just some static
+on song beats only on headphones. Speakers always stay mute.
+I can only get sound by attaching the headphones to line-in and enabling
+"shared" surround mode.
 
-  W0=20
-tVriyaegurya $ u 69 (10 Xk  ta 36 bIets)
-qVraiIripurm $ m 105 (3 5p 0 tabIe uW ts)
-zCnimadIbits $ t 99 (1 Mg 0 tabI lM ets)
-  9P=20
-And ma 9H ny other http://kay24.thostabana.com
+Same issues with a knoppix 4.0.2.
 
-------=_NextPart_000_0001_01C6435D.92222A90
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+======================================================================
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D3>&nbsp;<span style=3D" float : right "> =
-W0 </span></FONT></DIV>
-<DIV><FONT face=3DArial size=3D3><span style=3D" float : right =
-">t</span>V<span style=3D" float : right ">r</span>i<span style=3D" =
-float : right ">y</span>a<span style=3D" float : right ">e</span>g<span =
-style=3D" float : right ">u</span>r<span style=3D" float : right =
-">y</span>a <FONT color=3D#FE3A09><STRONG>$<span style=3D" float : right =
-"> u </span>69</STRONG></FONT> (10<span style=3D" float : right "> Xk =
-</span>&nbsp;ta<span style=3D" float : right "> 36 =
-</span>bIets)</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3><span style=3D" float : right =
-">q</span>V<span style=3D" float : right ">r</span>a<span style=3D" =
-float : right ">i</span>I<span style=3D" float : right ">r</span>i<span =
-style=3D" float : right ">p</span>u<span style=3D" float : right =
-">r</span>m <FONT color=3D#FE3A09><STRONG>$<span style=3D" float : right =
-"> m </span>105</STRONG></FONT> (3<span style=3D" float : right "> 5p =
-</span>0&nbsp;tabIe<span style=3D" float : right "> uW =
-</span>ts)</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3><span style=3D" float : right =
-">z</span>C<span style=3D" float : right ">n</span>i<span style=3D" =
-float : right ">m</span>a<span style=3D" float : right ">d</span>I<span =
-style=3D" float : right ">b</span>i<span style=3D" float : right =
-">t</span>s <FONT color=3D#FE3A09><STRONG>$<span style=3D" float : right =
-"> t </span>99</STRONG></FONT> (1<span style=3D" float : right "> Mg =
-</span>0&nbsp;tabI<span style=3D" float : right "> lM =
-</span>ets)</FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>&nbsp;<span style=3D" float : right "> =
-9P </span></FONT></DIV>
-<DIV><FONT face=3DArial size=3D3>And ma<span style=3D" float : right "> =
-9H </span>ny other <A =
-href=3D"http://kay24.thostabana.com">http://kay24.thostabana.com</A></FON=
-T></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C6435D.92222A90--
+----------------------------------------------------------------------
+ kiwi - 03-09-06 16:41 
+----------------------------------------------------------------------
+A link to the ac97 codec specs:
+http://www.realtek.com.tw/downloads/downloads1-3.aspx?spec=True&compamodel=ALC650
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-09-06 00:30 kiwi           New Issue                                    
+03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
+03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
+03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
+03-09-06 16:41 kiwi           Note Added: 0008391                          
+======================================================================
 
 
 
