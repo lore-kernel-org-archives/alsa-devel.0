@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001841]: Mixer not working  / fujitsu laptop V2060 with HDA intel & AD1986A
-Date: Thu, 9 Mar 2006 18:43:37 +0100
-Message-ID: <4f9c397fa43ebaf31e1d7b59a04ed7a2@bugtrack.alsa-project.org>
+From: "Hank Ivy" <hankivy@hot.rr.com>
+Subject: RE: cannot find input file: src/pcm/makefile.in
+Date: Thu, 9 Mar 2006 11:47:02 -0600
+Message-ID: <001101c643a1$7dc47320$6401a8c0@XP1>
+References: <s5hbqwfmsex.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B0751AB
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 18:43:37 +0100 (MET)
+In-Reply-To: <s5hbqwfmsex.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+See response at end of message.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1841> 
-======================================================================
-Reported By:                fchevalier
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1841
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-11-2006 14:13 CET
-Last Modified:              03-09-2006 18:43 CET
-======================================================================
-Summary:                    Mixer not working  / fujitsu laptop V2060 with HDA
-intel & AD1986A
-Description: 
-Hi all,
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Thursday, March 09, 2006 11:37 AM
+To: Hank Ivy
+Cc: alsa-devel@lists.sourceforge.net
+ 
+At Thu, 9 Mar 2006 11:28:54 -0600,
+Hank Ivy wrote:
+> 
+> Regardless of the error message, I thank all of you.  Now my Linux
+> system has sound.  How do you recommend that I keep my sound software
+up
+> to date?
+> 
+> I have a riptide combo sound/modem/game-port card.
+> I checked out the ALSA CVS source.
+> 
+> The alsa-driver, and alsa-kernel directories seemed to compile and
+> install ok.  The PySol game plays music, and has sound effects.
+> 
+> The "./cvscompile" command in the alsa-lib directory ran a long time,
+> and stopped with the following error message.
+> config.status: error: cannot find input file: src/pcm/makefile.in
+> 
+> The "./cvscompile --disable-pcm" command in the alsa-lib directory ran
+a
+> long time, and stopped with the same error message.
+> 
+> The "./cvscompile" command in the alsa-utils directory seemed to
+compile
+> and install ok.
 
-I am unable to use mixer settings on my laptop.
-Basically ALSA correctly detects HDA intel, Analog device chip. Mixer
-settings are there but changing volume, muting/unmuting does not make any
-difference. Playing  mp3 file with xmms sometimes i can hear some sound,
-but not loud enough.
-I tried with the latest ALSA version available, still not luck :-(
+Likely a problem of automake / autoconf.
+Which versions do you have?  automake-1.9.x should work.
 
-Can anyone help ?
+Takashi
 
-Fabien
-======================================================================
+Hank Ivy reply:
+I have an up to date Mandriva distribution.
+The command "automake --version" reports "automake (GNU automake)
+1.7.9".
 
-----------------------------------------------------------------------
- tiwai - 03-09-06 18:25 
-----------------------------------------------------------------------
-Or, try "model=2ch" at first, then "model=3stack".
-
-----------------------------------------------------------------------
- tiwai - 03-09-06 18:43 
-----------------------------------------------------------------------
-Forgot to add: the patch is to the latest ALSA CVS version.  Don't try it
-with 1.0.11rc3.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-11-06 14:13 fchevalier     New Issue                                    
-03-09-06 17:01 fchevalier     Note Added: 0008392                          
-03-09-06 18:23 tiwai          Note Added: 0008393                          
-03-09-06 18:24 tiwai          File Added: ad1986a-fix.diff                    
-03-09-06 18:25 tiwai          Note Added: 0008394                          
-03-09-06 18:43 tiwai          Note Added: 0008395                          
-======================================================================
 
 
 
