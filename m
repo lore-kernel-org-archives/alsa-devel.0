@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001901]: alsactl: man page has nothing about 'power' command
-Date: Thu, 9 Mar 2006 19:16:35 +0100
-Message-ID: <95e3da60fdbfa209b344f97e6e66fc07@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001899]: 'man aplay' typo: "immediatly"
+Date: Thu, 9 Mar 2006 19:18:27 +0100
+Message-ID: <b1f1f241fb9354c20ee236c217dd7a8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C31391B2
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 19:16:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 066DC1B2
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 19:18:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,34 +22,34 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1901> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1899> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   1901
-Category:                   alsactl
+Issue ID:                   1899
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
+Severity:                   trivial
+Priority:                   low
 Status:                     new
 ======================================================================
-Date Submitted:             03-09-2006 19:16 CET
-Last Modified:              03-09-2006 19:16 CET
+Date Submitted:             03-09-2006 11:39 CET
+Last Modified:              03-09-2006 19:18 CET
 ======================================================================
-Summary:                    alsactl: man page has nothing about 'power' command
+Summary:                    'man aplay' typo: "immediatly"
 Description: 
-Man page for alsactl has nothing about the 'power'
-command, which 'alsactl --help' refers to.
+"immediatly" should be "immediately" in aplay.1
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-06 19:16 jdthood        New Issue                                    
+03-09-06 11:39 jdthood        New Issue                                    
+03-09-06 19:18 jdthood        Additional Information Updated                    
 ======================================================================
 
 
