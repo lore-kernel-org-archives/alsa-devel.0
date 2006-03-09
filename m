@@ -1,87 +1,71 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Thu, 9 Mar 2006 21:02:33 +0100
-Message-ID: <104201d243b55f7a73bc26000868dcc3@bugtrack.alsa-project.org>
+From: Marek Peca <marek@tynska.cuni.cz>
+Subject: Re: Audigy 2 ZS Notebook -- can not hear nor record analog in [was:
+ does a sound capture (recording) work?]
+Date: Thu, 9 Mar 2006 21:23:40 +0000 (   )
+Message-ID: <Pine.LNX.4.10.10603092043480.12936-100000@tynska.cuni.cz>
+References: <440ED05F.1000509@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F32D0195
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 21:02:33 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <440ED05F.1000509@superbug.co.uk>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Thank you for your information.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
-======================================================================
-Reported By:                kiwi
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1898
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 5 test3
-Kernel Version:             2.6.15-1.2009.4.2_FC5
-======================================================================
-Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              03-09-2006 21:02 CET
-======================================================================
-Summary:                    no sound from headphones or speakers on asus a6km
-laptop
-Description: 
-The headphone port and the speakers just don't work. Seems like there is
-some control hidden in the mixer which is muted. 
-By setting the master and pcm volume at 100% I can hear just some static
-on song beats only on headphones. Speakers always stay mute.
-I can only get sound by attaching the headphones to line-in and enabling
-"shared" surround mode.
+On Wed, 8 Mar 2006, James Courtier-Dutton wrote:
+> > So, I'm asking, whether the analog sound capture work at this card --
+> > can anyone here tell me? I'd really like to know this before buy.
+> >
+> The status is still "Untested".
+> I was working towards getting the Audigy2 ZS notebook working, and got 
+> as far as getting some output on my speakers and checked in that code to 
+> the alsa tree. My Linux machines have been out of action since then due 
+> to hardware failures as a result of a power surge. So, I never got round 
+> to testing the sound capture.
 
-Same issues with a knoppix 4.0.2.
+I've just bought a card for the testing.
 
-======================================================================
+Playback of PCM works well, but, I cannot hear analog input, even
+if setting numerous controls in mixer. The only thing I did not set,
+is the control numid=32,iface=PCM,name='Captured FX8010
+Outputs',device=2, set now to
+  :
+values=off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,on,on,on,on,on,on,on,on,on,on,on,on,on,on,on,on,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off,off
+-- I'm not sure, if this can influence volume of analogue input in
+resulting output sound.
 
-----------------------------------------------------------------------
- michele26x1 - 03-09-06 20:09 
-----------------------------------------------------------------------
-Same problem,same laptop(A6KmQ024).My frind has write issue n° 0001896...my
-distro is gentoo 2005.1,kernel 2.6.15-r7..Sound only from headphones but
-disturbed and distorted.
-ready to help
+Recording of current playback (PCM) works, but recording of analog
+input does not.
 
-----------------------------------------------------------------------
- kiwi - 03-09-06 21:02 
-----------------------------------------------------------------------
-Does anyone know how to change ac97 registers by hand without recompiling
-the whole thing? Is it possible?
+I tried the card in M$Windows with the same source (sine generator)
+and there the sound is audible after selecting in mixer without
+problems.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-09-06 00:30 kiwi           New Issue                                    
-03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
-03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
-03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
-03-09-06 16:41 kiwi           Note Added: 0008391                          
-03-09-06 20:09 michele26x1    Note Added: 0008396                          
-03-09-06 21:02 kiwi           Note Added: 0008397                          
-======================================================================
+Can you, please, give me any suggestions how to continue? Is it
+possible to extract settings from the working card configuration in
+M$Windows and to analyze them? Can you give me some pointers, whether
+to try to alter ALSA sourcecode somewhere, or to try something
+before?
 
+
+/* Unfortunately, I'm in a big hurry with one project needing it
+working -- double side analogue modulator using 2-channel soundcard
+and it should work on notebook... Yesterday it was late :) */
+
+
+Thank you very much.
+Marek P.
 
 
 
