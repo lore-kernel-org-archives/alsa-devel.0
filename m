@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001902]: aplay: prints snd_timer_hw_open warning message
-Date: Thu, 9 Mar 2006 19:22:21 +0100
-Message-ID: <6a4a47be55fd336792c5cd46de15eb3a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
+Date: Thu, 9 Mar 2006 20:09:16 +0100
+Message-ID: <18397d74332c0fd3756237b9dfa31f53@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 210E3142
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 19:22:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5B6A1B2
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 20:09:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,41 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1902> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                kiwi
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1902
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   1898
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Fedora Core 5 test3
+Kernel Version:             2.6.15-1.2009.4.2_FC5
 ======================================================================
-Date Submitted:             03-09-2006 19:22 CET
-Last Modified:              03-09-2006 19:22 CET
+Date Submitted:             03-09-2006 00:30 CET
+Last Modified:              03-09-2006 20:09 CET
 ======================================================================
-Summary:                    aplay: prints snd_timer_hw_open warning message
+Summary:                    no sound from headphones or speakers on asus a6km
+laptop
 Description: 
-Version: 1.0.10-1
+The headphone port and the speakers just don't work. Seems like there is
+some control hidden in the mixer which is muted. 
+By setting the master and pcm volume at 100% I can hear just some static
+on song beats only on headphones. Speakers always stay mute.
+I can only get sound by attaching the headphones to line-in and enabling
+"shared" surround mode.
 
-$ aplay audio.wav
-ALSA lib timer_hw.c:269:(snd_timer_hw_open) extended read is not
-supported (SNDRV_TIMER_IOCTL_TREAD)
-Playing WAVE 'audio.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
+Same issues with a knoppix 4.0.2.
 
-(It works despite the message.)
 ======================================================================
+
+----------------------------------------------------------------------
+ kiwi - 03-09-06 16:41 
+----------------------------------------------------------------------
+A link to the ac97 codec specs:
+http://www.realtek.com.tw/downloads/downloads1-3.aspx?spec=True&compamodel=ALC650
+
+----------------------------------------------------------------------
+ michele26x1 - 03-09-06 20:09 
+----------------------------------------------------------------------
+Same problem,same laptop(A6KmQ024).My frind has write issue n° 0001896...my
+distro is gentoo 2005.1,kernel 2.6.15-r7..Sound only from headphones but
+disturbed and distorted.
+ready to help
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-06 19:22 jdthood        New Issue                                    
+03-09-06 00:30 kiwi           New Issue                                    
+03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
+03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
+03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
+03-09-06 16:41 kiwi           Note Added: 0008391                          
+03-09-06 20:09 michele26x1    Note Added: 0008396                          
 ======================================================================
 
 
