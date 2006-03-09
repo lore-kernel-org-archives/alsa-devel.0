@@ -1,13 +1,11 @@
-From: Marek Peca <marek@tynska.cuni.cz>
-Subject: Re: [Alsa-user] Re: Audigy 2 ZS Notebook -- can not hear nor record
- analog in
-Date: Thu, 9 Mar 2006 21:56:17 +0000 (   )
-Message-ID: <Pine.LNX.4.10.10603092151060.12936-100000@tynska.cuni.cz>
-References: <Pine.LNX.4.10.10603092043480.12936-100000@tynska.cuni.cz>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: pointer callback in pcm
+Date: Thu, 09 Mar 2006 22:21:22 +0000
+Message-ID: <1141942882.10937.5.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.10.10603092043480.12936-100000@tynska.cuni.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,35 +15,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+The documentation states:
 
-as I see in diff for /alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c
-between version 1.80 and 1.81, you added
+"This callback is called when the PCM middle layer inquires the current
+hardware position on the buffer."
 
-----------------------------------------------------------
-/* Enable GPIOs
- * GPIO0: Unknown
- * GPIO1: Speakers-enabled.
- * GPIO2: Unknown
- * GPIO3: Unknown
- * GPIO4: IEC958 Output on.
- * GPIO5: Unknown
- * GPIO6: Unknown
- * GPIO7: Unknown
- */
-outl(0x76, emu->port + A_IOCFG); /* Windows uses 0x3f76 */
-----------------------------------------------------------
 
-does it mean, that you have reverse-engineered, that Windows drivers
-outputs value 0x3f76 on this port? Do you think, that other values
-can switch analog line-input (mic,...) on?
+Does that mean the position the hardware is at (in its ring buffer in my
+case) or does it mean the position we are at in the dma buffer.
 
-Thank you very much.
-Marek P.
+ie I have a 128k DMA buffer which transfers samples into the 32k
+hardware memory buffer. Which position am I meant to be reporting?
 
 
 
