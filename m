@@ -1,14 +1,17 @@
-From: "Hank Ivy" <hankivy@hot.rr.com>
-Subject: cannot find input file: src/pcm/makefile.in
-Date: Thu, 9 Mar 2006 11:28:54 -0600
-Message-ID: <000001c6439e$f4eca100$6401a8c0@XP1>
-References: <20060307194211.1D74D13576@sc8-sf-spam2.sourceforge.net>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [ALSA - lib 0000172]: Master volume control only
+	controls front speakers
+Date: Thu, 09 Mar 2006 12:32:33 -0500
+Message-ID: <1141925554.13319.37.camel@mindpipe>
+References: <5a34d592565296e6d7412e415db906b7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060307194211.1D74D13576@sc8-sf-spam2.sourceforge.net>
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 03768170
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 18:32:42 +0100 (MET)
+In-Reply-To: <5a34d592565296e6d7412e415db906b7@bugtrack.alsa-project.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,31 +21,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: bugtrack@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Regardless of the error message, I thank all of you.  Now my Linux
-system has sound.  How do you recommend that I keep my sound software up
-to date?
+On Thu, 2006-03-09 at 11:17 +0100, bugtrack@alsa-project.org wrote:
+> After a long discussion in alsa-user@lists.sourceforge.net about this
+> problem a member of the list (Christian Haertwig) send me a patch to the
+> emu10k1 driver that adds a volume control called 'Digital Master' and is
+> able to control all 6 channels of the card.
 
-I have a riptide combo sound/modem/game-port card.
-I checked out the ALSA CVS source.
+Can someone take a look at this?  It would be great to get this very old
+bug fixed for ALSA 1.0.11.
 
-The alsa-driver, and alsa-kernel directories seemed to compile and
-install ok.  The PySol game plays music, and has sound effects.
+The new control is misleadingly called "Digital Master" because the
+existing "Master" control only affects the front speakers.  IMHO this
+needs to be changed to "Front" and the new control "Master".
 
-The "./cvscompile" command in the alsa-lib directory ran a long time,
-and stopped with the following error message.
-config.status: error: cannot find input file: src/pcm/makefile.in
-
-The "./cvscompile --disable-pcm" command in the alsa-lib directory ran a
-long time, and stopped with the same error message.
-
-The "./cvscompile" command in the alsa-utils directory seemed to compile
-and install ok.
-
-Hank Ivy
-
+Lee
 
 
 
