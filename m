@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000172]: Master volume control only controls front speakers
-Date: Thu, 9 Mar 2006 11:17:37 +0100
-Message-ID: <5a34d592565296e6d7412e415db906b7@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
+Date: Thu, 9 Mar 2006 11:34:10 +0100
+Message-ID: <6c9297ea939eb310d0ddaa505635dbdf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1398C1DF
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 11:17:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FE861DF
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 11:34:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,104 +24,97 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
 ======================================================================
-Reported By:                gruberroland
+Reported By:                wzzrd
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   172
+Issue ID:                   154
 Category:                   2_mixer
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     assigned
 ======================================================================
-Date Submitted:             03-31-2004 11:50 CEST
-Last Modified:              03-09-2006 11:17 CET
+Date Submitted:             03-23-2004 17:31 CET
+Last Modified:              03-09-2006 11:34 CET
 ======================================================================
-Summary:                    Master volume control only controls front speakers
+Summary:                    Master volume only controls front output (emu10k1)
 Description: 
-The master volume control has no effect on the rear speakers.
-The rear speakers can be controlled by "Sigmatel Surround" but not
-completly muted.
+Setting the alsamixer Master Volume slider only controls the front two
+speakers. The rear speakers have to be controlled with the Wave Surround
+setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
+bug. If I'm wrong putting it here, sorry.
 
-I use "Sigmatel 4-Speaker Stereo" to get sound on all 4 speakers. The
-speakers are plugged into both output plugs on the soundcard.
-
-I tried all volume controls that are provided, there seems to be no master
-control.
+It would be very convenient to be able to control all four speakers with
+the Master Volume setting and to have a Front and Rear slider to control
+the front and rear speakers individually.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0000154 Master volume only controls front outpu...
+has duplicate       0000176 Master volume does not alters center, L...
+has duplicate       0000786 Master can't handle all channel
+has duplicate       0001256 surround51: Master Volume control and M...
+has duplicate       0001071 Help with Volume Controls
+related to          0000172 Master volume control only controls fro...
 related to          0000919 Master volume doesn't control rear spea...
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-31-04 16:35 
+ rlrevell - 05-20-05 22:05 
 ----------------------------------------------------------------------
-It's feature request. We haven't designed abstract mixer layer at the
-moment,
-but you are allowed to control fully hardware anyway. If you cannot mute
-completely the rear speakers, then it's probably hardware problem.
+Sorry, I don't have time to work on this.  Please bug the ALSA developers
+to get the abstract mixer layer finished.
 
 ----------------------------------------------------------------------
- muffty - 03-09-06 11:17 
+ muffty - 03-09-06 11:34 
 ----------------------------------------------------------------------
-After a long discussion in alsa-user@lists.sourceforge.net about this
-problem a member of the list (Christian Haertwig) send me a patch to the
-emu10k1 driver that adds a volume control called 'Digital Master' and is
-able to control all 6 channels of the card.
-This is a part of the mail he send to me:
----------------------
-A "good" (where good means pretty easy to realize) fix *is* 
-available. I have attached the patch file that does the job. You need to 
-recompile alsa drivers that for. with the Patch included you will have a
-new 
-volume slider that indeed sets the overall volume for all channels. Since
-i 
-am no developer i cant tell you exactly why this patch is not included in
-the 
-drivers, but for emu10k1 and sb live i have found out it works great. i am
-
-using it with alsa-driver and -lib version 1.0.10 and have had no *real* 
-issues yet. unfortunately i know people reporting that this patch causes
-the 
-overall output volume to be a bit quiter than normal, but i cannot
-confirm. 
-Thanks again to whoever has send that patch to me.
----------------------
-I tested the patch and it appeard that it doesn't work for me. 
-When playing 2-channel sound my left front speaker was muted and when
-playing 6-channel sound the rear left speaker was muted.
-After a suggestion from Lee Revell I played arround with the
-SND_EMU10K1_GPR_CONTROLS and made it work when leaving this setting to 44
-and not changing it to 46 as the patch did. After these changes everything
-works fine. A new volume called 'Digital Master' can control all channels
-of the card. I have tested the card only in analog mode, as I don't have
-digital speakers. 
-If this is working for You give some feedback.
-I'm attaching the original patch I was send as accourding to Christian it
-works for other people. If it doesn't work for You try changing the
-SND_EMU10K1_GPR_CONTROLS as I did.
+Please, take a look at
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172. I added a
+possible solution there.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-04 11:50 gruberroland   New Issue                                    
-03-31-04 11:50 gruberroland   Kernel Version            => 2.4.25          
-03-31-04 16:33 perex          Assigned To               => perex           
-03-31-04 16:33 perex          Severity                 major => feature    
-03-31-04 16:33 perex          Status                   new => assigned     
-03-31-04 16:35 perex          Note Added: 0000725                          
-10-22-04 16:44 perex          Relationship added       related to 0000154  
-10-29-04 21:03 BMS            Issue Monitored: BMS                         
-02-22-05 09:57 perex          Relationship added       related to 0000919  
-02-22-05 09:59 perex          Project                  ALSA - driver => ALSA -
-lib
-02-22-05 09:59 perex          Category                 PCI - ens1371 => mixer
-03-09-06 11:17 muffty         Note Added: 0008387                          
+03-23-04 17:31 wzzrd          New Issue                                    
+03-23-04 18:42 perex          View Status              @0@ => public       
+03-23-04 18:42 perex          Description Updated                          
+03-23-04 18:42 perex          Additional Information Updated                    
+03-23-04 18:43 perex          Status                   new => assigned     
+03-23-04 18:43 perex          Assigned To               => perex           
+03-26-04 20:21 djtm           Note Added: 0000708                          
+04-19-04 02:47 tarball        Issue Monitored: tarball                     
+04-19-04 21:23 perex          Relationship added       has duplicate 0000176
+05-24-04 22:51 delmonico      Note Added: 0001199                          
+10-22-04 16:44 perex          Relationship added       related to 0000172  
+10-23-04 01:09 djtm           Note Added: 0002253                          
+10-23-04 01:09 djtm           File Added: alsavol.sh                       
+10-23-04 01:10 djtm           Note Edited: 0002253                         
+11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
+01-04-05 21:01 Miwer          Note Added: 0003081                          
+01-04-05 21:11 rlrevell       Note Added: 0003082                          
+01-04-05 21:29 pzad           Note Added: 0003083                          
+01-04-05 21:38 rlrevell       Note Added: 0003084                          
+01-04-05 22:30 pzad           Note Added: 0003085                          
+01-04-05 22:38 rlrevell       Note Added: 0003086                          
+01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
+01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
+01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
+01-27-05 01:00 adamk75        Note Added: 0003418                          
+02-01-05 22:57 adamk75        Note Added: 0003475                          
+02-03-05 20:20 rlrevell       Note Added: 0003493                          
+02-17-05 22:01 adamk75        Note Added: 0003642                          
+02-17-05 22:59 rlrevell       Note Added: 0003646                          
+02-17-05 23:28 adamk75        Note Added: 0003647                          
+02-22-05 09:56 perex          Relationship added       related to 0000919  
+05-20-05 20:39 Miwer          Issue Monitored: Miwer                       
+05-20-05 22:02 Miwer          Note Added: 0004699                          
+05-20-05 22:05 rlrevell       Note Added: 0004700                          
+07-13-05 18:56 rlrevell       Relationship added       has duplicate 0001256
+07-16-05 17:11 jdthood        Relationship added       has duplicate 0001071
+09-02-05 19:55 blueSceaDa     Issue Monitored: blueSceaDa                    
+03-09-06 11:34 muffty         Note Added: 0008388                          
 ======================================================================
 
 
