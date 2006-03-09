@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001841]: Mixer not working  / fujitsu laptop V2060 with HDA intel & AD1986A
-Date: Thu, 9 Mar 2006 18:23:48 +0100
-Message-ID: <f793c32605148b5a565a455d51d6895b@bugtrack.alsa-project.org>
+Date: Thu, 9 Mar 2006 18:25:20 +0100
+Message-ID: <565feee67b3656fa6d368c7052f36868@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECD511A7
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 18:23:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0356B1A7
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2006 18:25:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-11-2006 14:13 CET
-Last Modified:              03-09-2006 18:23 CET
+Last Modified:              03-09-2006 18:25 CET
 ======================================================================
 Summary:                    Mixer not working  / fujitsu laptop V2060 with HDA
 intel & AD1986A
@@ -60,15 +60,15 @@ Fabien
 ======================================================================
 
 ----------------------------------------------------------------------
- fchevalier - 03-09-06 17:01 
-----------------------------------------------------------------------
-Looks like afterwards this is a duplicated of bug id 1531...
-
-----------------------------------------------------------------------
  tiwai - 03-09-06 18:23 
 ----------------------------------------------------------------------
 Could you check whether the attached patch works with "model=3stack" module
 option?
+
+----------------------------------------------------------------------
+ tiwai - 03-09-06 18:25 
+----------------------------------------------------------------------
+Or, try "model=2ch" at first, then "model=3stack".
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -76,6 +76,8 @@ Date Modified  Username       Field                    Change
 02-11-06 14:13 fchevalier     New Issue                                    
 03-09-06 17:01 fchevalier     Note Added: 0008392                          
 03-09-06 18:23 tiwai          Note Added: 0008393                          
+03-09-06 18:24 tiwai          File Added: ad1986a-fix.diff                    
+03-09-06 18:25 tiwai          Note Added: 0008394                          
 ======================================================================
 
 
