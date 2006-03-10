@@ -1,110 +1,43 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001903]: Recording of USB sound doesn't work
-Date: Fri, 10 Mar 2006 20:56:26 +0100
-Message-ID: <7f55aca37c4417e4a06f9ce9a8d63baf@bugtrack.alsa-project.org>
+From: Carlos Munoz <carlos@kenati.com>
+Subject: Re: How can I link the kernel with libgcc ?
+Date: Fri, 10 Mar 2006 12:04:56 -0800
+Message-ID: <4411DBE8.2070302@kenati.com>
+References: <4410D9F0.6010707@kenati.com> <1141961152.13319.118.camel@mindpipe> <4410F6CB.8070907@kenati.com> <200603101237.35687.vda@ilport.com.ua> <4411BF8E.4080306@kenati.com> <20060310191842.GY27946@ftp.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6013D163
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 20:56:26 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751678AbWCJUAR@vger.kernel.org>
+In-Reply-To: <20060310191842.GY27946@ftp.linux.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Al Viro <viro@ftp.linux.org.uk>
+Cc: Denis Vlasenko <vda@ilport.com.ua>, Lee Revell <rlrevell@joe-job.com>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Al Viro wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1903> 
-======================================================================
-Reported By:                nbaggus
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1903
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               gentoo
-Kernel Version:             2.6.15-gentoo-r1
-======================================================================
-Date Submitted:             03-10-2006 01:38 CET
-Last Modified:              03-10-2006 20:56 CET
-======================================================================
-Summary:                    Recording of USB sound doesn't work
-Description: 
-arecord gives the next error message on:
+>On Fri, Mar 10, 2006 at 10:03:58AM -0800, Carlos Munoz wrote:
+>  
+>
+>>>              ydef[22] = (u_int32_t)(log10((double)(over & 0x0000003f)) /
+>>>                                     log10(2));
+>>>      
+>>>
+>
+>You've got to be kidding.  Let's take a good look at that expression:
+>log10(x)/log10(2) is what?  Right, base-2 logarithm of x.  Then you cast
+>it to unsigned, i.e. round it down.  In other words, you want to know the
+>highest bit in (over & 0x3f).  Which is to say, (fls(over & 0x3f) - 1).
+>Sigh...
+>  
+>
+Hi Al,
 
-$ arecord -D hw:2 -t wav -f S16_LE -d 10 file.wav
-Recording WAVE 'file.wav' : Signed 16 bit Little Endian, Rate 8000 Hz,
-Mono
-arecord: pcm_read:1303: read error: Input/output error
-$ 
+You are right, so easy. I will look at the data sheet and make sure the 
+same approach can be applied to all places calling for log10 
+calculations. I wonder why the data sheet calls for log10 calculations. 
+It threw me off... should have know better though.
 
-after about 10 seconds. The recorded sound is a kind of metalic click in
-silence. at playback the duration is between 1 and 2 seconds.
-======================================================================
-
-----------------------------------------------------------------------
- nbaggus - 03-10-06 20:13 
-----------------------------------------------------------------------
-Both the logitech and the Voip phone use the snd_usb_audio and friends.
-
-The voipphone is a Usb-p1K phone from yealink (yealink.ko driver).
-yealink.ko handles ringtone on/off; keypad & display, snd_usb_audio
-handles sound.
-The logitech is a logitech usb headphone set.
-(Kensington equip. is a mouse).
-
-connection is USB through EHCI or OHCI interface 
-The system used is a promedion cybermaxx laptop. (One OHCI port, 3 EHCI
-ports.)
-
-There are no messages in dmesg or system log. accept for adding the
-devices when plugging them in. 
-Sound output does function sound input fails.
+Thanks,
 
 
-
-----------------------------------------------------------------------
- nbaggus - 03-10-06 20:56 
-----------------------------------------------------------------------
-Additional info...
-
-The logitech headset does work on an intel Pentium 4/ 2.4 GHz DELL pc.
-(Same os version, but alsa-driver 1.0.10)
-On the AMD mobility XP though it doesn't work. All software is in i686
-more compiled.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-10-06 01:38 nbaggus        New Issue                                    
-03-10-06 01:38 nbaggus        Distribution              => gentoo          
-03-10-06 01:38 nbaggus        Kernel Version            => 2.6.15-gentoo-r1
-03-10-06 08:53 Clemens LadischNote Added: 0008401                          
-03-10-06 08:53 Clemens LadischStatus                   assigned => feedback
-03-10-06 13:47 nbaggus        Note Added: 0008402                          
-03-10-06 20:13 nbaggus        Note Edited: 0008402                         
-03-10-06 20:56 nbaggus        Note Added: 0008411                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by xPML, a groundbreaking scripting language
-that extends applications into web and mobile media. Attend the live webcast
-and join the prime developer group breaking into this new coding territory!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
+Carlos Munoz
