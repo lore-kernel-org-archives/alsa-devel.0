@@ -1,13 +1,13 @@
-From: Bart Hartgers <bart@etpmod.phys.tue.nl>
-Subject: Re: How can I link the kernel with libgcc ?
-Date: Fri, 10 Mar 2006 12:05:06 +0100
-Message-ID: <44115D62.6000100@etpmod.phys.tue.nl>
-References: <4410D9F0.6010707@kenati.com> <1141961152.13319.118.camel@mindpipe> <4410F6CB.8070907@kenati.com> <200603101237.35687.vda@ilport.com.ua>
+From: =?UTF-8?B?T25kcmVqIEl2YW5pxI0=?= <ondrej@kmit.sk>
+Subject: Re: Bt87x Audio Capture
+Date: Fri, 10 Mar 2006 12:32:02 +0100
+Message-ID: <441163B2.4060407@kmit.sk>
+References: <440F4F06.4030904@kmit.sk> <20060309074930.GA993@turing.informatik.uni-halle.de> <440FF003.5050106@kmit.sk> <20060309131146.GA4299@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200603101237.35687.vda@ilport.com.ua>
+In-Reply-To: <20060309131146.GA4299@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,57 +17,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlos Munoz <carlos@kenati.com>
-Cc: Denis Vlasenko <vda@ilport.com.ua>, Lee Revell <rlrevell@joe-job.com>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org, alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Denis Vlasenko wrote:
-> On Friday 10 March 2006 05:47, Carlos Munoz wrote:
->> Lee Revell wrote:
-> 
-> What? You are using log10 only twice!
-> 
->         if (!(siu_obj_status & ST_OPEN)) {
-> 		...
->                 /* = log2(over) */
->                 ydef[22] = (u_int32_t)(log10((double)(over & 0x0000003f)) /
->                                        log10(2));
-> 		...
->         }
->         else {
-> 		...
->                 if (coef) {
->                         ydef[16] = 0x03045000 | (over << 26) | (tap - 4);
->                         ydef[17] = (tap * 2 + 1);
->                         /* = log2(over) */
->                         ydef[22] = (u_int32_t)
->                                 (log10((double)(over & 0x0000003f)) / log10(2));
->                 }
-> 
-> Don't you think that log10((double)(over & 0x0000003f)) / log10(2)
-> can have only 64 different values depending on the result of (over & 0x3f)?
-> 
-> Obtain them from precomputed uint32_t log10table[64].
+Clemens Ladisch wrote:
 
-And since you're actually trying to do log2 [log10(x)/log10(2) =
-log2(x)] and casting the result to an integer, aren't you really looking
-for the position of the highest 1 bit or something like that? That
-doesn't need FP at all.
+> The snd-bt87x driver in the same kernel has a bug that prevents it from
+> working with the load_all parameter.  This was fixed with this patch:
+> http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=blobdiff;h=c840a4c08e9814c197d30b631b782c420e26869a;hp=aaaa2e0d45c22aec11ac2325a488d27e392a0f96;hb=54c63cfc153c6909a5d5dbe6072e8704b091f30e;f=sound/pci/bt87x.c
 
-Groeten,
-Bart
+Yes, my card was detected as an unknown card 0x11bd:0x12. I don't have 
+idea how to identify correct digital_rate value for card.
 
-> --
-> vda
-> -
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+I playing with a tvtime and arecord. In the tvtime I was tuned a tv 
+channel and with arecord I was tryied to record some sound from TV card 
+capture device.
+
+card 0: AudioPCI [Ensoniq AudioPCI], device 0: ES1371/1 [ES1371 DAC2/ADC]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
+card 1: Bt878 [Brooktree Bt878], device 0: Bt87x Digital [Bt87x Digital]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
+card 1: Bt878 [Brooktree Bt878], device 1: Bt87x Analog [Bt87x Analog]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
+
+$ arecord -Dhw:1,1 -f S16_LE -r 119466 -d 20 /tmp/out.wav
+
+Output file contains only wav header and 0x7fff values.
+
+BTW, it's possible to create interconnect between sound card and capture 
+device in TV card? I would like to live without cable from TV card to 
+sound card line in. I was read something about dmix and dsnoop plugins, 
+but i have't idea.
 
 
 -- 
-Bart Hartgers - TUE Eindhoven - http://plasimo.phys.tue.nl/bart/contact/
+Ondrej Ivanic
+(ondrej@kmit.sk)
 
 
 -------------------------------------------------------
