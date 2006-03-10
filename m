@@ -1,13 +1,13 @@
-From: =?UTF-8?B?T25kcmVqIEl2YW5pxI0=?= <ondrej@kmit.sk>
-Subject: Re: Bt87x Audio Capture
-Date: Fri, 10 Mar 2006 12:32:02 +0100
-Message-ID: <441163B2.4060407@kmit.sk>
-References: <440F4F06.4030904@kmit.sk> <20060309074930.GA993@turing.informatik.uni-halle.de> <440FF003.5050106@kmit.sk> <20060309131146.GA4299@turing.informatik.uni-halle.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Re: How can I link the kernel with libgcc ?
+Date: Fri, 10 Mar 2006 11:55:05 +0000
+Message-ID: <44116919.3000807@superbug.co.uk>
+References: <4410D9F0.6010707@kenati.com>	 <200603100145.k2A1jMem005323@turing-police.cc.vt.edu>	 <1141956362.13319.105.camel@mindpipe> <4410EC0D.3090303@kenati.com>	 <4410F1BE.7000904@kenati.com> <1141961152.13319.118.camel@mindpipe> <4410F6CB.8070907@kenati.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060309131146.GA4299@turing.informatik.uni-halle.de>
+In-Reply-To: <4410F6CB.8070907@kenati.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,45 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: Carlos Munoz <carlos@kenati.com>
+Cc: Lee Revell <rlrevell@joe-job.com>, Valdis.Kletnieks@vt.edu, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
+Carlos Munoz wrote:
+> Lee Revell wrote:
+>
+>> On Thu, 2006-03-09 at 19:25 -0800, Carlos Munoz wrote:
+>>  
+>>
+>>> I figured out how to get the driver to use floating point operations.
+>>> I included source code (from an open source math library) for the
+>>> log10 function in the driver. Then I added the following lines to the
+>>> file arch/sh/kernel/sh_ksyms.c:   
+Carlos,
 
-> The snd-bt87x driver in the same kernel has a bug that prevents it from
-> working with the load_all parameter.  This was fixed with this patch:
-> http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=blobdiff;h=c840a4c08e9814c197d30b631b782c420e26869a;hp=aaaa2e0d45c22aec11ac2325a488d27e392a0f96;hb=54c63cfc153c6909a5d5dbe6072e8704b091f30e;f=sound/pci/bt87x.c
+Be warned. You CANNOT use floating point instructions in the kernel.
+The floating point registers are not saved during a task switch for any 
+kernel module.
 
-Yes, my card was detected as an unknown card 0x11bd:0x12. I don't have 
-idea how to identify correct digital_rate value for card.
-
-I playing with a tvtime and arecord. In the tvtime I was tuned a tv 
-channel and with arecord I was tryied to record some sound from TV card 
-capture device.
-
-card 0: AudioPCI [Ensoniq AudioPCI], device 0: ES1371/1 [ES1371 DAC2/ADC]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 1: Bt878 [Brooktree Bt878], device 0: Bt87x Digital [Bt87x Digital]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 1: Bt878 [Brooktree Bt878], device 1: Bt87x Analog [Bt87x Analog]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-
-$ arecord -Dhw:1,1 -f S16_LE -r 119466 -d 20 /tmp/out.wav
-
-Output file contains only wav header and 0x7fff values.
-
-BTW, it's possible to create interconnect between sound card and capture 
-device in TV card? I would like to live without cable from TV card to 
-sound card line in. I was read something about dmix and dsnoop plugins, 
-but i have't idea.
+James
 
 
--- 
-Ondrej Ivanic
-(ondrej@kmit.sk)
+
+
+This e-mail and any attachment is for authorised use by the intended recipient(s) only. It may contain proprietary material, confidential information and/or be subject to legal privilege. It should not be copied, disclosed to, retained or used by, any other party. If you are not an intended recipient then please promptly delete this e-mail and any attachment and all copies and inform the sender. Thank you.
 
 
 -------------------------------------------------------
