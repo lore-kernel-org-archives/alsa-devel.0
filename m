@@ -1,7 +1,7 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: pointer callback in pcm
-Date: Fri, 10 Mar 2006 20:21:07 +0000
-Message-ID: <1142022067.9246.7.camel@localhost.localdomain>
+Date: Fri, 10 Mar 2006 15:23:30 -0500
+Message-ID: <1142022211.19759.27.camel@mindpipe>
 References: <1141942882.10937.5.camel@localhost.localdomain>
 	 <1141952015.13319.90.camel@mindpipe>
 	 <1142020261.9246.3.camel@localhost.localdomain>
@@ -21,50 +21,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+Cc: Adrian McMenamin <adrian@mcmen.demon.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Fri, 2006-03-10 at 21:16 +0100, Takashi Iwai wrote:
-
-> 
-> Hm, I've not checked your code and thread due to lack of my free time
-> for ALSA recently, but the symptom above sounds like you implemented
-> copy callback but still using mmap.
-> 
-
-No, I'm not using copy or mmap (the code is at
-http://newgolddream.dyndns.info/cgi-bin/cvsweb these days)
-
-
-> The copy callback is designed basically only for read/write transfer.
-> In the mmap mode, of course, such read/write transfer is eliminated,
-> and no copy action occurs.
-> 
-> Thus, first try not to set MMAP flag and let alsa-lib use the
-> traditional read/write method.
-> 
 > Some hardwares have actually separate h/w buffer and the memory
 > buffer (s/w buffer).  Even with such hardwares, mmap can be
 > implemented.  Instead of DMA transfer by hardware, the driver copies
 > data between h/w and s/w buffers on demand, namely, before starting
 > the stream (in trigger callback) and when each period is consumed (via
 > ack callback).
-
-
-This is quite like my device - but I know nothing about the ack device
-
-
 > 
 > There are userful functions for such a case, found in pcm-indirect.h.
 > They are used emu10k1 FX mode and cs46xx.
 > 
 
-I'll look
+Adrian has a weird case - his hardware *does* have DMA but it must be
+reprogrammed every period.  So no copying is required in the driver.
 
-> 
-> HTH,
-> 
-> Takashi
+The driver guide assumes that once the DMA is started, it will
+repeatedly fill the buffer until we tell it to stop.
+
+So, I thought that the DMA could be programmed in the copy callback each
+period.  But maybe this should go in the ack callback.
+
+Lee
 
 
 
