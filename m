@@ -1,121 +1,96 @@
-From: Ben Slusky <sluskyb@paranoiacs.org>
-Subject: Re: How can I link the kernel with libgcc ?
-Date: Fri, 10 Mar 2006 13:41:05 -0500
-Message-ID: <20060310184105.GA19846@paranoiacs.org>
-References: <4410D9F0.6010707@kenati.com> <1141961152.13319.118.camel@mindpipe> <4410F6CB.8070907@kenati.com> <200603101237.35687.vda@ilport.com.ua> <4411BF8E.4080306@kenati.com> <Pine.LNX.4.61.0603101320510.5057@chaos.analogic.com>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: [Alsa-devel] Re: 2.6.15-rt20, "bad page state", jackd
+Date: Fri, 10 Mar 2006 10:50:27 -0800
+Message-ID: <1142016627.6124.33.camel@cmn3.stanford.edu>
+References: <1141846564.5262.20.camel@cmn3.stanford.edu>
+	 <20060309084746.GB9408@osiris.boeblingen.de.ibm.com>
+	 <1141938488.22708.28.camel@cmn3.stanford.edu>
+	 <4410B2D7.4090806@yahoo.com.au>
+	 <1141958866.22708.69.camel@cmn3.stanford.edu>
+	 <441109BC.9070705@yahoo.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751849AbWCJSlb@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0603101320510.5057@chaos.analogic.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751987AbWCJSus@vger.kernel.org>
+In-Reply-To: <441109BC.9070705@yahoo.com.au>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "linux-os (Dick Johnson)" <linux-os@analogic.com>
-Cc: Carlos Munoz <carlos@kenati.com>, Denis Vlasenko <vda@ilport.com.ua>, Lee Revell <rlrevell@joe-job.com>, Valdis.Kletnieks@vt.edu, Linux kernel <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Nick Piggin <nickpiggin@yahoo.com.au>
+Cc: nando@ccrma.Stanford.EDU, alsa-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Heiko Carstens <heiko.carstens@de.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 10 Mar 2006 13:33:02 -0500, linux-os (Dick Johnson) wrote:
+On Fri, 2006-03-10 at 16:08 +1100, Nick Piggin wrote:
+> Fernando Lopez-Lezcano wrote:
+> > On Fri, 2006-03-10 at 09:57 +1100, Nick Piggin wrote:
+> >>Fernando Lopez-Lezcano wrote:
+> >>Can you test with the latest mainline -git snapshot, or is it only
+> >>the -rt tree that causes the warnings?
+> > 
+> > I found something strange although I don't know why it happens yet:
+> > 
+> >   Fedora Core 4 kernel (2.6.15 + patches) works fine.
+> >   Fedora Core 4 kernel + -rt21, [ahem... sorry], works fine.
+> >   Fedora Core 4 kernel + -rt21 + alsa kernel modules from 1.0.10 or
+> >      1.0.11rc3, fails[*]
+> >   Plain vanilla 2.6.15 + -rt21, works fine
+> >   Plain vanilla 2.6.15 + -rt21 + alsa kernel modules from 1.0.10 or
+> >      1.0.11rc3, fails[*]
+> > 
+> > So, it looks like it is some weird interaction between kernel modules
+> > that were not compiled as part of the kernel and the kernel itself. The
+> > "updated" modules are installed in a separate location (not on top of
+> > the built in kernel modules) and are found before the ones in the kernel
+> > tree.
+> > 
+> > I have been building this combination for a long long time with no
+> > problems, I don't know what might have happened that changed things.
+> > 
+> > Could be:
+> > - configuration problems?
 > 
-> On Fri, 10 Mar 2006, Carlos Munoz wrote:
+> No. It shouldn't do this even if there is a configuration problem.
 > 
-> > Denis Vlasenko wrote:
-> >
-> >> On Friday 10 March 2006 05:47, Carlos Munoz wrote:
-> >>
-> >>
-> >>> Lee Revell wrote:
-> >>>
-> >>>
-> >>>
-> >>>> On Thu, 2006-03-09 at 19:25 -0800, Carlos Munoz wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>>
-> >>>>> I figured out how to get the driver to use floating point operations.
-> >>>>> I included source code (from an open source math library) for the
-> >>>>> log10 function in the driver. Then I added the following lines to the
-> >>>>> file arch/sh/kernel/sh_ksyms.c:
-> >>>>>
-> >>>>>
-> >>>>>
-> >>>>>
-> >>>> Where is the source code to your driver?
-> >>>>
-> >>>> Lee
-> >>>>
-> >>>>
-> >>>>
-> >>>>
-> >>>>
-> >>> Hi Lee,
-> >>>
-> >>> Be warned. This driver is in the early stages of development. There is
-> >>> still a lot of work that needs to be done (interrupt, dma, etc, etc).
-> >>>
-> >>>
-> >>
-> >> What? You are using log10 only twice!
-> >>
-> >>        if (!(siu_obj_status & ST_OPEN)) {
-> >> 		...
-> >>                /* = log2(over) */
-> >>                ydef[22] = (u_int32_t)(log10((double)(over & 0x0000003f)) /
-> >>                                       log10(2));
-> >> 		...
-> >>        }
-> >>        else {
-> >> 		...
-> >>                if (coef) {
-> >>                        ydef[16] = 0x03045000 | (over << 26) | (tap - 4);
-> >>                        ydef[17] = (tap * 2 + 1);
-> >>                        /* = log2(over) */
-> >>                        ydef[22] = (u_int32_t)
-> >>                                (log10((double)(over & 0x0000003f)) / log10(2));
-> >>                }
-> >>
-> >> Don't you think that log10((double)(over & 0x0000003f)) / log10(2)
-> >> can have only 64 different values depending on the result of (over & 0x3f)?
-> >>
-> >> Obtain them from precomputed uint32_t log10table[64].
-> >> --
-> >> vda
-> >>
-> >>
-> > Hi Denis,
-> >
-> > Yes, the driver code so far only uses log10 twice, but there will be
-> > more uses for it as I populate the rest of the tables. However, I think
-> > its use will be some what limited. I wasn't aware that the floating
-> > point registers are not saved. I'll investigate a way to create a table
-> > with pre-calculated log10 values.
-> >
-> > Thanks,
-> >
-> >
-> > Carlos
+> > - the alsa tree is somehow incompatible with the kernel alsa tree, is
+> >   that even possible?
+>
+> Yes. Most likely this. It should be fixed before the new ALSA code is
+> pushed upstream.
 > 
-> Since the log in base n is the log in any base times a constant,
-> you can probably use log base 2 (binary bit position) and multiply
-> the result by a constant, which may simply be shifts and adds.
-> 
-> I assume you are using 16-bit audio. If so, the dynamic range
-> is only 20 * log10(2^16) = 96.3 dB. That means that attenuation
-> from mininum to maximum, in 1 dB steps, requires only 94 values.
-> 
-> Your code shows something whacked off at 0x3f = 0->0x40 = 64
-> 20 * log10(64) = 36 dB for only 36 values. Clearly, you don't
-> need floating point, just some thought ahead of time.
-> 
-> Cheers,
-> Dick Johnson
+> It is probably not so much a matter of somebody breaking the ALSA code
+> as that it hasn't been updated for the new kernel refcounting rules.
 
-As Bart pointed out earlier, what this code is really trying to do is not
-log10(foo) but int(log2(foo)) for some positive integer foo. This can be
-simply expressed as fls(foo)-1 for all foo < 0. No floating point
-necessary.
+Takashi and other gurus in alsa-devel, any comments on this? The
+original problem - not quoted in this email - is that when I stop jackd
+in the affected configurations I get errors similar to this one:
 
--- 
-Ben Slusky                      | Trust is your enemy.
-sluskyb@paranoiacs.org          |       -Dan Farmer and
-sluskyb@stwing.org              |        Wietse Venema
-PGP keyID ADA44B3B      
+> Bad page state at __free_pages_ok (in process 'jackd', page c1013ce0)
+> flags:0x00000414 mapping:00000000 mapcount:0 count:0
+> Backtrace:
+>  [<c015947d>] bad_page+0x7d/0xc0 (8)
+>  [<c01598fd>] __free_pages_ok+0x9d/0x180 (36)
+>  [<c015a5ac>] __pagevec_free+0x3c/0x50 (40)
+>  [<c015db47>] release_pages+0x127/0x1a0 (16)
+>  [<c016c93d>] free_pages_and_swap_cache+0x7d/0xc0 (80)
+>  [<c01681ae>] unmap_region+0x13e/0x160 (28)
+>  [<c0168461>] do_munmap+0xe1/0x120 (48)
+>  [<c01684df>] sys_munmap+0x3f/0x60 (32)
+>  [<c01034a1>] syscall_call+0x7/0xb (16)
+> Trying to fix it up, but a reboot is needed
+
+One other thing occurred to me (not tested yet)
+
+- userspace regression in the module load code (so that in the end
+modules from the in kernel tree get mixed with modules coming from the
+externally compiled alsa tree). Very unlikely, I think, I could test for
+this by removing the in kernel modules temporarily. 
+
+I have problems in both:
+  snd-ice1712 (midiman delta 66)
+  snd-hdsp (rme hdsp)
+but this seems to work fine:
+  snd-echo3g (gina3g)
+
+The interesting thing is that the one that works (snd-echo3g) has no
+counterpat in the in kernel alsa tree - that is, only exists in the
+add-on modules compiled externally. Coincidence?
+
+-- Fernando
