@@ -1,61 +1,93 @@
-From: Nick Piggin <nickpiggin@yahoo.com.au>
-Subject: Re: 2.6.15-rt20, "bad page state", jackd
-Date: Fri, 10 Mar 2006 16:08:12 +1100
-Message-ID: <441109BC.9070705@yahoo.com.au>
-References: <1141846564.5262.20.camel@cmn3.stanford.edu>	 <20060309084746.GB9408@osiris.boeblingen.de.ibm.com>	 <1141938488.22708.28.camel@cmn3.stanford.edu>	 <4410B2D7.4090806@yahoo.com.au> <1141958866.22708.69.camel@cmn3.stanford.edu>
+From: "Ester Chapdelaine" <esterichapdela@davidward.com>
+Subject: Re: ParavHmcy news
+Date: Fri, 10 Mar 2006 01:03:46 -0500
+Message-ID: <000001c64408$64923b50$912ea8c0@fxh25>
+Reply-To: "Ester Chapdelaine" <esterichapdela@davidward.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751597AbWCJFIR@vger.kernel.org>
-In-Reply-To: <1141958866.22708.69.camel@cmn3.stanford.edu>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: alsa-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Heiko Carstens <heiko.carstens@de.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C643DE.7BBC3350"
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDD17162
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 07:04:08 +0100 (MET)
+Received: from schippers.net (c-68-46-188-179.hsd1.pa.comcast.net [68.46.188.179])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 49BE09941C
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 07:04:06 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fernando Lopez-Lezcano wrote:
-> On Fri, 2006-03-10 at 09:57 +1100, Nick Piggin wrote:
-> 
->>Fernando Lopez-Lezcano wrote:
+This is a multi-part message in MIME format.
 
->>Can you test with the latest mainline -git snapshot, or is it only
->>the -rt tree that causes the warnings?
-> 
-> 
-> I found something strange although I don't know why it happens yet:
-> 
->   Fedora Core 4 kernel (2.6.15 + patches) works fine.
->   Fedora Core 4 kernel + -rt21, [ahem... sorry], works fine.
->   Fedora Core 4 kernel + -rt21 + alsa kernel modules from 1.0.10 or
->      1.0.11rc3, fails[*]
->   Plain vanilla 2.6.15 + -rt21, works fine
->   Plain vanilla 2.6.15 + -rt21 + alsa kernel modules from 1.0.10 or
->      1.0.11rc3, fails[*]
-> 
-> So, it looks like it is some weird interaction between kernel modules
-> that were not compiled as part of the kernel and the kernel itself. The
-> "updated" modules are installed in a separate location (not on top of
-> the built in kernel modules) and are found before the ones in the kernel
-> tree.
-> 
-> I have been building this combination for a long long time with no
-> problems, I don't know what might have happened that changed things.
-> 
-> Could be:
-> - configuration problems?
+------=_NextPart_000_0001_01C643DE.7BBC3350
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-No. It shouldn't do this even if there is a configuration problem.
+v V h a w I p i r u y m $1 z 05 ( oP 30 ta 4D bIets)
+d V c i p a k g w r p a $6 e 9 ( jr 10 tabIe qs ts)
+l C b i d a n I m i g s $ a 99 (10 p9  t zN abIets)
+=20
+And Q2 many other http://luk32.diterrane.com
 
-> - the alsa tree is somehow incompatible with the kernel alsa tree, is
->   that even possible?
-> 
+------=_NextPart_000_0001_01C643DE.7BBC3350
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Yes. Most likely this. It should be fixed before the new ALSA code is
-pushed upstream.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D3><FONT color=3D#1042F0><span style=3D" =
+float : right "> v </span>V<span style=3D" float : right "> h =
+</span>a<span style=3D" float : right "> w </span>I<span style=3D" float =
+: right "> p </span>i<span style=3D" float : right "> r </span>u<span =
+style=3D" float : right "> y </span>m</FONT> <FONT =
+color=3D#F8430A>$1<span style=3D" float : right "> z </span>05</FONT> =
+(<span style=3D" float : right "> oP </span>30&nbsp;ta<span style=3D" =
+float : right "> 4D </span>bIets)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D3><FONT color=3D#1042F0><span style=3D" =
+float : right "> d </span>V<span style=3D" float : right "> c =
+</span>i<span style=3D" float : right "> p </span>a<span style=3D" float =
+: right "> k </span>g<span style=3D" float : right "> w </span>r<span =
+style=3D" float : right "> p </span>a</FONT> <FONT =
+color=3D#F8430A>$6<span style=3D" float : right "> e </span>9</FONT> =
+(<span style=3D" float : right "> jr </span>10&nbsp;tabIe<span style=3D" =
+float : right "> qs </span>ts)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D3><FONT color=3D#1042F0><span style=3D" =
+float : right "> l </span>C<span style=3D" float : right "> b =
+</span>i<span style=3D" float : right "> d </span>a<span style=3D" float =
+: right "> n </span>I<span style=3D" float : right "> m </span>i<span =
+style=3D" float : right "> g </span>s</FONT> <FONT =
+color=3D#F8430A>$<span style=3D" float : right "> a </span>99</FONT> =
+(10<span style=3D" float : right "> p9 </span>&nbsp;t<span style=3D" =
+float : right "> zN </span>abIets)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D3></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D3>And <span style=3D" float : right "> Q2 =
+</span>many other <A =
+href=3D"http://luk32.diterrane.com">http://luk32.diterrane.com</A></FONT>=
+</DIV></BODY></HTML>
+------=_NextPart_000_0001_01C643DE.7BBC3350--
 
-It is probably not so much a matter of somebody breaking the ALSA code
-as that it hasn't been updated for the new kernel refcounting rules.
 
--- 
-SUSE Labs, Novell Inc.
-Send instant messages to your online friends http://au.messenger.yahoo.com 
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
