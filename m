@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001841]: Mixer not working  / fujitsu laptop V2060 with HDA intel & AD1986A
-Date: Fri, 10 Mar 2006 18:17:13 +0100
-Message-ID: <5d344aad2da0bdff8cd0170ece2b4744@bugtrack.alsa-project.org>
+Date: Fri, 10 Mar 2006 18:25:21 +0100
+Message-ID: <693a44811917229d8b9a0f802a7bd098@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65296199
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 18:17:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E23313B
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 18:25:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-11-2006 14:13 CET
-Last Modified:              03-10-2006 18:17 CET
+Last Modified:              03-10-2006 18:25 CET
 ======================================================================
 Summary:                    Mixer not working  / fujitsu laptop V2060 with HDA
 intel & AD1986A
@@ -60,18 +60,20 @@ Fabien
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-09-06 18:43 
-----------------------------------------------------------------------
-Forgot to add: the patch is to the latest ALSA CVS version.  Don't try it
-with 1.0.11rc3.
-
-----------------------------------------------------------------------
  kratz00 - 03-10-06 18:17 
 ----------------------------------------------------------------------
 i have the same hardware (see bugid 1714) and i can confirm the patch
 works
 sound is better with "model=2ch" than "model=3stack"
 with "model=3stack" the sound is really scratchy
+
+----------------------------------------------------------------------
+ tiwai - 03-10-06 18:25 
+----------------------------------------------------------------------
+Good to hear that something gets better.
+
+Please provide the output of "lspci -nv" (only for the corresponding
+device) to choose this model for your laptop as default.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +85,7 @@ Date Modified  Username       Field                    Change
 03-09-06 18:25 tiwai          Note Added: 0008394                          
 03-09-06 18:43 tiwai          Note Added: 0008395                          
 03-10-06 18:17 kratz00        Note Added: 0008406                          
+03-10-06 18:25 tiwai          Note Added: 0008407                          
 ======================================================================
 
 
