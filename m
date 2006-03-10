@@ -1,66 +1,77 @@
-From: Denis Vlasenko <vda@ilport.com.ua>
+From: Bart Hartgers <bart@etpmod.phys.tue.nl>
 Subject: Re: How can I link the kernel with libgcc ?
-Date: Fri, 10 Mar 2006 12:37:35 +0200
-Message-ID: <200603101237.35687.vda@ilport.com.ua>
-References: <4410D9F0.6010707@kenati.com> <1141961152.13319.118.camel@mindpipe> <4410F6CB.8070907@kenati.com>
+Date: Fri, 10 Mar 2006 12:05:06 +0100
+Message-ID: <44115D62.6000100@etpmod.phys.tue.nl>
+References: <4410D9F0.6010707@kenati.com> <1141961152.13319.118.camel@mindpipe> <4410F6CB.8070907@kenati.com> <200603101237.35687.vda@ilport.com.ua>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="koi8-r"
+Content-Type: text/plain; charset=KOI8-R
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752050AbWCJKiI@vger.kernel.org>
-In-Reply-To: <4410F6CB.8070907@kenati.com>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200603101237.35687.vda@ilport.com.ua>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Carlos Munoz <carlos@kenati.com>
-Cc: Lee Revell <rlrevell@joe-job.com>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org, alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: Denis Vlasenko <vda@ilport.com.ua>, Lee Revell <rlrevell@joe-job.com>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 10 March 2006 05:47, Carlos Munoz wrote:
-> Lee Revell wrote:
+Denis Vlasenko wrote:
+> On Friday 10 March 2006 05:47, Carlos Munoz wrote:
+>> Lee Revell wrote:
 > 
-> >On Thu, 2006-03-09 at 19:25 -0800, Carlos Munoz wrote:
-> >  
-> >
-> >>I figured out how to get the driver to use floating point operations.
-> >>I included source code (from an open source math library) for the
-> >>log10 function in the driver. Then I added the following lines to the
-> >>file arch/sh/kernel/sh_ksyms.c: 
-> >>    
-> >>
-> >
-> >Where is the source code to your driver?
-> >
-> >Lee
-> >
-> >  
-> >
-> Hi Lee,
+> What? You are using log10 only twice!
 > 
-> Be warned. This driver is in the early stages of development. There is 
-> still a lot of work that needs to be done (interrupt, dma, etc, etc).
+>         if (!(siu_obj_status & ST_OPEN)) {
+> 		...
+>                 /* = log2(over) */
+>                 ydef[22] = (u_int32_t)(log10((double)(over & 0x0000003f)) /
+>                                        log10(2));
+> 		...
+>         }
+>         else {
+> 		...
+>                 if (coef) {
+>                         ydef[16] = 0x03045000 | (over << 26) | (tap - 4);
+>                         ydef[17] = (tap * 2 + 1);
+>                         /* = log2(over) */
+>                         ydef[22] = (u_int32_t)
+>                                 (log10((double)(over & 0x0000003f)) / log10(2));
+>                 }
+> 
+> Don't you think that log10((double)(over & 0x0000003f)) / log10(2)
+> can have only 64 different values depending on the result of (over & 0x3f)?
+> 
+> Obtain them from precomputed uint32_t log10table[64].
 
-What? You are using log10 only twice!
+And since you're actually trying to do log2 [log10(x)/log10(2) =
+log2(x)] and casting the result to an integer, aren't you really looking
+for the position of the highest 1 bit or something like that? That
+doesn't need FP at all.
 
-        if (!(siu_obj_status & ST_OPEN)) {
-		...
-                /* = log2(over) */
-                ydef[22] = (u_int32_t)(log10((double)(over & 0x0000003f)) /
-                                       log10(2));
-		...
-        }
-        else {
-		...
-                if (coef) {
-                        ydef[16] = 0x03045000 | (over << 26) | (tap - 4);
-                        ydef[17] = (tap * 2 + 1);
-                        /* = log2(over) */
-                        ydef[22] = (u_int32_t)
-                                (log10((double)(over & 0x0000003f)) / log10(2));
-                }
+Groeten,
+Bart
 
-Don't you think that log10((double)(over & 0x0000003f)) / log10(2)
-can have only 64 different values depending on the result of (over & 0x3f)?
+> --
+> vda
+> -
+> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Please read the FAQ at  http://www.tux.org/lkml/
 
-Obtain them from precomputed uint32_t log10table[64].
---
-vda
+
+-- 
+Bart Hartgers - TUE Eindhoven - http://plasimo.phys.tue.nl/bart/contact/
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
