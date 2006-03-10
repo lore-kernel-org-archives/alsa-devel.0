@@ -1,16 +1,15 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: 2.6.15-rt20, "bad page state", jackd
-Date: Thu, 09 Mar 2006 18:47:46 -0800
-Message-ID: <1141958866.22708.69.camel@cmn3.stanford.edu>
-References: <1141846564.5262.20.camel@cmn3.stanford.edu>
-	 <20060309084746.GB9408@osiris.boeblingen.de.ibm.com>
-	 <1141938488.22708.28.camel@cmn3.stanford.edu>
-	 <4410B2D7.4090806@yahoo.com.au>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: How can I link the kernel with libgcc ?
+Date: Thu, 09 Mar 2006 22:22:41 -0500
+Message-ID: <1141960963.13319.116.camel@mindpipe>
+References: <4410D9F0.6010707@kenati.com>
+	 <200603100145.k2A1jMem005323@turing-police.cc.vt.edu>
+	 <1141956362.13319.105.camel@mindpipe>  <4410EC0D.3090303@kenati.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4410B2D7.4090806@yahoo.com.au>
+In-Reply-To: <4410EC0D.3090303@kenati.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,58 +19,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nick Piggin <nickpiggin@yahoo.com.au>
-Cc: alsa-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Heiko Carstens <heiko.carstens@de.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Carlos Munoz <carlos@kenati.com>
+Cc: Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-03-10 at 09:57 +1100, Nick Piggin wrote:
-> Fernando Lopez-Lezcano wrote:
-> 
-> > In my case it is completely repeatable. 
-> > Boot, start jackd, stop jackd -> problem appears. 
-> > 
-> > This does not happen on all computers so it would seem to me it is
-> > related to the sound drivers. I'll try to see if there is a correlation
-> > with the sound card being used. 
-> > 
-> > Is there anything else I could do to try to help resolve this?
-> 
-> Can you test with the latest mainline -git snapshot, or is it only
-> the -rt tree that causes the warnings?
+(added alsa-devel to cc:)
 
-I found something strange although I don't know why it happens yet:
+On Thu, 2006-03-09 at 19:01 -0800, Carlos Munoz wrote:
+> >Audio drivers should never have to directly manipulate the samples -
+> >they just manage the DMA buffers and interrupts and wake up the process
+> >at the right time.  Mixing, routing, volume control, DSP go in
+> >userspace.
+>
+> Unfortunately, the driver needs to populate several coefficient tables 
+> for the hardware to perform silence suppression and other advance 
+> features. The values for these tables are calculated using log10 
+> operations. I don't  see a clean way to push these operations to user 
+> space without the need for custom applications that build the tables and 
+> pass them to the driver.
 
-  Fedora Core 4 kernel (2.6.15 + patches) works fine.
-  Fedora Core 4 kernel + -rt21, [ahem... sorry], works fine.
-  Fedora Core 4 kernel + -rt21 + alsa kernel modules from 1.0.10 or
-     1.0.11rc3, fails[*]
-  Plain vanilla 2.6.15 + -rt21, works fine
-  Plain vanilla 2.6.15 + -rt21 + alsa kernel modules from 1.0.10 or
-     1.0.11rc3, fails[*]
+Unless you can do it with fixed point math, or use a static table, you
+might have to do just that, with a sysfs interface.  For example the
+emu10k1 driver uses an ioctl interface to upload code to the built in
+(floating point) DSP.  But new ioctls are frowned upon...
 
-So, it looks like it is some weird interaction between kernel modules
-that were not compiled as part of the kernel and the kernel itself. The
-"updated" modules are installed in a separate location (not on top of
-the built in kernel modules) and are found before the ones in the kernel
-tree.
-
-I have been building this combination for a long long time with no
-problems, I don't know what might have happened that changed things.
-
-Could be:
-- configuration problems?
-- the alsa tree is somehow incompatible with the kernel alsa tree, is
-  that even possible?
-
-I have _no_ idea on what to start looking for... but, oh well, this is a
-start. Suggestions welcome. Thanks for somehow pointing me in the right
-direction. 
-
--- Fernando
-
-[*] I need that because of cards not yet included in the kernel proper,
-and fixes that have not yet percolated to the kernel alsa tree. 
-
+Lee
 
 
 
