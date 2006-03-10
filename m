@@ -1,44 +1,61 @@
-From: Greg Borter <GregBWeb@yahoo.com>
-Subject: Sound Blaster AWE64 card information
-Date: Thu, 09 Mar 2006 23:21:46 -0500
-Message-ID: <4410FEDA.3050606@yahoo.com>
+From: Nick Piggin <nickpiggin@yahoo.com.au>
+Subject: Re: 2.6.15-rt20, "bad page state", jackd
+Date: Fri, 10 Mar 2006 16:08:12 +1100
+Message-ID: <441109BC.9070705@yahoo.com.au>
+References: <1141846564.5262.20.camel@cmn3.stanford.edu>	 <20060309084746.GB9408@osiris.boeblingen.de.ibm.com>	 <1141938488.22708.28.camel@cmn3.stanford.edu>	 <4410B2D7.4090806@yahoo.com.au> <1141958866.22708.69.camel@cmn3.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751597AbWCJFIR@vger.kernel.org>
+In-Reply-To: <1141958866.22708.69.camel@cmn3.stanford.edu>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: alsa-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Heiko Carstens <heiko.carstens@de.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Recently I needed to get a Sound Blaster AWE64 working with my Debian 
-based SimplyMEPIS 3.4.3 Linux system.  Most of the installation 
-instructions on the web will only get the sound section working.   After 
-a bit of digging I was able to piece together the extra steps that are 
-needed to get the on-board  synthesizer working.  Because my card is an 
-ISA card I needed to use isapnptools to setup the card.  Isapnptools 
-doesn't properly detect all the needed addresses.  Two addresses had to 
-be manually added to the isapnp.conf file.  I also had to manually add 
-the snd-sbawe, snd-pcm-oss, snd-mixer-oss, snd-seq-oss, snd-seq-midi and 
-snd-emu8000-synth modules to the etc/modules file.  The last step was to 
-use asfxload to load the sound fonts.  Once this was done, I am now able 
-to use the on-board EMU8000 synthesizer with various music programs, 
-like Kmid, Note Edit, Rosegarden 4, etc.   If you would like, I can do a 
-more detailed write up.
+Fernando Lopez-Lezcano wrote:
+> On Fri, 2006-03-10 at 09:57 +1100, Nick Piggin wrote:
+> 
+>>Fernando Lopez-Lezcano wrote:
 
- 
+>>Can you test with the latest mainline -git snapshot, or is it only
+>>the -rt tree that causes the warnings?
+> 
+> 
+> I found something strange although I don't know why it happens yet:
+> 
+>   Fedora Core 4 kernel (2.6.15 + patches) works fine.
+>   Fedora Core 4 kernel + -rt21, [ahem... sorry], works fine.
+>   Fedora Core 4 kernel + -rt21 + alsa kernel modules from 1.0.10 or
+>      1.0.11rc3, fails[*]
+>   Plain vanilla 2.6.15 + -rt21, works fine
+>   Plain vanilla 2.6.15 + -rt21 + alsa kernel modules from 1.0.10 or
+>      1.0.11rc3, fails[*]
+> 
+> So, it looks like it is some weird interaction between kernel modules
+> that were not compiled as part of the kernel and the kernel itself. The
+> "updated" modules are installed in a separate location (not on top of
+> the built in kernel modules) and are found before the ones in the kernel
+> tree.
+> 
+> I have been building this combination for a long long time with no
+> problems, I don't know what might have happened that changed things.
+> 
+> Could be:
+> - configuration problems?
 
+No. It shouldn't do this even if there is a configuration problem.
 
+> - the alsa tree is somehow incompatible with the kernel alsa tree, is
+>   that even possible?
+> 
 
--------------------------------------------------------
-This SF.Net email is sponsored by xPML, a groundbreaking scripting language
-that extends applications into web and mobile media. Attend the live webcast
-and join the prime developer group breaking into this new coding territory!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
+Yes. Most likely this. It should be fixed before the new ALSA code is
+pushed upstream.
+
+It is probably not so much a matter of somebody breaking the ALSA code
+as that it hasn't been updated for the new kernel refcounting rules.
+
+-- 
+SUSE Labs, Novell Inc.
+Send instant messages to your online friends http://au.messenger.yahoo.com 
