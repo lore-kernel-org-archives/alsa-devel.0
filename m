@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001841]: Mixer not working  / fujitsu laptop V2060 with HDA intel & AD1986A
-Date: Fri, 10 Mar 2006 23:12:18 +0100
-Message-ID: <9b0ebd05609b47e313d11404409af7a6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
+Date: Fri, 10 Mar 2006 23:44:15 +0100
+Message-ID: <3e29540a5fb8e8a4388f09c5b7e46a29@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4FB31192
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 23:12:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E13018A
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 23:44:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,88 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1841> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
 ======================================================================
-Reported By:                fchevalier
+Reported By:                chrmue
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1841
+Issue ID:                   1733
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               SuSE Linux 10.0
+Kernel Version:             2.6.13-15
 ======================================================================
-Date Submitted:             02-11-2006 14:13 CET
-Last Modified:              03-10-2006 23:12 CET
+Date Submitted:             01-11-2006 07:23 CET
+Last Modified:              03-10-2006 23:44 CET
 ======================================================================
-Summary:                    Mixer not working  / fujitsu laptop V2060 with HDA
-intel & AD1986A
+Summary:                    Intel HDA Modem ?
 Description: 
-Hi all,
+I want to use my HDA Softmodem in Linux, is there any development on a HDA
+Modem Module ?
 
-I am unable to use mixer settings on my laptop.
-Basically ALSA correctly detects HDA intel, Analog device chip. Mixer
-settings are there but changing volume, muting/unmuting does not make any
-difference. Playing  mp3 file with xmms sometimes i can hear some sound,
-but not loud enough.
-I tried with the latest ALSA version available, still not luck :-(
+cat /proc/asound/card0/codec#1 gives me:
+Codec: Generic 11c1 ID 3026
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x70500
 
-Can anyone help ?
+In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
 
-Fabien
+If there is development on this i would like to participate to get it
+going, because i dont't want to have a windows-installation on my Notebook
+(Acer TravelMate 8104) just for getting my mails at my parents house,
+where there is only analog telephone.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001714 Intel HDA (AD1986A) no sound
-======================================================================
 
 ----------------------------------------------------------------------
- kratz00 - 03-10-06 20:28 
+ lrupn - 03-03-06 15:43 
 ----------------------------------------------------------------------
-root@hermes:~# lspci -s 00:1b.0
-00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03)
-root@hermes:~# lspci -s 00:1b.0 -nv
-00:1b.0 0403: 8086:2668 (rev 03)
-        Subsystem: 144d:c01e
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+Is this patch integrated in to CVS now?
 
 ----------------------------------------------------------------------
- kratz00 - 03-10-06 23:12 
+ kratz00 - 03-10-06 23:44 
 ----------------------------------------------------------------------
-not the right place, I know
-
-but i tried teamspeak and i could hear people but recording didn't work so
-they didn't hear me
-any ideas or information you would need to solve this problem?
-
-now i'm trying to get this hda softmodem to work :)
+yes the patch is in cvs
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-11-06 14:13 fchevalier     New Issue                                    
-03-09-06 17:01 fchevalier     Note Added: 0008392                          
-03-09-06 18:23 tiwai          Note Added: 0008393                          
-03-09-06 18:24 tiwai          File Added: ad1986a-fix.diff                    
-03-09-06 18:25 tiwai          Note Added: 0008394                          
-03-09-06 18:43 tiwai          Note Added: 0008395                          
-03-10-06 18:17 kratz00        Note Added: 0008406                          
-03-10-06 18:25 tiwai          Note Added: 0008407                          
-03-10-06 18:26 tiwai          Relationship added       has duplicate 0001714
-03-10-06 20:28 kratz00        Note Added: 0008410                          
-03-10-06 23:12 kratz00        Note Added: 0008412                          
+01-11-06 07:23 chrmue         New Issue                                    
+01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
+01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
+01-11-06 07:42 rlrevell       Note Added: 0007559                          
+01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
+            
+01-11-06 23:35 sashak         Note Added: 0007571                          
+01-12-06 00:00 sashak         Note Added: 0007574                          
+01-12-06 00:02 sashak         Issue Monitored: sashak                      
+01-12-06 05:35 chrmue         Note Added: 0007581                          
+01-13-06 00:16 sashak         Note Added: 0007598                          
+01-16-06 20:19 chrmue         Note Added: 0007692                          
+01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
+03-03-06 15:43 lrupn          Note Added: 0008341                          
+03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
+03-10-06 23:44 kratz00        Note Added: 0008413                          
 ======================================================================
 
 
