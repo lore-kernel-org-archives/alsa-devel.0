@@ -1,71 +1,66 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-cvslog] CVS: alsa-kernel/usb usbaudio.c,1.172,1.173
-Date: Fri, 10 Mar 2006 09:16:09 +0100
-Message-ID: <20060310081609.GB10971@turing.informatik.uni-halle.de>
-References: <E1FHG2j-0001sX-Ln@sc8-pr-cvs1.sourceforge.net>
- <1141940987.13319.71.camel@mindpipe>
+From: Denis Vlasenko <vda@ilport.com.ua>
+Subject: Re: How can I link the kernel with libgcc ?
+Date: Fri, 10 Mar 2006 12:37:35 +0200
+Message-ID: <200603101237.35687.vda@ilport.com.ua>
+References: <4410D9F0.6010707@kenati.com> <1141961152.13319.118.camel@mindpipe> <4410F6CB.8070907@kenati.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1141940987.13319.71.camel@mindpipe>
-Content-disposition: inline
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, linux-kernel <linux-kernel@vger.kernel.org>, usb-devel@lists.sourceforge.net
+Content-Type: text/plain;
+  charset="koi8-r"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752050AbWCJKiI@vger.kernel.org>
+In-Reply-To: <4410F6CB.8070907@kenati.com>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Carlos Munoz <carlos@kenati.com>
+Cc: Lee Revell <rlrevell@joe-job.com>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Wed, 2006-03-08 at 23:58 -0800, Clemens Ladisch wrote:
-> > +static const char *usb_error_string(int err)
-> > +{
-> > +	switch (err) {
-> > +	case -ENODEV:
-> > +		return "no device";
-> > +	case -ENOENT:
-> > +		return "endpoint not enabled";
-> > +	case -EPIPE:
-> > +		return "endpoint stalled";
-> > +	case -ENOSPC:
-> > +		return "not enough bandwidth";
-> > +	case -ESHUTDOWN:
-> > +		return "device disabled";
-> > +	case -EHOSTUNREACH:
-> > +		return "device suspended";
-> > +	case -EINVAL:
-> > +	case -EAGAIN:
-> > +	case -EFBIG:
-> > +	case -EMSGSIZE:
-> > +		return "internal error";
-> > +	default:
-> > +		return "unknown error";
-> > +	}
-> > +}
+On Friday 10 March 2006 05:47, Carlos Munoz wrote:
+> Lee Revell wrote:
 > 
-> Shouldn't a generic facility be created for this?
+> >On Thu, 2006-03-09 at 19:25 -0800, Carlos Munoz wrote:
+> >  
+> >
+> >>I figured out how to get the driver to use floating point operations.
+> >>I included source code (from an open source math library) for the
+> >>log10 function in the driver. Then I added the following lines to the
+> >>file arch/sh/kernel/sh_ksyms.c: 
+> >>    
+> >>
+> >
+> >Where is the source code to your driver?
+> >
+> >Lee
+> >
+> >  
+> >
+> Hi Lee,
+> 
+> Be warned. This driver is in the early stages of development. There is 
+> still a lot of work that needs to be done (interrupt, dma, etc, etc).
 
-Yes, there's nothing audio specific in this function (except for my
-decision which codes to lump together as "internal error").
+What? You are using log10 only twice!
 
-> After all these are standard error codes and it seem like other parts
-> of the kernel might want to do user friendly error reporting.
+        if (!(siu_obj_status & ST_OPEN)) {
+		...
+                /* = log2(over) */
+                ydef[22] = (u_int32_t)(log10((double)(over & 0x0000003f)) /
+                                       log10(2));
+		...
+        }
+        else {
+		...
+                if (coef) {
+                        ydef[16] = 0x03045000 | (over << 26) | (tap - 4);
+                        ydef[17] = (tap * 2 + 1);
+                        /* = log2(over) */
+                        ydef[22] = (u_int32_t)
+                                (log10((double)(over & 0x0000003f)) / log10(2));
+                }
 
-But it seems none of those parts actually does.  ;-)
+Don't you think that log10((double)(over & 0x0000003f)) / log10(2)
+can have only 64 different values depending on the result of (over & 0x3f)?
 
-
-Clemens
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by xPML, a groundbreaking scripting language
-that extends applications into web and mobile media. Attend the live webcast
-and join the prime developer group breaking into this new coding territory!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
+Obtain them from precomputed uint32_t log10table[64].
+--
+vda
