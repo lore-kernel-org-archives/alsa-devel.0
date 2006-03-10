@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001458]: hda - High frequency noise in background and muting when changing volume
-Date: Fri, 10 Mar 2006 16:31:52 +0100
-Message-ID: <69e9e724337453629d092c7c58c90933@bugtrack.alsa-project.org>
+Date: Fri, 10 Mar 2006 16:38:11 +0100
+Message-ID: <fdcad8e55befabc2c8bee8f01d55f4de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B11FB18B
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 16:31:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6239B198
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 16:38:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               ubuntu breezy badger
 Kernel Version:              2.6.12-9-386
 ======================================================================
 Date Submitted:             09-25-2005 16:07 CEST
-Last Modified:              03-10-2006 16:31 CET
+Last Modified:              03-10-2006 16:38 CET
 ======================================================================
 Summary:                    hda - High frequency noise in background and muting
 when changing volume
@@ -58,25 +58,14 @@ Andres
 ======================================================================
 
 ----------------------------------------------------------------------
- marcel - 11-24-05 20:36 
-----------------------------------------------------------------------
-I have the same problem with my notebook(Samsung M50). It seems to have a
-"AD1986A" Chip.
-It does not occur if i use multichannel sound, like speaker-test
--Dplug:surround51 -c6, or any other value for -c except 2.
-The notebook also contains an media player, which boots up in 10secs when
-pressing a special key, so that you need not boot another operating system
-for just watching a video or something like that. According to the
-documentation, this is based on linux kernel 2.4.21 and alsa 1.0.9
-(http://www.zaigen.co.kr/support/open_source.html). Sound works fine with
-this media player, so samsung seems to have solved this problem?! Or is
-ist because kernel version 2.4?!
-I am using gentoo, kernel 2.6.14-r2 and alsa 1.0.10.
-
-----------------------------------------------------------------------
  sova - 03-10-06 16:31 
 ----------------------------------------------------------------------
 I have the same problem with ASUS p5pl2
+
+----------------------------------------------------------------------
+ tiwai - 03-10-06 16:38 
+----------------------------------------------------------------------
+Try the patch and model option described in #1841.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +85,7 @@ Date Modified  Username       Field                    Change
 02-08-06 13:15 simonckenyon   Issue Monitored: simonckenyon                    
 03-10-06 16:29 sova           Issue Monitored: sova                        
 03-10-06 16:31 sova           Note Added: 0008403                          
+03-10-06 16:38 tiwai          Note Added: 0008404                          
 ======================================================================
 
 
