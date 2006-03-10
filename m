@@ -1,14 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: pointer callback in pcm
-Date: Fri, 10 Mar 2006 19:51:01 +0000
-Message-ID: <1142020261.9246.3.camel@localhost.localdomain>
-References: <1141942882.10937.5.camel@localhost.localdomain>
-	 <1141952015.13319.90.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001903]: Recording of USB sound doesn't work
+Date: Fri, 10 Mar 2006 20:56:26 +0100
+Message-ID: <7f55aca37c4417e4a06f9ce9a8d63baf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1141952015.13319.90.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6013D163
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 20:56:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,44 +18,88 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-03-09 at 19:53 -0500, Lee Revell wrote:
-> On Thu, 2006-03-09 at 22:21 +0000, Adrian McMenamin wrote:
-> > The documentation states:
-> > 
-> > "This callback is called when the PCM middle layer inquires the current
-> > hardware position on the buffer."
-> > 
-> > 
-> > Does that mean the position the hardware is at (in its ring buffer in my
-> > case) or does it mean the position we are at in the dma buffer.
-> > 
-> > ie I have a 128k DMA buffer which transfers samples into the 32k
-> > hardware memory buffer. Which position am I meant to be reporting?
-> > 
-> 
-> The DMA buffer should be the same size as the hardware buffer, so the
-> positions should be the same.
-> 
-> The pointer callback should return the position of sample that the
-> hardware is currently playing.
-> 
-Thanks. I am sure I am driving you round the twist now, but that (both
-buffers being the same size) was a key piece of information I was
-unaware of. There are several pints in it if you are ever around in
-North London :)
 
-But my basic problem remains - my buffer is 8 periods long and I get to
-hear them over and over again :( - nothing new is ever fed into the DMA
-buffer and so nothing new therefore ever gets fed into the hardware
-buffer.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1903> 
+======================================================================
+Reported By:                nbaggus
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1903
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               gentoo
+Kernel Version:             2.6.15-gentoo-r1
+======================================================================
+Date Submitted:             03-10-2006 01:38 CET
+Last Modified:              03-10-2006 20:56 CET
+======================================================================
+Summary:                    Recording of USB sound doesn't work
+Description: 
+arecord gives the next error message on:
 
-I start the process by transferring a whole eight periods worth into the
-hardware buffer is that a mistake? Should I always be feeding in one
-period at a time only?
+$ arecord -D hw:2 -t wav -f S16_LE -d 10 file.wav
+Recording WAVE 'file.wav' : Signed 16 bit Little Endian, Rate 8000 Hz,
+Mono
+arecord: pcm_read:1303: read error: Input/output error
+$ 
+
+after about 10 seconds. The recorded sound is a kind of metalic click in
+silence. at playback the duration is between 1 and 2 seconds.
+======================================================================
+
+----------------------------------------------------------------------
+ nbaggus - 03-10-06 20:13 
+----------------------------------------------------------------------
+Both the logitech and the Voip phone use the snd_usb_audio and friends.
+
+The voipphone is a Usb-p1K phone from yealink (yealink.ko driver).
+yealink.ko handles ringtone on/off; keypad & display, snd_usb_audio
+handles sound.
+The logitech is a logitech usb headphone set.
+(Kensington equip. is a mouse).
+
+connection is USB through EHCI or OHCI interface 
+The system used is a promedion cybermaxx laptop. (One OHCI port, 3 EHCI
+ports.)
+
+There are no messages in dmesg or system log. accept for adding the
+devices when plugging them in. 
+Sound output does function sound input fails.
+
+
+
+----------------------------------------------------------------------
+ nbaggus - 03-10-06 20:56 
+----------------------------------------------------------------------
+Additional info...
+
+The logitech headset does work on an intel Pentium 4/ 2.4 GHz DELL pc.
+(Same os version, but alsa-driver 1.0.10)
+On the AMD mobility XP though it doesn't work. All software is in i686
+more compiled.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-10-06 01:38 nbaggus        New Issue                                    
+03-10-06 01:38 nbaggus        Distribution              => gentoo          
+03-10-06 01:38 nbaggus        Kernel Version            => 2.6.15-gentoo-r1
+03-10-06 08:53 Clemens LadischNote Added: 0008401                          
+03-10-06 08:53 Clemens LadischStatus                   assigned => feedback
+03-10-06 13:47 nbaggus        Note Added: 0008402                          
+03-10-06 20:13 nbaggus        Note Edited: 0008402                         
+03-10-06 20:56 nbaggus        Note Added: 0008411                          
+======================================================================
+
 
 
 
