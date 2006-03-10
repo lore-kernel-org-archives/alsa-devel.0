@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001458]: hda - High frequency noise in background and muting when changing volume
-Date: Fri, 10 Mar 2006 16:38:11 +0100
-Message-ID: <fdcad8e55befabc2c8bee8f01d55f4de@bugtrack.alsa-project.org>
+Date: Fri, 10 Mar 2006 17:10:07 +0100
+Message-ID: <ae11e5b30e7ea36b29f60afc772839c8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6239B198
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 16:38:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9693B198
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 17:10:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               ubuntu breezy badger
 Kernel Version:              2.6.12-9-386
 ======================================================================
 Date Submitted:             09-25-2005 16:07 CEST
-Last Modified:              03-10-2006 16:38 CET
+Last Modified:              03-10-2006 17:10 CET
 ======================================================================
 Summary:                    hda - High frequency noise in background and muting
 when changing volume
@@ -58,14 +58,15 @@ Andres
 ======================================================================
 
 ----------------------------------------------------------------------
- sova - 03-10-06 16:31 
-----------------------------------------------------------------------
-I have the same problem with ASUS p5pl2
-
-----------------------------------------------------------------------
  tiwai - 03-10-06 16:38 
 ----------------------------------------------------------------------
 Try the patch and model option described in #1841.
+
+----------------------------------------------------------------------
+ andres - 03-10-06 17:10 
+----------------------------------------------------------------------
+Will do, as soon as i get my hands on the hardware again. Unfortunately
+this is two or three weeks away (its not my laptop...)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -86,6 +87,7 @@ Date Modified  Username       Field                    Change
 03-10-06 16:29 sova           Issue Monitored: sova                        
 03-10-06 16:31 sova           Note Added: 0008403                          
 03-10-06 16:38 tiwai          Note Added: 0008404                          
+03-10-06 17:10 andres         Note Added: 0008405                          
 ======================================================================
 
 
