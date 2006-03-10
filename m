@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001841]: Mixer not working  / fujitsu laptop V2060 with HDA intel & AD1986A
-Date: Fri, 10 Mar 2006 18:25:21 +0100
-Message-ID: <693a44811917229d8b9a0f802a7bd098@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
+Date: Fri, 10 Mar 2006 18:26:39 +0100
+Message-ID: <ae02fdfa6e851e2f8848e10cdc8a5db1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E23313B
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 18:25:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8517D184
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 18:26:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,70 +22,89 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1841> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
 ======================================================================
-Reported By:                fchevalier
+Reported By:                kratz00
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1841
-Category:                   PCI - hda-intel
+Issue ID:                   1714
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               LFS
+Kernel Version:             2.6.15
+Resolution:                 duplicate
+Duplicate:                  1841
+Fixed in Version:           
 ======================================================================
-Date Submitted:             02-11-2006 14:13 CET
-Last Modified:              03-10-2006 18:25 CET
+Date Submitted:             01-04-2006 18:04 CET
+Last Modified:              03-10-2006 18:26 CET
 ======================================================================
-Summary:                    Mixer not working  / fujitsu laptop V2060 with HDA
-intel & AD1986A
+Summary:                    Intel HDA (AD1986A) no sound
 Description: 
-Hi all,
+It's a Samsung M50 Notebook.
+I also tried Alsa 1.0.10 but the problem is the same.
+There are no specific module options for the AD1986A chip, right?
 
-I am unable to use mixer settings on my laptop.
-Basically ALSA correctly detects HDA intel, Analog device chip. Mixer
-settings are there but changing volume, muting/unmuting does not make any
-difference. Playing  mp3 file with xmms sometimes i can hear some sound,
-but not loud enough.
-I tried with the latest ALSA version available, still not luck :-(
+00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 03)
+        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-Can anyone help ?
+loaded modules:
+snd_pcm_oss            47136  0 
+snd_mixer_oss          16512  1 snd_pcm_oss
+snd_hda_intel          14224  0 
+snd_hda_codec         122624  1 snd_hda_intel
+snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              19844  1 snd_pcm
+snd                    46144  6
+snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
 
-Fabien
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001841 Mixer not working  / fujitsu laptop V20...
 ======================================================================
 
 ----------------------------------------------------------------------
- kratz00 - 03-10-06 18:17 
+ kratz00 - 01-30-06 13:40 
 ----------------------------------------------------------------------
-i have the same hardware (see bugid 1714) and i can confirm the patch
-works
-sound is better with "model=2ch" than "model=3stack"
-with "model=3stack" the sound is really scratchy
+tried alsa-driver-1.0.11rc3 and still no luck :/
 
 ----------------------------------------------------------------------
- tiwai - 03-10-06 18:25 
+ tiwai - 03-10-06 18:26 
 ----------------------------------------------------------------------
-Good to hear that something gets better.
-
-Please provide the output of "lspci -nv" (only for the corresponding
-device) to choose this model for your laptop as default.
+The patch is in #1841.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-11-06 14:13 fchevalier     New Issue                                    
-03-09-06 17:01 fchevalier     Note Added: 0008392                          
-03-09-06 18:23 tiwai          Note Added: 0008393                          
-03-09-06 18:24 tiwai          File Added: ad1986a-fix.diff                    
-03-09-06 18:25 tiwai          Note Added: 0008394                          
-03-09-06 18:43 tiwai          Note Added: 0008395                          
-03-10-06 18:17 kratz00        Note Added: 0008406                          
-03-10-06 18:25 tiwai          Note Added: 0008407                          
+01-04-06 18:04 kratz00        New Issue                                    
+01-04-06 18:04 kratz00        Distribution              => LFS             
+01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
+01-30-06 13:40 kratz00        Note Added: 0007837                          
+02-07-06 00:48 gerick         Issue Monitored: gerick                      
+02-08-06 13:13 simonckenyon   Issue Monitored: simonckenyon                    
+03-10-06 18:26 tiwai          Relationship added       duplicate of 0001841
+03-10-06 18:26 tiwai          Duplicate ID             0 => 1841           
+03-10-06 18:26 tiwai          Status                   new => resolved     
+03-10-06 18:26 tiwai          Resolution               open => duplicate   
+03-10-06 18:26 tiwai          Assigned To               => tiwai           
+03-10-06 18:26 tiwai          Note Added: 0008408                          
 ======================================================================
 
 
