@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000172]: Master volume control only controls front speakers
-Date: Fri, 10 Mar 2006 03:05:56 +0100
-Message-ID: <97586a7779d07445890b46c80f326124@bugtrack.alsa-project.org>
+Date: Fri, 10 Mar 2006 03:20:16 +0100
+Message-ID: <0a1c6e5bccb6c02cad038003d6b71481@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A2C5184
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 03:05:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F12E18C
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 03:20:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             03-31-2004 11:50 CEST
-Last Modified:              03-10-2006 03:05 CET
+Last Modified:              03-10-2006 03:20 CET
 ======================================================================
 Summary:                    Master volume control only controls front speakers
 Description: 
@@ -59,52 +59,6 @@ related to          0000919 Master volume doesn't control rear spea...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-10-06 02:45 
-----------------------------------------------------------------------
-The "Sigmatel Surround" control the ratio of the front and rear speakers.
-
-The "Surround" control the volume of the rear speakers.
-
-amixer contents
-
-numid=78,iface=MIXER,name='Master Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=79,iface=MIXER,name='Master Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=28,28
-
-
-numid=101,iface=MIXER,name='PCM Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=102,iface=MIXER,name='PCM Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=28,28
-numid=80,iface=MIXER,name='Surround Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=81,iface=MIXER,name='Surround Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=23,23
-
-numid=113,iface=MIXER,name='Sigmatel 4-Speaker Stereo Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=112,iface=MIXER,name='Sigmatel Output Bias Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=114,iface=MIXER,name='Sigmatel Surround Phase Inversion Playback '
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=82,iface=MIXER,name='Sigmatel Surround Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=83,iface=MIXER,name='Sigmatel Surround Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=0,0
-
-----------------------------------------------------------------------
  Raymond - 03-10-06 03:05 
 ----------------------------------------------------------------------
 The other control which affect volume of front and rear speakers
@@ -123,6 +77,12 @@ numid=106,iface=MIXER,name='PCM Out Path & Mute'
   ; Item #0 'pre 3D'
   ; Item #1 'post 3D'
   : values=0
+
+----------------------------------------------------------------------
+ rlrevell - 03-10-06 03:20 
+----------------------------------------------------------------------
+Those Sigmatel and 3D* controls are part of the AC97 codec.  A real master
+volume has to be implemented with emu10k1 DSP code (as in the patch)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -148,6 +108,7 @@ lib
 03-09-06 19:53 muffty         Note Edited: 0008387                         
 03-10-06 02:45 Raymond        Note Added: 0008398                          
 03-10-06 03:05 Raymond        Note Added: 0008399                          
+03-10-06 03:20 rlrevell       Note Added: 0008400                          
 ======================================================================
 
 
