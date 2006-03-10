@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000172]: Master volume control only controls front speakers
-Date: Fri, 10 Mar 2006 02:45:56 +0100
-Message-ID: <1c68f2d2cb520c6db40170a98e4bef8f@bugtrack.alsa-project.org>
+Date: Fri, 10 Mar 2006 03:05:56 +0100
+Message-ID: <97586a7779d07445890b46c80f326124@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D3DA1DD
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 02:45:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A2C5184
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 03:05:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             03-31-2004 11:50 CEST
-Last Modified:              03-10-2006 02:45 CET
+Last Modified:              03-10-2006 03:05 CET
 ======================================================================
 Summary:                    Master volume control only controls front speakers
 Description: 
@@ -57,51 +57,6 @@ Relationships       ID      Summary
 related to          0000154 Master volume only controls front outpu...
 related to          0000919 Master volume doesn't control rear spea...
 ======================================================================
-
-----------------------------------------------------------------------
- muffty - 03-09-06 19:53 
-----------------------------------------------------------------------
-After a long discussion in alsa-user@lists.sourceforge.net about this
-problem a member of the list (Christian Haertwig) send me a patch to the
-emu10k1 driver that adds a volume control called 'Digital Master' and is
-able to control all 6 channels of the card.
-This is a part of the mail he send to me:
----------------------
-A "good" (where good means pretty easy to realize) fix *is* 
-available. I have attached the patch file that does the job. You need to 
-recompile alsa drivers that for. with the Patch included you will have a
-new 
-volume slider that indeed sets the overall volume for all channels. Since
-i 
-am no developer i cant tell you exactly why this patch is not included in
-the 
-drivers, but for emu10k1 and sb live i have found out it works great. i am
-
-using it with alsa-driver and -lib version 1.0.10 and have had no *real* 
-issues yet. unfortunately i know people reporting that this patch causes
-the 
-overall output volume to be a bit quiter than normal, but i cannot
-confirm. 
-Thanks again to whoever has send that patch to me.
----------------------
-I tested the patch and it appeard that it doesn't work for me. 
-When playing 2-channel sound my left front speaker was muted and when
-playing 6-channel sound the rear left speaker was muted.
-After a suggestion from Lee Revell I played arround with the
-SND_EMU10K1_GPR_CONTROLS and made it work when leaving this setting to 44
-and not changing it to 46 as the patch did. After these changes everything
-works fine. A new volume called 'Digital Master' can control all channels
-of the card. I have tested the card only in analog mode, as I don't have
-digital speakers. 
-If this is working for You give some feedback.
-I'm attaching the original patch I was send as accourding to Christian it
-works for other people. If it doesn't work for You try changing the
-SND_EMU10K1_GPR_CONTROLS as I did.
-The original author of the patch is Mikael Magnusson and as I know it is
-posted to alsa-devel.
-I tested with alsa 1.0.10 and SB Live! 5.1 (SB0220)
-
-
 
 ----------------------------------------------------------------------
  Raymond - 03-10-06 02:45 
@@ -149,6 +104,26 @@ numid=83,iface=MIXER,name='Sigmatel Surround Playback Volume'
   ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
   : values=0,0
 
+----------------------------------------------------------------------
+ Raymond - 03-10-06 03:05 
+----------------------------------------------------------------------
+The other control which affect volume of front and rear speakers
+
+numid=107,iface=MIXER,name='3D Control - Switch'
+  ; type=BOOLEAN,access=rw---,values=1
+  : values=off
+numid=110,iface=MIXER,name='3D Control Sigmatel - Depth'
+  ; type=INTEGER,access=rw---,values=1,min=0,max=3,step=0
+  : values=0
+numid=111,iface=MIXER,name='3D Control Sigmatel - Rear Depth'
+  ; type=INTEGER,access=rw---,values=1,min=0,max=3,step=0
+  : values=0
+numid=106,iface=MIXER,name='PCM Out Path & Mute'
+  ; type=ENUMERATED,access=rw---,values=1,items=2
+  ; Item #0 'pre 3D'
+  ; Item #1 'post 3D'
+  : values=0
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -172,6 +147,7 @@ lib
 03-09-06 12:23 Miwer          Issue Monitored: Miwer                       
 03-09-06 19:53 muffty         Note Edited: 0008387                         
 03-10-06 02:45 Raymond        Note Added: 0008398                          
+03-10-06 03:05 Raymond        Note Added: 0008399                          
 ======================================================================
 
 
