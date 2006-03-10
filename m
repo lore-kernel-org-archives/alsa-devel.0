@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Re: How can I link the kernel with libgcc ?
-Date: Fri, 10 Mar 2006 11:55:05 +0000
-Message-ID: <44116919.3000807@superbug.co.uk>
-References: <4410D9F0.6010707@kenati.com>	 <200603100145.k2A1jMem005323@turing-police.cc.vt.edu>	 <1141956362.13319.105.camel@mindpipe> <4410EC0D.3090303@kenati.com>	 <4410F1BE.7000904@kenati.com> <1141961152.13319.118.camel@mindpipe> <4410F6CB.8070907@kenati.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001903]: Recording of USB sound doesn't work
+Date: Fri, 10 Mar 2006 13:47:14 +0100
+Message-ID: <89650a1ec718daec1598551d89ae4bab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4410F6CB.8070907@kenati.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A81B198
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 13:47:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,32 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlos Munoz <carlos@kenati.com>
-Cc: Lee Revell <rlrevell@joe-job.com>, Valdis.Kletnieks@vt.edu, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Carlos Munoz wrote:
-> Lee Revell wrote:
->
->> On Thu, 2006-03-09 at 19:25 -0800, Carlos Munoz wrote:
->>  
->>
->>> I figured out how to get the driver to use floating point operations.
->>> I included source code (from an open source math library) for the
->>> log10 function in the driver. Then I added the following lines to the
->>> file arch/sh/kernel/sh_ksyms.c:   
-Carlos,
 
-Be warned. You CANNOT use floating point instructions in the kernel.
-The floating point registers are not saved during a task switch for any 
-kernel module.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1903> 
+======================================================================
+Reported By:                nbaggus
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1903
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               gentoo
+Kernel Version:             2.6.15-gentoo-r1
+======================================================================
+Date Submitted:             03-10-2006 01:38 CET
+Last Modified:              03-10-2006 13:47 CET
+======================================================================
+Summary:                    Recording of USB sound doesn't work
+Description: 
+arecord gives the next error message on:
 
-James
+$ arecord -D hw:2 -t wav -f S16_LE -d 10 file.wav
+Recording WAVE 'file.wav' : Signed 16 bit Little Endian, Rate 8000 Hz,
+Mono
+arecord: pcm_read:1303: read error: Input/output error
+$ 
+
+after about 10 seconds. The recorded sound is a kind of metalic click in
+silence. at playback the duration is between 1 and 2 seconds.
+======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-10-06 08:53 
+----------------------------------------------------------------------
+Which device are you using?
+How is it connected to the computer?
+Is there any error message in the system log?
+Do you know if it works with another device?
+
+----------------------------------------------------------------------
+ nbaggus - 03-10-06 13:47 
+----------------------------------------------------------------------
+Both the logitech and the Voip phone use the snd_usb_audio and friends.
+
+The voipphone is a Usb-p1K phone from yealink (yealink.ko driver).
+The logitech is a logitech usb headphone set.
+(Kensington equip. is a mouse).
+
+connection is USB through EHCI or OHCI interface 
+The system used is a promedion cybermaxx laptop. (One OHCI port, 3 EHCI
+ports.)
+
+There are no messages in dmesg or system log. accept for adding the
+devices when plugging them in. 
+Sound output does function sound input fails.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-10-06 01:38 nbaggus        New Issue                                    
+03-10-06 01:38 nbaggus        Distribution              => gentoo          
+03-10-06 01:38 nbaggus        Kernel Version            => 2.6.15-gentoo-r1
+03-10-06 08:53 Clemens LadischNote Added: 0008401                          
+03-10-06 08:53 Clemens LadischStatus                   assigned => feedback
+03-10-06 13:47 nbaggus        Note Added: 0008402                          
+======================================================================
 
 
-
-
-This e-mail and any attachment is for authorised use by the intended recipient(s) only. It may contain proprietary material, confidential information and/or be subject to legal privilege. It should not be copied, disclosed to, retained or used by, any other party. If you are not an intended recipient then please promptly delete this e-mail and any attachment and all copies and inform the sender. Thank you.
 
 
 -------------------------------------------------------
