@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001903]: Recording of USB sound doesn't work
-Date: Fri, 10 Mar 2006 13:47:14 +0100
-Message-ID: <89650a1ec718daec1598551d89ae4bab@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001904]: No Sound At All
+Date: Fri, 10 Mar 2006 14:24:36 +0100
+Message-ID: <7fc52e71041e24f7c10157c9b57c76b4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A81B198
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 13:47:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CBAAF198
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 14:24:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1903> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1904> 
 ======================================================================
-Reported By:                nbaggus
-Assigned To:                Clemens Ladisch
+Reported By:                niels
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1903
-Category:                   USB - usb-audio
+Issue ID:                   1904
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               gentoo
-Kernel Version:             2.6.15-gentoo-r1
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.15-i686
 ======================================================================
-Date Submitted:             03-10-2006 01:38 CET
-Last Modified:              03-10-2006 13:47 CET
+Date Submitted:             03-10-2006 14:24 CET
+Last Modified:              03-10-2006 14:24 CET
 ======================================================================
-Summary:                    Recording of USB sound doesn't work
+Summary:                    No Sound At All
 Description: 
-arecord gives the next error message on:
+Hi There!
+Unfortunately I have to report that I am not getting a single sound out of
+my SB24Bit Live Sounbcard!
+All dependencies are fulfilled, the right kernel is installed, the actual
+libasound2 is installed, Alsaconf builds the driver, on alsamixer the
+Volumes are up - but still no sound!
+Well it could be the DSP, thats true, but thats pretty much unusual as it
+is a brandnew card!
+If you, the developer crew does have any suggestions what you want me to
+test tzo verify if it is a bug or not, don`t hesitate to contact me!
+If I am on the console and try aplay /usr/share/sounds/pop.wav nothing
+happens either. And yes I have disabled the artsd in the control menu of
+KDE!
 
-$ arecord -D hw:2 -t wav -f S16_LE -d 10 file.wav
-Recording WAVE 'file.wav' : Signed 16 bit Little Endian, Rate 8000 Hz,
-Mono
-arecord: pcm_read:1303: read error: Input/output error
-$ 
-
-after about 10 seconds. The recorded sound is a kind of metalic click in
-silence. at playback the duration is between 1 and 2 seconds.
+Thanks
+Niels
 ======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 03-10-06 08:53 
-----------------------------------------------------------------------
-Which device are you using?
-How is it connected to the computer?
-Is there any error message in the system log?
-Do you know if it works with another device?
-
-----------------------------------------------------------------------
- nbaggus - 03-10-06 13:47 
-----------------------------------------------------------------------
-Both the logitech and the Voip phone use the snd_usb_audio and friends.
-
-The voipphone is a Usb-p1K phone from yealink (yealink.ko driver).
-The logitech is a logitech usb headphone set.
-(Kensington equip. is a mouse).
-
-connection is USB through EHCI or OHCI interface 
-The system used is a promedion cybermaxx laptop. (One OHCI port, 3 EHCI
-ports.)
-
-There are no messages in dmesg or system log. accept for adding the
-devices when plugging them in. 
-Sound output does function sound input fails.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-10-06 01:38 nbaggus        New Issue                                    
-03-10-06 01:38 nbaggus        Distribution              => gentoo          
-03-10-06 01:38 nbaggus        Kernel Version            => 2.6.15-gentoo-r1
-03-10-06 08:53 Clemens LadischNote Added: 0008401                          
-03-10-06 08:53 Clemens LadischStatus                   assigned => feedback
-03-10-06 13:47 nbaggus        Note Added: 0008402                          
+03-10-06 14:24 niels          New Issue                                    
+03-10-06 14:24 niels          Distribution              => Debian          
+03-10-06 14:24 niels          Kernel Version            => 2.6.15-i686     
 ======================================================================
 
 
