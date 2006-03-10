@@ -1,18 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Bt87x Audio Capture
-Date: Fri, 10 Mar 2006 16:08:50 +0100
-Message-ID: <20060310150850.GA15828@turing.informatik.uni-halle.de>
-References: <440F4F06.4030904@kmit.sk>
- <20060309074930.GA993@turing.informatik.uni-halle.de>
- <440FF003.5050106@kmit.sk>
- <20060309131146.GA4299@turing.informatik.uni-halle.de>
- <441163B2.4060407@kmit.sk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001458]: hda - High frequency noise in background and muting when changing volume
+Date: Fri, 10 Mar 2006 16:31:52 +0100
+Message-ID: <69e9e724337453629d092c7c58c90933@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <441163B2.4060407@kmit.sk>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B11FB18B
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2006 16:31:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,39 +18,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ondrej Ivani?? <ondrej@kmit.sk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ondrej Ivani?? wrote:
-> card 1: Bt878 [Brooktree Bt878], device 0: Bt87x Digital [Bt87x Digital]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> card 1: Bt878 [Brooktree Bt878], device 1: Bt87x Analog [Bt87x Analog]
->   Subdevices: 1/1
->   Subdevice #0: subdevice #0
-> 
-> $ arecord -Dhw:1,1 -f S16_LE -r 119466 -d 20 /tmp/out.wav
-> 
-> Output file contains only wav header and 0x7fff values.
 
-It seems the analog input pin of the Bt878 chip isn't connected to the
-tuner.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1458> 
+======================================================================
+Reported By:                andres
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1458
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               ubuntu breezy badger
+Kernel Version:              2.6.12-9-386
+======================================================================
+Date Submitted:             09-25-2005 16:07 CEST
+Last Modified:              03-10-2006 16:31 CET
+======================================================================
+Summary:                    hda - High frequency noise in background and muting
+when changing volume
+Description: 
+When i play sound i hear a high (constant) frequency beep additionally to
+what i intend to play. I also tried to set position_fix=[0,1,2] and model,
+but that didnt help (for both, related?, problems)
+If i change volume via alsamixer no sound can be heard anymore till i
+unload and load the snd_hda_intel module.
 
-I guess the digital input isn't connected, either.
+Thanks for helping
 
-> BTW, it's possible to create interconnect between sound card and capture 
-> device in TV card?
+Andres
 
-It would be possible to write an application that records from one of
-the Bt878 input devices and then immediately plays the data to the sound
-card.  There would be some milliseconds of latency, and it wouldn't work
-in most cases because few vendors bother to connect the audio input pins
-(as you've seen).
+======================================================================
+
+----------------------------------------------------------------------
+ marcel - 11-24-05 20:36 
+----------------------------------------------------------------------
+I have the same problem with my notebook(Samsung M50). It seems to have a
+"AD1986A" Chip.
+It does not occur if i use multichannel sound, like speaker-test
+-Dplug:surround51 -c6, or any other value for -c except 2.
+The notebook also contains an media player, which boots up in 10secs when
+pressing a special key, so that you need not boot another operating system
+for just watching a video or something like that. According to the
+documentation, this is based on linux kernel 2.4.21 and alsa 1.0.9
+(http://www.zaigen.co.kr/support/open_source.html). Sound works fine with
+this media player, so samsung seems to have solved this problem?! Or is
+ist because kernel version 2.4?!
+I am using gentoo, kernel 2.6.14-r2 and alsa 1.0.10.
+
+----------------------------------------------------------------------
+ sova - 03-10-06 16:31 
+----------------------------------------------------------------------
+I have the same problem with ASUS p5pl2
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-25-05 16:07 andres         New Issue                                    
+09-25-05 16:07 andres         Distribution              => ubuntu breezy badger
+09-25-05 16:07 andres         Kernel Version            =>  2.6.12-9-386   
+09-25-05 16:12 andres         Issue Monitored: andres                      
+09-28-05 10:12 andres         Note Added: 0006407                          
+09-28-05 10:12 andres         Note Added: 0006408                          
+09-28-05 13:30 andres         Note Deleted: 0006408                        
+10-18-05 11:22 cartman        Issue Monitored: cartman                     
+11-24-05 20:36 marcel         Note Added: 0006844                          
+12-05-05 19:59 marcel         Issue Monitored: marcel                      
+01-25-06 20:52 Ka-Ka          Issue Monitored: Ka-Ka                       
+02-07-06 00:48 gerick         Issue Monitored: gerick                      
+02-08-06 13:15 simonckenyon   Issue Monitored: simonckenyon                    
+03-10-06 16:29 sova           Issue Monitored: sova                        
+03-10-06 16:31 sova           Note Added: 0008403                          
+======================================================================
 
 
-Regards,
-Clemens
 
 
 -------------------------------------------------------
