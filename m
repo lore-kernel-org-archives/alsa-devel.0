@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001907]: Maestro3 driver does not work with Fedora Xen Kernels
-Date: Sat, 11 Mar 2006 02:29:04 +0100
-Message-ID: <36d15081bcba0472954996ef6f9722d0@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] sound/core/: fix 3 off-by-one errors
+Date: Sat, 11 Mar 2006 04:43:10 +0100
+Message-ID: <20060311034310.GK21864@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91BFA167
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 02:29:04 +0100 (MET)
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id AEB94129
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 04:43:09 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,66 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+This patch fixes three off-by-one errors found by the Coverity checker.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1907> 
-======================================================================
-Reported By:                xaoslaad
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1907
-Category:                   PCI - maestro3
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5 Test 3
-Kernel Version:             kernel-xen0-2.6.15-1.2038_FC5
-======================================================================
-Date Submitted:             03-11-2006 02:29 CET
-Last Modified:              03-11-2006 02:29 CET
-======================================================================
-Summary:                    Maestro3 driver does not work with Fedora Xen
-Kernels
-Description: 
-maestro3.c contains the following check which causes the driver to fail to
-work when using Fedora Xen0 kernels:
 
------------------------------------------------------------------------------
-        /* check, if we can restrict PCI DMA transfers to 28 bits */
-        if (pci_set_dma_mask(pci, 0x0fffffff) < 0 ||
-            pci_set_consistent_dma_mask(pci, 0x0fffffff) < 0) {
-                snd_printk(KERN_ERR "architecture does not support 28bit
-PCI busmaster DMA\n");
-                pci_disable_device(pci);
-                return -ENXIO;
-        }
------------------------------------------------------------------------------
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-Commenting out the lines:
+---
 
-                pci_disable_device(pci);
-                return -ENXIO;
+ sound/core/sound.c     |    4 ++--
+ sound/core/sound_oss.c |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-causes the driver to load and seemingly work properly.  Not sure what
-negative impact removing this check can have.
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-11-06 02:29 xaoslaad       New Issue                                    
-03-11-06 02:29 xaoslaad       Distribution              => Fedora Core 5 Test 3
-03-11-06 02:29 xaoslaad       Kernel Version            =>
-kernel-xen0-2.6.15-1.2038_FC5
-======================================================================
-
+--- linux-2.6.16-rc5-mm3-full/sound/core/sound.c.old	2006-03-11 03:03:04.000000000 +0100
++++ linux-2.6.16-rc5-mm3-full/sound/core/sound.c	2006-03-11 03:04:59.000000000 +0100
+@@ -121,7 +121,7 @@ void *snd_lookup_minor_data(unsigned int
+ 	struct snd_minor *mreg;
+ 	void *private_data;
+ 
+-	if (minor > ARRAY_SIZE(snd_minors))
++	if (minor >= ARRAY_SIZE(snd_minors))
+ 		return NULL;
+ 	mutex_lock(&sound_mutex);
+ 	mreg = snd_minors[minor];
+@@ -140,7 +140,7 @@ static int snd_open(struct inode *inode,
+ 	const struct file_operations *old_fops;
+ 	int err = 0;
+ 
+-	if (minor > ARRAY_SIZE(snd_minors))
++	if (minor >= ARRAY_SIZE(snd_minors))
+ 		return -ENODEV;
+ 	mptr = snd_minors[minor];
+ 	if (mptr == NULL) {
+--- linux-2.6.16-rc5-mm3-full/sound/core/sound_oss.c.old	2006-03-11 03:05:48.000000000 +0100
++++ linux-2.6.16-rc5-mm3-full/sound/core/sound_oss.c	2006-03-11 03:06:01.000000000 +0100
+@@ -46,7 +46,7 @@ void *snd_lookup_oss_minor_data(unsigned
+ 	struct snd_minor *mreg;
+ 	void *private_data;
+ 
+-	if (minor > ARRAY_SIZE(snd_oss_minors))
++	if (minor >= ARRAY_SIZE(snd_oss_minors))
+ 		return NULL;
+ 	mutex_lock(&sound_oss_mutex);
+ 	mreg = snd_oss_minors[minor];
 
 
 
