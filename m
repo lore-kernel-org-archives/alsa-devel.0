@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001913]: No Sound for SB Extigy for volume below 30%
-Date: Sat, 11 Mar 2006 19:51:25 +0100
-Message-ID: <35ff5982a7f8ac7496f42ca1a10378d8@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001910]: No Sound for SB Extigy for volume below 30%
+Date: Sat, 11 Mar 2006 19:52:13 +0100
+Message-ID: <396b59a89a4668866870784a8a6c1c5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 071E11A2
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 19:51:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 451501A2
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 19:52:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,25 +22,23 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1913> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1910> 
 ======================================================================
 Reported By:                andersin
-Assigned To:                Clemens Ladisch
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1913
-Category:                   USB - usb-audio
+Project:                    ALSA - utils
+Issue ID:                   1910
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.15-gentoo-r4
+Status:                     new
 ======================================================================
-Date Submitted:             03-11-2006 19:51 CET
-Last Modified:              03-11-2006 19:51 CET
+Date Submitted:             03-11-2006 16:40 CET
+Last Modified:              03-11-2006 19:52 CET
 ======================================================================
 Summary:                    No Sound for SB Extigy for volume below 30%
 Description: 
@@ -52,12 +50,18 @@ as far as I can tell. Effectively there's only half a volume control
 (50%-100%).
 ======================================================================
 
+----------------------------------------------------------------------
+ andersin - 03-11-06 19:52 
+----------------------------------------------------------------------
+please close this. I opened a new report after being advised in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1911
+that it should be reported for the usb-audio driver.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 19:51 andersin       New Issue                                    
-03-11-06 19:51 andersin       Distribution              => Gentoo          
-03-11-06 19:51 andersin       Kernel Version            => 2.6.15-gentoo-r4
+03-11-06 16:40 andersin       New Issue                                    
+03-11-06 19:52 andersin       Note Added: 0008426                          
 ======================================================================
 
 
