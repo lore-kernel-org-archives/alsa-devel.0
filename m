@@ -1,13 +1,13 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: pointer callback in pcm
-Date: Sat, 11 Mar 2006 19:35:21 +0000
-Message-ID: <44132679.1030100@superbug.co.uk>
-References: <1141942882.10937.5.camel@localhost.localdomain>	 <1141952015.13319.90.camel@mindpipe>	 <1142020261.9246.3.camel@localhost.localdomain>	 <4412B17F.7080200@superbug.co.uk>	 <1142076452.9496.8.camel@localhost.localdomain>	 <4412F001.5020404@superbug.co.uk>	 <1142098225.9496.25.camel@localhost.localdomain>	 <44131B40.9080100@superbug.co.uk> <1142105193.9496.37.camel@localhost.localdomain>
+Date: Sat, 11 Mar 2006 19:37:15 +0000
+Message-ID: <441326EB.8070801@superbug.co.uk>
+References: <1141942882.10937.5.camel@localhost.localdomain>	 <1141952015.13319.90.camel@mindpipe>	 <1142020261.9246.3.camel@localhost.localdomain>	 <4412B17F.7080200@superbug.co.uk>	 <1142076452.9496.8.camel@localhost.localdomain>	 <4412F001.5020404@superbug.co.uk>	 <1142098225.9496.25.camel@localhost.localdomain>	 <44131B40.9080100@superbug.co.uk>	 <1142104084.9496.34.camel@localhost.localdomain>	 <441321E9.1050503@superbug.co.uk> <1142104695.9496.35.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1142105193.9496.37.camel@localhost.localdomain>
+In-Reply-To: <1142104695.9496.35.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,19 +22,26 @@ Cc: Lee Revell <rlrevell@joe-job.com>, Alsa-devel <alsa-devel@lists.sourceforge.
 List-Id: alsa-devel@alsa-project.org
 
 Adrian McMenamin wrote:
-> On Sat, 2006-03-11 at 18:47 +0000, James Courtier-Dutton wrote:
+> On Sat, 2006-03-11 at 19:15 +0000, James Courtier-Dutton wrote:
 >
 >   
->
->   
->> You will need to set the .buffer_bytes_min as well.
+>>>   
+>>>       
+>> Ok, that is not what is needed.
+>> The value returned should be the position of the ADC in the hardware's 
+>> ring buffer in units of frames.
+>> Not the cumulative number of samples played.
+>> E.g. If the buffer is 32768 frames long, the returned value should only 
+>> have a value from 0 to 32767
+>> Once it gets to 32767, it should then role over to 0 again.
+>>
 >>     
->
-> Are you sure this exists? I get a compiler error
->
->
+> Yes, that's what I meant :) Sorry if I wasn't clear enough.
 >   
-Sorry, my mistake.
+Which application are you using to test.
+Have you tried "speaker-test"
+
+James
 
 
 
