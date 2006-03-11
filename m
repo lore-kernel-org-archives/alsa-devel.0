@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001908]: Stereo channels swapped using Midiman Audiophile 24/96
-Date: Sat, 11 Mar 2006 10:24:13 +0100
-Message-ID: <7a5a0d12cba92a54513508677ff11a18@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: pointer callback in pcm
+Date: Sat, 11 Mar 2006 11:16:15 +0000
+Message-ID: <4412B17F.7080200@superbug.co.uk>
+References: <1141942882.10937.5.camel@localhost.localdomain>	 <1141952015.13319.90.camel@mindpipe> <1142020261.9246.3.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6EE26195
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 10:24:13 +0100 (MET)
+In-Reply-To: <1142020261.9246.3.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,77 +17,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Adrian,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1908> 
-======================================================================
-Reported By:                sebastian_ml
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1908
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.15.6
-======================================================================
-Date Submitted:             03-11-2006 09:34 CET
-Last Modified:              03-11-2006 10:24 CET
-======================================================================
-Summary:                    Stereo channels swapped using Midiman Audiophile
-24/96
-Description: 
-Hi all,
+Here is a quick summary of what I think you have been saying.
+1) Your hardware has min and max periods set to 8.
+2) Your hardware can do DMA, but not periodic DMA.   <- This is really 
+the crux of the problem.
+3) You wish to use DMA.
+4) Unknown:  What triggers the audio interrupt? It should be triggered 
+once each period is completed.
 
-the stereo channels (L/R) are swapped. Say you patch PCM0 to HW Out 0 and
-do the same with PCM1 and HW Out 1 then the channel order is wrong.
-For now I use the Digital Mixer to make it right.
+Now, here is what the ALSA model assumes:
+1) hardware period sizes are exactly the same size as the memory mapped 
+DMA pages.
+2) snd_period_ellapsed() is called at periodic intervals dependent on 
+where the ADC is playing samples.
+3) If the copy callback is NULL, ALSA assumes the DMA has already completed.
+4) If the copy callback is not NULL, ALSA calls it, but when the copy 
+callback returns, the copy has been completed.
+5) The pointer callback is then called that should return the position 
+of the ADC in frames (not bytes) within the audio buffer.
 
-I discovered this by accident when I had both my mp3 player and my 2496
-connected to the same amp playing the same song. They sounded different. I
-swapped L/R and all was fine.
+So, if you wish to use DMA, you should be calling snd_period_ellapsed() 
+only after the DMA has completed, alternatively, the copy() callback 
+should only return after the DMA transaction has completed, but I don't 
+know if delaying the copy() return is allowed.
+Can you get it to interrupt on each DMA completion?
 
-When booting Windows the L/R order is accurate.
+I would recommend you trying to do the following:
+1) Discover when the ADC has played the entire period.
+2) start the DMA transfer.
+3) At the DMA transfer complete interrrupt, call period_ellapsed().
 
-I'll upload some pictures of envy24control in a few.
+So, the problem might be how to discover that the ADC has played the 
+entire period.
+You might have to use some sort of timer based polling to discover this.
 
-Thanks
-
-Sebastian
-======================================================================
-
-----------------------------------------------------------------------
- sebastian_ml - 03-11-06 10:24 
-----------------------------------------------------------------------
-The first attachment is a picture of the Patchbay. Patching PCM Out 1 to
-H/W Out 1 (L) and doing the same with PCM Out 2 and H/W Out 2 (R) results
-in L and R being swapped.
-
-To "fix" this I patch Digital Mix 1 to H/W Out 1 (L) and Digital Mix 2 to
-H/W Out 2 (R) and then I set the Monitor Mixer like shown in the second
-attachment.
-
-The correct way to use the Monitor Mixer would be the one shown in
-attachment 3. But then L/R is swapped.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-11-06 09:34 sebastian_ml   New Issue                                    
-03-11-06 09:34 sebastian_ml   Distribution              => Gentoo          
-03-11-06 09:34 sebastian_ml   Kernel Version            => 2.6.15.6        
-03-11-06 10:17 sebastian_ml   File Added: patchbay-pcm.png                    
-03-11-06 10:24 sebastian_ml   Note Added: 0008415                          
-======================================================================
-
-
+James
 
 
 -------------------------------------------------------
