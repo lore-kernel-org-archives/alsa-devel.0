@@ -1,14 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] sound/pci/rme9652/hdspm.c: fix off-by-one errors
-Date: Sat, 11 Mar 2006 04:43:21 +0100
-Message-ID: <20060311034321.GL21864__41324.1868875504$1142048658$gmane$org@stusta.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000172]: Master volume control only controls front speakers
+Date: Sat, 11 Mar 2006 08:50:54 +0100
+Message-ID: <24ad196fbdde16e00b0d7522ab920a5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 87652129
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 04:43:20 +0100 (MET)
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB99118C
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 08:50:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,35 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes off-by-one errors found by the Coverity checker.
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172> 
+======================================================================
+Reported By:                gruberroland
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   172
+Category:                   2_mixer
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             03-31-2004 11:50 CEST
+Last Modified:              03-11-2006 08:50 CET
+======================================================================
+Summary:                    Master volume control only controls front speakers
+Description: 
+The master volume control has no effect on the rear speakers.
+The rear speakers can be controlled by "Sigmatel Surround" but not
+completly muted.
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+I use "Sigmatel 4-Speaker Stereo" to get sound on all 4 speakers. The
+speakers are plugged into both output plugs on the soundcard.
 
---- linux-2.6.16-rc5-mm3-full/sound/pci/rme9652/hdspm.c.old	2006-03-11 03:11:15.000000000 +0100
-+++ linux-2.6.16-rc5-mm3-full/sound/pci/rme9652/hdspm.c	2006-03-11 03:12:10.000000000 +0100
-@@ -474,7 +474,7 @@
- static inline int hdspm_read_in_gain(struct hdspm * hdspm, unsigned int chan,
- 				     unsigned int in)
- {
--	if (chan > HDSPM_MIXER_CHANNELS || in > HDSPM_MIXER_CHANNELS)
-+	if (chan >= HDSPM_MIXER_CHANNELS || in >= HDSPM_MIXER_CHANNELS)
- 		return 0;
- 
- 	return hdspm->mixer->ch[chan].in[in];
-@@ -483,7 +483,7 @@
- static inline int hdspm_read_pb_gain(struct hdspm * hdspm, unsigned int chan,
- 				     unsigned int pb)
- {
--	if (chan > HDSPM_MIXER_CHANNELS || pb > HDSPM_MIXER_CHANNELS)
-+	if (chan >= HDSPM_MIXER_CHANNELS || pb >= HDSPM_MIXER_CHANNELS)
- 		return 0;
- 	return hdspm->mixer->ch[chan].pb[pb];
- }
+I tried all volume controls that are provided, there seems to be no master
+control.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000154 Master volume only controls front outpu...
+related to          0000919 Master volume doesn't control rear spea...
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 03-10-06 03:20 
+----------------------------------------------------------------------
+Those Sigmatel and 3D* controls are part of the AC97 codec.  A real master
+volume has to be implemented with emu10k1 DSP code (as in the patch)
+
+----------------------------------------------------------------------
+ Raymond - 03-11-06 08:50 
+----------------------------------------------------------------------
+But this report is related to the Sigmatec codec (STAC9708) on gruberroland
+'s ens1371
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-31-04 11:50 gruberroland   New Issue                                    
+03-31-04 11:50 gruberroland   Kernel Version            => 2.4.25          
+03-31-04 16:33 perex          Assigned To               => perex           
+03-31-04 16:33 perex          Severity                 major => feature    
+03-31-04 16:33 perex          Status                   new => assigned     
+03-31-04 16:35 perex          Note Added: 0000725                          
+10-22-04 16:44 perex          Relationship added       related to 0000154  
+10-29-04 21:03 BMS            Issue Monitored: BMS                         
+02-22-05 09:57 perex          Relationship added       related to 0000919  
+02-22-05 09:59 perex          Project                  ALSA - driver => ALSA -
+lib
+02-22-05 09:59 perex          Category                 PCI - ens1371 => mixer
+03-09-06 11:17 muffty         Note Added: 0008387                          
+03-09-06 11:18 muffty         File Added: master_volume_v3.patch                
+   
+03-09-06 11:19 muffty         Note Edited: 0008387                         
+03-09-06 11:24 muffty         Issue Monitored: muffty                      
+03-09-06 12:23 Miwer          Issue Monitored: Miwer                       
+03-09-06 19:53 muffty         Note Edited: 0008387                         
+03-10-06 02:45 Raymond        Note Added: 0008398                          
+03-10-06 03:05 Raymond        Note Added: 0008399                          
+03-10-06 03:20 rlrevell       Note Added: 0008400                          
+03-11-06 08:50 Raymond        Note Added: 0008414                          
+======================================================================
+
 
 
 
