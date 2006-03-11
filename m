@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
-Date: Sat, 11 Mar 2006 23:08:37 +0100
-Message-ID: <440201c15f2b4fb161c85c7708105ad1@bugtrack.alsa-project.org>
+From: Georg Chini <georg.chini@triaton-webhosting.com>
+Subject: snd-bt87x
+Date: Sat, 11 Mar 2006 23:19:38 +0100
+Message-ID: <44134CFA.2090800@triaton-webhosting.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 77DF01BB
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 23:08:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,98 +15,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
-======================================================================
-Reported By:                chrmue
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1733
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE Linux 10.0
-Kernel Version:             2.6.13-15
-======================================================================
-Date Submitted:             01-11-2006 07:23 CET
-Last Modified:              03-11-2006 23:08 CET
-======================================================================
-Summary:                    Intel HDA Modem ?
-Description: 
-I want to use my HDA Softmodem in Linux, is there any development on a HDA
-Modem Module ?
+I have a problem with the snd-bt87x module. My TV-card is
+an unsupported card (Terratec TValue (LR102), PCI ID 153b:1134)
+which worked with the module in 2.6.11.2 with option loadall=yes.
+When I try this with 2.6.15.6 the card is not detected. If I insert
+a line for the card into the source code and do not use the
+loadall option, the card is found, but I get no sound. Is there
+anyone who can help me solve this problem? Any help welcome.
 
-cat /proc/asound/card0/codec#1 gives me:
-Codec: Generic 11c1 ID 3026
-Address: 1
-Vendor Id: 0x11c13026
-Subsystem Id: 0x11c13026
-Revision Id: 0x70500
-
-In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
-
-If there is development on this i would like to participate to get it
-going, because i dont't want to have a windows-installation on my Notebook
-(Acer TravelMate 8104) just for getting my mails at my parents house,
-where there is only analog telephone.
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 03-11-06 19:33 
-----------------------------------------------------------------------
-Sorry, no idea.  Double check that your are doing it right.
-
-----------------------------------------------------------------------
- sashak - 03-11-06 23:08 
-----------------------------------------------------------------------
-kratz00,
-
-> Try ./slmodemd -a hw:0,6 
-
-This is correct and you need it.
-
-The problem you have with wvdial is known - this fails because wvdial
-expects something from serial specific ioctls(), but PTY interface (used
-to communicate with slmodem) does not have it. Not sure that this is issue
-with mainstream versions of wvdial, probably just distro specifc (you are
-with SuSE, right?). Anyway try different version of wvdial/wvstreams, or
-different dialer.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-11-06 07:23 chrmue         New Issue                                    
-01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
-01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
-01-11-06 07:42 rlrevell       Note Added: 0007559                          
-01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
-            
-01-11-06 23:35 sashak         Note Added: 0007571                          
-01-12-06 00:00 sashak         Note Added: 0007574                          
-01-12-06 00:02 sashak         Issue Monitored: sashak                      
-01-12-06 05:35 chrmue         Note Added: 0007581                          
-01-13-06 00:16 sashak         Note Added: 0007598                          
-01-16-06 20:19 chrmue         Note Added: 0007692                          
-01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
-03-03-06 15:43 lrupn          Note Added: 0008341                          
-03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
-03-10-06 23:44 kratz00        Note Added: 0008413                          
-03-11-06 15:19 kratz00        Note Added: 0008416                          
-03-11-06 19:03 rlrevell       Note Added: 0008421                          
-03-11-06 19:23 kratz00        Note Added: 0008423                          
-03-11-06 19:33 rlrevell       Note Added: 0008424                          
-03-11-06 23:08 sashak         Note Added: 0008427                          
-======================================================================
-
-
+Regards
+             Georg Chini
 
 
 -------------------------------------------------------
