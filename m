@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001912]: Make Master 1 adjust volumes relative to each other for SB Extigy
-Date: Sat, 11 Mar 2006 19:39:08 +0100
-Message-ID: <099ebf03319975d3e044eaabcad5aa83@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001911]: Make Master 1 adjust volumes relative to each other for SB Extigy
+Date: Sat, 11 Mar 2006 19:43:18 +0100
+Message-ID: <f63f77013f9113b3122a29895bbb4913@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 782D71A2
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 19:39:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCE96174
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 19:43:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,25 +22,23 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1912> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1911> 
 ======================================================================
 Reported By:                andersin
-Assigned To:                Clemens Ladisch
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1912
-Category:                   USB - usb-audio
+Project:                    ALSA - utils
+Issue ID:                   1911
+Category:                   aconnect
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16-rc4
+Status:                     new
 ======================================================================
-Date Submitted:             03-11-2006 19:39 CET
-Last Modified:              03-11-2006 19:39 CET
+Date Submitted:             03-11-2006 17:06 CET
+Last Modified:              03-11-2006 19:43 CET
 ======================================================================
 Summary:                    Make Master 1 adjust volumes relative to each other
 for SB Extigy
@@ -53,12 +51,24 @@ level of Master1 to the volume of the other channels. The other channels
 can hence be used individually or used to specify a relative offset.
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 03-11-06 19:17 
+----------------------------------------------------------------------
+Don't.  These are all bugs in the Extigy driver, not general ALSA bugs. 
+I'll close this so you can re-file it correctly.
+
+----------------------------------------------------------------------
+ andersin - 03-11-06 19:43 
+----------------------------------------------------------------------
+I opened a new bug for the driver. Please close this one.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 19:39 andersin       New Issue                                    
-03-11-06 19:39 andersin       Distribution              => Gentoo          
-03-11-06 19:39 andersin       Kernel Version            => 2.6.16-rc4      
+03-11-06 17:06 andersin       New Issue                                    
+03-11-06 17:08 andersin       Note Added: 0008419                          
+03-11-06 19:17 rlrevell       Note Added: 0008422                          
+03-11-06 19:43 andersin       Note Added: 0008425                          
 ======================================================================
 
 
