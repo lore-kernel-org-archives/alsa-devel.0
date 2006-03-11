@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000172]: Master volume control only controls front speakers
-Date: Sat, 11 Mar 2006 19:02:24 +0100
-Message-ID: <d5fe4b356ce12d8b56a0259f1e0fccf8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
+Date: Sat, 11 Mar 2006 19:03:52 +0100
+Message-ID: <30f8b6951619e615f9b017378e8c94bb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2944C1A0
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 19:02:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1A261A0
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 19:03:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,113 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
 ======================================================================
-Reported By:                gruberroland
-Assigned To:                perex
+Reported By:                chrmue
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   172
-Category:                   2_mixer
+Project:                    ALSA - driver
+Issue ID:                   1733
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
+Distribution:               SuSE Linux 10.0
+Kernel Version:             2.6.13-15
 ======================================================================
-Date Submitted:             03-31-2004 11:50 CEST
-Last Modified:              03-11-2006 19:02 CET
+Date Submitted:             01-11-2006 07:23 CET
+Last Modified:              03-11-2006 19:03 CET
 ======================================================================
-Summary:                    Master volume control only controls front speakers
+Summary:                    Intel HDA Modem ?
 Description: 
-The master volume control has no effect on the rear speakers.
-The rear speakers can be controlled by "Sigmatel Surround" but not
-completly muted.
+I want to use my HDA Softmodem in Linux, is there any development on a HDA
+Modem Module ?
 
-I use "Sigmatel 4-Speaker Stereo" to get sound on all 4 speakers. The
-speakers are plugged into both output plugs on the soundcard.
+cat /proc/asound/card0/codec#1 gives me:
+Codec: Generic 11c1 ID 3026
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x70500
 
-I tried all volume controls that are provided, there seems to be no master
-control.
+In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
+
+If there is development on this i would like to participate to get it
+going, because i dont't want to have a windows-installation on my Notebook
+(Acer TravelMate 8104) just for getting my mails at my parents house,
+where there is only analog telephone.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000154 Master volume only controls front outpu...
-related to          0000919 Master volume doesn't control rear spea...
-======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-11-06 08:50 
+ kratz00 - 03-11-06 15:19 
 ----------------------------------------------------------------------
-But this report is related to the Sigmatec codec (STAC9708) on gruberroland
-'s ens1371
+@chrmue
+
+i can't get it to work and any help would be appreciated
+
+aplay -l output is nearly the same
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Intel [HDA Intel], device 1: AD198x Digital [AD198x Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Intel [HDA Intel], device 6: Si3054 Modem [Si3054 Modem]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+./slmodemd -a hw:0           
+SmartLink Soft Modem: version 2.9.10 Mar 10 2006 23:39:11
+symbolic link `/dev/ttySL0' -> `/dev/pts/4' created.
+modem `hw:0' created. TTY is `/dev/pts/4'
+Use `/dev/ttySL0' as modem device, Ctrl+C for termination.
+
+but wvdial dosen't work
+do you have any special mixer settings or other hints i could try?
+
+wvdial output:
+--> Cannot open /dev/ttySL0: Cannot get information for serial port.
+
+the device exists and i'm running this command as root user
+it's a symlink and /dev/pts/4 does also exist
 
 ----------------------------------------------------------------------
- rlrevell - 03-11-06 19:02 
+ rlrevell - 03-11-06 19:03 
 ----------------------------------------------------------------------
-You are looking at the wrong bug report, this one makes no reference to
-ens1371, this is about the emu10k1 driver.
+You are doing it wrong.  The modem is device hw:0,6:
+
+card 0: Intel [HDA Intel], device 6: Si3054 Modem [Si3054 Modem]
+^^^^^^                     ^^^^^^^^
+
+But you tell it to use device 0:
+
+./slmodemd -a hw:0 
+
+Try ./slmodemd -a hw:0,6
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-04 11:50 gruberroland   New Issue                                    
-03-31-04 11:50 gruberroland   Kernel Version            => 2.4.25          
-03-31-04 16:33 perex          Assigned To               => perex           
-03-31-04 16:33 perex          Severity                 major => feature    
-03-31-04 16:33 perex          Status                   new => assigned     
-03-31-04 16:35 perex          Note Added: 0000725                          
-10-22-04 16:44 perex          Relationship added       related to 0000154  
-10-29-04 21:03 BMS            Issue Monitored: BMS                         
-02-22-05 09:57 perex          Relationship added       related to 0000919  
-02-22-05 09:59 perex          Project                  ALSA - driver => ALSA -
-lib
-02-22-05 09:59 perex          Category                 PCI - ens1371 => mixer
-03-09-06 11:17 muffty         Note Added: 0008387                          
-03-09-06 11:18 muffty         File Added: master_volume_v3.patch                
-   
-03-09-06 11:19 muffty         Note Edited: 0008387                         
-03-09-06 11:24 muffty         Issue Monitored: muffty                      
-03-09-06 12:23 Miwer          Issue Monitored: Miwer                       
-03-09-06 19:53 muffty         Note Edited: 0008387                         
-03-10-06 02:45 Raymond        Note Added: 0008398                          
-03-10-06 03:05 Raymond        Note Added: 0008399                          
-03-10-06 03:20 rlrevell       Note Added: 0008400                          
-03-11-06 08:50 Raymond        Note Added: 0008414                          
-03-11-06 19:02 rlrevell       Note Added: 0008420                          
+01-11-06 07:23 chrmue         New Issue                                    
+01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
+01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
+01-11-06 07:42 rlrevell       Note Added: 0007559                          
+01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
+            
+01-11-06 23:35 sashak         Note Added: 0007571                          
+01-12-06 00:00 sashak         Note Added: 0007574                          
+01-12-06 00:02 sashak         Issue Monitored: sashak                      
+01-12-06 05:35 chrmue         Note Added: 0007581                          
+01-13-06 00:16 sashak         Note Added: 0007598                          
+01-16-06 20:19 chrmue         Note Added: 0007692                          
+01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
+03-03-06 15:43 lrupn          Note Added: 0008341                          
+03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
+03-10-06 23:44 kratz00        Note Added: 0008413                          
+03-11-06 15:19 kratz00        Note Added: 0008416                          
+03-11-06 19:03 rlrevell       Note Added: 0008421                          
 ======================================================================
 
 
