@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001908]: Stereo channels swapped using Midiman Audiophile 24/96
-Date: Sat, 11 Mar 2006 09:34:00 +0100
-Message-ID: <ccd315df3d1187ffed971eabf47e34c2@bugtrack.alsa-project.org>
+Date: Sat, 11 Mar 2006 10:24:13 +0100
+Message-ID: <7a5a0d12cba92a54513508677ff11a18@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D93EE18C
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 09:34:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6EE26195
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 10:24:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1908> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.15.6
 ======================================================================
 Date Submitted:             03-11-2006 09:34 CET
-Last Modified:              03-11-2006 09:34 CET
+Last Modified:              03-11-2006 10:24 CET
 ======================================================================
 Summary:                    Stereo channels swapped using Midiman Audiophile
 24/96
@@ -64,12 +64,28 @@ Thanks
 Sebastian
 ======================================================================
 
+----------------------------------------------------------------------
+ sebastian_ml - 03-11-06 10:24 
+----------------------------------------------------------------------
+The first attachment is a picture of the Patchbay. Patching PCM Out 1 to
+H/W Out 1 (L) and doing the same with PCM Out 2 and H/W Out 2 (R) results
+in L and R being swapped.
+
+To "fix" this I patch Digital Mix 1 to H/W Out 1 (L) and Digital Mix 2 to
+H/W Out 2 (R) and then I set the Monitor Mixer like shown in the second
+attachment.
+
+The correct way to use the Monitor Mixer would be the one shown in
+attachment 3. But then L/R is swapped.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-11-06 09:34 sebastian_ml   New Issue                                    
 03-11-06 09:34 sebastian_ml   Distribution              => Gentoo          
 03-11-06 09:34 sebastian_ml   Kernel Version            => 2.6.15.6        
+03-11-06 10:17 sebastian_ml   File Added: patchbay-pcm.png                    
+03-11-06 10:24 sebastian_ml   Note Added: 0008415                          
 ======================================================================
 
 
