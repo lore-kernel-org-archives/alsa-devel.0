@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001914]: playing 2-channel sound on surround device uses rear speakers
-Date: Sat, 11 Mar 2006 21:25:44 +0100
-Message-ID: <bf469dc397f86da8d819a05d303f1c3a@bugtrack.alsa-project.org>
+From: "Eric Shattow" <lucent@gmail.com>
+Subject: Re: Reducing spam on alsa-devel
+Date: Sat, 11 Mar 2006 15:09:55 -0600
+Message-ID: <2c746f620603111309v20e61acbs64feb02844334bdf@mail.gmail.com>
+References: <440F1811.8060900@redfish-solutions.com>
+	 <1141840298.767.163.camel@mindpipe>
+	 <440F1C8C.6090807@redfish-solutions.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7402E1C1
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 21:25:44 +0100 (MET)
+Received: from wproxy.gmail.com (wproxy.gmail.com [64.233.184.193])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3A4D1CA
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 22:09:56 +0100 (MET)
+Received: by wproxy.gmail.com with SMTP id i34so932404wra
+        for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 13:09:55 -0800 (PST)
+In-Reply-To: <440F1C8C.6090807@redfish-solutions.com>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +25,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I agree that the spam level on alsa-devel is highly rediculous. I
+stopped reading it because i have to sift through too much
+non-content.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1914> 
-======================================================================
-Reported By:                mru
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1914
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.15-gentoo-r1
-======================================================================
-Date Submitted:             03-11-2006 21:25 CET
-Last Modified:              03-11-2006 21:25 CET
-======================================================================
-Summary:                    playing 2-channel sound on surround device uses rear
-speakers
-Description: 
-If I play regular 2-channel stereo sound specifying device "surround51" or
-"surround40" (or either of those with a "plug:" prefix) the sound is
-output on the rear speakers.  6-channel playback is correct.
-======================================================================
+ Eric
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-11-06 21:25 mru            New Issue                                    
-03-11-06 21:25 mru            Distribution              => Gentoo          
-03-11-06 21:25 mru            Kernel Version            => 2.6.15-gentoo-r1
-======================================================================
-
-
+On 3/8/06, Philip Prindeville <philipp_subx@redfish-solutions.com> wrote:
+> Lee Revell wrote:
+>
+> >On Wed, 2006-03-08 at 10:44 -0700, Philip Prindeville wrote:
+> >
+> >
+> >>Anyone know how to contact the list administrator?  I tried sending
+> >>an email to alsa-devel-request but never heard back.
+> >>
+> >>I'd like to work with him/her to improve the SpamAssassin settings
+> >>and cut down on some of the spam we're seeing on this list.
+> >>
+> >>
+> >
+> >There is very little spam on this list (less than 10%).  I doubt it can
+> >all be eliminated without some false positives.
+> >
+> >Anyway check the message headers for instructions.
+> >
+> >Lee
+> >
+> >
+> >
+>
+> The list headers say to contact alsa-devel-admin, which I've already trie=
+d.
+>
+> 10% is fairly high.  A lot higher than other open lists that I subscribe =
+to.
+>
+> "Some false positives" isn't unacceptable.  Usually the person can
+> figure out
+> why he got the false positive, and repost in such a way that he doesn't.
+>
+> About 90% of the spam that does get through on this list, I'm able to
+> identify
+> just from the Subject: line alone.  So changing the subject would be enou=
+gh
+> to get it through...
+>
+> -Philip
+>
+>
+>
+> -------------------------------------------------------
+> This SF.Net email is sponsored by xPML, a groundbreaking scripting langua=
+ge
+> that extends applications into web and mobile media. Attend the live webc=
+ast
+> and join the prime developer group breaking into this new coding territor=
+y!
+> http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D110944&bid=3D241720&dat=
+=3D121642
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
 
 
 -------------------------------------------------------
