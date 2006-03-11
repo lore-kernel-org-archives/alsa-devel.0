@@ -1,21 +1,14 @@
-From: "Eric Shattow" <lucent@gmail.com>
-Subject: Re: Reducing spam on alsa-devel
-Date: Sat, 11 Mar 2006 15:09:55 -0600
-Message-ID: <2c746f620603111309v20e61acbs64feb02844334bdf@mail.gmail.com>
-References: <440F1811.8060900@redfish-solutions.com>
-	 <1141840298.767.163.camel@mindpipe>
-	 <440F1C8C.6090807@redfish-solutions.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001915]: Module snd-intel8x0 for ALI 5455 card needs special option to work
+Date: Sat, 11 Mar 2006 23:06:28 +0100
+Message-ID: <54c20e2331d50f127994de4090d443d4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from wproxy.gmail.com (wproxy.gmail.com [64.233.184.193])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3A4D1CA
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 22:09:56 +0100 (MET)
-Received: by wproxy.gmail.com with SMTP id i34so932404wra
-        for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 13:09:55 -0800 (PST)
-In-Reply-To: <440F1C8C.6090807@redfish-solutions.com>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0AE81BB
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 23:06:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,74 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I agree that the spam level on alsa-devel is highly rediculous. I
-stopped reading it because i have to sift through too much
-non-content.
 
- Eric
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1915> 
+======================================================================
+Reported By:                ekalin
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1915
+Category:                   alsaconf
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             03-11-2006 23:06 CET
+Last Modified:              03-11-2006 23:06 CET
+======================================================================
+Summary:                    Module snd-intel8x0 for ALI 5455 card needs special
+option to work
+Description: 
+The ALI 5455 card, at least the model whose lspci -vv output is shown
+below, needs the "buggy_semaphore=1" to work. If this option is not
+passed, the module does load, but no sound cards are identified. So
+alsaconf should add this option to the modules configuration file when the
+card is detected.
 
-On 3/8/06, Philip Prindeville <philipp_subx@redfish-solutions.com> wrote:
-> Lee Revell wrote:
->
-> >On Wed, 2006-03-08 at 10:44 -0700, Philip Prindeville wrote:
-> >
-> >
-> >>Anyone know how to contact the list administrator?  I tried sending
-> >>an email to alsa-devel-request but never heard back.
-> >>
-> >>I'd like to work with him/her to improve the SpamAssassin settings
-> >>and cut down on some of the spam we're seeing on this list.
-> >>
-> >>
-> >
-> >There is very little spam on this list (less than 10%).  I doubt it can
-> >all be eliminated without some false positives.
-> >
-> >Anyway check the message headers for instructions.
-> >
-> >Lee
-> >
-> >
-> >
->
-> The list headers say to contact alsa-devel-admin, which I've already trie=
-d.
->
-> 10% is fairly high.  A lot higher than other open lists that I subscribe =
-to.
->
-> "Some false positives" isn't unacceptable.  Usually the person can
-> figure out
-> why he got the false positive, and repost in such a way that he doesn't.
->
-> About 90% of the spam that does get through on this list, I'm able to
-> identify
-> just from the Subject: line alone.  So changing the subject would be enou=
-gh
-> to get it through...
->
-> -Philip
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by xPML, a groundbreaking scripting langua=
-ge
-> that extends applications into web and mobile media. Attend the live webc=
-ast
-> and join the prime developer group breaking into this new coding territor=
-y!
-> http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D110944&bid=3D241720&dat=
-=3D121642
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
+Here's the output of lspci -vv:
+0000:00:04.0 Multimedia audio controller: ALi Corporation M5455 PCI
+AC-Link Controller Audio Device (rev 20)
+        Subsystem: ASUSTeK Computer Inc.: Unknown device 80b0
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (16000ns min), Cache Line Size: 0x10 (64 bytes)
+        Interrupt: pin A routed to IRQ 22
+        Region 0: I/O ports at c800 [size=256]
+        Region 1: Memory at fbdff000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [40] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2+,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-11-06 23:06 ekalin         New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
