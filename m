@@ -1,68 +1,88 @@
-From: Nick Piggin <nickpiggin@yahoo.com.au>
-Subject: Re: [Alsa-devel] Re: 2.6.15-rt20, "bad page state", jackd
-Date: Sat, 11 Mar 2006 11:01:21 +1100
-Message-ID: <44121351.2050703@yahoo.com.au>
-References: <1141846564.5262.20.camel@cmn3.stanford.edu>	 <20060309084746.GB9408@osiris.boeblingen.de.ibm.com>	 <1141938488.22708.28.camel@cmn3.stanford.edu>	 <4410B2D7.4090806@yahoo.com.au>	 <1141958866.22708.69.camel@cmn3.stanford.edu>	 <441109BC.9070705@yahoo.com.au> <1142016627.6124.33.camel@cmn3.stanford.edu>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001907]: Maestro3 driver does not work with Fedora Xen Kernels
+Date: Sat, 11 Mar 2006 02:29:04 +0100
+Message-ID: <36d15081bcba0472954996ef6f9722d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752256AbWCKABb@vger.kernel.org>
-In-Reply-To: <1142016627.6124.33.camel@cmn3.stanford.edu>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: alsa-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Heiko Carstens <heiko.carstens@de.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91BFA167
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 02:29:04 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fernando Lopez-Lezcano wrote:
 
-> Takashi and other gurus in alsa-devel, any comments on this? The
-> original problem - not quoted in this email - is that when I stop jackd
-> in the affected configurations I get errors similar to this one:
-> 
-> 
->>Bad page state at __free_pages_ok (in process 'jackd', page c1013ce0)
->>flags:0x00000414 mapping:00000000 mapcount:0 count:0
->>Backtrace:
->> [<c015947d>] bad_page+0x7d/0xc0 (8)
->> [<c01598fd>] __free_pages_ok+0x9d/0x180 (36)
->> [<c015a5ac>] __pagevec_free+0x3c/0x50 (40)
->> [<c015db47>] release_pages+0x127/0x1a0 (16)
->> [<c016c93d>] free_pages_and_swap_cache+0x7d/0xc0 (80)
->> [<c01681ae>] unmap_region+0x13e/0x160 (28)
->> [<c0168461>] do_munmap+0xe1/0x120 (48)
->> [<c01684df>] sys_munmap+0x3f/0x60 (32)
->> [<c01034a1>] syscall_call+0x7/0xb (16)
->>Trying to fix it up, but a reboot is needed
-> 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1907> 
+======================================================================
+Reported By:                xaoslaad
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1907
+Category:                   PCI - maestro3
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5 Test 3
+Kernel Version:             kernel-xen0-2.6.15-1.2038_FC5
+======================================================================
+Date Submitted:             03-11-2006 02:29 CET
+Last Modified:              03-11-2006 02:29 CET
+======================================================================
+Summary:                    Maestro3 driver does not work with Fedora Xen
+Kernels
+Description: 
+maestro3.c contains the following check which causes the driver to fail to
+work when using Fedora Xen0 kernels:
 
-FWIW, this is a PageReserved page being freed. PageReserved does
-anything, and you instead need to ensure the page count is incremented
-in your ->nopage handler (ie. via get_page()).
+-----------------------------------------------------------------------------
+        /* check, if we can restrict PCI DMA transfers to 28 bits */
+        if (pci_set_dma_mask(pci, 0x0fffffff) < 0 ||
+            pci_set_consistent_dma_mask(pci, 0x0fffffff) < 0) {
+                snd_printk(KERN_ERR "architecture does not support 28bit
+PCI busmaster DMA\n");
+                pci_disable_device(pci);
+                return -ENXIO;
+        }
+-----------------------------------------------------------------------------
 
-> 
-> One other thing occurred to me (not tested yet)
-> 
-> - userspace regression in the module load code (so that in the end
-> modules from the in kernel tree get mixed with modules coming from the
-> externally compiled alsa tree). Very unlikely, I think, I could test for
-> this by removing the in kernel modules temporarily. 
-> 
-> I have problems in both:
->   snd-ice1712 (midiman delta 66)
->   snd-hdsp (rme hdsp)
-> but this seems to work fine:
->   snd-echo3g (gina3g)
-> 
-> The interesting thing is that the one that works (snd-echo3g) has no
-> counterpat in the in kernel alsa tree - that is, only exists in the
-> add-on modules compiled externally. Coincidence?
-> 
-> -- Fernando
-> 
-> 
-> 
+Commenting out the lines:
+
+                pci_disable_device(pci);
+                return -ENXIO;
+
+causes the driver to load and seemingly work properly.  Not sure what
+negative impact removing this check can have.
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-11-06 02:29 xaoslaad       New Issue                                    
+03-11-06 02:29 xaoslaad       Distribution              => Fedora Core 5 Test 3
+03-11-06 02:29 xaoslaad       Kernel Version            =>
+kernel-xen0-2.6.15-1.2038_FC5
+======================================================================
 
 
--- 
-SUSE Labs, Novell Inc.
-Send instant messages to your online friends http://au.messenger.yahoo.com 
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
