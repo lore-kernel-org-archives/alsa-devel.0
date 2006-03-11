@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001915]: Module snd-intel8x0 for ALI 5455 card needs special option to work
-Date: Sat, 11 Mar 2006 23:06:28 +0100
-Message-ID: <54c20e2331d50f127994de4090d443d4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
+Date: Sat, 11 Mar 2006 23:08:37 +0100
+Message-ID: <440201c15f2b4fb161c85c7708105ad1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0AE81BB
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 23:06:28 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 77DF01BB
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 23:08:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,56 +22,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1915> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
 ======================================================================
-Reported By:                ekalin
-Assigned To:                
+Reported By:                chrmue
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1915
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   1733
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               SuSE Linux 10.0
+Kernel Version:             2.6.13-15
 ======================================================================
-Date Submitted:             03-11-2006 23:06 CET
-Last Modified:              03-11-2006 23:06 CET
+Date Submitted:             01-11-2006 07:23 CET
+Last Modified:              03-11-2006 23:08 CET
 ======================================================================
-Summary:                    Module snd-intel8x0 for ALI 5455 card needs special
-option to work
+Summary:                    Intel HDA Modem ?
 Description: 
-The ALI 5455 card, at least the model whose lspci -vv output is shown
-below, needs the "buggy_semaphore=1" to work. If this option is not
-passed, the module does load, but no sound cards are identified. So
-alsaconf should add this option to the modules configuration file when the
-card is detected.
+I want to use my HDA Softmodem in Linux, is there any development on a HDA
+Modem Module ?
 
-Here's the output of lspci -vv:
-0000:00:04.0 Multimedia audio controller: ALi Corporation M5455 PCI
-AC-Link Controller Audio Device (rev 20)
-        Subsystem: ASUSTeK Computer Inc.: Unknown device 80b0
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64 (16000ns min), Cache Line Size: 0x10 (64 bytes)
-        Interrupt: pin A routed to IRQ 22
-        Region 0: I/O ports at c800 [size=256]
-        Region 1: Memory at fbdff000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: [40] Power Management version 2
-                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2+,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+cat /proc/asound/card0/codec#1 gives me:
+Codec: Generic 11c1 ID 3026
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x70500
 
+In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
+
+If there is development on this i would like to participate to get it
+going, because i dont't want to have a windows-installation on my Notebook
+(Acer TravelMate 8104) just for getting my mails at my parents house,
+where there is only analog telephone.
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 03-11-06 19:33 
+----------------------------------------------------------------------
+Sorry, no idea.  Double check that your are doing it right.
+
+----------------------------------------------------------------------
+ sashak - 03-11-06 23:08 
+----------------------------------------------------------------------
+kratz00,
+
+> Try ./slmodemd -a hw:0,6 
+
+This is correct and you need it.
+
+The problem you have with wvdial is known - this fails because wvdial
+expects something from serial specific ioctls(), but PTY interface (used
+to communicate with slmodem) does not have it. Not sure that this is issue
+with mainstream versions of wvdial, probably just distro specifc (you are
+with SuSE, right?). Anyway try different version of wvdial/wvstreams, or
+different dialer.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 23:06 ekalin         New Issue                                    
+01-11-06 07:23 chrmue         New Issue                                    
+01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
+01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
+01-11-06 07:42 rlrevell       Note Added: 0007559                          
+01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
+            
+01-11-06 23:35 sashak         Note Added: 0007571                          
+01-12-06 00:00 sashak         Note Added: 0007574                          
+01-12-06 00:02 sashak         Issue Monitored: sashak                      
+01-12-06 05:35 chrmue         Note Added: 0007581                          
+01-13-06 00:16 sashak         Note Added: 0007598                          
+01-16-06 20:19 chrmue         Note Added: 0007692                          
+01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
+03-03-06 15:43 lrupn          Note Added: 0008341                          
+03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
+03-10-06 23:44 kratz00        Note Added: 0008413                          
+03-11-06 15:19 kratz00        Note Added: 0008416                          
+03-11-06 19:03 rlrevell       Note Added: 0008421                          
+03-11-06 19:23 kratz00        Note Added: 0008423                          
+03-11-06 19:33 rlrevell       Note Added: 0008424                          
+03-11-06 23:08 sashak         Note Added: 0008427                          
 ======================================================================
 
 
