@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
-Date: Sat, 11 Mar 2006 15:20:00 +0100
-Message-ID: <399f0fcbc797ea18cc1825e09c2b83b1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001364]: Channel mapping mixed-up for SB Extigy
+Date: Sat, 11 Mar 2006 16:14:27 +0100
+Message-ID: <741f751c584dea1e6af61e28e029a712@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AC27183
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 15:20:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C0E91A2
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 16:14:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,103 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1364> 
 ======================================================================
-Reported By:                chrmue
-Assigned To:                tiwai
+Reported By:                andersin
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1733
-Category:                   PCI - hda-intel
+Issue ID:                   1364
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   tweak
 Priority:                   normal
 Status:                     assigned
-Distribution:               SuSE Linux 10.0
-Kernel Version:             2.6.13-15
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.12.1
 ======================================================================
-Date Submitted:             01-11-2006 07:23 CET
-Last Modified:              03-11-2006 15:19 CET
+Date Submitted:             08-24-2005 01:00 CEST
+Last Modified:              03-11-2006 16:14 CET
 ======================================================================
-Summary:                    Intel HDA Modem ?
+Summary:                    Channel mapping mixed-up for SB Extigy
 Description: 
-I want to use my HDA Softmodem in Linux, is there any development on a HDA
-Modem Module ?
-
-cat /proc/asound/card0/codec#1 gives me:
-Codec: Generic 11c1 ID 3026
-Address: 1
-Vendor Id: 0x11c13026
-Subsystem Id: 0x11c13026
-Revision Id: 0x70500
-
-In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
-
-If there is development on this i would like to participate to get it
-going, because i dont't want to have a windows-installation on my Notebook
-(Acer TravelMate 8104) just for getting my mails at my parents house,
-where there is only analog telephone.
+The channels mapping for my Extigy seems to be wrong.
+"Rear Left" controls the Subwoofer
+"Rear Right" controls the left rear speaker
+"Subwoofer" controls the right rear speaker
 ======================================================================
 
 ----------------------------------------------------------------------
- kratz00 - 03-10-06 23:44 
+ andersin - 08-24-05 01:04 
 ----------------------------------------------------------------------
-yes the patch is in cvs
+Sorry for the space, see bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0001210 for details on 6
+channel problems
 
 ----------------------------------------------------------------------
- kratz00 - 03-11-06 15:19 
+ andersin - 03-11-06 16:14 
 ----------------------------------------------------------------------
-@chrmue
+The problem is still present in 1.0.10rc3 in kernel 2.6.16-rc4.
+When using amixer to check the speaker outputs with an AC3 testfile that
+is directly send to the card through its 2nd device hw:Extigy,2 I get a
+slightly different mapping ( maybe I messed it up the first time around:
 
-i can't get it to work and any help would be appreciated
-
-aplay -l output is nearly the same
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Intel [HDA Intel], device 1: AD198x Digital [AD198x Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Intel [HDA Intel], device 6: Si3054 Modem [Si3054 Modem]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-./slmodemd -a hw:0           
-SmartLink Soft Modem: version 2.9.10 Mar 10 2006 23:39:11
-symbolic link `/dev/ttySL0' -> `/dev/pts/4' created.
-modem `hw:0' created. TTY is `/dev/pts/4'
-Use `/dev/ttySL0' as modem device, Ctrl+C for termination.
-
-but wvdial dosen't work
-do you have any special mixer settings or other hints i could try?
-
-wvdial output:
---> Cannot open /dev/ttySL0: Cannot get information for serial port.
-
-the device exists and i'm running this command as root user
-it's a symlink and /dev/pts/4 does also exist
+control:      speaker:
+front left   front left
+front right  front right
+rear left    front center
+rear right   woofer
+front center rear left
+woofer       rear right
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 07:23 chrmue         New Issue                                    
-01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
-01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
-01-11-06 07:42 rlrevell       Note Added: 0007559                          
-01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
-            
-01-11-06 23:35 sashak         Note Added: 0007571                          
-01-12-06 00:00 sashak         Note Added: 0007574                          
-01-12-06 00:02 sashak         Issue Monitored: sashak                      
-01-12-06 05:35 chrmue         Note Added: 0007581                          
-01-13-06 00:16 sashak         Note Added: 0007598                          
-01-16-06 20:19 chrmue         Note Added: 0007692                          
-01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
-03-03-06 15:43 lrupn          Note Added: 0008341                          
-03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
-03-10-06 23:44 kratz00        Note Added: 0008413                          
-03-11-06 15:19 kratz00        Note Added: 0008416                          
+08-24-05 01:00 andersin       New Issue                                    
+08-24-05 01:00 andersin       Distribution              => Gentoo Linux    
+08-24-05 01:00 andersin       Kernel Version            => 2.6.12.1        
+08-24-05 01:04 andersin       Note Added: 0005923                          
+03-11-06 16:14 andersin       Note Added: 0008417                          
 ======================================================================
 
 
