@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001911]: Make Master 1 adjust volumes relative to each other for SB Extigy
-Date: Sat, 11 Mar 2006 17:06:48 +0100
-Message-ID: <68a8f77bb83c70411da19be66826beb4@bugtrack.alsa-project.org>
+Date: Sat, 11 Mar 2006 17:08:10 +0100
+Message-ID: <c160d775a5ff88e4616ee1a691dd4688@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B14E1A2
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 17:06:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6FEB31A2
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 17:08:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1911> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             03-11-2006 17:06 CET
-Last Modified:              03-11-2006 17:06 CET
+Last Modified:              03-11-2006 17:08 CET
 ======================================================================
 Summary:                    Make Master 1 adjust volumes relative to each other
 for SB Extigy
@@ -51,10 +51,17 @@ level of Master1 to the volume of the other channels. The other channels
 can hence be used individually or used to specify a relative offset.
 ======================================================================
 
+----------------------------------------------------------------------
+ andersin - 03-11-06 17:08 
+----------------------------------------------------------------------
+Sorry for the mess. how do I change the category to alsa-utils --
+alsamixer?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-11-06 17:06 andersin       New Issue                                    
+03-11-06 17:08 andersin       Note Added: 0008419                          
 ======================================================================
 
 
