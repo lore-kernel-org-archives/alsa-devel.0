@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001909]: Labelling of controls for SB Extigy is confusing
-Date: Sat, 11 Mar 2006 16:33:03 +0100
-Message-ID: <144a5805f2ae55a507055fb1f4fa0c99@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001910]: No Sound for SB Extigy for volume below 30%
+Date: Sat, 11 Mar 2006 16:40:15 +0100
+Message-ID: <49ce09ddf21cf832604302fabc76f677@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9C521A2
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 16:33:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 629901A2
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 16:40:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,35 +24,36 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1909> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1910> 
 ======================================================================
 Reported By:                andersin
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   1909
+Issue ID:                   1910
 Category:                   alsamixer
 Reproducibility:            always
-Severity:                   text
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             03-11-2006 16:33 CET
-Last Modified:              03-11-2006 16:33 CET
+Date Submitted:             03-11-2006 16:40 CET
+Last Modified:              03-11-2006 16:40 CET
 ======================================================================
-Summary:                    Labelling of controls for SB Extigy is confusing
+Summary:                    No Sound for SB Extigy for volume below 30%
 Description: 
-The controls for the SB Extigy are all labelled as Master. The names should
-reflect the channel(s) that they control. Amixer shows this information
-(albeit its mapping of controls to actual channels is off).
-Additionally a Master 1 control exists that changes the volume of all
-channels.
+The volume control for the SB Extigy only works accurately for values above
+50%. Below that, sound is still detectable very faintly as low as 30%
+(This is with my speakers set to full output which is unbearably loud if
+the volume in alsamixer gets turned up again). Below 30% there is no sound
+as far as I can tell. Effectively there's only half a volume control
+(50%-100%).
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 16:33 andersin       New Issue                                    
+03-11-06 16:40 andersin       New Issue                                    
 ======================================================================
 
 
