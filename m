@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
-Date: Sat, 11 Mar 2006 19:23:54 +0100
-Message-ID: <c299858e3eebdbf394a4f73df19fc9cc@bugtrack.alsa-project.org>
+Date: Sat, 11 Mar 2006 19:33:46 +0100
+Message-ID: <72e9af300f6e4a7e43767bf8c6dfbb1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A0A018C
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 19:23:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B85FD1A2
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2006 19:33:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSE Linux 10.0
 Kernel Version:             2.6.13-15
 ======================================================================
 Date Submitted:             01-11-2006 07:23 CET
-Last Modified:              03-11-2006 19:23 CET
+Last Modified:              03-11-2006 19:33 CET
 ======================================================================
 Summary:                    Intel HDA Modem ?
 Description: 
@@ -63,20 +63,6 @@ where there is only analog telephone.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-11-06 19:03 
-----------------------------------------------------------------------
-You are doing it wrong.  The modem is device hw:0,6:
-
-card 0: Intel [HDA Intel], device 6: Si3054 Modem [Si3054 Modem]
-^^^^^^                     ^^^^^^^^
-
-But you tell it to use device 0:
-
-./slmodemd -a hw:0 
-
-Try ./slmodemd -a hw:0,6
-
-----------------------------------------------------------------------
  kratz00 - 03-11-06 19:23 
 ----------------------------------------------------------------------
 ok, i thought chrmue is right because he got it working 
@@ -84,6 +70,11 @@ nevertheless your suggestion didn't change anything, wvdial still gives
 the same error message :(
 
 other ideas? thanks
+
+----------------------------------------------------------------------
+ rlrevell - 03-11-06 19:33 
+----------------------------------------------------------------------
+Sorry, no idea.  Double check that your are doing it right.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +98,7 @@ Date Modified  Username       Field                    Change
 03-11-06 15:19 kratz00        Note Added: 0008416                          
 03-11-06 19:03 rlrevell       Note Added: 0008421                          
 03-11-06 19:23 kratz00        Note Added: 0008423                          
+03-11-06 19:33 rlrevell       Note Added: 0008424                          
 ======================================================================
 
 
