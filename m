@@ -1,21 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Reducing spam on alsa-devel
-Date: Sun, 12 Mar 2006 03:04:19 -0500
-Message-ID: <1142150660.25358.121.camel@mindpipe>
-References: <440F1811.8060900@redfish-solutions.com>
-	 <1141840298.767.163.camel@mindpipe>
-	 <440F1C8C.6090807@redfish-solutions.com>
-	 <2c746f620603111309v20e61acbs64feb02844334bdf@mail.gmail.com>
-	 <1142143510.25358.99.camel@mindpipe>
-	 <4413CB49.3090801@redfish-solutions.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000172]: Master volume control only controls front speakers
+Date: Sun, 12 Mar 2006 10:36:44 +0100
+Message-ID: <af5751e6d19720bdd163cba3b15459e8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id C514B1DF
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 09:12:47 +0100 (MET)
-In-Reply-To: <4413CB49.3090801@redfish-solutions.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 586AE18A
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 10:36:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,50 +18,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Cc: Eric Shattow <lucent@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-03-12 at 00:18 -0700, Philip Prindeville wrote:
-> Lee Revell wrote:
-> 
-> >On Sat, 2006-03-11 at 15:09 -0600, Eric Shattow wrote:
-> >
-> >>I agree that the spam level on alsa-devel is highly rediculous. I
-> >>
-> >>stopped reading it because i have to sift through too much
-> >>
-> >>non-content.
-> >>
-> >The spam has been drastically reduced from several months ago.  Maybe
-> >
-> >whatever filter was applied could be dialed up a bit?
-> >
-> >Do you notice any pattern in the spam scores (see headers) of the
-> >
-> >messages that get through?
-> >
-> >Lee
-> >
-> >  
-> >
-> For instance:
 
-I'm not talking about the spam score that your SA assigns, I'm referring
-to the one from Sourceforge's server:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172> 
+======================================================================
+Reported By:                gruberroland
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   172
+Category:                   2_mixer
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             03-31-2004 11:50 CEST
+Last Modified:              03-12-2006 10:36 CET
+======================================================================
+Summary:                    Master volume control only controls front speakers
+Description: 
+The master volume control has no effect on the rear speakers.
+The rear speakers can be controlled by "Sigmatel Surround" but not
+completly muted.
 
-X-Spam-Score: 2.4 (++)
-X-Spam-Report: Spam Filtering performed by sourceforge.net. See
-http://spamassassin.org/tag/ for more details. Report problems to
-http://sf.net/tracker/?func=add&group_id=1&atid=200001 0.1
-NORMAL_HTTP_TO_IP      URI: Uses a dotted-decimal IP address in URL 0.0
-HTML_60_70             BODY: Message is 60% to 70% HTML 0.0 HTML_MESSAGE
-BODY: HTML included in message 1.2 MIME_HTML_ONLY         BODY: Message
-only has text/html MIME parts 0.6 URIBL_SBL              Contains an URL
-listed in the SBL blocklist [URIs: 83.68.233.20] 0.5
-MIME_HEADER_CTYPE_ONLY 'Content-Type' found without required MIME
-headers
-Subject: [Alsa-devel] Important information regarding your Chase account
+I use "Sigmatel 4-Speaker Stereo" to get sound on all 4 speakers. The
+speakers are plugged into both output plugs on the soundcard.
+
+I tried all volume controls that are provided, there seems to be no master
+control.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000154 Master volume only controls front outpu...
+related to          0000919 Master volume doesn't control rear spea...
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 03-11-06 19:02 
+----------------------------------------------------------------------
+You are looking at the wrong bug report, this one makes no reference to
+ens1371, this is about the emu10k1 driver.
+
+----------------------------------------------------------------------
+ gruberroland - 03-12-06 10:36 
+----------------------------------------------------------------------
+I created this report because the volume control on my ens1371 did not work
+correctly. But I do not know why there is no more reference to the
+ens1371.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-31-04 11:50 gruberroland   New Issue                                    
+03-31-04 11:50 gruberroland   Kernel Version            => 2.4.25          
+03-31-04 16:33 perex          Assigned To               => perex           
+03-31-04 16:33 perex          Severity                 major => feature    
+03-31-04 16:33 perex          Status                   new => assigned     
+03-31-04 16:35 perex          Note Added: 0000725                          
+10-22-04 16:44 perex          Relationship added       related to 0000154  
+10-29-04 21:03 BMS            Issue Monitored: BMS                         
+02-22-05 09:57 perex          Relationship added       related to 0000919  
+02-22-05 09:59 perex          Project                  ALSA - driver => ALSA -
+lib
+02-22-05 09:59 perex          Category                 PCI - ens1371 => mixer
+03-09-06 11:17 muffty         Note Added: 0008387                          
+03-09-06 11:18 muffty         File Added: master_volume_v3.patch                
+   
+03-09-06 11:19 muffty         Note Edited: 0008387                         
+03-09-06 11:24 muffty         Issue Monitored: muffty                      
+03-09-06 12:23 Miwer          Issue Monitored: Miwer                       
+03-09-06 19:53 muffty         Note Edited: 0008387                         
+03-10-06 02:45 Raymond        Note Added: 0008398                          
+03-10-06 03:05 Raymond        Note Added: 0008399                          
+03-10-06 03:20 rlrevell       Note Added: 0008400                          
+03-11-06 08:50 Raymond        Note Added: 0008414                          
+03-11-06 19:02 rlrevell       Note Added: 0008420                          
+03-12-06 05:22 Raymond        Note Edited: 0008398                         
+03-12-06 10:36 gruberroland   Note Added: 0008429                          
+======================================================================
 
 
 
