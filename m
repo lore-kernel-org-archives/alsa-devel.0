@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000172]: Master volume control only controls front speakers
-Date: Sun, 12 Mar 2006 10:36:44 +0100
-Message-ID: <af5751e6d19720bdd163cba3b15459e8@bugtrack.alsa-project.org>
+Date: Sun, 12 Mar 2006 11:04:37 +0100
+Message-ID: <ae243ad55842608a14da06d59175dffa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 586AE18A
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 10:36:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0CB961D0
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 11:04:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             03-31-2004 11:50 CEST
-Last Modified:              03-12-2006 10:36 CET
+Last Modified:              03-12-2006 11:04 CET
 ======================================================================
 Summary:                    Master volume control only controls front speakers
 Description: 
@@ -59,17 +59,29 @@ related to          0000919 Master volume doesn't control rear spea...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-11-06 19:02 
-----------------------------------------------------------------------
-You are looking at the wrong bug report, this one makes no reference to
-ens1371, this is about the emu10k1 driver.
-
-----------------------------------------------------------------------
  gruberroland - 03-12-06 10:36 
 ----------------------------------------------------------------------
 I created this report because the volume control on my ens1371 did not work
 correctly. But I do not know why there is no more reference to the
 ens1371.
+
+----------------------------------------------------------------------
+ Raymond - 03-12-06 11:04 
+----------------------------------------------------------------------
+If you want to mute the rear speaker, the simplest way is to turn "Sigmatel
+4-Speaker Stereo" off.
+
+The name of the control should be named according to the slots assigned to
+the pcm 
+
+It depend how stac9708 is configured - multi-channels programming register
+74h.
+
+MC1, MC0  PCM OUT LEFT PCM OUT RIGHT PCM2 LEFT PCM2 RIGHT
+0, 0      Slot 3       Slot 4        Slot 7    Slot 8
+0, 1      Slot 7       Slot 8        Slot 6    Slot 9 
+1, 0      Slot 6       Slot 9        Slot 7    Slot 8
+1, 1      Slot 6       Slot 9        Slot 10   Slot 11
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +112,7 @@ lib
 03-11-06 19:02 rlrevell       Note Added: 0008420                          
 03-12-06 05:22 Raymond        Note Edited: 0008398                         
 03-12-06 10:36 gruberroland   Note Added: 0008429                          
+03-12-06 11:04 Raymond        Note Added: 0008430                          
 ======================================================================
 
 
