@@ -1,17 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Dreamcast AICA driver
-Date: Sun, 12 Mar 2006 01:20:27 +0000
-Message-ID: <1142126427.9496.56.camel@localhost.localdomain>
-References: <1142124747.9496.50.camel@localhost.localdomain>
-	 <1142125920.25358.22.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001916]: NVidia CK8 and CK8S AC97 controllers only capture in mono
+Date: Sun, 12 Mar 2006 02:33:52 +0100
+Message-ID: <e2124fc04ff5d7cb85d630c7423d90fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 598C01E2
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 02:20:31 +0100 (MET)
-In-Reply-To: <1142125920.25358.22.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E110F13A
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 02:33:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,31 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-03-11 at 20:11 -0500, Lee Revell wrote:
-> On Sun, 2006-03-12 at 00:52 +0000, Adrian McMenamin wrote:
-> > After a mere three years in development I now have a working (mono only
-> > for now) ALSA driver for the Dreamcast driver to test.
-> > 
-> > Sources are available for browsing at:
-> > 
-> > http://newgolddream.dyndns.info/cgi-bin/cvsweb
-> > 
-> > 
-> > If there are any testers out there please let me know!
-> 
-> Cool, what did you have to do to get it working?
 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1916> 
+======================================================================
+Reported By:                nenolod
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1916
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo Linux 2005.1
+Kernel Version:             2.6.15-gentoo-r7
+======================================================================
+Date Submitted:             03-12-2006 02:33 CET
+Last Modified:              03-12-2006 02:33 CET
+======================================================================
+Summary:                    NVidia CK8 and CK8S AC97 controllers only capture in
+mono
+Description: 
+nenolod@localhost ~/audacious-devel/audacious $ cat /proc/asound/cards
+0 [CK8            ]: NFORCE - NVidia CK8
+                     NVidia CK8 with ALC658D at 0xea005000, irq 18
+nenolod@localhost ~/audacious-devel/audacious $ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
+08:13:09 2005 UTC).
+nenolod@localhost ~/audacious-devel/audacious $
 
-Key point was to switch to timer polling. It turned out there were
-issues with the ARM7 firmware and interrupts that meant it behaved in
-odd ways and essentially didn't work :)
+======================================================================
 
-So I still use DMA to transfer the samples, but I use timer polling to
-test how much has been played
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-12-06 02:33 nenolod        New Issue                                    
+03-12-06 02:33 nenolod        Distribution              => Gentoo Linux 2005.1
+03-12-06 02:33 nenolod        Kernel Version            => 2.6.15-gentoo-r7
+======================================================================
+
 
 
 
