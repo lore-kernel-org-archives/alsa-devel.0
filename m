@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Sun, 12 Mar 2006 16:40:15 +0100
-Message-ID: <7a1702321045ad4819cb84e6de52f152@bugtrack.alsa-project.org>
+From: Georg Chini <georg.chini@triaton-webhosting.com>
+Subject: snd-bt87x
+Date: Sun, 12 Mar 2006 16:54:13 +0100
+Message-ID: <44144425.5040702@triaton-webhosting.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B445A1CA
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 16:40:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +15,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
-======================================================================
-Reported By:                kiwi
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1898
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 5 test3
-Kernel Version:             2.6.15-1.2009.4.2_FC5
-======================================================================
-Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              03-12-2006 16:40 CET
-======================================================================
-Summary:                    no sound from headphones or speakers on asus a6km
-laptop
-Description: 
-The headphone port and the speakers just don't work. Seems like there is
-some control hidden in the mixer which is muted. 
-By setting the master and pcm volume at 100% I can hear just some static
-on song beats only on headphones. Speakers always stay mute.
-I can only get sound by attaching the headphones to line-in and enabling
-"shared" surround mode.
+I posted a mail yesterday concerning problems with snd-bt87x.
+I was wrong, the module works. The only remaining issue is
+that my card is not detected with loadall=yes.
 
-Same issues with a knoppix 4.0.2.
-
-======================================================================
-
-----------------------------------------------------------------------
- kiwi - 03-12-06 15:49 
-----------------------------------------------------------------------
-I confirm it's the same laptop (same exact model too). 
-I found by myself the way to write to ac97 registers
-(Documentation/sound/alsa/Procfile.txt).
-Now I'm recompiling the driver with debug enabled and mess with registers
-:)
-
-----------------------------------------------------------------------
- Rollsappletree - 03-12-06 16:40 
-----------------------------------------------------------------------
-Identical problem on a Asus z92km, whith same chipset, on a Gentoo box
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-09-06 00:30 kiwi           New Issue                                    
-03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
-03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
-03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
-03-09-06 16:41 kiwi           Note Added: 0008391                          
-03-09-06 20:09 michele26x1    Note Added: 0008396                          
-03-09-06 21:02 kiwi           Note Added: 0008397                          
-03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
-03-12-06 15:49 kiwi           Note Added: 0008432                          
-03-12-06 16:40 Rollsappletree Note Added: 0008433                          
-======================================================================
-
-
+Regards
+              Georg Chini
 
 
 -------------------------------------------------------
