@@ -1,13 +1,17 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: website updates
-Date: Mon, 13 Mar 2006 12:17:23 +0900
-Message-ID: <4414E443.2070005@boosthardware.com>
-References: <44144425.5040702@triaton-webhosting.com>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Dreamcast AICA driver
+Date: Sun, 12 Mar 2006 20:23:14 +0000
+Message-ID: <1142194994.19034.9.camel@localhost.localdomain>
+References: <1142124747.9496.50.camel@localhost.localdomain>
+	 <1142125920.25358.22.camel@mindpipe>
+	 <1142126427.9496.56.camel@localhost.localdomain>
+	 <1142145536.25358.116.camel@mindpipe>
+	 <1142195736.8342.4.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <44144425.5040702@triaton-webhosting.com>
+In-Reply-To: <1142195736.8342.4.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,37 +21,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Manuel Jander <manuel.jander@gmail.com>
+Cc: Alsa-devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, 2006-03-12 at 21:35 +0100, Manuel Jander wrote:
+> Hi,
+> 
+> On Sun, 2006-03-12 at 01:38 -0500, Lee Revell wrote:
+> > On Sun, 2006-03-12 at 01:20 +0000, Adrian McMenamin wrote:
+> > > > > http://newgolddream.dyndns.info/cgi-bin/cvsweb
+> > > > > 
+> > > 
+> > 
+> > > 	dreamcastcard->clicks++;
+> > > 	if (dreamcastcard->clicks == 8) dreamcastcard->clicks = 0;
+> > 
+> > dreamcastcard->clicks %= 8;
+> 
+> Watch out. The ARM7 does not support this in direct assembler. If the
+> compiler is not smart enough it would require a division, and that is
+> really realy slow on a any ARM processor. 
+> Helping the compiler by using
+> 
+> dreamcastcard->clicks &= 0x00000003;
+> 
+> ... would be a much faster option. 
+> 
+This was actually in SH4 code rather than ARM7, though I did have some
+fun and games with the ARM7 code - seemingly with division :)
 
-I'm now back online with a new office in sunny Thailand.
-
-I will be doing a round of updates for the website in the next month or 
-so. If anyone has ideas or suggestions for improvements please let me 
-know and I will do my best to make them happen.
-
-Cheers.
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
-========================================
-
-
-Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
 
 
 -------------------------------------------------------
