@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Sun, 12 Mar 2006 21:35:56 +0100
-Message-ID: <0735ab6b976061bdd3847fda60ff8545@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Stereo or mono - how to tell, what to do?
+Date: Sun, 12 Mar 2006 21:56:33 +0000
+Message-ID: <44149911.1030309@superbug.co.uk>
+References: <1142194467.19034.6.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AEB911D5
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 21:35:56 +0100 (MET)
+Received: from anchor-post-32.mail.demon.net (anchor-post-32.mail.demon.net [194.217.242.90])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A416B177
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 22:56:15 +0100 (MET)
+In-Reply-To: <1142194467.19034.6.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,108 +20,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Adrian McMenamin wrote:
+> I want to add the capacity to play stereo samples to my Dreamcast sound
+> driver.
+>
+> The hardware does not support interleaved samples and in the OSS driver
+> I simply separated out the input stream into two different buffers and
+> transferred them separately into the hardware's memory. Can I do the
+> same with ALSA or is there some middle layer magic I should be aware of?
+>   
+You can get alsa-lib to send either interleaved or non-interleaved 
+samples to your driver.
+You just tell alsa-lib which format you like, and set the 
+snd_pcm_hardware .info parameter.
+I have not looked into how alsa-lib informs the driver of the 
+non-interleaved nature of the samples. You might have to look into that 
+yourself.
+Probably something in the snd_pcm_runtime structure.
+> And how can my driver tell if the incoming samples are stereo or not. In
+> OSS this was all done through the SNDCTL_DSP_STEREO and
+> SNDCTL_DSP_CHANNELS ioctls, how do I do it in ALSA (I need to inform the
+> hardware to expect two channels and not one).
+>
+> Adrian
+>
+>   
+You get all that information from the prepare() callback.
+The parameter passed is struct snd_pcm_substream *substream.
+substream->runtime->rate
+substream->runtime->format
+substream->runtime->channels
+substream->runtime->buffer_size
+substream->runtime->period_size
+substream->runtime->periods
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
-======================================================================
-Reported By:                wzzrd
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   154
-Category:                   2_mixer
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              03-12-2006 21:35 CET
-======================================================================
-Summary:                    Master volume only controls front output (emu10k1)
-Description: 
-Setting the alsamixer Master Volume slider only controls the front two
-speakers. The rear speakers have to be controlled with the Wave Surround
-setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
-bug. If I'm wrong putting it here, sorry.
-
-It would be very convenient to be able to control all four speakers with
-the Master Volume setting and to have a Front and Rear slider to control
-the front and rear speakers individually.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000176 Master volume does not alters center, L...
-has duplicate       0000786 Master can't handle all channel
-has duplicate       0001256 surround51: Master Volume control and M...
-has duplicate       0001071 Help with Volume Controls
-related to          0000919 Master volume doesn't control rear spea...
-======================================================================
-
-----------------------------------------------------------------------
- muffty - 03-09-06 11:34 
-----------------------------------------------------------------------
-Please, take a look at
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172. I added a
-possible solution there.
-
-----------------------------------------------------------------------
- rlrevell - 03-12-06 21:35 
-----------------------------------------------------------------------
-Solution is now attached to this bug as master_volume_v3.patch - bug #172
-was for the wrong driver
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-23-04 17:31 wzzrd          New Issue                                    
-03-23-04 18:42 perex          View Status              @0@ => public       
-03-23-04 18:42 perex          Description Updated                          
-03-23-04 18:42 perex          Additional Information Updated                    
-03-23-04 18:43 perex          Status                   new => assigned     
-03-23-04 18:43 perex          Assigned To               => perex           
-03-26-04 20:21 djtm           Note Added: 0000708                          
-04-19-04 02:47 tarball        Issue Monitored: tarball                     
-04-19-04 21:23 perex          Relationship added       has duplicate 0000176
-05-24-04 22:51 delmonico      Note Added: 0001199                          
-10-22-04 16:44 perex          Relationship added       related to 0000172  
-10-23-04 01:09 djtm           Note Added: 0002253                          
-10-23-04 01:09 djtm           File Added: alsavol.sh                       
-10-23-04 01:10 djtm           Note Edited: 0002253                         
-11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
-01-04-05 21:01 Miwer          Note Added: 0003081                          
-01-04-05 21:11 rlrevell       Note Added: 0003082                          
-01-04-05 21:29 pzad           Note Added: 0003083                          
-01-04-05 21:38 rlrevell       Note Added: 0003084                          
-01-04-05 22:30 pzad           Note Added: 0003085                          
-01-04-05 22:38 rlrevell       Note Added: 0003086                          
-01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
-01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
-01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
-01-27-05 01:00 adamk75        Note Added: 0003418                          
-02-01-05 22:57 adamk75        Note Added: 0003475                          
-02-03-05 20:20 rlrevell       Note Added: 0003493                          
-02-17-05 22:01 adamk75        Note Added: 0003642                          
-02-17-05 22:59 rlrevell       Note Added: 0003646                          
-02-17-05 23:28 adamk75        Note Added: 0003647                          
-02-22-05 09:56 perex          Relationship added       related to 0000919  
-05-20-05 20:39 Miwer          Issue Monitored: Miwer                       
-05-20-05 22:02 Miwer          Note Added: 0004699                          
-05-20-05 22:05 rlrevell       Note Added: 0004700                          
-07-13-05 18:56 rlrevell       Relationship added       has duplicate 0001256
-07-16-05 17:11 jdthood        Relationship added       has duplicate 0001071
-09-02-05 19:55 blueSceaDa     Issue Monitored: blueSceaDa                    
-03-09-06 11:34 muffty         Note Added: 0008388                          
-03-09-06 11:37 muffty         Issue Monitored: muffty                      
-03-12-06 21:27 rlrevell       Relationship deleted     related to 0000172  
-03-12-06 21:34 rlrevell       File Added: master_volume_v3.patch                
-   
-03-12-06 21:35 rlrevell       Note Added: 0008436                          
-======================================================================
 
 
 
