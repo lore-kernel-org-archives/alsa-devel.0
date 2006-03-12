@@ -1,19 +1,18 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Dreamcast AICA driver
-Date: Sun, 12 Mar 2006 01:28:21 -0500
-Message-ID: <1142144901.25358.108.camel@mindpipe>
+Date: Sun, 12 Mar 2006 01:32:01 -0500
+Message-ID: <1142145122.25358.112.camel@mindpipe>
 References: <1142124747.9496.50.camel@localhost.localdomain>
 	 <1142125920.25358.22.camel@mindpipe>
 	 <1142126427.9496.56.camel@localhost.localdomain>
-	 <1142144081.25358.103.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 815941DF
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 07:28:23 +0100 (MET)
-In-Reply-To: <1142144081.25358.103.camel@mindpipe>
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 406331DF
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 07:32:04 +0100 (MET)
+In-Reply-To: <1142126427.9496.56.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,25 +26,26 @@ To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-03-12 at 01:14 -0500, Lee Revell wrote:
-> You should submit this to ALSA now, as a patch against CVS...
+On Sun, 2006-03-12 at 01:20 +0000, Adrian McMenamin wrote: 
+>  http://newgolddream.dyndns.info/cgi-bin/cvsweb
 
+You should split this into a .c and .h file
 
-static int snd_aicapcm_free(snd_card_aica_t *dreamcastcard)
-{
-	release_mem_region(0xa0702c00, 0x4);
-	release_mem_region(0xa0800000, 0x200000);
-	return 0;
-}
+/* AICA channels stuff */
 
-Actually this driver still has way too many magic numbers - if you're
-not exactly sure what a constant does then document it with comments in
-the header file.
+/* Command values */
+#define AICA_CMD_KICK 0x80000000
+#define AICA_CMD_NONE 0
+#define AICA_CMD_START 1
+#define AICA_CMD_STOP 2
+#define AICA_CMD_VOL 3
 
-It looks like many of these will be trivial to document:
+/* Sound modes */
+#define SM_8BIT		1
+#define SM_16BIT	0
+#define SM_ADPCM	2
 
-	if (request_mem_region(0xa0702c00, 4, "AICA ARM control")== NULL) return -ENOMEM;
-	if (request_mem_region(0xa0800000, 0x200000, "AICA Sound RAM") == NULL)
+etc
 
 Lee
 
