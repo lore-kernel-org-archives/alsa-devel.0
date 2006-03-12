@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Sun, 12 Mar 2006 15:49:53 +0100
-Message-ID: <eed3e2f76e69f3f4afc42ae1f26b0e68@bugtrack.alsa-project.org>
+Date: Sun, 12 Mar 2006 16:40:15 +0100
+Message-ID: <7a1702321045ad4819cb84e6de52f152@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B7C41CF
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 15:49:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B445A1CA
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 16:40:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5 test3
 Kernel Version:             2.6.15-1.2009.4.2_FC5
 ======================================================================
 Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              03-12-2006 15:49 CET
+Last Modified:              03-12-2006 16:40 CET
 ======================================================================
 Summary:                    no sound from headphones or speakers on asus a6km
 laptop
@@ -57,12 +57,6 @@ Same issues with a knoppix 4.0.2.
 ======================================================================
 
 ----------------------------------------------------------------------
- kiwi - 03-09-06 21:02 
-----------------------------------------------------------------------
-Does anyone know how to change ac97 registers by hand without recompiling
-the whole thing? Is it possible?
-
-----------------------------------------------------------------------
  kiwi - 03-12-06 15:49 
 ----------------------------------------------------------------------
 I confirm it's the same laptop (same exact model too). 
@@ -70,6 +64,11 @@ I found by myself the way to write to ac97 registers
 (Documentation/sound/alsa/Procfile.txt).
 Now I'm recompiling the driver with debug enabled and mess with registers
 :)
+
+----------------------------------------------------------------------
+ Rollsappletree - 03-12-06 16:40 
+----------------------------------------------------------------------
+Identical problem on a Asus z92km, whith same chipset, on a Gentoo box
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +82,7 @@ Date Modified  Username       Field                    Change
 03-09-06 21:02 kiwi           Note Added: 0008397                          
 03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
 03-12-06 15:49 kiwi           Note Added: 0008432                          
+03-12-06 16:40 Rollsappletree Note Added: 0008433                          
 ======================================================================
 
 
