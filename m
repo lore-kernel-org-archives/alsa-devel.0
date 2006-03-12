@@ -1,11 +1,14 @@
-From: Georg Chini <georg.chini@triaton-webhosting.com>
-Subject: snd-bt87x
-Date: Sat, 11 Mar 2006 23:19:38 +0100
-Message-ID: <44134CFA.2090800@triaton-webhosting.com>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Dreamcast AICA driver
+Date: Sun, 12 Mar 2006 00:52:27 +0000
+Message-ID: <1142124747.9496.50.camel__24532.7874123634$1142124806$gmane$org@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7E9141B5
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 01:52:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,21 +18,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: linux-sh <linuxsh-dev@lists.sourceforge.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+After a mere three years in development I now have a working (mono only
+for now) ALSA driver for the Dreamcast driver to test.
 
-I have a problem with the snd-bt87x module. My TV-card is
-an unsupported card (Terratec TValue (LR102), PCI ID 153b:1134)
-which worked with the module in 2.6.11.2 with option loadall=yes.
-When I try this with 2.6.15.6 the card is not detected. If I insert
-a line for the card into the source code and do not use the
-loadall option, the card is found, but I get no sound. Is there
-anyone who can help me solve this problem? Any help welcome.
+Sources are available for browsing at:
 
-Regards
-             Georg Chini
+http://newgolddream.dyndns.info/cgi-bin/cvsweb
+
+
+If there are any testers out there please let me know!
+
+Adrian
+
 
 
 -------------------------------------------------------
