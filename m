@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001911]: Make Master 1 adjust volumes relative to each other for SB Extigy
-Date: Sun, 12 Mar 2006 02:01:35 +0100
-Message-ID: <0944b6ba210a8913d1312233c5bde0f2@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Dreamcast AICA driver
+Date: Sat, 11 Mar 2006 20:11:59 -0500
+Message-ID: <1142125920.25358.22.camel@mindpipe>
+References: <1142124747.9496.50.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 881A71B5
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 02:01:35 +0100 (MET)
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 472601E2
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 02:12:03 +0100 (MET)
+In-Reply-To: <1142124747.9496.50.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,65 +20,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2006-03-12 at 00:52 +0000, Adrian McMenamin wrote:
+> After a mere three years in development I now have a working (mono only
+> for now) ALSA driver for the Dreamcast driver to test.
+> 
+> Sources are available for browsing at:
+> 
+> http://newgolddream.dyndns.info/cgi-bin/cvsweb
+> 
+> 
+> If there are any testers out there please let me know!
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1911> 
-======================================================================
-Reported By:                andersin
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1911
-Category:                   aconnect
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
-======================================================================
-Date Submitted:             03-11-2006 17:06 CET
-Last Modified:              03-12-2006 02:01 CET
-======================================================================
-Summary:                    Make Master 1 adjust volumes relative to each other
-for SB Extigy
-Description: 
-The Master 1 volume control sets the volume of all channels to the desired
-volume level. When adjusting the volume of several speakers, it is
-desirable, to adjust the volume while keeping the relative differences
-between the channels intact. This can be implemented by adding the volume
-level of Master1 to the volume of the other channels. The other channels
-can hence be used individually or used to specify a relative offset.
-======================================================================
+Cool, what did you have to do to get it working?
 
-----------------------------------------------------------------------
- andersin - 03-11-06 19:54 
-----------------------------------------------------------------------
-I opened a new bug in the driver category. Please close this one.
-
-
-
-----------------------------------------------------------------------
- rlrevell - 03-12-06 02:01 
-----------------------------------------------------------------------
-Wrong category
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-11-06 17:06 andersin       New Issue                                    
-03-11-06 17:08 andersin       Note Added: 0008419                          
-03-11-06 19:17 rlrevell       Note Added: 0008422                          
-03-11-06 19:43 andersin       Note Added: 0008425                          
-03-11-06 19:54 andersin       Note Edited: 0008425                         
-03-12-06 02:01 rlrevell       Status                   new => closed       
-03-12-06 02:01 rlrevell       Note Added: 0008428                          
-======================================================================
-
+Lee
 
 
 
