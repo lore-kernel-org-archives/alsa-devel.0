@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
-Date: Sun, 12 Mar 2006 11:22:08 +0100
-Message-ID: <ad620ee5f8621c8713aebc64f72edf1f@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Dreamcast AICA driver
+Date: Sun, 12 Mar 2006 10:58:02 +0000
+Message-ID: <1142161082.9555.0.camel@localhost.localdomain>
+References: <1142124747.9496.50.camel@localhost.localdomain>
+	 <1142125920.25358.22.camel@mindpipe>
+	 <1142126427.9496.56.camel@localhost.localdomain>
+	 <1142145536.25358.116.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 713251E2
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 11:22:08 +0100 (MET)
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9E0ED1D5
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 11:58:07 +0100 (MET)
+In-Reply-To: <1142145536.25358.116.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,106 +23,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2006-03-12 at 01:38 -0500, Lee Revell wrote:
+> On Sun, 2006-03-12 at 01:20 +0000, Adrian McMenamin wrote:
+> > > > http://newgolddream.dyndns.info/cgi-bin/cvsweb
+> > > > 
+> > 
+> 
+> > 	dreamcastcard->clicks++;
+> > 	if (dreamcastcard->clicks == 8) dreamcastcard->clicks = 0;
+> 
+> dreamcastcard->clicks %= 8
+> 
+> ;-)
+> 
+> > 	/* reschedule the timer */
+> > 	dreamcastcard->timer.expires = jiffies + 2;
+> 
+> What exactly do you mean to do here - I suspect there's an unintended
+> dependency on HZ.  Do you intend to delay for $FOO ms?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
-======================================================================
-Reported By:                chrmue
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1733
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE Linux 10.0
-Kernel Version:             2.6.13-15
-======================================================================
-Date Submitted:             01-11-2006 07:23 CET
-Last Modified:              03-12-2006 11:22 CET
-======================================================================
-Summary:                    Intel HDA Modem ?
-Description: 
-I want to use my HDA Softmodem in Linux, is there any development on a HDA
-Modem Module ?
-
-cat /proc/asound/card0/codec#1 gives me:
-Codec: Generic 11c1 ID 3026
-Address: 1
-Vendor Id: 0x11c13026
-Subsystem Id: 0x11c13026
-Revision Id: 0x70500
-
-In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
-
-If there is development on this i would like to participate to get it
-going, because i dont't want to have a windows-installation on my Notebook
-(Acer TravelMate 8104) just for getting my mails at my parents house,
-where there is only analog telephone.
-======================================================================
-
-----------------------------------------------------------------------
- sashak - 03-11-06 23:08 
-----------------------------------------------------------------------
-kratz00,
-
-> Try ./slmodemd -a hw:0,6 
-
-This is correct and you need it.
-
-The problem you have with wvdial is known - this fails because wvdial
-expects something from serial specific ioctls(), but PTY interface (used
-to communicate with slmodem) does not have it. Not sure that this is issue
-with mainstream versions of wvdial, probably just distro specifc (you are
-with SuSE, right?). Anyway try different version of wvdial/wvstreams, or
-different dialer.
-
-----------------------------------------------------------------------
- kratz00 - 03-12-06 11:22 
-----------------------------------------------------------------------
-i believe you two
-
-just curious how chrmue got it working (with the wrong parameters) and i
-really would like to know what wvdial version he uses
-
-i'm not on SuSE :) it's a LFS system and i installed wvdial following the
-BLFS instructions
-
-wvdial is version 1.54.0 and wvstreams 4.0.1
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-11-06 07:23 chrmue         New Issue                                    
-01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
-01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
-01-11-06 07:42 rlrevell       Note Added: 0007559                          
-01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
-            
-01-11-06 23:35 sashak         Note Added: 0007571                          
-01-12-06 00:00 sashak         Note Added: 0007574                          
-01-12-06 00:02 sashak         Issue Monitored: sashak                      
-01-12-06 05:35 chrmue         Note Added: 0007581                          
-01-13-06 00:16 sashak         Note Added: 0007598                          
-01-16-06 20:19 chrmue         Note Added: 0007692                          
-01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
-03-03-06 15:43 lrupn          Note Added: 0008341                          
-03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
-03-10-06 23:44 kratz00        Note Added: 0008413                          
-03-11-06 15:19 kratz00        Note Added: 0008416                          
-03-11-06 19:03 rlrevell       Note Added: 0008421                          
-03-11-06 19:23 kratz00        Note Added: 0008423                          
-03-11-06 19:33 rlrevell       Note Added: 0008424                          
-03-11-06 23:08 sashak         Note Added: 0008427                          
-03-12-06 11:22 kratz00        Note Added: 0008431                          
-======================================================================
-
+Just copied that off the dummy driver in the kernel but yes it's just an
+arbitrary delay
 
 
 
