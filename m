@@ -1,21 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Dreamcast AICA driver
-Date: Sun, 12 Mar 2006 12:16:07 +0000
-Message-ID: <1142165767.9555.9.camel__10221.1766098209$1142165835$gmane$org@localhost.localdomain>
-References: <1142124747.9496.50.camel@localhost.localdomain>
-	 <1142125920.25358.22.camel@mindpipe>
-	 <1142126427.9496.56.camel@localhost.localdomain>
-	 <1142144081.25358.103.camel@mindpipe> <1142144901.25358.108.camel@mindpipe>
-	 <1142161181.9555.3.camel@localhost.localdomain>
-	 <44140DF0.1090908@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
+Date: Sun, 12 Mar 2006 15:49:53 +0100
+Message-ID: <eed3e2f76e69f3f4afc42ae1f26b0e68@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B32FD1B7
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 13:16:12 +0100 (MET)
-In-Reply-To: <44140DF0.1090908@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B7C41CF
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 15:49:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,34 +18,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: Lee Revell <rlrevell@joe-job.com>, linux-sh <linuxsh-dev@lists.sourceforge.net>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-03-12 at 12:02 +0000, James Courtier-Dutton wrote:
 
-> Adrian,
-> 
-> It was good to talk to you on IRC. Now, as you have the source code for 
-> the ARM7 firmware as well as the SH4 driver code, it might be sensible 
-> to highlight the dependencies between them, by maybe using the same 
-> human readable constant name in both bits of code. It also makes things 
-> easier to understand if the hex addresses are given as offsets from some 
-> sort of base.
-> 
-> if (request_mem_region(0xa0702c00, 4, "AICA ARM control")== NULL) return -ENOMEM;
-> 
-> then becomes in a .h file:
-> #define ARM7_BASE_MEM  0xa0700000
-> #define ARM7_AICA_CONTROL  0x2c00
-> 
-> During driver init:
-> base_mem = ARM7_BASE_MEM
-> 
-> if (request_mem_region(base_mem + ARM7_AICA_CONTROL, 4, "AICA ARM control")== NULL) return -ENOMEM;
-> 
-> This would then allow movement of the base_mem without much modification to the driver code, if for example the ARM7 firmware required the change.
-Sure. I understand the point of course
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
+======================================================================
+Reported By:                kiwi
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1898
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 5 test3
+Kernel Version:             2.6.15-1.2009.4.2_FC5
+======================================================================
+Date Submitted:             03-09-2006 00:30 CET
+Last Modified:              03-12-2006 15:49 CET
+======================================================================
+Summary:                    no sound from headphones or speakers on asus a6km
+laptop
+Description: 
+The headphone port and the speakers just don't work. Seems like there is
+some control hidden in the mixer which is muted. 
+By setting the master and pcm volume at 100% I can hear just some static
+on song beats only on headphones. Speakers always stay mute.
+I can only get sound by attaching the headphones to line-in and enabling
+"shared" surround mode.
+
+Same issues with a knoppix 4.0.2.
+
+======================================================================
+
+----------------------------------------------------------------------
+ kiwi - 03-09-06 21:02 
+----------------------------------------------------------------------
+Does anyone know how to change ac97 registers by hand without recompiling
+the whole thing? Is it possible?
+
+----------------------------------------------------------------------
+ kiwi - 03-12-06 15:49 
+----------------------------------------------------------------------
+I confirm it's the same laptop (same exact model too). 
+I found by myself the way to write to ac97 registers
+(Documentation/sound/alsa/Procfile.txt).
+Now I'm recompiling the driver with debug enabled and mess with registers
+:)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-09-06 00:30 kiwi           New Issue                                    
+03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
+03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
+03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
+03-09-06 16:41 kiwi           Note Added: 0008391                          
+03-09-06 20:09 michele26x1    Note Added: 0008396                          
+03-09-06 21:02 kiwi           Note Added: 0008397                          
+03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
+03-12-06 15:49 kiwi           Note Added: 0008432                          
+======================================================================
+
 
 
 
