@@ -1,18 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Dreamcast AICA driver
-Date: Sun, 12 Mar 2006 01:38:55 -0500
-Message-ID: <1142145536.25358.116.camel@mindpipe>
-References: <1142124747.9496.50.camel@localhost.localdomain>
-	 <1142125920.25358.22.camel@mindpipe>
-	 <1142126427.9496.56.camel@localhost.localdomain>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Re: Reducing spam on alsa-devel
+Date: Sun, 12 Mar 2006 00:01:07 -0700
+Message-ID: <4413C733.7000107@redfish-solutions.com>
+References: <440F1811.8060900@redfish-solutions.com>	 <1141840298.767.163.camel@mindpipe>	 <440F1C8C.6090807@redfish-solutions.com>	 <2c746f620603111309v20e61acbs64feb02844334bdf@mail.gmail.com> <1142143510.25358.99.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 36C96144
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 07:38:58 +0100 (MET)
-In-Reply-To: <1142126427.9496.56.camel@localhost.localdomain>
+Received: from mail.redfish-solutions.com (mail.redfish-solutions.com [71.36.29.88])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EDEC81BB
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 08:01:10 +0100 (MET)
+In-Reply-To: <1142143510.25358.99.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,29 +20,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>, alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Eric Shattow <lucent@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-03-12 at 01:20 +0000, Adrian McMenamin wrote:
-> > > http://newgolddream.dyndns.info/cgi-bin/cvsweb
-> > > 
-> 
+Lee Revell wrote:
 
-> 	dreamcastcard->clicks++;
-> 	if (dreamcastcard->clicks == 8) dreamcastcard->clicks = 0;
+>On Sat, 2006-03-11 at 15:09 -0600, Eric Shattow wrote:
+>  
+>
+>>I agree that the spam level on alsa-devel is highly rediculous. I
+>>stopped reading it because i have to sift through too much
+>>non-content.
+>>    
+>>
+>
+>The spam has been drastically reduced from several months ago.  Maybe
+>whatever filter was applied could be dialed up a bit?
+>
+>Do you notice any pattern in the spam scores (see headers) of the
+>messages that get through?
+>
+>Lee
+>
+>  
+>
 
-dreamcastcard->clicks %= 8
+Well, I have filters on my own system that reject messages being delivered
+for alsa-devel if they look too much like spam.
 
-;-)
+A lot of these are private rules I wrote myself.
 
-> 	/* reschedule the timer */
-> 	dreamcastcard->timer.expires = jiffies + 2;
+But every once in a while I'll see a message that should have been rejected
+by a standard SA install but wasn't...
 
-What exactly do you mean to do here - I suspect there's an unintended
-dependency on HZ.  Do you intend to delay for $FOO ms?
+Could have to do with the custom scoring or with the way that
+auto-whitelists
+work...
 
-Lee
+You also might not have a complete SA install, with SPF turned on (for
+instance).
+
+I could share my rules, but it would have to be out-of-band, since any
+spammer
+could then look at the list archives and figure out how to get around them.
+
+Hence my comment about wanting to reach the list admins directly.
+
+-Philip
+
 
 
 
