@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001917]: SB audigy 2 NX buffer underruns
-Date: Sun, 12 Mar 2006 12:46:14 +0100
-Message-ID: <0427dfdfe8ec96a1a3bcfc9c50675c4b@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Dreamcast AICA driver
+Date: Sun, 12 Mar 2006 12:02:56 +0000
+Message-ID: <44140DF0.1090908@superbug.co.uk>
+References: <1142124747.9496.50.camel@localhost.localdomain>	 <1142125920.25358.22.camel@mindpipe>	 <1142126427.9496.56.camel@localhost.localdomain>	 <1142144081.25358.103.camel@mindpipe> <1142144901.25358.108.camel@mindpipe> <1142161181.9555.3.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AFBDD1D8
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 12:46:14 +0100 (MET)
+Received: from anchor-post-36.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8E4E19F
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 13:02:38 +0100 (MET)
+In-Reply-To: <1142161181.9555.3.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,101 +20,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: Lee Revell <rlrevell@joe-job.com>, linux-sh <linuxsh-dev@lists.sourceforge.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Adrian McMenamin wrote:
+> I know what these are - they can be turned into constants - they are
+> either references to the ARM7 register bank or the ARM7 memory space.
+>
+>
+>   
+>> It looks like many of these will be trivial to document:
+>>
+>> 	if (request_mem_region(0xa0702c00, 4, "AICA ARM control")== NULL) return -ENOMEM;
+>> 	if (request_mem_region(0xa0800000, 0x200000, "AICA Sound RAM") == NULL)
+>>
+>> Lee
+>>
+>>     
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1917> 
-======================================================================
-Reported By:                vyzivus
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1917
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             03-12-2006 12:46 CET
-Last Modified:              03-12-2006 12:46 CET
-======================================================================
-Summary:                    SB audigy 2 NX buffer underruns
-Description: 
-The best I can get is audio with clicks. Both mplayer and aplay screams
-every 10 seconds something about buffer underrun. Then at some random
-underrun something (snd-usb-audio?) finally breaks down and everything
-locks when trying to play. It seems to affect usb functionality aswell - I
-am not able to use usb disks until I reboot.
-I tried to put this into /etc/asound.conf:
-pcm.usb {
-        type hw;
-        card 1;
-        device 0;
-}
+Adrian,
 
-pcm.NX {
-        type dmix
-        ipc_key 1024
-        slave {
-                pcm     "usb";
-                channels        2;
-                rate    48000;
-                period_size     6000;
-                buffer_size     24000;
-                period_time     125000;
-        }
-        bindings {
-                0 0
-                1 1
-        }
-}
+It was good to talk to you on IRC. Now, as you have the source code for 
+the ARM7 firmware as well as the SH4 driver code, it might be sensible 
+to highlight the dependencies between them, by maybe using the same 
+human readable constant name in both bits of code. It also makes things 
+easier to understand if the hex addresses are given as offsets from some 
+sort of base.
 
+if (request_mem_region(0xa0702c00, 4, "AICA ARM control")== NULL) return -ENOMEM;
 
+then becomes in a .h file:
+#define ARM7_BASE_MEM  0xa0700000
+#define ARM7_AICA_CONTROL  0x2c00
 
-with various period_* and buffer arguments but this simply stops playing
-after first buffer underrun. I tried to 
+During driver init:
+base_mem = ARM7_BASE_MEM
 
-modprobe snd-usb-audio nrpacks=1
+if (request_mem_region(base_mem + ARM7_AICA_CONTROL, 4, "AICA ARM control")== NULL) return -ENOMEM;
 
- just to see snd-usb-audio die sooner. I'm wondering what I really bought.
-The
-http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Creative_Labs#matrix
-site says that S/PDIF is not working for NX. Well, _my_ NX does not seem
-to know it because S/PDIF works. With clicks and all that shit of course.
+This would then allow movement of the base_mem without much modification to the driver code, if for example the ARM7 firmware required the change.
 
-When I try to play a file with mplayer this happens:
-$ mplayer -ao alsa:device=NX *
-... blahblah ...
-alsa-init: 1 soundcard found, using: dmixer
-alsa: 48000 Hz/2 channels/4 bpf/65536 bytes buffer/Signed 16 bit Little
-Endian
-AO: [alsa] 48000Hz 2ch s16le (2 bytes per sample)
-Video: no video
-Starting playback...
-A:   2.2 (02.1) of 380.0 (06:20.0)  3.8%
-alsa-play: trying to reset soundcard
-alsa-play: write error: Broken pipe
-alsa-play: trying to reset soundcard
-alsa-play: write error: Broken pipe
-alsa-play: trying to reset soundcard
-... repeat until ctrl+c
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-12-06 12:46 vyzivus        New Issue                                    
-03-12-06 12:46 vyzivus        Distribution              => Gentoo          
-03-12-06 12:46 vyzivus        Kernel Version            => 2.6.15          
-======================================================================
-
+James
 
 
 
