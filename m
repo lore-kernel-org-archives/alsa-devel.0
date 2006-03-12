@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001916]: NVidia CK8 and CK8S AC97 controllers only capture in mono
-Date: Sun, 12 Mar 2006 02:33:52 +0100
-Message-ID: <e2124fc04ff5d7cb85d630c7423d90fc@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Reducing spam on alsa-devel
+Date: Sun, 12 Mar 2006 01:05:09 -0500
+Message-ID: <1142143510.25358.99.camel@mindpipe>
+References: <440F1811.8060900@redfish-solutions.com>
+	 <1141840298.767.163.camel@mindpipe>
+	 <440F1C8C.6090807@redfish-solutions.com>
+	 <2c746f620603111309v20e61acbs64feb02844334bdf@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E110F13A
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 02:33:52 +0100 (MET)
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 14B0C137
+	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 07:05:20 +0100 (MET)
+In-Reply-To: <2c746f620603111309v20e61acbs64feb02844334bdf@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +23,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Eric Shattow <lucent@gmail.com>
+Cc: Philip Prindeville <philipp_subx@redfish-solutions.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2006-03-11 at 15:09 -0600, Eric Shattow wrote:
+> I agree that the spam level on alsa-devel is highly rediculous. I
+> stopped reading it because i have to sift through too much
+> non-content.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1916> 
-======================================================================
-Reported By:                nenolod
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1916
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo Linux 2005.1
-Kernel Version:             2.6.15-gentoo-r7
-======================================================================
-Date Submitted:             03-12-2006 02:33 CET
-Last Modified:              03-12-2006 02:33 CET
-======================================================================
-Summary:                    NVidia CK8 and CK8S AC97 controllers only capture in
-mono
-Description: 
-nenolod@localhost ~/audacious-devel/audacious $ cat /proc/asound/cards
-0 [CK8            ]: NFORCE - NVidia CK8
-                     NVidia CK8 with ALC658D at 0xea005000, irq 18
-nenolod@localhost ~/audacious-devel/audacious $ cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
-08:13:09 2005 UTC).
-nenolod@localhost ~/audacious-devel/audacious $
+The spam has been drastically reduced from several months ago.  Maybe
+whatever filter was applied could be dialed up a bit?
 
-======================================================================
+Do you notice any pattern in the spam scores (see headers) of the
+messages that get through?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-12-06 02:33 nenolod        New Issue                                    
-03-12-06 02:33 nenolod        Distribution              => Gentoo Linux 2005.1
-03-12-06 02:33 nenolod        Kernel Version            => 2.6.15-gentoo-r7
-======================================================================
-
+Lee
 
 
 
