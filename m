@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001531]: PCM output is muted most of the time
-Date: Mon, 13 Mar 2006 17:35:09 +0100
-Message-ID: <6b1e65ead5e4a150e4706c633874e018@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001478]: No sound after volume adjustment during playback
+Date: Mon, 13 Mar 2006 17:35:07 +0100
+Message-ID: <60cce53fb2db43159ae24523200bc120@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C5C01CF
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 17:35:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93087191
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 17:35:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0001478.
+The issue 0001531 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1531> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1478> 
 ======================================================================
-Reported By:                sq5bpm
+Reported By:                dzi
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1531
+Issue ID:                   1478
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo 2.6.13-r5
+Status:                     assigned
+Distribution:               Gentoo 2.6.13-r4
 Kernel Version:             2.6.13
-Resolution:                 duplicate
-Duplicate:                  1841
-Fixed in Version:           
 ======================================================================
-Date Submitted:             11-06-2005 19:04 CET
-Last Modified:              03-13-2006 15:37 CET
+Date Submitted:             10-17-2005 00:57 CEST
+Last Modified:              03-13-2006 17:35 CET
 ======================================================================
-Summary:                    PCM output is muted most of the time
+Summary:                    No sound after volume adjustment during playback
 Description: 
-The soundcard's PCM output is silent in normal use, no errors are reported
-by the snd-hda-intel module. 
-
-The only way I found to hear something is to use gstreamer. This
-application seems to do something extra during initialization, something
-that allows the pass-through of the PCM output (both with alsasink and
-osssink). However, touching anything in the alsamixer during gstreamer
-playback causes the soundcard to become silent immediately (including the
-all other outputs). The sound can be turned on again only by closing the
-application using gstreamer and subsequently muting/unmuting all relevant
-outputs. 
-
-As for the CD playback, apart from the above problem with muting, the CD
-player output works well.
-
-This is somehow related to
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1478 , though here
-the output is disabled by default. The same AD1986A soundcard chip. 
+If I adjust volume during playback, there is no sound anymore. After
+reinserting alsa modules sound is ok. I can adjust sound when playback is
+stopped and then I can play sound again. But if I adjust volume during
+playback, it disappears till reinserting of alsa modules.
+I use alsa kernel modules.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001841 Mixer not working  / fujitsu laptop V20...
-duplicate of        0001478 No sound after volume adjustment during...
+has duplicate       0001531 PCM output is muted most of the time
 ======================================================================
 
 ----------------------------------------------------------------------
- fchevalier - 03-12-06 20:32 
+ dzi - 10-17-05 00:59 
 ----------------------------------------------------------------------
-Thinks are moving under bug id #1841, which looks like a duplicate of this
-bug.
-Maybe you should try the patch and if it works, send your configuration
-information under this bug report ?
+I forgot to mention, that my sound card is AD1986A on my notebook.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-06-05 19:04 sq5bpm         New Issue                                    
-11-06-05 19:04 sq5bpm         Distribution              => Gentoo 2.6.13-r5
-11-06-05 19:04 sq5bpm         Kernel Version            => 2.6.13          
-02-08-06 13:16 simonckenyon   Issue Monitored: simonckenyon                    
-03-12-06 20:32 fchevalier     Note Added: 0008435                          
-03-13-06 15:36 tiwai          Relationship added       related to 0001841  
-03-13-06 15:37 tiwai          Relationship replaced    duplicate of 0001841
-03-13-06 15:37 tiwai          Duplicate ID             0 => 1841           
-03-13-06 15:37 tiwai          Status                   assigned => resolved
-03-13-06 15:37 tiwai          Resolution               open => duplicate   
-03-13-06 17:35 rlrevell       Relationship added       duplicate of 0001478
+10-17-05 00:57 dzi            New Issue                                    
+10-17-05 00:57 dzi            Distribution              => Gentoo 2.6.13-r4
+10-17-05 00:57 dzi            Kernel Version            => 2.6.13          
+10-17-05 00:59 dzi            Note Added: 0006485                          
+10-18-05 00:54 dzi            Issue Monitored: dzi                         
+11-01-05 22:09 dzi            Note Added: 0006600                          
+12-01-05 09:18 juliancola     Issue Monitored: juliancola                    
+01-01-06 19:37 dzi            Note Deleted: 0006600                        
+02-08-06 13:19 simonckenyon   Issue Monitored: simonckenyon                    
+03-13-06 17:35 rlrevell       Relationship added       has duplicate 0001531
 ======================================================================
 
 
