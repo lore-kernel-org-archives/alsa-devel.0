@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001902]: aplay: prints snd_timer_hw_open warning message
-Date: Mon, 13 Mar 2006 20:48:14 +0100
-Message-ID: <d0496c1ce7fc56868131f38e3d96cae6@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001899]: 'man aplay' typo: "immediatly"
+Date: Mon, 13 Mar 2006 20:49:45 +0100
+Message-ID: <b91805b4d94e6d9cf8fc31948ec36027@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2516E1D7
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 20:48:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 035201D7
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 20:49:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1902> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1899> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   1902
+Issue ID:                   1899
 Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
+Severity:                   trivial
+Priority:                   low
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-09-2006 19:22 CET
-Last Modified:              03-13-2006 20:48 CET
+Date Submitted:             03-09-2006 11:39 CET
+Last Modified:              03-13-2006 20:49 CET
 ======================================================================
-Summary:                    aplay: prints snd_timer_hw_open warning message
+Summary:                    'man aplay' typo: "immediatly"
 Description: 
-Version: 1.0.10-1
-
-$ aplay audio.wav
-ALSA lib timer_hw.c:269:(snd_timer_hw_open) extended read is not
-supported (SNDRV_TIMER_IOCTL_TREAD)
-Playing WAVE 'audio.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-
-(It works despite the message.)
+"immediatly" should be "immediately" in aplay.1
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-13-06 20:48 
+ tiwai - 03-13-06 20:49 
 ----------------------------------------------------------------------
-It's harmless, just warning that you're using a newer alsa-lib with older
-kernel.
-Will fix later.
+Fixed on CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-06 19:22 jdthood        New Issue                                    
-03-13-06 20:48 tiwai          Note Added: 0008461                          
+03-09-06 11:39 jdthood        New Issue                                    
+03-09-06 19:18 jdthood        Additional Information Updated                    
+03-13-06 20:49 tiwai          Status                   new => resolved     
+03-13-06 20:49 tiwai          Resolution               open => fixed       
+03-13-06 20:49 tiwai          Assigned To               => tiwai           
+03-13-06 20:49 tiwai          Note Added: 0008464                          
 ======================================================================
 
 
