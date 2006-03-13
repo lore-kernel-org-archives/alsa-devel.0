@@ -1,14 +1,14 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] sound/: fix some memory leaks
-Date: Mon, 13 Mar 2006 23:26:47 +0100
-Message-ID: <20060313222647.GP13973@stusta.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
+Date: Mon, 13 Mar 2006 23:39:53 +0100
+Message-ID: <1ccae6ee1556c5ad05f8cf13fd88192a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D3B781CF
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 23:26:47 +0100 (MET)
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37E14144
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 23:39:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,82 +18,166 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes two memory leaks spotted by the Coverity checker.
+
+The following issue has been ASSIGNED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
+======================================================================
+Reported By:                iq79
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1259
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.12-gentoo-r1
+======================================================================
+Date Submitted:             07-15-2005 18:18 CEST
+Last Modified:              03-13-2006 23:39 CET
+======================================================================
+Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
+from AUX in
+Description: 
+I am unable to unmute the internal AUX-in header of my Audigy4Pro.
+
+- I played around with all (Playback/Capture) mixer settings in alsamixer
+but I couldn't find a configuration which gives me sound from AUX-in.
+
+- I tried loading emu10k1 module with several extin/exout combinations.
+That didn't help, too.
+======================================================================
+
+----------------------------------------------------------------------
+ pzad - 07-15-05 19:50 
+----------------------------------------------------------------------
+Did you try to set "Aux" and "Analog Mix" volume ?
 
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
----
+----------------------------------------------------------------------
+ iq79 - 07-15-05 23:40 
+----------------------------------------------------------------------
+Yes, I did set both "Aux" and "AnalogMix" to 100%. I also tried to set Aux2
+to 100% with no success.
 
- sound/drivers/serial-u16550.c |    1 +
- sound/isa/es18xx.c            |    1 +
- sound/pci/cs46xx/dsp_spos.c   |   10 +++++++---
- 3 files changed, 9 insertions(+), 3 deletions(-)
+----------------------------------------------------------------------
+ jdthood - 07-16-05 16:31 
+----------------------------------------------------------------------
+Unmute "Line".
 
---- linux-2.6.16-rc6-mm1-full/sound/drivers/serial-u16550.c.old	2006-03-13 22:52:25.000000000 +0100
-+++ linux-2.6.16-rc6-mm1-full/sound/drivers/serial-u16550.c	2006-03-13 22:52:59.000000000 +0100
-@@ -789,6 +789,7 @@ static int __init snd_uart16550_create(s
- 
- 	if ((err = snd_uart16550_detect(uart)) <= 0) {
- 		printk(KERN_ERR "no UART detected at 0x%lx\n", iobase);
-+		kfree(uart);
- 		return -ENODEV;
- 	}
- 
---- linux-2.6.16-rc6-mm1-full/sound/isa/es18xx.c.old	2006-03-13 22:53:43.000000000 +0100
-+++ linux-2.6.16-rc6-mm1-full/sound/isa/es18xx.c	2006-03-13 22:54:03.000000000 +0100
-@@ -2083,6 +2083,7 @@ static int __devinit snd_audiodrive_pnp(
- 	err = pnp_activate_dev(acard->devc);
- 	if (err < 0) {
- 		snd_printk(KERN_ERR PFX "PnP control configure failure (out of resources?)\n");
-+		kfree(cfg);
- 		return -EAGAIN;
- 	}
- 	snd_printdd("pnp: port=0x%lx\n", pnp_port_start(acard->devc, 0));
---- linux-2.6.16-rc6-mm1-full/sound/pci/cs46xx/dsp_spos.c.old	2006-03-13 22:55:23.000000000 +0100
-+++ linux-2.6.16-rc6-mm1-full/sound/pci/cs46xx/dsp_spos.c	2006-03-13 22:56:30.000000000 +0100
-@@ -237,7 +237,7 @@ struct dsp_spos_instance *cs46xx_dsp_spo
- 
- 	if (ins->symbol_table.symbols == NULL) {
- 		cs46xx_dsp_spos_destroy(chip);
--		return NULL;
-+		goto error;
- 	}
- 
- 	ins->code.offset = 0;
-@@ -246,7 +246,7 @@ struct dsp_spos_instance *cs46xx_dsp_spo
- 
- 	if (ins->code.data == NULL) {
- 		cs46xx_dsp_spos_destroy(chip);
--		return NULL;
-+		goto error;
- 	}
- 
- 	ins->nscb = 0;
-@@ -257,7 +257,7 @@ struct dsp_spos_instance *cs46xx_dsp_spo
- 
- 	if (ins->modules == NULL) {
- 		cs46xx_dsp_spos_destroy(chip);
--		return NULL;
-+		goto error;
- 	}
- 
- 	/* default SPDIF input sample rate
-@@ -280,6 +280,10 @@ struct dsp_spos_instance *cs46xx_dsp_spo
- 	 /* left and right validity bits */ (1 << 13) | (1 << 12);
- 
- 	return ins;
-+
-+error:
-+	kfree(ins);
-+	return NULL;
- }
- 
- void  cs46xx_dsp_spos_destroy (struct snd_cs46xx * chip)
+Send the output of the amixer command.
+
+----------------------------------------------------------------------
+ iq79 - 07-16-05 18:38 
+----------------------------------------------------------------------
+Unmuting "Line" or "Line2" doesn't help.
+I've uploaded the output from amixer.
+
+----------------------------------------------------------------------
+ jcdutton - 07-20-05 05:32 
+----------------------------------------------------------------------
+I will look at this in a few weeks time, as I am away from home at the
+moment.
+I have an Audigy4.
+
+----------------------------------------------------------------------
+ iq79 - 03-01-06 10:46 
+----------------------------------------------------------------------
+*bump*
+
+Still having this problem. I double-checked everything again (HW is okay,
+software setup should be fine, too), but couldn't get it to work.
+
+----------------------------------------------------------------------
+ rlrevell - 03-01-06 18:02 
+----------------------------------------------------------------------
+Have you tried a newer ALSA than 1.0.9-rc2?  That's very old.
+
+----------------------------------------------------------------------
+ iq79 - 03-02-06 23:00 
+----------------------------------------------------------------------
+Yes, I did try a recent version.
+
+cat /proc/asound/version
+
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+
+----------------------------------------------------------------------
+ pzad - 03-03-06 17:36 
+----------------------------------------------------------------------
+What ac97 codec is on your soundcard ?
+
+----------------------------------------------------------------------
+ iq79 - 03-04-06 00:55 
+----------------------------------------------------------------------
+Alsamixer tells me it's a "SigmaTel STAC9750,51"
+
+----------------------------------------------------------------------
+ iq79 - 03-13-06 09:51 
+----------------------------------------------------------------------
+One more thing. I just found out that all my (analog) inputs are not named
+correctly:
+
+For instance if I plug in my microphone into the input labeled "Line 1 /
+Mic" (LiveDrive), in alsamixer I have to use the "Line 2" slider to set
+the playback volume of my mic. As long as "Line 2" is set to some volume
+the mic works, regardless of the "Analog Mix" setting.
+
+There is no "Line 1 / Mic" mixer, but two seperate mixers (labeled "Mic"
+and "Line 1"), but I wasn't able to find out what either of them does.
+There is also no controll for the "Line 3" input in alsamixer. There is a
+"Aux 2" mixer controll, but the Audigy 4 / LiveDrive has no input of that
+name.
+
+PS: Currently I'm using the 2.6.15-gentoo5 kernel.
+
+
+
+----------------------------------------------------------------------
+ pzad - 03-13-06 17:39 
+----------------------------------------------------------------------
+Inputs from livedrive are not controled by analog mix. Aux 2 can by your
+line3. Try IEC958 Optical too.
+
+Mic, Line In are inputs on back side of card (I don't know if audigy 4 pro
+has them).
+
+Internal Aux input (on card) should go through AC97 to ADC and should be
+affected by Aux and Analog Mix controls.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-15-05 18:18 iq79           New Issue                                    
+07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
+07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
+07-15-05 19:49 pzad           Note Added: 0005483                          
+07-15-05 19:50 pzad           Note Edited: 0005483                         
+07-15-05 23:40 iq79           Note Added: 0005484                          
+07-16-05 16:31 jdthood        Note Added: 0005496                          
+07-16-05 18:36 iq79           File Added: amixer_output                    
+07-16-05 18:38 iq79           Note Added: 0005500                          
+07-20-05 05:32 jcdutton       Note Added: 0005532                          
+03-01-06 10:46 iq79           Note Added: 0008278                          
+03-01-06 18:02 rlrevell       Note Added: 0008286                          
+03-02-06 23:00 iq79           Note Added: 0008327                          
+03-03-06 17:36 pzad           Note Added: 0008342                          
+03-04-06 00:55 iq79           Note Added: 0008344                          
+03-13-06 09:50 iq79           Note Added: 0008438                          
+03-13-06 09:51 iq79           Note Edited: 0008438                         
+03-13-06 17:39 pzad           Note Added: 0008450                          
+03-13-06 23:39 jcdutton       Status                   new => assigned     
+03-13-06 23:39 jcdutton       Assigned To               => jcdutton        
+======================================================================
+
 
 
 
