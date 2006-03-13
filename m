@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001850]: source available
-Date: Mon, 13 Mar 2006 19:49:11 +0100
-Message-ID: <fa5b268ef571cca0e6577e5b9342cc1a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
+Date: Mon, 13 Mar 2006 19:49:42 +0100
+Message-ID: <132874c5d664e6175726b6ca30aec267@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ACD0D1D5
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 19:49:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C268C1D5
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 19:49:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,216 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
 ======================================================================
-Reported By:                coz
+Reported By:                binilbenjamin
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1850
-Category:                   PCI - echoaudio
+Issue ID:                   1920
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               ubuntu/breezy/Debian
-Kernel Version:             2.6.12.10.386
+Distribution:               Fedora Core 4
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             02-16-2006 13:05 CET
+Date Submitted:             03-13-2006 19:02 CET
 Last Modified:              03-13-2006 19:49 CET
 ======================================================================
-Summary:                    source available
+Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
-can't start layla24
+i'm having a 5.1 speakers..when i play music ,only 2 of them are working!!!
+i had changed the channel mode in alsamixer to 6 channel..yet no
+changes!!! 
+Motherboard : Asus A8N-E
+OS: fedora core 4
+
 ======================================================================
 
 ----------------------------------------------------------------------
- pochini - 02-20-06 22:02 
+ rlrevell - 03-13-06 19:33 
 ----------------------------------------------------------------------
-Download the files from alsa-project.org and compile and install them just
-like any other program:
-
-./configure --with-cards=layla24[,other cards] [other options]
-make
-make install
-
-More infos here: http://www.webalice.it/g_pochini/ead/ (I should update
-them...)
+Please read the bug reporting guidelines, you don't give nearly enough info
+(ALSA version, driver, amixer output, etc)
 
 ----------------------------------------------------------------------
- coz - 03-13-06 19:49 
+ binilbenjamin - 03-13-06 19:49 
 ----------------------------------------------------------------------
-hello, ALL suggestions, including a guy that actually is part of the Ubuntu
-team who walked me through the installation, were unsuccesful. This
-layla24 is in excellent working condition. RUns fine on XP.
- Try to install the drivers for ubuntu dapper and all I get is "---no
-soundcard found---" 
-   I realize this is not a common card in use since it is considered pro
-sound, however wouldn't it be just as easy having a single install package
-that will install the drivers?
-  I am not aprogrammer so forgive the naive statement, but nvivida has a
-package that installs, just a copnfig enable does the trick. i am not
-clear why this is not like that.
-  unfortunately this is for a client. He wants his layla14 installed on
-ubuntu Dapper, even after telling him there are nohighend apps for
-recording in linux.
-He has insisted.
- However, i still cannot get the darn thing to work.
- The system recognizes the chip on the layla24 card and that is is.
-It does not recognize the card at all.
- Thanks
+amixer output :
+=======================================================================
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 23 [74%] [on]
+  Front Right: Playback 23 [74%] [on]
+Simple mixer control 'Master Mono',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 23 [74%] [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 23 [74%] [on]
+  Front Right: Playback 23 [74%] [on]
+Simple mixer control 'Surround',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 21 [68%] [on]
+  Front Right: Playback 21 [68%] [on]
+Simple mixer control 'Surround Jack Mode',0
+  Capabilities: enum
+  Items: 'Shared' 'Independent'
+  Item0: 'Shared'
+Simple mixer control 'Center',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 19 [61%] [on]
+Simple mixer control 'LFE',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 21 [68%] [on]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 28 [90%] [on] Capture [on]
+  Front Right: Playback 28 [90%] [on] Capture [on]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Mic Boost (+20dB)',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Mic Front Input',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Mic Select',0
+  Capabilities: enum
+  Items: 'Mic1' 'Mic2'
+  Item0: 'Mic1'
+Simple mixer control 'Video',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Phone',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'IEC958',0
+  Capabilities: cswitch cswitch-joined
+  Capture channels: Mono
+  Mono: Capture [off]
+Simple mixer control 'IEC958 Source',0
+  Capabilities: enum
+  Items: 'PCM' 'Analog In' 'IEC958 In'
+  Item0: 'PCM'
+Simple mixer control 'PC Speaker',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 15
+  Mono: Playback 12 [80%] [on]
+Simple mixer control 'Aux',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Mono Output Select',0
+  Capabilities: enum
+  Items: 'Mix' 'Mic'
+  Item0: 'Mix'
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch cswitch-joined
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [off]
+  Front Right: Capture 0 [0%] [off]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Mix Mono',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Channel Mode',0
+  Capabilities: enum
+  Items: '2ch' '4ch' '6ch'
+  Item0: '6ch'
+Simple mixer control 'Duplicate Front',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'External Amplifier',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'SPDIF',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'SPDIF Playback AC97-SPSA',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 3
+  Mono: 1 [33%]
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-06 13:05 coz            New Issue                                    
-02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
-02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
-02-18-06 13:34 pochini        Note Added: 0008119                          
-02-20-06 03:30 coz            Note Added: 0008140                          
-02-20-06 22:02 pochini        Note Added: 0008150                          
-03-13-06 19:49 coz            Note Added: 0008456                          
+03-13-06 19:02 binilbenjamin  New Issue                                    
+03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
+03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
+03-13-06 19:33 rlrevell       Note Added: 0008455                          
+03-13-06 19:49 binilbenjamin  Note Added: 0008457                          
 ======================================================================
 
 
