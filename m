@@ -1,16 +1,13 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [-mm patch] sound/pci/ice1712/delta.c: make 2 functions static
-Date: Mon, 13 Mar 2006 22:14:44 +0100
-Message-ID: <20060313211444.GH13973__31870.8277809948$1142284643$gmane$org@stusta.de>
-References: <20060312031036.3a382581.akpm@osdl.org>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Re: Ludicrous amount of spam on this list
+Date: Mon, 13 Mar 2006 14:28:48 -0700
+Message-ID: <4415E410.6060703@redfish-solutions.com>
+References: <1142276619.9235.3.camel@localhost.localdomain>	<s5hhd62ma6p.wl%tiwai@suse.de>	<1142277710.9235.9.camel@localhost.localdomain> <s5hd5gqm9fh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 35EAB1CF
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 22:14:45 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <20060312031036.3a382581.akpm@osdl.org>
+In-Reply-To: <s5hd5gqm9fh.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,50 +17,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew Morton <akpm@osdl.org>, perex@suse.cz
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Adrian McMenamin <adrian@mcmen.demon.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Mar 12, 2006 at 03:10:36AM -0800, Andrew Morton wrote:
->...
-> Changes since 2.6.16-rc5-mm3:
->...
->  git-alsa.patch
->...
->  git trees
->...
+Takashi Iwai wrote:
+> At Mon, 13 Mar 2006 19:21:50 +0000,
+> Adrian McMenamin wrote:
+> 
+>>On Mon, 2006-03-13 at 20:11 +0100, Takashi Iwai wrote:
+>>
+>>>At Mon, 13 Mar 2006 19:03:39 +0000,
+>>>Adrian McMenamin wrote:
+>>>
+>>>>Can we just close it down and go elsewhere if nobody is going to take
+>>>>responsibility? It is a real pain - biggest single source of spam in my
+>>>>inbox.
+>>>
+>>>Complain sourceforge.  They are hosting the MLs.
+>>>
+>>
+>>The mailserver alsa.jcu.cz doesn't look like a sourceforge box to me.
+>>
+>>
+>>
+>>>Though, I'm not against moving from sf to somewhere better host.
+>>>Suggestions?
+>>>
+>>
+>>How about sourceforge :)
+> 
+> 
+> You're sending to a wrong address.  It's an old ml address, and simply
+> reroutes to sf.net.
+> 
+> The right address is alsa-devel@lists.sourceforge.net.
+> 
+> 
+> Takashi
 
 
-This patch makes two needlessly global functions static.
+It might be the case that the new mailer whitelists stuff coming from the
+old mailer, and the old mailer doesn't have the bar set very high...
 
+In which case, turning off the old mailer might be sufficient...
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+But probably not.
 
----
+In any case, I've opened a case with the SF folks, and offered to help them
+fine tune SA to filter better.
 
- sound/pci/ice1712/delta.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+For instance, adding SA 3 points to "open" mailing lists to raise the criteria
+of what passes and what doesn't would already go a long way...
 
---- linux-2.6.16-rc6-mm1-full/sound/pci/ice1712/delta.c.old	2006-03-13 21:32:49.000000000 +0100
-+++ linux-2.6.16-rc6-mm1-full/sound/pci/ice1712/delta.c	2006-03-13 21:33:25.000000000 +0100
-@@ -393,7 +393,7 @@
- 	snd_ice1712_delta_cs8403_spdif_write(ice, tmp);
- }
- 
--int snd_ice1712_delta1010lt_wordclock_status_info(struct snd_kcontrol *kcontrol,
-+static int snd_ice1712_delta1010lt_wordclock_status_info(struct snd_kcontrol *kcontrol,
- 			  struct snd_ctl_elem_info *uinfo)
- {
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-@@ -403,7 +403,7 @@
- 	return 0;
- }
- 
--int snd_ice1712_delta1010lt_wordclock_status_get(struct snd_kcontrol *kcontrol,
-+static int snd_ice1712_delta1010lt_wordclock_status_get(struct snd_kcontrol *kcontrol,
- 			 struct snd_ctl_elem_value *ucontrol)
- {
- 	char reg = 0x10; // cs8427 receiver error register
+-Philip
 
 
 
