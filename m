@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Mon, 13 Mar 2006 19:49:42 +0100
-Message-ID: <132874c5d664e6175726b6ca30aec267@bugtrack.alsa-project.org>
+Date: Mon, 13 Mar 2006 19:54:50 +0100
+Message-ID: <edd52564b70fb85f910e152862da6d3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C268C1D5
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 19:49:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD6CE1D5
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 19:54:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6
 ======================================================================
 Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-13-2006 19:49 CET
+Last Modified:              03-13-2006 19:54 CET
 ======================================================================
 Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
@@ -51,12 +51,6 @@ Motherboard : Asus A8N-E
 OS: fedora core 4
 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 03-13-06 19:33 
-----------------------------------------------------------------------
-Please read the bug reporting guidelines, you don't give nearly enough info
-(ALSA version, driver, amixer output, etc)
 
 ----------------------------------------------------------------------
  binilbenjamin - 03-13-06 19:49 
@@ -226,6 +220,23 @@ Simple mixer control 'SPDIF Playback AC97-SPSA',0
   Limits: 0 - 3
   Mono: 1 [33%]
 
+----------------------------------------------------------------------
+ rlrevell - 03-13-06 19:54 
+----------------------------------------------------------------------
+Are you trying to play back a 6 channel .wav file, or playing a stereo file
+and expect it to be upmixed to 5.1?
+
+Try
+
+speaker-test -Dsurround51 --channels=6
+
+and
+
+speaker-test --channels=2
+
+If you are expecting stereo sources to be upmixed then try enabling the
+"Duplicate Front" mixer control.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -234,6 +245,7 @@ Date Modified  Username       Field                    Change
 03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
 03-13-06 19:33 rlrevell       Note Added: 0008455                          
 03-13-06 19:49 binilbenjamin  Note Added: 0008457                          
+03-13-06 19:54 rlrevell       Note Added: 0008458                          
 ======================================================================
 
 
