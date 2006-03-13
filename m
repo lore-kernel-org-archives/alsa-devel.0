@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001658]: Capture happens only on one channel
-Date: Mon, 13 Mar 2006 15:50:48 +0100
-Message-ID: <071cc377917a1b4af2d919311363746e@bugtrack.alsa-project.org>
+From: Florian Schlichting <Florian.Schlichting@gmx.de>
+Subject: Re: debugging nm256: some results, many questions
+Date: Mon, 13 Mar 2006 22:55:34 +0800
+Message-ID: <20060313145534.GA7995@tigerbay>
+References: <20060223185253.GA7954@tigerbay> <s5hfym8vd0k.wl%tiwai@suse.de> <20060311174421.GB7775@tigerbay> <20060313064627.GA3864@tigerbay> <s5h4q22mu89.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7F8B19F
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 15:50:48 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <s5h4q22mu89.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,93 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1658> 
-======================================================================
-Reported By:                phil_troin
-Assigned To:                rlrevell
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1658
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo
-Kernel Version:             2.6.14-gentoo-r2
-======================================================================
-Date Submitted:             12-18-2005 08:40 CET
-Last Modified:              03-13-2006 15:50 CET
-======================================================================
-Summary:                    Capture happens only on one channel
-Description: 
-When I am playing a CD, if I capture the sound output via the capture
-channel OR the CD channel (amixer output attached), the captured sound is
-only one one channel (the right one) and is very distorted.
-The audio plays normally in stereo on the speakers.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001784 line input not recording right channel
-======================================================================
+--7JfCtLOvnd9MIVvH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- jdthood - 03-10-06 19:15 
-----------------------------------------------------------------------
-In Debian bug report 350138 it is reported that the bug is still present in
-1.0.11rc2.
+On Mon, Mar 13, 2006 at 12:58:46PM +0100, Takashi Iwai wrote:
+>=20
+> The writes in snd_nm256_ac97_reset() break the PM resume.  You should
+> check reg_accessed[] and use the cached value if already written.
 
-    http://bugs.debian.org/350138
+Yes, I just noticed the broken PM resume... The following is just to
+check that I don't misunderstand things:
 
-----------------------------------------------------------------------
- tiwai - 03-13-06 15:50 
-----------------------------------------------------------------------
-Make sure that really both the mic is selected for both recording sources,
-and both left/right capture switches are on, and both left/right capture
-volumes are adjusted.
+I originally wanted to write the initial values in snd_nm256_mixer(),
+but there ac97 is still an ac97_template_t and doesn't have a register
+cache. Still, reg_accessed[] is set there, meaning "register may be
+touched". Consequently, in snd_nm256_ac97_reset() all usable
+reg_accessed[] are already set, which the first time means nothing (and
+all registers should be written), but during a resume means the value
+shouldn't be touched... So there needs to be another way to distinguish
+between these two states.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-18-05 08:40 phil_troin     New Issue                                    
-12-18-05 08:40 phil_troin     File Added: amixout                          
-12-18-05 08:40 phil_troin     Distribution              => Gentoo          
-12-18-05 08:40 phil_troin     Kernel Version            => 2.6.14-gentoo-r2
-12-18-05 12:00 linuxbear      Note Added: 0007071                          
-12-18-05 12:02 linuxbear      Note Edited: 0007071                         
-12-27-05 10:34 linuxbear      Issue Monitored: linuxbear                    
-01-07-06 06:24 tgutwin        Note Added: 0007508                          
-01-07-06 06:25 tgutwin        Issue Monitored: tgutwin                     
-01-09-06 01:34 legluondunet   Note Added: 0007529                          
-01-09-06 01:35 legluondunet   File Added: alsa.conf.record1channel              
-     
-01-09-06 01:37 legluondunet   File Added: alsa.conf.ubuntu                    
-01-09-06 01:43 legluondunet   Note Added: 0007530                          
-01-13-06 02:17 rlrevell       Note Added: 0007615                          
-01-13-06 14:29 Matthias KoenigNote Added: 0007640                          
-01-13-06 17:12 legluondunet   Note Added: 0007644                          
-01-13-06 17:46 vsu            Note Added: 0007645                          
-01-13-06 17:49 vsu            Issue Monitored: vsu                         
-01-13-06 17:51 tiwai          Note Added: 0007646                          
-01-13-06 18:17 vsu            Note Added: 0007647                          
-01-18-06 11:53 Matthias KoenigNote Added: 0007709                          
-01-18-06 18:16 rlrevell       Status                   new => resolved     
-01-18-06 18:16 rlrevell       Resolution               open => fixed       
-01-18-06 18:16 rlrevell       Assigned To               => rlrevell        
-01-26-06 20:45 rlrevell       Relationship added       has duplicate 0001784
-03-10-06 19:15 jdthood        Status                   resolved => feedback
-03-10-06 19:15 jdthood        Resolution               fixed => reopened   
-03-10-06 19:15 jdthood        Note Added: 0008409                          
-03-13-06 15:50 tiwai          Note Added: 0008449                          
-======================================================================
+(I couldn't find any documentation about reg_accessed[], which to me
+seems to indicate both "register can be accessed" and later "register
+value is cached" - which really are two different things and I wonder
+whether they should be kept apart?)
 
+Assuming that when first initialized, all cache registers are set to
+0x0000, which is also a valid volume setting, I could probably test for
+a non-zero value in AC97_VENDOR_ID1, which would mean I've already done
+the initial writing to the cache and it's a resume; otherwise all
+registers are to be written.
 
+> Additionally, we may use a static resolution table to skip the volume
+> resolution detection with the latest ac97_codec.
+
+I couldn't find any indication of that in 1.0.11rc3. Can you give me a
+hint?
+
+Florian
+
+--7JfCtLOvnd9MIVvH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQFEFYfm/R0+cAphf/kRAthYAJ40MZF1H+6d5DiSUOLBNXYV3fKzXQCfcEbu
+3hFYV29BEv02LMw+q/LO8WE=
+=9d6w
+-----END PGP SIGNATURE-----
+
+--7JfCtLOvnd9MIVvH--
 
 
 -------------------------------------------------------
