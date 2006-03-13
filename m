@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Mon, 13 Mar 2006 20:25:20 +0100
-Message-ID: <29c491960aeb7032f6da5924f415b4d9@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Ludicrous amount of spam on this list
+Date: Mon, 13 Mar 2006 19:21:50 +0000
+Message-ID: <1142277710.9235.9.camel@localhost.localdomain>
+References: <1142276619.9235.3.camel@localhost.localdomain>
+	 <s5hhd62ma6p.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33E071D7
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 20:25:20 +0100 (MET)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id DD1351D5
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 20:21:58 +0100 (MET)
+In-Reply-To: <s5hhd62ma6p.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +21,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-03-13 at 20:11 +0100, Takashi Iwai wrote:
+> At Mon, 13 Mar 2006 19:03:39 +0000,
+> Adrian McMenamin wrote:
+> > 
+> > Can we just close it down and go elsewhere if nobody is going to take
+> > responsibility? It is a real pain - biggest single source of spam in my
+> > inbox.
+> 
+> Complain sourceforge.  They are hosting the MLs.
+> 
+The mailserver alsa.jcu.cz doesn't look like a sourceforge box to me.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
-======================================================================
-Reported By:                binilbenjamin
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1920
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6
-======================================================================
-Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-13-2006 20:25 CET
-======================================================================
-Summary:                    output from only 2 speakers(out of 5 speakers)
-Description: 
-i'm having a 5.1 speakers..when i play music ,only 2 of them are working!!!
-i had changed the channel mode in alsamixer to 6 channel..yet no
-changes!!! 
-Motherboard : Asus A8N-E
-OS: fedora core 4
 
-======================================================================
+> Though, I'm not against moving from sf to somewhere better host.
+> Suggestions?
+> 
 
-----------------------------------------------------------------------
- binilbenjamin - 03-13-06 20:16 
-----------------------------------------------------------------------
-how do i enable the "Duplicate Front" mixer control....(sorry..i'm a linux
-newbie..:)..i'm trying to play mp3 files thru xmms and mplayer
-
-----------------------------------------------------------------------
- rlrevell - 03-13-06 20:25 
-----------------------------------------------------------------------
-Enable it with alsamixer
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-13-06 19:02 binilbenjamin  New Issue                                    
-03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
-03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
-03-13-06 19:33 rlrevell       Note Added: 0008455                          
-03-13-06 19:49 binilbenjamin  Note Added: 0008457                          
-03-13-06 19:54 rlrevell       Note Added: 0008458                          
-03-13-06 20:16 binilbenjamin  Note Added: 0008459                          
-03-13-06 20:25 rlrevell       Note Added: 0008460                          
-======================================================================
+How about sourceforge :)
 
 
 
