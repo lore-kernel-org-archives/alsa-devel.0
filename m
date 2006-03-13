@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000172]: Master volume control only controls front speakers
-Date: Sun, 12 Mar 2006 21:30:55 +0100
-Message-ID: <885af32edb571459e9f216f47d22bbfe@bugtrack.alsa-project.org>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: website updates
+Date: Mon, 13 Mar 2006 12:17:23 +0900
+Message-ID: <4414E443.2070005@boosthardware.com>
+References: <44144425.5040702@triaton-webhosting.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7F441E8
-	for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2006 21:30:55 +0100 (MET)
+In-Reply-To: <44144425.5040702@triaton-webhosting.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,253 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following issue has been marked as UNRELATED TO issue 0000919.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172> 
-======================================================================
-Reported By:                gruberroland
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   172
-Category:                   2_mixer
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             03-31-2004 11:50 CEST
-Last Modified:              03-12-2006 21:30 CET
-======================================================================
-Summary:                    Master volume control only controls front speakers
-Description: 
-The master volume control has no effect on the rear speakers.
-The rear speakers can be controlled by "Sigmatel Surround" but not
-completly muted.
+I'm now back online with a new office in sunny Thailand.
 
-I use "Sigmatel 4-Speaker Stereo" to get sound on all 4 speakers. The
-speakers are plugged into both output plugs on the soundcard.
+I will be doing a round of updates for the website in the next month or 
+so. If anyone has ideas or suggestions for improvements please let me 
+know and I will do my best to make them happen.
 
-I tried all volume controls that are provided, there seems to be no master
-control.
-======================================================================
+Cheers.
 
-----------------------------------------------------------------------
- perex - 03-31-04 16:35 
-----------------------------------------------------------------------
-It's feature request. We haven't designed abstract mixer layer at the
-moment,
-but you are allowed to control fully hardware anyway. If you cannot mute
-completely the rear speakers, then it's probably hardware problem.
-
-----------------------------------------------------------------------
- muffty - 03-09-06 19:53 
-----------------------------------------------------------------------
-After a long discussion in alsa-user@lists.sourceforge.net about this
-problem a member of the list (Christian Haertwig) send me a patch to the
-emu10k1 driver that adds a volume control called 'Digital Master' and is
-able to control all 6 channels of the card.
-This is a part of the mail he send to me:
----------------------
-A "good" (where good means pretty easy to realize) fix *is* 
-available. I have attached the patch file that does the job. You need to 
-recompile alsa drivers that for. with the Patch included you will have a
-new 
-volume slider that indeed sets the overall volume for all channels. Since
-i 
-am no developer i cant tell you exactly why this patch is not included in
-the 
-drivers, but for emu10k1 and sb live i have found out it works great. i am
-
-using it with alsa-driver and -lib version 1.0.10 and have had no *real* 
-issues yet. unfortunately i know people reporting that this patch causes
-the 
-overall output volume to be a bit quiter than normal, but i cannot
-confirm. 
-Thanks again to whoever has send that patch to me.
----------------------
-I tested the patch and it appeard that it doesn't work for me. 
-When playing 2-channel sound my left front speaker was muted and when
-playing 6-channel sound the rear left speaker was muted.
-After a suggestion from Lee Revell I played arround with the
-SND_EMU10K1_GPR_CONTROLS and made it work when leaving this setting to 44
-and not changing it to 46 as the patch did. After these changes everything
-works fine. A new volume called 'Digital Master' can control all channels
-of the card. I have tested the card only in analog mode, as I don't have
-digital speakers. 
-If this is working for You give some feedback.
-I'm attaching the original patch I was send as accourding to Christian it
-works for other people. If it doesn't work for You try changing the
-SND_EMU10K1_GPR_CONTROLS as I did.
-The original author of the patch is Mikael Magnusson and as I know it is
-posted to alsa-devel.
-I tested with alsa 1.0.10 and SB Live! 5.1 (SB0220)
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
+========================================
 
 
+Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
 
-----------------------------------------------------------------------
- Raymond - 03-12-06 05:22 
-----------------------------------------------------------------------
-The "Sigmatel Surround" control the ratio of the front and rear speakers.
+United Press International
+Rockets on donkeys hit major Baghdad sites
 
-The "Surround" control the volume of SDAC.
-
-The "PCM" control the volume of front DAC.
-
-The "Master" control the volume of the analog mixer.
-
-amixer contents
-
-numid=78,iface=MIXER,name='Master Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=79,iface=MIXER,name='Master Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=28,28
-
-
-numid=101,iface=MIXER,name='PCM Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=102,iface=MIXER,name='PCM Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=28,28
-numid=80,iface=MIXER,name='Surround Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=2
-  : values=on,on
-numid=81,iface=MIXER,name='Surround Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=23,23
-
-numid=113,iface=MIXER,name='Sigmatel 4-Speaker Stereo Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=112,iface=MIXER,name='Sigmatel Output Bias Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=114,iface=MIXER,name='Sigmatel Surround Phase Inversion Playback '
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=on
-numid=82,iface=MIXER,name='Sigmatel Surround Playback Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=83,iface=MIXER,name='Sigmatel Surround Playback Volume'
-  ; type=INTEGER,access=rw---,values=2,min=0,max=31,step=0
-  : values=0,0
-
-
-
-----------------------------------------------------------------------
- Raymond - 03-10-06 03:05 
-----------------------------------------------------------------------
-The other control which affect volume of front and rear speakers
-
-numid=107,iface=MIXER,name='3D Control - Switch'
-  ; type=BOOLEAN,access=rw---,values=1
-  : values=off
-numid=110,iface=MIXER,name='3D Control Sigmatel - Depth'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=3,step=0
-  : values=0
-numid=111,iface=MIXER,name='3D Control Sigmatel - Rear Depth'
-  ; type=INTEGER,access=rw---,values=1,min=0,max=3,step=0
-  : values=0
-numid=106,iface=MIXER,name='PCM Out Path & Mute'
-  ; type=ENUMERATED,access=rw---,values=1,items=2
-  ; Item #0 'pre 3D'
-  ; Item #1 'post 3D'
-  : values=0
-
-----------------------------------------------------------------------
- rlrevell - 03-10-06 03:20 
-----------------------------------------------------------------------
-Those Sigmatel and 3D* controls are part of the AC97 codec.  A real master
-volume has to be implemented with emu10k1 DSP code (as in the patch)
-
-----------------------------------------------------------------------
- Raymond - 03-11-06 08:50 
-----------------------------------------------------------------------
-But this report is related to the Sigmatec codec (STAC9708) on gruberroland
-'s ens1371
-
-----------------------------------------------------------------------
- rlrevell - 03-11-06 19:02 
-----------------------------------------------------------------------
-You are looking at the wrong bug report, this one makes no reference to
-ens1371, this is about the emu10k1 driver.
-
-----------------------------------------------------------------------
- gruberroland - 03-12-06 10:36 
-----------------------------------------------------------------------
-I created this report because the volume control on my ens1371 did not work
-correctly. But I do not know why there is no more reference to the
-ens1371.
-
-----------------------------------------------------------------------
- Raymond - 03-12-06 11:22 
-----------------------------------------------------------------------
-If you want to mute the rear speaker, the simplest way is to turn "Sigmatel
-4-Speaker Stereo" off.
-
-The name of the control should be named according to the slots assigned to
-the pcm 
-
-It depend how stac9708 is configured - multi-channels programming register
-74h.
-
-MC1, MC0  PCM OUT LEFT PCM OUT RIGHT PCM2 LEFT PCM2 RIGHT
-0, 0      Slot 3       Slot 4        Slot 7    Slot 8
-0, 1      Slot 7       Slot 8        Slot 6    Slot 9 
-1, 0      Slot 6       Slot 9        Slot 7    Slot 8
-1, 1      Slot 6       Slot 9        Slot 10   Slot 11
-
-bug 172 - ens1371
-bug 154 - emu10k1
-bug 919 - ymfpci
-
-It seem that they are related as these cards use sigmatel codeec
-
-
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-31-04 11:50 gruberroland   New Issue                                    
-03-31-04 11:50 gruberroland   Kernel Version            => 2.4.25          
-03-31-04 16:33 perex          Assigned To               => perex           
-03-31-04 16:33 perex          Severity                 major => feature    
-03-31-04 16:33 perex          Status                   new => assigned     
-03-31-04 16:35 perex          Note Added: 0000725                          
-10-22-04 16:44 perex          Relationship added       related to 0000154  
-10-29-04 21:03 BMS            Issue Monitored: BMS                         
-02-22-05 09:57 perex          Relationship added       related to 0000919  
-02-22-05 09:59 perex          Project                  ALSA - driver => ALSA -
-lib
-02-22-05 09:59 perex          Category                 PCI - ens1371 => mixer
-03-09-06 11:17 muffty         Note Added: 0008387                          
-03-09-06 11:18 muffty         File Added: master_volume_v3.patch                
-   
-03-09-06 11:19 muffty         Note Edited: 0008387                         
-03-09-06 11:24 muffty         Issue Monitored: muffty                      
-03-09-06 12:23 Miwer          Issue Monitored: Miwer                       
-03-09-06 19:53 muffty         Note Edited: 0008387                         
-03-10-06 02:45 Raymond        Note Added: 0008398                          
-03-10-06 03:05 Raymond        Note Added: 0008399                          
-03-10-06 03:20 rlrevell       Note Added: 0008400                          
-03-11-06 08:50 Raymond        Note Added: 0008414                          
-03-11-06 19:02 rlrevell       Note Added: 0008420                          
-03-12-06 05:22 Raymond        Note Edited: 0008398                         
-03-12-06 10:36 gruberroland   Note Added: 0008429                          
-03-12-06 11:04 Raymond        Note Added: 0008430                          
-03-12-06 11:22 Raymond        Note Edited: 0008430                         
-03-12-06 21:27 rlrevell       Relationship deleted     related to 0000154  
-03-12-06 21:30 rlrevell       Relationship deleted     related to 0000919  
-======================================================================
-
-
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
 
 
 -------------------------------------------------------
