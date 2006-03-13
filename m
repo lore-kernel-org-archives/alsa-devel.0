@@ -1,11 +1,16 @@
-From: Carlos Munoz <carlos@kenati.com>
-Subject: Buffer management questions
-Date: Mon, 13 Mar 2006 11:24:46 -0800
-Message-ID: <4415C6FE.2080202@kenati.com>
+From: Ismail Donmez <ismail@pardus.org.tr>
+Subject: Re: Ludicrous amount of spam on this list
+Date: Mon, 13 Mar 2006 21:18:20 +0200
+Message-ID: <200603132118.25331.ismail@pardus.org.tr>
+References: <1142276619.9235.3.camel@localhost.localdomain> <s5hhd62ma6p.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: multipart/signed;
+  boundary="nextPart1469962.1Q72gIx2Vo";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hhd62ma6p.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,27 +23,37 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+--nextPart1469962.1Q72gIx2Vo
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I'm writing my first alsa driver and I have the following questions 
-regarding buffer management (I've read all the documents in the alsa 
-site but none answered my questions):
+Pazartesi 13 Mart 2006 21:11 tarihinde, Takashi Iwai =C5=9Funlar=C4=B1 yazm=
+=C4=B1=C5=9Ft=C4=B1:=20
+> Though, I'm not against moving from sf to somewhere better host.
+> Suggestions?
 
-How is the sound data replenished in the dma buffer for playback ? I 
-call snd_pcm_lib_malloc_pages() to allocate the buffer. I assume when 
-the trigger function is called, there is valid data in the buffer. 
-However, once the driver sends all the data in the buffer, how does it 
-get more data ? Should I assume the data is there and just wrap around 
-the buffer ?
+A mailing list at kernel.org would be good I think.
 
-I'm used to the write()/read() function calls to pass data in/out of 
-drivers, but don't yet understand how data is passed in the alsa model. 
-Any help is appreciated.
+Regards,
+ismail
 
-Thanks,
+=2D-=20
+An eye for eye will make the whole world blind -- Gandhi
 
+--nextPart1469962.1Q72gIx2Vo
+Content-Type: application/pgp-signature
 
-Carlos
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iD8DBQBEFcWBGp0leluI9UwRAqb1AJ9RJ4nHJcd/twBNcNEDvuJ0YqdlfgCZASH6
+41WG2nBZSNEmUYXWL38drJM=
+=mOff
+-----END PGP SIGNATURE-----
+
+--nextPart1469962.1Q72gIx2Vo--
 
 
 -------------------------------------------------------
