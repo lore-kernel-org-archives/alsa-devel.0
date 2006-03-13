@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Mon, 13 Mar 2006 20:16:57 +0100
-Message-ID: <499cf692fe0a90e042cd251fccba7bd8@bugtrack.alsa-project.org>
+From: Carlos Munoz <carlos@kenati.com>
+Subject: Buffer management questions
+Date: Mon, 13 Mar 2006 11:24:46 -0800
+Message-ID: <4415C6FE.2080202@kenati.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C05FB1D5
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 20:16:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +15,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
-======================================================================
-Reported By:                binilbenjamin
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1920
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6
-======================================================================
-Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-13-2006 20:16 CET
-======================================================================
-Summary:                    output from only 2 speakers(out of 5 speakers)
-Description: 
-i'm having a 5.1 speakers..when i play music ,only 2 of them are working!!!
-i had changed the channel mode in alsamixer to 6 channel..yet no
-changes!!! 
-Motherboard : Asus A8N-E
-OS: fedora core 4
+I'm writing my first alsa driver and I have the following questions 
+regarding buffer management (I've read all the documents in the alsa 
+site but none answered my questions):
 
-======================================================================
+How is the sound data replenished in the dma buffer for playback ? I 
+call snd_pcm_lib_malloc_pages() to allocate the buffer. I assume when 
+the trigger function is called, there is valid data in the buffer. 
+However, once the driver sends all the data in the buffer, how does it 
+get more data ? Should I assume the data is there and just wrap around 
+the buffer ?
 
-----------------------------------------------------------------------
- rlrevell - 03-13-06 19:54 
-----------------------------------------------------------------------
-Are you trying to play back a 6 channel .wav file, or playing a stereo file
-and expect it to be upmixed to 5.1?
+I'm used to the write()/read() function calls to pass data in/out of 
+drivers, but don't yet understand how data is passed in the alsa model. 
+Any help is appreciated.
 
-Try
-
-speaker-test -Dsurround51 --channels=6
-
-and
-
-speaker-test --channels=2
-
-If you are expecting stereo sources to be upmixed then try enabling the
-"Duplicate Front" mixer control.
-
-----------------------------------------------------------------------
- binilbenjamin - 03-13-06 20:16 
-----------------------------------------------------------------------
-how do i enable the "Duplicate Front" mixer control....(sorry..i'm a linux
-newbie..:)..i'm trying to play mp3 files thru xmms and mplayer
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-13-06 19:02 binilbenjamin  New Issue                                    
-03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
-03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
-03-13-06 19:33 rlrevell       Note Added: 0008455                          
-03-13-06 19:49 binilbenjamin  Note Added: 0008457                          
-03-13-06 19:54 rlrevell       Note Added: 0008458                          
-03-13-06 20:16 binilbenjamin  Note Added: 0008459                          
-======================================================================
+Thanks,
 
 
+Carlos
 
 
 -------------------------------------------------------
