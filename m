@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001816]: identify alc880 chip on Aopen i915GMm-HFS motherboard
-Date: Mon, 13 Mar 2006 15:21:37 +0100
-Message-ID: <fe5dcc11dd5bf81bc943fd4c88756325@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001841]: Mixer not working  / fujitsu laptop V2060 with HDA intel & AD1986A
+Date: Mon, 13 Mar 2006 15:27:48 +0100
+Message-ID: <680549915432ca1741965462c56da1d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F49318C
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 15:21:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2011E18C
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 15:27:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,16 +24,16 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1816> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1841> 
 ======================================================================
-Reported By:                kylecronan
+Reported By:                fchevalier
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1816
+Issue ID:                   1841
 Category:                   PCI - hda-intel
-Reproducibility:            N/A
-Severity:                   feature
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
 Distribution:               
@@ -41,50 +41,99 @@ Kernel Version:
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-03-2006 21:26 CET
-Last Modified:              03-13-2006 15:21 CET
+Date Submitted:             02-11-2006 14:13 CET
+Last Modified:              03-13-2006 15:27 CET
 ======================================================================
-Summary:                    identify alc880 chip on Aopen i915GMm-HFS
-motherboard
+Summary:                    Mixer not working  / fujitsu laptop V2060 with HDA
+intel & AD1986A
 Description: 
-This motherboard has the Realtek ALC880 chip, but it is not recognized.  I
-used lspci -n to get the PCI ID of the audio subsystem, then edited
-patch_realtek.c as follows:
+Hi all,
 
---- patch_realtek.c~    2006-02-02 22:29:54.000000000 -0800
-+++ patch_realtek.c     2006-02-02 22:29:54.000000000 -0800
-@@ -989,7 +989,7 @@
-        { .pci_vendor = 0x8086, .pci_device = 0xd401, .config =
-ALC880_5ST_DIG },
-        { .pci_vendor = 0x8086, .pci_device = 0xa100, .config =
-ALC880_5ST_DIG },
-        { .pci_vendor = 0x1565, .pci_device = 0x8202, .config =
-ALC880_5ST_DIG },
-+       { .pci_vendor = 0xa0a0, .pci_device = 0x0560, .config =
-ALC880_5ST_DIG },
+I am unable to use mixer settings on my laptop.
+Basically ALSA correctly detects HDA intel, Analog device chip. Mixer
+settings are there but changing volume, muting/unmuting does not make any
+difference. Playing  mp3 file with xmms sometimes i can hear some sound,
+but not loud enough.
+I tried with the latest ALSA version available, still not luck :-(
 
-        { .modelname = "w810", .config = ALC880_W810 },
-        { .pci_vendor = 0x161f, .pci_device = 0x203d, .config =
-ALC880_W810 },
+Can anyone help ?
 
-I'm not sure that I've done this properly, but I now see an IEC958 option
-in alsamixer.  I don't have any S/PDIF equipment to test it out with right
-now, but there's red laser light coming out the back of my machine!
-
+Fabien
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001714 Intel HDA (AD1986A) no sound
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-13-06 15:21 
+ fchevalier - 03-12-06 20:27 
 ----------------------------------------------------------------------
-Fixed on CVS.  Thanks.
+Hi guys,
+
+Sorry for this late answer, but fact is that as was off to my parents
+house for a long WE, with no Internet access of course :-(
+
+Takashi, i tried your patch and it works FINE for my laptop too (Tested
+PCM playback only). Model i used was model=2ch
+By the way i had been working this WE on a patch of my own and was ready
+to submit it to you :-). I attached it anyway so that you can grab my
+vendor/device id.
+
+HOWEVER,
+Using my patch i never got microphone to work properly, and for now i
+don't have any microphone under my hands anymore to test your patch, its
+too bad :-(
+
+Some more random comments to further improbe things on a laptop
+configuration:
+ - For what i've tried, Headphone volume is useless. Headphone volume is
+the same as Front DAC. (==>remove it from mixer list ??)
+ - PC speaker is not connected to anything (==>remove it from mixer list
+??)
+ - Is stereo downmix switch usefull on a 2ch configutation ? (It might be
+a dumb question, i'm not familiar to this stuff ;-) )
+ - I'm not sure if mono input is usefull.
+
+
+By the way here the decription of the connectivity on my laptop:
+ - A set of speakers, obviously connected to Front DAC.
+ - A microphone input
+ - A line in input
+ - A headset output
+ - A SPDIF output 
+ ... and that' all :-)
+
+Many thanks for the good work anyway !!
+
+----------------------------------------------------------------------
+ tiwai - 03-13-06 15:27 
+----------------------------------------------------------------------
+Applied the fixed patch to CVS.
+
+Let's close this bug once.  For a problem with recording, please open
+another bug.  The bug might have been fixed by my recent udpates.  Try CVS
+version at first.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-06 21:26 kylecronan     New Issue                                    
-03-13-06 15:21 tiwai          Status                   assigned => resolved
-03-13-06 15:21 tiwai          Resolution               open => fixed       
-03-13-06 15:21 tiwai          Note Added: 0008444                          
+02-11-06 14:13 fchevalier     New Issue                                    
+03-09-06 17:01 fchevalier     Note Added: 0008392                          
+03-09-06 18:23 tiwai          Note Added: 0008393                          
+03-09-06 18:24 tiwai          File Added: ad1986a-fix.diff                    
+03-09-06 18:25 tiwai          Note Added: 0008394                          
+03-09-06 18:43 tiwai          Note Added: 0008395                          
+03-10-06 18:17 kratz00        Note Added: 0008406                          
+03-10-06 18:25 tiwai          Note Added: 0008407                          
+03-10-06 18:26 tiwai          Relationship added       has duplicate 0001714
+03-10-06 20:28 kratz00        Note Added: 0008410                          
+03-10-06 23:12 kratz00        Note Added: 0008412                          
+03-12-06 20:27 fchevalier     Note Added: 0008434                          
+03-12-06 20:28 fchevalier     File Added: patch_analog_ad1986a_laptop.diff      
+             
+03-13-06 15:27 tiwai          Status                   assigned => resolved
+03-13-06 15:27 tiwai          Resolution               open => fixed       
+03-13-06 15:27 tiwai          Note Added: 0008445                          
 ======================================================================
 
 
