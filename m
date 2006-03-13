@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001919]: Make can't finished
-Date: Mon, 13 Mar 2006 20:48:48 +0100
-Message-ID: <9106525eeda37ced8ee247234eed0cc3@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Ludicrous amount of spam on this list
+Date: Mon, 13 Mar 2006 14:50:00 -0500
+Message-ID: <1142279401.13256.18.camel@mindpipe>
+References: <1142276619.9235.3.camel@localhost.localdomain>
+	 <1142278013.13256.10.camel@mindpipe>  <s5hacbum8rk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 788621D7
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 20:48:48 +0100 (MET)
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D94B71D7
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 20:50:05 +0100 (MET)
+In-Reply-To: <s5hacbum8rk.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +21,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Adrian McMenamin <adrian@mcmen.demon.co.uk>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-03-13 at 20:42 +0100, Takashi Iwai wrote:
+> Well, but it's true that the amount of spam from alsa-devel is much
+> more than from LKML.  (It's still acceptable to me, though.) 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1919> 
-======================================================================
-Reported By:                jakub_saran
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1919
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.
-======================================================================
-Date Submitted:             03-13-2006 15:27 CET
-Last Modified:              03-13-2006 20:48 CET
-======================================================================
-Summary:                    Make can't finished
-Description: 
-First after congigure command shows "Hacking autoconf.h...". Then I type
-make and it shows: 
-Makefile:25: /home/linux: There is no such file or folder
-Makefile:25: drivers/AC: There is no such file or folder
-Makefile:25: 97: There is no such file or folder
-Makefile:25: Audio: There is no such file or folder
-Makefile:25: Drivers/alsa-driver-1.0.10/Rules.make: There is no such file
-or folder
-make[2]: *** No rules to make object
-`Drivers/alsa-driver-1.0.10/Rules.make'.
-Stop.
-make[2]: Leaving directory `/home/linux drivers/AC 97 Audio
-Drivers/alsa-driver-1.0.10/acore'
-make[1]: *** [dep] Error 1
-make[1]: Leaving directory `/home/linux drivers/AC 97 Audio
-Drivers/alsa-driver-1.0.10'
-make: *** [include/sndversions.h] Error 2
+I think the spam mails are close in number but the much greater LKML
+volume drowns it out.  It does seem that we should be able to do a
+little better, like loweing the spam score threshold, which IIRC can be
+done via the Mailman interface.
 
-It is translated from Polish to English so it can be different from
-orginal. What shoul I do? I've got ARSROC K7NF2-RAID motherboard with
-CMI9761/A audio codec.
+How about simply filtering out all HTML mail like LKML does?
 
-regard
-
-Jakub
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-13-06 20:48 
-----------------------------------------------------------------------
-Don't put space in the directory name.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-13-06 15:27 jakub_saran    New Issue                                    
-03-13-06 15:27 jakub_saran    Kernel Version            => 2.6.            
-03-13-06 20:48 tiwai          Note Added: 0008462                          
-======================================================================
-
+Lee
 
 
 
