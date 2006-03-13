@@ -1,15 +1,14 @@
-From: "igokcek@msn.com" <igokcek@msn.com>
-Subject: Gokcek iksiri nedir?
-Date: Mon, 13 Mar 2006 06:49:36 +0100
-Message-ID: <200603130649338A8C267DE9$F379B12C05@GFBBAC>
-Reply-To: igokcek@msn.com
+From: Florian Schlichting <Florian.Schlichting@gmx.de>
+Subject: Re: debugging nm256: some results, many questions
+Date: Mon, 13 Mar 2006 14:46:28 +0800
+Message-ID: <20060313064627.GA3864@tigerbay>
+References: <20060223185253.GA7954@tigerbay> <s5hfym8vd0k.wl%tiwai@suse.de> <20060311174421.GB7775@tigerbay>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_686_E697_5776C686.17463790"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TakKZr9L6Hm6aLOc"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from g-0f95bb77a1c64 (cable-159-112.iesy.tv [81.210.159.112])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 281811D1
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 06:49:37 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <20060311174421.GB7775@tigerbay>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,91 +18,187 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format
 
-------=_NextPart_686_E697_5776C686.17463790
-Content-Type: text/plain; charset="iso-8859-1"
+--TakKZr9L6Hm6aLOc
+Content-Type: multipart/mixed; boundary="d6Gm4EdcadzBjdND"
+Content-Disposition: inline
+
+
+--d6Gm4EdcadzBjdND
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+I went ahead implementing caching of reads to the ac97 mixer registers
+inside the nm256 driver, and also included "preloading" of the cache,
+just as the OSS driver does. And it works like a charm: no reads to the
+mixers, no crashes any more!
+
+Alas, this improvement has taught me what some of the reads were for -
+detection of volume resolution, for example: I suddenly had two maxima
+on the PCM mixer. As all my mixers have a resolution of 31, I customized
+the values being written to the cache so that the ac97_codec would
+"detect" the correct value. Now the only difference to the non-patched
+state (according to alsactl) is that a few mixers are stereo instead of
+mono - but up to now this doesn't seem to have any effect on anything I
+do, everything works fine...
+
+The question is: how portable is this to other users of nm256? Will we
+need a detect for this workaround?
+
+I've attached a patch against 1.0.10rc3 - I just saw that in 1.0.11rc3
+there has been a cleanup in nm256, and my patch doesn't apply cleanly
+any more... although I don't think it will need to be changed. Perhaps I
+could have some feedback first?
+
+Florian
+
+
+--d6Gm4EdcadzBjdND
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=nm256-patch
 Content-Transfer-Encoding: quoted-printable
 
-Gokcek iksiri nedir? Bu iksir 26 yillik bir tecrubenin ve arstirmanin ur=
-unudur ve bildiginiz butun eksotik urunlerden daha etkili vede oldukca u=
-cuzdur, yani evde kendiniz yapabilirsiniz.
+--- /usr/src/linux/sound/pci/nm256/nm256.c.orig	2006-03-13 13:46:23.0000000=
+00 +0800
++++ /usr/src/linux/sound/pci/nm256/nm256.c.cleaned_up	2006-03-13 14:13:28.0=
+00000000 +0800
+@@ -1152,22 +1152,33 @@
+ }
+=20
+ /*
++ * some nm256 easily crash when reading from mixer registers
++ * thus we're caching both read and written values for reading
+  */
+ static unsigned short
+ snd_nm256_ac97_read(ac97_t *ac97, unsigned short reg)
+ {
+ 	nm256_t *chip =3D ac97->private_data;
+-	int res;
+=20
+ 	if (reg >=3D 128)
+ 		return 0;
+=20
+ 	if (! snd_nm256_ac97_ready(chip))
+ 		return 0;
+-	res =3D snd_nm256_readw(chip, chip->mixer_base + reg);
++
++	if (! test_bit(reg, ac97->reg_accessed)) { /* ! read_workaround && */
++		/* we should never get here, really, as all regs have been=20
++		 * loaded into the cache, and the cached-flags in reg_accessed
++		 * are never cleared. Thus we could also test for=20
++		 * ! read_workaround (once introduced and properly set)	=09
++		 */
++ 		ac97->regs[reg] =3D snd_nm256_readw(chip, chip->mixer_base + reg);
++		set_bit(reg, ac97->reg_accessed);
++	}
++
+ 	/* Magic delay.  Bleah yucky.  */
+ 	msleep(1);
+-	return res;
++	return ac97->regs[reg];
+ }
+=20
+ /*=20
+@@ -1188,17 +1199,62 @@
+ 	while (tries-- > 0) {
+ 		snd_nm256_writew(chip, base + reg, val);
+ 		msleep(1);  /* a little delay here seems better.. */
+-		if (snd_nm256_ac97_ready(chip))
++		if (snd_nm256_ac97_ready(chip)) {
++			/* successful write: set cache */
++			ac97->regs[reg] =3D (val & 0xdfdf); /* we don't do this volume resoluti=
+on */
++			set_bit(reg, ac97->reg_accessed);
+ 			return;
++		}
+ 	}
+ 	snd_printd("nm256: ac97 codec not ready..\n");
+ }
+=20
++/*=20
++ * below copied from OSS driver
++ * this list could perhaps be fused with mixer_regs[] ??
++ *=20
++ * Initial register values to be written to the AC97 mixer.
++ * While most of these are identical to the reset values, we do this
++ * so that we have most of the register contents cached--this avoids
++ * reading from the mixer directly (which seems to be problematic,
++ * probably due to ignorance).
++ */
++
++struct initialValues
++{
++	unsigned int reg;
++	unsigned short value;
++};
++
++static struct initialValues nm256_ac97_initial_values[] =3D
++{
++	{ AC97_MASTER, 		0x8000 },
++	{ AC97_HEADPHONE,	0x8000 },
++	{ AC97_MASTER_MONO,	0x0000 },
++	{ AC97_PC_BEEP,		0x0000 },
++	{ AC97_PHONE,		0x0008 },
++	{ AC97_MIC,		0x8000 },
++	{ AC97_LINE,		0x8808 },
++	{ AC97_CD,		0x8808 },
++	{ AC97_VIDEO,		0x8808 },
++	{ AC97_AUX,		0x8808 },
++	{ AC97_PCM,		0x0808 },
++	{ AC97_REC_SEL,		0x0000 },
++	{ AC97_REC_GAIN,	0x0B0B },
++	{ AC97_GENERAL_PURPOSE,	0x0000 },
++	{ AC97_3D_CONTROL,	0x8000 },=20
++	{ AC97_VENDOR_ID1, 	0x8384 },
++	{ AC97_VENDOR_ID2,	0x7609 },
++	{ 0xffff, 0xffff }
++};
++
++
+ /* initialize the ac97 into a known state */
+ static void
+ snd_nm256_ac97_reset(ac97_t *ac97)
+ {
+ 	nm256_t *chip =3D ac97->private_data;
++	int x;=20
+=20
+ 	/* Reset the mixer.  'Tis magic!  */
+ 	snd_nm256_writeb(chip, 0x6c0, 1);
+@@ -1211,6 +1267,12 @@
+ 		snd_nm256_writeb(chip, 0x6cc, 0x80);
+ 		snd_nm256_writeb(chip, 0x6cc, 0x0);
+ 	}
++	for (x =3D 0; nm256_ac97_initial_values[x].reg !=3D 0xffff; x++) {
++		/* preload the cache, so as to avoid even a single read of the mixer reg=
+s */
++		snd_ac97_write_cache(ac97,
++				nm256_ac97_initial_values[x].reg,
++				nm256_ac97_initial_values[x].value);
++	}
+ }
+=20
+ /* create an ac97 mixer interface */
 
-Gokcek iksiri (SSL iksiri): 1 kgr. sarimsak kiyilarak bir siseye konur v=
-e uzerine 2 litre taze sikilmis limon suyu, 3 litre kaliteli =FCz=FCm si=
-rkesi ilave edilir. Bu iksir 6 hafta Gunes isinlarindan uzakta muhafaza =
-edilir ve herg=FCn bir defa calkalanir ve bu s=FCre sonunda s=FCz=FClere=
-k Gokcek iksiri elde edilir. Bu iksirden gunde 3-5 defa 1-2 corba kasigi=
- alinir. Gokcek iksiri icin 1 kgr. sarimsak, 2 litre limon suyu ve 3 lit=
-re sirke gerekir, sayet hastalik kronikse veya ailece kulanilmak icin uy=
-gudur. Eger hastalik ilerlememis yani akut ise burada verilen oranlarin =
-yarisi veya ceyregi ilede tedaviye baslanabilinir. 
+--d6Gm4EdcadzBjdND--
 
-Gokcek iksiri vucudumuzdaki kolesterol, lipid, ve trigliserid gibi zarar=
-li yaglari eritir, yuksek tansiyonu onler ve kandaki sekeri dusurur vede=
- vucudu plaklardan temizler. Beyin kanamasi, kalp krizi, kronar yetersiz=
-ligi ve damar serligi gibi bircok rahatsizligi =F6nler, cinsel g=FCc=FC =
-artirir ve sindirimi kolaylastirir. 
+--TakKZr9L6Hm6aLOc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-www.dogaltedavi.net         www.alternatif-tip.net
-www.bitkiseltedavi.com     www.aloeverabu.com      
-www.lr-kozmetik.com       www.nonibu.com         
-www.kilover.biz                www.biroybil.net           
-www.sayfabu.com            www.gazeteweb.com
-www.turksiteler100.com
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
 
-------=_NextPart_686_E697_5776C686.17463790
-Content-Type: text/html; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+iD8DBQFEFRVD/R0+cAphf/kRAgpjAKDVkTOllKRl5EgyAQZ5jvplOrFsHACfc0g5
+SxwSFqma+McyUAA5Eh7aYAc=
+=Ngvv
+-----END PGP SIGNATURE-----
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> <html><he=
-ad>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=3Diso-88=
-59-1">
-  <META content=3D3.88 name=3DGenerator> <title>Gokcek iksiri nedir? </t=
-itle>
- </head>
- <body bgColor=3D#ffffff> <P align=3Dleft><STRONG>Gokcek iksiri nedir?</=
-STRONG> Bu iksir 26 yillik bir tecrubenin ve arstirmanin urunudur ve bil=
-diginiz butun eksotik urunlerden daha etkili vede oldukca ucuzdur, yani =
-evde kendiniz yapabilirsiniz.</P><P align=3Dleft><STRONG>Gokcek iksiri (=
-SSL iksiri):</STRONG> 1 kgr. sarimsak kiyilarak bir siseye konur ve uzer=
-ine 2 litre taze sikilmis limon suyu, 3 litre kaliteli =FCz=FCm sirkesi =
-ilave edilir. Bu iksir 6 hafta Gunes isinlarindan uzakta muhafaza edilir=
- ve herg=FCn bir defa calkalanir ve bu s=FCre sonunda s=FCz=FClerek Gokc=
-ek iksiri elde edilir. Bu iksirden gunde 3-5 defa 1 corba kasigi 2-6&nbs=
-p;ay&nbsp;alinabilir. Gokcek iksiri icin 1 kgr. sarimsak, 2 litre limon =
-suyu ve 3 litre sirke gerekir, sayet hastalik kronikse veya ailece kulan=
-ilmak icin uygudur. Eger hastalik ilerlememis yani akut ise burada veril=
-en oranlarin yarisi veya ceyregi ilede tedaviye baslanabilinir. </P><P a=
-lign=3Dleft><STRONG>Gokcek iksiri</STRONG> vucudumuzdaki kolesterol, lip=
-id, ve trigliserid gibi zararli yaglari eritir, yuksek tansiyonu onler v=
-e kandaki sekeri dusurur vede vucudu plaklardan temizler. Beyin kanamasi=
-, kalp krizi, kronar yetersizligi ve damar serligi gibi bircok rahatsizl=
-igi =F6nler, cinsel g=FCc=FC artirir ve sindirimi kolaylastirir.&nbsp;<B=
-R><BR><A href=3D"http://www.dogaltedavi.net/">www.dogaltedavi.net</A>&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href=3D"http://www.alte=
-rnatif-tip.net/">www.alternatif-tip.net</A><BR><A href=3D"http://www.bit=
-kiseltedavi.com/">www.bitkiseltedavi.com</A>&nbsp;&nbsp;&nbsp;&nbsp; <A =
-href=3D"http://www.aloeverabu.com/">www.aloeverabu.com</A>&nbsp;&nbsp;&n=
-bsp;&nbsp;&nbsp; <BR><A href=3D"http://www.lr-kozmetik.com/">www.lr-kozm=
-etik.com</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href=3D"http://www.n=
-onibu.com/">www.nonibu.com</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp; <BR><A href=3D"http://www.kilover.biz/">www.kilover.biz</A>&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp; <A href=3D"http://www.biroybil.net/">www.biroybil.net</A>&n=
-bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR><A href=3D=
-"http://www.sayfabu.com/">www.sayfabu.com</A>&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <A href=3D"http://www.gazeteweb.=
-com/">www.gazeteweb.com</A><BR><A href=3D"http://www.turksiteler100.com/=
-">www.turksiteler100.com</A><BR></P></body>
- </html>
- 
-
-------=_NextPart_686_E697_5776C686.17463790--
+--TakKZr9L6Hm6aLOc--
 
 
 -------------------------------------------------------
