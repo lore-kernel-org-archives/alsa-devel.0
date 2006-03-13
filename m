@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001921]: Unsupported Sound Card
-Date: Tue, 14 Mar 2006 00:21:21 +0100
-Message-ID: <fa679515f51c3beb336b948bae91aeee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001922]: Unsupported Sound Card
+Date: Tue, 14 Mar 2006 00:21:29 +0100
+Message-ID: <1e66414fec0f0ced725168061be8c010@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E79F31D7
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 00:21:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 75D471D7
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 00:21:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1921> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1922> 
 ======================================================================
 Reported By:                sk0rp10
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1921
+Issue ID:                   1922
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
@@ -98,7 +98,6 @@ Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-14-06 00:21 sk0rp10        New Issue                                    
-03-14-06 00:21 sk0rp10        File Added: 30701302.pdf                     
 03-14-06 00:21 sk0rp10        Distribution              => Slackware current
 03-14-06 00:21 sk0rp10        Kernel Version            => 2.6.15.6 vanilla
 ======================================================================
