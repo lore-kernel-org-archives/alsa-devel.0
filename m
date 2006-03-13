@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001910]: No Sound for SB Extigy for volume below 30%
-Date: Mon, 13 Mar 2006 15:45:42 +0100
-Message-ID: <f28e5ea634529c1f690020c0814f8141@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001915]: Module snd-intel8x0 for ALI 5455 card needs special option to work
+Date: Mon, 13 Mar 2006 15:47:49 +0100
+Message-ID: <a86ac657f98d48bbcb2526a62c6723ef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9761D19F
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 15:45:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1AB6A19F
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 15:47:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1910> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1915> 
 ======================================================================
-Reported By:                andersin
+Reported By:                ekalin
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   1910
-Category:                   alsamixer
+Issue ID:                   1915
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Resolution:                 not an issue
+Resolution:                 won't fix
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-11-2006 16:40 CET
-Last Modified:              03-13-2006 15:45 CET
+Date Submitted:             03-11-2006 23:06 CET
+Last Modified:              03-13-2006 15:47 CET
 ======================================================================
-Summary:                    No Sound for SB Extigy for volume below 30%
+Summary:                    Module snd-intel8x0 for ALI 5455 card needs special
+option to work
 Description: 
-The volume control for the SB Extigy only works accurately for values above
-50%. Below that, sound is still detectable very faintly as low as 30%
-(This is with my speakers set to full output which is unbearably loud if
-the volume in alsamixer gets turned up again). Below 30% there is no sound
-as far as I can tell. Effectively there's only half a volume control
-(50%-100%).
+The ALI 5455 card, at least the model whose lspci -vv output is shown
+below, needs the "buggy_semaphore=1" to work. If this option is not
+passed, the module does load, but no sound cards are identified. So
+alsaconf should add this option to the modules configuration file when the
+card is detected.
+
+Here's the output of lspci -vv:
+0000:00:04.0 Multimedia audio controller: ALi Corporation M5455 PCI
+AC-Link Controller Audio Device (rev 20)
+        Subsystem: ASUSTeK Computer Inc.: Unknown device 80b0
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV+ VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64 (16000ns min), Cache Line Size: 0x10 (64 bytes)
+        Interrupt: pin A routed to IRQ 22
+        Region 0: I/O ports at c800 [size=256]
+        Region 1: Memory at fbdff000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [40] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2+,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
 ======================================================================
 
 ----------------------------------------------------------------------
- andersin - 03-11-06 19:52 
+ tiwai - 03-13-06 15:47 
 ----------------------------------------------------------------------
-please close this. I opened a new report after being advised in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1911
-that it should be reported for the usb-audio driver.
+This dpeends on the kernel version and may be fixed in the future kernel.
+Adding this option is a bad idea.  It's just a workaround...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 16:40 andersin       New Issue                                    
-03-11-06 19:52 andersin       Note Added: 0008426                          
-03-13-06 15:45 tiwai          Status                   new => resolved     
-03-13-06 15:45 tiwai          Resolution               open => not an issue
-03-13-06 15:45 tiwai          Assigned To               => tiwai           
+03-11-06 23:06 ekalin         New Issue                                    
+03-11-06 23:07 ekalin         Issue Monitored: ekalin                      
+03-13-06 15:47 tiwai          Status                   new => resolved     
+03-13-06 15:47 tiwai          Resolution               open => won't fix   
+03-13-06 15:47 tiwai          Assigned To               => tiwai           
+03-13-06 15:47 tiwai          Note Added: 0008447                          
 ======================================================================
 
 
