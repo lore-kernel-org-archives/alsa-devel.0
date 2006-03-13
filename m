@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Mon, 13 Mar 2006 13:51:09 +0100
-Message-ID: <4a7f9d8e6868fc03869f7aaad5c51b8a@bugtrack.alsa-project.org>
+Date: Mon, 13 Mar 2006 14:36:06 +0100
+Message-ID: <3c960aa04f542baa70dd0749484d83c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5D021C1
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 13:51:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE8361CA
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 14:36:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              03-13-2006 13:51 CET
+Last Modified:              03-13-2006 14:36 CET
 ======================================================================
 Summary:                    Master volume only controls front output (emu10k1)
 Description: 
@@ -59,13 +59,6 @@ has duplicate       0001256 surround51: Master Volume control and M...
 has duplicate       0001071 Help with Volume Controls
 related to          0000919 Master volume doesn't control rear spea...
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-13-06 13:28 
-----------------------------------------------------------------------
-I'd suggest to rename the ac97 Master to Front, and the new Master Digital
-to a real Master.  Also, for avoid regressions (no sound after update),
-make the default value of Front full and unmuted.
 
 ----------------------------------------------------------------------
  muffty - 03-13-06 13:51 
@@ -111,6 +104,14 @@ SND_EMU10K1_GPR_CONTROLS as I did.
 The original author of the patch is Mikael Magnusson and as I know it is
 posted to alsa-devel.
 I tested with alsa 1.0.10 and SB Live! 5.1 (SB0220)
+
+----------------------------------------------------------------------
+ tiwai - 03-13-06 14:36 
+----------------------------------------------------------------------
+OK, then please someone submit the right patch to alsa-devel ML, not URL.
+Discussing/reviewing the patch on a web form is very annoying.
+
+Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -161,6 +162,7 @@ Date Modified  Username       Field                    Change
 03-13-06 13:28 tiwai          Note Added: 0008440                          
 03-13-06 13:49 muffty         Note Deleted: 0008388                        
 03-13-06 13:51 muffty         Note Added: 0008442                          
+03-13-06 14:36 tiwai          Note Added: 0008443                          
 ======================================================================
 
 
