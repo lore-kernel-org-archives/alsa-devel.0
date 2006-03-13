@@ -1,137 +1,74 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Mon, 13 Mar 2006 18:09:48 +0100
-Message-ID: <2d32b85db7b9f40bb82659002fa579b8@bugtrack.alsa-project.org>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: [Alsa-devel] Re: 2.6.15-rt20, "bad page state",
+	jackd	(alsa	1.0.10 vs. recent kernels)
+Date: Mon, 13 Mar 2006 09:33:50 -0800
+Message-ID: <1142271230.13467.13.camel@cmn3.stanford.edu>
+References: <1141846564.5262.20.camel@cmn3.stanford.edu>
+	 <20060309084746.GB9408@osiris.boeblingen.de.ibm.com>
+	 <1141938488.22708.28.camel@cmn3.stanford.edu>
+	 <4410B2D7.4090806@yahoo.com.au>
+	 <1141958866.22708.69.camel@cmn3.stanford.edu>
+	 <441109BC.9070705@yahoo.com.au>
+	 <1142016627.6124.33.camel@cmn3.stanford.edu>
+	 <44121351.2050703@yahoo.com.au>
+	 <1142210977.7471.27.camel@cmn3.stanford.edu>
+	 <4414DBFE.1050400@yahoo.com.au>
+	 <1142220385.7471.46.camel@cmn3.stanford.edu>
+	 <1142220716.25358.273.camel@mindpipe>
+	 <1142221144.7471.51.camel@cmn3.stanford.edu>
+	 <1142222022.25358.277.camel@mindpipe>  <s5h8xremwpb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 311A61CD
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 18:09:49 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751533AbWCMReS@vger.kernel.org>
+In-Reply-To: <s5h8xremwpb.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: nando@ccrma.Stanford.EDU, Lee Revell <rlrevell@joe-job.com>, Nick Piggin <nickpiggin@yahoo.com.au>, cc@ccrma.Stanford.EDU, alsa-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Heiko Carstens <heiko.carstens@de.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-03-13 at 12:05 +0100, Takashi Iwai wrote:
+> At Sun, 12 Mar 2006 22:53:41 -0500,
+> Lee Revell wrote:
+> > On Sun, 2006-03-12 at 19:39 -0800, Fernando Lopez-Lezcano wrote:
+> > > On Sun, 2006-03-12 at 22:31 -0500, Lee Revell wrote:
+> > >  
+> > > > Older ALSA with a newer kernel has never been supported.  Why would you
+> > > > want to replace the ALSA in the kernel with an old version?
+> > > 
+> > > Because it is not an older version?
+> > > "cat /proc/asound/version" for the 2.6.15 in kernel tree prints this:
+> > >   Advanced Linux Sound Architecture Driver Version 1.0.10rc3
+> > > That should be older than 1.0.10 final.
+> > 
+> > Ah, sorry.  Then you're right, this patch must have slipped through the
+> > cracks.
+> 
+> Well, ALSA 1.0.10-final was already released in last November,
+> i.e. before 2.6.15.  When 2.6.15 was released, we had ALSA 1.0.11rc2.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
-======================================================================
-Reported By:                wzzrd
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   154
-Category:                   2_mixer
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              03-13-2006 18:09 CET
-======================================================================
-Summary:                    Master volume only controls front output (emu10k1)
-Description: 
-Setting the alsamixer Master Volume slider only controls the front two
-speakers. The rear speakers have to be controlled with the Wave Surround
-setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
-bug. If I'm wrong putting it here, sorry.
+I understand. Still, 2.6.15 has 1.0.10rc3 and current alsa "stable" does
+not work out of the box with it (at least for some of the cards and in
+my tests - hmmm, maybe this only happens when running with the -rt
+patches?). 
 
-It would be very convenient to be able to control all four speakers with
-the Master Volume setting and to have a Front and Rear slider to control
-the front and rear speakers individually.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000176 Master volume does not alters center, L...
-has duplicate       0000786 Master can't handle all channel
-has duplicate       0001256 surround51: Master Volume control and M...
-has duplicate       0001071 Help with Volume Controls
-related to          0000919 Master volume doesn't control rear spea...
-======================================================================
+There's one additional tiny patch needed in alsa 1.0.10 if you want
+snd-rtctimer to be detected by configure and subsequently built under
+2.6.15+:
 
-----------------------------------------------------------------------
- tiwai - 03-13-06 14:36 
-----------------------------------------------------------------------
-OK, then please someone submit the right patch to alsa-devel ML, not URL.
-Discussing/reviewing the patch on a web form is very annoying.
+========
+alsa-driver-1.0.10/configure~	2005-11-16 09:41:17.000000000 -0500
++++ alsa-driver-1.0.10/configure	2006-03-06 20:48:03.152744160 -0500
+@@ -8260,7 +8260,7 @@
+ echo "$as_me:$LINENO: checking for RTC callback support in kernel" >&5
+ echo $ECHO_N "checking for RTC callback support in kernel... $ECHO_C"
+>&6
+ rtcsup=""
+-if test "$kversion.$kpatchlevel" = "2.6" -a "$kpatchlevel" -ge 15; then
++if test "$kversion.$kpatchlevel" = "2.6" -a "$ksublevel" -ge 15; then
+ ac_save_CFLAGS="$CFLAGS"
+ ac_save_CC=$CC
+ CFLAGS="$KERNEL_CHECK_CFLAGS"
+========
 
-Thanks.
-
-----------------------------------------------------------------------
- rlrevell - 03-13-06 18:09 
-----------------------------------------------------------------------
-Sorry - I told the user to post it here so it could be widely regression
-tested
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-23-04 17:31 wzzrd          New Issue                                    
-03-23-04 18:42 perex          View Status              @0@ => public       
-03-23-04 18:42 perex          Description Updated                          
-03-23-04 18:42 perex          Additional Information Updated                    
-03-23-04 18:43 perex          Status                   new => assigned     
-03-23-04 18:43 perex          Assigned To               => perex           
-03-26-04 20:21 djtm           Note Added: 0000708                          
-04-19-04 02:47 tarball        Issue Monitored: tarball                     
-04-19-04 21:23 perex          Relationship added       has duplicate 0000176
-05-24-04 22:51 delmonico      Note Added: 0001199                          
-10-22-04 16:44 perex          Relationship added       related to 0000172  
-10-23-04 01:09 djtm           Note Added: 0002253                          
-10-23-04 01:09 djtm           File Added: alsavol.sh                       
-10-23-04 01:10 djtm           Note Edited: 0002253                         
-11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
-01-04-05 21:01 Miwer          Note Added: 0003081                          
-01-04-05 21:11 rlrevell       Note Added: 0003082                          
-01-04-05 21:29 pzad           Note Added: 0003083                          
-01-04-05 21:38 rlrevell       Note Added: 0003084                          
-01-04-05 22:30 pzad           Note Added: 0003085                          
-01-04-05 22:38 rlrevell       Note Added: 0003086                          
-01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
-01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
-01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
-01-27-05 01:00 adamk75        Note Added: 0003418                          
-02-01-05 22:57 adamk75        Note Added: 0003475                          
-02-03-05 20:20 rlrevell       Note Added: 0003493                          
-02-17-05 22:01 adamk75        Note Added: 0003642                          
-02-17-05 22:59 rlrevell       Note Added: 0003646                          
-02-17-05 23:28 adamk75        Note Added: 0003647                          
-02-22-05 09:56 perex          Relationship added       related to 0000919  
-05-20-05 20:39 Miwer          Issue Monitored: Miwer                       
-05-20-05 22:02 Miwer          Note Added: 0004699                          
-05-20-05 22:05 rlrevell       Note Added: 0004700                          
-07-13-05 18:56 rlrevell       Relationship added       has duplicate 0001256
-07-16-05 17:11 jdthood        Relationship added       has duplicate 0001071
-09-02-05 19:55 blueSceaDa     Issue Monitored: blueSceaDa                    
-03-09-06 11:34 muffty         Note Added: 0008388                          
-03-09-06 11:37 muffty         Issue Monitored: muffty                      
-03-12-06 21:27 rlrevell       Relationship deleted     related to 0000172  
-03-12-06 21:34 rlrevell       File Added: master_volume_v3.patch                
-   
-03-12-06 21:35 rlrevell       Note Added: 0008436                          
-03-13-06 13:28 tiwai          Note Added: 0008440                          
-03-13-06 13:49 muffty         Note Deleted: 0008388                        
-03-13-06 13:51 muffty         Note Added: 0008442                          
-03-13-06 14:36 tiwai          Note Added: 0008443                          
-03-13-06 18:09 rlrevell       Note Added: 0008454                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by xPML, a groundbreaking scripting language
-that extends applications into web and mobile media. Attend the live webcast
-and join the prime developer group breaking into this new coding territory!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
+-- Fernando
