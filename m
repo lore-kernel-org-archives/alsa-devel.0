@@ -1,17 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Ludicrous amount of spam on this list
-Date: Mon, 13 Mar 2006 14:50:00 -0500
-Message-ID: <1142279401.13256.18.camel@mindpipe>
-References: <1142276619.9235.3.camel@localhost.localdomain>
-	 <1142278013.13256.10.camel@mindpipe>  <s5hacbum8rk.wl%tiwai@suse.de>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] ALSA-Configuration.txt: snd-hda-intel: document model=basic
+Date: Mon, 13 Mar 2006 20:56:44 +0100
+Message-ID: <20060313195644.GF13973@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id D94B71D7
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 20:50:05 +0100 (MET)
-In-Reply-To: <s5hacbum8rk.wl%tiwai@suse.de>
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 06B29178
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 20:56:44 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,22 +18,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adrian McMenamin <adrian@mcmen.demon.co.uk>, alsa-devel@alsa-project.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: Takashi Iwai <tiwai@suse.de>, perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-03-13 at 20:42 +0100, Takashi Iwai wrote:
-> Well, but it's true that the amount of spam from alsa-devel is much
-> more than from LKML.  (It's still acceptable to me, though.) 
+Document the model=basic option in the snd-hda-intel driver.
 
-I think the spam mails are close in number but the much greater LKML
-volume drowns it out.  It does seem that we should be able to do a
-little better, like loweing the spam score threshold, which IIRC can be
-done via the Mailman interface.
 
-How about simply filtering out all HTML mail like LKML does?
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-Lee
+---
+
+Can I get an ACK for getting this patch into 2.6.16?
+
+This patch was already sent on:
+- 4 Mar 2006
+
+--- linux-2.6.16-rc5-mm2-full/Documentation/sound/alsa/ALSA-Configuration.txt.old	2006-03-04 15:52:50.000000000 +0100
++++ linux-2.6.16-rc5-mm2-full/Documentation/sound/alsa/ALSA-Configuration.txt	2006-03-04 15:57:10.000000000 +0100
+@@ -705,6 +705,7 @@
+ 			$CONFIG_SND_DEBUG=y
+ 
+ 	ALC260
++	  basic		base mode
+ 	  hp		HP machines
+ 	  fujitsu	Fujitsu S7020
+ 
+
 
 
 
