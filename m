@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
-Date: Mon, 13 Mar 2006 09:50:47 +0100
-Message-ID: <a272ed3b5f90be459a3dcf452d9239a1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
+Date: Mon, 13 Mar 2006 10:10:19 +0100
+Message-ID: <66a19838fe21e8f88e0a547638160ef8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 519591D8
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 09:50:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A18521E1
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 10:10:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
 ======================================================================
-Reported By:                iq79
+Reported By:                kiwi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1259
-Category:                   PCI - emu10k1
+Issue ID:                   1898
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.12-gentoo-r1
+Distribution:               Fedora Core 5 test3
+Kernel Version:             2.6.15-1.2009.4.2_FC5
 ======================================================================
-Date Submitted:             07-15-2005 18:18 CEST
-Last Modified:              03-13-2006 09:50 CET
+Date Submitted:             03-09-2006 00:30 CET
+Last Modified:              03-13-2006 10:10 CET
 ======================================================================
-Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
-from AUX in
+Summary:                    no sound from headphones or speakers on asus a6km
+laptop
 Description: 
-I am unable to unmute the internal AUX-in header of my Audigy4Pro.
+The headphone port and the speakers just don't work. Seems like there is
+some control hidden in the mixer which is muted. 
+By setting the master and pcm volume at 100% I can hear just some static
+on song beats only on headphones. Speakers always stay mute.
+I can only get sound by attaching the headphones to line-in and enabling
+"shared" surround mode.
 
-- I played around with all (Playback/Capture) mixer settings in alsamixer
-but I couldn't find a configuration which gives me sound from AUX-in.
+Same issues with a knoppix 4.0.2.
 
-- I tried loading emu10k1 module with several extin/exout combinations.
-That didn't help, too.
 ======================================================================
 
 ----------------------------------------------------------------------
- iq79 - 03-04-06 00:55 
+ Rollsappletree - 03-12-06 16:40 
 ----------------------------------------------------------------------
-Alsamixer tells me it's a "SigmaTel STAC9750,51"
+Identical problem on a Asus z92km, whith same chipset, on a Gentoo box
 
 ----------------------------------------------------------------------
- iq79 - 03-13-06 09:50 
+ u238 - 03-13-06 10:10 
 ----------------------------------------------------------------------
-One more thing. I just found out that all my (analog) inputs are not named
-correctly:
-
-For instance if I plug in my microphone into the input labeled "Line 1 /
-Mic" (LiveDrive), in alsamixer I have to use the "Line 2" slider to set
-the playback volume of my mic. As long as "Line 2" is set to some volume
-the mic works, regardless of the "Analog Mix" setting.
-
-There is no "Line 1 / Mic" mixer, but two seperate mixers (labeled "Mic"
-and "Line 1"), but I wasn't able to find out what either of them does.
-There is also no controll for the "Line 3" input in alsamixer. There is a
-"Aux 2" mixer controll, but the Audigy 4 / LiveDrive has no input of that
-name.
+Same issue on ASUS A6KMQ004P laptop with Gentoo 2006.0
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-15-05 18:18 iq79           New Issue                                    
-07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
-07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
-07-15-05 19:49 pzad           Note Added: 0005483                          
-07-15-05 19:50 pzad           Note Edited: 0005483                         
-07-15-05 23:40 iq79           Note Added: 0005484                          
-07-16-05 16:31 jdthood        Note Added: 0005496                          
-07-16-05 18:36 iq79           File Added: amixer_output                    
-07-16-05 18:38 iq79           Note Added: 0005500                          
-07-20-05 05:32 jcdutton       Note Added: 0005532                          
-03-01-06 10:46 iq79           Note Added: 0008278                          
-03-01-06 18:02 rlrevell       Note Added: 0008286                          
-03-02-06 23:00 iq79           Note Added: 0008327                          
-03-03-06 17:36 pzad           Note Added: 0008342                          
-03-04-06 00:55 iq79           Note Added: 0008344                          
-03-13-06 09:50 iq79           Note Added: 0008438                          
+03-09-06 00:30 kiwi           New Issue                                    
+03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
+03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
+03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
+03-09-06 16:41 kiwi           Note Added: 0008391                          
+03-09-06 20:09 michele26x1    Note Added: 0008396                          
+03-09-06 21:02 kiwi           Note Added: 0008397                          
+03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
+03-12-06 15:49 kiwi           Note Added: 0008432                          
+03-12-06 16:40 Rollsappletree Note Added: 0008433                          
+03-13-06 10:10 u238           Note Added: 0008439                          
 ======================================================================
 
 
