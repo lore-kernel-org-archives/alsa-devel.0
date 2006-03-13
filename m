@@ -1,8 +1,8 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: [Alsa-devel] Re: 2.6.15-rt20, "bad page state", jackd
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: 2.6.15-rt20, "bad page state", jackd
 	(alsa	1.0.10 vs. recent kernels)
-Date: Sun, 12 Mar 2006 19:39:04 -0800
-Message-ID: <1142221144.7471.51.camel@cmn3.stanford.edu>
+Date: Sun, 12 Mar 2006 22:53:41 -0500
+Message-ID: <1142222022.25358.277.camel@mindpipe>
 References: <1141846564.5262.20.camel@cmn3.stanford.edu>
 	 <20060309084746.GB9408@osiris.boeblingen.de.ibm.com>
 	 <1141938488.22708.28.camel@cmn3.stanford.edu>
@@ -15,42 +15,50 @@ References: <1141846564.5262.20.camel@cmn3.stanford.edu>
 	 <4414DBFE.1050400@yahoo.com.au>
 	 <1142220385.7471.46.camel@cmn3.stanford.edu>
 	 <1142220716.25358.273.camel@mindpipe>
+	 <1142221144.7471.51.camel@cmn3.stanford.edu>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751275AbWCMDjb@vger.kernel.org>
-In-Reply-To: <1142220716.25358.273.camel@mindpipe>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Nick Piggin <nickpiggin@yahoo.com.au>, nando@ccrma.Stanford.EDU, cc@ccrma.Stanford.EDU, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Heiko Carstens <heiko.carstens@de.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1142221144.7471.51.camel@cmn3.stanford.edu>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: Nick Piggin <nickpiggin@yahoo.com.au>, cc@ccrma.Stanford.EDU, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Heiko Carstens <heiko.carstens@de.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-03-12 at 22:31 -0500, Lee Revell wrote:
-> On Sun, 2006-03-12 at 19:26 -0800, Fernando Lopez-Lezcano wrote:
-> > On Mon, 2006-03-13 at 13:42 +1100, Nick Piggin wrote:
-> > > Fernando Lopez-Lezcano wrote:
-> > > 
-> > > > Well, I found it. Finally. I diffed memalloc.c in the alsa kernel tree
-> > > > with alsa stable 1.0.10 and googled for the obvious two chunks that
-> > > > stood out :-)
-> > > > 
-> > > 
-> > > Well, good work on tracking it down. I guess you should forward
-> > > forward your patch to the ALSA guys.
-> > 
-> > It fixes 1.0.10 with recent kernels but I guess 1.0.10 is old so maybe
-> > it will not get patched (just a guess) - what would that be, 1.0.10a?.
-> > 1.0.11rc3 did not trigger the problem in a quick test but I could swear
-> > it did before, I'll have to retest again tomorrow (maybe it was
-> > happening with a different card).
+On Sun, 2006-03-12 at 19:39 -0800, Fernando Lopez-Lezcano wrote:
+> On Sun, 2006-03-12 at 22:31 -0500, Lee Revell wrote:
+>  
+> > Older ALSA with a newer kernel has never been supported.  Why would you
+> > want to replace the ALSA in the kernel with an old version?
 > 
-> Older ALSA with a newer kernel has never been supported.  Why would you
-> want to replace the ALSA in the kernel with an old version?
+> Because it is not an older version?
+> "cat /proc/asound/version" for the 2.6.15 in kernel tree prints this:
+>   Advanced Linux Sound Architecture Driver Version 1.0.10rc3
+> That should be older than 1.0.10 final.
 
-Because it is not an older version?
-"cat /proc/asound/version" for the 2.6.15 in kernel tree prints this:
-  Advanced Linux Sound Architecture Driver Version 1.0.10rc3
-That should be older than 1.0.10 final.
-(plus 1.0.10 has drivers that are not yet in the kernel tree AFAIK)
+Ah, sorry.  Then you're right, this patch must have slipped through the
+cracks.
 
--- Fernando
+> (plus 1.0.10 has drivers that are not yet in the kernel tree AFAIK)
+
+Yeah I never liked this practice, I think all ALSA drivers should be in
+the kernel.  IMHO an immature driver is better than no driver.
+
+Lee
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
