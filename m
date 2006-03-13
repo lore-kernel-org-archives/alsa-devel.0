@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001918]: No sound when I boot into Linux
-Date: Mon, 13 Mar 2006 03:09:38 +0100
-Message-ID: <90e9d2cb29c4b62ac4bb5cd575fc38ac@bugtrack.alsa-project.org>
+From: Nick Piggin <nickpiggin@yahoo.com.au>
+Subject: Re: Re: 2.6.15-rt20, "bad page state", jackd (alsa	1.0.10
+ vs. recent kernels)
+Date: Mon, 13 Mar 2006 13:42:06 +1100
+Message-ID: <4414DBFE.1050400@yahoo.com.au>
+References: <1141846564.5262.20.camel@cmn3.stanford.edu>	 <20060309084746.GB9408@osiris.boeblingen.de.ibm.com>	 <1141938488.22708.28.camel@cmn3.stanford.edu>	 <4410B2D7.4090806@yahoo.com.au>	 <1141958866.22708.69.camel@cmn3.stanford.edu>	 <441109BC.9070705@yahoo.com.au>	 <1142016627.6124.33.camel@cmn3.stanford.edu>	 <44121351.2050703@yahoo.com.au> <1142210977.7471.27.camel@cmn3.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 04A9C1BC
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 03:09:38 +0100 (MET)
+In-Reply-To: <1142210977.7471.27.camel@cmn3.stanford.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +18,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: cc@ccrma.Stanford.EDU, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Ingo Molnar <mingo@elte.hu>, Heiko Carstens <heiko.carstens@de.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Fernando Lopez-Lezcano wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1918> 
-======================================================================
-Reported By:                gordon3913
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1918
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             03-13-2006 03:04 CET
-Last Modified:              03-13-2006 03:09 CET
-======================================================================
-Summary:                    No sound when I boot into Linux
-Description: 
-I do not have sound every time that I boot into Linux
-When I run "alsaconf" and follow the prompts in a terminal my sound will
-work.
-Next time I start my computer - no sound.
-======================================================================
+> Well, I found it. Finally. I diffed memalloc.c in the alsa kernel tree
+> with alsa stable 1.0.10 and googled for the obvious two chunks that
+> stood out :-)
+> 
 
-----------------------------------------------------------------------
- rlrevell - 03-13-06 03:09 
-----------------------------------------------------------------------
-After "alsaconf" gets your sound working try running "alsactl store".  Then
-reboot, and if you don't get sound, run "alsactl restore".
+Well, good work on tracking it down. I guess you should forward
+forward your patch to the ALSA guys.
 
-If this works then the bug is in your distro, maybe you don't have all the
-alsa packages installed.
+[snip]
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-13-06 03:04 gordon3913     New Issue                                    
-03-13-06 03:09 rlrevell       Note Added: 0008437                          
-======================================================================
+Nick
 
+-- 
+SUSE Labs, Novell Inc.
+Send instant messages to your online friends http://au.messenger.yahoo.com 
 
 
 
