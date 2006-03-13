@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Mon, 13 Mar 2006 10:10:19 +0100
-Message-ID: <66a19838fe21e8f88e0a547638160ef8@bugtrack.alsa-project.org>
+From: Ingo Molnar <mingo@elte.hu>
+Subject: Re: Re: 2.6.15-rt20, "bad page state", jackd (alsa 1.0.10 vs. recent kernels)
+Date: Mon, 13 Mar 2006 10:25:53 +0100
+Message-ID: <20060313092553.GF5780@elte.hu>
+References: <1141846564.5262.20.camel@cmn3.stanford.edu> <20060309084746.GB9408@osiris.boeblingen.de.ibm.com> <1141938488.22708.28.camel@cmn3.stanford.edu> <4410B2D7.4090806@yahoo.com.au> <1141958866.22708.69.camel@cmn3.stanford.edu> <441109BC.9070705@yahoo.com.au> <1142016627.6124.33.camel@cmn3.stanford.edu> <44121351.2050703@yahoo.com.au> <1142210977.7471.27.camel@cmn3.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A18521E1
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 10:10:19 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <1142210977.7471.27.camel@cmn3.stanford.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: Nick Piggin <nickpiggin@yahoo.com.au>, cc@ccrma.Stanford.EDU, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Heiko Carstens <heiko.carstens@de.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
-======================================================================
-Reported By:                kiwi
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1898
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 5 test3
-Kernel Version:             2.6.15-1.2009.4.2_FC5
-======================================================================
-Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              03-13-2006 10:10 CET
-======================================================================
-Summary:                    no sound from headphones or speakers on asus a6km
-laptop
-Description: 
-The headphone port and the speakers just don't work. Seems like there is
-some control hidden in the mixer which is muted. 
-By setting the master and pcm volume at 100% I can hear just some static
-on song beats only on headphones. Speakers always stay mute.
-I can only get sound by attaching the headphones to line-in and enabling
-"shared" surround mode.
+* Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU> wrote:
 
-Same issues with a knoppix 4.0.2.
+> Well, I found it. Finally. I diffed memalloc.c in the alsa kernel tree
+> with alsa stable 1.0.10 and googled for the obvious two chunks that
+> stood out :-)
+> 
+> It's apparently an old issue, see here and follow the thread:
+>   http://lkml.org/lkml/2005/11/21/9
+> So, 1.0.10 obviously did not include these two patches:
 
-======================================================================
+ah, great detective work! FYI, current upstream has the fix included, so 
+2.6.16-rc6-rt2 should not have this particular problem.
 
-----------------------------------------------------------------------
- Rollsappletree - 03-12-06 16:40 
-----------------------------------------------------------------------
-Identical problem on a Asus z92km, whith same chipset, on a Gentoo box
-
-----------------------------------------------------------------------
- u238 - 03-13-06 10:10 
-----------------------------------------------------------------------
-Same issue on ASUS A6KMQ004P laptop with Gentoo 2006.0
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-09-06 00:30 kiwi           New Issue                                    
-03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
-03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
-03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
-03-09-06 16:41 kiwi           Note Added: 0008391                          
-03-09-06 20:09 michele26x1    Note Added: 0008396                          
-03-09-06 21:02 kiwi           Note Added: 0008397                          
-03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
-03-12-06 15:49 kiwi           Note Added: 0008432                          
-03-12-06 16:40 Rollsappletree Note Added: 0008433                          
-03-13-06 10:10 u238           Note Added: 0008439                          
-======================================================================
-
-
+	Ingo
 
 
 -------------------------------------------------------
