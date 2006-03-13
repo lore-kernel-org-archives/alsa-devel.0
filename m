@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
-Date: Mon, 13 Mar 2006 23:39:53 +0100
-Message-ID: <1ccae6ee1556c5ad05f8cf13fd88192a@bugtrack.alsa-project.org>
+Date: Mon, 13 Mar 2006 23:43:55 +0100
+Message-ID: <cf35c0eb0951574c189af7c930edf376@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37E14144
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 23:39:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 042A11CF
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 23:43:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.6.12-gentoo-r1
 ======================================================================
 Date Submitted:             07-15-2005 18:18 CEST
-Last Modified:              03-13-2006 23:39 CET
+Last Modified:              03-13-2006 23:43 CET
 ======================================================================
 Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
 from AUX in
@@ -55,93 +55,6 @@ That didn't help, too.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 07-15-05 19:50 
-----------------------------------------------------------------------
-Did you try to set "Aux" and "Analog Mix" volume ?
-
-
-
-----------------------------------------------------------------------
- iq79 - 07-15-05 23:40 
-----------------------------------------------------------------------
-Yes, I did set both "Aux" and "AnalogMix" to 100%. I also tried to set Aux2
-to 100% with no success.
-
-----------------------------------------------------------------------
- jdthood - 07-16-05 16:31 
-----------------------------------------------------------------------
-Unmute "Line".
-
-Send the output of the amixer command.
-
-----------------------------------------------------------------------
- iq79 - 07-16-05 18:38 
-----------------------------------------------------------------------
-Unmuting "Line" or "Line2" doesn't help.
-I've uploaded the output from amixer.
-
-----------------------------------------------------------------------
- jcdutton - 07-20-05 05:32 
-----------------------------------------------------------------------
-I will look at this in a few weeks time, as I am away from home at the
-moment.
-I have an Audigy4.
-
-----------------------------------------------------------------------
- iq79 - 03-01-06 10:46 
-----------------------------------------------------------------------
-*bump*
-
-Still having this problem. I double-checked everything again (HW is okay,
-software setup should be fine, too), but couldn't get it to work.
-
-----------------------------------------------------------------------
- rlrevell - 03-01-06 18:02 
-----------------------------------------------------------------------
-Have you tried a newer ALSA than 1.0.9-rc2?  That's very old.
-
-----------------------------------------------------------------------
- iq79 - 03-02-06 23:00 
-----------------------------------------------------------------------
-Yes, I did try a recent version.
-
-cat /proc/asound/version
-
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
-13:30:21 2005 UTC).
-
-----------------------------------------------------------------------
- pzad - 03-03-06 17:36 
-----------------------------------------------------------------------
-What ac97 codec is on your soundcard ?
-
-----------------------------------------------------------------------
- iq79 - 03-04-06 00:55 
-----------------------------------------------------------------------
-Alsamixer tells me it's a "SigmaTel STAC9750,51"
-
-----------------------------------------------------------------------
- iq79 - 03-13-06 09:51 
-----------------------------------------------------------------------
-One more thing. I just found out that all my (analog) inputs are not named
-correctly:
-
-For instance if I plug in my microphone into the input labeled "Line 1 /
-Mic" (LiveDrive), in alsamixer I have to use the "Line 2" slider to set
-the playback volume of my mic. As long as "Line 2" is set to some volume
-the mic works, regardless of the "Analog Mix" setting.
-
-There is no "Line 1 / Mic" mixer, but two seperate mixers (labeled "Mic"
-and "Line 1"), but I wasn't able to find out what either of them does.
-There is also no controll for the "Line 3" input in alsamixer. There is a
-"Aux 2" mixer controll, but the Audigy 4 / LiveDrive has no input of that
-name.
-
-PS: Currently I'm using the 2.6.15-gentoo5 kernel.
-
-
-
-----------------------------------------------------------------------
  pzad - 03-13-06 17:39 
 ----------------------------------------------------------------------
 Inputs from livedrive are not controled by analog mix. Aux 2 can by your
@@ -152,6 +65,14 @@ has them).
 
 Internal Aux input (on card) should go through AC97 to ADC and should be
 affected by Aux and Analog Mix controls.
+
+----------------------------------------------------------------------
+ jcdutton - 03-13-06 23:43 
+----------------------------------------------------------------------
+Ok, I will have to check into this. I went round renaming all the controls
+to match the Audigy 4 pro..(Line1, Line2, Line3 etc.)except the two on the
+card itself. I will have to check the CD/AUX analog input, and also the
+CD/Digital input connectors on the sound card itself when I get a chance.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -176,6 +97,7 @@ Date Modified  Username       Field                    Change
 03-13-06 17:39 pzad           Note Added: 0008450                          
 03-13-06 23:39 jcdutton       Status                   new => assigned     
 03-13-06 23:39 jcdutton       Assigned To               => jcdutton        
+03-13-06 23:43 jcdutton       Note Added: 0008468                          
 ======================================================================
 
 
