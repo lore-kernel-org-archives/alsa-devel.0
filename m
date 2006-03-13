@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Mon, 13 Mar 2006 19:33:09 +0100
-Message-ID: <f2e68a0cb9fa63834ee17f67cf2a2913@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001850]: source available
+Date: Mon, 13 Mar 2006 19:49:11 +0100
+Message-ID: <fa5b268ef571cca0e6577e5b9342cc1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90BAA1C4
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 19:33:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ACD0D1D5
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 19:49:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
 ======================================================================
-Reported By:                binilbenjamin
+Reported By:                coz
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1920
-Category:                   1_OTHERS
+Issue ID:                   1850
+Category:                   PCI - echoaudio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6
+Distribution:               ubuntu/breezy/Debian
+Kernel Version:             2.6.12.10.386
 ======================================================================
-Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-13-2006 19:33 CET
+Date Submitted:             02-16-2006 13:05 CET
+Last Modified:              03-13-2006 19:49 CET
 ======================================================================
-Summary:                    output from only 2 speakers(out of 5 speakers)
+Summary:                    source available
 Description: 
-i'm having a 5.1 speakers..when i play music ,only 2 of them are working!!!
-i had changed the channel mode in alsamixer to 6 channel..yet no
-changes!!! 
-Motherboard : Asus A8N-E
-OS: fedora core 4
-
+can't start layla24
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-13-06 19:33 
+ pochini - 02-20-06 22:02 
 ----------------------------------------------------------------------
-Please read the bug reporting guidelines, you don't give nearly enough info
-(ALSA version, driver, amixer output, etc)
+Download the files from alsa-project.org and compile and install them just
+like any other program:
+
+./configure --with-cards=layla24[,other cards] [other options]
+make
+make install
+
+More infos here: http://www.webalice.it/g_pochini/ead/ (I should update
+them...)
+
+----------------------------------------------------------------------
+ coz - 03-13-06 19:49 
+----------------------------------------------------------------------
+hello, ALL suggestions, including a guy that actually is part of the Ubuntu
+team who walked me through the installation, were unsuccesful. This
+layla24 is in excellent working condition. RUns fine on XP.
+ Try to install the drivers for ubuntu dapper and all I get is "---no
+soundcard found---" 
+   I realize this is not a common card in use since it is considered pro
+sound, however wouldn't it be just as easy having a single install package
+that will install the drivers?
+  I am not aprogrammer so forgive the naive statement, but nvivida has a
+package that installs, just a copnfig enable does the trick. i am not
+clear why this is not like that.
+  unfortunately this is for a client. He wants his layla14 installed on
+ubuntu Dapper, even after telling him there are nohighend apps for
+recording in linux.
+He has insisted.
+ However, i still cannot get the darn thing to work.
+ The system recognizes the chip on the layla24 card and that is is.
+It does not recognize the card at all.
+ Thanks
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-13-06 19:02 binilbenjamin  New Issue                                    
-03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
-03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
-03-13-06 19:33 rlrevell       Note Added: 0008455                          
+02-16-06 13:05 coz            New Issue                                    
+02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
+02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
+02-18-06 13:34 pochini        Note Added: 0008119                          
+02-20-06 03:30 coz            Note Added: 0008140                          
+02-20-06 22:02 pochini        Note Added: 0008150                          
+03-13-06 19:49 coz            Note Added: 0008456                          
 ======================================================================
 
 
