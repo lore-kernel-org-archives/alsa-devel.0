@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001922]: Unsupported Sound Card
-Date: Tue, 14 Mar 2006 00:21:29 +0100
-Message-ID: <1e66414fec0f0ced725168061be8c010@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001890]: Only the PCM channel in alsa mixer, unmuted, no sound at all
+Date: Tue, 14 Mar 2006 00:25:46 +0100
+Message-ID: <c9d01d2ea778bfabc880dee7aa07fc72@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 75D471D7
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 00:21:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1FCD01D7
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 00:25:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1922> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1890> 
 ======================================================================
-Reported By:                sk0rp10
+Reported By:                arielo
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1922
+Issue ID:                   1890
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware current
-Kernel Version:             2.6.15.6 vanilla
+Distribution:               Ubuntu
+Kernel Version:             Linux haifa 2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20
+17:26:04 UTC 2006 i686 GNU/Linux
 ======================================================================
-Date Submitted:             03-14-2006 00:21 CET
-Last Modified:              03-14-2006 00:21 CET
+Date Submitted:             03-04-2006 18:19 CET
+Last Modified:              03-14-2006 00:25 CET
 ======================================================================
-Summary:                    Unsupported Sound Card
+Summary:                    Only the PCM channel in alsa mixer, unmuted, no
+sound at all
 Description: 
-Sound Card equipped on VAIO VGN-FE11S is unsupported by intel-hda. Once the
-module is loaded, alsamixer recognizes a Sigmatel ID 7661 chip, only one
-mixer control is shown in Playback tab, named PCM. Module is loaded with
-no error but no sound comes out from speakers. Here is lspci:
+Alsamixer shows only one channel called PCM. It's unmuted, and the volume
+at its maximum. There is no sound at all, even though there is no error
+reported by the system.
 
-00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub (rev
-03)
-00:01.0 PCI bridge: Intel Corporation Mobile PCI Express Graphics Port
-(rev 03)
-00:1b.0 Class 0403: Intel Corporation 82801G (ICH7 Family) High Definition
-Audio Controller (rev 02)
-00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 1 (rev 02)
-00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 2 (rev 02)
-00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 3 (rev 02)
-00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 4 (rev 02)
-00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #1
-(rev 02)
-00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #2
-(rev 02)
-00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #3
-(rev 02)
-00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #4
-(rev 02)
-00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI
-Controller (rev 02)
-00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev e2)
-00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
-Bridge (rev 02)
-00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
-Controller (rev 02)
-00:1f.2 IDE interface: Intel Corporation 82801GBM/GHM (ICH7 Family) Serial
-ATA Storage Controllers cc=IDE (rev 02)
-00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus Controller
-(rev 02)
-01:00.0 VGA compatible controller: nVidia Corporation: Unknown device 01d8
-(rev a1)
-06:00.0 Network controller: Intel Corporation: Unknown device 4222 (rev
-02)
-0a:03.0 CardBus bridge: Texas Instruments: Unknown device 8039
-0a:03.1 FireWire (IEEE 1394): Texas Instruments: Unknown device 803a
-0a:03.2 Mass storage controller: Texas Instruments: Unknown device 803b
-0a:08.0 Ethernet controller: Intel Corporation: Unknown device 1092 (rev
-02)
 
 ======================================================================
+
+----------------------------------------------------------------------
+ sk0rp10 - 03-14-06 00:25 
+----------------------------------------------------------------------
+Same hardware and same issue reported for Sony VAIO FE series and SZ
+series.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-06 00:21 sk0rp10        New Issue                                    
-03-14-06 00:21 sk0rp10        Distribution              => Slackware current
-03-14-06 00:21 sk0rp10        Kernel Version            => 2.6.15.6 vanilla
+03-04-06 18:19 arielo         New Issue                                    
+03-04-06 18:19 arielo         Distribution              => Ubuntu          
+03-04-06 18:19 arielo         Kernel Version            => Linux haifa
+2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20 17:26:04 UTC 2006 i686 GNU/Linux
+03-14-06 00:25 sk0rp10        Note Added: 0008471                          
 ======================================================================
 
 
