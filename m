@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Mon, 13 Mar 2006 19:02:29 +0100
-Message-ID: <b472a32a76764a2cfcf6198916209a2e@bugtrack.alsa-project.org>
+Date: Mon, 13 Mar 2006 19:33:09 +0100
+Message-ID: <f2e68a0cb9fa63834ee17f67cf2a2913@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C0FB1D8
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 19:02:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90BAA1C4
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 19:33:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6
 ======================================================================
 Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-13-2006 19:02 CET
+Last Modified:              03-13-2006 19:33 CET
 ======================================================================
 Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
@@ -52,12 +52,19 @@ OS: fedora core 4
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 03-13-06 19:33 
+----------------------------------------------------------------------
+Please read the bug reporting guidelines, you don't give nearly enough info
+(ALSA version, driver, amixer output, etc)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-13-06 19:02 binilbenjamin  New Issue                                    
 03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
 03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
+03-13-06 19:33 rlrevell       Note Added: 0008455                          
 ======================================================================
 
 
