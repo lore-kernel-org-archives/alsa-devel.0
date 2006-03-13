@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001916]: NVidia CK8 and CK8S AC97 controllers only capture in mono
-Date: Mon, 13 Mar 2006 15:38:47 +0100
-Message-ID: <5edfdec48aecd6b23a236ba77533d2bc@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001910]: No Sound for SB Extigy for volume below 30%
+Date: Mon, 13 Mar 2006 15:45:42 +0100
+Message-ID: <f28e5ea634529c1f690020c0814f8141@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76EF819F
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 15:38:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9761D19F
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 15:45:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1916> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1910> 
 ======================================================================
-Reported By:                nenolod
-Assigned To:                
+Reported By:                andersin
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1916
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   1910
+Category:                   alsamixer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo Linux 2005.1
-Kernel Version:             2.6.15-gentoo-r7
+Status:                     resolved
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-12-2006 02:33 CET
-Last Modified:              03-13-2006 15:38 CET
+Date Submitted:             03-11-2006 16:40 CET
+Last Modified:              03-13-2006 15:45 CET
 ======================================================================
-Summary:                    NVidia CK8 and CK8S AC97 controllers only capture in
-mono
+Summary:                    No Sound for SB Extigy for volume below 30%
 Description: 
-nenolod@localhost ~/audacious-devel/audacious $ cat /proc/asound/cards
-0 [CK8            ]: NFORCE - NVidia CK8
-                     NVidia CK8 with ALC658D at 0xea005000, irq 18
-nenolod@localhost ~/audacious-devel/audacious $ cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
-08:13:09 2005 UTC).
-nenolod@localhost ~/audacious-devel/audacious $
-
+The volume control for the SB Extigy only works accurately for values above
+50%. Below that, sound is still detectable very faintly as low as 30%
+(This is with my speakers set to full output which is unbearably loud if
+the volume in alsamixer gets turned up again). Below 30% there is no sound
+as far as I can tell. Effectively there's only half a volume control
+(50%-100%).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-13-06 15:38 
+ andersin - 03-11-06 19:52 
 ----------------------------------------------------------------------
-Try the latest alsa-lib, 1.0.11rc3 or better CVS version.
+please close this. I opened a new report after being advised in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1911
+that it should be reported for the usb-audio driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-06 02:33 nenolod        New Issue                                    
-03-12-06 02:33 nenolod        Distribution              => Gentoo Linux 2005.1
-03-12-06 02:33 nenolod        Kernel Version            => 2.6.15-gentoo-r7
-03-13-06 15:38 tiwai          Note Added: 0008446                          
+03-11-06 16:40 andersin       New Issue                                    
+03-11-06 19:52 andersin       Note Added: 0008426                          
+03-13-06 15:45 tiwai          Status                   new => resolved     
+03-13-06 15:45 tiwai          Resolution               open => not an issue
+03-13-06 15:45 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
