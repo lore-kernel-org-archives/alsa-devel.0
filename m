@@ -1,14 +1,14 @@
-From: Florian Schlichting <Florian.Schlichting@gmx.de>
-Subject: Re: debugging nm256: some results, many questions
-Date: Mon, 13 Mar 2006 14:46:28 +0800
-Message-ID: <20060313064627.GA3864@tigerbay>
-References: <20060223185253.GA7954@tigerbay> <s5hfym8vd0k.wl%tiwai@suse.de> <20060311174421.GB7775@tigerbay>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001259]: Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound from AUX in
+Date: Mon, 13 Mar 2006 09:50:47 +0100
+Message-ID: <a272ed3b5f90be459a3dcf452d9239a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="TakKZr9L6Hm6aLOc"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20060311174421.GB7775@tigerbay>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 519591D8
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 09:50:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,187 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---TakKZr9L6Hm6aLOc
-Content-Type: multipart/mixed; boundary="d6Gm4EdcadzBjdND"
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1259> 
+======================================================================
+Reported By:                iq79
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1259
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.12-gentoo-r1
+======================================================================
+Date Submitted:             07-15-2005 18:18 CEST
+Last Modified:              03-13-2006 09:50 CET
+======================================================================
+Summary:                    Audigy 4 Pro (SB0380) with ALSA 1.0.9rc2 - no sound
+from AUX in
+Description: 
+I am unable to unmute the internal AUX-in header of my Audigy4Pro.
+
+- I played around with all (Playback/Capture) mixer settings in alsamixer
+but I couldn't find a configuration which gives me sound from AUX-in.
+
+- I tried loading emu10k1 module with several extin/exout combinations.
+That didn't help, too.
+======================================================================
+
+----------------------------------------------------------------------
+ iq79 - 03-04-06 00:55 
+----------------------------------------------------------------------
+Alsamixer tells me it's a "SigmaTel STAC9750,51"
+
+----------------------------------------------------------------------
+ iq79 - 03-13-06 09:50 
+----------------------------------------------------------------------
+One more thing. I just found out that all my (analog) inputs are not named
+correctly:
+
+For instance if I plug in my microphone into the input labeled "Line 1 /
+Mic" (LiveDrive), in alsamixer I have to use the "Line 2" slider to set
+the playback volume of my mic. As long as "Line 2" is set to some volume
+the mic works, regardless of the "Analog Mix" setting.
+
+There is no "Line 1 / Mic" mixer, but two seperate mixers (labeled "Mic"
+and "Line 1"), but I wasn't able to find out what either of them does.
+There is also no controll for the "Line 3" input in alsamixer. There is a
+"Aux 2" mixer controll, but the Audigy 4 / LiveDrive has no input of that
+name.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-15-05 18:18 iq79           New Issue                                    
+07-15-05 18:18 iq79           Distribution              => Gentoo Linux    
+07-15-05 18:18 iq79           Kernel Version            => 2.6.12-gentoo-r1
+07-15-05 19:49 pzad           Note Added: 0005483                          
+07-15-05 19:50 pzad           Note Edited: 0005483                         
+07-15-05 23:40 iq79           Note Added: 0005484                          
+07-16-05 16:31 jdthood        Note Added: 0005496                          
+07-16-05 18:36 iq79           File Added: amixer_output                    
+07-16-05 18:38 iq79           Note Added: 0005500                          
+07-20-05 05:32 jcdutton       Note Added: 0005532                          
+03-01-06 10:46 iq79           Note Added: 0008278                          
+03-01-06 18:02 rlrevell       Note Added: 0008286                          
+03-02-06 23:00 iq79           Note Added: 0008327                          
+03-03-06 17:36 pzad           Note Added: 0008342                          
+03-04-06 00:55 iq79           Note Added: 0008344                          
+03-13-06 09:50 iq79           Note Added: 0008438                          
+======================================================================
 
 
---d6Gm4EdcadzBjdND
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-I went ahead implementing caching of reads to the ac97 mixer registers
-inside the nm256 driver, and also included "preloading" of the cache,
-just as the OSS driver does. And it works like a charm: no reads to the
-mixers, no crashes any more!
-
-Alas, this improvement has taught me what some of the reads were for -
-detection of volume resolution, for example: I suddenly had two maxima
-on the PCM mixer. As all my mixers have a resolution of 31, I customized
-the values being written to the cache so that the ac97_codec would
-"detect" the correct value. Now the only difference to the non-patched
-state (according to alsactl) is that a few mixers are stereo instead of
-mono - but up to now this doesn't seem to have any effect on anything I
-do, everything works fine...
-
-The question is: how portable is this to other users of nm256? Will we
-need a detect for this workaround?
-
-I've attached a patch against 1.0.10rc3 - I just saw that in 1.0.11rc3
-there has been a cleanup in nm256, and my patch doesn't apply cleanly
-any more... although I don't think it will need to be changed. Perhaps I
-could have some feedback first?
-
-Florian
-
-
---d6Gm4EdcadzBjdND
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=nm256-patch
-Content-Transfer-Encoding: quoted-printable
-
---- /usr/src/linux/sound/pci/nm256/nm256.c.orig	2006-03-13 13:46:23.0000000=
-00 +0800
-+++ /usr/src/linux/sound/pci/nm256/nm256.c.cleaned_up	2006-03-13 14:13:28.0=
-00000000 +0800
-@@ -1152,22 +1152,33 @@
- }
-=20
- /*
-+ * some nm256 easily crash when reading from mixer registers
-+ * thus we're caching both read and written values for reading
-  */
- static unsigned short
- snd_nm256_ac97_read(ac97_t *ac97, unsigned short reg)
- {
- 	nm256_t *chip =3D ac97->private_data;
--	int res;
-=20
- 	if (reg >=3D 128)
- 		return 0;
-=20
- 	if (! snd_nm256_ac97_ready(chip))
- 		return 0;
--	res =3D snd_nm256_readw(chip, chip->mixer_base + reg);
-+
-+	if (! test_bit(reg, ac97->reg_accessed)) { /* ! read_workaround && */
-+		/* we should never get here, really, as all regs have been=20
-+		 * loaded into the cache, and the cached-flags in reg_accessed
-+		 * are never cleared. Thus we could also test for=20
-+		 * ! read_workaround (once introduced and properly set)	=09
-+		 */
-+ 		ac97->regs[reg] =3D snd_nm256_readw(chip, chip->mixer_base + reg);
-+		set_bit(reg, ac97->reg_accessed);
-+	}
-+
- 	/* Magic delay.  Bleah yucky.  */
- 	msleep(1);
--	return res;
-+	return ac97->regs[reg];
- }
-=20
- /*=20
-@@ -1188,17 +1199,62 @@
- 	while (tries-- > 0) {
- 		snd_nm256_writew(chip, base + reg, val);
- 		msleep(1);  /* a little delay here seems better.. */
--		if (snd_nm256_ac97_ready(chip))
-+		if (snd_nm256_ac97_ready(chip)) {
-+			/* successful write: set cache */
-+			ac97->regs[reg] =3D (val & 0xdfdf); /* we don't do this volume resoluti=
-on */
-+			set_bit(reg, ac97->reg_accessed);
- 			return;
-+		}
- 	}
- 	snd_printd("nm256: ac97 codec not ready..\n");
- }
-=20
-+/*=20
-+ * below copied from OSS driver
-+ * this list could perhaps be fused with mixer_regs[] ??
-+ *=20
-+ * Initial register values to be written to the AC97 mixer.
-+ * While most of these are identical to the reset values, we do this
-+ * so that we have most of the register contents cached--this avoids
-+ * reading from the mixer directly (which seems to be problematic,
-+ * probably due to ignorance).
-+ */
-+
-+struct initialValues
-+{
-+	unsigned int reg;
-+	unsigned short value;
-+};
-+
-+static struct initialValues nm256_ac97_initial_values[] =3D
-+{
-+	{ AC97_MASTER, 		0x8000 },
-+	{ AC97_HEADPHONE,	0x8000 },
-+	{ AC97_MASTER_MONO,	0x0000 },
-+	{ AC97_PC_BEEP,		0x0000 },
-+	{ AC97_PHONE,		0x0008 },
-+	{ AC97_MIC,		0x8000 },
-+	{ AC97_LINE,		0x8808 },
-+	{ AC97_CD,		0x8808 },
-+	{ AC97_VIDEO,		0x8808 },
-+	{ AC97_AUX,		0x8808 },
-+	{ AC97_PCM,		0x0808 },
-+	{ AC97_REC_SEL,		0x0000 },
-+	{ AC97_REC_GAIN,	0x0B0B },
-+	{ AC97_GENERAL_PURPOSE,	0x0000 },
-+	{ AC97_3D_CONTROL,	0x8000 },=20
-+	{ AC97_VENDOR_ID1, 	0x8384 },
-+	{ AC97_VENDOR_ID2,	0x7609 },
-+	{ 0xffff, 0xffff }
-+};
-+
-+
- /* initialize the ac97 into a known state */
- static void
- snd_nm256_ac97_reset(ac97_t *ac97)
- {
- 	nm256_t *chip =3D ac97->private_data;
-+	int x;=20
-=20
- 	/* Reset the mixer.  'Tis magic!  */
- 	snd_nm256_writeb(chip, 0x6c0, 1);
-@@ -1211,6 +1267,12 @@
- 		snd_nm256_writeb(chip, 0x6cc, 0x80);
- 		snd_nm256_writeb(chip, 0x6cc, 0x0);
- 	}
-+	for (x =3D 0; nm256_ac97_initial_values[x].reg !=3D 0xffff; x++) {
-+		/* preload the cache, so as to avoid even a single read of the mixer reg=
-s */
-+		snd_ac97_write_cache(ac97,
-+				nm256_ac97_initial_values[x].reg,
-+				nm256_ac97_initial_values[x].value);
-+	}
- }
-=20
- /* create an ac97 mixer interface */
-
---d6Gm4EdcadzBjdND--
-
---TakKZr9L6Hm6aLOc
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
-
-iD8DBQFEFRVD/R0+cAphf/kRAgpjAKDVkTOllKRl5EgyAQZ5jvplOrFsHACfc0g5
-SxwSFqma+McyUAA5Eh7aYAc=
-=Ngvv
------END PGP SIGNATURE-----
-
---TakKZr9L6Hm6aLOc--
 
 
 -------------------------------------------------------
