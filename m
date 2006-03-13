@@ -1,13 +1,11 @@
-From: Ismail Donmez <ismail@pardus.org.tr>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 Subject: Re: Ludicrous amount of spam on this list
-Date: Mon, 13 Mar 2006 21:18:20 +0200
-Message-ID: <200603132118.25331.ismail@pardus.org.tr>
-References: <1142276619.9235.3.camel@localhost.localdomain> <s5hhd62ma6p.wl%tiwai@suse.de>
+Date: Mon, 13 Mar 2006 19:19:13 +0000
+Message-ID: <1142277553.9235.6.camel@localhost.localdomain>
+References: <1142276619.9235.3.camel@localhost.localdomain>
+	 <s5hhd62ma6p.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1469962.1Q72gIx2Vo";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <s5hhd62ma6p.wl%tiwai@suse.de>
@@ -20,40 +18,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---nextPart1469962.1Q72gIx2Vo
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Mon, 2006-03-13 at 20:11 +0100, Takashi Iwai wrote:
 
-Pazartesi 13 Mart 2006 21:11 tarihinde, Takashi Iwai =C5=9Funlar=C4=B1 yazm=
-=C4=B1=C5=9Ft=C4=B1:=20
-> Though, I'm not against moving from sf to somewhere better host.
-> Suggestions?
+> 
+> > While we're at it can the bug messages not go to a separate list so that
+> > we just get development traffic on this one? Most of the bug messages
+> > are not relevant.
+> 
+> Not relevant to whom?
+> 
+Messages like this:
 
-A mailing list at kernel.org would be good I think.
+----------------------------------------------------------------------
+ rlrevell - 03-13-06 19:33 
+----------------------------------------------------------------------
+Please read the bug reporting guidelines, you don't give nearly enough
+info
+(ALSA version, driver, amixer output, etc)
 
-Regards,
-ismail
 
-=2D-=20
-An eye for eye will make the whole world blind -- Gandhi
+Belong on the web or another list but not a developer list. Because they
+are not relevant to development!
 
---nextPart1469962.1Q72gIx2Vo
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQBEFcWBGp0leluI9UwRAqb1AJ9RJ4nHJcd/twBNcNEDvuJ0YqdlfgCZASH6
-41WG2nBZSNEmUYXWL38drJM=
-=mOff
------END PGP SIGNATURE-----
-
---nextPart1469962.1Q72gIx2Vo--
 
 
 -------------------------------------------------------
