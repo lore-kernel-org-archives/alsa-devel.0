@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Mon, 13 Mar 2006 23:59:58 +0100
-Message-ID: <7a5e760462d127412a970536a3755087@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
+Date: Tue, 14 Mar 2006 00:04:55 +0100
+Message-ID: <55c2b7f82dc0272092f478bdc9580892@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 051F21CF
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2006 23:59:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0002E1D7
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 00:04:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,118 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
 ======================================================================
-Reported By:                kiwi
-Assigned To:                
+Reported By:                wzzrd
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1898
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   154
+Category:                   2_mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 5 test3
-Kernel Version:             2.6.15-1.2009.4.2_FC5
+Status:                     assigned
 ======================================================================
-Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              03-13-2006 23:59 CET
+Date Submitted:             03-23-2004 17:31 CET
+Last Modified:              03-14-2006 00:04 CET
 ======================================================================
-Summary:                    no sound from headphones or speakers on asus a6km
-laptop
+Summary:                    Master volume only controls front output (emu10k1)
 Description: 
-The headphone port and the speakers just don't work. Seems like there is
-some control hidden in the mixer which is muted. 
-By setting the master and pcm volume at 100% I can hear just some static
-on song beats only on headphones. Speakers always stay mute.
-I can only get sound by attaching the headphones to line-in and enabling
-"shared" surround mode.
+Setting the alsamixer Master Volume slider only controls the front two
+speakers. The rear speakers have to be controlled with the Wave Surround
+setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
+bug. If I'm wrong putting it here, sorry.
 
-Same issues with a knoppix 4.0.2.
-
+It would be very convenient to be able to control all four speakers with
+the Master Volume setting and to have a Front and Rear slider to control
+the front and rear speakers individually.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000176 Master volume does not alters center, L...
+has duplicate       0000786 Master can't handle all channel
+has duplicate       0001256 surround51: Master Volume control and M...
+has duplicate       0001071 Help with Volume Controls
+related to          0000919 Master volume doesn't control rear spea...
 ======================================================================
 
 ----------------------------------------------------------------------
- u238 - 03-13-06 10:12 
+ rlrevell - 03-13-06 18:09 
 ----------------------------------------------------------------------
-Same issue on ASUS A6KMQ004P laptop with Gentoo 2006.0 (x86_64)
-
-on kernel 2.6.12, 2.6.15-r7, 2.6.16.rc6
-
-
+Sorry - I told the user to post it here so it could be widely regression
+tested
 
 ----------------------------------------------------------------------
- lbenini - 03-13-06 23:59 
+ Miwer - 03-14-06 00:04 
 ----------------------------------------------------------------------
-Identical problem....
-Duplicate of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1896
-(more info in place)
+I have just tested this new patch - and it works great :)
+I'm amazed that it didn't take more than those few lines - my thanks to
+Christian Haertwig and you muffty for posting it here.
+
+About the lower overall volume reported by some, it doesn't seem to be a
+problem on this system. The main PCM and Master levels are the same, but
+the Surround, Center, and LFE levels appears lower. Actually, those
+channels were a bit high before the pacth. I had to have PCM, Surround,
+Center, LFE at levels 70, 30, 30, 30 to get the volumes even. Now it seems
+that the levels have been even out, and I get the same amount of sound
+when they are set the same (e.g. 70 on those channels)
+
+I just used the patch as-is (didn't change the 44/46 value in the patch),
+and it's a SB Live! 5.1 (SB0060)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-06 00:30 kiwi           New Issue                                    
-03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
-03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
-03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
-03-09-06 16:41 kiwi           Note Added: 0008391                          
-03-09-06 20:09 michele26x1    Note Added: 0008396                          
-03-09-06 21:02 kiwi           Note Added: 0008397                          
-03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
-03-12-06 15:49 kiwi           Note Added: 0008432                          
-03-12-06 16:40 Rollsappletree Note Added: 0008433                          
-03-13-06 10:10 u238           Note Added: 0008439                          
-03-13-06 10:11 u238           Note Edited: 0008439                         
-03-13-06 10:12 u238           Note Edited: 0008439                         
-03-13-06 23:59 lbenini        Note Added: 0008469                          
+03-23-04 17:31 wzzrd          New Issue                                    
+03-23-04 18:42 perex          View Status              @0@ => public       
+03-23-04 18:42 perex          Description Updated                          
+03-23-04 18:42 perex          Additional Information Updated                    
+03-23-04 18:43 perex          Status                   new => assigned     
+03-23-04 18:43 perex          Assigned To               => perex           
+03-26-04 20:21 djtm           Note Added: 0000708                          
+04-19-04 02:47 tarball        Issue Monitored: tarball                     
+04-19-04 21:23 perex          Relationship added       has duplicate 0000176
+05-24-04 22:51 delmonico      Note Added: 0001199                          
+10-22-04 16:44 perex          Relationship added       related to 0000172  
+10-23-04 01:09 djtm           Note Added: 0002253                          
+10-23-04 01:09 djtm           File Added: alsavol.sh                       
+10-23-04 01:10 djtm           Note Edited: 0002253                         
+11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
+01-04-05 21:01 Miwer          Note Added: 0003081                          
+01-04-05 21:11 rlrevell       Note Added: 0003082                          
+01-04-05 21:29 pzad           Note Added: 0003083                          
+01-04-05 21:38 rlrevell       Note Added: 0003084                          
+01-04-05 22:30 pzad           Note Added: 0003085                          
+01-04-05 22:38 rlrevell       Note Added: 0003086                          
+01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
+01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
+01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
+01-27-05 01:00 adamk75        Note Added: 0003418                          
+02-01-05 22:57 adamk75        Note Added: 0003475                          
+02-03-05 20:20 rlrevell       Note Added: 0003493                          
+02-17-05 22:01 adamk75        Note Added: 0003642                          
+02-17-05 22:59 rlrevell       Note Added: 0003646                          
+02-17-05 23:28 adamk75        Note Added: 0003647                          
+02-22-05 09:56 perex          Relationship added       related to 0000919  
+05-20-05 20:39 Miwer          Issue Monitored: Miwer                       
+05-20-05 22:02 Miwer          Note Added: 0004699                          
+05-20-05 22:05 rlrevell       Note Added: 0004700                          
+07-13-05 18:56 rlrevell       Relationship added       has duplicate 0001256
+07-16-05 17:11 jdthood        Relationship added       has duplicate 0001071
+09-02-05 19:55 blueSceaDa     Issue Monitored: blueSceaDa                    
+03-09-06 11:34 muffty         Note Added: 0008388                          
+03-09-06 11:37 muffty         Issue Monitored: muffty                      
+03-12-06 21:27 rlrevell       Relationship deleted     related to 0000172  
+03-12-06 21:34 rlrevell       File Added: master_volume_v3.patch                
+   
+03-12-06 21:35 rlrevell       Note Added: 0008436                          
+03-13-06 13:28 tiwai          Note Added: 0008440                          
+03-13-06 13:49 muffty         Note Deleted: 0008388                        
+03-13-06 13:51 muffty         Note Added: 0008442                          
+03-13-06 14:36 tiwai          Note Added: 0008443                          
+03-13-06 18:09 rlrevell       Note Added: 0008454                          
+03-14-06 00:04 Miwer          Note Added: 0008470                          
 ======================================================================
 
 
