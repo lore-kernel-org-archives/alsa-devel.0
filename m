@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Tue, 14 Mar 2006 20:08:42 +0100
-Message-ID: <33c5fe01191f7c417bc747ecb0bd3fe0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001890]: Only the PCM channel in alsa mixer, unmuted, no sound at all
+Date: Tue, 14 Mar 2006 20:28:49 +0100
+Message-ID: <13410434eff851d67c791216c7a07db4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1F961B9
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 20:08:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 72D8F11B
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 20:28:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1890> 
 ======================================================================
-Reported By:                binilbenjamin
-Assigned To:                
+Reported By:                arielo
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1920
-Category:                   1_OTHERS
+Issue ID:                   1890
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             Linux haifa 2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20
+17:26:04 UTC 2006 i686 GNU/Linux
 ======================================================================
-Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-14-2006 20:08 CET
+Date Submitted:             03-04-2006 18:19 CET
+Last Modified:              03-14-2006 20:28 CET
 ======================================================================
-Summary:                    output from only 2 speakers(out of 5 speakers)
+Summary:                    Only the PCM channel in alsa mixer, unmuted, no
+sound at all
 Description: 
-i'm having a 5.1 speakers..when i play music ,only 2 of them are working!!!
-i had changed the channel mode in alsamixer to 6 channel..yet no
-changes!!! 
-Motherboard : Asus A8N-E
-OS: fedora core 4
+Alsamixer shows only one channel called PCM. It's unmuted, and the volume
+at its maximum. There is no sound at all, even though there is no error
+reported by the system.
 
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001921 Unsupported Sound Card
 ======================================================================
 
 ----------------------------------------------------------------------
- binilbenjamin - 03-14-06 19:27 
+ rlrevell - 03-14-06 17:06 
 ----------------------------------------------------------------------
-I turned off 'Duplicate Front' option and changed 'Surround jack mode' to 
-'Independent' in the mixer , and then tried out this command:
+On my Ubuntu system the flash issue can be fixed by setting
+FIREFOX_DSP="aoss" in /etc/firefox/firefoxrc.
 
-speaker-test -Dsurround51 --channels=6
-
-Amazingly, every speakers worked(including the woofer!)
-
-Output of cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9b.
-Compiled on Mar  3 2006 for kernel 2.6.11-1.1369_FC4.
+You can also load the snd-pcm-oss module but this is not as good as any
+app using /dev/dsp will block your soundcard
 
 ----------------------------------------------------------------------
- rlrevell - 03-14-06 20:08 
+ arielo - 03-14-06 20:28 
 ----------------------------------------------------------------------
-Great, so it's working.
-
-BTW 1.0.9b is not the latest version of ALSA - the latest is 1.0.11-rc3. 
-Apparently your distro does not support the latest version.
+tested on the vaio sz110. Sound output and recording works perfectly now.
+Thanks a lot!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-13-06 19:02 binilbenjamin  New Issue                                    
-03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
-03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
-03-13-06 19:33 rlrevell       Note Added: 0008455                          
-03-13-06 19:49 binilbenjamin  Note Added: 0008457                          
-03-13-06 19:54 rlrevell       Note Added: 0008458                          
-03-13-06 20:16 binilbenjamin  Note Added: 0008459                          
-03-13-06 20:25 rlrevell       Note Added: 0008460                          
-03-14-06 17:44 binilbenjamin  Note Added: 0008501                          
-03-14-06 17:56 rlrevell       Note Added: 0008504                          
-03-14-06 18:34 binilbenjamin  Note Added: 0008505                          
-03-14-06 18:52 rlrevell       Note Added: 0008506                          
-03-14-06 19:00 rlrevell       Note Added: 0008507                          
-03-14-06 19:02 binilbenjamin  Note Added: 0008508                          
-03-14-06 19:12 rlrevell       Note Added: 0008509                          
-03-14-06 19:23 tiwai          Note Added: 0008510                          
-03-14-06 19:27 binilbenjamin  Note Added: 0008511                          
-03-14-06 20:08 rlrevell       Note Added: 0008512                          
+03-04-06 18:19 arielo         New Issue                                    
+03-04-06 18:19 arielo         Distribution              => Ubuntu          
+03-04-06 18:19 arielo         Kernel Version            => Linux haifa
+2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20 17:26:04 UTC 2006 i686 GNU/Linux
+03-14-06 00:25 sk0rp10        Note Added: 0008471                          
+03-14-06 14:55 tiwai          Note Added: 0008475                          
+03-14-06 14:56 tiwai          File Added: vaio-stac7661-test3.diff              
+     
+03-14-06 14:57 tiwai          Relationship added       has duplicate 0001921
+03-14-06 15:16 sk0rp10        Note Added: 0008479                          
+03-14-06 15:21 tiwai          Note Added: 0008480                          
+03-14-06 16:47 sk0rp10        Note Added: 0008485                          
+03-14-06 16:49 sk0rp10        Note Added: 0008486                          
+03-14-06 16:53 tiwai          Note Added: 0008488                          
+03-14-06 17:06 rlrevell       Note Added: 0008491                          
+03-14-06 17:17 rlrevell       Relationship added       related to 0001631  
+03-14-06 17:17 rlrevell       Relationship deleted     related to 0001631  
+03-14-06 20:28 arielo         Note Added: 0008513                          
 ======================================================================
 
 
