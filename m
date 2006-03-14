@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001801]: Audiophile USB noisy analog capture
-Date: Tue, 14 Mar 2006 16:55:57 +0100
-Message-ID: <02504019c105226aec5ebcba78cf53e7@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 17:04:37 +0100
+Message-ID: <f91b63e916225e637bcb92adb5ef29e6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCE371BA
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 16:55:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3594F1BA
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:04:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1801> 
 ======================================================================
@@ -42,7 +42,7 @@ Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
 Date Submitted:             01-31-2006 16:04 CET
-Last Modified:              03-14-2006 16:55 CET
+Last Modified:              03-14-2006 17:04 CET
 ======================================================================
 Summary:                    Audiophile USB noisy analog capture
 Description: 
@@ -67,6 +67,22 @@ interface
 ======================================================================
 
 ----------------------------------------------------------------------
+ lemeur - 02-07-06 10:23 
+----------------------------------------------------------------------
+I've done more tests and found that Reproducibility is in fact "Always" if
+you follow these steps:
+* boot the PC with Audiophile USB turned Off
+* turn on the Audiophile USB and wait for ALSA to auto-setup it
+=> At this point there is a one byte alignment shift (captured sound on
+the analog Input is distorted)
+* restart alsa once by issuing "/etc/init.d/alsasound restart"
+=> At this point there is a 2 bytes alignment shift (captured sound on the
+analog Input is white noise only)
+* restart alsa once by issuing "/etc/init.d/alsasound restart"
+=> At this point there is a 3 bytes alignment shift (captured sound on the
+analog Input is back to normal)
+
+----------------------------------------------------------------------
  lemeur - 03-14-06 15:28 
 ----------------------------------------------------------------------
 The bug was due to the way the snd-usb-audio driver initializes the
@@ -86,6 +102,11 @@ I suppose that this ticket can be closed now.
 ----------------------------------------------------------------------
 Closing now.  Thanks.
 
+----------------------------------------------------------------------
+ rlrevell - 03-14-06 17:04 
+----------------------------------------------------------------------
+Fixed in CVS - please open new bugs if issues remain
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -97,6 +118,7 @@ Date Modified  Username       Field                    Change
 03-14-06 16:55 tiwai          Status                   assigned => resolved
 03-14-06 16:55 tiwai          Resolution               open => fixed       
 03-14-06 16:55 tiwai          Note Added: 0008489                          
+03-14-06 17:04 rlrevell       Note Added: 0008490                          
 ======================================================================
 
 
