@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Tue, 14 Mar 2006 18:52:25 +0100
-Message-ID: <79655608fc4ade270e9055d753f7c358@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 19:00:40 +0100
+Message-ID: <58f7196cb635d3f59e83dc0ab7d2f6d7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35BB81C3
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 18:52:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44D991C3
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 19:00:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6
 ======================================================================
 Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-14-2006 18:52 CET
+Last Modified:              03-14-2006 19:00 CET
 ======================================================================
 Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
@@ -53,16 +53,15 @@ OS: fedora core 4
 ======================================================================
 
 ----------------------------------------------------------------------
- binilbenjamin - 03-14-06 18:34 
-----------------------------------------------------------------------
-no....i'm not getting sound frm the center speaker!!! :( ...and wen i turn
-off tht 'duplicate front' option ,and runnning tht command, only two spkrs
-work.....any solution for this??:((
-
-----------------------------------------------------------------------
  rlrevell - 03-14-06 18:52 
 ----------------------------------------------------------------------
 No idea, try the latest ALSA version
+
+----------------------------------------------------------------------
+ rlrevell - 03-14-06 19:00 
+----------------------------------------------------------------------
+Also please try to write correctly, the "tht" and "plz" and "spkrs" and
+smileys give me a headache - you are reporting a bug not text messaging.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -79,6 +78,7 @@ Date Modified  Username       Field                    Change
 03-14-06 17:56 rlrevell       Note Added: 0008504                          
 03-14-06 18:34 binilbenjamin  Note Added: 0008505                          
 03-14-06 18:52 rlrevell       Note Added: 0008506                          
+03-14-06 19:00 rlrevell       Note Added: 0008507                          
 ======================================================================
 
 
