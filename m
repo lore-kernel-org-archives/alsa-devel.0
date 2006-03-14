@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Tue, 14 Mar 2006 17:33:15 +0100
-Message-ID: <6e3013cf581ad6b4dc1d179c4d11195a@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 17:36:54 +0100
+Message-ID: <547bf8b6015e8da6e4c33f2c5b51ad3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBDDE1CD
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:33:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83C511CD
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:36:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              03-14-2006 17:33 CET
+Last Modified:              03-14-2006 17:36 CET
 ======================================================================
 Summary:                    No sound or High pitched noise, dissapears if change
 made on mixer
@@ -296,18 +296,23 @@ Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-14-06 17:29 
-----------------------------------------------------------------------
-What does that patch have to do with anything?
-
-"In the latest ALSA CVS version, you can pass model=3stack or
-model=laptop. Try one of them."
-
-----------------------------------------------------------------------
  tiwai - 03-14-06 17:33 
 ----------------------------------------------------------------------
 Actually, the models I mentioned above should have the same fix as your
 patch although your patch will be never merged (it breaks other boards).
+
+----------------------------------------------------------------------
+ merin - 03-14-06 17:36 
+----------------------------------------------------------------------
+Hi tiwai!
+Just tried it, but neither model=3stack nor model=laptop brought any
+improvement.
+Any other idea?
+Is there any work for this in progress?
+That would be great!
+
+Greets,
+Merin
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -335,6 +340,7 @@ Date Modified  Username       Field                    Change
 03-14-06 17:16 fluor          Note Added: 0008494                          
 03-14-06 17:29 rlrevell       Note Added: 0008497                          
 03-14-06 17:33 tiwai          Note Added: 0008498                          
+03-14-06 17:36 merin          Note Added: 0008499                          
 ======================================================================
 
 
