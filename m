@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001890]: Only the PCM channel in alsa mixer, unmuted, no sound at all
-Date: Tue, 14 Mar 2006 20:28:49 +0100
-Message-ID: <13410434eff851d67c791216c7a07db4@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 20:51:21 +0100
+Message-ID: <248d7f279e3fc773cbdb659f2ee17022@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 72D8F11B
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 20:28:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E325F1D3
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 20:51:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1890> 
 ======================================================================
@@ -35,13 +35,15 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Ubuntu
 Kernel Version:             Linux haifa 2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20
 17:26:04 UTC 2006 i686 GNU/Linux
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-04-2006 18:19 CET
-Last Modified:              03-14-2006 20:28 CET
+Last Modified:              03-14-2006 20:51 CET
 ======================================================================
 Summary:                    Only the PCM channel in alsa mixer, unmuted, no
 sound at all
@@ -93,6 +95,8 @@ Date Modified  Username       Field                    Change
 03-14-06 17:17 rlrevell       Relationship added       related to 0001631  
 03-14-06 17:17 rlrevell       Relationship deleted     related to 0001631  
 03-14-06 20:28 arielo         Note Added: 0008513                          
+03-14-06 20:51 rlrevell       Status                   assigned => resolved
+03-14-06 20:51 rlrevell       Resolution               open => fixed       
 ======================================================================
 
 
