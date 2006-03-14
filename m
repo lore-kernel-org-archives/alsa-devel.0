@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001914]: playing 2-channel sound on surround device uses rear speakers
-Date: Tue, 14 Mar 2006 15:22:52 +0100
-Message-ID: <4012235595eb202fb3b4d54f1d75704f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001801]: Audiophile USB noisy analog capture
+Date: Tue, 14 Mar 2006 15:28:40 +0100
+Message-ID: <b705abf81dc59dda1de02b8d1a549f72@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FBCE1BB
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 15:22:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 490EF11D
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 15:28:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1914> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1801> 
 ======================================================================
-Reported By:                mru
-Assigned To:                tiwai
+Reported By:                lemeur
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1914
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   1801
+Category:                   USB - usb-audio
+Reproducibility:            sometimes
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.15-gentoo-r1
+Distribution:               
+Kernel Version:             2.6.15.1-rt3
 ======================================================================
-Date Submitted:             03-11-2006 21:25 CET
-Last Modified:              03-14-2006 15:22 CET
+Date Submitted:             01-31-2006 16:04 CET
+Last Modified:              03-14-2006 15:28 CET
 ======================================================================
-Summary:                    playing 2-channel sound on surround device uses rear
-speakers
+Summary:                    Audiophile USB noisy analog capture
 Description: 
-If I play regular 2-channel stereo sound specifying device "surround51" or
-"surround40" (or either of those with a "plug:" prefix) the sound is
-output on the rear speakers.  6-channel playback is correct.
+The audiophile usb analog capture interface seems to be unreliably
+initialized by the ALSA driver.
+
+Just after bootup (or after an /etc/init.d/alsasound restart) the sound
+recorded on the analog capture port is sometimes either:
+- Case A: saturated/distorted (as if it had a very high volume gain)
+or
+- Case B: completly inaudible and loud white noised
+or
+- Case C: sometimes the sound is good
+
+This issue affects:
+* only the analog capture interface and not the SPDIF digital capture
+interface
+* playback is always working
+* both hw:1,1 (analog capture) and plughw:1,1 (analog cpautre with plug)
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- mru - 03-14-06 15:15 
+ lemeur - 02-07-06 10:23 
 ----------------------------------------------------------------------
-Maybe I was unclear.  The sound appears *only* on the rear speakers.  The
-front speakers remain silent.  Surely this is not what users want?
+I've done more tests and found that Reproducibility is in fact "Always" if
+you follow these steps:
+* boot the PC with Audiophile USB turned Off
+* turn on the Audiophile USB and wait for ALSA to auto-setup it
+=> At this point there is a one byte alignment shift (captured sound on
+the analog Input is distorted)
+* restart alsa once by issuing "/etc/init.d/alsasound restart"
+=> At this point there is a 2 bytes alignment shift (captured sound on the
+analog Input is white noise only)
+* restart alsa once by issuing "/etc/init.d/alsasound restart"
+=> At this point there is a 3 bytes alignment shift (captured sound on the
+analog Input is back to normal)
 
 ----------------------------------------------------------------------
- tiwai - 03-14-06 15:22 
+ lemeur - 03-14-06 15:28 
 ----------------------------------------------------------------------
-OK then it's a problem.  But you mentioned that 6-channel playback work, so
-basically all channels work unless you pass 2-channel samples?
+The bug was due to the way the snd-usb-audio driver initializes the
+audiophile usb device.
 
-Anyway, try to update alsa-lib to the latest version.  There were bugs in
-alsa-lib regarding channel routing.
+I've submitted a patch (now included into CVS). For this patch to take
+effect you should use the new "device_setup" module parameter as described
+in the included doc (alsa-kernel/Documentation/Audiophile-Usb.txt).
+
+Thanks a lot to you guys who helped me troubleshooting and tracking down
+this issue (Takashi, Andreas, Sander, ...).
+
+I suppose that this ticket can be closed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 21:25 mru            New Issue                                    
-03-11-06 21:25 mru            Distribution              => Gentoo          
-03-11-06 21:25 mru            Kernel Version            => 2.6.15-gentoo-r1
-03-14-06 15:04 tiwai          Note Added: 0008477                          
-03-14-06 15:15 mru            Note Added: 0008478                          
-03-14-06 15:22 tiwai          Note Added: 0008481                          
+01-31-06 16:04 lemeur         New Issue                                    
+01-31-06 16:04 lemeur         Kernel Version            => 2.6.15.1-rt3    
+02-02-06 14:20 lemeur         Issue Monitored: lemeur                      
+02-07-06 10:23 lemeur         Note Added: 0007956                          
+03-14-06 15:28 lemeur         Note Added: 0008482                          
 ======================================================================
 
 
