@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001914]: playing 2-channel sound on surround device uses rear speakers
-Date: Tue, 14 Mar 2006 23:53:04 +0100
-Message-ID: <0267f60cf39ac1345ea93de40dacf307@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001924]: snd_pcm_avail_update occasionally returns one billion frames
+Date: Wed, 15 Mar 2006 00:03:00 +0100
+Message-ID: <b53126afe633a57db7bf8e20fbc3efae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 311F21D3
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 23:53:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B3D51D3
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 00:03:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1914> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1924> 
 ======================================================================
-Reported By:                mru
-Assigned To:                tiwai
+Reported By:                jussi_kujala
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1914
-Category:                   PCI - cmipci
+Project:                    ALSA - lib
+Issue ID:                   1924
+Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.15-gentoo-r1
+Status:                     new
 ======================================================================
-Date Submitted:             03-11-2006 21:25 CET
-Last Modified:              03-14-2006 23:53 CET
+Date Submitted:             03-15-2006 00:02 CET
+Last Modified:              03-15-2006 00:02 CET
 ======================================================================
-Summary:                    playing 2-channel sound on surround device uses rear
-speakers
+Summary:                    snd_pcm_avail_update occasionally returns one
+billion frames
 Description: 
-If I play regular 2-channel stereo sound specifying device "surround51" or
-"surround40" (or either of those with a "plug:" prefix) the sound is
-output on the rear speakers.  6-channel playback is correct.
+Under right circumstances ALSA function snd_pcm_avail_update returns a
+wrong
+value. More precisely, if buffer underruns are disabled like:
+<code>
+snd_pcm_sw_params_get_boundary( sw_params, &boundary );
+snd_pcm_sw_params_set_stop_threshold( playback_handle, sw_params, boundary
+);
+</code>
+and there are constant underruns then it occasionally happens that the
+snd_pcm_avail_update returns the desired value plus the pointer boundary
+wrapout
+value.
+
+I noticed this when using a game called Stepmania, but it happens with a
+simple
+program that plays .wav with a small buffer. To show that this is really
+happening, I have attached files from /proc/asound/card0/pcm0p/sub0.
+
+If this is a some kind of a feature, it would be desirable to document it
+:-)
+Well I am not 100% certain if this is a fault in ALSA, but it is my best
+guess so I make this bug report here.
+
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-14-06 15:22 
-----------------------------------------------------------------------
-OK then it's a problem.  But you mentioned that 6-channel playback work, so
-basically all channels work unless you pass 2-channel samples?
-
-Anyway, try to update alsa-lib to the latest version.  There were bugs in
-alsa-lib regarding channel routing.
-
-----------------------------------------------------------------------
- mru - 03-14-06 23:53 
-----------------------------------------------------------------------
-Yes, 6-channel playback is fine, as is 2-channel on the "default" device.
-I installed alsa-lib 1.0.11-rc3; no change.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 21:25 mru            New Issue                                    
-03-11-06 21:25 mru            Distribution              => Gentoo          
-03-11-06 21:25 mru            Kernel Version            => 2.6.15-gentoo-r1
-03-14-06 15:04 tiwai          Note Added: 0008477                          
-03-14-06 15:15 mru            Note Added: 0008478                          
-03-14-06 15:22 tiwai          Note Added: 0008481                          
-03-14-06 23:53 mru            Note Added: 0008524                          
+03-15-06 00:02 jussi_kujala   New Issue                                    
+03-15-06 00:02 jussi_kujala   File Added: sub0.tar                         
 ======================================================================
 
 
