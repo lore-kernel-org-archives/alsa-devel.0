@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001756]: Detects soundcard, alsamixer is ok, fiddled with switches, but no audio output
-Date: Tue, 14 Mar 2006 21:41:47 +0100
-Message-ID: <7b5c51536a9d68f665199061d5b8e0ba@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
+Date: Tue, 14 Mar 2006 21:50:09 +0100
+Message-ID: <dc1aeda33e12c44237bd6693c6e03d68@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3682F1B7
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 21:41:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A88091B7
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 21:50:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,248 +24,332 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1756> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1596> 
 ======================================================================
-Reported By:                rawsock
-Assigned To:                
+Reported By:                jrgns
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1756
-Category:                   PCI - intel8x0
+Issue ID:                   1596
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu Breezy Badger
-Kernel Version:             2.6.12-i686
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.14-rc2
 ======================================================================
-Date Submitted:             01-16-2006 18:51 CET
-Last Modified:              03-14-2006 21:41 CET
+Date Submitted:             11-24-2005 11:26 CET
+Last Modified:              03-14-2006 21:50 CET
 ======================================================================
-Summary:                    Detects soundcard, alsamixer is ok, fiddled with
-switches, but no audio output
+Summary:                    No sound or High pitched noise, dissapears if change
+made on mixer
 Description: 
-Tried switching External Amplifier, SPDIF output, Mic, PC Speaker, etc ...
-but to no avail. My laptop is a Packard Bell EasyNote A8, but the chipset
-seems pretty standard. The output of dmesg does not show any error while
-loading modules.
+With the driver compiled as a standalone (1.0.10rc3), there's is sound, but
+accompanied with a very high pitched noise. All sound dissappears the
+moment I change something on the mixer.
 
-On full volume settings, i can hear popping sounds when switching mic, pcm
-or lfe on/off. I can also hear the same loud pop when loading the sound
-module.
+There is no sound at all if the driver is compiled into the kernel or as a
+kernel module (1.0.10rc1 and 2.6.14-rc2).
 
-== lspci output
+I tried loading the module with various model= and fix_position=
+combinations as well.
 
-0000:00:00.0 Host bridge: Intel Corp. Mobile Memory Controller Hub (rev
-03)
-0000:00:02.0 VGA compatible controller: Intel Corp. Mobile Graphics
-Controller (rev 03)
-0000:00:02.1 Display controller: Intel Corp. Mobile Graphics Controller
-(rev 03)
-0000:00:1c.0 PCI bridge: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-PCI Express Port 1 (rev 04)
-0000:00:1d.0 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #1 (rev 04)
-0000:00:1d.1 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #2 (rev 04)
-0000:00:1d.2 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #3 (rev 04)
-0000:00:1d.3 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB UHCI #4 (rev 04)
-0000:00:1d.7 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) USB2 EHCI Controller (rev 04)
-0000:00:1e.0 PCI bridge: Intel Corp. 82801 PCI Bridge (rev d4)
-0000:00:1e.2 Multimedia audio controller: Intel Corp.
-82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97 Audio Controller (rev 04)
-0000:00:1e.3 Modem: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97
-Modem Controller (rev 04)
-0000:00:1f.0 ISA bridge: Intel Corp. 82801FBM (ICH6M) LPC Interface Bridge
-(rev 04)
-0000:00:1f.1 IDE interface: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) IDE Controller (rev 04)
-0000:00:1f.3 SMBus: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) SMBus
-Controller (rev 04)
-0000:06:01.0 CardBus bridge: Texas Instruments: Unknown device 8031
-0000:06:01.2 FireWire (IEEE 1394): Texas Instruments: Unknown device 8032
-0000:06:01.3 Unknown mass storage controller: Texas Instruments: Unknown
-device 8033
-0000:06:03.0 Network controller: Intel Corp. PRO/Wireless 2200BG (rev 05)
-0000:06:08.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL-8139/8139C/8139C+ (rev 10)
+Hardware:
+lspci
+0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 04)
 
-== lsmod output
+lspci -n -v -v
+0000:00:1b.0 Class 0403: 8086:2668 (rev 04)
+        Subsystem: 17c0:2017
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, cache line size 08
+        Interrupt: pin A routed to IRQ 10
+        Region 0: Memory at b0000000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] #10 [0091]
 
-snd_intel8x0           35036  2
-snd_ac97_codec         99136  1 snd_intel8x0
-snd_ac97_bus            2144  1 snd_ac97_codec
-snd_pcm_oss            56352  0
-snd_mixer_oss          20512  1 snd_pcm_oss
-snd_pcm                96776  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd_timer              26916  1 snd_pcm
-snd                    58756  10
-snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              10816  1 snd
-snd_page_alloc         10984  2 snd_intel8x0,snd_pcm
-binfmt_misc            12456  1
-rfcomm                 41816  0
-l2cap                  28196  5 rfcomm
-bluetooth              52452  4 rfcomm,l2cap
-speedstep_centrino      7600  1
-cpufreq_powersave       1696  0
-cpufreq_stats           5860  0
-cpufreq_userspace       4472  1
-cpufreq_ondemand        6300  0
-cpufreq_conservative     7332  0
-freq_table              4548  2 speedstep_centrino,cpufreq_stats
-pcmcia                 41548  2
-i915                   20576  1
-drm                    77204  2 i915
-tc1100_wmi              6660  0
-video                  16036  0
-battery                 9444  0
-container               4384  0
-button                  6480  0
-pcc_acpi               10848  0
-sony_acpi               5292  0
-ac                      4708  0
-dev_acpi               10916  0
-hotkey                 11300  0
-ipv6                  281856  8
-xfrm_user              20132  2
-xfrm4_tunnel            3748  0
-ipcomp                  8456  0
-esp4                    8192  0
-ah4                     6400  0
-af_packet              23560  2
-tsdev                   7808  0
-rtc                    14292  0
-ipw2200               110988  0
-ieee80211              34888  1 ipw2200
-ieee80211_crypt         6560  1 ieee80211
-firmware_class         11328  1 ipw2200
-ohci1394               37172  0
-yenta_socket           29228  2
-rsrc_nonstatic         14336  1 yenta_socket
-pcmcia_core            44976  3 pcmcia,yenta_socket,rsrc_nonstatic
-hw_random               5620  0
-shpchp                 48576  0
-pci_hotplug            31060  1 shpchp
-intel_agp              24284  1
-agpgart                36264  3 drm,intel_agp
-deflate                 4064  0
-zlib_deflate           24248  1 deflate
-twofish                47616  0
-serpent                20672  0
-aes                    29792  0
-blowfish                8352  0
-des                    17664  0
-sha256                 10944  0
-sha1                    2624  0
-crypto_null             2240  0
-af_key                 36144  0
-nls_cp437               5664  1
-ntfs                  109936  1
-joydev                 10272  0
-dm_mod                 61752  1
-sr_mod                 17828  0
-sbp2                   24740  0
-scsi_mod              144264  2 sr_mod,sbp2
-ieee1394              107704  2 ohci1394,sbp2
-psmouse                39556  0
-mousedev               12288  2
-parport_pc             37604  0
-lp                     11876  0
-parport                39176  2 parport_pc,lp
-md_mod                 76404  0
-reiserfs              280432  2
-thermal                13448  0
-processor              23456  2 speedstep_centrino,thermal
-fan                     4612  0
-usbhid                 40384  0
-8139cp                 23328  0
-8139too                28832  0
-mii                     6048  2 8139cp,8139too
-ehci_hcd               36968  0
-uhci_hcd               35120  0
-usbcore               136996  4 usbhid,ehci_hcd,uhci_hcd
-ide_cd                 43972  0
-cdrom                  41472  2 sr_mod,ide_cd
-ide_disk               18944  5
-ide_generic             1280  0
-piix                   11236  1
-generic                 5156  0
-ide_core              147956  5 ide_cd,ide_disk,ide_generic,piix,generic
-unix                   30416  668
-vga16fb                13448  0
-vgastate                9984  1 vga16fb
-cfbimgblt               2880  1 vga16fb
-cfbfillrect             4128  1 vga16fb
-cfbcopyarea             3872  1 vga16fb
-tileblit                2560  0
-font                    8096  0
+lspci -v
+0000:00:02.0 VGA compatible controller: Intel Corporation Mobile
+915GM/GMS/910GML Express Graphics Controller (rev 04) (prog-if 00 [VGA])
+        Subsystem: Wistron Corp.: Unknown device 2071
+        Flags: bus master, fast devsel, latency 0, IRQ 10
+        Memory at b0080000 (32-bit, non-prefetchable) [size=512K]
+        I/O ports at 1800 [size=8]
+        Memory at c0000000 (32-bit, prefetchable) [size=256M]
+        Memory at b0040000 (32-bit, non-prefetchable) [size=256K]
+        Capabilities: [d0] Power Management version 2
 
-== output of /proc/interrupts
-
- 0:    1467003    IO-APIC-edge  timer
-  1:      27671    IO-APIC-edge  i8042
-  8:          1    IO-APIC-edge  rtc
-  9:        334   IO-APIC-level  acpi
- 12:     232936    IO-APIC-edge  i8042
- 14:     107773    IO-APIC-edge  ide0
- 16:      45563   IO-APIC-level  ipw2200, Intel ICH6
- 17:     101668   IO-APIC-level  uhci_hcd:usb4, yenta, ohci1394, eth1,
-i915@pci:0000:00:02.0
- 19:     359145   IO-APIC-level  uhci_hcd:usb3
- 20:          2   IO-APIC-level  uhci_hcd:usb1, ehci_hcd:usb5
- 21:          0   IO-APIC-level  uhci_hcd:usb2
-NMI:          0
-LOC:     192512
-ERR:          0
-MIS:          0
-
-
+cat /proc/asound/card0/codec#0
+Codec: Analog Devices AD1986A
+Address: 0
+Vendor Id: 0x11d41986
+Subsystem Id: 0x0
+Revision Id: 0x100400
+Default PCM: rates 0x07f, bits 0x0e, types 0x1
+Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+Default Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital
+  PCM: rates 0x060, bits 0x02, types 0x5
+  Connection: 2
+     0x01* 0x06
+Node 0x03 [Audio Output] wcaps 0x445: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x97 0x97]
+Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x9f 0x9f]
+Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x9f 0x9f]
+Node 0x06 [Audio Input] wcaps 0x100511: Stereo
+  PCM: rates 0x07f, bits 0x06, types 0x1
+  Connection: 1
+     0x12
+Node 0x07 [Audio Mixer] wcaps 0x200101: Stereo
+  Connection: 8
+     0x03 0x09 0x13 0x14 0x15 0x16 0x17 0x18
+Node 0x08 [Audio Mixer] wcaps 0x200108: Mono
+  Connection: 1
+     0x07
+Node 0x09 [Audio Mixer] wcaps 0x200106: Mono Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80] [0x80]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80]
+  Connection: 2
+     0x04 0x05
+Node 0x0a [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 3
+     0x07* 0x04 0x05
+Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 2
+     0x07* 0x04
+Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 2
+     0x04* 0x07
+Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 2
+     0x05* 0x08
+Node 0x0e [Audio Selector] wcaps 0x300100: Mono
+  Connection: 2
+     0x08* 0x11
+Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 8
+     0x1f* 0x20 0x1d 0x1d 0x27 0x28 0x29 0x2a
+Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 3
+     0x20* 0x1c 0x1f
+Node 0x11 [Audio Selector] wcaps 0x300941: Stereo
+  Connection: 2
+     0x0f* 0x2b
+Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Connection: 6
+     0x11* 0x22 0x10 0x07 0x08 0x23
+Node 0x13 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x97 0x97]
+  Connection: 1
+     0x11
+Node 0x14 [Audio Selector] wcaps 0x300104: Mono Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x97]
+  Connection: 1
+     0x23
+Node 0x15 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x97 0x97]
+  Connection: 1
+     0x22
+Node 0x16 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x97 0x97]
+  Connection: 1
+     0x21
+Node 0x17 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x97 0x97]
+  Connection: 1
+     0x10
+Node 0x18 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
+  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
+  Amp-Out vals:  [0x8f]
+  Connection: 2
+     0x19* 0x24
+Node 0x19 [Beep Generator Widget] wcaps 0x700200: Mono Digital
+Node 0x1a [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x9f 0x9f]
+  Pincap 0x081f: OUT HP
+  Pin Default 0x01813030: [Jack] Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x0a
+Node 0x1b [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x9f 0x9f]
+  Pincap 0x081001f: OUT HP
+  Pin Default 0x01014011: [Jack] Line Out at Ext Rear
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0b
+Node 0x1c [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x9f 0x9f]
+  Pincap 0x0837: IN OUT
+  Pin Default 0x9933f170: [Fixed] CD at Int ATAPI
+    Conn = ATAPI, Color = Other
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0c
+Node 0x1d [Pin Complex] wcaps 0x40098d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x9f 0x9f]
+  Pincap 0x081737: IN OUT
+  Pin Default 0x99f3f115: [Fixed] Other at Int ATAPI
+    Conn = ATAPI, Color = Other
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0d
+Node 0x1e [Pin Complex] wcaps 0x40018c: Mono Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x00]
+  Pincap 0x0810: OUT
+  Pin Default 0x901700f0: [Fixed] Speaker at Int N/A
+    Conn = Analog, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x0e
+Node 0x1f [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x081727: IN
+  Pin Default 0x02a190f0: [Jack] Mic at Ext Front
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x24: IN
+Node 0x20 [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x081727: IN
+  Pin Default 0x018130f0: [Jack] Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+  Pin-ctls: 0x20: IN
+Node 0x21 [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x0827: IN
+  Pin Default 0x409700f0: [N/A] Aux at Ext N/A
+    Conn = Analog, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x22 [Pin Complex] wcaps 0x400081: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x903300f0: [Fixed] CD at Int N/A
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x23 [Pin Complex] wcaps 0x400080: Mono
+  Pincap 0x0820: IN
+  Pin Default 0x40b700f0: [N/A] Telephony at Ext N/A
+    Conn = Analog, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x24 [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0x50f700f0: [N/A] Other at Int N/A
+    Conn = Analog, Color = Unknown
+  Pin-ctls: 0x20: IN
+Node 0x25 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x014500f0: [Jack] SPDIF Out at Ext Rear
+    Conn = Optical, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x02
+Node 0x26 [Power Widget] wcaps 0x500500: Mono
+  Connection: 8
+     0x07* 0x08 0x13 0x14 0x15 0x16 0x17 0x18
+Node 0x27 [Audio Mixer] wcaps 0x200101: Stereo
+  Connection: 2
+     0x1f 0x1d
+Node 0x28 [Audio Mixer] wcaps 0x200101: Stereo
+  Connection: 2
+     0x1f 0x20
+Node 0x29 [Audio Mixer] wcaps 0x200101: Stereo
+  Connection: 2
+     0x1d 0x20
+Node 0x2a [Audio Mixer] wcaps 0x200101: Stereo
+  Connection: 3
+     0x1f 0x1d 0x20
+Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
+  Connection: 1
+     0x0f
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jamez - 03-14-06 16:24 
+ merin - 03-14-06 21:41 
 ----------------------------------------------------------------------
-I have the same Packard Bell A8 laptop too!
-i cant seem to get my sound working at all.
-I have a Packard Bell A8202
-http://www.packardbell.co.uk/product...s00001-51.html
-It says an Intel ICH6 on searches on the laptop for devices etc even tho
-PB say Realtek.
-I have it now on dapper but still no sound. alsa has the Intel ICH6 card
-selected and volume up.
-the only sound i get is clicks when i mute or unmute the sound. THATS IT
+Heyho!
+Now i compiled with:
+./cvscompile --with-cards=hda-intel --with-sequencer=yes
+--with-debug=full
+
+But there is no message like "hda-intel: model xxx is selected" in stdout,
+/var/log/syslog or /var/log/messages when i do a
+modprobe snd-hda-intel model=3stack
+or
+modprobe snd-hda-intel model=laptop .
+
+And the problem remains :/
+
+Greetings
+Merin
 
 ----------------------------------------------------------------------
- rawsock - 03-14-06 21:41 
+ rlrevell - 03-14-06 21:50 
 ----------------------------------------------------------------------
-Looks like the soundcard mentioned in this thread is the same as the
-Packard Bell one :
-
-http://thread.gmane.org/gmane.linux.alsa.user/18698
-
-Looks like an unsupported-buggy AC'97 codec.
+Please post the output of "dmesg" after loading the module.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-16-06 18:51 rawsock        New Issue                                    
-01-16-06 18:51 rawsock        Distribution              => Ubuntu Breezy Badger
-01-16-06 18:51 rawsock        Kernel Version            => 2.6.12-i686     
-01-17-06 18:46 rawsock        File Added: proc_asound.tar.gz                    
-01-18-06 16:06 anhi1968       Note Added: 0007711                          
-02-14-06 22:17 anhi1968       Issue Monitored: anhi1968                    
-02-14-06 22:22 anhi1968       Note Added: 0008071                          
-02-14-06 22:35 anhi1968       Note Added: 0008072                          
-02-25-06 18:57 thoroughfare   Note Added: 0008190                          
-02-25-06 18:59 thoroughfare   Note Added: 0008191                          
-02-28-06 11:58 anhi1968       Issue End Monitor: anhi1968                    
-03-14-06 16:24 jamez          Note Added: 0008484                          
-03-14-06 21:41 rawsock        Note Added: 0008515                          
+11-24-05 11:26 jrgns          New Issue                                    
+11-24-05 11:26 jrgns          Distribution              => Gentoo          
+11-24-05 11:26 jrgns          Kernel Version            => 2.6.14-rc2      
+11-24-05 12:14 jrgns          Note Added: 0006840                          
+11-24-05 12:14 jrgns          Note Added: 0006841                          
+02-04-06 23:15 eIf            Note Added: 0007927                          
+02-04-06 23:15 eIf            Issue Monitored: eIf                         
+02-05-06 06:31 gerick         Issue Monitored: gerick                      
+02-08-06 13:11 simonckenyon   Issue Monitored: simonckenyon                    
+02-18-06 19:16 fluor          Note Added: 0008122                          
+02-18-06 19:48 chalvorson     Issue Monitored: chalvorson                    
+02-19-06 21:49 jrgns          Note Added: 0008137                          
+02-19-06 21:57 eIf            Note Added: 0008138                          
+03-04-06 18:23 merin          Note Added: 0008350                          
+03-04-06 18:24 merin          Note Edited: 0008350                         
+03-04-06 19:11 rlrevell       Note Added: 0008352                          
+03-04-06 22:02 merin          Note Added: 0008354                          
+03-05-06 11:29 merin          Issue Monitored: merin                       
+03-06-06 05:48 stevenellis    Issue Monitored: stevenellis                    
+03-14-06 17:09 tiwai          Note Added: 0008493                          
+03-14-06 17:16 fluor          Note Added: 0008494                          
+03-14-06 17:29 rlrevell       Note Added: 0008497                          
+03-14-06 17:33 tiwai          Note Added: 0008498                          
+03-14-06 17:36 merin          Note Added: 0008499                          
+03-14-06 17:44 tiwai          Note Added: 0008500                          
+03-14-06 17:55 fluor          Note Added: 0008503                          
+03-14-06 21:41 merin          Note Added: 0008514                          
+03-14-06 21:50 rlrevell       Note Added: 0008516                          
 ======================================================================
 
 
