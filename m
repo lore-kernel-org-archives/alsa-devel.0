@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001900]: alsactl stores incorrect values; overwrites non-writable file; does not set emu10k1 mixer
-Date: Tue, 14 Mar 2006 15:53:58 +0100
-Message-ID: <68cb8bc04c741354011fa93455cf821b@bugtrack.alsa-project.org>
+From: Florian Schlichting <Florian.Schlichting@gmx.de>
+Subject: Re: Re: Ludicrous amount of spam on this list
+Date: Tue, 14 Mar 2006 23:07:54 +0800
+Message-ID: <20060314150754.GB9743@tigerbay>
+References: <1142276619.9235.3.camel@localhost.localdomain> <s5hhd62ma6p.wl%tiwai@suse.de> <1142277553.9235.6.camel@localhost.localdomain> <s5hbqwam98f.wl%tiwai@suse.de> <yw1xk6ay6rg8.fsf@agrajag.inprovide.com> <s5h1wx6m6s4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98A561B4
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 15:53:58 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <s5h1wx6m6s4.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,92 +18,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1900> 
-======================================================================
-Reported By:                covex
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1900
-Category:                   alsactl
-Reproducibility:            sometimes
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-09-2006 17:38 CET
-Last Modified:              03-14-2006 15:53 CET
-======================================================================
-Summary:                    alsactl stores incorrect values; overwrites
-non-writable file; does not set emu10k1 mixer
-Description: 
-I have one main problem with alsa and emu10k1 based SB Live! card. 
+--f2QGlHpHGjS2mn6Y
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It's some time ago I notice that very often (not always) after reboot my
-sound card has setup strange values in mixer (e.g wave volume is righ 75
-and left 0, see attached asound.state). First I thought it's some
-application setting these nonsenses but it's not true - those values are
-set SOMETIMES on module removal at reboot.
+On Mon, Mar 13, 2006 at 09:25:15PM +0100, Takashi Iwai wrote:
+> At Mon, 13 Mar 2006 20:05:27 +0000,
+> M=E5ns Rullg=E5rd wrote:
+> > the bug reporter.  I agree that there is a lot of noise from the bug
+> > tracker on the list.  It would help if the subject lines used a
+> > shorter prefix so the actual subject was visible even when the mail
+> > reader truncates it to fit the window.
+>=20
+> Yep, agreed that the mail from mantis could be more simplified to be
+> suitable for ML.
 
-What I noticed during digging around:
-1) Always on user logout I have message in log: ainit: Operation not
-permitted
-It is not specified what operation.
-2) see this situation:
-# modprobe -r snd-emu10k1
-# modprobe --ignore-install snd-emu10k1 && alsactl restore 0
-/usr/sbin/alsactl: load_state:1250: Cannot find soundcard '0'...
-The only thing that works is:
-# modprobe --ignore-install snd-emu10k1; sleep 1; alsactl restore 0
-As the first one is very common situation in all modprobe.conf setups I
-see this as fairly bad problem.
+And I think it would be useful if bug tracker emails contained a header
+like References: or In-Reply-To: with the bug number or some such id, so
+that all emails coming from the same bug report can be grouped in one
+thread - and read or discarded together, according to interest.
 
-3) I set permitions of /etc/asound.state to r--r--r-- to protect it from
-being overwriten but issuing alsactl store overwrites this file!
-
-None of these explain why, on module removal the asound is filled with
-incorrect values (asound.state is attached). 
-BTW: there are three states in that file - for CK804 (it is nForce4
-chipset with internal AC97 disabled), for Unknown (guh?!) and Live (finaly
-correct).
+Florian
 
 
-======================================================================
+--f2QGlHpHGjS2mn6Y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-----------------------------------------------------------------------
- tiwai - 03-14-06 15:53 
-----------------------------------------------------------------------
-The delay is because of the udev mechanism.  At the moment modprobe
-returns, the modules and devices are still not ready.  Better to call
-alsactl from udev rules.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
 
-The permission has almost no meaning for root.  The open doesn't return
-errors for writing to such a file.
+iD8DBQFEFtxK/R0+cAphf/kRAi55AKDlxzh7RnOOVcja4zxRXDTCPHqUIwCghvht
+MA/ya892LSZdxsi0Dw4Bv44=
+=IA2D
+-----END PGP SIGNATURE-----
 
-One problem I can see is that you don't use -F option with alsactl.
-Without this option, alsactl may keep some controls uninitialized if the
-element number is changed in the driver side, which will result in an
-incomplete state to be saved.  This could be the cause of your trouble.
-
-The "Unknown" came from the state that your device wasn't detected
-properly by the driver due to lack of information in the supported card
-list.  This can be removed, of course.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-09-06 17:38 covex          New Issue                                    
-03-09-06 17:38 covex          File Added: asound.state.wrong                    
-03-14-06 15:53 tiwai          Note Added: 0008483                          
-======================================================================
-
-
+--f2QGlHpHGjS2mn6Y--
 
 
 -------------------------------------------------------
