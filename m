@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001801]: Audiophile USB noisy analog capture
-Date: Tue, 14 Mar 2006 17:18:20 +0100
-Message-ID: <ef4306e6e19852d22b6a03db661be529@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001631]: Audiophile USB will not capture.
+Date: Tue, 14 Mar 2006 17:18:16 +0100
+Message-ID: <fc65c54463d0dcfb95cca86aa1ca66fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 112C11C3
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:18:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42EAA1C3
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:18:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,108 +22,170 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001631.
+The following issue has been set as RELATED TO issue 0001801.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1801> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1631> 
 ======================================================================
-Reported By:                lemeur
+Reported By:                smithbone
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1801
+Issue ID:                   1631
 Category:                   USB - usb-audio
-Reproducibility:            sometimes
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.15.1-rt3
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               1.0.10
+Kernel Version:             2.6.15-rc5-git1
 ======================================================================
-Date Submitted:             01-31-2006 16:04 CET
-Last Modified:              03-14-2006 17:04 CET
+Date Submitted:             12-08-2005 17:38 CET
+Last Modified:              03-14-2006 17:18 CET
 ======================================================================
-Summary:                    Audiophile USB noisy analog capture
+Summary:                    Audiophile USB will not capture.
 Description: 
-The audiophile usb analog capture interface seems to be unreliably
-initialized by the ALSA driver.
+If I try to capure audio from my Audiophile USB I get the following.
 
-Just after bootup (or after an /etc/init.d/alsasound restart) the sound
-recorded on the analog capture port is sometimes either:
-- Case A: saturated/distorted (as if it had a very high volume gain)
-or
-- Case B: completly inaudible and loud white noised
-or
-- Case C: sometimes the sound is good
-
-This issue affects:
-* only the analog capture interface and not the SPDIF digital capture
-interface
-* playback is always working
-* both hw:1,1 (analog capture) and plughw:1,1 (analog cpautre with plug)
-
-
+ $ arecord -vv -D hw:1,1 -f S24_3BE -t raw -c 2 -r48000 test.raw
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S24_3BE
+subformat    : STD
+channels     : 2
+rate         : 48000
+exact rate   : 48000 (48000/1)
+msbits       : 24
+buffer_size  : 24000
+period_size  : 6000
+period_time  : 125000
+tick_time    : 4000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 6000
+xfer_align   : 6000
+start_threshold  : 1
+stop_threshold   : 24000
+silence_threshold: 0
+silence_size : 0
+boundary     : 1572864000
+arecord: pcm_read:1303: read error: Input/output error
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001631 Audiophile USB will not capture.
+related to          0001801 Audiophile USB noisy analog capture
 ======================================================================
 
 ----------------------------------------------------------------------
- lemeur - 02-07-06 10:23 
+ sander - 12-23-05 18:40 
 ----------------------------------------------------------------------
-I've done more tests and found that Reproducibility is in fact "Always" if
-you follow these steps:
-* boot the PC with Audiophile USB turned Off
-* turn on the Audiophile USB and wait for ALSA to auto-setup it
-=> At this point there is a one byte alignment shift (captured sound on
-the analog Input is distorted)
-* restart alsa once by issuing "/etc/init.d/alsasound restart"
-=> At this point there is a 2 bytes alignment shift (captured sound on the
-analog Input is white noise only)
-* restart alsa once by issuing "/etc/init.d/alsasound restart"
-=> At this point there is a 3 bytes alignment shift (captured sound on the
-analog Input is back to normal)
+I mailed this analysis to the alsa-devel list two months ago. It seems to
+have found a nice home here :)
 
-----------------------------------------------------------------------
- lemeur - 03-14-06 15:28 
-----------------------------------------------------------------------
-The bug was due to the way the snd-usb-audio driver initializes the
-audiophile usb device.
 
-I've submitted a patch (now included into CVS). For this patch to take
-effect you should use the new "device_setup" module parameter as described
-in the included doc (alsa-kernel/Documentation/Audiophile-Usb.txt).
+SUMMARY:
 
-Thanks a lot to you guys who helped me troubleshooting and tracking down
-this issue (Takashi, Andreas, Sander, ...).
+- only 48001-96000hz capturing works
+- only capturing through plughw:x,1 works
+- format is 24/32 bits regardless of plug conversion (? at least, as
+reported by audacity)
+- only the signal on the jack inputs is captured
+- only 2-channel capture
+- only the SYNC/48001-96000/S24_3BE altset on device #1 can be captured,
+only through plughw.
 
-I suppose that this ticket can be closed now.
 
-----------------------------------------------------------------------
- tiwai - 03-14-06 16:55 
-----------------------------------------------------------------------
-Closing now.  Thanks.
+signal (from the jacks, not the cinch connectors)
+-------------------------------------------------
 
-----------------------------------------------------------------------
- rlrevell - 03-14-06 17:04 
-----------------------------------------------------------------------
-Fixed in CVS - please open new bugs if issues remain
+s1) arecord -D plughw:0,1 -t wav -c 2 -r 96000 -f S16_LE -d 2 -vv test.wav
+
+- output :
+Plug PCM: Linear conversion PCM (S24_3BE)
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S16_LE
+- audacity reports 24b/96khz
+- amplitude suspects 24 bit sound despite S16_LE setting
+- altset reportedly used :
+    Format: S24_3BE
+    Channels: 2
+    Endpoint: 5 IN (SYNC)
+    Rates: 48001 - 96000 (continuous)
+- see (n1) and (e3)
+
+s2) arecord -D plughw:0,1 -t wav -c 2 -r 96000 -f S32_LE -d 2 -vv
+test.wav
+- output :
+Plug PCM: Linear conversion PCM (S24_3BE)
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S32_LE
+- audacity reports 32b/96khz
+- altset used same as (s1)
+
+
+no signal
+---------
+
+n1) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_3BE -d 2 -vv
+test.raw
+- output :
+Plug PCM: Hardware PCM card 0 'Audiophile USB (tm)' device 1 subdevice 0
+
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S24_3BE
+
+n2) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_LE -d 2 -vv
+test.raw
+n3) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_3LE -d 2 -vv
+test.raw
+n4) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f U24_3LE -d 2 -vv
+test.raw
+n5) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f U24_3BE -d 2 -vv
+test.raw
+
+errors/'lock'
+-------------
+
+e1) arecord -D plughw:0,1 -t raw -c 2 -r 48000 -f S16_LE -d 2 -vv
+test.raw
+- output :
+Plug PCM: Linear conversion PCM (S16_BE)
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S16_LE
+
+e2) arecord -D plughw:0,1 -t raw -c 2 -r 48000 -f S16_BE -d 2 -vv
+test.raw
+- output :
+Plug PCM: Hardware PCM card 0 'Audiophile USB (tm)' device 1 subdevice 0
+
+Its setup is:
+stream       : CAPTURE
+access       : RW_INTERLEAVED
+format       : S16_BE
+
+e3) arecord -D plughw:0,0 -t wav -c 2 -r 96000 -f S16_LE -d 2 -vv
+test.wav
+e3) arecord -D plughw:0,1 -t wav -c 1 -r 96000 -f S16_LE -d 2 -vv test.wav
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-06 16:04 lemeur         New Issue                                    
-01-31-06 16:04 lemeur         Kernel Version            => 2.6.15.1-rt3    
-02-02-06 14:20 lemeur         Issue Monitored: lemeur                      
-02-07-06 10:23 lemeur         Note Added: 0007956                          
-03-14-06 15:28 lemeur         Note Added: 0008482                          
-03-14-06 16:55 tiwai          Status                   assigned => resolved
-03-14-06 16:55 tiwai          Resolution               open => fixed       
-03-14-06 16:55 tiwai          Note Added: 0008489                          
-03-14-06 17:04 rlrevell       Note Added: 0008490                          
-03-14-06 17:18 rlrevell       Relationship added       related to 0001631  
+12-08-05 17:38 smithbone      New Issue                                    
+12-08-05 17:38 smithbone      Distribution              => 1.0.10          
+12-08-05 17:38 smithbone      Kernel Version            => 2.6.15-rc5-git1 
+12-23-05 18:40 sander         Note Added: 0007135                          
+03-14-06 17:17 rlrevell       Relationship added       related to 0001890  
+03-14-06 17:17 rlrevell       Relationship deleted     related to 0001890  
+03-14-06 17:18 rlrevell       Relationship added       related to 0001801  
 ======================================================================
 
 
