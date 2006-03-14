@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Tue, 14 Mar 2006 19:27:55 +0100
-Message-ID: <9eea9d5fae773b5b5e58cdb5723bc523@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 20:08:42 +0100
+Message-ID: <33c5fe01191f7c417bc747ecb0bd3fe0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5ACBA1C3
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 19:27:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1F961B9
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 20:08:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6
 ======================================================================
 Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-14-2006 19:27 CET
+Last Modified:              03-14-2006 20:08 CET
 ======================================================================
 Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
@@ -51,38 +51,6 @@ Motherboard : Asus A8N-E
 OS: fedora core 4
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-14-06 19:23 
-----------------------------------------------------------------------
-The proper routing to center/LFE on software isn't too trivial since the
-output to them requires the mixing of left/right channels.
-
-For example, define your own PCM like below in ~/.asoundrc:
-  pcm.mysurround {
-    type plug
-    slave {
-      pcm "surround51"
-      channels 6
-    }
-    ttable {
-      0.0 1
-      1.1 1
-      0.2 1
-      1.3 1
-      0.4 0.5
-      1.4 0.5
-      0.5 0.5
-      1.5 0.5
-    }
-  }
-
-Then play with aplay -Dmysurround somefile.wav.  You can define it as the
-defaut PCM by adding:
-
-  pcm.!default "mysurround"
-
-Combining with this and soft-mixing is also another story...
 
 ----------------------------------------------------------------------
  binilbenjamin - 03-14-06 19:27 
@@ -97,6 +65,14 @@ Amazingly, every speakers worked(including the woofer!)
 Output of cat /proc/asound/version
 Advanced Linux Sound Architecture Driver Version 1.0.9b.
 Compiled on Mar  3 2006 for kernel 2.6.11-1.1369_FC4.
+
+----------------------------------------------------------------------
+ rlrevell - 03-14-06 20:08 
+----------------------------------------------------------------------
+Great, so it's working.
+
+BTW 1.0.9b is not the latest version of ALSA - the latest is 1.0.11-rc3. 
+Apparently your distro does not support the latest version.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -118,6 +94,7 @@ Date Modified  Username       Field                    Change
 03-14-06 19:12 rlrevell       Note Added: 0008509                          
 03-14-06 19:23 tiwai          Note Added: 0008510                          
 03-14-06 19:27 binilbenjamin  Note Added: 0008511                          
+03-14-06 20:08 rlrevell       Note Added: 0008512                          
 ======================================================================
 
 
