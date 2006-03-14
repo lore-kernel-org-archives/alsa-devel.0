@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Tue, 14 Mar 2006 17:55:42 +0100
-Message-ID: <a2e632fd7c7158054a04dd6f23cb41ec@bugtrack.alsa-project.org>
+From: "Agathangelos Goolsby" <goolagathang@cg13.fr>
+Subject: Re: Pharagqmacy news
+Date: Tue, 14 Mar 2006 12:15:54 -0500
+Message-ID: <000001c6478a$f3559910$ed97a8c0@amh5>
+Reply-To: "Agathangelos Goolsby" <goolagathang@cg13.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C64761.0A820210"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 682A41AD
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:55:42 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9ADE41B7
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 18:16:26 +0100 (MET)
+Received: from cg13.fr (adsl-144-84-186.mia.bellsouth.net [72.144.84.186])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 3E07D9926F
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 18:16:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,325 +25,139 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1596> 
-======================================================================
-Reported By:                jrgns
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1596
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.14-rc2
-======================================================================
-Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              03-14-2006 17:55 CET
-======================================================================
-Summary:                    No sound or High pitched noise, dissapears if change
-made on mixer
-Description: 
-With the driver compiled as a standalone (1.0.10rc3), there's is sound, but
-accompanied with a very high pitched noise. All sound dissappears the
-moment I change something on the mixer.
+------=_NextPart_000_0001_01C64761.0A820210
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-There is no sound at all if the driver is compiled into the kernel or as a
-kernel module (1.0.10rc1 and 2.6.14-rc2).
+=20
+u C l i m a h I y i a s $ k 99 (1 pN 0  n p t i f l y l r s m )
+e V m a a I s i w u n m $ t 105 ( 8V 30  z p o i j l v l t s v )
+y V c i q a e g s r a a $ r 69 (1 7l 0  j p i i d l y l d s t )
+=20
+Many o sZ ther, V cr isit our s pR ite <http://aoto33.onsaltpan.com>
+and S HJ ave ov xs er 50 gE %
 
-I tried loading the module with various model= and fix_position=
-combinations as well.
+------=_NextPart_000_0001_01C64761.0A820210
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Hardware:
-lspci
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><span=20
+style
+=3D "float: right"> u </span>C<span=20
+style
+=3D "float: right"> l </span>i<span=20
+style
+=3D "float: right"> m </span>a<span=20
+style
+=3D "float: right"> h </span>I<span=20
+style
+=3D "float: right"> y </span>i<span=20
+style
+=3D "float: right"> a </span>s <FONT color=3D#F4381D>$<span=20
+style
+=3D "float: right"> k </span>99</FONT> (1<span=20
+style
+=3D "float: right"> pN </span>0&nbsp;<span=20
+style
+=3D "float: right"> n </span>p<span=20
+style
+=3D "float: right"> t </span>i<span=20
+style
+=3D "float: right"> f </span>l<span=20
+style
+=3D "float: right"> y </span>l<span=20
+style
+=3D "float: right"> r </span>s<span=20
+style
+=3D "float: right"> m </span>)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><span=20
+style
+=3D "float: right"> e </span>V<span=20
+style
+=3D "float: right"> m </span>a<span=20
+style
+=3D "float: right"> a </span>I<span=20
+style
+=3D "float: right"> s </span>i<span=20
+style
+=3D "float: right"> w </span>u<span=20
+style
+=3D "float: right"> n </span>m <FONT color=3D#F4381D>$<span=20
+style
+=3D "float: right"> t </span>105</FONT> (<span=20
+style
+=3D "float: right"> 8V </span>30&nbsp;<span=20
+style
+=3D "float: right"> z </span>p<span=20
+style
+=3D "float: right"> o </span>i<span=20
+style
+=3D "float: right"> j </span>l<span=20
+style
+=3D "float: right"> v </span>l<span=20
+style
+=3D "float: right"> t </span>s<span=20
+style
+=3D "float: right"> v </span>)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><span=20
+style
+=3D "float: right"> y </span>V<span=20
+style
+=3D "float: right"> c </span>i<span=20
+style
+=3D "float: right"> q </span>a<span=20
+style
+=3D "float: right"> e </span>g<span=20
+style
+=3D "float: right"> s </span>r<span=20
+style
+=3D "float: right"> a </span>a <FONT color=3D#F4381D>$<span=20
+style
+=3D "float: right"> r </span>69</FONT> (1<span=20
+style
+=3D "float: right"> 7l </span>0&nbsp;<span=20
+style
+=3D "float: right"> j </span>p<span=20
+style
+=3D "float: right"> i </span>i<span=20
+style
+=3D "float: right"> d </span>l<span=20
+style
+=3D "float: right"> y </span>l<span=20
+style
+=3D "float: right"> d </span>s<span=20
+style
+=3D "float: right"> t </span>)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Many o<span=20
+style
+=3D "float: right"> sZ </span>ther, <A =
+href=3D"http://aoto33.onsaltpan.com">V<span=20
+style
+=3D "float: right"> cr </span>isit our s<span=20
+style
+=3D "float: right"> pR </span>ite</A> and S<span=20
+style
+=3D "float: right"> HJ </span>ave ov<span=20
+style
+=3D "float: right"> xs </span>er 50<span=20
+style
+=3D "float: right"> gE </span>%</FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C64761.0A820210--
 
-lspci -n -v -v
-0000:00:1b.0 Class 0403: 8086:2668 (rev 04)
-        Subsystem: 17c0:2017
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, cache line size 08
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at b0000000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] #10 [0091]
-
-lspci -v
-0000:00:02.0 VGA compatible controller: Intel Corporation Mobile
-915GM/GMS/910GML Express Graphics Controller (rev 04) (prog-if 00 [VGA])
-        Subsystem: Wistron Corp.: Unknown device 2071
-        Flags: bus master, fast devsel, latency 0, IRQ 10
-        Memory at b0080000 (32-bit, non-prefetchable) [size=512K]
-        I/O ports at 1800 [size=8]
-        Memory at c0000000 (32-bit, prefetchable) [size=256M]
-        Memory at b0040000 (32-bit, non-prefetchable) [size=256K]
-        Capabilities: [d0] Power Management version 2
-
-cat /proc/asound/card0/codec#0
-Codec: Analog Devices AD1986A
-Address: 0
-Vendor Id: 0x11d41986
-Subsystem Id: 0x0
-Revision Id: 0x100400
-Default PCM: rates 0x07f, bits 0x0e, types 0x1
-Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Default Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital
-  PCM: rates 0x060, bits 0x02, types 0x5
-  Connection: 2
-     0x01* 0x06
-Node 0x03 [Audio Output] wcaps 0x445: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-Node 0x06 [Audio Input] wcaps 0x100511: Stereo
-  PCM: rates 0x07f, bits 0x06, types 0x1
-  Connection: 1
-     0x12
-Node 0x07 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 8
-     0x03 0x09 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x08 [Audio Mixer] wcaps 0x200108: Mono
-  Connection: 1
-     0x07
-Node 0x09 [Audio Mixer] wcaps 0x200106: Mono Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80] [0x80]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Connection: 2
-     0x04 0x05
-Node 0x0a [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x07* 0x04 0x05
-Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x07* 0x04
-Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x04* 0x07
-Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x05* 0x08
-Node 0x0e [Audio Selector] wcaps 0x300100: Mono
-  Connection: 2
-     0x08* 0x11
-Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 8
-     0x1f* 0x20 0x1d 0x1d 0x27 0x28 0x29 0x2a
-Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x20* 0x1c 0x1f
-Node 0x11 [Audio Selector] wcaps 0x300941: Stereo
-  Connection: 2
-     0x0f* 0x2b
-Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 6
-     0x11* 0x22 0x10 0x07 0x08 0x23
-Node 0x13 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x11
-Node 0x14 [Audio Selector] wcaps 0x300104: Mono Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97]
-  Connection: 1
-     0x23
-Node 0x15 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x22
-Node 0x16 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x21
-Node 0x17 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x10
-Node 0x18 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals:  [0x8f]
-  Connection: 2
-     0x19* 0x24
-Node 0x19 [Beep Generator Widget] wcaps 0x700200: Mono Digital
-Node 0x1a [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081f: OUT HP
-  Pin Default 0x01813030: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x0a
-Node 0x1b [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081001f: OUT HP
-  Pin Default 0x01014011: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0b
-Node 0x1c [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x0837: IN OUT
-  Pin Default 0x9933f170: [Fixed] CD at Int ATAPI
-    Conn = ATAPI, Color = Other
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0c
-Node 0x1d [Pin Complex] wcaps 0x40098d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081737: IN OUT
-  Pin Default 0x99f3f115: [Fixed] Other at Int ATAPI
-    Conn = ATAPI, Color = Other
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0d
-Node 0x1e [Pin Complex] wcaps 0x40018c: Mono Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x00]
-  Pincap 0x0810: OUT
-  Pin Default 0x901700f0: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x1f [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN
-  Pin Default 0x02a190f0: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-Node 0x20 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN
-  Pin Default 0x018130f0: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-Node 0x21 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0827: IN
-  Pin Default 0x409700f0: [N/A] Aux at Ext N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x22 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x903300f0: [Fixed] CD at Int N/A
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x23 [Pin Complex] wcaps 0x400080: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x40b700f0: [N/A] Telephony at Ext N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x24 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x50f700f0: [N/A] Other at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x25 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x014500f0: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x02
-Node 0x26 [Power Widget] wcaps 0x500500: Mono
-  Connection: 8
-     0x07* 0x08 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x27 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x1d
-Node 0x28 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x20
-Node 0x29 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1d 0x20
-Node 0x2a [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 3
-     0x1f 0x1d 0x20
-Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x0f
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-14-06 17:44 
-----------------------------------------------------------------------
-Did you try the latest CVS?  Compile with debug option, and you'll see a
-message like "hda-intel: model xxx is selected" if the option is processed
-correctly.
-
-----------------------------------------------------------------------
- fluor - 03-14-06 17:55 
-----------------------------------------------------------------------
-rlrevell: dunno, I have forgotten to say that I have found it here:
-http://student.fiit.stuba.sk/~kotuc04/suse/
-
-Hmm, it partially works.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-24-05 11:26 jrgns          New Issue                                    
-11-24-05 11:26 jrgns          Distribution              => Gentoo          
-11-24-05 11:26 jrgns          Kernel Version            => 2.6.14-rc2      
-11-24-05 12:14 jrgns          Note Added: 0006840                          
-11-24-05 12:14 jrgns          Note Added: 0006841                          
-02-04-06 23:15 eIf            Note Added: 0007927                          
-02-04-06 23:15 eIf            Issue Monitored: eIf                         
-02-05-06 06:31 gerick         Issue Monitored: gerick                      
-02-08-06 13:11 simonckenyon   Issue Monitored: simonckenyon                    
-02-18-06 19:16 fluor          Note Added: 0008122                          
-02-18-06 19:48 chalvorson     Issue Monitored: chalvorson                    
-02-19-06 21:49 jrgns          Note Added: 0008137                          
-02-19-06 21:57 eIf            Note Added: 0008138                          
-03-04-06 18:23 merin          Note Added: 0008350                          
-03-04-06 18:24 merin          Note Edited: 0008350                         
-03-04-06 19:11 rlrevell       Note Added: 0008352                          
-03-04-06 22:02 merin          Note Added: 0008354                          
-03-05-06 11:29 merin          Issue Monitored: merin                       
-03-06-06 05:48 stevenellis    Issue Monitored: stevenellis                    
-03-14-06 17:09 tiwai          Note Added: 0008493                          
-03-14-06 17:16 fluor          Note Added: 0008494                          
-03-14-06 17:29 rlrevell       Note Added: 0008497                          
-03-14-06 17:33 tiwai          Note Added: 0008498                          
-03-14-06 17:36 merin          Note Added: 0008499                          
-03-14-06 17:44 tiwai          Note Added: 0008500                          
-03-14-06 17:55 fluor          Note Added: 0008503                          
-======================================================================
 
 
 
