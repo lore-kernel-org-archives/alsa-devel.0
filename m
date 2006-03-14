@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Tue, 14 Mar 2006 17:36:54 +0100
-Message-ID: <547bf8b6015e8da6e4c33f2c5b51ad3e@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 17:44:11 +0100
+Message-ID: <66111586e5c0fc86a7b054c4a493b40c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83C511CD
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:36:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE74917C
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:44:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              03-14-2006 17:36 CET
+Last Modified:              03-14-2006 17:44 CET
 ======================================================================
 Summary:                    No sound or High pitched noise, dissapears if change
 made on mixer
@@ -296,12 +296,6 @@ Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-14-06 17:33 
-----------------------------------------------------------------------
-Actually, the models I mentioned above should have the same fix as your
-patch although your patch will be never merged (it breaks other boards).
-
-----------------------------------------------------------------------
  merin - 03-14-06 17:36 
 ----------------------------------------------------------------------
 Hi tiwai!
@@ -313,6 +307,13 @@ That would be great!
 
 Greets,
 Merin
+
+----------------------------------------------------------------------
+ tiwai - 03-14-06 17:44 
+----------------------------------------------------------------------
+Did you try the latest CVS?  Compile with debug option, and you'll see a
+message like "hda-intel: model xxx is selected" if the option is processed
+correctly.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -341,6 +342,7 @@ Date Modified  Username       Field                    Change
 03-14-06 17:29 rlrevell       Note Added: 0008497                          
 03-14-06 17:33 tiwai          Note Added: 0008498                          
 03-14-06 17:36 merin          Note Added: 0008499                          
+03-14-06 17:44 tiwai          Note Added: 0008500                          
 ======================================================================
 
 
