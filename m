@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001924]: snd_pcm_avail_update occasionally returns one billion frames
-Date: Wed, 15 Mar 2006 00:03:00 +0100
-Message-ID: <b53126afe633a57db7bf8e20fbc3efae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
+Date: Wed, 15 Mar 2006 00:42:33 +0100
+Message-ID: <2874656d0ee5b6773b3bcb0708fd1bb4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B3D51D3
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 00:03:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FBC71C4
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 00:42:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,103 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1924> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
 ======================================================================
-Reported By:                jussi_kujala
-Assigned To:                
+Reported By:                chrmue
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1924
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1733
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               SuSE Linux 10.0
+Kernel Version:             2.6.13-15
 ======================================================================
-Date Submitted:             03-15-2006 00:02 CET
-Last Modified:              03-15-2006 00:02 CET
+Date Submitted:             01-11-2006 07:23 CET
+Last Modified:              03-15-2006 00:42 CET
 ======================================================================
-Summary:                    snd_pcm_avail_update occasionally returns one
-billion frames
+Summary:                    Intel HDA Modem ?
 Description: 
-Under right circumstances ALSA function snd_pcm_avail_update returns a
-wrong
-value. More precisely, if buffer underruns are disabled like:
-<code>
-snd_pcm_sw_params_get_boundary( sw_params, &boundary );
-snd_pcm_sw_params_set_stop_threshold( playback_handle, sw_params, boundary
-);
-</code>
-and there are constant underruns then it occasionally happens that the
-snd_pcm_avail_update returns the desired value plus the pointer boundary
-wrapout
-value.
+I want to use my HDA Softmodem in Linux, is there any development on a HDA
+Modem Module ?
 
-I noticed this when using a game called Stepmania, but it happens with a
-simple
-program that plays .wav with a small buffer. To show that this is really
-happening, I have attached files from /proc/asound/card0/pcm0p/sub0.
+cat /proc/asound/card0/codec#1 gives me:
+Codec: Generic 11c1 ID 3026
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x70500
 
-If this is a some kind of a feature, it would be desirable to document it
-:-)
-Well I am not 100% certain if this is a fault in ALSA, but it is my best
-guess so I make this bug report here.
+In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
 
+If there is development on this i would like to participate to get it
+going, because i dont't want to have a windows-installation on my Notebook
+(Acer TravelMate 8104) just for getting my mails at my parents house,
+where there is only analog telephone.
 ======================================================================
+
+----------------------------------------------------------------------
+ kratz00 - 03-12-06 11:22 
+----------------------------------------------------------------------
+i believe you two
+
+just curious how chrmue got it working (with the wrong parameters) and i
+really would like to know what wvdial version he uses
+
+i'm not on SuSE :) it's a LFS system and i installed wvdial following the
+BLFS instructions
+
+wvdial is version 1.54.0 and wvstreams 4.0.1
+
+----------------------------------------------------------------------
+ chrmue - 03-15-06 00:42 
+----------------------------------------------------------------------
+I use slmodemd v. 2.9.10, wvdial v. 1.54.0 and wvstreams v. 4.0.1; all from
+SuSE 10.0.
+You're right hw:0 is the wrong parameter, hw:0,6 works on my system, but i
+have to manually go off- AND on-hook in alsamixer. I use "slmodemd -a
+modem:0" and it works with automatically going off-hook, but for going
+on-hook on disconnect i got " disconnect "amixer sset Off-hook off >
+/dev/null" " in my /etc/ppp/options, but this only works with connections
+using pppd. If you use a terminal-programm (eg. minicom) you have to reset
+the Off-hook switch in alsamixer manually after disconnecting (else your
+telephone-line stays busy and you get NO DIALTONE the next time).
+
+Btw.: If your problem is wvdial-related try to establish a connection to
+your ISP or a mailbox-system with minicom. If you get a connection
+slmodemd and alsa are okay and you should take a look to your wvdial.conf
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 00:02 jussi_kujala   New Issue                                    
-03-15-06 00:02 jussi_kujala   File Added: sub0.tar                         
+01-11-06 07:23 chrmue         New Issue                                    
+01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
+01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
+01-11-06 07:42 rlrevell       Note Added: 0007559                          
+01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
+            
+01-11-06 23:35 sashak         Note Added: 0007571                          
+01-12-06 00:00 sashak         Note Added: 0007574                          
+01-12-06 00:02 sashak         Issue Monitored: sashak                      
+01-12-06 05:35 chrmue         Note Added: 0007581                          
+01-13-06 00:16 sashak         Note Added: 0007598                          
+01-16-06 20:19 chrmue         Note Added: 0007692                          
+01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
+03-03-06 15:43 lrupn          Note Added: 0008341                          
+03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
+03-10-06 23:44 kratz00        Note Added: 0008413                          
+03-11-06 15:19 kratz00        Note Added: 0008416                          
+03-11-06 19:03 rlrevell       Note Added: 0008421                          
+03-11-06 19:23 kratz00        Note Added: 0008423                          
+03-11-06 19:33 rlrevell       Note Added: 0008424                          
+03-11-06 23:08 sashak         Note Added: 0008427                          
+03-12-06 11:22 kratz00        Note Added: 0008431                          
+03-15-06 00:42 chrmue         Note Added: 0008525                          
 ======================================================================
 
 
