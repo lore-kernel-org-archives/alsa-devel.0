@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Tue, 14 Mar 2006 22:06:37 +0100
-Message-ID: <f24f7c5ffcaad0754baf6e0fcad5a2ed@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 22:15:16 +0100
+Message-ID: <1e46f7dc59c825212cdf90e04138755d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB22B1B7
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 22:06:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D6E31BA
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 22:15:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              03-14-2006 22:06 CET
+Last Modified:              03-14-2006 22:15 CET
 ======================================================================
 Summary:                    No sound or High pitched noise, dissapears if change
 made on mixer
@@ -296,11 +296,6 @@ Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-14-06 21:50 
-----------------------------------------------------------------------
-Please post the output of "dmesg" after loading the module.
-
-----------------------------------------------------------------------
  merin - 03-14-06 22:06 
 ----------------------------------------------------------------------
 This is the dmesg output after
@@ -310,6 +305,12 @@ modprobe snd-hda-intel model=3stack
 low) ->                                                                   
                                 IRQ 16
 [17179945.680000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+
+----------------------------------------------------------------------
+ rlrevell - 03-14-06 22:15 
+----------------------------------------------------------------------
+Then you must be doing something wrong.  Are you SURE you ran "make
+install", etc after compiling from CVS?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -343,6 +344,7 @@ Date Modified  Username       Field                    Change
 03-14-06 21:41 merin          Note Added: 0008514                          
 03-14-06 21:50 rlrevell       Note Added: 0008516                          
 03-14-06 22:06 merin          Note Added: 0008519                          
+03-14-06 22:15 rlrevell       Note Added: 0008520                          
 ======================================================================
 
 
