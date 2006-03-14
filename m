@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Tue, 14 Mar 2006 17:09:37 +0100
-Message-ID: <4d83c4fdf0725de39968466cde828779@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 17:16:36 +0100
+Message-ID: <e7a5ca4fde2a807716fd0a53b396b045@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B41317A
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:09:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A59001C3
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:16:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              03-14-2006 17:09 CET
+Last Modified:              03-14-2006 17:16 CET
 ======================================================================
 Summary:                    No sound or High pitched noise, dissapears if change
 made on mixer
@@ -296,21 +296,52 @@ Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
 ======================================================================
 
 ----------------------------------------------------------------------
- merin - 03-04-06 22:02 
-----------------------------------------------------------------------
-Ok, I tried the CVS version.
-
-cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.11rc3.
-Compiled on Mar  4 2006 for kernel 2.6.15.501.
-
-Unfortunately the problem remains.
-
-----------------------------------------------------------------------
  tiwai - 03-14-06 17:09 
 ----------------------------------------------------------------------
 In the latest ALSA CVS version, you can pass model=3stack or model=laptop. 
 Try one of them.
+
+----------------------------------------------------------------------
+ fluor - 03-14-06 17:16 
+----------------------------------------------------------------------
+I have applied this patch:
+
+
+--- sound/pci/hda/hda_codec.c.old	2005-11-17 07:08:51.000000000 +0100
++++ sound/pci/hda/hda_codec.c	2005-11-17 07:21:05.000000000 +0100
+@@ -1704,15 +1704,6 @@
+ 	if (mout->hp_nid)
+ 		/* headphone out will just decode front left/right (stereo) */
+ 		snd_hda_codec_setup_stream(codec, mout->hp_nid, stream_tag, 0,
+format);
+-	/* surrounds */
+-	for (i = 1; i < mout->num_dacs; i++) {
+-		if (chs >= (i + 1) * 2) /* independent out */
+-			snd_hda_codec_setup_stream(codec, nids[i], stream_tag, i * 2,
+-						   format);
+-		else /* copy front */
+-			snd_hda_codec_setup_stream(codec, nids[i], stream_tag, 0,
+-						   format);
+-	}
+ 	return 0;
+ }
+ 
+@@ -1724,10 +1715,9 @@
+ 	hda_nid_t *nids = mout->dac_nids;
+ 	int i;
+ 
+-	for (i = 0; i < mout->num_dacs; i++)
+-		snd_hda_codec_setup_stream(codec, nids[i], 0, 0, 0);
+ 	if (mout->hp_nid)
+ 		snd_hda_codec_setup_stream(codec, mout->hp_nid, 0, 0, 0);
++	snd_hda_codec_setup_stream(codec, nids[HDA_FRONT], 0, 0, 0);
+ 	down(&codec->spdif_mutex);
+ 	if (mout->dig_out_nid && mout->dig_out_used == HDA_DIG_ANALOG_DUP) {
+ 		snd_hda_codec_setup_stream(codec, mout->dig_out_nid, 0, 0, 0);
+
+
+on alsa-driver-1.0.10 and 2.6.15.6 and I don't have high pitching noise
+anymore, but some "scratches" still remain.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -335,6 +366,7 @@ Date Modified  Username       Field                    Change
 03-05-06 11:29 merin          Issue Monitored: merin                       
 03-06-06 05:48 stevenellis    Issue Monitored: stevenellis                    
 03-14-06 17:09 tiwai          Note Added: 0008493                          
+03-14-06 17:16 fluor          Note Added: 0008494                          
 ======================================================================
 
 
