@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001890]: Only the PCM channel in alsa mixer, unmuted, no sound at all
-Date: Tue, 14 Mar 2006 16:49:03 +0100
-Message-ID: <21d9d3d2da783227a1e794da62385be1@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 16:53:08 +0100
+Message-ID: <5729a50deec6d0f1b4d7f2ba4a20a661@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6978F1B9
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 16:49:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AFE9190
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 16:53:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,7 @@ Kernel Version:             Linux haifa 2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20
 17:26:04 UTC 2006 i686 GNU/Linux
 ======================================================================
 Date Submitted:             03-04-2006 18:19 CET
-Last Modified:              03-14-2006 16:49 CET
+Last Modified:              03-14-2006 16:53 CET
 ======================================================================
 Summary:                    Only the PCM channel in alsa mixer, unmuted, no
 sound at all
@@ -56,15 +56,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 has duplicate       0001921 Unsupported Sound Card
 ======================================================================
-
-----------------------------------------------------------------------
- sk0rp10 - 03-14-06 16:47 
-----------------------------------------------------------------------
-On this Laptop there is an input jack for external mic and also an
-integrated microphone. 
-
-Another issue : /dev/dsp and /dev/sound/ are missing , so apps like flash
-player don't work
 
 ----------------------------------------------------------------------
  sk0rp10 - 03-14-06 16:49 
@@ -144,6 +135,14 @@ state.Intel {
         }
 }
 
+----------------------------------------------------------------------
+ tiwai - 03-14-06 16:53 
+----------------------------------------------------------------------
+/dev/dsp is irrelevant.  You didn't load the necessary modules.
+
+Apparently, the capture switch is off, and "HP" is chosen as the recording
+source.  Change it via alsamixer.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -160,6 +159,7 @@ Date Modified  Username       Field                    Change
 03-14-06 15:21 tiwai          Note Added: 0008480                          
 03-14-06 16:47 sk0rp10        Note Added: 0008485                          
 03-14-06 16:49 sk0rp10        Note Added: 0008486                          
+03-14-06 16:53 tiwai          Note Added: 0008488                          
 ======================================================================
 
 
