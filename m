@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001631]: Audiophile USB will not capture.
-Date: Tue, 14 Mar 2006 17:18:56 +0100
-Message-ID: <8866bc1557f0c7740e2e0f0ec82bbcbf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001646]: Wish for M-Audio AudioPhile 192 (AP192K) Support
+Date: Tue, 14 Mar 2006 17:30:48 +0100
+Message-ID: <d77116c4009969d0086d57d6fe6bce3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3DC91C3
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:18:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C06D1C3
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:30:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,180 +22,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been set as RELATED TO issue 0001475.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1631> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646> 
 ======================================================================
-Reported By:                smithbone
-Assigned To:                Clemens Ladisch
+Reported By:                bobek
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1631
-Category:                   USB - usb-audio
+Issue ID:                   1646
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               1.0.10
-Kernel Version:             2.6.15-rc5-git1
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-08-2005 17:38 CET
-Last Modified:              03-14-2006 17:18 CET
+Date Submitted:             12-13-2005 11:38 CET
+Last Modified:              03-14-2006 17:30 CET
 ======================================================================
-Summary:                    Audiophile USB will not capture.
+Summary:                    Wish for M-Audio AudioPhile 192 (AP192K) Support
 Description: 
-If I try to capure audio from my Audiophile USB I get the following.
-
- $ arecord -vv -D hw:1,1 -f S24_3BE -t raw -c 2 -r48000 test.raw
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S24_3BE
-subformat    : STD
-channels     : 2
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 24
-buffer_size  : 24000
-period_size  : 6000
-period_time  : 125000
-tick_time    : 4000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 6000
-xfer_align   : 6000
-start_threshold  : 1
-stop_threshold   : 24000
-silence_threshold: 0
-silence_size : 0
-boundary     : 1572864000
-arecord: pcm_read:1303: read error: Input/output error
+Could you add support for that soundcard? I have discussed this already
+with Jaroslav, he asked for photo of the card.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001801 Audiophile USB noisy analog capture
+related to          0001475 Support for M Audio Audiophile 192
 ======================================================================
-
-----------------------------------------------------------------------
- sander - 12-23-05 18:40 
-----------------------------------------------------------------------
-I mailed this analysis to the alsa-devel list two months ago. It seems to
-have found a nice home here :)
-
-
-SUMMARY:
-
-- only 48001-96000hz capturing works
-- only capturing through plughw:x,1 works
-- format is 24/32 bits regardless of plug conversion (? at least, as
-reported by audacity)
-- only the signal on the jack inputs is captured
-- only 2-channel capture
-- only the SYNC/48001-96000/S24_3BE altset on device #1 can be captured,
-only through plughw.
-
-
-signal (from the jacks, not the cinch connectors)
--------------------------------------------------
-
-s1) arecord -D plughw:0,1 -t wav -c 2 -r 96000 -f S16_LE -d 2 -vv test.wav
-
-- output :
-Plug PCM: Linear conversion PCM (S24_3BE)
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_LE
-- audacity reports 24b/96khz
-- amplitude suspects 24 bit sound despite S16_LE setting
-- altset reportedly used :
-    Format: S24_3BE
-    Channels: 2
-    Endpoint: 5 IN (SYNC)
-    Rates: 48001 - 96000 (continuous)
-- see (n1) and (e3)
-
-s2) arecord -D plughw:0,1 -t wav -c 2 -r 96000 -f S32_LE -d 2 -vv
-test.wav
-- output :
-Plug PCM: Linear conversion PCM (S24_3BE)
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S32_LE
-- audacity reports 32b/96khz
-- altset used same as (s1)
-
-
-no signal
----------
-
-n1) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_3BE -d 2 -vv
-test.raw
-- output :
-Plug PCM: Hardware PCM card 0 'Audiophile USB (tm)' device 1 subdevice 0
-
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S24_3BE
-
-n2) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_LE -d 2 -vv
-test.raw
-n3) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_3LE -d 2 -vv
-test.raw
-n4) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f U24_3LE -d 2 -vv
-test.raw
-n5) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f U24_3BE -d 2 -vv
-test.raw
-
-errors/'lock'
--------------
-
-e1) arecord -D plughw:0,1 -t raw -c 2 -r 48000 -f S16_LE -d 2 -vv
-test.raw
-- output :
-Plug PCM: Linear conversion PCM (S16_BE)
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_LE
-
-e2) arecord -D plughw:0,1 -t raw -c 2 -r 48000 -f S16_BE -d 2 -vv
-test.raw
-- output :
-Plug PCM: Hardware PCM card 0 'Audiophile USB (tm)' device 1 subdevice 0
-
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_BE
-
-e3) arecord -D plughw:0,0 -t wav -c 2 -r 96000 -f S16_LE -d 2 -vv
-test.wav
-e3) arecord -D plughw:0,1 -t wav -c 1 -r 96000 -f S16_LE -d 2 -vv test.wav
-
-----------------------------------------------------------------------
- rlrevell - 03-14-06 17:18 
-----------------------------------------------------------------------
-SHould be fixed in CVS - see bug 1801
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-08-05 17:38 smithbone      New Issue                                    
-12-08-05 17:38 smithbone      Distribution              => 1.0.10          
-12-08-05 17:38 smithbone      Kernel Version            => 2.6.15-rc5-git1 
-12-23-05 18:40 sander         Note Added: 0007135                          
-03-14-06 17:17 rlrevell       Relationship added       related to 0001890  
-03-14-06 17:17 rlrevell       Relationship deleted     related to 0001890  
-03-14-06 17:18 rlrevell       Relationship added       related to 0001801  
-03-14-06 17:18 rlrevell       Status                   assigned => resolved
-03-14-06 17:18 rlrevell       Resolution               open => fixed       
-03-14-06 17:18 rlrevell       Note Added: 0008495                          
+12-13-05 11:38 bobek          New Issue                                    
+12-13-05 11:38 bobek          File Added: ap192k-front.jpg                    
+12-13-05 11:39 bobek          File Added: ap192k-back.jpg                    
+03-14-06 17:30 rlrevell       Relationship added       related to 0001475  
 ======================================================================
 
 
