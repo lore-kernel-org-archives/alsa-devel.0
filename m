@@ -1,17 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re[3]: looking for a customer service
-	representative  (ref: 5276)
-Date: Mon, 13 Mar 2006 20:53:42 -0500
-Message-ID: <1142301224.13256.83.camel@mindpipe>
-References: <001a01c64709$9cc46152$96c8d90c@keaton-7m53n2cx>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001907]: Maestro3 driver does not work with Fedora Xen Kernels
+Date: Tue, 14 Mar 2006 04:46:44 +0100
+Message-ID: <8e85c0047ad21b4e50d556a863fc3061@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 86D361CD
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 02:53:55 +0100 (MET)
-In-Reply-To: <001a01c64709$9cc46152$96c8d90c@keaton-7m53n2cx>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 529F91BC
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 04:46:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,30 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: fyvtx@tophet.demon.co.uk
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-03-13 at 19:50 -0500, fyvtx@tophet.demon.co.uk wrote:
-> X-Spam-Score: 4.3 (++++)
-> X-Spam-Report: Spam Filtering performed by sourceforge.net. See
-> http://spamassassin.org/tag/ for more details. Report problems to
-> http://sf.net/tracker/?func=add&group_id=1&atid=200001 0.2
-> NO_REAL_NAME     From: does not include a real name 0.2 INVALID_DATE
-> Invalid Date: header (not RFC 2822) 0.9 EARN_PER_WEEK          BODY:
-> Contains 'earn $something per week' 1.1 ITS_LEGAL              BODY:
-> Claims to be Legal 0.3 MIME_HTML_MOSTLY       BODY: Multipart message
-> mostly text/html MIME 0.0 HTML_MESSAGE           BODY: HTML included
-> in message 0.1 HTML_00_10    BODY: Message is 0% to 10% HTML 1.5
-> MPART_ALT_DIFF         BODY: HTML and text parts are different
-> Subject: [Alsa-devel] Re[3]: looking for a customer service
-> representative  (ref: 5276)
 
-It appears that if we can just lower the spam score threshold from 5 to
-4 we can catch more of these.  I am pretty sure this can be done by
-perex in mailman without help from SourceForge.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1907> 
+======================================================================
+Reported By:                xaoslaad
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1907
+Category:                   PCI - maestro3
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5 Test 3
+Kernel Version:             kernel-xen0-2.6.15-1.2038_FC5
+======================================================================
+Date Submitted:             03-11-2006 02:29 CET
+Last Modified:              03-14-2006 04:46 CET
+======================================================================
+Summary:                    Maestro3 driver does not work with Fedora Xen
+Kernels
+Description: 
+maestro3.c contains the following check which causes the driver to fail to
+work when using Fedora Xen0 kernels:
 
-Lee
+-----------------------------------------------------------------------------
+        /* check, if we can restrict PCI DMA transfers to 28 bits */
+        if (pci_set_dma_mask(pci, 0x0fffffff) < 0 ||
+            pci_set_consistent_dma_mask(pci, 0x0fffffff) < 0) {
+                snd_printk(KERN_ERR "architecture does not support 28bit
+PCI busmaster DMA\n");
+                pci_disable_device(pci);
+                return -ENXIO;
+        }
+-----------------------------------------------------------------------------
+
+Commenting out the lines:
+
+                pci_disable_device(pci);
+                return -ENXIO;
+
+causes the driver to load and seemingly work properly.  Not sure what
+negative impact removing this check can have.
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 03-13-06 15:49 
+----------------------------------------------------------------------
+It's rather a problem of Xen kernel which doesn't accept the DMA mask.
+
+----------------------------------------------------------------------
+ chrisw - 03-14-06 04:46 
+----------------------------------------------------------------------
+File this under kernel-xen in Fedora Bugzilla (it's a Xen issue).  Also,
+please include the dmesg from bootup.  It will show swiotlb info that's
+useful.  Specifically, if the swiotlb is in use, and mapped up too high,
+it won't be able to handle 28-bit dma mask.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-11-06 02:29 xaoslaad       New Issue                                    
+03-11-06 02:29 xaoslaad       Distribution              => Fedora Core 5 Test 3
+03-11-06 02:29 xaoslaad       Kernel Version            =>
+kernel-xen0-2.6.15-1.2038_FC5
+03-13-06 15:49 tiwai          Note Added: 0008448                          
+03-14-06 04:46 chrisw         Note Added: 0008473                          
+======================================================================
+
 
 
 
