@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001631]: Audiophile USB will not capture.
-Date: Tue, 14 Mar 2006 17:17:19 +0100
-Message-ID: <fef67c5a5ea05b7824555331c0ac7b5f@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 17:17:56 +0100
+Message-ID: <384ffb27ae1aaf7ad6cd3b751f8596c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A969B1C3
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:17:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 101731C3
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:17:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001890.
+The following issue has been marked as UNRELATED TO issue 0001890.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1631> 
 ======================================================================
@@ -71,10 +71,6 @@ silence_threshold: 0
 silence_size : 0
 boundary     : 1572864000
 arecord: pcm_read:1303: read error: Input/output error
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001890 Only the PCM channel in alsa mixer, unm...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -184,6 +180,7 @@ Date Modified  Username       Field                    Change
 12-08-05 17:38 smithbone      Kernel Version            => 2.6.15-rc5-git1 
 12-23-05 18:40 sander         Note Added: 0007135                          
 03-14-06 17:17 rlrevell       Relationship added       related to 0001890  
+03-14-06 17:17 rlrevell       Relationship deleted     related to 0001890  
 ======================================================================
 
 
