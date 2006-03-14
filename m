@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Tue, 14 Mar 2006 22:28:14 +0100
-Message-ID: <826ad06b640f32b418d1e917f3d393ae@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 22:53:37 +0100
+Message-ID: <1dd1bce522a798f64c42947b92f2fb80@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B7CD01C3
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 22:28:14 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D18319E
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 22:53:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              03-14-2006 22:28 CET
+Last Modified:              03-14-2006 22:53 CET
 ======================================================================
 Summary:                    No sound or High pitched noise, dissapears if change
 made on mixer
@@ -296,15 +296,37 @@ Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-14-06 22:15 
-----------------------------------------------------------------------
-Then you must be doing something wrong.  Are you SURE you ran "make
-install", etc after compiling from CVS?
-
-----------------------------------------------------------------------
- merin - 03-14-06 22:28 
+ merin - 03-14-06 22:51 
 ----------------------------------------------------------------------
 Yes I`m quite sure, but I will do it again :)
+
+Edit:
+-----
+Now i am 100% sure. :)
+But still no output except:
+
+[17179899.668000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
+low) -> IRQ 16
+[17179899.668000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+
+
+
+----------------------------------------------------------------------
+ merin - 03-14-06 22:53 
+----------------------------------------------------------------------
+This is what i did:   
+  504  ./cvscompile --with-cards=hda-intel --with-sequencer=yes
+--with-debug=full
+  505  make install
+  506  ./snddevices
+  507  cd ..
+  508  cd alsa-lib/
+  509  ./cvscompile
+  510  make install
+  511  cd ..
+  512  cd alsa-utils/
+  513  ./cvscompile
+  514  make install
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -340,6 +362,8 @@ Date Modified  Username       Field                    Change
 03-14-06 22:06 merin          Note Added: 0008519                          
 03-14-06 22:15 rlrevell       Note Added: 0008520                          
 03-14-06 22:28 merin          Note Added: 0008521                          
+03-14-06 22:51 merin          Note Edited: 0008521                         
+03-14-06 22:53 merin          Note Added: 0008522                          
 ======================================================================
 
 
