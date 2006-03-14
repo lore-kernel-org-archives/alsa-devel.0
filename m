@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001890]: Only the PCM channel in alsa mixer, unmuted, no sound at all
-Date: Tue, 14 Mar 2006 15:16:41 +0100
-Message-ID: <d9e612c6d2a8c4e3e99ddfbb81d106b8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001914]: playing 2-channel sound on surround device uses rear speakers
+Date: Tue, 14 Mar 2006 15:15:41 +0100
+Message-ID: <74d79b5f7287840a73ab9fac69358482@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 853C91BB
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 15:16:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2A651BB
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 15:15:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1890> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1914> 
 ======================================================================
-Reported By:                arielo
+Reported By:                mru
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1890
-Category:                   PCI - hda-intel
+Issue ID:                   1914
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             Linux haifa 2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20
-17:26:04 UTC 2006 i686 GNU/Linux
+Distribution:               Gentoo
+Kernel Version:             2.6.15-gentoo-r1
 ======================================================================
-Date Submitted:             03-04-2006 18:19 CET
-Last Modified:              03-14-2006 15:16 CET
+Date Submitted:             03-11-2006 21:25 CET
+Last Modified:              03-14-2006 15:15 CET
 ======================================================================
-Summary:                    Only the PCM channel in alsa mixer, unmuted, no
-sound at all
+Summary:                    playing 2-channel sound on surround device uses rear
+speakers
 Description: 
-Alsamixer shows only one channel called PCM. It's unmuted, and the volume
-at its maximum. There is no sound at all, even though there is no error
-reported by the system.
-
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001921 Unsupported Sound Card
+If I play regular 2-channel stereo sound specifying device "surround51" or
+"surround40" (or either of those with a "plug:" prefix) the sound is
+output on the rear speakers.  6-channel playback is correct.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-14-06 14:55 
+ tiwai - 03-14-06 15:04 
 ----------------------------------------------------------------------
-Try the patch below.  It's to ALSA CVS version.
-If nothing is changed, pass "model=vaio" module option.
-
-Would be nice if you can test the recording, too.
+Sorry, what is the problem?  It's the behavior most of users want.
 
 ----------------------------------------------------------------------
- sk0rp10 - 03-14-06 15:16 
+ mru - 03-14-06 15:15 
 ----------------------------------------------------------------------
-now sound output works, also with headphones,great work. Here is the
-alsamixer status:
-
-Playback : Master , PCM
-Capture: PCM (disabled) , CD , Mic (disabled) , Capture , HP ("L R CAPTUR"
-written in red on top of  disabled control) , Unknown (disabled)
-
-Mic volume  Control  is disabled, so I can't test capture.
+Maybe I was unclear.  The sound appears *only* on the rear speakers.  The
+front speakers remain silent.  Surely this is not what users want?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-06 18:19 arielo         New Issue                                    
-03-04-06 18:19 arielo         Distribution              => Ubuntu          
-03-04-06 18:19 arielo         Kernel Version            => Linux haifa
-2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20 17:26:04 UTC 2006 i686 GNU/Linux
-03-14-06 00:25 sk0rp10        Note Added: 0008471                          
-03-14-06 14:55 tiwai          Note Added: 0008475                          
-03-14-06 14:56 tiwai          File Added: vaio-stac7661-test3.diff              
-     
-03-14-06 14:57 tiwai          Relationship added       has duplicate 0001921
-03-14-06 15:16 sk0rp10        Note Added: 0008479                          
+03-11-06 21:25 mru            New Issue                                    
+03-11-06 21:25 mru            Distribution              => Gentoo          
+03-11-06 21:25 mru            Kernel Version            => 2.6.15-gentoo-r1
+03-14-06 15:04 tiwai          Note Added: 0008477                          
+03-14-06 15:15 mru            Note Added: 0008478                          
 ======================================================================
 
 
