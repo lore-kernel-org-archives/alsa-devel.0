@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001900]: alsactl stores incorrect values; overwrites non-writable file; does not set emu10k1 mixer
-Date: Tue, 14 Mar 2006 21:54:36 +0100
-Message-ID: <f728952e5cd676698c68efffd98aabdd@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 22:03:45 +0100
+Message-ID: <bb2015e772d52b2fa6a1ee7e070333fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5BEF1B7
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 21:54:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 151491B7
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 22:03:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             03-09-2006 17:38 CET
-Last Modified:              03-14-2006 21:54 CET
+Last Modified:              03-14-2006 22:03 CET
 ======================================================================
 Summary:                    alsactl stores incorrect values; overwrites
 non-writable file; does not set emu10k1 mixer
@@ -77,25 +77,6 @@ correct).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-14-06 15:53 
-----------------------------------------------------------------------
-The delay is because of the udev mechanism.  At the moment modprobe
-returns, the modules and devices are still not ready.  Better to call
-alsactl from udev rules.
-
-The permission has almost no meaning for root.  The open doesn't return
-errors for writing to such a file.
-
-One problem I can see is that you don't use -F option with alsactl.
-Without this option, alsactl may keep some controls uninitialized if the
-element number is changed in the driver side, which will result in an
-incomplete state to be saved.  This could be the cause of your trouble.
-
-The "Unknown" came from the state that your device wasn't detected
-properly by the driver due to lack of information in the supported card
-list.  This can be removed, of course.
-
-----------------------------------------------------------------------
  covex - 03-14-06 21:54 
 ----------------------------------------------------------------------
 Thanks for the explanation of the udev issue.
@@ -110,6 +91,15 @@ not save.
 The CK804 is disabled and there is no other sound device that could be
 "unknown". Therefore I do not know how to remove it.
 
+----------------------------------------------------------------------
+ rlrevell - 03-14-06 22:03 
+----------------------------------------------------------------------
+"Regarding permitions: I am not sure if this is true. If root sets some
+files to not be writeable, then it should not be possible to write in the
+file even though you are root."
+
+I AM sure it is true.  This is how Unix permissions have always worked.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -117,6 +107,7 @@ Date Modified  Username       Field                    Change
 03-09-06 17:38 covex          File Added: asound.state.wrong                    
 03-14-06 15:53 tiwai          Note Added: 0008483                          
 03-14-06 21:54 covex          Note Added: 0008517                          
+03-14-06 22:03 rlrevell       Note Added: 0008518                          
 ======================================================================
 
 
