@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001631]: Audiophile USB will not capture.
-Date: Tue, 14 Mar 2006 17:17:56 +0100
-Message-ID: <384ffb27ae1aaf7ad6cd3b751f8596c0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001890]: Only the PCM channel in alsa mixer, unmuted, no sound at all
+Date: Tue, 14 Mar 2006 17:17:58 +0100
+Message-ID: <7c27e75f5a8908210f8426fc3d863187@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 101731C3
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:17:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D84A71C4
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:17:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,165 +22,201 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been marked as UNRELATED TO issue 0001890.
+The following issue has been marked as UNRELATED TO issue 0001631.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1631> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1890> 
 ======================================================================
-Reported By:                smithbone
-Assigned To:                Clemens Ladisch
+Reported By:                arielo
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1631
-Category:                   USB - usb-audio
+Issue ID:                   1890
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               1.0.10
-Kernel Version:             2.6.15-rc5-git1
+Distribution:               Ubuntu
+Kernel Version:             Linux haifa 2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20
+17:26:04 UTC 2006 i686 GNU/Linux
 ======================================================================
-Date Submitted:             12-08-2005 17:38 CET
-Last Modified:              03-14-2006 17:17 CET
+Date Submitted:             03-04-2006 18:19 CET
+Last Modified:              03-14-2006 17:06 CET
 ======================================================================
-Summary:                    Audiophile USB will not capture.
+Summary:                    Only the PCM channel in alsa mixer, unmuted, no
+sound at all
 Description: 
-If I try to capure audio from my Audiophile USB I get the following.
+Alsamixer shows only one channel called PCM. It's unmuted, and the volume
+at its maximum. There is no sound at all, even though there is no error
+reported by the system.
 
- $ arecord -vv -D hw:1,1 -f S24_3BE -t raw -c 2 -r48000 test.raw
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S24_3BE
-subformat    : STD
-channels     : 2
-rate         : 48000
-exact rate   : 48000 (48000/1)
-msbits       : 24
-buffer_size  : 24000
-period_size  : 6000
-period_time  : 125000
-tick_time    : 4000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 6000
-xfer_align   : 6000
-start_threshold  : 1
-stop_threshold   : 24000
-silence_threshold: 0
-silence_size : 0
-boundary     : 1572864000
-arecord: pcm_read:1303: read error: Input/output error
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001921 Unsupported Sound Card
 ======================================================================
 
 ----------------------------------------------------------------------
- sander - 12-23-05 18:40 
+ sk0rp10 - 03-14-06 00:25 
 ----------------------------------------------------------------------
-I mailed this analysis to the alsa-devel list two months ago. It seems to
-have found a nice home here :)
+Same hardware and same issue reported for Sony VAIO FE series and SZ
+series.
 
+----------------------------------------------------------------------
+ tiwai - 03-14-06 14:55 
+----------------------------------------------------------------------
+Try the patch below.  It's to ALSA CVS version.
+If nothing is changed, pass "model=vaio" module option.
 
-SUMMARY:
+Would be nice if you can test the recording, too.
 
-- only 48001-96000hz capturing works
-- only capturing through plughw:x,1 works
-- format is 24/32 bits regardless of plug conversion (? at least, as
-reported by audacity)
-- only the signal on the jack inputs is captured
-- only 2-channel capture
-- only the SYNC/48001-96000/S24_3BE altset on device #1 can be captured,
-only through plughw.
+----------------------------------------------------------------------
+ sk0rp10 - 03-14-06 15:16 
+----------------------------------------------------------------------
+now sound output works, also with headphones,great work. Here is the
+alsamixer status:
 
+Playback : Master , PCM
+Capture: PCM (disabled) , CD , Mic (disabled) , Capture , HP ("L R CAPTUR"
+written in red on top of  disabled control) , Unknown (disabled)
 
-signal (from the jacks, not the cinch connectors)
--------------------------------------------------
+Mic volume  Control  is disabled, so I can't test capture.
 
-s1) arecord -D plughw:0,1 -t wav -c 2 -r 96000 -f S16_LE -d 2 -vv test.wav
+----------------------------------------------------------------------
+ tiwai - 03-14-06 15:21 
+----------------------------------------------------------------------
+Push space on 'Mic' in capture view to select as the source.  I'm not sure
+whether it's a mic jack or whether any internal mic is equipped on this
+laptop.
 
-- output :
-Plug PCM: Linear conversion PCM (S24_3BE)
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_LE
-- audacity reports 24b/96khz
-- amplitude suspects 24 bit sound despite S16_LE setting
-- altset reportedly used :
-    Format: S24_3BE
-    Channels: 2
-    Endpoint: 5 IN (SYNC)
-    Rates: 48001 - 96000 (continuous)
-- see (n1) and (e3)
+It's better to show the content of /etc/asound.state after running
+"alsactl store", though.
 
-s2) arecord -D plughw:0,1 -t wav -c 2 -r 96000 -f S32_LE -d 2 -vv
-test.wav
-- output :
-Plug PCM: Linear conversion PCM (S24_3BE)
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S32_LE
-- audacity reports 32b/96khz
-- altset used same as (s1)
+----------------------------------------------------------------------
+ sk0rp10 - 03-14-06 16:47 
+----------------------------------------------------------------------
+On this Laptop there is an input jack for external mic and also an
+integrated microphone. 
 
+Another issue : /dev/dsp and /dev/sound/ are missing , so apps like flash
+player don't work
 
-no signal
----------
+----------------------------------------------------------------------
+ sk0rp10 - 03-14-06 16:49 
+----------------------------------------------------------------------
+here is asound.state
 
-n1) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_3BE -d 2 -vv
-test.raw
-- output :
-Plug PCM: Hardware PCM card 0 'Audiophile USB (tm)' device 1 subdevice 0
+state.Intel {
+        control.1 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 127'
+                iface MIXER
+                name 'Master Playback Volume'
+                value.0 127
+                value.1 127
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Master Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.3 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'CD Capture Volume'
+                value.0 4
+                value.1 4
+        }
+        control.4 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Capture Volume'
+                value.0 3
+                value.1 3
+        }
+        control.5 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Capture Switch'
+                value.0 false
+                value.1 false
+        }
+        control.6 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 HP
+                comment.item.1 Unknown
+                comment.item.2 Mic
+                comment.item.3 PCM
+                iface MIXER
+                name 'Capture Source'
+                value HP
+        }
+        control.7 {
+                comment.access 'read write user'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 255'
+                iface MIXER
+                name 'PCM Playback Volume'
+                value.0 255
+                value.1 255
+        }
+}
 
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S24_3BE
+----------------------------------------------------------------------
+ tiwai - 03-14-06 16:53 
+----------------------------------------------------------------------
+/dev/dsp is irrelevant.  You didn't load the necessary modules.
 
-n2) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_LE -d 2 -vv
-test.raw
-n3) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f S24_3LE -d 2 -vv
-test.raw
-n4) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f U24_3LE -d 2 -vv
-test.raw
-n5) arecord -D plughw:0,1 -t raw -c 2 -r 96000 -f U24_3BE -d 2 -vv
-test.raw
+Apparently, the capture switch is off, and "HP" is chosen as the recording
+source.  Change it via alsamixer.
 
-errors/'lock'
--------------
+----------------------------------------------------------------------
+ rlrevell - 03-14-06 17:06 
+----------------------------------------------------------------------
+On my Ubuntu system the flash issue can be fixed by setting
+FIREFOX_DSP="aoss" in /etc/firefox/firefoxrc.
 
-e1) arecord -D plughw:0,1 -t raw -c 2 -r 48000 -f S16_LE -d 2 -vv
-test.raw
-- output :
-Plug PCM: Linear conversion PCM (S16_BE)
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_LE
-
-e2) arecord -D plughw:0,1 -t raw -c 2 -r 48000 -f S16_BE -d 2 -vv
-test.raw
-- output :
-Plug PCM: Hardware PCM card 0 'Audiophile USB (tm)' device 1 subdevice 0
-
-Its setup is:
-stream       : CAPTURE
-access       : RW_INTERLEAVED
-format       : S16_BE
-
-e3) arecord -D plughw:0,0 -t wav -c 2 -r 96000 -f S16_LE -d 2 -vv
-test.wav
-e3) arecord -D plughw:0,1 -t wav -c 1 -r 96000 -f S16_LE -d 2 -vv test.wav
+You can also load the snd-pcm-oss module but this is not as good as any
+app using /dev/dsp will block your soundcard
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-08-05 17:38 smithbone      New Issue                                    
-12-08-05 17:38 smithbone      Distribution              => 1.0.10          
-12-08-05 17:38 smithbone      Kernel Version            => 2.6.15-rc5-git1 
-12-23-05 18:40 sander         Note Added: 0007135                          
-03-14-06 17:17 rlrevell       Relationship added       related to 0001890  
-03-14-06 17:17 rlrevell       Relationship deleted     related to 0001890  
+03-04-06 18:19 arielo         New Issue                                    
+03-04-06 18:19 arielo         Distribution              => Ubuntu          
+03-04-06 18:19 arielo         Kernel Version            => Linux haifa
+2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20 17:26:04 UTC 2006 i686 GNU/Linux
+03-14-06 00:25 sk0rp10        Note Added: 0008471                          
+03-14-06 14:55 tiwai          Note Added: 0008475                          
+03-14-06 14:56 tiwai          File Added: vaio-stac7661-test3.diff              
+     
+03-14-06 14:57 tiwai          Relationship added       has duplicate 0001921
+03-14-06 15:16 sk0rp10        Note Added: 0008479                          
+03-14-06 15:21 tiwai          Note Added: 0008480                          
+03-14-06 16:47 sk0rp10        Note Added: 0008485                          
+03-14-06 16:49 sk0rp10        Note Added: 0008486                          
+03-14-06 16:53 tiwai          Note Added: 0008488                          
+03-14-06 17:06 rlrevell       Note Added: 0008491                          
+03-14-06 17:17 rlrevell       Relationship added       related to 0001631  
+03-14-06 17:17 rlrevell       Relationship deleted     related to 0001631  
 ======================================================================
 
 
