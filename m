@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001801]: Audiophile USB noisy analog capture
-Date: Tue, 14 Mar 2006 15:28:40 +0100
-Message-ID: <b705abf81dc59dda1de02b8d1a549f72@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001900]: alsactl stores incorrect values; overwrites non-writable file; does not set emu10k1 mixer
+Date: Tue, 14 Mar 2006 15:53:58 +0100
+Message-ID: <68cb8bc04c741354011fa93455cf821b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 490EF11D
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 15:28:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98A561B4
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 15:53:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,85 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1801> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1900> 
 ======================================================================
-Reported By:                lemeur
-Assigned To:                Clemens Ladisch
+Reported By:                covex
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1801
-Category:                   USB - usb-audio
+Project:                    ALSA - utils
+Issue ID:                   1900
+Category:                   alsactl
 Reproducibility:            sometimes
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.15.1-rt3
+Status:                     new
 ======================================================================
-Date Submitted:             01-31-2006 16:04 CET
-Last Modified:              03-14-2006 15:28 CET
+Date Submitted:             03-09-2006 17:38 CET
+Last Modified:              03-14-2006 15:53 CET
 ======================================================================
-Summary:                    Audiophile USB noisy analog capture
+Summary:                    alsactl stores incorrect values; overwrites
+non-writable file; does not set emu10k1 mixer
 Description: 
-The audiophile usb analog capture interface seems to be unreliably
-initialized by the ALSA driver.
+I have one main problem with alsa and emu10k1 based SB Live! card. 
 
-Just after bootup (or after an /etc/init.d/alsasound restart) the sound
-recorded on the analog capture port is sometimes either:
-- Case A: saturated/distorted (as if it had a very high volume gain)
-or
-- Case B: completly inaudible and loud white noised
-or
-- Case C: sometimes the sound is good
+It's some time ago I notice that very often (not always) after reboot my
+sound card has setup strange values in mixer (e.g wave volume is righ 75
+and left 0, see attached asound.state). First I thought it's some
+application setting these nonsenses but it's not true - those values are
+set SOMETIMES on module removal at reboot.
 
-This issue affects:
-* only the analog capture interface and not the SPDIF digital capture
-interface
-* playback is always working
-* both hw:1,1 (analog capture) and plughw:1,1 (analog cpautre with plug)
+What I noticed during digging around:
+1) Always on user logout I have message in log: ainit: Operation not
+permitted
+It is not specified what operation.
+2) see this situation:
+# modprobe -r snd-emu10k1
+# modprobe --ignore-install snd-emu10k1 && alsactl restore 0
+/usr/sbin/alsactl: load_state:1250: Cannot find soundcard '0'...
+The only thing that works is:
+# modprobe --ignore-install snd-emu10k1; sleep 1; alsactl restore 0
+As the first one is very common situation in all modprobe.conf setups I
+see this as fairly bad problem.
+
+3) I set permitions of /etc/asound.state to r--r--r-- to protect it from
+being overwriten but issuing alsactl store overwrites this file!
+
+None of these explain why, on module removal the asound is filled with
+incorrect values (asound.state is attached). 
+BTW: there are three states in that file - for CK804 (it is nForce4
+chipset with internal AC97 disabled), for Unknown (guh?!) and Live (finaly
+correct).
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- lemeur - 02-07-06 10:23 
+ tiwai - 03-14-06 15:53 
 ----------------------------------------------------------------------
-I've done more tests and found that Reproducibility is in fact "Always" if
-you follow these steps:
-* boot the PC with Audiophile USB turned Off
-* turn on the Audiophile USB and wait for ALSA to auto-setup it
-=> At this point there is a one byte alignment shift (captured sound on
-the analog Input is distorted)
-* restart alsa once by issuing "/etc/init.d/alsasound restart"
-=> At this point there is a 2 bytes alignment shift (captured sound on the
-analog Input is white noise only)
-* restart alsa once by issuing "/etc/init.d/alsasound restart"
-=> At this point there is a 3 bytes alignment shift (captured sound on the
-analog Input is back to normal)
+The delay is because of the udev mechanism.  At the moment modprobe
+returns, the modules and devices are still not ready.  Better to call
+alsactl from udev rules.
 
-----------------------------------------------------------------------
- lemeur - 03-14-06 15:28 
-----------------------------------------------------------------------
-The bug was due to the way the snd-usb-audio driver initializes the
-audiophile usb device.
+The permission has almost no meaning for root.  The open doesn't return
+errors for writing to such a file.
 
-I've submitted a patch (now included into CVS). For this patch to take
-effect you should use the new "device_setup" module parameter as described
-in the included doc (alsa-kernel/Documentation/Audiophile-Usb.txt).
+One problem I can see is that you don't use -F option with alsactl.
+Without this option, alsactl may keep some controls uninitialized if the
+element number is changed in the driver side, which will result in an
+incomplete state to be saved.  This could be the cause of your trouble.
 
-Thanks a lot to you guys who helped me troubleshooting and tracking down
-this issue (Takashi, Andreas, Sander, ...).
-
-I suppose that this ticket can be closed now.
+The "Unknown" came from the state that your device wasn't detected
+properly by the driver due to lack of information in the supported card
+list.  This can be removed, of course.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-06 16:04 lemeur         New Issue                                    
-01-31-06 16:04 lemeur         Kernel Version            => 2.6.15.1-rt3    
-02-02-06 14:20 lemeur         Issue Monitored: lemeur                      
-02-07-06 10:23 lemeur         Note Added: 0007956                          
-03-14-06 15:28 lemeur         Note Added: 0008482                          
+03-09-06 17:38 covex          New Issue                                    
+03-09-06 17:38 covex          File Added: asound.state.wrong                    
+03-14-06 15:53 tiwai          Note Added: 0008483                          
 ======================================================================
 
 
