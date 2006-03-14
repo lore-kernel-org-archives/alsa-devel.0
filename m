@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001801]: Audiophile USB noisy analog capture
-Date: Tue, 14 Mar 2006 17:04:37 +0100
-Message-ID: <f91b63e916225e637bcb92adb5ef29e6@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0001893]: ESI Waveterminal u24 works
+Date: Tue, 14 Mar 2006 17:06:57 +0100
+Message-ID: <c7a5542aaf28208ad93ccd4a244cfff2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3594F1BA
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:04:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36A191BA
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 17:06:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,103 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1801> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1893> 
 ======================================================================
-Reported By:                lemeur
-Assigned To:                Clemens Ladisch
+Reported By:                yonatan
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1801
-Category:                   USB - usb-audio
-Reproducibility:            sometimes
-Severity:                   major
+Project:                    ALSA - WWW server
+Issue ID:                   1893
+Category:                   soundcard matrix
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.15.1-rt3
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             01-31-2006 16:04 CET
-Last Modified:              03-14-2006 17:04 CET
+Date Submitted:             03-05-2006 10:09 CET
+Last Modified:              03-14-2006 17:06 CET
 ======================================================================
-Summary:                    Audiophile USB noisy analog capture
+Summary:                    ESI Waveterminal u24 works
 Description: 
-The audiophile usb analog capture interface seems to be unreliably
-initialized by the ALSA driver.
+I haven't tested too thoroughly, but playback works fine with alsaplayer
+(after modprobe snd-usb-audio). I think it can be added to the matrix.
 
-Just after bootup (or after an /etc/init.d/alsasound restart) the sound
-recorded on the analog capture port is sometimes either:
-- Case A: saturated/distorted (as if it had a very high volume gain)
-or
-- Case B: completly inaudible and loud white noised
-or
-- Case C: sometimes the sound is good
-
-This issue affects:
-* only the analog capture interface and not the SPDIF digital capture
-interface
-* playback is always working
-* both hw:1,1 (analog capture) and plughw:1,1 (analog cpautre with plug)
-
-
+Thank you ALSA people.. bye.
 ======================================================================
 
 ----------------------------------------------------------------------
- lemeur - 02-07-06 10:23 
+ tiwai - 03-14-06 17:06 
 ----------------------------------------------------------------------
-I've done more tests and found that Reproducibility is in fact "Always" if
-you follow these steps:
-* boot the PC with Audiophile USB turned Off
-* turn on the Audiophile USB and wait for ALSA to auto-setup it
-=> At this point there is a one byte alignment shift (captured sound on
-the analog Input is distorted)
-* restart alsa once by issuing "/etc/init.d/alsasound restart"
-=> At this point there is a 2 bytes alignment shift (captured sound on the
-analog Input is white noise only)
-* restart alsa once by issuing "/etc/init.d/alsasound restart"
-=> At this point there is a 3 bytes alignment shift (captured sound on the
-analog Input is back to normal)
-
-----------------------------------------------------------------------
- lemeur - 03-14-06 15:28 
-----------------------------------------------------------------------
-The bug was due to the way the snd-usb-audio driver initializes the
-audiophile usb device.
-
-I've submitted a patch (now included into CVS). For this patch to take
-effect you should use the new "device_setup" module parameter as described
-in the included doc (alsa-kernel/Documentation/Audiophile-Usb.txt).
-
-Thanks a lot to you guys who helped me troubleshooting and tracking down
-this issue (Takashi, Andreas, Sander, ...).
-
-I suppose that this ticket can be closed now.
-
-----------------------------------------------------------------------
- tiwai - 03-14-06 16:55 
-----------------------------------------------------------------------
-Closing now.  Thanks.
-
-----------------------------------------------------------------------
- rlrevell - 03-14-06 17:04 
-----------------------------------------------------------------------
-Fixed in CVS - please open new bugs if issues remain
+Do you have a URL for linking from the page?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-06 16:04 lemeur         New Issue                                    
-01-31-06 16:04 lemeur         Kernel Version            => 2.6.15.1-rt3    
-02-02-06 14:20 lemeur         Issue Monitored: lemeur                      
-02-07-06 10:23 lemeur         Note Added: 0007956                          
-03-14-06 15:28 lemeur         Note Added: 0008482                          
-03-14-06 16:55 tiwai          Status                   assigned => resolved
-03-14-06 16:55 tiwai          Resolution               open => fixed       
-03-14-06 16:55 tiwai          Note Added: 0008489                          
-03-14-06 17:04 rlrevell       Note Added: 0008490                          
+03-05-06 10:09 yonatan        New Issue                                    
+03-14-06 17:06 tiwai          Note Added: 0008492                          
 ======================================================================
 
 
