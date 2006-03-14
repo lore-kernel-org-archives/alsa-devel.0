@@ -1,16 +1,17 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: 2.6.16-rc6: known regressions
-Date: Tue, 14 Mar 2006 02:06:21 +0100
-Message-ID: <20060314010621.GR13973__30871.5364932597$1142298476$gmane$org@stusta.de>
-References: <Pine.LNX.4.64.0603111551330.18022@g5.osdl.org> <20060313200544.GG13973@stusta.de> <20060313144244.266d96ef.akpm@osdl.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re[3]: looking for a customer service
+	representative  (ref: 5276)
+Date: Mon, 13 Mar 2006 20:53:42 -0500
+Message-ID: <1142301224.13256.83.camel@mindpipe>
+References: <001a01c64709$9cc46152$96c8d90c@keaton-7m53n2cx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CC4061C1
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 02:06:21 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <20060313144244.266d96ef.akpm@osdl.org>
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 86D361CD
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 02:53:55 +0100 (MET)
+In-Reply-To: <001a01c64709$9cc46152$96c8d90c@keaton-7m53n2cx>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,60 +21,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew Morton <akpm@osdl.org>
-Cc: linux-kernel@vger.kernel.org, Parag Warudkar <kernel-stuff@comcast.net>, Miguel Blanco <mblancom@gmail.com>, Mauro Tassinari <mtassinari@cmanet.it>, perex@suse.cz, alsa-devel@alsa-project.org
+To: fyvtx@tophet.demon.co.uk
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 13, 2006 at 02:42:44PM -0800, Andrew Morton wrote:
-> Adrian Bunk <bunk@stusta.de> wrote:
-> >
-> > This email lists some known regressions in 2.6.16-rc6 compared to 2.6.15.
-> >
-> 
-> We've also left a trail of wrecked machines behind us from earlier kernels.
->...
-> Post-2.6.15:
->   From: Parag Warudkar <kernel-stuff@comcast.net>
->   Subject: Re: ALSA HDA Intel stoped to work in 2.6.16-*
+On Mon, 2006-03-13 at 19:50 -0500, fyvtx@tophet.demon.co.uk wrote:
+> X-Spam-Score: 4.3 (++++)
+> X-Spam-Report: Spam Filtering performed by sourceforge.net. See
+> http://spamassassin.org/tag/ for more details. Report problems to
+> http://sf.net/tracker/?func=add&group_id=1&atid=200001 0.2
+> NO_REAL_NAME     From: does not include a real name 0.2 INVALID_DATE
+> Invalid Date: header (not RFC 2822) 0.9 EARN_PER_WEEK          BODY:
+> Contains 'earn $something per week' 1.1 ITS_LEGAL              BODY:
+> Claims to be Legal 0.3 MIME_HTML_MOSTLY       BODY: Multipart message
+> mostly text/html MIME 0.0 HTML_MESSAGE           BODY: HTML included
+> in message 0.1 HTML_00_10    BODY: Message is 0% to 10% HTML 1.5
+> MPART_ALT_DIFF         BODY: HTML and text parts are different
+> Subject: [Alsa-devel] Re[3]: looking for a customer service
+> representative  (ref: 5276)
 
-Is this the interrupt problem from the "ALSA can't cherry-pick" 
-category?
+It appears that if we can just lower the spam score threshold from 5 to
+4 we can catch more of these.  I am pretty sure this can be done by
+perex in mailman without help from SourceForge.
 
->...
-> XFS-related oopses:
->   http://bugzilla.kernel.org/show_bug.cgi?id=6180
-
-This was in my list.
-
->...
-> Post-2.6.14:
->   From: "Miguel Blanco" <mblancom@gmail.com>
->   Subject: problem mounting a jffs2 filesystem
-> 
->   (We might have fixed this?)
-
-This was fixed with commit e96fb230cc97760e448327c0de612cfba94ca7bf.
-
->...
-> Post-2.6.16-rc1:
->   From: "Mauro Tassinari" <mtassinari@cmanet.it>
->   Subject: Re: 2.6.16-rc3: more regressions
-> 
->   (Radeon makes Xorg hang)
->...
-
-This was fixed with commit 75c0141ca2fdae7c332d8f17412fbe0939dd005f.
-
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+Lee
 
 
 
