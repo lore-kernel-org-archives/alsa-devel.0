@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Tue, 14 Mar 2006 19:23:22 +0100
-Message-ID: <fac85075f717ad2933c706bae0616d19@bugtrack.alsa-project.org>
+Date: Tue, 14 Mar 2006 19:27:55 +0100
+Message-ID: <9eea9d5fae773b5b5e58cdb5723bc523@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76B0615E
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 19:23:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5ACBA1C3
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2006 19:27:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6
 ======================================================================
 Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-14-2006 19:23 CET
+Last Modified:              03-14-2006 19:27 CET
 ======================================================================
 Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
@@ -51,17 +51,6 @@ Motherboard : Asus A8N-E
 OS: fedora core 4
 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 03-14-06 19:12 
-----------------------------------------------------------------------
-What happens with:
-
-speaker-test -Dsurround51 --channels=6
-
-And what is the output of "cat /proc/asound/version"?
-
-Did you install the latest alsa-lib/libasound too (1.0.11-rc3)?
 
 ----------------------------------------------------------------------
  tiwai - 03-14-06 19:23 
@@ -95,6 +84,20 @@ defaut PCM by adding:
 
 Combining with this and soft-mixing is also another story...
 
+----------------------------------------------------------------------
+ binilbenjamin - 03-14-06 19:27 
+----------------------------------------------------------------------
+I turned off 'Duplicate Front' option and changed 'Surround jack mode' to 
+'Independent' in the mixer , and then tried out this command:
+
+speaker-test -Dsurround51 --channels=6
+
+Amazingly, every speakers worked(including the woofer!)
+
+Output of cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9b.
+Compiled on Mar  3 2006 for kernel 2.6.11-1.1369_FC4.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -114,6 +117,7 @@ Date Modified  Username       Field                    Change
 03-14-06 19:02 binilbenjamin  Note Added: 0008508                          
 03-14-06 19:12 rlrevell       Note Added: 0008509                          
 03-14-06 19:23 tiwai          Note Added: 0008510                          
+03-14-06 19:27 binilbenjamin  Note Added: 0008511                          
 ======================================================================
 
 
