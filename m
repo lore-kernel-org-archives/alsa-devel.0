@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Wed, 15 Mar 2006 12:47:25 +0100
-Message-ID: <ca3d253fadb18c4a346b1ad6b2c31f6c@bugtrack.alsa-project.org>
+Date: Wed, 15 Mar 2006 12:53:41 +0100
+Message-ID: <383ff01048038cbd791ed6f29504000a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A6491FD
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 12:47:25 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9053F1FD
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 12:53:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              03-15-2006 12:47 CET
+Last Modified:              03-15-2006 12:53 CET
 ======================================================================
 Summary:                    No sound or High pitched noise, dissapears if change
 made on mixer
@@ -296,13 +296,6 @@ Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 12:17 
-----------------------------------------------------------------------
-Then /etc/modprobe.conf or whatever already includes the model option that
-conflicts.  I'm not sure why modprobe commandline cannot override, but I
-remember someone hit a similar problem on Debian.
-
-----------------------------------------------------------------------
  merin - 03-15-06 12:47 
 ----------------------------------------------------------------------
 Thanks tiwai!
@@ -318,6 +311,21 @@ Bye,
 Merin
 
 P.S.: With model=3stack i get no sound at all
+
+----------------------------------------------------------------------
+ tiwai - 03-15-06 12:53 
+----------------------------------------------------------------------
+Glad to hear that.
+
+Guys, please report the following:
+
+- The model option value that works for your device best
+- "lspci -nv" output (only for Class 0403)
+
+so that the right model is activated as default.
+I need to gather the all these information!
+
+Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -363,6 +371,7 @@ Date Modified  Username       Field                    Change
 03-15-06 12:13 merin          Note Added: 0008537                          
 03-15-06 12:17 tiwai          Note Added: 0008539                          
 03-15-06 12:47 merin          Note Added: 0008542                          
+03-15-06 12:53 tiwai          Note Added: 0008543                          
 ======================================================================
 
 
