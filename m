@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001458]: hda - High frequency noise in background and muting when changing volume
-Date: Wed, 15 Mar 2006 15:28:21 +0100
-Message-ID: <3d9f1a21141e68bb66e64067631ea4f5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
+Date: Wed, 15 Mar 2006 15:31:46 +0100
+Message-ID: <015d416c4bce2a725864ac4235cf1370@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ACF6F209
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 15:28:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CE66209
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 15:31:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1458> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1838> 
 ======================================================================
-Reported By:                andres
+Reported By:                graabein
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1458
+Issue ID:                   1838
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               ubuntu breezy badger
-Kernel Version:              2.6.12-9-386
-Resolution:                 duplicate
-Duplicate:                  1596
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.15-1.1831_FC4smp
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-25-2005 16:07 CEST
-Last Modified:              03-15-2006 15:28 CET
+Date Submitted:             02-10-2006 23:27 CET
+Last Modified:              03-15-2006 15:31 CET
 ======================================================================
-Summary:                    hda - High frequency noise in background and muting
-when changing volume
+Summary:                    Unknown model for ALC880 again, First International
+Computer p4m-915gd1 no sound
 Description: 
-When i play sound i hear a high (constant) frequency beep additionally to
-what i intend to play. I also tried to set position_fix=[0,1,2] and model,
-but that didnt help (for both, related?, problems)
-If i change volume via alsamixer no sound can be heard anymore till i
-unload and load the snd_hda_intel module.
+I'm unable to get any sound on my FIC p4m-915gd1 motherboard's built-in
+sound. There are no error messages and I can play content all I want, I
+just don't get any sound.
 
-Thanks for helping
+The manufacturer's page lists the hardware as "Intel HDA, Azalia 8
+Channel, Realtek ALC880":
+http://www.fic.com.tw/product/motherboard/intel/p4m-915gd1.aspx
 
-Andres
+I've found other, similar reports here in the bug tracker (#1460, #1563,
+#1589), including reports that this problem was resolved as of 1.0.11rc1.
+
+Accordingly, I tried compiling alsa from cvs sources as of today, but this
+made no difference. I still have no sound.
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001596 No sound or High pitched noise, dissape...
-======================================================================
 
 ----------------------------------------------------------------------
- andres - 03-10-06 17:10 
+ graabein - 03-06-06 00:03 
 ----------------------------------------------------------------------
-Will do, as soon as i get my hands on the hardware again. Unfortunately
-this is two or three weeks away (its not my laptop...)
+I've spent entirely too much time on getting 1.0.11/CVS to work, but I'm
+giving up on that now.
+
+Marijn Schouten was right, something broke, at least with regard to this
+driver, since 1.0.10.
+
+I now have a fully working card, both analog and S/PDIF digital. What I
+did was to start with the 1.0.10 source tarball, apply the patch from bug
+#1563 and then apply my own patch.
+
+As far as I'm concerned this bug has been resolved. Whatever's going on
+with 1.0.11rc3 is a whole other kettle of fish. ;-)
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 15:28 
+ tiwai - 03-15-06 15:31 
 ----------------------------------------------------------------------
-Try CVS version, and provide the requested information in #1596 if it works
-with a proper model option.
+Then this bug was already fixed in the latest version.  Closing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-25-05 16:07 andres         New Issue                                    
-09-25-05 16:07 andres         Distribution              => ubuntu breezy badger
-09-25-05 16:07 andres         Kernel Version            =>  2.6.12-9-386   
-09-25-05 16:12 andres         Issue Monitored: andres                      
-09-28-05 10:12 andres         Note Added: 0006407                          
-09-28-05 10:12 andres         Note Added: 0006408                          
-09-28-05 13:30 andres         Note Deleted: 0006408                        
-10-18-05 11:22 cartman        Issue Monitored: cartman                     
-11-24-05 20:36 marcel         Note Added: 0006844                          
-12-05-05 19:59 marcel         Issue Monitored: marcel                      
-01-25-06 20:52 Ka-Ka          Issue Monitored: Ka-Ka                       
-02-07-06 00:48 gerick         Issue Monitored: gerick                      
-02-08-06 13:15 simonckenyon   Issue Monitored: simonckenyon                    
-03-10-06 16:29 sova           Issue Monitored: sova                        
-03-10-06 16:31 sova           Note Added: 0008403                          
-03-10-06 16:38 tiwai          Note Added: 0008404                          
-03-10-06 17:10 andres         Note Added: 0008405                          
-03-15-06 15:28 tiwai          Relationship added       duplicate of 0001596
-03-15-06 15:28 tiwai          Duplicate ID             0 => 1596           
-03-15-06 15:28 tiwai          Status                   assigned => resolved
-03-15-06 15:28 tiwai          Resolution               open => duplicate   
-03-15-06 15:28 tiwai          Note Added: 0008550                          
+02-10-06 23:27 graabein       New Issue                                    
+02-10-06 23:27 graabein       Distribution              => Fedora Core 4   
+02-10-06 23:27 graabein       Kernel Version            => 2.6.15-1.1831_FC4smp
+02-10-06 23:38 graabein       Note Added: 0008010                          
+02-15-06 23:46 Eugene Seppel  Issue Monitored: Eugene Seppel                    
+02-15-06 23:46 Eugene Seppel  Note Added: 0008081                          
+02-16-06 17:08 Marijn SchoutenNote Added: 0008098                          
+02-16-06 17:10 Marijn SchoutenNote Edited: 0008098                         
+02-16-06 18:36 er-ku          Note Added: 0008101                          
+02-16-06 23:06 graabein       Note Added: 0008103                          
+02-17-06 10:47 Marijn SchoutenNote Added: 0008107                          
+02-17-06 16:31 Eugene Seppel  Note Added: 0008108                          
+02-19-06 02:03 graabein       Note Added: 0008127                          
+02-19-06 05:47 graabein       Note Added: 0008128                          
+02-19-06 05:50 graabein       File Added: ficpatch.diff                    
+02-19-06 05:55 rlrevell       Note Added: 0008129                          
+03-06-06 00:03 graabein       Note Added: 0008360                          
+03-15-06 15:31 tiwai          Status                   assigned => resolved
+03-15-06 15:31 tiwai          Resolution               open => fixed       
+03-15-06 15:31 tiwai          Note Added: 0008551                          
 ======================================================================
 
 
