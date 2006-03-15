@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001929]: Sound clips over 80% of volume from non clipped source
-Date: Wed, 15 Mar 2006 23:38:38 +0100
-Message-ID: <28796eb2f00cb201f53a33190530afab@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
+Date: Wed, 15 Mar 2006 23:41:11 +0100
+Message-ID: <063f455a744f7a75e58caa424d55b39c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 75914203
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 23:38:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A44B203
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 23:41:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,36 +24,35 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1929> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
 ======================================================================
-Reported By:                specialboy
+Reported By:                drolyk
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1929
-Category:                   CORE OSS - mixer
-Reproducibility:            have not tried
-Severity:                   minor
+Issue ID:                   1930
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Debian
+Kernel Version:             2.6.15.6
 ======================================================================
-Date Submitted:             03-15-2006 23:38 CET
-Last Modified:              03-15-2006 23:38 CET
+Date Submitted:             03-15-2006 23:41 CET
+Last Modified:              03-15-2006 23:41 CET
 ======================================================================
-Summary:                    Sound clips over 80% of volume from non clipped
-source
+Summary:                    Can`t get timidity woking in soft synth mode
 Description: 
-Was playing a video in VLC when I noticed that the sound was clipping when
-the player volume was full.  Reduced Alsa volume to <80% and increased
-player to full and the problem went away.
+Can`t get timidity woking in "soft synth mode".
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 23:38 specialboy     New Issue                                    
+03-15-06 23:41 drolyk         New Issue                                    
+03-15-06 23:41 drolyk         Distribution              => Debian          
+03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
 ======================================================================
 
 
