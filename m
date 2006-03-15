@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Wed, 15 Mar 2006 11:14:18 +0100
-Message-ID: <3d4f183e3ac0c62d869efcb209702b3c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
+Date: Wed, 15 Mar 2006 11:35:59 +0100
+Message-ID: <21557af65ee5de7126675e1d7ff2bafc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A251D16C
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 11:14:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC2CA1F2
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 11:35:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,344 +24,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1596> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
 ======================================================================
-Reported By:                jrgns
+Reported By:                chrmue
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1596
+Issue ID:                   1733
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.14-rc2
+Distribution:               SuSE Linux 10.0
+Kernel Version:             2.6.13-15
 ======================================================================
-Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              03-15-2006 11:14 CET
+Date Submitted:             01-11-2006 07:23 CET
+Last Modified:              03-15-2006 11:35 CET
 ======================================================================
-Summary:                    No sound or High pitched noise, dissapears if change
-made on mixer
+Summary:                    Intel HDA Modem ?
 Description: 
-With the driver compiled as a standalone (1.0.10rc3), there's is sound, but
-accompanied with a very high pitched noise. All sound dissappears the
-moment I change something on the mixer.
+I want to use my HDA Softmodem in Linux, is there any development on a HDA
+Modem Module ?
 
-There is no sound at all if the driver is compiled into the kernel or as a
-kernel module (1.0.10rc1 and 2.6.14-rc2).
+cat /proc/asound/card0/codec#1 gives me:
+Codec: Generic 11c1 ID 3026
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x70500
 
-I tried loading the module with various model= and fix_position=
-combinations as well.
+In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
 
-Hardware:
-lspci
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
-
-lspci -n -v -v
-0000:00:1b.0 Class 0403: 8086:2668 (rev 04)
-        Subsystem: 17c0:2017
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, cache line size 08
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at b0000000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] #10 [0091]
-
-lspci -v
-0000:00:02.0 VGA compatible controller: Intel Corporation Mobile
-915GM/GMS/910GML Express Graphics Controller (rev 04) (prog-if 00 [VGA])
-        Subsystem: Wistron Corp.: Unknown device 2071
-        Flags: bus master, fast devsel, latency 0, IRQ 10
-        Memory at b0080000 (32-bit, non-prefetchable) [size=512K]
-        I/O ports at 1800 [size=8]
-        Memory at c0000000 (32-bit, prefetchable) [size=256M]
-        Memory at b0040000 (32-bit, non-prefetchable) [size=256K]
-        Capabilities: [d0] Power Management version 2
-
-cat /proc/asound/card0/codec#0
-Codec: Analog Devices AD1986A
-Address: 0
-Vendor Id: 0x11d41986
-Subsystem Id: 0x0
-Revision Id: 0x100400
-Default PCM: rates 0x07f, bits 0x0e, types 0x1
-Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Default Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital
-  PCM: rates 0x060, bits 0x02, types 0x5
-  Connection: 2
-     0x01* 0x06
-Node 0x03 [Audio Output] wcaps 0x445: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-Node 0x06 [Audio Input] wcaps 0x100511: Stereo
-  PCM: rates 0x07f, bits 0x06, types 0x1
-  Connection: 1
-     0x12
-Node 0x07 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 8
-     0x03 0x09 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x08 [Audio Mixer] wcaps 0x200108: Mono
-  Connection: 1
-     0x07
-Node 0x09 [Audio Mixer] wcaps 0x200106: Mono Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80] [0x80]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Connection: 2
-     0x04 0x05
-Node 0x0a [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x07* 0x04 0x05
-Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x07* 0x04
-Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x04* 0x07
-Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x05* 0x08
-Node 0x0e [Audio Selector] wcaps 0x300100: Mono
-  Connection: 2
-     0x08* 0x11
-Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 8
-     0x1f* 0x20 0x1d 0x1d 0x27 0x28 0x29 0x2a
-Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x20* 0x1c 0x1f
-Node 0x11 [Audio Selector] wcaps 0x300941: Stereo
-  Connection: 2
-     0x0f* 0x2b
-Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 6
-     0x11* 0x22 0x10 0x07 0x08 0x23
-Node 0x13 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x11
-Node 0x14 [Audio Selector] wcaps 0x300104: Mono Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97]
-  Connection: 1
-     0x23
-Node 0x15 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x22
-Node 0x16 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x21
-Node 0x17 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x10
-Node 0x18 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals:  [0x8f]
-  Connection: 2
-     0x19* 0x24
-Node 0x19 [Beep Generator Widget] wcaps 0x700200: Mono Digital
-Node 0x1a [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081f: OUT HP
-  Pin Default 0x01813030: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x0a
-Node 0x1b [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081001f: OUT HP
-  Pin Default 0x01014011: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0b
-Node 0x1c [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x0837: IN OUT
-  Pin Default 0x9933f170: [Fixed] CD at Int ATAPI
-    Conn = ATAPI, Color = Other
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0c
-Node 0x1d [Pin Complex] wcaps 0x40098d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081737: IN OUT
-  Pin Default 0x99f3f115: [Fixed] Other at Int ATAPI
-    Conn = ATAPI, Color = Other
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0d
-Node 0x1e [Pin Complex] wcaps 0x40018c: Mono Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x00]
-  Pincap 0x0810: OUT
-  Pin Default 0x901700f0: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x1f [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN
-  Pin Default 0x02a190f0: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-Node 0x20 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN
-  Pin Default 0x018130f0: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-Node 0x21 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0827: IN
-  Pin Default 0x409700f0: [N/A] Aux at Ext N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x22 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x903300f0: [Fixed] CD at Int N/A
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x23 [Pin Complex] wcaps 0x400080: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x40b700f0: [N/A] Telephony at Ext N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x24 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x50f700f0: [N/A] Other at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x25 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x014500f0: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x02
-Node 0x26 [Power Widget] wcaps 0x500500: Mono
-  Connection: 8
-     0x07* 0x08 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x27 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x1d
-Node 0x28 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x20
-Node 0x29 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1d 0x20
-Node 0x2a [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 3
-     0x1f 0x1d 0x20
-Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x0f
-
+If there is development on this i would like to participate to get it
+going, because i dont't want to have a windows-installation on my Notebook
+(Acer TravelMate 8104) just for getting my mails at my parents house,
+where there is only analog telephone.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-14-06 23:28 
+ chrmue - 03-15-06 00:42 
 ----------------------------------------------------------------------
-And you then unloaded the old drivers with rmmod before modprobe-ing
-again?
+I use slmodemd v. 2.9.10, wvdial v. 1.54.0 and wvstreams v. 4.0.1; all from
+SuSE 10.0.
+You're right hw:0 is the wrong parameter, hw:0,6 works on my system, but i
+have to manually go off- AND on-hook in alsamixer. I use "slmodemd -a
+modem:0" and it works with automatically going off-hook, but for going
+on-hook on disconnect i got " disconnect "amixer sset Off-hook off >
+/dev/null" " in my /etc/ppp/options, but this only works with connections
+using pppd. If you use a terminal-programm (eg. minicom) you have to reset
+the Off-hook switch in alsamixer manually after disconnecting (else your
+telephone-line stays busy and you get NO DIALTONE the next time).
 
-lsmod | grep ^snd | cut -d\  -f1 | xargs rmmod
+Btw.: If your problem is wvdial-related try to establish a connection to
+your ISP or a mailbox-system with minicom. If you get a connection
+slmodemd and alsa are okay and you should take a look to your wvdial.conf
 
 ----------------------------------------------------------------------
- merin - 03-15-06 11:14 
+ tiwai - 03-15-06 11:35 
 ----------------------------------------------------------------------
-Yes I did :)
-
-:~# lsmod | grep ^snd | cut -d\  -f1 | xargs rmmod
-:~# lsmod | grep ^snd
-:~# modprobe snd-hda-intel model=3stack
-:~# dmesg (last 3 lines)
-    [17180062.324000] ACPI: PCI interrupt for device 0000:00:1b.0
-disabled
-    [17180092.500000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16
-(level, low) -> IRQ 16
-    [17180092.500000] PCI: Setting latency timer of device 0000:00:1b.0 to
-64
-
-:~# cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.11rc3.
-Compiled on Mar 14 2006 for kernel 2.6.15.501.
+SUSE 10.0 has ALSA 1.0.10-pre version, and the newer version of alsa-lib
+has a proper definition of modem PCM.  Thus, you don't have to -- or
+shouldn't -- use "hw:X,Y" but use "modem" or "modem:1" instead.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-05 11:26 jrgns          New Issue                                    
-11-24-05 11:26 jrgns          Distribution              => Gentoo          
-11-24-05 11:26 jrgns          Kernel Version            => 2.6.14-rc2      
-11-24-05 12:14 jrgns          Note Added: 0006840                          
-11-24-05 12:14 jrgns          Note Added: 0006841                          
-02-04-06 23:15 eIf            Note Added: 0007927                          
-02-04-06 23:15 eIf            Issue Monitored: eIf                         
-02-05-06 06:31 gerick         Issue Monitored: gerick                      
-02-08-06 13:11 simonckenyon   Issue Monitored: simonckenyon                    
-02-18-06 19:16 fluor          Note Added: 0008122                          
-02-18-06 19:48 chalvorson     Issue Monitored: chalvorson                    
-02-19-06 21:49 jrgns          Note Added: 0008137                          
-02-19-06 21:57 eIf            Note Added: 0008138                          
-03-04-06 18:23 merin          Note Added: 0008350                          
-03-04-06 18:24 merin          Note Edited: 0008350                         
-03-04-06 19:11 rlrevell       Note Added: 0008352                          
-03-04-06 22:02 merin          Note Added: 0008354                          
-03-05-06 11:29 merin          Issue Monitored: merin                       
-03-06-06 05:48 stevenellis    Issue Monitored: stevenellis                    
-03-14-06 17:09 tiwai          Note Added: 0008493                          
-03-14-06 17:16 fluor          Note Added: 0008494                          
-03-14-06 17:29 rlrevell       Note Added: 0008497                          
-03-14-06 17:33 tiwai          Note Added: 0008498                          
-03-14-06 17:36 merin          Note Added: 0008499                          
-03-14-06 17:44 tiwai          Note Added: 0008500                          
-03-14-06 17:55 fluor          Note Added: 0008503                          
-03-14-06 21:41 merin          Note Added: 0008514                          
-03-14-06 21:50 rlrevell       Note Added: 0008516                          
-03-14-06 22:06 merin          Note Added: 0008519                          
-03-14-06 22:15 rlrevell       Note Added: 0008520                          
-03-14-06 22:28 merin          Note Added: 0008521                          
-03-14-06 22:51 merin          Note Edited: 0008521                         
-03-14-06 22:53 merin          Note Added: 0008522                          
-03-14-06 22:54 merin          Note Edited: 0008521                         
-03-14-06 23:28 rlrevell       Note Added: 0008523                          
-03-15-06 11:14 merin          Note Added: 0008529                          
+01-11-06 07:23 chrmue         New Issue                                    
+01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
+01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
+01-11-06 07:42 rlrevell       Note Added: 0007559                          
+01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
+            
+01-11-06 23:35 sashak         Note Added: 0007571                          
+01-12-06 00:00 sashak         Note Added: 0007574                          
+01-12-06 00:02 sashak         Issue Monitored: sashak                      
+01-12-06 05:35 chrmue         Note Added: 0007581                          
+01-13-06 00:16 sashak         Note Added: 0007598                          
+01-16-06 20:19 chrmue         Note Added: 0007692                          
+01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
+03-03-06 15:43 lrupn          Note Added: 0008341                          
+03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
+03-10-06 23:44 kratz00        Note Added: 0008413                          
+03-11-06 15:19 kratz00        Note Added: 0008416                          
+03-11-06 19:03 rlrevell       Note Added: 0008421                          
+03-11-06 19:23 kratz00        Note Added: 0008423                          
+03-11-06 19:33 rlrevell       Note Added: 0008424                          
+03-11-06 23:08 sashak         Note Added: 0008427                          
+03-12-06 11:22 kratz00        Note Added: 0008431                          
+03-15-06 00:42 chrmue         Note Added: 0008525                          
+03-15-06 11:35 tiwai          Note Added: 0008530                          
 ======================================================================
 
 
