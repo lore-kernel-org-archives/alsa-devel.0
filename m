@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001927]: Capture Device not working
-Date: Wed, 15 Mar 2006 20:20:54 +0100
-Message-ID: <6535347975d588558e7732e130d4fb37@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
+Date: Wed, 15 Mar 2006 21:42:20 +0100
+Message-ID: <9c5c1d2496e8f1117b912ae8177cb738@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F7F4176
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 20:20:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D737203
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 21:42:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,133 +24,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1927> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
 ======================================================================
-Reported By:                sk0rp10
+Reported By:                chrmue
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1927
+Issue ID:                   1733
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware current
-Kernel Version:             2.6.15.6 vanilla
+Distribution:               SuSE Linux 10.0
+Kernel Version:             2.6.13-15
 ======================================================================
-Date Submitted:             03-15-2006 19:23 CET
-Last Modified:              03-15-2006 20:20 CET
+Date Submitted:             01-11-2006 07:23 CET
+Last Modified:              03-15-2006 21:42 CET
 ======================================================================
-Summary:                    Capture Device not working
+Summary:                    Intel HDA Modem ?
 Description: 
-I tryed use krec to record from internal mic but no sound is recorded. 
-I applyed the patch from issue #1890.
+I want to use my HDA Softmodem in Linux, is there any development on a HDA
+Modem Module ?
 
-here asound.state:
+cat /proc/asound/card0/codec#1 gives me:
+Codec: Generic 11c1 ID 3026
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x70500
 
-state.Intel {
-        control.1 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 127'
-                iface MIXER
-                name 'Master Playback Volume'
-                value.0 121
-                value.1 121
-        }
-        control.2 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Master Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.3 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'CD Capture Volume'
-                value.0 7
-                value.1 7
-        }
-        control.4 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'Capture Volume'
-                value.0 11
-                value.1 11
-        }
-        control.5 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Capture Switch'
-                value.0 false
-                value.1 false
-        }
-        control.6 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 HP
-                comment.item.1 Unknown
-                comment.item.2 Mic
-                comment.item.3 PCM
-                iface MIXER
-                name 'Capture Source'
-                value Mic
-        }
-        control.7 {
-                comment.access 'read write user'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 255'
-                iface MIXER
-                name 'PCM Playback Volume'
-                value.0 232
-                value.1 232
-        }
-}
+In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
 
+If there is development on this i would like to participate to get it
+going, because i dont't want to have a windows-installation on my Notebook
+(Acer TravelMate 8104) just for getting my mails at my parents house,
+where there is only analog telephone.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 19:38 
+ tiwai - 03-15-06 11:35 
 ----------------------------------------------------------------------
-Try CVS version at first.  If still doesn't work, please upload the
-contents of /proc/asound/card0/codec#* files, and the product name of your
-machine, laptop or mobo, whatever information to identify.
-The detailed description of the existing I/O (jacks, etc) is also
-appreciated.
+SUSE 10.0 has ALSA 1.0.10-pre version, and the newer version of alsa-lib
+has a proper definition of modem PCM.  Thus, you don't have to -- or
+shouldn't -- use "hw:X,Y" but use "modem" or "modem:1" instead.
 
 ----------------------------------------------------------------------
- sk0rp10 - 03-15-06 20:20 
+ kratz00 - 03-15-06 21:42 
 ----------------------------------------------------------------------
-Product Name: SONY VAIO VGN-FE11S (Notebook)
+i used cvs from today (driver, kernel, libs)
+output off "./slmodemd -a -d 5 modem:0 -g root" is
 
-Exixting I/O : headphone jack , mic in jack , embedded microphone
-(internal)
+SmartLink Soft Modem: version 2.9.10 Mar 10 2006 23:39:11
+<081.923714> SmartLink Soft Modem: version 2.9.10 Mar 10 2006 23:39:11
+<081.923736> modem:0: startup modem...
+<081.923783> modem:0: update termios...
+symbolic link `/dev/ttySL0' -> `/dev/pts/2' created.
+modem `modem:0' created. TTY is `/dev/pts/2'
+<081.924379> open file: /var/lib/slmodem/data.modem:0...
+<081.924475> cannot open '/var/lib/slmodem/data.modem:0': No such file or
+directory
+<081.924823> main: rt applyed: SCHED_FIFO, pri 99
+Use `/dev/ttySL0' as modem device, Ctrl+C for termination.
 
-Uploaded: codec output
+and still no luck with wvdail
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 19:23 sk0rp10        New Issue                                    
-03-15-06 19:23 sk0rp10        Distribution              => Slackware current
-03-15-06 19:23 sk0rp10        Kernel Version            => 2.6.15.6 vanilla
-03-15-06 19:38 tiwai          Note Added: 0008569                          
-03-15-06 20:20 sk0rp10        Note Added: 0008572                          
+01-11-06 07:23 chrmue         New Issue                                    
+01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
+01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
+01-11-06 07:42 rlrevell       Note Added: 0007559                          
+01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
+            
+01-11-06 23:35 sashak         Note Added: 0007571                          
+01-12-06 00:00 sashak         Note Added: 0007574                          
+01-12-06 00:02 sashak         Issue Monitored: sashak                      
+01-12-06 05:35 chrmue         Note Added: 0007581                          
+01-13-06 00:16 sashak         Note Added: 0007598                          
+01-16-06 20:19 chrmue         Note Added: 0007692                          
+01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
+03-03-06 15:43 lrupn          Note Added: 0008341                          
+03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
+03-10-06 23:44 kratz00        Note Added: 0008413                          
+03-11-06 15:19 kratz00        Note Added: 0008416                          
+03-11-06 19:03 rlrevell       Note Added: 0008421                          
+03-11-06 19:23 kratz00        Note Added: 0008423                          
+03-11-06 19:33 rlrevell       Note Added: 0008424                          
+03-11-06 23:08 sashak         Note Added: 0008427                          
+03-12-06 11:22 kratz00        Note Added: 0008431                          
+03-15-06 00:42 chrmue         Note Added: 0008525                          
+03-15-06 11:35 tiwai          Note Added: 0008530                          
+03-15-06 21:42 kratz00        Note Added: 0008573                          
 ======================================================================
 
 
