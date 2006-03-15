@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001838]: Unknown model for ALC880 again, First International Computer p4m-915gd1 no sound
-Date: Wed, 15 Mar 2006 15:31:46 +0100
-Message-ID: <015d416c4bce2a725864ac4235cf1370@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
+Date: Wed, 15 Mar 2006 15:36:59 +0100
+Message-ID: <53aad5870651a7f1e9c768f9e056ec3b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CE66209
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 15:31:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 775E820A
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 15:36:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,91 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1838> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
 ======================================================================
-Reported By:                graabein
+Reported By:                mjsb
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1838
+Issue ID:                   1572
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15-1.1831_FC4smp
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.1.13-gentoo-r3
 ======================================================================
-Date Submitted:             02-10-2006 23:27 CET
-Last Modified:              03-15-2006 15:31 CET
+Date Submitted:             11-17-2005 16:31 CET
+Last Modified:              03-15-2006 15:36 CET
 ======================================================================
-Summary:                    Unknown model for ALC880 again, First International
-Computer p4m-915gd1 no sound
+Summary:                    Simultaneous sound from speakers and headphone
 Description: 
-I'm unable to get any sound on my FIC p4m-915gd1 motherboard's built-in
-sound. There are no error messages and I can play content all I want, I
-just don't get any sound.
+I cannot ear headphones without having sound from front speakers
+simultaneously.
+Volume of headphones is adjusted by front speakers and when muting front
+speakers also mutes headphones.
+(in MS Windows, inserting headphones automatically disables sound from
+front speakers)
 
-The manufacturer's page lists the hardware as "Intel HDA, Azalia 8
-Channel, Realtek ALC880":
-http://www.fic.com.tw/product/motherboard/intel/p4m-915gd1.aspx
-
-I've found other, similar reports here in the bug tracker (#1460, #1563,
-#1589), including reports that this problem was resolved as of 1.0.11rc1.
-
-Accordingly, I tried compiling alsa from cvs sources as of today, but this
-made no difference. I still have no sound.
-
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001663 LW20 bugs with headphone input, realtek...
 ======================================================================
 
 ----------------------------------------------------------------------
- graabein - 03-06-06 00:03 
+ mjsb - 02-16-06 13:49 
 ----------------------------------------------------------------------
-I've spent entirely too much time on getting 1.0.11/CVS to work, but I'm
-giving up on that now.
+This bug was submited 3 months ago. It would be nice to have some feedback
+on its status.
+If there are no plans to fix this, please provide an easy way or
+documentation on building a custom model for ALC880.
 
-Marijn Schouten was right, something broke, at least with regard to this
-driver, since 1.0.10.
-
-I now have a fully working card, both analog and S/PDIF digital. What I
-did was to start with the 1.0.10 source tarball, apply the patch from bug
-#1563 and then apply my own patch.
-
-As far as I'm concerned this bug has been resolved. Whatever's going on
-with 1.0.11rc3 is a whole other kettle of fish. ;-)
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 15:31 
+ tiwai - 03-15-06 15:36 
 ----------------------------------------------------------------------
-Then this bug was already fixed in the latest version.  Closing.
+Try the CVS version with "model=lg" option.
+I fixed for LG m1 express dual laptop.  Hopefully it's the same for yours.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-10-06 23:27 graabein       New Issue                                    
-02-10-06 23:27 graabein       Distribution              => Fedora Core 4   
-02-10-06 23:27 graabein       Kernel Version            => 2.6.15-1.1831_FC4smp
-02-10-06 23:38 graabein       Note Added: 0008010                          
-02-15-06 23:46 Eugene Seppel  Issue Monitored: Eugene Seppel                    
-02-15-06 23:46 Eugene Seppel  Note Added: 0008081                          
-02-16-06 17:08 Marijn SchoutenNote Added: 0008098                          
-02-16-06 17:10 Marijn SchoutenNote Edited: 0008098                         
-02-16-06 18:36 er-ku          Note Added: 0008101                          
-02-16-06 23:06 graabein       Note Added: 0008103                          
-02-17-06 10:47 Marijn SchoutenNote Added: 0008107                          
-02-17-06 16:31 Eugene Seppel  Note Added: 0008108                          
-02-19-06 02:03 graabein       Note Added: 0008127                          
-02-19-06 05:47 graabein       Note Added: 0008128                          
-02-19-06 05:50 graabein       File Added: ficpatch.diff                    
-02-19-06 05:55 rlrevell       Note Added: 0008129                          
-03-06-06 00:03 graabein       Note Added: 0008360                          
-03-15-06 15:31 tiwai          Status                   assigned => resolved
-03-15-06 15:31 tiwai          Resolution               open => fixed       
-03-15-06 15:31 tiwai          Note Added: 0008551                          
+11-17-05 16:31 mjsb           New Issue                                    
+11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
+11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
+12-08-05 21:23 mjsb           Note Added: 0006962                          
+01-16-06 11:19 mjsb           Note Added: 0007685                          
+01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
+01-21-06 03:24 mjsb           Note Added: 0007730                          
+01-21-06 03:25 mjsb           File Added: HPoff-speakeron                    
+01-21-06 03:25 mjsb           File Added: HPon-speakeroff                    
+01-21-06 03:30 mjsb           Note Edited: 0007730                         
+01-25-06 11:47 blackr2d       Issue Monitored: blackr2d                    
+01-25-06 11:56 blackr2d       Note Added: 0007778                          
+01-25-06 11:59 blackr2d       Note Edited: 0007778                         
+01-25-06 12:00 blackr2d       Note Edited: 0007778                         
+01-25-06 12:36 blackr2d       Note Edited: 0007778                         
+02-14-06 05:36 richardfish    Issue Monitored: richardfish                    
+02-14-06 05:37 richardfish    Note Added: 0008069                          
+02-16-06 13:49 mjsb           Note Added: 0008096                          
+03-01-06 18:00 mpt            Issue Monitored: mpt                         
+03-15-06 15:36 tiwai          Note Added: 0008552                          
 ======================================================================
 
 
