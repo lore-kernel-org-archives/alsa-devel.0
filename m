@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001914]: playing 2-channel sound on surround device uses rear speakers
-Date: Wed, 15 Mar 2006 13:04:35 +0100
-Message-ID: <c45523a7d2e1408195838579f6944a77@bugtrack.alsa-project.org>
+From: "Joe Hsu" <nagual.hsu@gmail.com>
+Subject: snd_pcm_hwsync
+Date: Wed, 15 Mar 2006 20:06:49 +0800
+Message-ID: <7fe205990603150406i5e61842fh@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83DB21FD
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 13:04:35 +0100 (MET)
+Received: from zproxy.gmail.com (zproxy.gmail.com [64.233.162.197])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D28621FD
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 13:06:50 +0100 (MET)
+Received: by zproxy.gmail.com with SMTP id i11so96671nzh
+        for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 04:06:49 -0800 (PST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,67 +24,15 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all:
+    Sometimes, snd_pcm_hwsync would return -32 (-EPIPE).
+I can't see why. After snd_pcm_hwsync failed, snd_pcm_avail_update
+would return a much bigger positive value than pcm_hw_bufsize.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1914> 
-======================================================================
-Reported By:                mru
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1914
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.15-gentoo-r1
-======================================================================
-Date Submitted:             03-11-2006 21:25 CET
-Last Modified:              03-15-2006 13:04 CET
-======================================================================
-Summary:                    playing 2-channel sound on surround device uses rear
-speakers
-Description: 
-If I play regular 2-channel stereo sound specifying device "surround51" or
-"surround40" (or either of those with a "plug:" prefix) the sound is
-output on the rear speakers.  6-channel playback is correct.
-======================================================================
+    Can any one tell me why? and how to avoid such questions?
 
-----------------------------------------------------------------------
- mru - 03-15-06 12:27 
-----------------------------------------------------------------------
-OK, I understand how this is happening.  Some sort of rerouting would be
-useful here.  I prefer not needing to specify different devices depending
-on the number of channels.  Shout if you want me to test something.
-
-----------------------------------------------------------------------
- tiwai - 03-15-06 13:04 
-----------------------------------------------------------------------
-The attached patch should fix this problem.
-
-This doesn't change the default behavior of plug plugin, i.e. the
-2-channel sampless are copied only to front and rest speakers are silent.
-For a more clever channel expansion, it'd better to create a new plugin.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-11-06 21:25 mru            New Issue                                    
-03-11-06 21:25 mru            Distribution              => Gentoo          
-03-11-06 21:25 mru            Kernel Version            => 2.6.15-gentoo-r1
-03-14-06 15:04 tiwai          Note Added: 0008477                          
-03-14-06 15:15 mru            Note Added: 0008478                          
-03-14-06 15:22 tiwai          Note Added: 0008481                          
-03-14-06 23:53 mru            Note Added: 0008524                          
-03-15-06 11:59 tiwai          Note Added: 0008536                          
-03-15-06 12:27 mru            Note Added: 0008541                          
-03-15-06 13:04 tiwai          Note Added: 0008545                          
-======================================================================
-
-
+--
+The sun is shinny but the ice is slippery.
 
 
 -------------------------------------------------------
