@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Wed, 15 Mar 2006 19:54:07 +0100
-Message-ID: <2414bfd7a83c70aa11eacb051c65d1af@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001926]: No sound and no internal speakers with Samsung R65-T2300 Charis notebook
+Date: Wed, 15 Mar 2006 19:56:13 +0100
+Message-ID: <a469c3d67eea62595996c271e6ae97bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D126206
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 19:54:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3372F206
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 19:56:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,88 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1926> 
 ======================================================================
-Reported By:                binilbenjamin
-Assigned To:                
+Reported By:                tassilo80
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1920
-Category:                   1_OTHERS
+Issue ID:                   1926
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-15-2006 19:54 CET
+Date Submitted:             03-15-2006 18:21 CET
+Last Modified:              03-15-2006 19:56 CET
 ======================================================================
-Summary:                    output from only 2 speakers(out of 5 speakers)
+Summary:                    No sound and no internal speakers with Samsung
+R65-T2300 Charis notebook
 Description: 
-i'm having a 5.1 speakers..when i play music ,only 2 of them are working!!!
-i had changed the channel mode in alsamixer to 6 channel..yet no
-changes!!! 
-Motherboard : Asus A8N-E
-OS: fedora core 4
+I have no sound on my laptop. 
+
+First I tried alsa-diver-1.0.11rc3:
+* The headphones are listed in alsamixer, but the internal speakers are
+not listed.
+* There's no sound with headphones
+* If I apply the patch mentioned in bug #1793
+(http://quaggaspace.org/a8nvm/a8nvmsound.patch) I have at least sound with
+my headphones
+
+The I tried the current CVS:
+* without model-option I had short a sound on my right headphone till I
+tweaked the mixer settings
+* with model=laptop I had no sound at all
+* with model=3stack I had no sount at all, too
+* if I apply the patch mentioned above and give no model-option, the sound
+works again (only headphones)
 
 ======================================================================
 
 ----------------------------------------------------------------------
- binilbenjamin - 03-15-06 19:10 
+ tiwai - 03-15-06 19:35 
 ----------------------------------------------------------------------
-So , how can i enable all the speakers while I play mp3s in a player such
-as xmms?
+OK, and which mixer controls influence on the volume / mute of headphone
+output?
+I suppose PCM should, but any else (Front, Surround, Rear, Center, LFE,
+Headphone)?
+
+And, does the recording from mic-jack (or built-in mic) work?
+You can see the captured signal via
+
+   % arecord -vv -fdat foo.wav
+
+Don't forget to turn on 'Capture Switch', adjust 'Capture Volume', and
+choose the right 'Capture Source' (either Line or Mic, I guess).
 
 ----------------------------------------------------------------------
- rlrevell - 03-15-06 19:54 
+ tassilo80 - 03-15-06 19:56 
 ----------------------------------------------------------------------
-By following tiwai's instructions.
+> OK, and which mixer controls influence on the volume / mute 
+> of headphone output? I suppose PCM should, but any else (Front,
+> Surround, Rear, Center, LFE, Headphone)?
+
+PCM and Headphone have influence.
+
+> And, does the recording from mic-jack (or built-in mic) work?
+
+Recording from external mic works. The internal mic doesn't, but
+unfornately I even don't know where this should be located. Perhaps this
+has to be enabled with some Fn-X shortcut...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-13-06 19:02 binilbenjamin  New Issue                                    
-03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
-03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
-03-13-06 19:33 rlrevell       Note Added: 0008455                          
-03-13-06 19:49 binilbenjamin  Note Added: 0008457                          
-03-13-06 19:54 rlrevell       Note Added: 0008458                          
-03-13-06 20:16 binilbenjamin  Note Added: 0008459                          
-03-13-06 20:25 rlrevell       Note Added: 0008460                          
-03-14-06 17:44 binilbenjamin  Note Added: 0008501                          
-03-14-06 17:56 rlrevell       Note Added: 0008504                          
-03-14-06 18:34 binilbenjamin  Note Added: 0008505                          
-03-14-06 18:52 rlrevell       Note Added: 0008506                          
-03-14-06 19:00 rlrevell       Note Added: 0008507                          
-03-14-06 19:02 binilbenjamin  Note Added: 0008508                          
-03-14-06 19:12 rlrevell       Note Added: 0008509                          
-03-14-06 19:23 tiwai          Note Added: 0008510                          
-03-14-06 19:27 binilbenjamin  Note Added: 0008511                          
-03-14-06 20:08 rlrevell       Note Added: 0008512                          
-03-15-06 18:27 binilbenjamin  Note Added: 0008560                          
-03-15-06 18:40 rlrevell       Note Added: 0008562                          
-03-15-06 19:10 binilbenjamin  Note Added: 0008566                          
-03-15-06 19:54 rlrevell       Note Added: 0008570                          
+03-15-06 18:21 tassilo80      New Issue                                    
+03-15-06 18:21 tassilo80      File Added: asound.state                     
+03-15-06 18:26 tassilo80      File Added: codec-files                      
+03-15-06 18:50 tiwai          Note Added: 0008563                          
+03-15-06 18:59 tassilo80      Note Added: 0008565                          
+03-15-06 19:35 tiwai          Note Added: 0008568                          
+03-15-06 19:56 tassilo80      Note Added: 0008571                          
 ======================================================================
 
 
