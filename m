@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
-Date: Wed, 15 Mar 2006 21:42:20 +0100
-Message-ID: <9c5c1d2496e8f1117b912ae8177cb738@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
+Date: Wed, 15 Mar 2006 21:49:33 +0100
+Message-ID: <403578c404cd5abbc7d0f3f2a76d3615@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D737203
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 21:42:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBCAD1FB
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 21:49:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,101 +22,93 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
 ======================================================================
-Reported By:                chrmue
+Reported By:                kratz00
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1733
-Category:                   PCI - hda-intel
+Issue ID:                   1714
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE Linux 10.0
-Kernel Version:             2.6.13-15
+Status:                     feedback
+Distribution:               LFS
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             01-11-2006 07:23 CET
-Last Modified:              03-15-2006 21:42 CET
+Date Submitted:             01-04-2006 18:04 CET
+Last Modified:              03-15-2006 21:49 CET
 ======================================================================
-Summary:                    Intel HDA Modem ?
+Summary:                    Intel HDA (AD1986A) no sound
 Description: 
-I want to use my HDA Softmodem in Linux, is there any development on a HDA
-Modem Module ?
+It's a Samsung M50 Notebook.
+I also tried Alsa 1.0.10 but the problem is the same.
+There are no specific module options for the AD1986A chip, right?
 
-cat /proc/asound/card0/codec#1 gives me:
-Codec: Generic 11c1 ID 3026
-Address: 1
-Vendor Id: 0x11c13026
-Subsystem Id: 0x11c13026
-Revision Id: 0x70500
+00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 03)
+        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
+loaded modules:
+snd_pcm_oss            47136  0 
+snd_mixer_oss          16512  1 snd_pcm_oss
+snd_hda_intel          14224  0 
+snd_hda_codec         122624  1 snd_hda_intel
+snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              19844  1 snd_pcm
+snd                    46144  6
+snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
 
-If there is development on this i would like to participate to get it
-going, because i dont't want to have a windows-installation on my Notebook
-(Acer TravelMate 8104) just for getting my mails at my parents house,
-where there is only analog telephone.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001841 Mixer not working  / fujitsu laptop V20...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 11:35 
+ tiwai - 03-10-06 18:26 
 ----------------------------------------------------------------------
-SUSE 10.0 has ALSA 1.0.10-pre version, and the newer version of alsa-lib
-has a proper definition of modem PCM.  Thus, you don't have to -- or
-shouldn't -- use "hw:X,Y" but use "modem" or "modem:1" instead.
+The patch is in #1841.
 
 ----------------------------------------------------------------------
- kratz00 - 03-15-06 21:42 
+ kratz00 - 03-15-06 21:49 
 ----------------------------------------------------------------------
-i used cvs from today (driver, kernel, libs)
-output off "./slmodemd -a -d 5 modem:0 -g root" is
+sorry that i have to reopen this bug again
 
-SmartLink Soft Modem: version 2.9.10 Mar 10 2006 23:39:11
-<081.923714> SmartLink Soft Modem: version 2.9.10 Mar 10 2006 23:39:11
-<081.923736> modem:0: startup modem...
-<081.923783> modem:0: update termios...
-symbolic link `/dev/ttySL0' -> `/dev/pts/2' created.
-modem `modem:0' created. TTY is `/dev/pts/2'
-<081.924379> open file: /var/lib/slmodem/data.modem:0...
-<081.924475> cannot open '/var/lib/slmodem/data.modem:0': No such file or
-directory
-<081.924823> main: rt applyed: SCHED_FIFO, pri 99
-Use `/dev/ttySL0' as modem device, Ctrl+C for termination.
-
-and still no luck with wvdail
+if I use your attached patch from #1841 line out works but after you
+checked it in and changed something in current cvs it dosen't work anymore
+:(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 07:23 chrmue         New Issue                                    
-01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
-01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
-01-11-06 07:42 rlrevell       Note Added: 0007559                          
-01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
-            
-01-11-06 23:35 sashak         Note Added: 0007571                          
-01-12-06 00:00 sashak         Note Added: 0007574                          
-01-12-06 00:02 sashak         Issue Monitored: sashak                      
-01-12-06 05:35 chrmue         Note Added: 0007581                          
-01-13-06 00:16 sashak         Note Added: 0007598                          
-01-16-06 20:19 chrmue         Note Added: 0007692                          
-01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
-03-03-06 15:43 lrupn          Note Added: 0008341                          
-03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
-03-10-06 23:44 kratz00        Note Added: 0008413                          
-03-11-06 15:19 kratz00        Note Added: 0008416                          
-03-11-06 19:03 rlrevell       Note Added: 0008421                          
-03-11-06 19:23 kratz00        Note Added: 0008423                          
-03-11-06 19:33 rlrevell       Note Added: 0008424                          
-03-11-06 23:08 sashak         Note Added: 0008427                          
-03-12-06 11:22 kratz00        Note Added: 0008431                          
-03-15-06 00:42 chrmue         Note Added: 0008525                          
-03-15-06 11:35 tiwai          Note Added: 0008530                          
-03-15-06 21:42 kratz00        Note Added: 0008573                          
+01-04-06 18:04 kratz00        New Issue                                    
+01-04-06 18:04 kratz00        Distribution              => LFS             
+01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
+01-30-06 13:40 kratz00        Note Added: 0007837                          
+02-07-06 00:48 gerick         Issue Monitored: gerick                      
+02-08-06 13:13 simonckenyon   Issue Monitored: simonckenyon                    
+03-10-06 18:26 tiwai          Relationship added       duplicate of 0001841
+03-10-06 18:26 tiwai          Duplicate ID             0 => 1841           
+03-10-06 18:26 tiwai          Status                   new => resolved     
+03-10-06 18:26 tiwai          Resolution               open => duplicate   
+03-10-06 18:26 tiwai          Assigned To               => tiwai           
+03-10-06 18:26 tiwai          Note Added: 0008408                          
+03-15-06 21:49 kratz00        Status                   resolved => feedback
+03-15-06 21:49 kratz00        Resolution               duplicate => reopened
+03-15-06 21:49 kratz00        Note Added: 0008574                          
 ======================================================================
 
 
