@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001926]: No sound and no internal speakers with Samsung R65-T2300 Charis notebook
-Date: Wed, 15 Mar 2006 19:35:18 +0100
-Message-ID: <09670bea2a9a6e1f8bebbe06c33abb9d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001927]: Capture Device not working
+Date: Wed, 15 Mar 2006 19:38:08 +0100
+Message-ID: <2124fc20fd97ce0a30bb6602693701ec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40D101D7
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 19:35:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9C54205
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 19:38:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,89 +24,122 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1926> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1927> 
 ======================================================================
-Reported By:                tassilo80
+Reported By:                sk0rp10
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1926
+Issue ID:                   1927
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Slackware current
+Kernel Version:             2.6.15.6 vanilla
 ======================================================================
-Date Submitted:             03-15-2006 18:21 CET
-Last Modified:              03-15-2006 19:35 CET
+Date Submitted:             03-15-2006 19:23 CET
+Last Modified:              03-15-2006 19:38 CET
 ======================================================================
-Summary:                    No sound and no internal speakers with Samsung
-R65-T2300 Charis notebook
+Summary:                    Capture Device not working
 Description: 
-I have no sound on my laptop. 
+I tryed use krec to record from internal mic but no sound is recorded. 
+I applyed the patch from issue #1890.
 
-First I tried alsa-diver-1.0.11rc3:
-* The headphones are listed in alsamixer, but the internal speakers are
-not listed.
-* There's no sound with headphones
-* If I apply the patch mentioned in bug #1793
-(http://quaggaspace.org/a8nvm/a8nvmsound.patch) I have at least sound with
-my headphones
+here asound.state:
 
-The I tried the current CVS:
-* without model-option I had short a sound on my right headphone till I
-tweaked the mixer settings
-* with model=laptop I had no sound at all
-* with model=3stack I had no sount at all, too
-* if I apply the patch mentioned above and give no model-option, the sound
-works again (only headphones)
+state.Intel {
+        control.1 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 127'
+                iface MIXER
+                name 'Master Playback Volume'
+                value.0 121
+                value.1 121
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Master Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.3 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'CD Capture Volume'
+                value.0 7
+                value.1 7
+        }
+        control.4 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Capture Volume'
+                value.0 11
+                value.1 11
+        }
+        control.5 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Capture Switch'
+                value.0 false
+                value.1 false
+        }
+        control.6 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 HP
+                comment.item.1 Unknown
+                comment.item.2 Mic
+                comment.item.3 PCM
+                iface MIXER
+                name 'Capture Source'
+                value Mic
+        }
+        control.7 {
+                comment.access 'read write user'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 255'
+                iface MIXER
+                name 'PCM Playback Volume'
+                value.0 232
+                value.1 232
+        }
+}
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tassilo80 - 03-15-06 18:59 
+ tiwai - 03-15-06 19:38 
 ----------------------------------------------------------------------
-> So, in every case, you haven't got built-in speaker working, 
-> but only headphone jack output, right?
-
-Exactly.
-
-Inputs:
-  - one microphone jack
-  - one integrated microphone (at least the manual says that)
-
-Outputs:
-  - one headphone jack
-  - 2 integrated stereo speakers
-  - TV-Out (SVHS), don't know if that has something to do with sound
-
-----------------------------------------------------------------------
- tiwai - 03-15-06 19:35 
-----------------------------------------------------------------------
-OK, and which mixer controls influence on the volume / mute of headphone
-output?
-I suppose PCM should, but any else (Front, Surround, Rear, Center, LFE,
-Headphone)?
-
-And, does the recording from mic-jack (or built-in mic) work?
-You can see the captured signal via
-
-   % arecord -vv -fdat foo.wav
-
-Don't forget to turn on 'Capture Switch', adjust 'Capture Volume', and
-choose the right 'Capture Source' (either Line or Mic, I guess).
+Try CVS version at first.  If still doesn't work, please upload the
+contents of /proc/asound/card0/codec#* files, and the product name of your
+machine, laptop or mobo, whatever information to identify.
+The detailed description of the existing I/O (jacks, etc) is also
+appreciated.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 18:21 tassilo80      New Issue                                    
-03-15-06 18:21 tassilo80      File Added: asound.state                     
-03-15-06 18:26 tassilo80      File Added: codec-files                      
-03-15-06 18:50 tiwai          Note Added: 0008563                          
-03-15-06 18:59 tassilo80      Note Added: 0008565                          
-03-15-06 19:35 tiwai          Note Added: 0008568                          
+03-15-06 19:23 sk0rp10        New Issue                                    
+03-15-06 19:23 sk0rp10        Distribution              => Slackware current
+03-15-06 19:23 sk0rp10        Kernel Version            => 2.6.15.6 vanilla
+03-15-06 19:38 tiwai          Note Added: 0008569                          
 ======================================================================
 
 
