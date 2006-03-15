@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001928]: Only Problems with Surround Sound
-Date: Wed, 15 Mar 2006 22:02:11 +0100
-Message-ID: <902c0fc2d37fe47479df0b5cf74f757f@bugtrack.alsa-project.org>
+Date: Wed, 15 Mar 2006 22:24:18 +0100
+Message-ID: <89ded15a4966b24ff91123fa0a20e584@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63849E8
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 22:02:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D09821F3
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 22:24:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1928> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Debian Sid
 Kernel Version:             2.6.15.6
 ======================================================================
 Date Submitted:             03-15-2006 22:02 CET
-Last Modified:              03-15-2006 22:02 CET
+Last Modified:              03-15-2006 22:24 CET
 ======================================================================
 Summary:                    Only Problems with Surround Sound
 Description: 
@@ -125,12 +125,22 @@ I need it!
 mfg Patrick
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 03-15-06 22:24 
+----------------------------------------------------------------------
+Your surround sound (playback of 5.1 audio) is working perfectly - what you
+want is upmixing of stereo sounds to 5.1.
+
+This is not really appropriate for a bug report as it's not a bug.  Please
+post your question to the alsa-user list.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-15-06 22:02 the-me         New Issue                                    
 03-15-06 22:02 the-me         Distribution              => Debian Sid      
 03-15-06 22:02 the-me         Kernel Version            => 2.6.15.6        
+03-15-06 22:24 rlrevell       Note Added: 0008575                          
 ======================================================================
 
 
