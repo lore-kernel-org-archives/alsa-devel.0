@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
-Date: Wed, 15 Mar 2006 21:49:33 +0100
-Message-ID: <403578c404cd5abbc7d0f3f2a76d3615@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001928]: Only Problems with Surround Sound
+Date: Wed, 15 Mar 2006 22:02:11 +0100
+Message-ID: <902c0fc2d37fe47479df0b5cf74f757f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBCAD1FB
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 21:49:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63849E8
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 22:02:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,93 +22,115 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1928> 
 ======================================================================
-Reported By:                kratz00
+Reported By:                the-me
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1714
-Category:                   1_OTHERS
+Issue ID:                   1928
+Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               LFS
-Kernel Version:             2.6.15
+Status:                     assigned
+Distribution:               Debian Sid
+Kernel Version:             2.6.15.6
 ======================================================================
-Date Submitted:             01-04-2006 18:04 CET
-Last Modified:              03-15-2006 21:49 CET
+Date Submitted:             03-15-2006 22:02 CET
+Last Modified:              03-15-2006 22:02 CET
 ======================================================================
-Summary:                    Intel HDA (AD1986A) no sound
+Summary:                    Only Problems with Surround Sound
 Description: 
-It's a Samsung M50 Notebook.
-I also tried Alsa 1.0.10 but the problem is the same.
-There are no specific module options for the AD1986A chip, right?
+Hi.
+I've got a big problem ( like many other users of many other soundcards ).
+My Surroundsound didn't work!
+I've got the Terratec Aureon 5.1 Fun soundcard. At alsamixer, I haven't
+got any LFE or Center Options ( why? there stands in the topic *MC6 ( for
+6 channels! ) ).
+Now I tried it with a .asoundrc. Result:
+Now my Rear / Front / Center worked correctly at listening to mp3s, the
+subwoofer ( lfe ) gives also high sound out, not only deep!!! thats a big
+problem.
 
-00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03)
-        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+I tried it with the following .asoundrc =>
+http://www.linux-development.org/nopaste/?800
 
-loaded modules:
-snd_pcm_oss            47136  0 
-snd_mixer_oss          16512  1 snd_pcm_oss
-snd_hda_intel          14224  0 
-snd_hda_codec         122624  1 snd_hda_intel
-snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              19844  1 snd_pcm
-snd                    46144  6
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
+now I found an entry at an wiki of alsa.opensrc.org , which contains
+following:
 
+---------------
+Custom Routing of Signals to Surround Outputs
+
+With a little .asoundrc hackery, you can easily route signals around any
+way you like. See for example FAQ028 for an example of how to play a
+stereo signal over booth front and rear speakers simultaneously. The
+example can easily be adapted to suit your needs. FAQ028 tells us how to
+route our "normal" stereo signals to 4 or 5 speakers. It would be nice to
+process the signal for the subwoofer with a lowpass filter. Thats's where
+the LADSPA plugins come in handy:
+
+pcm.lowpass {
+type ladspa
+slave.pcm ...
+path "/usr/lib/ladspa"
+plugins [ {
+label lpf
+input {
+controls [ 50 ]
+}
+} ]
+}
+
+This filter will cut off everything above 50 Hz. Only problem: How do I
+send only one channel (a mixture of right and left channel) through this
+filter? And where do I send the filtered signal? I have tried this setup:
+
+# move channel 0 to channel 2
+pcm.move0to2 {
+type route
+slave.pcm 3to6
+slave.channels 3
+ttable.0.2 1
+}
+# 3to6 has 3 input and 6 output channels
+# the stereo signal is on ch. 0 and 1
+# ch.0 is copied to 0 and 2 (front and rear)
+# ch.1 is copied to 1 and 3 (front and rear)
+# ch.0 and ch.1 will is mixed to ch.4 (center)
+# ch.2 is routed to ch.5 (subwoofer)
+pcm.3to6 {
+type route
+slave.pcm "surround51"
+slave.channels 6
+ttable.0.0 1
+ttable.1.1 1
+ttable.0.2 1
+ttable.1.3 1
+ttable.0.4 0.5
+ttable.1.4 0.5
+ttable.2.5 1
+}
+
+This seems to work from the lowpass filter to the output (I have tried
+aplay -D plug:lowpass sound.wav). But still the question - How to I get
+the data of one channel to the lowpass filter?
+---------------
+
+my question, how can I set up this lowpassfilter only for my LFE channel??
+I need it!
+
+mfg Patrick
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001841 Mixer not working  / fujitsu laptop V20...
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-10-06 18:26 
-----------------------------------------------------------------------
-The patch is in #1841.
-
-----------------------------------------------------------------------
- kratz00 - 03-15-06 21:49 
-----------------------------------------------------------------------
-sorry that i have to reopen this bug again
-
-if I use your attached patch from #1841 line out works but after you
-checked it in and changed something in current cvs it dosen't work anymore
-:(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 18:04 kratz00        New Issue                                    
-01-04-06 18:04 kratz00        Distribution              => LFS             
-01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
-01-30-06 13:40 kratz00        Note Added: 0007837                          
-02-07-06 00:48 gerick         Issue Monitored: gerick                      
-02-08-06 13:13 simonckenyon   Issue Monitored: simonckenyon                    
-03-10-06 18:26 tiwai          Relationship added       duplicate of 0001841
-03-10-06 18:26 tiwai          Duplicate ID             0 => 1841           
-03-10-06 18:26 tiwai          Status                   new => resolved     
-03-10-06 18:26 tiwai          Resolution               open => duplicate   
-03-10-06 18:26 tiwai          Assigned To               => tiwai           
-03-10-06 18:26 tiwai          Note Added: 0008408                          
-03-15-06 21:49 kratz00        Status                   resolved => feedback
-03-15-06 21:49 kratz00        Resolution               duplicate => reopened
-03-15-06 21:49 kratz00        Note Added: 0008574                          
+03-15-06 22:02 the-me         New Issue                                    
+03-15-06 22:02 the-me         Distribution              => Debian Sid      
+03-15-06 22:02 the-me         Kernel Version            => 2.6.15.6        
 ======================================================================
 
 
