@@ -1,13 +1,14 @@
-From: boku <boku0712@gmail.com>
-Subject: memory allocate for substream->runtime->dma_area
-Date: Wed, 15 Mar 2006 11:43:51 +0800
-Message-ID: <715d90900603141943h423c0ffdydedec3f1ed50a375@mail.gmail.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: memory allocate for substream->runtime->dma_area
+Date: Tue, 14 Mar 2006 22:54:01 -0500
+Message-ID: <1142394842.24603.77.camel@mindpipe>
 References: <715d90900603141942y6c409027sb5a99be13f5ec462@mail.gmail.com>
+	 <715d90900603141943h423c0ffdydedec3f1ed50a375@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_2131_5650904.1142394231252"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <715d90900603141942y6c409027sb5a99be13f5ec462@mail.gmail.com>
+In-Reply-To: <715d90900603141943h423c0ffdydedec3f1ed50a375@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,38 +18,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: boku <boku0712@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_2131_5650904.1142394231252
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Wed, 2006-03-15 at 11:43 +0800, boku wrote:
+> Dear all,
+>     Could anyone tell me where the memory allocation of
+> substream->runtime is? I got to refine the runtime->dma_area within a
+> specific DMA address. But I can't find where the dma alloc is. Thanks
+> a lot! 
 
- Dear all,
-    Could anyone tell me where the memory allocation of substream->runtime
-is? I got to refine the runtime->dma_area within a specific DMA address. Bu=
-t
-I can't find where the dma alloc is. Thanks a lot!
+This question is pretty cryptic, can you describe what you are trying to
+do and post a link to your code?  Did you read the ALSA driver guide?
 
-BR,
+Lee
 
-------=_Part_2131_5650904.1142394231252
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-<span class=3D"gmail_quote"></span>
-<div>Dear all,<br>&nbsp;&nbsp;&nbsp; Could anyone tell me where the memory =
-allocation of substream-&gt;runtime is? I got to refine the runtime-&gt;dma=
-_area within a specific DMA address. But I can't find where the dma alloc i=
-s. Thanks a lot!=20
-</div>
-<div>&nbsp;</div>
-<div>BR,</div>
-<div>&nbsp;</div>
-
-------=_Part_2131_5650904.1142394231252--
 
 
 -------------------------------------------------------
