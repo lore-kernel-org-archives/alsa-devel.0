@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Wed, 15 Mar 2006 05:34:50 +0100
-Message-ID: <da36ec21d4e6faad5045049d07dcbfd9@bugtrack.alsa-project.org>
+Date: Wed, 15 Mar 2006 06:39:45 +0100
+Message-ID: <61f46dfb4a532950915fceb4e8cd1c91@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 845F31E9
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 05:34:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D66DF1ED
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 06:39:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              03-15-2006 05:34 CET
+Last Modified:              03-15-2006 06:39 CET
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -69,12 +69,6 @@ thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- robitech - 03-03-06 08:29 
-----------------------------------------------------------------------
-HELLO. Please help me. I am using GENTOO LINUX. No sound on my BENQ
-S52.Probed module snd-itel8x0. Thank you.
-
-----------------------------------------------------------------------
  JProgrammer - 03-15-06 05:34 
 ----------------------------------------------------------------------
 It appears to me that this is a problem with ac97_codec as it is not being
@@ -83,6 +77,14 @@ conexant_patch and with no patch however there is still no sound. I am
 willing to help in delivering a patch however I am not familiar with
 developing for alsa and the CX20551 is not even on the conexant website to
 look for documentation like with some of their other chips.
+
+----------------------------------------------------------------------
+ Kooper - 03-15-06 06:39 
+----------------------------------------------------------------------
+The same hardware (BenQ Joybook S52), the same problem.
+Kernel - 2.6.15-1.1833_1.rhfc4.cubbi_swsusp2 (no sound with standard FC4
+kernels also)
+alsa-utils-1.0.10-1.FC4
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -119,6 +121,8 @@ Date Modified  Username       Field                    Change
 02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
 03-03-06 08:29 robitech       Note Added: 0008336                          
 03-15-06 05:34 JProgrammer    Note Added: 0008526                          
+03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
+03-15-06 06:39 Kooper         Note Added: 0008527                          
 ======================================================================
 
 
