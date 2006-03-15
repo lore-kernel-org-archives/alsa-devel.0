@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001678]: nForce (10de:026c) left channel squeals, right channel mostly okay
-Date: Wed, 15 Mar 2006 15:47:41 +0100
-Message-ID: <ffcd2fe29a50d5af9f0d33863b975ba1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001793]: No sound on ASUS A8N-VM CSM
+Date: Wed, 15 Mar 2006 15:54:07 +0100
+Message-ID: <42060e7e63214e2854e65030afffa585@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5757120A
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 15:47:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B897720C
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 15:54:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,91 +22,265 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1678> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1793> 
 ======================================================================
-Reported By:                kees
+Reported By:                labene
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1678
+Issue ID:                   1793
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.15-rc6-git4
-Resolution:                 duplicate
-Duplicate:                  1596
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.15 standard
 ======================================================================
-Date Submitted:             12-25-2005 02:29 CET
-Last Modified:              03-15-2006 15:47 CET
+Date Submitted:             01-29-2006 18:31 CET
+Last Modified:              03-15-2006 15:54 CET
 ======================================================================
-Summary:                    nForce (10de:026c) left channel squeals, right
-channel mostly okay
+Summary:                    No sound on ASUS A8N-VM CSM
 Description: 
-This is an integrated chipset on an ASUS A8N-VM-UAYGZ mobo.  Marketing info
-is this is an "nForce410" board, with "6-channel HD audio".
+No sound on ASUS A8N-VM CSM, chipset nForce 430 (HDA nvidia) don't have
+sound on the speaker but found by kernel 2.6.15 and exist with alsamixer
+!
+I don't any issue in the line :
+options snd-hda-intel model=???? position_fix=1
 
-Both the ALSA in 2.6.15-rc6-git4 and the 1.0.11rc1 ALSA driver for
-snd-hda-intel load fine, but during playback, the left channel squeals,
-while the right seems to play things okay.
+I don't know where is the problem !
 
-I'm happy to dig around and try whatever needs trying to get this fixed. 
-Thanks!
+
+cat /proc/asound/cards :
+0 [NVidia         ]: HDA-Intel - HDA NVidia
+                     HDA NVidia at 0xfebd8000 irq 5
+
+lspci -nv :
+
+
+0000:00:00.0 0500: 10de:02f0 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        Capabilities: <available only to root>
+
+0000:00:00.1 0500: 10de:02fa (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel
+
+0000:00:00.2 0500: 10de:02fe (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel
+
+0000:00:00.3 0500: 10de:02f8 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel
+
+0000:00:00.4 0500: 10de:02f9 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+
+0000:00:00.5 0500: 10de:02ff (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        Capabilities: <available only to root>
+
+0000:00:00.6 0500: 10de:027f (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel
+
+0000:00:00.7 0500: 10de:027e (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel
+
+0000:00:02.0 0604: 10de:02fc (rev a1)
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+        Capabilities: <available only to root>
+
+0000:00:03.0 0604: 10de:02fd (rev a1)
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
+        Capabilities: <available only to root>
+
+0000:00:04.0 0604: 10de:02fb (rev a1)
+        Flags: bus master, fast devsel, latency 0
+        Bus: primary=00, secondary=03, subordinate=03, sec-latency=0
+        Capabilities: <available only to root>
+
+0000:00:05.0 0300: 10de:0240 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 11
+        Memory at fd000000 (32-bit, non-prefetchable) [size=16M]
+        Memory at d0000000 (64-bit, prefetchable) [size=256M]
+        Memory at fc000000 (64-bit, non-prefetchable) [size=16M]
+        Expansion ROM at febe0000 [disabled] [size=128K]
+        Capabilities: <available only to root>
+
+0000:00:09.0 0500: 10de:0270 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        Capabilities: <available only to root>
+
+0000:00:0a.0 0601: 10de:0260 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+
+0000:00:0a.1 0c05: 10de:0264 (rev a2)
+        Subsystem: 10de:cb84
+        Flags: 66MHz, fast devsel, IRQ 5
+        I/O ports at 0600 [size=64]
+        I/O ports at 0700 [size=64]
+        Capabilities: <available only to root>
+
+0000:00:0b.0 0c03: 10de:026d (rev a2) (prog-if 10)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
+        Memory at febde000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: <available only to root>
+
+0000:00:0b.1 0c03: 10de:026e (rev a2) (prog-if 20)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 3
+        Memory at febdfc00 (32-bit, non-prefetchable) [size=256]
+        Capabilities: <available only to root>
+
+0000:00:0d.0 0101: 10de:0265 (rev a1) (prog-if 8a [Master SecP PriP])
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        I/O ports at ffa0 [size=16]
+        Capabilities: <available only to root>
+
+0000:00:0e.0 0101: 10de:0266 (rev a1) (prog-if 85 [Master SecO PriO])
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
+        I/O ports at e800 [size=8]
+        I/O ports at e480 [size=4]
+        I/O ports at e400 [size=8]
+        I/O ports at e080 [size=4]
+        I/O ports at e000 [size=16]
+        Memory at febdd000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: <available only to root>
+
+0000:00:0f.0 0101: 10de:0267 (rev a1) (prog-if 85 [Master SecO PriO])
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
+        I/O ports at dc00 [size=8]
+        I/O ports at d880 [size=4]
+        I/O ports at d800 [size=8]
+        I/O ports at d480 [size=4]
+        I/O ports at d400 [size=16]
+        Memory at febdc000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: <available only to root>
+
+0000:00:10.0 0604: 10de:026f (rev a2) (prog-if 01)
+        Flags: bus master, 66MHz, fast devsel, latency 0
+        Bus: primary=00, secondary=04, subordinate=04, sec-latency=128
+        I/O behind bridge: 0000c000-0000cfff
+        Memory behind bridge: faa00000-faafffff
+        Capabilities: <available only to root>
+
+0000:00:10.1 0403: 10de:026c (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
+        Memory at febd8000 (32-bit, non-prefetchable) [size=16K]
+        Capabilities: <available only to root>
+
+0000:00:18.0 0600: 1022:1100
+        Flags: fast devsel
+        Capabilities: <available only to root>
+
+0000:00:18.1 0600: 1022:1101
+        Flags: fast devsel
+
+0000:00:18.2 0600: 1022:1102
+        Flags: fast devsel
+
+0000:00:18.3 0600: 1022:1103
+        Flags: fast devsel
+
+0000:04:05.0 0c00: 1106:3044 (rev 80) (prog-if 10)
+        Subsystem: 1043:808a
+        Flags: bus master, medium devsel, latency 128, IRQ 5
+        Memory at faaff800 (32-bit, non-prefetchable) [size=2K]
+        I/O ports at cc00 [size=128]
+        Capabilities: <available only to root>
+
+0000:04:08.0 0200: 10ec:8139 (rev 10)
+        Subsystem: 10ec:8139
+        Flags: bus master, medium devsel, latency 128, IRQ 5
+        I/O ports at c800 [size=256]
+        Memory at faaff400 (32-bit, non-prefetchable) [size=256]
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001596 No sound or High pitched noise, dissape...
+duplicate of        0001632 suse 10.0,  yast, no ad1986a listed,  i...
 ======================================================================
 
 ----------------------------------------------------------------------
- Xbalanque - 01-31-06 21:43 
+ tassilo80 - 03-15-06 15:41 
 ----------------------------------------------------------------------
-Same problem described by kees with alsa 1.0.11rc3. Just to let you all
-know.
+> Try model=3stack, instead, then.
+
+No sound with this, too. Just to be sure: Adding
+    options snd-hda-intel model=3stack
+to /etc/modules.d/alsa followed by modules-update and a reboot should
+suffice, right?
+
+> I meant "product name" of your laptop/mobo, sorry it was a typo.
+
+It's a Samsung R65 Charis with one of those new Intel T2300 dual core
+centrino cpus. Chipset is Intel 945 GM or PM (ICH7M).
+
+
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 15:47 
+ tiwai - 03-15-06 15:54 
 ----------------------------------------------------------------------
-It's dup of #1596.  Follow the instruction there, and provide the requested
-information if it works.
+Check /sys/module/snd_hda_intel/parameters/* whether the values are passed
+correctly.  Also, build the drivers with debug option, then you'll see a
+kernel message like "hda-codec: model XXX selected".
+
+After changing the model, make sure that you unmute/adjust the mixer
+volumes properly.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-25-05 02:29 kees           New Issue                                    
-12-25-05 02:29 kees           Distribution              => Ubuntu Breezy   
-12-25-05 02:29 kees           Kernel Version            => 2.6.15-rc6-git4 
-12-26-05 11:02 kees           Note Added: 0007149                          
-12-30-05 23:43 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:43 morgoth666     Issue End Monitor: morgoth666                    
-12-30-05 23:44 morgoth666     Issue Monitored: morgoth666                    
-12-30-05 23:50 morgoth666     Note Added: 0007300                          
-12-31-05 05:47 Dr Hotdog      Issue Monitored: Dr Hotdog                    
-12-31-05 10:16 kees           Note Added: 0007355                          
-12-31-05 17:12 Dr Hotdog      Note Added: 0007357                          
-12-31-05 17:30 Dr Hotdog      Note Edited: 0007357                         
-01-04-06 17:40 tiwai          Note Added: 0007446                          
-01-04-06 17:56 kees           Note Added: 0007449                          
-01-06-06 18:14 adel           Note Added: 0007490                          
-01-06-06 19:22 kees           Note Added: 0007494                          
-01-12-06 09:57 moreloci       Note Added: 0007583                          
-01-25-06 20:52 Ka-Ka          Issue Monitored: Ka-Ka                       
-01-31-06 21:43 Xbalanque      Note Added: 0007854                          
-02-05-06 06:30 gerick         Issue Monitored: gerick                      
-02-06-06 22:39 rbenech        Issue Monitored: rbenech                     
-02-08-06 13:06 simonckenyon   Issue Monitored: simonckenyon                    
-02-13-06 12:07 beenleigh      Issue Monitored: beenleigh                    
-03-06-06 06:12 stevenellis    Issue Monitored: stevenellis                    
-03-15-06 15:47 tiwai          Relationship added       duplicate of 0001596
-03-15-06 15:47 tiwai          Duplicate ID             0 => 1596           
-03-15-06 15:47 tiwai          Status                   assigned => resolved
-03-15-06 15:47 tiwai          Resolution               open => duplicate   
-03-15-06 15:47 tiwai          Note Added: 0008556                          
+01-29-06 18:31 labene         New Issue                                    
+01-29-06 18:31 labene         Distribution              => Debian          
+01-29-06 18:31 labene         Kernel Version            => 2.6.15 standard 
+01-29-06 18:54 labene         Note Added: 0007833                          
+01-29-06 19:13 labene         Note Added: 0007834                          
+02-01-06 15:38 thorstenl      Issue Monitored: thorstenl                    
+02-04-06 02:20 rbenech        Issue Monitored: rbenech                     
+02-04-06 02:23 rbenech        Note Added: 0007909                          
+02-04-06 02:28 rbenech        Note Edited: 0007909                         
+02-04-06 15:36 labene         Note Added: 0007916                          
+02-04-06 15:44 labene         Note Edited: 0007916                         
+02-04-06 19:15 rlrevell       Note Added: 0007920                          
+02-04-06 20:23 Arnaud Patard  Note Added: 0007924                          
+02-05-06 06:26 gerick         Note Added: 0007931                          
+02-05-06 06:32 gerick         Issue Monitored: gerick                      
+02-06-06 20:16 quagga         Note Added: 0007951                          
+02-08-06 13:04 simonckenyon   Issue Monitored: simonckenyon                    
+02-13-06 14:00 ukrcald        Note Added: 0008048                          
+02-13-06 14:56 awjb           Issue Monitored: awjb                        
+02-13-06 15:02 awjb           Note Added: 0008051                          
+02-13-06 21:29 chalvorson     Issue Monitored: chalvorson                    
+03-01-06 13:09 tassilo80      Note Added: 0008280                          
+03-01-06 13:13 tassilo80      Note Edited: 0008280                         
+03-07-06 15:20 quagga         Issue Monitored: quagga                      
+03-13-06 17:39 rlrevell       Relationship added       duplicate of 0001632
+03-13-06 17:50 rlrevell       Note Added: 0008451                          
+03-13-06 17:56 tiwai          Note Added: 0008452                          
+03-13-06 23:19 tassilo80      Note Added: 0008467                          
+03-15-06 14:50 tiwai          Note Added: 0008548                          
+03-15-06 15:40 tassilo80      Note Added: 0008554                          
+03-15-06 15:41 tassilo80      Note Edited: 0008554                         
+03-15-06 15:54 tiwai          Note Added: 0008557                          
 ======================================================================
 
 
