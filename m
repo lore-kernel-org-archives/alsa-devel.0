@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001928]: Only Problems with Surround Sound
-Date: Wed, 15 Mar 2006 23:02:50 +0100
-Message-ID: <df1be6d0d843f52c907be2f97b7b09a3@bugtrack.alsa-project.org>
+Date: Wed, 15 Mar 2006 23:13:59 +0100
+Message-ID: <2a51f75a93f78306a05e3f46cff50393@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42CE2203
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 23:02:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42BF7203
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 23:13:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian Sid
 Kernel Version:             2.6.15.6
 ======================================================================
 Date Submitted:             03-15-2006 22:02 CET
-Last Modified:              03-15-2006 23:02 CET
+Last Modified:              03-15-2006 23:13 CET
 ======================================================================
 Summary:                    Only Problems with Surround Sound
 Description: 
@@ -126,20 +126,22 @@ mfg Patrick
 ======================================================================
 
 ----------------------------------------------------------------------
- the-me - 03-15-06 22:55 
-----------------------------------------------------------------------
-hmm, you can see this like a feature request.
-an alsa option to enable this in alsamixer will be good.
-
-but do you have any idea?
-
-----------------------------------------------------------------------
  rlrevell - 03-15-06 23:02 
 ----------------------------------------------------------------------
 No, sorry, I don't.  You should be able to find a sample .asoundrc for 5.1
 upmixing with low pass filter for the LFE on the net though.
 
 If it was easy to enable this by default it would be done already.
+
+----------------------------------------------------------------------
+ rlrevell - 03-15-06 23:13 
+----------------------------------------------------------------------
+Never mind - I just googled and to my amazement I cannot find a single
+example of an .asoundrc that does stereo->5.1 upmixing with low pass
+filter for the sub.
+
+I do think it's a bug that we don't provide a single example of this
+seemingly common config.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -150,6 +152,7 @@ Date Modified  Username       Field                    Change
 03-15-06 22:24 rlrevell       Note Added: 0008575                          
 03-15-06 22:55 the-me         Note Added: 0008576                          
 03-15-06 23:02 rlrevell       Note Added: 0008577                          
+03-15-06 23:13 rlrevell       Note Added: 0008578                          
 ======================================================================
 
 
