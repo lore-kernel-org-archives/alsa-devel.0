@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Wed, 15 Mar 2006 11:53:49 +0100
-Message-ID: <39c67edfb9c4400248c46bf6091b7631@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001914]: playing 2-channel sound on surround device uses rear speakers
+Date: Wed, 15 Mar 2006 11:59:19 +0100
+Message-ID: <36ecb998e0804cde01a6be4e90ecbf24@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A166E1F6
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 11:53:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2A521F8
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 11:59:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,138 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1914> 
 ======================================================================
-Reported By:                liangalei
-Assigned To:                
+Reported By:                mru
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Issue ID:                   1914
+Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Distribution:               Gentoo
+Kernel Version:             2.6.15-gentoo-r1
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              03-15-2006 11:53 CET
+Date Submitted:             03-11-2006 21:25 CET
+Last Modified:              03-15-2006 11:59 CET
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    playing 2-channel sound on surround device uses rear
+speakers
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
-
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
-
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
-
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
-
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
-
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
+If I play regular 2-channel stereo sound specifying device "surround51" or
+"surround40" (or either of those with a "plug:" prefix) the sound is
+output on the rear speakers.  6-channel playback is correct.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 11:40 
+ mru - 03-14-06 23:53 
 ----------------------------------------------------------------------
-Well, the possible problems are:
-
-- Some important codec-specific initialization is missing
-- Conflict of audio and modem codec initialization, due to the combined
-codec chip
-
-The first one is hard to fix without a proper h/w information.
-
-For the second point, make sure that you never load snd-intel8x0m (note
-'m'), e.g. by removing the driver module file.  Then, comment out the
-whole codes related with modem.
+Yes, 6-channel playback is fine, as is 2-channel on the "default" device.
+I installed alsa-lib 1.0.11-rc3; no change.
 
 ----------------------------------------------------------------------
- Kooper - 03-15-06 11:53 
+ tiwai - 03-15-06 11:59 
 ----------------------------------------------------------------------
-> The first one is hard to fix without a proper h/w information.
+I understand slowly what's going on there.
 
-Can I help with it? You need a hardware information from me (customer) or
-from BenQ?
+The 4.0/5.1 surround outputs use the second DAC.  The behavior of this DAC
+is somewhat strange.  If only 2-channel is used, it's routed to rear.  If
+4 or more channels are used, it works as 4.0/5.1.
 
-> For the second point, make sure that you never load snd-intel8x0m (note
-'m'), 
-> e.g. by removing the driver module file. Then, comment out the whole
-codes 
-> related with modem.
+And, in surround40 and surround51 definitions, there is no restriction of
+channels.  That is, if the PCM is opened with 2 channels, it is regarded
+as the rear output.
 
-# lsmod | grep intel
-snd_intel8x0           32093  0
-snd_ac97_codec         88161  1 snd_intel8x0
-snd_pcm                86981  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd                    54309  9
-snd_intel8x0,snd_ac97_codec,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-snd_page_alloc         10697  2 snd_intel8x0,snd_pcm
-
-# dmesg | grep intel8x0
-intel8x0_measure_ac97_clock: measured 55983 usecs
-intel8x0: clocking to 48000
-
-# grep intel /etc/modprobe.conf
-alias snd-card-0 snd-intel8x0
-options snd-intel8x0 index=0
-remove snd-intel8x0 { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-intel8x0
-
-Which 'codes' I should comment out? Comment out from what?
+Maybe we need a route plugin wrapping surround40/51 to fix the channel
+numbers...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
+03-11-06 21:25 mru            New Issue                                    
+03-11-06 21:25 mru            Distribution              => Gentoo          
+03-11-06 21:25 mru            Kernel Version            => 2.6.15-gentoo-r1
+03-14-06 15:04 tiwai          Note Added: 0008477                          
+03-14-06 15:15 mru            Note Added: 0008478                          
+03-14-06 15:22 tiwai          Note Added: 0008481                          
+03-14-06 23:53 mru            Note Added: 0008524                          
+03-15-06 11:59 tiwai          Note Added: 0008536                          
 ======================================================================
 
 
