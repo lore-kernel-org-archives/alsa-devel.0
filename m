@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001926]: No sound and no internal speakers with Samsung R65-T2300 Charis notebook
-Date: Wed, 15 Mar 2006 18:59:59 +0100
-Message-ID: <631b4facbddbc59a6e720107b7cfcbf4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
+Date: Wed, 15 Mar 2006 19:10:26 +0100
+Message-ID: <7c85e9ff4492aff8675b0f24f0e48099@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F277147
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 18:59:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96AAD205
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 19:10:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1926> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
 ======================================================================
-Reported By:                tassilo80
-Assigned To:                tiwai
+Reported By:                binilbenjamin
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1926
-Category:                   PCI - hda-intel
+Issue ID:                   1920
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             03-15-2006 18:21 CET
-Last Modified:              03-15-2006 18:59 CET
+Date Submitted:             03-13-2006 19:02 CET
+Last Modified:              03-15-2006 19:10 CET
 ======================================================================
-Summary:                    No sound and no internal speakers with Samsung
-R65-T2300 Charis notebook
+Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
-I have no sound on my laptop. 
-
-First I tried alsa-diver-1.0.11rc3:
-* The headphones are listed in alsamixer, but the internal speakers are
-not listed.
-* There's no sound with headphones
-* If I apply the patch mentioned in bug #1793
-(http://quaggaspace.org/a8nvm/a8nvmsound.patch) I have at least sound with
-my headphones
-
-The I tried the current CVS:
-* without model-option I had short a sound on my right headphone till I
-tweaked the mixer settings
-* with model=laptop I had no sound at all
-* with model=3stack I had no sount at all, too
-* if I apply the patch mentioned above and give no model-option, the sound
-works again (only headphones)
+i'm having a 5.1 speakers..when i play music ,only 2 of them are working!!!
+i had changed the channel mode in alsamixer to 6 channel..yet no
+changes!!! 
+Motherboard : Asus A8N-E
+OS: fedora core 4
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 18:50 
+ rlrevell - 03-15-06 18:40 
 ----------------------------------------------------------------------
-Thanks for moving.  So, in every case, you haven't got built-in speaker
-working, but only headphone jack output, right?
-
-What input / output does the laptop have at all?
+There's no need to upgrade as your problem is solved - speaker-test
+produces sound from all speakers, right?
 
 ----------------------------------------------------------------------
- tassilo80 - 03-15-06 18:59 
+ binilbenjamin - 03-15-06 19:10 
 ----------------------------------------------------------------------
-> So, in every case, you haven't got built-in speaker working, 
-> but only headphone jack output, right?
-
-Exactly.
-
-Inputs:
-  - one microphone jack
-  - one integrated microphone (at least the manual says that)
-
-Outputs:
-  - one headphone jack
-  - 2 integrated stereo speakers
-  - TV-Out (SVHS), don't know if that has something to do with sound
+So , how can i enable all the speakers while I play mp3s in a player such
+as xmms?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 18:21 tassilo80      New Issue                                    
-03-15-06 18:21 tassilo80      File Added: asound.state                     
-03-15-06 18:26 tassilo80      File Added: codec-files                      
-03-15-06 18:50 tiwai          Note Added: 0008563                          
-03-15-06 18:59 tassilo80      Note Added: 0008565                          
+03-13-06 19:02 binilbenjamin  New Issue                                    
+03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
+03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
+03-13-06 19:33 rlrevell       Note Added: 0008455                          
+03-13-06 19:49 binilbenjamin  Note Added: 0008457                          
+03-13-06 19:54 rlrevell       Note Added: 0008458                          
+03-13-06 20:16 binilbenjamin  Note Added: 0008459                          
+03-13-06 20:25 rlrevell       Note Added: 0008460                          
+03-14-06 17:44 binilbenjamin  Note Added: 0008501                          
+03-14-06 17:56 rlrevell       Note Added: 0008504                          
+03-14-06 18:34 binilbenjamin  Note Added: 0008505                          
+03-14-06 18:52 rlrevell       Note Added: 0008506                          
+03-14-06 19:00 rlrevell       Note Added: 0008507                          
+03-14-06 19:02 binilbenjamin  Note Added: 0008508                          
+03-14-06 19:12 rlrevell       Note Added: 0008509                          
+03-14-06 19:23 tiwai          Note Added: 0008510                          
+03-14-06 19:27 binilbenjamin  Note Added: 0008511                          
+03-14-06 20:08 rlrevell       Note Added: 0008512                          
+03-15-06 18:27 binilbenjamin  Note Added: 0008560                          
+03-15-06 18:40 rlrevell       Note Added: 0008562                          
+03-15-06 19:10 binilbenjamin  Note Added: 0008566                          
 ======================================================================
 
 
