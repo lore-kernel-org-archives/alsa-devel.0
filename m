@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Wed, 15 Mar 2006 12:13:23 +0100
-Message-ID: <87f92adb43e7c5eac6c14d90699099e3@bugtrack.alsa-project.org>
+Date: Wed, 15 Mar 2006 12:17:22 +0100
+Message-ID: <9ec8209891746f351e3da28ec3074524@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C36C1F8
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 12:13:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 203981FB
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 12:17:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              03-15-2006 12:13 CET
+Last Modified:              03-15-2006 12:17 CET
 ======================================================================
 Summary:                    No sound or High pitched noise, dissapears if change
 made on mixer
@@ -296,17 +296,6 @@ Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 11:47 
-----------------------------------------------------------------------
-First, check the date shown in /proc/asound/version whether the driver is
-really what you newly installed.
-Then check /sys/module/snd_hda_intel/parameters/* whether the values were
-properly passed.
-
-BTW, with the CVS version, you don't have to set position_fix any more. 
-It should  without that parameter.
-
-----------------------------------------------------------------------
  merin - 03-15-06 12:13 
 ----------------------------------------------------------------------
 Ok, did that:
@@ -329,6 +318,13 @@ But the module seems to ignore the model parameter i pass:
     position_fix value: 0
     probe_mask value: -1
     single_cmd value: N
+
+----------------------------------------------------------------------
+ tiwai - 03-15-06 12:17 
+----------------------------------------------------------------------
+Then /etc/modprobe.conf or whatever already includes the model option that
+conflicts.  I'm not sure why modprobe commandline cannot override, but I
+remember someone hit a similar problem on Debian.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -372,6 +368,7 @@ Date Modified  Username       Field                    Change
 03-15-06 11:47 tiwai          Note Added: 0008533                          
 03-15-06 12:00 fchevalier     Issue Monitored: fchevalier                    
 03-15-06 12:13 merin          Note Added: 0008537                          
+03-15-06 12:17 tiwai          Note Added: 0008539                          
 ======================================================================
 
 
