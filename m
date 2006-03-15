@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001900]: alsactl stores incorrect values; overwrites non-writable file; does not set emu10k1 mixer
-Date: Wed, 15 Mar 2006 11:50:52 +0100
-Message-ID: <21194158e9c1db80c0f5e24e5de7ea76@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
+Date: Wed, 15 Mar 2006 11:53:49 +0100
+Message-ID: <39c67edfb9c4400248c46bf6091b7631@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BAD1D1F6
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 11:50:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A166E1F6
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 11:53:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,87 +24,138 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1900> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
 ======================================================================
-Reported By:                covex
+Reported By:                liangalei
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1900
-Category:                   alsactl
-Reproducibility:            sometimes
+Project:                    ALSA - driver
+Issue ID:                   1134
+Category:                   PCI - intel8x0
+Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
 ======================================================================
-Date Submitted:             03-09-2006 17:38 CET
-Last Modified:              03-15-2006 11:50 CET
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              03-15-2006 11:53 CET
 ======================================================================
-Summary:                    alsactl stores incorrect values; overwrites
-non-writable file; does not set emu10k1 mixer
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
 Description: 
-I have one main problem with alsa and emu10k1 based SB Live! card. 
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
 
-It's some time ago I notice that very often (not always) after reboot my
-sound card has setup strange values in mixer (e.g wave volume is righ 75
-and left 0, see attached asound.state). First I thought it's some
-application setting these nonsenses but it's not true - those values are
-set SOMETIMES on module removal at reboot.
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
 
-What I noticed during digging around:
-1) Always on user logout I have message in log: ainit: Operation not
-permitted
-It is not specified what operation.
-2) see this situation:
-# modprobe -r snd-emu10k1
-# modprobe --ignore-install snd-emu10k1 && alsactl restore 0
-/usr/sbin/alsactl: load_state:1250: Cannot find soundcard '0'...
-The only thing that works is:
-# modprobe --ignore-install snd-emu10k1; sleep 1; alsactl restore 0
-As the first one is very common situation in all modprobe.conf setups I
-see this as fairly bad problem.
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
 
-3) I set permitions of /etc/asound.state to r--r--r-- to protect it from
-being overwriten but issuing alsactl store overwrites this file!
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
 
-None of these explain why, on module removal the asound is filled with
-incorrect values (asound.state is attached). 
-BTW: there are three states in that file - for CK804 (it is nForce4
-chipset with internal AC97 disabled), for Unknown (guh?!) and Live (finaly
-correct).
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
 
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
 
+thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-14-06 22:03 
+ tiwai - 03-15-06 11:40 
 ----------------------------------------------------------------------
-"Regarding permitions: I am not sure if this is true. If root sets some
-files to not be writeable, then it should not be possible to write in the
-file even though you are root."
+Well, the possible problems are:
 
-I AM sure it is true.  This is how Unix permissions have always worked.
+- Some important codec-specific initialization is missing
+- Conflict of audio and modem codec initialization, due to the combined
+codec chip
+
+The first one is hard to fix without a proper h/w information.
+
+For the second point, make sure that you never load snd-intel8x0m (note
+'m'), e.g. by removing the driver module file.  Then, comment out the
+whole codes related with modem.
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 11:50 
+ Kooper - 03-15-06 11:53 
 ----------------------------------------------------------------------
-The -F option has no influence for alsactl save.  It's *nix tradition that
-root can do everything.  (For example, you can do "echo XXX >
-any-file-without-read-bit" as root.)
+> The first one is hard to fix without a proper h/w information.
 
-alsactl has, so far, no function to remove the old entries.  Please use
-editor to remove the entries of "Unknown" (although that entry must be
-harmless except for place holder).
+Can I help with it? You need a hardware information from me (customer) or
+from BenQ?
+
+> For the second point, make sure that you never load snd-intel8x0m (note
+'m'), 
+> e.g. by removing the driver module file. Then, comment out the whole
+codes 
+> related with modem.
+
+# lsmod | grep intel
+snd_intel8x0           32093  0
+snd_ac97_codec         88161  1 snd_intel8x0
+snd_pcm                86981  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
+snd                    54309  9
+snd_intel8x0,snd_ac97_codec,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+snd_page_alloc         10697  2 snd_intel8x0,snd_pcm
+
+# dmesg | grep intel8x0
+intel8x0_measure_ac97_clock: measured 55983 usecs
+intel8x0: clocking to 48000
+
+# grep intel /etc/modprobe.conf
+alias snd-card-0 snd-intel8x0
+options snd-intel8x0 index=0
+remove snd-intel8x0 { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-intel8x0
+
+Which 'codes' I should comment out? Comment out from what?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-06 17:38 covex          New Issue                                    
-03-09-06 17:38 covex          File Added: asound.state.wrong                    
-03-14-06 15:53 tiwai          Note Added: 0008483                          
-03-14-06 21:54 covex          Note Added: 0008517                          
-03-14-06 22:03 rlrevell       Note Added: 0008518                          
-03-15-06 11:50 tiwai          Note Added: 0008534                          
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
+05-30-05 03:29 liangalei      Note Added: 0004795                          
+06-01-05 16:58 tiwai          Note Added: 0004863                          
+06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+06-02-05 10:42 liangalei      Note Added: 0004875                          
+06-06-05 09:53 perex          Assigned To              perex =>            
+06-23-05 12:42 tiwai          Note Added: 0005182                          
+06-24-05 03:12 liangalei      File Added: asound.state                     
+06-24-05 03:13 liangalei      File Added: ac97#0-0                         
+06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
+06-24-05 03:18 liangalei      Note Added: 0005202                          
+08-28-05 15:28 ybar           Note Added: 0005962                          
+11-29-05 05:59 derek          Issue Monitored: derek                       
+11-29-05 06:00 derek          Issue End Monitor: derek                     
+11-29-05 06:03 derek          Note Added: 0006870                          
+02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
+02-17-06 22:22 gandhi         Note Added: 0008110                          
+02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
+02-17-06 23:28 gandhi         Note Edited: 0008110                         
+02-17-06 23:43 gandhi         Note Edited: 0008110                         
+02-18-06 02:05 gandhi         Note Added: 0008112                          
+02-18-06 08:13 liangalei      Note Added: 0008116                          
+02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
+02-18-06 15:56 gandhi         Note Added: 0008120                          
+02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
+03-03-06 08:29 robitech       Note Added: 0008336                          
+03-15-06 05:34 JProgrammer    Note Added: 0008526                          
+03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
+03-15-06 06:39 Kooper         Note Added: 0008527                          
+03-15-06 11:40 tiwai          Note Added: 0008531                          
+03-15-06 11:53 Kooper         Note Added: 0008535                          
 ======================================================================
 
 
