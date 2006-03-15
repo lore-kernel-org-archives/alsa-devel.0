@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001927]: Capture Device not working
-Date: Wed, 15 Mar 2006 19:38:08 +0100
-Message-ID: <2124fc20fd97ce0a30bb6602693701ec@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
+Date: Wed, 15 Mar 2006 19:54:07 +0100
+Message-ID: <2414bfd7a83c70aa11eacb051c65d1af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9C54205
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 19:38:08 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D126206
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 19:54:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,122 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1927> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
 ======================================================================
-Reported By:                sk0rp10
-Assigned To:                tiwai
+Reported By:                binilbenjamin
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1927
-Category:                   PCI - hda-intel
+Issue ID:                   1920
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware current
-Kernel Version:             2.6.15.6 vanilla
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             03-15-2006 19:23 CET
-Last Modified:              03-15-2006 19:38 CET
+Date Submitted:             03-13-2006 19:02 CET
+Last Modified:              03-15-2006 19:54 CET
 ======================================================================
-Summary:                    Capture Device not working
+Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
-I tryed use krec to record from internal mic but no sound is recorded. 
-I applyed the patch from issue #1890.
-
-here asound.state:
-
-state.Intel {
-        control.1 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 127'
-                iface MIXER
-                name 'Master Playback Volume'
-                value.0 121
-                value.1 121
-        }
-        control.2 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Master Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.3 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'CD Capture Volume'
-                value.0 7
-                value.1 7
-        }
-        control.4 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'Capture Volume'
-                value.0 11
-                value.1 11
-        }
-        control.5 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Capture Switch'
-                value.0 false
-                value.1 false
-        }
-        control.6 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 HP
-                comment.item.1 Unknown
-                comment.item.2 Mic
-                comment.item.3 PCM
-                iface MIXER
-                name 'Capture Source'
-                value Mic
-        }
-        control.7 {
-                comment.access 'read write user'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 255'
-                iface MIXER
-                name 'PCM Playback Volume'
-                value.0 232
-                value.1 232
-        }
-}
+i'm having a 5.1 speakers..when i play music ,only 2 of them are working!!!
+i had changed the channel mode in alsamixer to 6 channel..yet no
+changes!!! 
+Motherboard : Asus A8N-E
+OS: fedora core 4
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 19:38 
+ binilbenjamin - 03-15-06 19:10 
 ----------------------------------------------------------------------
-Try CVS version at first.  If still doesn't work, please upload the
-contents of /proc/asound/card0/codec#* files, and the product name of your
-machine, laptop or mobo, whatever information to identify.
-The detailed description of the existing I/O (jacks, etc) is also
-appreciated.
+So , how can i enable all the speakers while I play mp3s in a player such
+as xmms?
+
+----------------------------------------------------------------------
+ rlrevell - 03-15-06 19:54 
+----------------------------------------------------------------------
+By following tiwai's instructions.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 19:23 sk0rp10        New Issue                                    
-03-15-06 19:23 sk0rp10        Distribution              => Slackware current
-03-15-06 19:23 sk0rp10        Kernel Version            => 2.6.15.6 vanilla
-03-15-06 19:38 tiwai          Note Added: 0008569                          
+03-13-06 19:02 binilbenjamin  New Issue                                    
+03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
+03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
+03-13-06 19:33 rlrevell       Note Added: 0008455                          
+03-13-06 19:49 binilbenjamin  Note Added: 0008457                          
+03-13-06 19:54 rlrevell       Note Added: 0008458                          
+03-13-06 20:16 binilbenjamin  Note Added: 0008459                          
+03-13-06 20:25 rlrevell       Note Added: 0008460                          
+03-14-06 17:44 binilbenjamin  Note Added: 0008501                          
+03-14-06 17:56 rlrevell       Note Added: 0008504                          
+03-14-06 18:34 binilbenjamin  Note Added: 0008505                          
+03-14-06 18:52 rlrevell       Note Added: 0008506                          
+03-14-06 19:00 rlrevell       Note Added: 0008507                          
+03-14-06 19:02 binilbenjamin  Note Added: 0008508                          
+03-14-06 19:12 rlrevell       Note Added: 0008509                          
+03-14-06 19:23 tiwai          Note Added: 0008510                          
+03-14-06 19:27 binilbenjamin  Note Added: 0008511                          
+03-14-06 20:08 rlrevell       Note Added: 0008512                          
+03-15-06 18:27 binilbenjamin  Note Added: 0008560                          
+03-15-06 18:40 rlrevell       Note Added: 0008562                          
+03-15-06 19:10 binilbenjamin  Note Added: 0008566                          
+03-15-06 19:54 rlrevell       Note Added: 0008570                          
 ======================================================================
 
 
