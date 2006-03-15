@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Wed, 15 Mar 2006 12:53:41 +0100
-Message-ID: <383ff01048038cbd791ed6f29504000a@bugtrack.alsa-project.org>
+Date: Wed, 15 Mar 2006 13:01:14 +0100
+Message-ID: <59b0ac788dcb7672b1251ec4679780ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9053F1FD
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 12:53:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 841611FD
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 13:01:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              03-15-2006 12:53 CET
+Last Modified:              03-15-2006 13:01 CET
 ======================================================================
 Summary:                    No sound or High pitched noise, dissapears if change
 made on mixer
@@ -296,23 +296,6 @@ Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
 ======================================================================
 
 ----------------------------------------------------------------------
- merin - 03-15-06 12:47 
-----------------------------------------------------------------------
-Thanks tiwai!
-That was the hint! :)
-When i do a 
-:~# modprobe snd_hda_intel model=laptop
-It seems to work alright :)
-No high pitching noise anymore, and the music keeps playing when i touch
-the mixer controls :)
-Great Job! :D
-
-Bye,
-Merin
-
-P.S.: With model=3stack i get no sound at all
-
-----------------------------------------------------------------------
  tiwai - 03-15-06 12:53 
 ----------------------------------------------------------------------
 Glad to hear that.
@@ -326,6 +309,20 @@ so that the right model is activated as default.
 I need to gather the all these information!
 
 Thanks.
+
+----------------------------------------------------------------------
+ merin - 03-15-06 13:01 
+----------------------------------------------------------------------
+Ok, i`ll start
+This is what worked for my.
+
+0000:00:1b.0 0403: 8086:2668 (rev 04)
+        Subsystem: 1043:818f
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at dfef8000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: <available only to root>
+
+model=laptop
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -372,6 +369,7 @@ Date Modified  Username       Field                    Change
 03-15-06 12:17 tiwai          Note Added: 0008539                          
 03-15-06 12:47 merin          Note Added: 0008542                          
 03-15-06 12:53 tiwai          Note Added: 0008543                          
+03-15-06 13:01 merin          Note Added: 0008544                          
 ======================================================================
 
 
