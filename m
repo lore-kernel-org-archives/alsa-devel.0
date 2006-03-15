@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001793]: No sound on ASUS A8N-VM CSM
-Date: Wed, 15 Mar 2006 17:05:53 +0100
-Message-ID: <78153351c0897c7de65c410bc11856f3@bugtrack.alsa-project.org>
+Date: Wed, 15 Mar 2006 17:53:06 +0100
+Message-ID: <5a0022c4e2d8b27f36d463855b014fd0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31E8B207
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 17:05:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DEB219D
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2006 17:53:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.15 standard
 ======================================================================
 Date Submitted:             01-29-2006 18:31 CET
-Last Modified:              03-15-2006 17:05 CET
+Last Modified:              03-15-2006 17:53 CET
 ======================================================================
 Summary:                    No sound on ASUS A8N-VM CSM
 Description: 
@@ -220,16 +220,6 @@ duplicate of        0001632 suse 10.0,  yast, no ad1986a listed,  i...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-15-06 15:54 
-----------------------------------------------------------------------
-Check /sys/module/snd_hda_intel/parameters/* whether the values are passed
-correctly.  Also, build the drivers with debug option, then you'll see a
-kernel message like "hda-codec: model XXX selected".
-
-After changing the model, make sure that you unmute/adjust the mixer
-volumes properly.
-
-----------------------------------------------------------------------
  tassilo80 - 03-15-06 17:05 
 ----------------------------------------------------------------------
 > Check /sys/module/snd_hda_intel/parameters/* whether the values 
@@ -244,6 +234,20 @@ Ah, ok. Yes, they're passed correctly.
 
 Sure, everything's unmuted and adjusted to "loud" (at least headphones and
 PCM). I tried several combinations of switches toggled on/off, too.
+
+----------------------------------------------------------------------
+ tiwai - 03-15-06 17:53 
+----------------------------------------------------------------------
+Once try without model option and the patch mentioned in the ealier comment
+(it must be trivial to apply manually even if conflicted) to make sure
+that still works with CVS version.
+
+Anyway, open another bug instead of hijacking the problem of a different
+machine.
+Even with the same codec chip, the problem can be (most likely is) quite
+different.
+Then, upload /proc/asound/card0/codec#* files and /etc/asound.state after
+"alsactl store", not pasting to the input form.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -281,6 +285,7 @@ Date Modified  Username       Field                    Change
 03-15-06 15:41 tassilo80      Note Edited: 0008554                         
 03-15-06 15:54 tiwai          Note Added: 0008557                          
 03-15-06 17:05 tassilo80      Note Added: 0008558                          
+03-15-06 17:53 tiwai          Note Added: 0008559                          
 ======================================================================
 
 
