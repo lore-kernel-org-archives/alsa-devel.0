@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001040]: ice1724: Invalid EEPROM (size = 255)
-Date: Thu, 16 Mar 2006 08:49:09 +0100
-Message-ID: <028bdf2d7821e805972fa85d674d1e9d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000854]: Can't load module snd-cs4236, snd-cs4236 or snd-sb8
+Date: Thu, 16 Mar 2006 08:51:43 +0100
+Message-ID: <2846d3dfc22805a08f94e3d25af31dbd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1AEA51FB
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:49:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9CDEA1FB
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:51:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,70 +22,147 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been set as RELATED TO issue 0001748.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1040> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=854> 
 ======================================================================
-Reported By:                lorenb
-Assigned To:                rlrevell
+Reported By:                mrpee
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1040
-Category:                   PCI - ice1724
+Issue ID:                   854
+Category:                   ISA - cs4236
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.11
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.8-2-386
 ======================================================================
-Date Submitted:             04-08-2005 14:10 CEST
-Last Modified:              03-16-2006 08:49 CET
+Date Submitted:             01-28-2005 13:18 CET
+Last Modified:              03-16-2006 08:51 CET
 ======================================================================
-Summary:                    ice1724: Invalid EEPROM (size = 255)
+Summary:                    Can't load module snd-cs4236, snd-cs4236 or snd-sb8
 Description: 
-Have a Shuttle SN25P based system:
-http://global.shuttle.com/Product/Barebone/SN25P.asp
+I can't load any modules for my sound carc Cirrus Logic cs4237b on my Dell
+Latitude CP M233XT. I tried snd-cs4236, snd-cs4236 and also the
+soundblaster module snd-sb8 with the same result "no such device".
 
-It comes with VIA Envy24PT audio controller:
-http://www.via.com.tw/en/products/audio/controllers/envy24pt/
+I think I'll tried everything, kernel 2.4 with alsamodules, 2.6.1, alsa
+1.0.7-2. half/full duplex, changing irq, dma etc.
 
-Every time I tried and load the ice1724 driver I get an error about
-invalid EEPROM size.
-
-I saw this old bug:
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000142
-
-Which indicated this issue was resolved in 1.0.5a.  I'm using v1.0.9rc2.
-
+Here is a link from another forum whith the same problem:
+http://www.talkaboutsoftware.com/group/linux.debian.laptop/messages/7049.html
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001748 sound driver will not load (CS4237B chip)
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:28 
+ mrpee - 01-28-05 13:23 
+----------------------------------------------------------------------
+Sorry It should say cd4232 and cs4236 in the summary and description
+
+----------------------------------------------------------------------
+ jdthood - 03-28-05 04:23 
+----------------------------------------------------------------------
+Submitter: Send the output of lsmod.
+
+----------------------------------------------------------------------
+ mrpee - 03-30-05 09:49 
+----------------------------------------------------------------------
+After running alsaconf I have these modules:
+
+# lsmod
+Module                  Size  Used by
+snd_pcm_oss            48168  0
+snd_mixer_oss          16640  1 snd_pcm_oss
+snd_pcm                85384  1 snd_pcm_oss
+snd_page_alloc         11144  1 snd_pcm
+snd_timer              23172  1 snd_pcm
+snd                    50660  4
+snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore               9824  1 snd
+lp                     10408  0
+ipv6                  229764  14
+orinoco_cs              9096  1
+ds                     17796  5 orinoco_cs
+nfsd                  181024  8
+exportfs                6144  1 nfsd
+lockd                  56520  2 nfsd
+sunrpc                137060  2 nfsd,lockd
+af_packet              20872  2
+floppy                 54992  0
+parport_pc             33348  1
+parport                37320  2 lp,parport_pc
+rtc                    12088  0
+tsdev                   7168  0
+mousedev                9996  1
+joydev                  9536  0
+evdev                   9088  0
+pcspkr                  3816  0
+psmouse                17800  0
+3c59x                  36776  0
+yenta_socket           19200  2
+pcmcia_core            63028  3 orinoco_cs,ds,yenta_socket
+uhci_hcd               29328  0
+usbcore               104164  3 uhci_hcd
+dm_mod                 51068  0
+capability              4872  0
+commoncap               7168  1 capability
+orinoco                38284  1 orinoco_cs
+hermes                  7936  2 orinoco_cs,orinoco
+ide_cd                 38176  0
+cdrom                  35740  1 ide_cd
+ext3                  109672  1
+jbd                    54552  1 ext3
+ide_generic             1664  0
+piix                   12448  1
+ide_disk               16768  3
+ide_core              125028  4 ide_cd,ide_generic,piix,ide_disk
+unix                   26036  302
+font                    8576  0
+vesafb                  6688  0
+cfbcopyarea             3840  1 vesafb
+cfbimgblt               3200  1 vesafb
+cfbfillrect             3712  1 vesafb
+
+----------------------------------------------------------------------
+ rlrevell - 12-30-05 05:22 
 ----------------------------------------------------------------------
 Any improvement with later ALSA releases?
 
 ----------------------------------------------------------------------
- lorenb - 12-30-05 05:32 
+ briand - 01-21-06 03:39 
 ----------------------------------------------------------------------
-Yeah the card now works fine with the current ALSA in the Linux kernel. You
-can close the bug.
+apparently not, as this sounds suspicously like the problem I reported on
+my Dell Inspiron 3200 (0001748).
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 01-21-06 03:45 
+----------------------------------------------------------------------
+This bug report is too vague to be actionable.  Please provide more
+information - what EXACTLY did you do that produced the "no such device"
+message, etc.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-08-05 14:10 lorenb         New Issue                                    
-04-08-05 14:10 lorenb         Distribution              => Gentoo          
-04-08-05 14:10 lorenb         Kernel Version            => 2.6.11          
-04-09-05 19:09 ungod          Note Added: 0004427                          
-04-12-05 21:11 lorenb         Note Added: 0004464                          
-12-30-05 05:28 rlrevell       Note Added: 0007247                          
-12-30-05 05:32 lorenb         Note Added: 0007248                          
-03-16-06 08:49 rlrevell       Status                   new => resolved     
-03-16-06 08:49 rlrevell       Resolution               open => fixed       
-03-16-06 08:49 rlrevell       Assigned To               => rlrevell        
+01-28-05 13:18 mrpee          New Issue                                    
+01-28-05 13:18 mrpee          Distribution              => Debian          
+01-28-05 13:18 mrpee          Kernel Version            => 2.6.8-2-386     
+01-28-05 13:23 mrpee          Note Added: 0003426                          
+03-28-05 04:23 jdthood        Note Added: 0004233                          
+03-30-05 09:49 mrpee          Note Added: 0004264                          
+12-30-05 05:22 rlrevell       Note Added: 0007243                          
+01-21-06 03:39 briand         Note Added: 0007731                          
+01-21-06 03:39 briand         Note Edited: 0007731                         
+01-21-06 03:40 briand         Issue Monitored: briand                      
+01-21-06 03:45 rlrevell       Note Added: 0007732                          
+03-16-06 08:51 rlrevell       Relationship added       related to 0001748  
 ======================================================================
 
 
