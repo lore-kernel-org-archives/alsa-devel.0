@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Thu, 16 Mar 2006 19:27:40 +0100
-Message-ID: <d2604f822b53ad2f4ea40f70cbf1a063@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001931]: Unknown AC97 codec, digital sound works
+Date: Thu, 16 Mar 2006 19:28:37 +0100
+Message-ID: <0b5c80290702b9a88aaa667627fc5fbb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91385192
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 19:27:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42209196
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 19:28:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1931> 
 ======================================================================
-Reported By:                binilbenjamin
+Reported By:                marc
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1920
-Category:                   1_OTHERS
+Issue ID:                   1931
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-16-2006 19:27 CET
+Date Submitted:             03-16-2006 19:28 CET
+Last Modified:              03-16-2006 19:28 CET
 ======================================================================
-Summary:                    output from only 2 speakers(out of 5 speakers)
+Summary:                    Unknown AC97 codec, digital sound works
 Description: 
-i'm having a 5.1 speakers..when i play music ,only 2 of them are working!!!
-i had changed the channel mode in alsamixer to 6 channel..yet no
-changes!!! 
-Motherboard : Asus A8N-E
-OS: fedora core 4
+Hi everyone,
 
+i got a brandnew benq s53w notebook with intel ICH 6 chipset. the digital
+audio out via spdif works great, but analog audio thru internal speakers
+or headphone jack doesn't work at all.
+
+the main problem i think is:
+Intel ICH6 with unknown codec at 0xb0040800, irq 11
+
+i investigated that the adding the following line 
+
+{ 0x43585430, 0xfffffff0, "CX20468-21", NULL, NULL }
+
+to ac97_codec.c affects the output above to
+
+Intel ICH6 with CX20468-21 at 0xb0040800, irq 11.
+
+but i think i've chosen the wrong driver...i've heard that benq uses a
+conexand 20551 chip in this notebook.
+
+question 1) how do i figure out which chip is mounted on my mainbord
+
+and 
+
+question 2) is this chip already supported?
+
+and if not
+
+question 3) how can i support those who can implement a driver for this?
+
+i appended aadebug.txt for more information about my system.
+
+thanks in advance
+marc
 ======================================================================
-
-----------------------------------------------------------------------
- binilbenjamin - 03-16-06 17:53 
-----------------------------------------------------------------------
-As per tiwai's instructions, I created my own PCM in ~/.asoundrc . After
-that I tested it with the command :
-aplay -Dmysurround test.wav
- It worked well!! But how do I set this PCM as the default one.
-His statement was :"You can define it as the defaut PCM by adding: 
-pcm.!default "mysurround" "
-But where do I add this?? Will this enable all the speakers when I play
-mp3 in xmms or mplayer??
-
-----------------------------------------------------------------------
- rlrevell - 03-16-06 19:27 
-----------------------------------------------------------------------
-Add the line:
-
-pcm.!default "mysurround"
-
-to your .asoundrc
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-13-06 19:02 binilbenjamin  New Issue                                    
-03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
-03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
-03-13-06 19:33 rlrevell       Note Added: 0008455                          
-03-13-06 19:49 binilbenjamin  Note Added: 0008457                          
-03-13-06 19:54 rlrevell       Note Added: 0008458                          
-03-13-06 20:16 binilbenjamin  Note Added: 0008459                          
-03-13-06 20:25 rlrevell       Note Added: 0008460                          
-03-14-06 17:44 binilbenjamin  Note Added: 0008501                          
-03-14-06 17:56 rlrevell       Note Added: 0008504                          
-03-14-06 18:34 binilbenjamin  Note Added: 0008505                          
-03-14-06 18:52 rlrevell       Note Added: 0008506                          
-03-14-06 19:00 rlrevell       Note Added: 0008507                          
-03-14-06 19:02 binilbenjamin  Note Added: 0008508                          
-03-14-06 19:12 rlrevell       Note Added: 0008509                          
-03-14-06 19:23 tiwai          Note Added: 0008510                          
-03-14-06 19:27 binilbenjamin  Note Added: 0008511                          
-03-14-06 20:08 rlrevell       Note Added: 0008512                          
-03-15-06 18:27 binilbenjamin  Note Added: 0008560                          
-03-15-06 18:40 rlrevell       Note Added: 0008562                          
-03-15-06 19:10 binilbenjamin  Note Added: 0008566                          
-03-15-06 19:54 rlrevell       Note Added: 0008570                          
-03-16-06 17:53 binilbenjamin  Note Added: 0008616                          
-03-16-06 19:27 rlrevell       Note Added: 0008618                          
+03-16-06 19:28 marc           New Issue                                    
+03-16-06 19:28 marc           File Added: aadebug.txt                      
+03-16-06 19:28 marc           Distribution              => Gentoo Linux    
+03-16-06 19:28 marc           Kernel Version            => 2.6.15          
 ======================================================================
 
 
