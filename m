@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001925]: no sound from hda_intel
-Date: Thu, 16 Mar 2006 17:33:07 +0100
-Message-ID: <14ef5b0e7ef01de952b3c9b4c7e6c7ef@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
+Date: Thu, 16 Mar 2006 17:53:36 +0100
+Message-ID: <4665c1aa9ba2319338bd3d176556e162@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 034AF1A1
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 17:33:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93E7A1E0
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 17:53:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,83 +22,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1925> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
 ======================================================================
-Reported By:                stefanob
-Assigned To:                tiwai
+Reported By:                binilbenjamin
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1925
-Category:                   PCI - hda-intel
+Issue ID:                   1920
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15-18-686 #1 SMP PREEMPT
-Resolution:                 duplicate
-Duplicate:                  1926
-Fixed in Version:           
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             03-15-2006 14:59 CET
-Last Modified:              03-16-2006 17:33 CET
+Date Submitted:             03-13-2006 19:02 CET
+Last Modified:              03-16-2006 17:53 CET
 ======================================================================
-Summary:                    no sound from hda_intel
+Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
-Alsa mixer works but i can't hear any sound. I tried the last cvs branch
-with no success ( i tried also with model=laptop ).
-
-My computer is a notebook Asus Model A6J
-
-lspci -nv 
-
-0000:00:1b.0 0403: 8086:27d8 (rev 02)
-        Subsystem: 1043:1213
-        Flags: bus master, fast devsel, latency 0, IRQ 169
-        Memory at febfc000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] #10 [0091]
+i'm having a 5.1 speakers..when i play music ,only 2 of them are working!!!
+i had changed the channel mode in alsamixer to 6 channel..yet no
+changes!!! 
+Motherboard : Asus A8N-E
+OS: fedora core 4
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001926 No sound and no internal speakers with ...
-======================================================================
 
 ----------------------------------------------------------------------
- stefanob - 03-16-06 17:12 
+ rlrevell - 03-15-06 19:54 
 ----------------------------------------------------------------------
-I tried the patch ad1986a-laptop-eapd.diff and with model=laptop-eapd sound
-works now!
+By following tiwai's instructions.
 
 ----------------------------------------------------------------------
- tiwai - 03-16-06 17:33 
+ binilbenjamin - 03-16-06 17:53 
 ----------------------------------------------------------------------
-OK, your PCI SSID will be added when the patch is merged to upstream, so
-that the model is selected automatically.
+As per tiwai's instructions, I created my own PCM in ~/.asoundrc . After
+that I tested it with the command :
+aplay -Dmysurround test.wav
+ It worked well!! But how do I set this PCM as the default one.
+His statement was :"You can define it as the defaut PCM by adding: 
+pcm.!default "mysurround" "
+But where do I add this?? Will this enable all the speakers when I play
+mp3 in xmms or mplayer??
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 14:59 stefanob       New Issue                                    
-03-15-06 14:59 stefanob       Distribution              => Ubuntu Dapper   
-03-15-06 14:59 stefanob       Kernel Version            => 2.6.15-18-686 #1 SMP
-PREEMPT
-03-16-06 16:01 stefanob       Issue Monitored: stefanob                    
-03-16-06 16:59 tiwai          Note Added: 0008611                          
-03-16-06 17:10 stefanob       File Added: codec0.txt                       
-03-16-06 17:10 stefanob       File Added: codec1.txt                       
-03-16-06 17:10 stefanob       File Added: asound.state                     
-03-16-06 17:12 stefanob       Note Added: 0008612                          
-03-16-06 17:33 tiwai          Relationship added       duplicate of 0001926
-03-16-06 17:33 tiwai          Duplicate ID             0 => 1926           
-03-16-06 17:33 tiwai          Status                   assigned => resolved
-03-16-06 17:33 tiwai          Resolution               open => duplicate   
-03-16-06 17:33 tiwai          Note Added: 0008615                          
+03-13-06 19:02 binilbenjamin  New Issue                                    
+03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
+03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
+03-13-06 19:33 rlrevell       Note Added: 0008455                          
+03-13-06 19:49 binilbenjamin  Note Added: 0008457                          
+03-13-06 19:54 rlrevell       Note Added: 0008458                          
+03-13-06 20:16 binilbenjamin  Note Added: 0008459                          
+03-13-06 20:25 rlrevell       Note Added: 0008460                          
+03-14-06 17:44 binilbenjamin  Note Added: 0008501                          
+03-14-06 17:56 rlrevell       Note Added: 0008504                          
+03-14-06 18:34 binilbenjamin  Note Added: 0008505                          
+03-14-06 18:52 rlrevell       Note Added: 0008506                          
+03-14-06 19:00 rlrevell       Note Added: 0008507                          
+03-14-06 19:02 binilbenjamin  Note Added: 0008508                          
+03-14-06 19:12 rlrevell       Note Added: 0008509                          
+03-14-06 19:23 tiwai          Note Added: 0008510                          
+03-14-06 19:27 binilbenjamin  Note Added: 0008511                          
+03-14-06 20:08 rlrevell       Note Added: 0008512                          
+03-15-06 18:27 binilbenjamin  Note Added: 0008560                          
+03-15-06 18:40 rlrevell       Note Added: 0008562                          
+03-15-06 19:10 binilbenjamin  Note Added: 0008566                          
+03-15-06 19:54 rlrevell       Note Added: 0008570                          
+03-16-06 17:53 binilbenjamin  Note Added: 0008616                          
 ======================================================================
 
 
