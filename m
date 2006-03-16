@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001532]: Mute controls are gone, therefore unmuting impossible and no sound: NM256,AC97
-Date: Thu, 16 Mar 2006 08:03:31 +0100
-Message-ID: <803d8828557d13dc1a2ed590f5f4dac3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000108]: OSS Seq ioctl(... SNDCTL_SEQ_OUTOFBAND ...) does not work
+Date: Thu, 16 Mar 2006 08:29:55 +0100
+Message-ID: <a6c3290947b488be8f9c7087bcb7214c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D24C8194
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:03:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07A5E1FB
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:29:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,94 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1532> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=108> 
 ======================================================================
-Reported By:                sstefan
-Assigned To:                tiwai
+Reported By:                mpkelly
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1532
-Category:                   PCI - nm256
+Issue ID:                   108
+Category:                   GENERIC - mpu401
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.13
+Status:                     resolved
+Distribution:               SuSE 8.2 Pro
+Kernel Version:             2.4.25
+Resolution:                 fixed
+Fixed in Version:           1.0.4
 ======================================================================
-Date Submitted:             11-06-2005 19:32 CET
-Last Modified:              03-16-2006 08:03 CET
+Date Submitted:             03-03-2004 04:13 CET
+Last Modified:              03-16-2006 08:29 CET
 ======================================================================
-Summary:                    Mute controls are gone, therefore unmuting
-impossible and no sound: NM256,AC97
+Summary:                    OSS Seq ioctl(... SNDCTL_SEQ_OUTOFBAND ...) does not
+work
 Description: 
-Upgrading from Linux 2.6.10 to 2.6.13, I was no longer able to use the alsa
-nm256 driver, because the mute controls (e.g. for Master and PCM output)
-disappeared from alsamixer or kmix. The chip is muted by default, so upon
-playing nothing is output to the speakers, and there's no way to unmute
-the channels.
+
+This problem shows up in the OSS compatibility layer.
+The test case involves using an external MIDI keyboard
+connected to an Audigy2 via a MIDI cable plugged into
+the "joystick" port.  External MIDI modules are also 
+connected in the MIDI cable chain.
+
+The goal is to have a software program perform a "soft"
+MIDI THROUGH operation; read the data in from /dev/music,
+and insert the MIDI events into the MIDI output stream,
+where they go out onto the output cable, and on to external
+MIDI modules.
+
+
+NOTE: This setup has worked for me for well over a year,
+and worked fine with ALSA 0.9.6.
+
+
+All else being working, performing the following call:
+
+  ioctl(fd,SNDCTL_SEQ_OUTOFBAND,buf);
+
+does not work. No midi events get put into any queue.
+I've used print statements to verify that the data
+being passed into the ioctl() is correct (it is coming
+directly from a read() from /dev/music, and has always
+worked, in 0.9.6).
+
+The last version of ALSA I ran was 0.9.6, and it worked there.  I then
+upgraded to 1.0.2c, which did not work.  
+Today I tried 1.0.3, which also does not work.
+
+The problem first showed up in the JAZZ midi sequencer, 
+which is using the OSS compatibility layer.  I also have
+a small test case that shows the problem.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- sstefan - 11-10-05 22:31 
+ mpkelly - 03-21-05 03:48 
 ----------------------------------------------------------------------
-I isolated the code that actually broke it, it is the snd_ac97_try_bit if
-clause in  snd_ac97_cmix_new_stereo().
----
-	if (snd_ac97_try_bit(ac97, reg, 15)) {
-        {
-		sprintf(name, "%s Switch", pfx);
-		if ((err = snd_ac97_cmute_new_stereo(card, name, reg, check_stereo,
-ac97)) < 0)
-			return err;
-	}
----
-When I commented out the condition, the mute switches were all there!
+I haven't tested it,but I did look at version 1.0.4 (the initial
+1.0.4 release), and the code changes that I submitted were in place.
+The changes were pretty simple, so I presume they work, although as
+I said I didn't test them on real hardware yet.
 
 ----------------------------------------------------------------------
- rlrevell - 03-16-06 08:03 
+ rlrevell - 03-16-06 08:29 
 ----------------------------------------------------------------------
-Was this ever resolved?
+Should be fixed
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-06-05 19:32 sstefan        New Issue                                    
-11-06-05 19:32 sstefan        Distribution              => Debian          
-11-06-05 19:32 sstefan        Kernel Version            => 2.6.13          
-11-08-05 18:29 tiwai          Note Added: 0006632                          
-11-10-05 00:23 sstefan        Note Added: 0006658                          
-11-10-05 22:31 sstefan        Note Added: 0006674                          
-03-16-06 08:03 rlrevell       Note Added: 0008589                          
+03-03-04 04:13 mpkelly        New Issue                                    
+03-03-04 04:13 mpkelly        File Added: seqOOB.c                         
+03-19-05 09:28 jdthood        Note Added: 0004018                          
+03-21-05 03:48 mpkelly        Note Added: 0004114                          
+03-16-06 08:29 rlrevell       Status                   new => resolved     
+03-16-06 08:29 rlrevell       Fixed in Version          => 1.0.4           
+03-16-06 08:29 rlrevell       Resolution               open => fixed       
+03-16-06 08:29 rlrevell       Assigned To               => rlrevell        
+03-16-06 08:29 rlrevell       Note Added: 0008590                          
 ======================================================================
 
 
