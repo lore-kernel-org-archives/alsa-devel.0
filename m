@@ -1,11 +1,13 @@
-From: boku <boku0712@gmail.com>
-Subject: Any polling method example for alsa dma
-Date: Thu, 16 Mar 2006 14:29:41 +0800
-Message-ID: <715d90900603152229p34dffc06m4d78b1d56815691b@mail.gmail.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Any polling method example for alsa dma
+Date: Thu, 16 Mar 2006 01:33:24 -0500
+Message-ID: <1142490805.1671.157.camel@mindpipe>
+References: <715d90900603152229p34dffc06m4d78b1d56815691b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_870_20184882.1142490581112"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <715d90900603152229p34dffc06m4d78b1d56815691b@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,33 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: boku <boku0712@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_870_20184882.1142490581112
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Thu, 2006-03-16 at 14:29 +0800, boku wrote:
+> Dear all,
+>     Is there any example that uses polling instead of IRQ to check the
+> DMA transfer is done or not? Thank you!~
+>  
+> Best Regards,
+>  
 
-Dear all,
-    Is there any example that uses polling instead of IRQ to check the DMA
-transfer is done or not? Thank you!~
+http://newgolddream.dyndns.info/cgi-bin/cvsweb
 
-Best Regards,
-
-------=_Part_870_20184882.1142490581112
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-<div>Dear all,</div>
-<div>&nbsp;&nbsp;&nbsp; Is there any example that uses polling instead of I=
-RQ to check the DMA transfer is done or not? Thank you!~</div>
-<div>&nbsp;</div>
-<div>Best Regards,</div>
-<div>&nbsp;</div>
-
-------=_Part_870_20184882.1142490581112--
 
 
 -------------------------------------------------------
