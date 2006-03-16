@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000162]: Alsa 1.0,4RC1: snd-usb-audio still interfers with pwc.o (Philips based webcams)
-Date: Thu, 16 Mar 2006 08:37:03 +0100
-Message-ID: <e10fb70cad396b89e5e90a67e1c2d17a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000502]: Mp3+ crackles when on alsa, not when on oss emulation
+Date: Thu, 16 Mar 2006 08:38:05 +0100
+Message-ID: <bab5e0068381a12f9562b284c4ad1699@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C45E41FB
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:37:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE29F1FB
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:38:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=162> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=502> 
 ======================================================================
-Reported By:                Schugy
+Reported By:                hhg
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   162
+Issue ID:                   502
 Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               SuSE8.2
-Kernel Version:             2.4.25
+Distribution:               Mandrake 9.2
+Kernel Version:             2.6.8
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-28-2004 17:20 CEST
-Last Modified:              03-16-2006 08:37 CET
+Date Submitted:             09-15-2004 00:44 CEST
+Last Modified:              03-16-2006 08:38 CET
 ======================================================================
-Summary:                    Alsa 1.0,4RC1: snd-usb-audio still interfers with
-pwc.o (Philips based webcams)
+Summary:                    Mp3+ crackles when on alsa, not when on oss
+emulation
 Description: 
-Like other people using Mandrake's Cooker (google), I have crashes when
-loading snd-usb-audio.o after pwc.o.
+this shell-cut-and-paste wil ilustrate my problem:
 
-I boot my system, hotplug recognizes my webcam and my usb-Headset. pwc.o
-is loaded but not snd-usb-audio.o, because hotplug wants to load audio.o
-(OSS).
+At first when I plug my mp3+ in, it crackles. It is not scraping or
+static, it is a distinct pop in the sound about 2-3 times/sec not
+rythmical. The card shows up in alsamixer -c1, and everything about
+controling it works. Then, without plugging my card in or out, I do this:
 
-Now I can either modprobe snd-usb-audio or I can e.g. start TeamSpeak on
-/dev/dsp1 and my kernel registers snd-usb-audio automagically for
-sound-slot-1. After that I have weird colorful lines on my screen. Apache
-and sshd still work but it hangs during the reboot script.
+[root@localhost hhg]# rmmod snd_usb_audio
+[root@localhost hhg]# modprobe audio
+[root@localhost hhg]# alsamixer -c1
+ 
+alsamixer: function snd_ctl_open failed for hw:1: No such file or
+directory
 
-Sometimes my PC doesn't crash immediately but I've had some kernel oops.
-At first some libraries in the memory become corrupted and e.g. all
-QT-Apps crash.
+I also have a boult-in intel-8x0-card working fine with alsa. But now the
+mp3+card works great. Using oss-emulated mixer the card can also be
+controled. I have to use oss-output, though, as the card no longer is
+registrered by alsa.
 
-I can use my webcam for 10h without its mic or I can use my USB-Headset
-but I can't use pwc.o and snd-usb-audio.o simultaniously. In a testcase
-I've used my webcam with the mic as my only usb hardware.
- My 3 Gamepads, the cyberjack pinpad (usb-serial) and my USB-Mouse can be
-connected too, they have no bad influence.
+even if I do
 
-My hardware is error free, RAM @ standard speed.
+[root@localhost hhg]# modprobe snd-usb-audio
+
+alsamixer -c1 fails and the card stil works as an oss-card.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 08-30-05 12:12 
+ rlrevell - 08-30-05 23:08 
 ----------------------------------------------------------------------
-Hi.  What's the status of this bug.  Any improvement in later ALSA
-releases?
+OK. My guess is that this is an upstream USB bug fixed in newer kernels.
 
 ----------------------------------------------------------------------
- rlrevell - 03-16-06 08:37 
+ rlrevell - 03-16-06 08:38 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-28-04 17:20 Schugy         New Issue                                    
-03-28-04 17:20 Schugy         Distribution              => SuSE8.2         
-03-28-04 17:20 Schugy         Kernel Version            => 2.4.25          
-04-02-04 17:47 paperclip      Note Added: 0000733                          
-04-03-04 15:16 Schugy         Note Added: 0000736                          
-04-05-04 16:33 Clemens LadischNote Added: 0000753                          
-04-09-04 14:13 Schugy         Note Added: 0000775                          
-04-10-04 20:10 Schugy         File Added: oops.zip                         
-04-10-04 20:19 Schugy         Note Added: 0000778                          
-08-30-05 12:12 jdthood        Note Added: 0005965                          
-03-16-06 08:37 rlrevell       Status                   assigned => closed  
-03-16-06 08:37 rlrevell       Note Added: 0008595                          
+09-15-04 00:44 hhg            New Issue                                    
+09-15-04 00:44 hhg            Distribution              => Mandrake 9.2    
+09-15-04 00:44 hhg            Kernel Version            => 2.6.8           
+09-15-04 13:09 hhg            Note Added: 0001760                          
+08-30-05 12:22 jdthood        Note Added: 0005974                          
+08-30-05 20:12 rlrevell       Note Added: 0005980                          
+08-30-05 22:37 jdthood        Note Added: 0005982                          
+08-30-05 23:08 rlrevell       Note Added: 0005983                          
+03-16-06 08:38 rlrevell       Status                   assigned => closed  
+03-16-06 08:38 rlrevell       Note Added: 0008596                          
 ======================================================================
 
 
