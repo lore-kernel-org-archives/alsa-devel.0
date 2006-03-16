@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000502]: Mp3+ crackles when on alsa, not when on oss emulation
-Date: Thu, 16 Mar 2006 08:38:05 +0100
-Message-ID: <bab5e0068381a12f9562b284c4ad1699@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000168]: Two sound blaster mp3+ USB sound cards cause applications and OS to start core dumping (crash).
+Date: Thu, 16 Mar 2006 08:41:57 +0100
+Message-ID: <e6ec32145758d8634f7b9531357aba0f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE29F1FB
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:38:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 689DB1FB
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:41:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=502> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=168> 
 ======================================================================
-Reported By:                hhg
+Reported By:                paperclip
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   502
+Issue ID:                   168
 Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     closed
-Distribution:               Mandrake 9.2
-Kernel Version:             2.6.8
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Mandrake 10.0
+Kernel Version:             2.6.5 rc2 mm5 (and 2.6 kernel version)
 ======================================================================
-Date Submitted:             09-15-2004 00:44 CEST
-Last Modified:              03-16-2006 08:38 CET
+Date Submitted:             03-30-2004 07:17 CEST
+Last Modified:              03-16-2006 08:41 CET
 ======================================================================
-Summary:                    Mp3+ crackles when on alsa, not when on oss
-emulation
+Summary:                    Two sound blaster mp3+ USB sound cards cause
+applications and OS to start core dumping (crash).
 Description: 
-this shell-cut-and-paste wil ilustrate my problem:
-
-At first when I plug my mp3+ in, it crackles. It is not scraping or
-static, it is a distinct pop in the sound about 2-3 times/sec not
-rythmical. The card shows up in alsamixer -c1, and everything about
-controling it works. Then, without plugging my card in or out, I do this:
-
-[root@localhost hhg]# rmmod snd_usb_audio
-[root@localhost hhg]# modprobe audio
-[root@localhost hhg]# alsamixer -c1
- 
-alsamixer: function snd_ctl_open failed for hw:1: No such file or
-directory
-
-I also have a boult-in intel-8x0-card working fine with alsa. But now the
-mp3+card works great. Using oss-emulated mixer the card can also be
-controled. I have to use oss-output, though, as the card no longer is
-registrered by alsa.
-
-even if I do
-
-[root@localhost hhg]# modprobe snd-usb-audio
-
-alsamixer -c1 fails and the card stil works as an oss-card.
+USB sound works great in ALSA except when I try to run two USB sound cards.
+I use it for portable sound recording for guitar fx processing. Any
+application using two different DSPs will start causing applications to
+crash, until the entire system is unusable. Tried different kernel
+versions and alsa versions. regular OSS sound driver does not seem to work
+with mp3+ so I can't even verify if it is the kernel or alsa or both. I
+have been able to use the built in sound card (VIA dsp) and one USB sound
+card with no problems. so it has nothing to do with 2 sound cards. but if
+I compile in with just the USB driver or USB driver and VIA driver and
+plug in two sound cards the system crashes. 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 08-30-05 23:08 
+ paperclip - 08-30-05 18:12 
 ----------------------------------------------------------------------
-OK. My guess is that this is an upstream USB bug fixed in newer kernels.
+I have not tried it in a while but it did not work with all the way up to
+2.6.10 -- I need to reinstall linux (been using windows 2k lately for
+doing sound processing). I will give it a look when I get a chance. 
+
+-R
 
 ----------------------------------------------------------------------
- rlrevell - 03-16-06 08:38 
+ rlrevell - 03-16-06 08:41 
 ----------------------------------------------------------------------
-No response
+Any improvement with later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-15-04 00:44 hhg            New Issue                                    
-09-15-04 00:44 hhg            Distribution              => Mandrake 9.2    
-09-15-04 00:44 hhg            Kernel Version            => 2.6.8           
-09-15-04 13:09 hhg            Note Added: 0001760                          
-08-30-05 12:22 jdthood        Note Added: 0005974                          
-08-30-05 20:12 rlrevell       Note Added: 0005980                          
-08-30-05 22:37 jdthood        Note Added: 0005982                          
-08-30-05 23:08 rlrevell       Note Added: 0005983                          
-03-16-06 08:38 rlrevell       Status                   assigned => closed  
-03-16-06 08:38 rlrevell       Note Added: 0008596                          
+03-30-04 07:17 paperclip      New Issue                                    
+03-30-04 07:17 paperclip      File Added: config.gz                        
+03-30-04 07:17 paperclip      Distribution              => Mandrake 10.0   
+03-30-04 07:17 paperclip      Kernel Version            => 2.6.5 rc2 mm5 (and
+2.6 kernel version)
+04-01-04 19:29 paperclip      Issue Monitored: paperclip                    
+04-05-04 16:11 Clemens LadischNote Added: 0000752                          
+04-08-04 22:24 paperclip      Note Added: 0000770                          
+04-08-04 22:31 paperclip      Note Added: 0000771                          
+04-20-04 00:15 paperclip      Note Added: 0000867                          
+04-22-04 15:39 Clemens LadischNote Added: 0000894                          
+04-22-04 22:06 paperclip      Note Added: 0000896                          
+08-30-05 12:16 jdthood        Note Added: 0005967                          
+08-30-05 18:12 paperclip      Note Added: 0005979                          
+03-16-06 08:41 rlrevell       Note Added: 0008597                          
 ======================================================================
 
 
