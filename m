@@ -1,14 +1,18 @@
-From: Florian Schlichting <Florian.Schlichting@gmx.de>
-Subject: thanks
-Date: Thu, 16 Mar 2006 09:42:00 +0800
-Message-ID: <20060316014200.GB3608@tigerbay>
-References: <20060313064627.GA3864@tigerbay> <s5h4q22mu89.wl%tiwai@suse.de> <20060313145534.GA7995@tigerbay> <s5h7j6yqr7c.wl%tiwai@suse.de> <20060314195946.GA3633@tigerbay> <s5hu0a0ixyb.wl%tiwai@suse.de> <20060315060922.GA30060@tigerbay> <s5hpskohw13.wl%tiwai@suse.de> <20060315132330.GC27567@tigerbay> <s5hirqf3ea8.wl%tiwai@suse.de>
+From: Valdis.Kletnieks@vt.edu
+Subject: Re: Fix sequencer missing negative bound check
+Date: Wed, 15 Mar 2006 22:07:20 -0500
+Message-ID: <200603160307.k2G37KLX007666__37723.0738559321$1142478492$gmane$org@turing-police.cc.vt.edu>
+References: <20060316011911.GA20384@eugeneteo.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZfOjI3PrQbgiZnxM"
+Content-Type: multipart/signed; boundary="==_Exmh_1142478440_5420P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hirqf3ea8.wl%tiwai@suse.de>
+Received: from turing-police.cc.vt.edu (turing-police.cc.vt.edu [128.173.14.107])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43E5B20E
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 04:07:30 +0100 (MET)
+In-Reply-To: Your message of "Thu, 16 Mar 2006 09:19:11 +0800."
+             <20060316011911.GA20384@eugeneteo.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,66 +22,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Eugene Teo <eugene.teo@eugeneteo.net>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---ZfOjI3PrQbgiZnxM
+--==_Exmh_1142478440_5420P
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 15, 2006 at 04:42:39PM +0100, Takashi Iwai wrote:
->=20
-> Thanks for confirmation.  I applied the patches to CVS.
+On Thu, 16 Mar 2006 09:19:11 +0800, Eugene Teo said:
+> dev is missing a negative bound check.
+> 
+> Signed-off-by: Eugene Teo <eugene.teo@eugeneteo.net>
+> 
+> --- linux-2.6/sound/oss/sequencer.c~	2006-03-15 10:05:45.000000000 +0800
+> +++ linux-2.6/sound/oss/sequencer.c	2006-03-16 09:06:59.000000000 +0800
+> @@ -713,7 +713,7 @@
+>  	int i, l = 0;
+>  	unsigned char  *buf = &event_rec[2];
+>  
+> -	if ((int) dev > max_synthdev)
+> +	if (dev < 0 || dev >= max_synthdev)
+>  		return;
+>  	if (!(synth_open_mask & (1 << dev)))
+>  		return;
 
-thanks to you for your patience, quick and helpful replies, and ongoing
-work. And to Lee for providing initial pointers. This was the first time
-that I looked into kernel code deeply enough to actually understand
-something and make some modifications. And it was surprisingly easy!
-(well, it took some time and persistance, but C doesn't read that
-different from Java, and putting lots of printk's in suspicious places
-really isn't that difficult)
+Erm??
 
-I was thinking that I might have done this much earlier, had I known
-that developers lacked access to hardware and thus couldn't possibly do
-much debugging. I've been checking the ALSA website since at least 2002,
-saw that it's a known issue, that there are bug reports filed to which
-people answer, and went away again thinking that there are more
-knowledgeable and able people working on it, and it's just a matter of
-time and a hard problem...
+Looking at a bit more context for the function:
 
-Thus I was thinking whether it might help in such cases to post a note
-on the driver page that people with access to a certain type of hardware
-are needed to do debugging? And perhaps have a page somewhere explaining
-how easy it is to start doing this, for people with some background in
-programming languages?
+static void seq_sysex_message(unsigned char *event_rec)
+{
+        int dev = event_rec[1];
+        int i, l = 0;
+        unsigned char  *buf = &event_rec[2];
 
-I realize now that there are probably similar bugs everywhere, and it's
-just a matter of going for one - but I've been thinking for years that
-the kernel is such a monster that I'll never understand how it works,
-anyway (and I still don't, but I found out that it doesn't necessarily
-matter as long as one understands just the tiny part that's concerned)
+        if ((int) dev > max_synthdev)
+                return;
+        if (!(synth_open_mask & (1 << dev)))
+                return;
+        if (!synth_devs[dev])
+                return;
 
-Anyway, it's been a joy working with you on this!
+that 'int dev' came out of an 'unsigned char *' - as such, I doubt you
+can get a negative value.  If anything, it should be 'unsigned int dev'.
 
-Florian
-
---ZfOjI3PrQbgiZnxM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+--==_Exmh_1142478440_5420P
+Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2 (GNU/Linux)
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+Comment: Exmh version 2.5 07/13/2001
 
-iD8DBQFEGMJo/R0+cAphf/kRAkVPAJwL+2uNdaNX3A170fWiEEhN1lIg3wCgg/yH
-DXvz+j9mVwbIluaqboC0ww0=
-=qjJr
+iD8DBQFEGNZocC3lWbTT17ARAs6xAJ91+YwE3g7n/AMwsiqz5CRN4TWIygCgpJ23
+1bS1NrCIQ6osl5v3o5owHNk=
+=ahcq
 -----END PGP SIGNATURE-----
 
---ZfOjI3PrQbgiZnxM--
+--==_Exmh_1142478440_5420P--
 
 
 -------------------------------------------------------
