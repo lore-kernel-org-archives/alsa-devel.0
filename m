@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000146]: mic stops working
-Date: Thu, 16 Mar 2006 08:46:22 +0100
-Message-ID: <9eef0ba3b7c43ca89692f762336b9a2b@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000196]: full duplex doesn't work any more
+Date: Thu, 16 Mar 2006 08:47:20 +0100
+Message-ID: <f7b12167e9d067496c4d0bba3671a81f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B1611FB
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:46:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AF751FB
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:47:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=146> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=196> 
 ======================================================================
-Reported By:                davec
+Reported By:                nathanel
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   146
-Category:                   PCI - intel8x0
+Project:                    ALSA - liboss
+Issue ID:                   196
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-18-2004 14:40 CET
-Last Modified:              03-16-2006 08:46 CET
+Date Submitted:             04-08-2004 20:59 CEST
+Last Modified:              03-16-2006 08:47 CET
 ======================================================================
-Summary:                    mic stops working
+Summary:                    full duplex doesn't work any more
 Description: 
-I can initiate a call in skype ( through wine) and talk for a few seconds,
-then it drops
+I'm using the attached .asoundrc to separate front an rear speakers of my
+Soundblaster Live! to dsp and dsp1 respectively. I have my headphones
+connected to the rear speaker output and running gnomemeeting with
+alsa-oss on dsp1. Unfortunately this setup stopped working with alsa-oss
+version 1.0.3 or higher (Different versions of alsa-libs didn't make any
+difference). Playing music solely on dsp1 still works (tried with xmms
+OSS) and recording also works (other people can hear me in gnomemeeting),
+but both at the same time is no longer functioning (read: I can't hear my
+dialog partner). As gnomemeering opens the audio device for recording
+first, i suspect that full duplex support got broken somewhere between
+1.0.2 and 1.0.3.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 12-13-05 12:42 
+ rlrevell - 12-30-05 05:26 
 ----------------------------------------------------------------------
-Submitter: Does this problem still exist in ALSA 1.0.10?
+Any improvement with later ALSA releases?
 
 ----------------------------------------------------------------------
- davec - 12-13-05 13:47 
+ rlrevell - 03-16-06 08:47 
 ----------------------------------------------------------------------
-Sorry, I have no idea. I now use a Mac
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-18-04 14:40 davec          New Issue                                    
-03-19-05 09:29 jdthood        Note Added: 0004019                          
-12-13-05 12:42 jdthood        Note Added: 0006997                          
-12-13-05 13:47 davec          Note Added: 0007016                          
-03-16-06 08:46 rlrevell       Status                   new => closed       
+04-08-04 20:59 nathanel       New Issue                                    
+04-08-04 20:59 nathanel       File Added: .asoundrc                        
+03-20-05 23:59 jdthood        Note Added: 0004104                          
+03-21-05 16:15 nathanel       Note Added: 0004119                          
+03-22-05 09:37 jdthood        Note Edited: 0004104                         
+03-22-05 09:38 jdthood        Status                   new => feedback     
+12-30-05 05:26 rlrevell       Note Added: 0007246                          
+03-16-06 08:47 rlrevell       Status                   feedback => closed  
+03-16-06 08:47 rlrevell       Note Added: 0008600                          
 ======================================================================
 
 
