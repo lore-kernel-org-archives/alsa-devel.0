@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001940]: enemy territory has no sound on ICE1724
-Date: Sat, 18 Mar 2006 00:31:17 +0100
-Message-ID: <9ff998d2a2faa5652c7c80a638bd12d2@bugtrack.alsa-project.org>
+From: nagual.hsu <nagual.hsu@gmail.com>
+Subject: Re: =?utf-8?b?c25kX3BjbV9od3N5bmM=?=
+Date: Thu, 16 Mar 2006 15:26:46 +0000 (UTC)
+Message-ID: <loom.20060316T162209-805@post.gmane.org>
+References: <7fe205990603150406i5e61842fh@mail.gmail.com> <Pine.LNX.4.61.0603151309030.20193@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 050921BB
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 00:31:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,87 +16,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> 
+> yOn Wed, 15 Mar 2006, Joe Hsu wrote:
+> 
+> > Hi all:
+> >     Sometimes, snd_pcm_hwsync would return -32 (-EPIPE).
+> > I can't see why. After snd_pcm_hwsync failed, snd_pcm_avail_update
+> > would return a much bigger positive value than pcm_hw_bufsize.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1940> 
-======================================================================
-Reported By:                oscar
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1940
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15 (Debian')
-======================================================================
-Date Submitted:             03-18-2006 00:28 CET
-Last Modified:              03-18-2006 00:31 CET
-======================================================================
-Summary:                    enemy territory has no sound on ICE1724
-Description: 
-
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
-13:30:21 2005 UTC).
-
-Enemy territory starts without sound.
-Reports this error:
-------- sound initialization -------
-/dev/dsp: Invalid argument
-Could not set /dev/dsp to stereo=2------------------------------------
-
-Strace:
-open("/dev/dsp", O_RDWR)                = 327
-getuid32()                              = 1000
-setresuid32(-1, 1000, -1)               = 0
-ioctl(327, SNDCTL_DSP_GETCAPS, 0xbfb7eddc) = 0
-ioctl(327, SNDCTL_DSP_STEREO, 0xbfb7edd4) = -1 EINVAL (Invalid argument)
-write(2, "/dev/dsp: Invalid argument\n", 27) = 27
-write(2, "Could not set /dev/dsp to stereo"..., 34) = 34
-close(327)                              = 0
-write(2, "--------------------------------"..., 37) = 37
+> -EPIPE means xrun (over or underrun - new data exceed the ring buffer 
+> or an application does not put new data in time)
+> 
+> 						Jaroslav
+> 
+> -----
 
 
-SNDCTL_DSP_STEREO fails on /dev/dsp.
-
-Unfortunately all wrappers misbehave with this damned game...
-I run this to get this far: "et.x86 0 0 direct" >
-/proc/asound/card0/pcm0p/oss
-without that the game exits with and MMAP error (it's a known issue with
-q3 engine, I am only writing it here so noone will suggest it as a
-workaround).
-
-I appreciate any help/advice.
-Willing to compile and test code.
+    I will check out. I used real time scheduling already. Maybe I should 
+enlarge snd_pcm_hwbufsize. Thanks. :)
 
 
 
-======================================================================
 
-----------------------------------------------------------------------
- oscar - 03-18-06 00:31 
-----------------------------------------------------------------------
-I forgot the exact hw specs:
+----
+The sun is shinny but the ice is slippery.
 
-0 [SN25P          ]: ICE1724 - Shuttle SN25P
-                     Shuttle SN25P at 0xa000, irq 20
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-18-06 00:28 oscar          New Issue                                    
-03-18-06 00:28 oscar          Distribution              => Debian          
-03-18-06 00:28 oscar          Kernel Version            => 2.6.15 (Debian')
-03-18-06 00:28 oscar          Issue Monitored: oscar                       
-03-18-06 00:31 oscar          Note Added: 0008666                          
-======================================================================
+
 
 
 
