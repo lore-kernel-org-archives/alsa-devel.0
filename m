@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000854]: Can't load module snd-cs4236, snd-cs4236 or snd-sb8
-Date: Thu, 16 Mar 2006 14:00:25 +0100
-Message-ID: <958f32c6d0658ca96e1c47bc00f56a17@bugtrack.alsa-project.org>
+From: "Joe Hsu" <nagual.hsu@gmail.com>
+Subject: snd_pcm_hwsync / snd_pcm_avail_update problem
+Date: Thu, 16 Mar 2006 21:19:25 +0800
+Message-ID: <7fe205990603160519u160c02f8i@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6FFF1DC
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 14:00:25 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +16,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+    When playing back or capturing digital audio samples from alsa
+devices, I use snd_pcm_hwsync and snd_pcm_avail_update. But sometimes
+snd_pcm_hwsync fails and then snd_pcm_avail_update would return a much
+bigger value than snd_pcm_hwbufsize.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=854> 
-======================================================================
-Reported By:                mrpee
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   854
-Category:                   ISA - cs4236
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8-2-386
-======================================================================
-Date Submitted:             01-28-2005 13:18 CET
-Last Modified:              03-16-2006 14:00 CET
-======================================================================
-Summary:                    Can't load module snd-cs4236, snd-cs4236 or snd-sb8
-Description: 
-I can't load any modules for my sound carc Cirrus Logic cs4237b on my Dell
-Latitude CP M233XT. I tried snd-cs4236, snd-cs4236 and also the
-soundblaster module snd-sb8 with the same result "no such device".
+     snd_pcm_hwsync returns -32(-EPIPE) when it fails. Can someone
+explains why? Thanks. :)
 
-I think I'll tried everything, kernel 2.4 with alsamodules, 2.6.1, alsa
-1.0.7-2. half/full duplex, changing irq, dma etc.
-
-Here is a link from another forum whith the same problem:
-http://www.talkaboutsoftware.com/group/linux.debian.laptop/messages/7049.html
-======================================================================
-Problem-Beziehungen ID      Zusammenfassung
-----------------------------------------------------------------------
-verwandt mit        0001748 sound driver will not load (CS4237B chip)
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 01-21-06 03:45 
-----------------------------------------------------------------------
-This bug report is too vague to be actionable.  Please provide more
-information - what EXACTLY did you do that produced the "no such device"
-message, etc.
-
-----------------------------------------------------------------------
- Henne - 03-16-06 14:00 
-----------------------------------------------------------------------
-Please post also the dmesg output. I believe I have a similar problem.
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1520
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-28-05 13:18 mrpee          New Issue                                    
-01-28-05 13:18 mrpee          Distribution              => Debian          
-01-28-05 13:18 mrpee          Kernel Version            => 2.6.8-2-386     
-01-28-05 13:23 mrpee          Note Added: 0003426                          
-03-28-05 04:23 jdthood        Note Added: 0004233                          
-03-30-05 09:49 mrpee          Note Added: 0004264                          
-12-30-05 05:22 rlrevell       Note Added: 0007243                          
-01-21-06 03:39 briand         Note Added: 0007731                          
-01-21-06 03:39 briand         Note Edited: 0007731                         
-01-21-06 03:40 briand         Issue Monitored: briand                      
-01-21-06 03:45 rlrevell       Note Added: 0007732                          
-03-16-06 08:51 rlrevell       Relationship added       related to 0001748  
-03-16-06 14:00 Henne          Note Added: 0008603                          
-======================================================================
-
-
+--
+The sun is shinny but the ice is slippery.
 
 
 -------------------------------------------------------
