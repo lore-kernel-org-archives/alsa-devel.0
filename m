@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001925]: no sound from hda_intel
-Date: Thu, 16 Mar 2006 16:59:05 +0100
-Message-ID: <91856345e1dbe7264a721ace9353c873@bugtrack.alsa-project.org>
+Date: Thu, 16 Mar 2006 17:12:53 +0100
+Message-ID: <2e7f5ffd74a59df684ce1d177cbd5acd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 459191F1
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 16:59:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A9C6F140
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 17:12:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu Dapper
 Kernel Version:             2.6.15-18-686 #1 SMP PREEMPT
 ======================================================================
 Date Submitted:             03-15-2006 14:59 CET
-Last Modified:              03-16-2006 16:59 CET
+Last Modified:              03-16-2006 17:12 CET
 ======================================================================
 Summary:                    no sound from hda_intel
 Description: 
@@ -71,6 +71,12 @@ Upload the contents of /proc/asound/card0/codec#* files and
 You can find available models for each codec in ALSA-Configuration.txt. 
 Check other bugreports with the same codec chip, too.
 
+----------------------------------------------------------------------
+ stefanob - 03-16-06 17:12 
+----------------------------------------------------------------------
+I tried the patch ad1986a-laptop-eapd.diff and with model=laptop-eapd sound
+works now!
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -80,6 +86,10 @@ Date Modified  Username       Field                    Change
 PREEMPT
 03-16-06 16:01 stefanob       Issue Monitored: stefanob                    
 03-16-06 16:59 tiwai          Note Added: 0008611                          
+03-16-06 17:10 stefanob       File Added: codec0.txt                       
+03-16-06 17:10 stefanob       File Added: codec1.txt                       
+03-16-06 17:10 stefanob       File Added: asound.state                     
+03-16-06 17:12 stefanob       Note Added: 0008612                          
 ======================================================================
 
 
