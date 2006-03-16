@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001914]: playing 2-channel sound on surround device uses rear speakers
-Date: Thu, 16 Mar 2006 02:38:19 +0100
-Message-ID: <58913763b056ec8c175151dfeb367213@bugtrack.alsa-project.org>
+From: Steven A.Norman <837april@ablonco.com>
+Subject: Rolex for $249.95
+Date: Thu, 16 Mar 2006 03:43:43 +0300
+Message-ID: <94fb01c64892$acaa055e$e2b4105f@ablonco.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_000_0000_1E74DFC8.35F1D473"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 60D6F20E
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 02:38:19 +0100 (MET)
+Received: from 82-44-249-113.stb.ubr05.haye.blueyonder.co.uk (82-44-249-113.stb.ubr05.haye.blueyonder.co.uk [82.44.249.113])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id DFAA320E
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 02:41:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,79 +21,75 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1914> 
-======================================================================
-Reported By:                mru
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1914
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.15-gentoo-r1
-======================================================================
-Date Submitted:             03-11-2006 21:25 CET
-Last Modified:              03-16-2006 02:38 CET
-======================================================================
-Summary:                    playing 2-channel sound on surround device uses rear
-speakers
-Description: 
-If I play regular 2-channel stereo sound specifying device "surround51" or
-"surround40" (or either of those with a "plug:" prefix) the sound is
-output on the rear speakers.  6-channel playback is correct.
-======================================================================
+------=_NextPart_000_0000_1E74DFC8.35F1D473
+Content-Type: text/plain;
+    charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-----------------------------------------------------------------------
- mru - 03-16-06 02:06 
-----------------------------------------------------------------------
-That patch makes plug:surround51 work as expected with two channels. 
-However, it is now failing with 6-channel sound.  Front and surround/lfe
-are fine, but right rear is about half volume, and left rear is barely
-audible.  Playing 2-channel sound on the "rear" device works, so I'm sure
-the speakers are connected properly.
+       EXACT COPIES OF SWISS WATCHES
 
-----------------------------------------------------------------------
- mru - 03-16-06 02:38 
-----------------------------------------------------------------------
-Sorry, that last bit must have been caused by something else.  Muting and
-unmuting the "PCM" control somehow fixed it, even though the PCM mute
-otherwise only affects the front speakers.
+- exact copies of V.I.P. watches
+- perfect as a gift for your colleagues and friends
+- free gift box
 
-With the patch, 2-channel samples are padded to 6 by the plug: wrapper so
-the sound is correctly played on the front speakers.  6-channel playback
-is unchanged, as it should.
+Rolex, Patek Philippe, Omega
+Cartier, Bvlgari, Franck Muller
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-11-06 21:25 mru            New Issue                                    
-03-11-06 21:25 mru            Distribution              => Gentoo          
-03-11-06 21:25 mru            Kernel Version            => 2.6.15-gentoo-r1
-03-14-06 15:04 tiwai          Note Added: 0008477                          
-03-14-06 15:15 mru            Note Added: 0008478                          
-03-14-06 15:22 tiwai          Note Added: 0008481                          
-03-14-06 23:53 mru            Note Added: 0008524                          
-03-15-06 11:59 tiwai          Note Added: 0008536                          
-03-15-06 12:27 mru            Note Added: 0008541                          
-03-15-06 13:04 tiwai          Note Added: 0008545                          
-03-15-06 13:05 tiwai          File Added: pcm-hw-restrict.diff                  
+.. and 15 other most famous manufacturers.
+
+http://121.stylishwatches.net
+
+All watches are for only $239.95 - $279.95!
+
+
+________________________________
+To change your mail preferences, go here
+
  
-03-16-06 02:06 mru            Note Added: 0008580                          
-03-16-06 02:38 mru            Note Added: 0008582                          
-======================================================================
+------=_NextPart_000_0000_1E74DFC8.35F1D473
+Content-Type: text/html;
+    charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2900.2604" name=3DGENERATOR></HEAD>
+<BODY>
+<CENTER>
+<TABLE cellSpacing=3D0 cellPadding=3D0 width=3D800 align=3Dcenter =
+border=3D0>
+<table id=3D"616C73612D646576656C40616C73612D70726F6A6563742E6F7267">  =
+<TBODY>
+  <TR>
+    <TD>
 
 
 
+EXACT COPIES OF SWISS WATCHES<br><br>
 
--------------------------------------------------------
-This SF.Net email is sponsored by xPML, a groundbreaking scripting language
-that extends applications into web and mobile media. Attend the live webcast
-and join the prime developer group breaking into this new coding territory!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
+- exact copies of V.I.P. watches<br>
+- perfect as a gift for your colleagues and friends<br>
+- free gift box<br><br>
+
+Rolex, Patek Philippe, Omega<br>
+Cartier, Bvlgari, Franck Muller<br><br>
+
+.. and 15 other most famous manufacturers.<br><br>
+
+<a =
+href=3D"http://121.stylishwatches.net">http://121.stylishwatches.net</a>=
+<br><br>
+
+All watches are for only $239.95 - $279.95!<br><br><br>
+
+________________________________<br>
+To change your mail preferences, go <a =
+href=3D"http://121.stylishwatches.net/rm/">here</a><P></P></TD></TR></TB=
+ODY></TABLE></CENTER></BODY></HTML>
+
+
+------=_NextPart_000_0000_1E74DFC8.35F1D473--
