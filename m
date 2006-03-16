@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Thu, 16 Mar 2006 15:04:34 +0100
-Message-ID: <b29ee8e189f1f6335e880c92e2fad167@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001926]: No sound and no internal speakers with Samsung R65-T2300 Charis notebook
+Date: Thu, 16 Mar 2006 15:37:56 +0100
+Message-ID: <a3c957be24b82c50db8aac70a2d3c99a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B75661D1
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 15:04:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AFEFC1B4
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 15:37:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,125 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1926> 
 ======================================================================
-Reported By:                liangalei
-Assigned To:                
+Reported By:                tassilo80
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Issue ID:                   1926
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              03-16-2006 15:04 CET
+Date Submitted:             03-15-2006 18:21 CET
+Last Modified:              03-16-2006 15:37 CET
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    No sound and no internal speakers with Samsung
+R65-T2300 Charis notebook
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+I have no sound on my laptop. 
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
+First I tried alsa-diver-1.0.11rc3:
+* The headphones are listed in alsamixer, but the internal speakers are
+not listed.
+* There's no sound with headphones
+* If I apply the patch mentioned in bug #1793
+(http://quaggaspace.org/a8nvm/a8nvmsound.patch) I have at least sound with
+my headphones
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
+The I tried the current CVS:
+* without model-option I had short a sound on my right headphone till I
+tweaked the mixer settings
+* with model=laptop I had no sound at all
+* with model=3stack I had no sount at all, too
+* if I apply the patch mentioned above and give no model-option, the sound
+works again (only headphones)
 
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
-
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
-
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- JProgrammer - 03-15-06 23:48 
+ tiwai - 03-16-06 14:54 
 ----------------------------------------------------------------------
-I received a response from BenQ today:
+The attached patch adds a new model "laptop-eapd".  It's enabled
+automatically for your device.
 
-"BenQ does not support the use of Linux on our notebooks, therefor there
-are no drivers or support documentation iswritten for this system.
+With this model, you'll have "Master" and "PCM" volumes/mutes.  Both
+influence on headphone and (possibly) internal speaker at the same time. 
+Don't forget to unmute both Master and PCM.
+There is a new control "External Amplifier", which hopefully toggles
+speaker on/off.
 
-Regards
+If this doesn't work, change line 625 to '#if 1'.  This will add 'Speaker'
+and 'Headphone' volumes/mutes.
 
-BenQ Support"
-
-However I phoned them up later and got them to confirm that it is the
-CX20551 chip in this laptop. I then proceeded to contact Conexant from
-their website literature@conexant.com however the delivery to this address
-fails.
-
-If someone in the US or Canada could contact them directly on a toll free
-number that would be appreciated.
-
-Headquarters
-4000 MacArthur Blvd.
-Newport Beach, CA., 92660
-Phone: (949) 483-4600
-(888) 855-4562 (Toll free U.S. & Canada)
+If the patch works but the speaker isn't muted even after plugging the
+headphone, we need to toggle the speaker on software with jack detection. 
+Try to uncomment line 586 '#define EAPD_AUTO_MUTE'.  (Note that this might
+be a bit dangerous, prepare for reboot ;)
 
 ----------------------------------------------------------------------
- tiwai - 03-16-06 15:04 
+ tassilo80 - 03-16-06 15:37 
 ----------------------------------------------------------------------
-The patch attached is just a blind shot to remove the modem part from
-ac97_codec.c.  Give it a try.
+Hey tiwai.
+
+It works with the patch (no modifications were needed). The internal
+speaker work and if I plugin the headphones the speakers are muted, too.
+
+Thanks for your great and fast help!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
+03-15-06 18:21 tassilo80      New Issue                                    
+03-15-06 18:21 tassilo80      File Added: asound.state                     
+03-15-06 18:26 tassilo80      File Added: codec-files                      
+03-15-06 18:50 tiwai          Note Added: 0008563                          
+03-15-06 18:59 tassilo80      Note Added: 0008565                          
+03-15-06 19:35 tiwai          Note Added: 0008568                          
+03-15-06 19:56 tassilo80      Note Added: 0008571                          
+03-16-06 14:54 tiwai          Note Added: 0008604                          
+03-16-06 14:56 tiwai          File Added: ad1986a-laptop-eapd.diff              
+     
+03-16-06 15:37 tassilo80      Note Added: 0008607                          
 ======================================================================
 
 
