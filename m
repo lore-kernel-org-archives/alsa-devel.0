@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000162]: Alsa 1.0,4RC1: snd-usb-audio still interfers with pwc.o (Philips based webcams)
-Date: Thu, 16 Mar 2006 19:53:49 +0100
-Message-ID: <e0c034ebc0fb4a58eed33eeddda69fea@bugtrack.alsa-project.org>
+Date: Thu, 16 Mar 2006 20:11:13 +0100
+Message-ID: <786b5bf419a09b219d18ae6dfbe38d93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 002281A9
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 19:53:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DFF41A9
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 20:11:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=162> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               SuSE8.2
 Kernel Version:             2.4.25
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-28-2004 17:20 CEST
-Last Modified:              03-16-2006 19:53 CET
+Last Modified:              03-16-2006 20:11 CET
 ======================================================================
 Summary:                    Alsa 1.0,4RC1: snd-usb-audio still interfers with
 pwc.o (Philips based webcams)
@@ -71,17 +73,17 @@ My hardware is error free, RAM @ standard speed.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-16-06 08:37 
-----------------------------------------------------------------------
-No response
-
-----------------------------------------------------------------------
  Schugy - 03-16-06 19:53 
 ----------------------------------------------------------------------
 These crashes were gone with kernel 2.6.X (think it was 2.6.7) on SuSE 8.2.
 Updating is quite difficult (udev, modutils). Maybe there were some
 changes in the usbcore. I'm no developer. I don't know. I'm using Ubuntu
 Warty now with kernel 2.6.13 and pwc-driver from http://www.saillard.org.
+
+----------------------------------------------------------------------
+ rlrevell - 03-16-06 20:11 
+----------------------------------------------------------------------
+Closed -> Resolved (fixed around kernel 2.6.7)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -104,6 +106,9 @@ rlrevell
 03-16-06 19:53 Schugy         Status                   closed => feedback  
 03-16-06 19:53 Schugy         Resolution               open => reopened    
 03-16-06 19:53 Schugy         Note Added: 0008620                          
+03-16-06 20:11 rlrevell       Status                   feedback => resolved
+03-16-06 20:11 rlrevell       Resolution               reopened => fixed   
+03-16-06 20:11 rlrevell       Note Added: 0008621                          
 ======================================================================
 
 
