@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001926]: No sound and no internal speakers with Samsung R65-T2300 Charis notebook
-Date: Thu, 16 Mar 2006 16:14:34 +0100
-Message-ID: <59d8c1bf0d712102f2922c6c28f181a9@bugtrack.alsa-project.org>
+Date: Thu, 16 Mar 2006 16:27:18 +0100
+Message-ID: <eb0129c3ab0b172eb7ebf83669c41595@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8CD561B4
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 16:14:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E2DA1CB
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 16:27:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             03-15-2006 18:21 CET
-Last Modified:              03-16-2006 16:14 CET
+Last Modified:              03-16-2006 16:27 CET
 ======================================================================
 Summary:                    No sound and no internal speakers with Samsung
 R65-T2300 Charis notebook
@@ -66,16 +66,6 @@ works again (only headphones)
 ======================================================================
 
 ----------------------------------------------------------------------
- tassilo80 - 03-16-06 15:37 
-----------------------------------------------------------------------
-Hey tiwai.
-
-It works with the patch (no modifications were needed). The internal
-speaker work and if I plugin the headphones the speakers are muted, too.
-
-Thanks for your great and fast help!
-
-----------------------------------------------------------------------
  tiwai - 03-16-06 16:14 
 ----------------------------------------------------------------------
 OK, good to hear that.
@@ -84,6 +74,11 @@ Could you check also recording?  Especially, what "Capture Source" works
 indeed.
 Currently we have "Mic", "CD", "Aux", "Line", "Mix", "Mono", and "Phone". 
 Possibly only "Mic", "Line" (as built-in mic) and "Mix" are effective.
+
+----------------------------------------------------------------------
+ tiwai - 03-16-06 16:27 
+----------------------------------------------------------------------
+The new, smaller patch is uploaded.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +95,9 @@ Date Modified  Username       Field                    Change
      
 03-16-06 15:37 tassilo80      Note Added: 0008607                          
 03-16-06 16:14 tiwai          Note Added: 0008609                          
+03-16-06 16:26 tiwai          File Added: ad1986a-laptop-eapd-new.diff          
+         
+03-16-06 16:27 tiwai          Note Added: 0008610                          
 ======================================================================
 
 
