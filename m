@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
-Date: Thu, 16 Mar 2006 19:44:55 +0100
-Message-ID: <9ccaa1519c438f9a203495bcb714fa3f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000162]: Alsa 1.0,4RC1: snd-usb-audio still interfers with pwc.o (Philips based webcams)
+Date: Thu, 16 Mar 2006 19:53:49 +0100
+Message-ID: <e0c034ebc0fb4a58eed33eeddda69fea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5CEF71A9
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 19:44:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 002281A9
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 19:53:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,98 +22,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=162> 
 ======================================================================
-Reported By:                chrmue
-Assigned To:                tiwai
+Reported By:                Schugy
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1733
-Category:                   PCI - hda-intel
+Issue ID:                   162
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               SuSE Linux 10.0
-Kernel Version:             2.6.13-15
+Status:                     feedback
+Distribution:               SuSE8.2
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             01-11-2006 07:23 CET
-Last Modified:              03-16-2006 19:44 CET
+Date Submitted:             03-28-2004 17:20 CEST
+Last Modified:              03-16-2006 19:53 CET
 ======================================================================
-Summary:                    Intel HDA Modem ?
+Summary:                    Alsa 1.0,4RC1: snd-usb-audio still interfers with
+pwc.o (Philips based webcams)
 Description: 
-I want to use my HDA Softmodem in Linux, is there any development on a HDA
-Modem Module ?
+Like other people using Mandrake's Cooker (google), I have crashes when
+loading snd-usb-audio.o after pwc.o.
 
-cat /proc/asound/card0/codec#1 gives me:
-Codec: Generic 11c1 ID 3026
-Address: 1
-Vendor Id: 0x11c13026
-Subsystem Id: 0x11c13026
-Revision Id: 0x70500
+I boot my system, hotplug recognizes my webcam and my usb-Headset. pwc.o
+is loaded but not snd-usb-audio.o, because hotplug wants to load audio.o
+(OSS).
 
-In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
+Now I can either modprobe snd-usb-audio or I can e.g. start TeamSpeak on
+/dev/dsp1 and my kernel registers snd-usb-audio automagically for
+sound-slot-1. After that I have weird colorful lines on my screen. Apache
+and sshd still work but it hangs during the reboot script.
 
-If there is development on this i would like to participate to get it
-going, because i dont't want to have a windows-installation on my Notebook
-(Acer TravelMate 8104) just for getting my mails at my parents house,
-where there is only analog telephone.
+Sometimes my PC doesn't crash immediately but I've had some kernel oops.
+At first some libraries in the memory become corrupted and e.g. all
+QT-Apps crash.
+
+I can use my webcam for 10h without its mic or I can use my USB-Headset
+but I can't use pwc.o and snd-usb-audio.o simultaniously. In a testcase
+I've used my webcam with the mic as my only usb hardware.
+ My 3 Gamepads, the cyberjack pinpad (usb-serial) and my USB-Mouse can be
+connected too, they have no bad influence.
+
+My hardware is error free, RAM @ standard speed.
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 03-16-06 02:17 
+ rlrevell - 03-16-06 08:37 
 ----------------------------------------------------------------------
-slmodem-2.9.10 is old, it does not do off-hook. Use slmodem-2.9.11-20051101
-from http://linmodmes.technion.ac.il/packages/smartlink .
-
-About wvdial. I know that such problem was reported and reason was that
-this fails  after unsuccessful serial port specific ioctl()s.
-
-What is the difference between wvdial-1.54.0 and wvdial-1.54.0 - I don't
-know (configure parameters?) and actually never seen such problem
-personally (my wvdial-1.54.0 was ok when I've used it last time). Try to
-debug with gdb, this should not be too complicated problem.
+No response
 
 ----------------------------------------------------------------------
- kratz00 - 03-16-06 19:44 
+ Schugy - 03-16-06 19:53 
 ----------------------------------------------------------------------
-i tried slmodem-2.9.11-20051101 but still the same if i have a little more
-time i will have a close look at this but maybe somebody has an idea what
-could be wrong in the mean time
+These crashes were gone with kernel 2.6.X (think it was 2.6.7) on SuSE 8.2.
+Updating is quite difficult (udev, modutils). Maybe there were some
+changes in the usbcore. I'm no developer. I don't know. I'm using Ubuntu
+Warty now with kernel 2.6.13 and pwc-driver from http://www.saillard.org.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 07:23 chrmue         New Issue                                    
-01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
-01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
-01-11-06 07:42 rlrevell       Note Added: 0007559                          
-01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
-            
-01-11-06 23:35 sashak         Note Added: 0007571                          
-01-12-06 00:00 sashak         Note Added: 0007574                          
-01-12-06 00:02 sashak         Issue Monitored: sashak                      
-01-12-06 05:35 chrmue         Note Added: 0007581                          
-01-13-06 00:16 sashak         Note Added: 0007598                          
-01-16-06 20:19 chrmue         Note Added: 0007692                          
-01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
-03-03-06 15:43 lrupn          Note Added: 0008341                          
-03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
-03-10-06 23:44 kratz00        Note Added: 0008413                          
-03-11-06 15:19 kratz00        Note Added: 0008416                          
-03-11-06 19:03 rlrevell       Note Added: 0008421                          
-03-11-06 19:23 kratz00        Note Added: 0008423                          
-03-11-06 19:33 rlrevell       Note Added: 0008424                          
-03-11-06 23:08 sashak         Note Added: 0008427                          
-03-12-06 11:22 kratz00        Note Added: 0008431                          
-03-15-06 00:42 chrmue         Note Added: 0008525                          
-03-15-06 11:35 tiwai          Note Added: 0008530                          
-03-15-06 21:42 kratz00        Note Added: 0008573                          
-03-15-06 21:42 kratz00        Issue Monitored: kratz00                     
-03-16-06 02:17 sashak         Note Added: 0008581                          
-03-16-06 19:44 kratz00        Note Added: 0008619                          
+03-28-04 17:20 Schugy         New Issue                                    
+03-28-04 17:20 Schugy         Distribution              => SuSE8.2         
+03-28-04 17:20 Schugy         Kernel Version            => 2.4.25          
+04-02-04 17:47 paperclip      Note Added: 0000733                          
+04-03-04 15:16 Schugy         Note Added: 0000736                          
+04-05-04 16:33 Clemens LadischNote Added: 0000753                          
+04-09-04 14:13 Schugy         Note Added: 0000775                          
+04-10-04 20:10 Schugy         File Added: oops.zip                         
+04-10-04 20:19 Schugy         Note Added: 0000778                          
+08-30-05 12:12 jdthood        Note Added: 0005965                          
+03-16-06 08:37 rlrevell       Status                   assigned => closed  
+03-16-06 08:37 rlrevell       Note Added: 0008595                          
+03-16-06 19:44 Schugy         Issue Monitored: Schugy                      
+03-16-06 19:53 Schugy         Assigned To              Clemens Ladisch =>
+rlrevell
+03-16-06 19:53 Schugy         Status                   closed => feedback  
+03-16-06 19:53 Schugy         Resolution               open => reopened    
+03-16-06 19:53 Schugy         Note Added: 0008620                          
 ======================================================================
 
 
