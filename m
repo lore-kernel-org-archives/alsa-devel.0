@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000406]: Multiple Kernel OOPS with multiple threads accessing sound device
-Date: Thu, 16 Mar 2006 08:31:13 +0100
-Message-ID: <b42f211eac67e9d89f1ea2f50c0fcec0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000405]: PCM playback causes hard freeze under kernel 2.6.x
+Date: Thu, 16 Mar 2006 08:33:15 +0100
+Message-ID: <93c08f97ccc8a60c6e4ed51886ffc330@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7B801FB
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:31:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 918011FB
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:33:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=406> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=405> 
 ======================================================================
-Reported By:                nickkral
+Reported By:                comac
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   406
-Category:                   CORE OSS - pcm
-Reproducibility:            random
+Issue ID:                   405
+Category:                   ISA - opl3sa2
+Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.7-gentoo-r5
+Status:                     acknowledged
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             07-26-2004 07:55 CEST
-Last Modified:              03-16-2006 08:31 CET
+Date Submitted:             07-25-2004 20:07 CEST
+Last Modified:              03-16-2006 08:33 CET
 ======================================================================
-Summary:                    Multiple Kernel OOPS with multiple threads accessing
-sound device
+Summary:                    PCM playback causes hard freeze under kernel 2.6.x
 Description: 
-I have a program with two threads (pthreads)
+System freezes after a few seconds of playback thru integrated "OPL3-SA3
+Snd System" (as reported by pnpdump) with any 2.6 kernel. (tested 2.6.0,
+2.6.5, 2.6.7, 2.6.7-ck[15] and perhaps some other)
 
-One thread continually writes to /dev/dsp, and the other thread
-continually calls the SNDCTL_DSP_GETODELAY ioctl.
+Problem shows up both with kernel alsa modules AND 1.0.5 modules compiled
+from alsa-project tarballs. Worked flawlessly on 2.4.x on the same
+system.
 
-At startup, there appears to be a race condition in the initialization of
-some data structures which causes OOPSes in the linux kernel.
+Playback time before freeze varies from a few seconds to a few minutes and
+seems to be related to system or disk load. While playing, sound gets
+distorted (seems to skip) when disk is accessed.
+
+I've tried disabling preemptive, messing with PnP settings on BIOS and
+checked the card has its own DMA and IRQ (not shared with anyone else)
+without any success.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-08-05 22:27 
+ comac - 04-09-05 00:10 
 ----------------------------------------------------------------------
-Submitter: Was this problem ever solved in later ALSA releases?
+I've been trying 2.6.x kernels as they are released up to 2.6.11.5, using
+the included alsa code. And all kernels have shown the same problem so
+far.
+
+Is there any combination of kernel + alsa I should try?
 
 ----------------------------------------------------------------------
- rlrevell - 03-16-06 08:31 
+ rlrevell - 03-16-06 08:33 
 ----------------------------------------------------------------------
-No response
+heyzuess, your problem sounds like a kernel/ACPI issue.
+
+Any improvement with later ALSA/kernel releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-26-04 07:55 nickkral       New Issue                                    
-07-26-04 07:55 nickkral       Distribution              => Gentoo          
-07-26-04 07:55 nickkral       Kernel Version            => 2.6.7-gentoo-r5 
-04-08-05 22:27 jdthood        Note Added: 0004376                          
-03-16-06 08:31 rlrevell       Note Added: 0008591                          
+07-25-04 20:07 comac          New Issue                                    
+07-25-04 20:07 comac          Distribution              => Gentoo Linux    
+07-25-04 20:07 comac          Kernel Version            => 2.6.7           
+07-28-04 02:57 heyzuess       Note Added: 0001479                          
+04-08-05 22:27 jdthood        Note Added: 0004377                          
+04-09-05 00:10 comac          Note Added: 0004380                          
+04-09-05 04:19 jdthood        Status                   new => confirmed    
+04-09-05 04:20 jdthood        Status                   confirmed => acknowledged
+03-16-06 08:33 rlrevell       Note Added: 0008592                          
 ======================================================================
 
 
