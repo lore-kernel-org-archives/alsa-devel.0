@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001926]: No sound and no internal speakers with Samsung R65-T2300 Charis notebook
-Date: Thu, 16 Mar 2006 16:27:18 +0100
-Message-ID: <eb0129c3ab0b172eb7ebf83669c41595@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001925]: no sound from hda_intel
+Date: Thu, 16 Mar 2006 16:59:05 +0100
+Message-ID: <91856345e1dbe7264a721ace9353c873@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E2DA1CB
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 16:27:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 459191F1
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 16:59:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1926> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1925> 
 ======================================================================
-Reported By:                tassilo80
+Reported By:                stefanob
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1926
+Issue ID:                   1925
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Ubuntu Dapper
+Kernel Version:             2.6.15-18-686 #1 SMP PREEMPT
 ======================================================================
-Date Submitted:             03-15-2006 18:21 CET
-Last Modified:              03-16-2006 16:27 CET
+Date Submitted:             03-15-2006 14:59 CET
+Last Modified:              03-16-2006 16:59 CET
 ======================================================================
-Summary:                    No sound and no internal speakers with Samsung
-R65-T2300 Charis notebook
+Summary:                    no sound from hda_intel
 Description: 
-I have no sound on my laptop. 
+Alsa mixer works but i can't hear any sound. I tried the last cvs branch
+with no success ( i tried also with model=laptop ).
 
-First I tried alsa-diver-1.0.11rc3:
-* The headphones are listed in alsamixer, but the internal speakers are
-not listed.
-* There's no sound with headphones
-* If I apply the patch mentioned in bug #1793
-(http://quaggaspace.org/a8nvm/a8nvmsound.patch) I have at least sound with
-my headphones
+My computer is a notebook Asus Model A6J
 
-The I tried the current CVS:
-* without model-option I had short a sound on my right headphone till I
-tweaked the mixer settings
-* with model=laptop I had no sound at all
-* with model=3stack I had no sount at all, too
-* if I apply the patch mentioned above and give no model-option, the sound
-works again (only headphones)
+lspci -nv 
+
+0000:00:1b.0 0403: 8086:27d8 (rev 02)
+        Subsystem: 1043:1213
+        Flags: bus master, fast devsel, latency 0, IRQ 169
+        Memory at febfc000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] #10 [0091]
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-16-06 16:14 
+ tiwai - 03-16-06 16:59 
 ----------------------------------------------------------------------
-OK, good to hear that.
+Upload the contents of /proc/asound/card0/codec#* files and
+/etc/asound.state after "alsactl store".
 
-Could you check also recording?  Especially, what "Capture Source" works
-indeed.
-Currently we have "Mic", "CD", "Aux", "Line", "Mix", "Mono", and "Phone". 
-Possibly only "Mic", "Line" (as built-in mic) and "Mix" are effective.
-
-----------------------------------------------------------------------
- tiwai - 03-16-06 16:27 
-----------------------------------------------------------------------
-The new, smaller patch is uploaded.
+You can find available models for each codec in ALSA-Configuration.txt. 
+Check other bugreports with the same codec chip, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 18:21 tassilo80      New Issue                                    
-03-15-06 18:21 tassilo80      File Added: asound.state                     
-03-15-06 18:26 tassilo80      File Added: codec-files                      
-03-15-06 18:50 tiwai          Note Added: 0008563                          
-03-15-06 18:59 tassilo80      Note Added: 0008565                          
-03-15-06 19:35 tiwai          Note Added: 0008568                          
-03-15-06 19:56 tassilo80      Note Added: 0008571                          
-03-16-06 14:54 tiwai          Note Added: 0008604                          
-03-16-06 14:56 tiwai          File Added: ad1986a-laptop-eapd.diff              
-     
-03-16-06 15:37 tassilo80      Note Added: 0008607                          
-03-16-06 16:14 tiwai          Note Added: 0008609                          
-03-16-06 16:26 tiwai          File Added: ad1986a-laptop-eapd-new.diff          
-         
-03-16-06 16:27 tiwai          Note Added: 0008610                          
+03-15-06 14:59 stefanob       New Issue                                    
+03-15-06 14:59 stefanob       Distribution              => Ubuntu Dapper   
+03-15-06 14:59 stefanob       Kernel Version            => 2.6.15-18-686 #1 SMP
+PREEMPT
+03-16-06 16:01 stefanob       Issue Monitored: stefanob                    
+03-16-06 16:59 tiwai          Note Added: 0008611                          
 ======================================================================
 
 
