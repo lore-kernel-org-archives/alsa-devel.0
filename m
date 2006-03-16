@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001850]: source available
-Date: Thu, 16 Mar 2006 14:54:53 +0100
-Message-ID: <f4c4c0a2d7f41f5aad2d86637152b4df@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
+Date: Thu, 16 Mar 2006 15:04:34 +0100
+Message-ID: <b29ee8e189f1f6335e880c92e2fad167@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0DDF1F3
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 14:54:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B75661D1
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 15:04:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,125 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
 ======================================================================
-Reported By:                coz
+Reported By:                liangalei
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1850
-Category:                   PCI - echoaudio
+Issue ID:                   1134
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               ubuntu/breezy/Debian
-Kernel Version:             2.6.12.10.386
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
 ======================================================================
-Date Submitted:             02-16-2006 13:05 CET
-Last Modified:              03-16-2006 14:54 CET
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              03-16-2006 15:04 CET
 ======================================================================
-Summary:                    source available
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
 Description: 
-can't start layla24
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
+
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
+
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
+
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
+
+thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- johnrigg - 03-13-06 23:02 
+ JProgrammer - 03-15-06 23:48 
 ----------------------------------------------------------------------
-No high end apps for recording on Linux?
-http://ardour.org
+I received a response from BenQ today:
+
+"BenQ does not support the use of Linux on our notebooks, therefor there
+are no drivers or support documentation iswritten for this system.
+
+Regards
+
+BenQ Support"
+
+However I phoned them up later and got them to confirm that it is the
+CX20551 chip in this laptop. I then proceeded to contact Conexant from
+their website literature@conexant.com however the delivery to this address
+fails.
+
+If someone in the US or Canada could contact them directly on a toll free
+number that would be appreciated.
+
+Headquarters
+4000 MacArthur Blvd.
+Newport Beach, CA., 92660
+Phone: (949) 483-4600
+(888) 855-4562 (Toll free U.S. & Canada)
 
 ----------------------------------------------------------------------
- coz - 03-16-06 14:54 
+ tiwai - 03-16-06 15:04 
 ----------------------------------------------------------------------
-Hello, yes the driver compiles without any problems.
- i reinstalled dapper. I have downloded these files;
-alsa-driver-1.0.11rc3
-alsa-source_1.0.10+1.0.11rc3
-alsa-firmware-1.0.11rc3
-alsa-tools-1.0.11rc3
-alsa-utils-1.0.11rc3
- in which order are these installed?
-Can I then follow your sites how to listed under Layla24?
-   The second how to on your site, listed under Layla24 talks of hotplug
-scripts but according to ubuntu scripts/init has been removed because it
-is taken care of by kernel.
- So at least that part of the how to is out of date.
- I apologize for my ingorance around this issue. i am in no way trying to
-tax your patience. I am sure that this is not exactly what you like to
-do.
-Ardour, apparently my client is aware of this and one reason he wasnts his
-layla card with ubuntu.
- I have donwloade it to take a look at it. 
-Thanks
+The patch attached is just a blind shot to remove the modem part from
+ac97_codec.c.  Give it a try.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-06 13:05 coz            New Issue                                    
-02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
-02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
-02-18-06 13:34 pochini        Note Added: 0008119                          
-02-20-06 03:30 coz            Note Added: 0008140                          
-02-20-06 22:02 pochini        Note Added: 0008150                          
-03-13-06 19:49 coz            Note Added: 0008456                          
-03-13-06 22:38 pochini        Note Added: 0008465                          
-03-13-06 23:02 johnrigg       Note Added: 0008466                          
-03-16-06 14:54 coz            Note Added: 0008605                          
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
+05-30-05 03:29 liangalei      Note Added: 0004795                          
+06-01-05 16:58 tiwai          Note Added: 0004863                          
+06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+06-02-05 10:42 liangalei      Note Added: 0004875                          
+06-06-05 09:53 perex          Assigned To              perex =>            
+06-23-05 12:42 tiwai          Note Added: 0005182                          
+06-24-05 03:12 liangalei      File Added: asound.state                     
+06-24-05 03:13 liangalei      File Added: ac97#0-0                         
+06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
+06-24-05 03:18 liangalei      Note Added: 0005202                          
+08-28-05 15:28 ybar           Note Added: 0005962                          
+11-29-05 05:59 derek          Issue Monitored: derek                       
+11-29-05 06:00 derek          Issue End Monitor: derek                     
+11-29-05 06:03 derek          Note Added: 0006870                          
+02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
+02-17-06 22:22 gandhi         Note Added: 0008110                          
+02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
+02-17-06 23:28 gandhi         Note Edited: 0008110                         
+02-17-06 23:43 gandhi         Note Edited: 0008110                         
+02-18-06 02:05 gandhi         Note Added: 0008112                          
+02-18-06 08:13 liangalei      Note Added: 0008116                          
+02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
+02-18-06 15:56 gandhi         Note Added: 0008120                          
+02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
+03-03-06 08:29 robitech       Note Added: 0008336                          
+03-15-06 05:34 JProgrammer    Note Added: 0008526                          
+03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
+03-15-06 06:39 Kooper         Note Added: 0008527                          
+03-15-06 11:40 tiwai          Note Added: 0008531                          
+03-15-06 11:53 Kooper         Note Added: 0008535                          
+03-15-06 12:13 JProgrammer    Note Added: 0008538                          
+03-15-06 12:18 tiwai          Note Added: 0008540                          
+03-15-06 23:48 JProgrammer    Note Added: 0008579                          
+03-16-06 15:04 tiwai          Note Added: 0008606                          
 ======================================================================
 
 
