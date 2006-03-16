@@ -1,16 +1,15 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: ALSA SoC status
-Date: Thu, 16 Mar 2006 10:56:48 +0000
-Message-ID: <1142506608.30276.29.camel@cearnarfon>
-References: <20060316093811.GK21043@trinity.fluff.org>
+From: boku <boku0712@gmail.com>
+Subject: Re: memory allocate for substream->runtime->dma_area
+Date: Thu, 16 Mar 2006 20:51:47 +0800
+Message-ID: <715d90900603160451g36db25ecl7703f277b99b40c3@mail.gmail.com>
+References: <715d90900603141942y6c409027sb5a99be13f5ec462@mail.gmail.com>
+	 <715d90900603141943h423c0ffdydedec3f1ed50a375@mail.gmail.com>
+	 <s5hoe08hve4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_2679_11715294.1142513507521"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from orlando.wolfsonmicro.main (webmail.wolfsonmicro.com [212.20.225.142])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E453190
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 11:56:51 +0100 (MET)
-In-Reply-To: <20060316093811.GK21043@trinity.fluff.org>
+In-Reply-To: <s5hoe08hve4.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,45 +19,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ben Dooks <ben-alsa@fluff.org>
-Cc: Dirk Opfer <Dirk@Opfer-Online.de>, Richard Purdie <rpurdie@rpsys.net>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Ben,
+------=_Part_2679_11715294.1142513507521
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-On Thu, 2006-03-16 at 09:38 +0000, Ben Dooks wrote:
-> I would like to know how the ALSA SoC work is going on,
-> as I am hoping to get the S3C2410/S3C244X better supported
-> and was hoping that the ASoC work would make the job easier
-> to do.
-
-It's working well on some pxa2xx machines atm. There are people
-currently working on support for omap and AT91RM9200. I have access to a
-pb1500 and i.MX21 boards so I'll be able to add support for them in the
-near future. 
-
-> 
-> Are there any plans to merge ASoC soon, otherwise, is there
-> any advice for getting the S3C24XX and the boards produced
-> with it on supported?
-> 
-
-The plan is to merge 0.10 into alsa-kernel. 0.10rc4 was released
-recently (will be on http://www.rpsys.net/openzaurus/patches/alsa/ by
-the weekend). The patch is large at about 450k (supports a lot of
-codecs), so I'm happy to send it to anyone who requests.
-
-ASoC 0.10 final is waiting on me completing some documentation: i.e. how
-to write a platform driver, codec driver, how dynamic audio pm works,
-etc. We also still have some machine specific bugs to fix on some
-Zauruses and some testing before we can release final.
-
-I'd be glad to help and advise with the S3C24XX support. I've sent the
-current patch to you off list.
-
-Liam
+Is there any example case that uses fixed address space for the DMA region?
+Thanks!~
 
 
+On 3/15/06, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> At Wed, 15 Mar 2006 11:43:51 +0800,
+> boku wrote:
+> >
+> > Dear all,
+> >     Could anyone tell me where the memory allocation of
+> substream->runtime is? I got
+> > to refine the runtime->dma_area within a specific DMA address. But I
+> can't find where
+> > the dma alloc is. Thanks a lot!
+>
+> The driver has to allocate the DMA buffer by itself.
+>
+> Most drivers use the helper functions, snd_pcm_lib_preallocate_*() at
+> creation and snd_pcm_lib_malloc_pages() at hw_params callback, so that
+> the PCM middle layer takes over the jobs.  But, in special cases, you
+> need to allocate the buffer or assign the fixed addresses by
+> yourself.
+>
+> Anyway, better to show your code and read the documentation once, as
+> Lee suggested.
+>
+>
+> Takashi
+>
+
+------=_Part_2679_11715294.1142513507521
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+<div>Is there any example case that uses fixed address space for&nbsp;the D=
+MA region? Thanks!~</div>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div><span class=3D"gmail_quote">On 3/15/06, <b class=3D"gmail_sendername">=
+Takashi Iwai</b> &lt;<a href=3D"mailto:tiwai@suse.de">tiwai@suse.de</a>&gt;=
+ wrote:</span>
+<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
+px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">At Wed, 15 Mar 2006 11:43:51 +08=
+00,<br>boku wrote:<br>&gt;<br>&gt; Dear all,<br>&gt;&nbsp;&nbsp;&nbsp;&nbsp=
+; Could anyone tell me where the memory allocation of substream-&gt;runtime=
+ is? I got
+<br>&gt; to refine the runtime-&gt;dma_area within a specific DMA address. =
+But I can't find where<br>&gt; the dma alloc is. Thanks a lot!<br><br>The d=
+river has to allocate the DMA buffer by itself.<br><br>Most drivers use the=
+ helper functions, snd_pcm_lib_preallocate_*() at
+<br>creation and snd_pcm_lib_malloc_pages() at hw_params callback, so that<=
+br>the PCM middle layer takes over the jobs.&nbsp;&nbsp;But, in special cas=
+es, you<br>need to allocate the buffer or assign the fixed addresses by<br>=
+yourself.
+<br><br>Anyway, better to show your code and read the documentation once, a=
+s<br>Lee suggested.<br><br><br>Takashi<br></blockquote></div><br>
+
+------=_Part_2679_11715294.1142513507521--
 
 
 -------------------------------------------------------
