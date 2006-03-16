@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001926]: No sound and no internal speakers with Samsung R65-T2300 Charis notebook
-Date: Thu, 16 Mar 2006 14:54:52 +0100
-Message-ID: <88810892233e1e9959ac85702fe80179@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001850]: source available
+Date: Thu, 16 Mar 2006 14:54:53 +0100
+Message-ID: <f4c4c0a2d7f41f5aad2d86637152b4df@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD2D71F1
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 14:54:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0DDF1F3
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 14:54:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,93 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1926> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
 ======================================================================
-Reported By:                tassilo80
-Assigned To:                tiwai
+Reported By:                coz
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1926
-Category:                   PCI - hda-intel
+Issue ID:                   1850
+Category:                   PCI - echoaudio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               ubuntu/breezy/Debian
+Kernel Version:             2.6.12.10.386
 ======================================================================
-Date Submitted:             03-15-2006 18:21 CET
+Date Submitted:             02-16-2006 13:05 CET
 Last Modified:              03-16-2006 14:54 CET
 ======================================================================
-Summary:                    No sound and no internal speakers with Samsung
-R65-T2300 Charis notebook
+Summary:                    source available
 Description: 
-I have no sound on my laptop. 
-
-First I tried alsa-diver-1.0.11rc3:
-* The headphones are listed in alsamixer, but the internal speakers are
-not listed.
-* There's no sound with headphones
-* If I apply the patch mentioned in bug #1793
-(http://quaggaspace.org/a8nvm/a8nvmsound.patch) I have at least sound with
-my headphones
-
-The I tried the current CVS:
-* without model-option I had short a sound on my right headphone till I
-tweaked the mixer settings
-* with model=laptop I had no sound at all
-* with model=3stack I had no sount at all, too
-* if I apply the patch mentioned above and give no model-option, the sound
-works again (only headphones)
-
+can't start layla24
 ======================================================================
 
 ----------------------------------------------------------------------
- tassilo80 - 03-15-06 19:56 
+ johnrigg - 03-13-06 23:02 
 ----------------------------------------------------------------------
-> OK, and which mixer controls influence on the volume / mute 
-> of headphone output? I suppose PCM should, but any else (Front,
-> Surround, Rear, Center, LFE, Headphone)?
-
-PCM and Headphone have influence.
-
-> And, does the recording from mic-jack (or built-in mic) work?
-
-Recording from external mic works. The internal mic doesn't, but
-unfornately I even don't know where this should be located. Perhaps this
-has to be enabled with some Fn-X shortcut...
+No high end apps for recording on Linux?
+http://ardour.org
 
 ----------------------------------------------------------------------
- tiwai - 03-16-06 14:54 
+ coz - 03-16-06 14:54 
 ----------------------------------------------------------------------
-The attached patch adds a new model "laptop-eapd".  It's enabled
-automatically for your device.
-
-With this model, you'll have "Master" and "PCM" volumes/mutes.  Both
-influence on headphone and (possibly) internal speaker at the same time. 
-Don't forget to unmute both Master and PCM.
-There is a new control "External Amplifier", which hopefully toggles
-speaker on/off.
-
-If this doesn't work, change line 625 to '#if 1'.  This will add 'Speaker'
-and 'Headphone' volumes/mutes.
-
-If the patch works but the speaker isn't muted even after plugging the
-headphone, we need to toggle the speaker on software with jack detection. 
-Try to uncomment line 586 '#define EAPD_AUTO_MUTE'.  (Note that this might
-be a bit dangerous, prepare for reboot ;)
+Hello, yes the driver compiles without any problems.
+ i reinstalled dapper. I have downloded these files;
+alsa-driver-1.0.11rc3
+alsa-source_1.0.10+1.0.11rc3
+alsa-firmware-1.0.11rc3
+alsa-tools-1.0.11rc3
+alsa-utils-1.0.11rc3
+ in which order are these installed?
+Can I then follow your sites how to listed under Layla24?
+   The second how to on your site, listed under Layla24 talks of hotplug
+scripts but according to ubuntu scripts/init has been removed because it
+is taken care of by kernel.
+ So at least that part of the how to is out of date.
+ I apologize for my ingorance around this issue. i am in no way trying to
+tax your patience. I am sure that this is not exactly what you like to
+do.
+Ardour, apparently my client is aware of this and one reason he wasnts his
+layla card with ubuntu.
+ I have donwloade it to take a look at it. 
+Thanks
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 18:21 tassilo80      New Issue                                    
-03-15-06 18:21 tassilo80      File Added: asound.state                     
-03-15-06 18:26 tassilo80      File Added: codec-files                      
-03-15-06 18:50 tiwai          Note Added: 0008563                          
-03-15-06 18:59 tassilo80      Note Added: 0008565                          
-03-15-06 19:35 tiwai          Note Added: 0008568                          
-03-15-06 19:56 tassilo80      Note Added: 0008571                          
-03-16-06 14:54 tiwai          Note Added: 0008604                          
+02-16-06 13:05 coz            New Issue                                    
+02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
+02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
+02-18-06 13:34 pochini        Note Added: 0008119                          
+02-20-06 03:30 coz            Note Added: 0008140                          
+02-20-06 22:02 pochini        Note Added: 0008150                          
+03-13-06 19:49 coz            Note Added: 0008456                          
+03-13-06 22:38 pochini        Note Added: 0008465                          
+03-13-06 23:02 johnrigg       Note Added: 0008466                          
+03-16-06 14:54 coz            Note Added: 0008605                          
 ======================================================================
 
 
