@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000406]: Multiple Kernel OOPS with multiple threads accessing sound device
-Date: Thu, 16 Mar 2006 08:31:37 +0100
-Message-ID: <1b33771af7466aa89719216069c0b7b8@bugtrack.alsa-project.org>
+Date: Thu, 16 Mar 2006 08:31:13 +0100
+Message-ID: <b42f211eac67e9d89f1ea2f50c0fcec0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 370BB1FB
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:31:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7B801FB
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:31:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=406> 
 ======================================================================
@@ -35,11 +35,9 @@ Category:                   CORE OSS - pcm
 Reproducibility:            random
 Severity:                   crash
 Priority:                   normal
-Status:                     closed
+Status:                     new
 Distribution:               Gentoo
 Kernel Version:             2.6.7-gentoo-r5
-Resolution:                 open
-Fixed in Version:           
 ======================================================================
 Date Submitted:             07-26-2004 07:55 CEST
 Last Modified:              03-16-2006 08:31 CET
@@ -74,7 +72,6 @@ Date Modified  Username       Field                    Change
 07-26-04 07:55 nickkral       Kernel Version            => 2.6.7-gentoo-r5 
 04-08-05 22:27 jdthood        Note Added: 0004376                          
 03-16-06 08:31 rlrevell       Note Added: 0008591                          
-03-16-06 08:31 rlrevell       Status                   new => closed       
 ======================================================================
 
 
