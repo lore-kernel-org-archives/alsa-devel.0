@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000326]: Emagic EMI 6/2m: no recording
-Date: Thu, 16 Mar 2006 08:43:57 +0100
-Message-ID: <5bcdace827b01242c26ae63ac54e075e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000146]: mic stops working
+Date: Thu, 16 Mar 2006 08:46:22 +0100
+Message-ID: <9eef0ba3b7c43ca89692f762336b9a2b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 063211FB
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:43:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B1611FB
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:46:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=326> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=146> 
 ======================================================================
-Reported By:                kompi
-Assigned To:                Clemens Ladisch
+Reported By:                davec
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   326
-Category:                   USB - usb-audio
+Issue ID:                   146
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.7-rc2 (also tested earlier stable versions)
+Distribution:               
+Kernel Version:             
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-07-2004 19:52 CEST
-Last Modified:              03-16-2006 08:43 CET
+Date Submitted:             03-18-2004 14:40 CET
+Last Modified:              03-16-2006 08:46 CET
 ======================================================================
-Summary:                    Emagic EMI 6/2m: no recording
+Summary:                    mic stops working
 Description: 
-Cannot get a recording stream from the USB device Emagic EMI 6/2m running
-with snd-usb-audio. 
-No errors oder hangs are produced. Just a zero stream is outputted (in
-every data rate the emi can work with).
-The mixer controls are set correctly, nothing is muted.
-
+I can initiate a call in skype ( through wine) and talk for a few seconds,
+then it drops
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 08-30-05 12:17 
+ jdthood - 12-13-05 12:42 
 ----------------------------------------------------------------------
-Hi.  What's the status of this bug.  Any improvement in later ALSA
-releases?
+Submitter: Does this problem still exist in ALSA 1.0.10?
 
 ----------------------------------------------------------------------
- rlrevell - 03-16-06 08:43 
+ davec - 12-13-05 13:47 
 ----------------------------------------------------------------------
-No response
+Sorry, I have no idea. I now use a Mac
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-04 19:52 kompi          New Issue                                    
-06-07-04 19:52 kompi          Distribution              => Gentoo Linux    
-06-07-04 19:52 kompi          Kernel Version            => 2.6.7-rc2 (also
-tested earlier stable versions)
-08-30-05 12:17 jdthood        Note Added: 0005968                          
-03-16-06 08:43 rlrevell       Status                   assigned => closed  
-03-16-06 08:43 rlrevell       Note Added: 0008599                          
+03-18-04 14:40 davec          New Issue                                    
+03-19-05 09:29 jdthood        Note Added: 0004019                          
+12-13-05 12:42 jdthood        Note Added: 0006997                          
+12-13-05 13:47 davec          Note Added: 0007016                          
+03-16-06 08:46 rlrevell       Status                   new => closed       
 ======================================================================
 
 
