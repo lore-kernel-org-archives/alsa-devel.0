@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
-Date: Thu, 16 Mar 2006 07:52:13 +0100
-Message-ID: <8a05c87570d5abb759285e6498ca9341@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
+Date: Thu, 16 Mar 2006 07:53:45 +0100
+Message-ID: <258515a622ed9ade86ef8c5b898d1d81@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66D54215
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 07:52:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65CAA216
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 07:53:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,136 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=875> 
 ======================================================================
-Reported By:                aaronkaplan
+Reported By:                Jean-Louis Crouzet
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   328
+Issue ID:                   875
 Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398
+Status:                     assigned
+Distribution:               
+Kernel Version:             # uname -a
+Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 ======================================================================
-Date Submitted:             06-08-2004 23:13 CEST
-Last Modified:              03-16-2006 07:52 CET
+Date Submitted:             02-01-2005 16:17 CET
+Last Modified:              03-16-2006 07:53 CET
 ======================================================================
-Summary:                    snd-nm256 freezes Dell Latitude LS
+Summary:                    Can't get nm256 up & running
 Description: 
-My Dell Latitude LS with an NM256AV hangs when I insert the
-snd-nm256 module.
+I trying since ages to get this nm256 up & running with ALSA, w/o any
+sucess.
 
-The OSS driver works fine.
+PC Omnibook 900 (not a 900B)
 
+# uname -a
+Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+
+
+#lspci  -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-04.0  Texas Instruments PCI1225
+      +-04.1  Texas Instruments PCI1225
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      \-07.3  Intel Corp. 82371AB/EB/MB PIIX4 A	
+	
+# modinfo snd_nm256
+filename:      
+/lib/modules/2.6.8jlcv32/kernel/sound/pci/nm256/snd-nm256.ko
+author:         Takashi Iwai <tiwai@suse.de>
+description:    NeoMagic NM256AV/ZX
+license:        GPL
+vermagic:       2.6.8jlcv32 PENTIUMII gcc-3.3
+depends:        snd-pcm,snd,snd-ac97-codec
+alias:          pci:v000010C8d00008005sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008006sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008016sv*sd*bc*sc*i*
+parm:           vaio_hack:Enable workaround for Sony VAIO notebooks.
+parm:           use_cache:Enable the cache for coefficient table access.
+parm:           buffer_top:Set the top address of audio buffer for
+NeoMagic 256AV/ZX soundcard.
+parm:           force_ac97:Force to use AC97 codec for NeoMagic 256AV/ZX
+soundcard.
+parm:           capture_bufsize:ADC frame size in kB for NeoMagic 256AV/ZX
+soundcard.
+parm:           playback_bufsize:DAC frame size in kB for NeoMagic
+256AV/ZX soundcard.
+parm:           enable:Enable this soundcard.
+parm:           id:ID string for NeoMagic 256AV/ZX soundcard.
+parm:           index:Index value for NeoMagic 256AV/ZX soundcard.
+
+# alsaconf
+Unloading sound driver modules...done.
+Building card database..
+
+
+Running update-modules...
+Loading driver...
+FATAL: Error running install command for snd_nm256
+Setting default volumes...
+Saving the mixer setup used for this in /var/lib/alsa/asound.state.
+/usr/sbin/alsactl: save_state:1061: No soundcards found...
+
+===============================================================================
+
+ Now ALSA is ready to use.
+ For adjustment of volumes, use your favorite mixer.
+
+ Have a lot of fun!
+
+
+???????????????????????????,,
 ======================================================================
 
 ----------------------------------------------------------------------
- aaronkaplan - 01-22-06 02:00 
+ tiwai - 10-12-05 13:49 
 ----------------------------------------------------------------------
-With alsa 1.0.11rc2, modprobe snd_nm256 hangs the machine with all four
-possible combinations of reset_workaround and reset_workaround_2.
+It'll be merged to the ALSA public tree only if it's confirmed to work.
+Remember that the patch is really untested.  It might freeze your system
+;)
 
 ----------------------------------------------------------------------
- rlrevell - 03-16-06 07:52 
+ rlrevell - 03-16-06 07:53 
 ----------------------------------------------------------------------
-This bug should be fixed in CVS, can you please test it?
+Was this ever resolved?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-04 23:13 aaronkaplan    New Issue                                    
-06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
-06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
-06-08-04 23:13 aaronkaplan    Issue Monitored: aaronkaplan                    
-06-30-04 16:55 tiwai          Note Added: 0001362                          
-06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                   
+02-01-05 16:17 Jean-Louis CrouzetNew Issue                                    
+02-01-05 16:17 Jean-Louis CrouzetKernel Version            => # uname -a
+Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+02-02-05 11:18 tiwai          Note Added: 0003483                          
+02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
+02-02-05 12:46 tiwai          Note Added: 0003486                          
+02-02-05 13:05 Jean-Louis CrouzetNote Added: 0003487                          
+02-09-05 12:09 tiwai          Note Added: 0003547                          
+02-10-05 09:54 Jean-Louis CrouzetNote Added: 0003563                          
+02-14-05 19:46 tiwai          Note Added: 0003605                          
+02-15-05 10:08 Jean-Louis CrouzetNote Added: 0003617                          
+02-15-05 10:32 Jean-Louis CrouzetNote Added: 0003618                          
+03-16-05 08:50 Jean-Louis CrouzetNote Added: 0003934                          
+03-16-05 11:26 Jean-Louis CrouzetNote Added: 0003937                          
+03-16-05 12:27 tiwai          Note Added: 0003940                          
+03-16-05 14:53 Jean-Louis CrouzetNote Added: 0003960                          
+09-22-05 15:07 jdthood        Note Added: 0006343                          
+09-22-05 15:43 Jean-Louis CrouzetNote Added: 0006352                          
+10-05-05 19:12 tiwai          Note Added: 0006442                          
+10-11-05 19:24 tiwai          Note Added: 0006457                          
+10-11-05 19:25 tiwai          File Added: cs4232-pnpbios.diff                   
 
-07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
-07-01-04 16:03 aaronkaplan    Note Added: 0001370                          
-08-13-04 01:33 fridolin       Note Added: 0001559                          
-08-13-04 12:46 fridolin       Note Added: 0001562                          
-08-13-04 15:17 fridolin       Note Added: 0001564                          
-08-14-04 20:04 aaronkaplan    Note Added: 0001565                          
-08-19-04 19:18 tiwai          Status                   assigned => resolved
-08-19-04 19:18 tiwai          Resolution               open => fixed       
-08-19-04 19:18 tiwai          Note Added: 0001593                          
-09-24-04 13:43 tiwai          Status                   resolved => closed  
-09-03-05 22:43 aaronkaplan    Distribution             Fedora Core 2 => Fedora
-Core 4
-09-03-05 22:43 aaronkaplan    Kernel Version           2.6.5-1.358 =>
-2.6.12-1.1398
-09-03-05 22:43 aaronkaplan    Status                   closed => feedback  
-09-03-05 22:43 aaronkaplan    Resolution               fixed => reopened   
-09-03-05 22:43 aaronkaplan    Note Added: 0006030                          
-09-04-05 00:33 rlrevell       Note Added: 0006031                          
-09-13-05 11:49 florentb5      Note Added: 0006152                          
-11-08-05 18:47 tiwai          Note Added: 0006636                          
-11-12-05 17:58 aaronkaplan    Note Added: 0006687                          
-01-05-06 10:52 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-01-21-06 02:03 rlrevell       Note Added: 0007729                          
-01-22-06 02:00 aaronkaplan    Note Added: 0007742                          
-03-16-06 07:52 rlrevell       Note Added: 0008584                          
+10-11-05 19:51 Jean-Louis CrouzetNote Added: 0006458                          
+10-12-05 13:49 tiwai          Note Added: 0006464                          
+03-16-06 07:53 rlrevell       Note Added: 0008585                          
 ======================================================================
 
 
