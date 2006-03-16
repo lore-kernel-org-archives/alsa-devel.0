@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000196]: full duplex doesn't work any more
-Date: Thu, 16 Mar 2006 08:47:20 +0100
-Message-ID: <f7b12167e9d067496c4d0bba3671a81f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001040]: ice1724: Invalid EEPROM (size = 255)
+Date: Thu, 16 Mar 2006 08:49:09 +0100
+Message-ID: <028bdf2d7821e805972fa85d674d1e9d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AF751FB
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:47:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1AEA51FB
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 08:49:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=196> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1040> 
 ======================================================================
-Reported By:                nathanel
-Assigned To:                
+Reported By:                lorenb
+Assigned To:                rlrevell
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   196
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1040
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Resolution:                 open
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.11
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-08-2004 20:59 CEST
-Last Modified:              03-16-2006 08:47 CET
+Date Submitted:             04-08-2005 14:10 CEST
+Last Modified:              03-16-2006 08:49 CET
 ======================================================================
-Summary:                    full duplex doesn't work any more
+Summary:                    ice1724: Invalid EEPROM (size = 255)
 Description: 
-I'm using the attached .asoundrc to separate front an rear speakers of my
-Soundblaster Live! to dsp and dsp1 respectively. I have my headphones
-connected to the rear speaker output and running gnomemeeting with
-alsa-oss on dsp1. Unfortunately this setup stopped working with alsa-oss
-version 1.0.3 or higher (Different versions of alsa-libs didn't make any
-difference). Playing music solely on dsp1 still works (tried with xmms
-OSS) and recording also works (other people can hear me in gnomemeeting),
-but both at the same time is no longer functioning (read: I can't hear my
-dialog partner). As gnomemeering opens the audio device for recording
-first, i suspect that full duplex support got broken somewhere between
-1.0.2 and 1.0.3.
+Have a Shuttle SN25P based system:
+http://global.shuttle.com/Product/Barebone/SN25P.asp
+
+It comes with VIA Envy24PT audio controller:
+http://www.via.com.tw/en/products/audio/controllers/envy24pt/
+
+Every time I tried and load the ice1724 driver I get an error about
+invalid EEPROM size.
+
+I saw this old bug:
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000142
+
+Which indicated this issue was resolved in 1.0.5a.  I'm using v1.0.9rc2.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-30-05 05:26 
+ rlrevell - 12-30-05 05:28 
 ----------------------------------------------------------------------
 Any improvement with later ALSA releases?
 
 ----------------------------------------------------------------------
- rlrevell - 03-16-06 08:47 
+ lorenb - 12-30-05 05:32 
 ----------------------------------------------------------------------
-No response
+Yeah the card now works fine with the current ALSA in the Linux kernel. You
+can close the bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-08-04 20:59 nathanel       New Issue                                    
-04-08-04 20:59 nathanel       File Added: .asoundrc                        
-03-20-05 23:59 jdthood        Note Added: 0004104                          
-03-21-05 16:15 nathanel       Note Added: 0004119                          
-03-22-05 09:37 jdthood        Note Edited: 0004104                         
-03-22-05 09:38 jdthood        Status                   new => feedback     
-12-30-05 05:26 rlrevell       Note Added: 0007246                          
-03-16-06 08:47 rlrevell       Status                   feedback => closed  
-03-16-06 08:47 rlrevell       Note Added: 0008600                          
+04-08-05 14:10 lorenb         New Issue                                    
+04-08-05 14:10 lorenb         Distribution              => Gentoo          
+04-08-05 14:10 lorenb         Kernel Version            => 2.6.11          
+04-09-05 19:09 ungod          Note Added: 0004427                          
+04-12-05 21:11 lorenb         Note Added: 0004464                          
+12-30-05 05:28 rlrevell       Note Added: 0007247                          
+12-30-05 05:32 lorenb         Note Added: 0007248                          
+03-16-06 08:49 rlrevell       Status                   new => resolved     
+03-16-06 08:49 rlrevell       Resolution               open => fixed       
+03-16-06 08:49 rlrevell       Assigned To               => rlrevell        
 ======================================================================
 
 
