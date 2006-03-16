@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
-Date: Thu, 16 Mar 2006 07:53:45 +0100
-Message-ID: <258515a622ed9ade86ef8c5b898d1d81@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
+Date: Thu, 16 Mar 2006 07:54:46 +0100
+Message-ID: <cde519dcb7b364af34945e2bd7bf4cb3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65CAA216
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 07:53:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3564421D
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 07:54:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,138 +22,269 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The issue 0000914 has been set as DUPLICATE OF the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=875> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328> 
 ======================================================================
-Reported By:                Jean-Louis Crouzet
+Reported By:                aaronkaplan
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   875
+Issue ID:                   328
 Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   block
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             # uname -a
-Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+Status:                     feedback
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.12-1.1398
 ======================================================================
-Date Submitted:             02-01-2005 16:17 CET
-Last Modified:              03-16-2006 07:53 CET
+Date Submitted:             06-08-2004 23:13 CEST
+Last Modified:              03-16-2006 07:52 CET
 ======================================================================
-Summary:                    Can't get nm256 up & running
+Summary:                    snd-nm256 freezes Dell Latitude LS
 Description: 
-I trying since ages to get this nm256 up & running with ALSA, w/o any
-sucess.
+My Dell Latitude LS with an NM256AV hangs when I insert the
+snd-nm256 module.
 
-PC Omnibook 900 (not a 900B)
+The OSS driver works fine.
 
-# uname -a
-Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
-
-
-#lspci  -tv
--[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
-      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
-      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
-Audio]
-      +-04.0  Texas Instruments PCI1225
-      +-04.1  Texas Instruments PCI1225
-      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
-      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
-      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
-      \-07.3  Intel Corp. 82371AB/EB/MB PIIX4 A	
-	
-# modinfo snd_nm256
-filename:      
-/lib/modules/2.6.8jlcv32/kernel/sound/pci/nm256/snd-nm256.ko
-author:         Takashi Iwai <tiwai@suse.de>
-description:    NeoMagic NM256AV/ZX
-license:        GPL
-vermagic:       2.6.8jlcv32 PENTIUMII gcc-3.3
-depends:        snd-pcm,snd,snd-ac97-codec
-alias:          pci:v000010C8d00008005sv*sd*bc*sc*i*
-alias:          pci:v000010C8d00008006sv*sd*bc*sc*i*
-alias:          pci:v000010C8d00008016sv*sd*bc*sc*i*
-parm:           vaio_hack:Enable workaround for Sony VAIO notebooks.
-parm:           use_cache:Enable the cache for coefficient table access.
-parm:           buffer_top:Set the top address of audio buffer for
-NeoMagic 256AV/ZX soundcard.
-parm:           force_ac97:Force to use AC97 codec for NeoMagic 256AV/ZX
-soundcard.
-parm:           capture_bufsize:ADC frame size in kB for NeoMagic 256AV/ZX
-soundcard.
-parm:           playback_bufsize:DAC frame size in kB for NeoMagic
-256AV/ZX soundcard.
-parm:           enable:Enable this soundcard.
-parm:           id:ID string for NeoMagic 256AV/ZX soundcard.
-parm:           index:Index value for NeoMagic 256AV/ZX soundcard.
-
-# alsaconf
-Unloading sound driver modules...done.
-Building card database..
-
-
-Running update-modules...
-Loading driver...
-FATAL: Error running install command for snd_nm256
-Setting default volumes...
-Saving the mixer setup used for this in /var/lib/alsa/asound.state.
-/usr/sbin/alsactl: save_state:1061: No soundcards found...
-
-===============================================================================
-
- Now ALSA is ready to use.
- For adjustment of volumes, use your favorite mixer.
-
- Have a lot of fun!
-
-
-???????????????????????????,,
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000914 nm256 causes kernel to hard freeze
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-12-05 13:49 
+ tiwai - 06-30-04 16:55 
 ----------------------------------------------------------------------
-It'll be merged to the ALSA public tree only if it's confirmed to work.
-Remember that the patch is really untested.  It might freeze your system
-;)
+Does the attached patch have any effect?
+If not, please show the output of lspci -nv.
 
 ----------------------------------------------------------------------
- rlrevell - 03-16-06 07:53 
+ aaronkaplan - 07-01-04 16:03 
 ----------------------------------------------------------------------
-Was this ever resolved?
+No difference with the patch.  I'm attaching the output from lspci.
+
+----------------------------------------------------------------------
+ fridolin - 08-13-04 01:33 
+----------------------------------------------------------------------
+Hi!
+
+
+I have got a similar problem. My computer is a Latitude Cpi-R 400GT.
+
+The machine hangs not immediately after inserting the nm-nm256 module, but
+it freezes always when accessing the soundcard (by invoking alsamixer).
+
+The similarity is, that I have already tried to activate/deactivate the
+old "latitude_workaround"-thing, but this doesn't help.
+
+The older OSS-driver works for me, too. 
+
+
+I'm using the latest stable driver (alsa-driver-1.0.5.tar.bz2) compiled
+over a linux 2.4.24-kernel.
+
+----------------------------------------------------------------------
+ fridolin - 08-13-04 12:46 
+----------------------------------------------------------------------
+I've also tried alsa-driver-1.0.5a, but it shows the same crashing.
+
+----------------------------------------------------------------------
+ fridolin - 08-13-04 15:17 
+----------------------------------------------------------------------
+With 1.0.6rc2, the driver doesn't crash any more.
+
+I'm sorry that I haven't tried out this before, but when compiling on a
+slow machine and after tens of reboots, one day goes by very soon.
+
+----------------------------------------------------------------------
+ aaronkaplan - 08-14-04 20:04 
+----------------------------------------------------------------------
+I upgraded to kernel 2.6.7 and I no longer have a problem with this driver.
+
+----------------------------------------------------------------------
+ tiwai - 08-19-04 19:18 
+----------------------------------------------------------------------
+Ok now I close this.  Reopen if still something gets wrong.
+
+----------------------------------------------------------------------
+ aaronkaplan - 09-03-05 22:43 
+----------------------------------------------------------------------
+I upgraded to FC4 and the problem is back again.  When I modprobe
+snd_nm256, sometimes it works, but more than half the time it hangs the
+system.
+
+----------------------------------------------------------------------
+ rlrevell - 09-04-05 00:33 
+----------------------------------------------------------------------
+The ALSA version shipped with FC4 is old and quite buggy.  Try the latest
+ALSA version (1.0.10-rc1) or ALSA CVS.
+
+----------------------------------------------------------------------
+ florentb5 - 09-13-05 11:49 
+----------------------------------------------------------------------
+Hello,
+
+I also have a crash.
+Hardware : Dell Latitude Cpi A laptop (P2 366Mhz)
+audio card : integrated Neomagic MagicMedia 256AV Audio
+normal alsa audio driver : nm256
+
+bug infos in OpenSuse Bugzilla :
+https://bugzilla.novell.com/show_bug.cgi?id=116387
+
+Here the output of lspci -v :
+========================
+00:00.0 Host bridge: Intel Corporation 440BX/ZX/DX - 82443BX/ZX/DX Host
+bridge
+(rev 03)
+	Flags: bus master, medium devsel, latency 32
+	Memory at f4000000 (32-bit, prefetchable) [size=64M]
+	Capabilities: [a0] AGP version 1.0
+
+00:01.0 PCI bridge: Intel Corporation 440BX/ZX/DX - 82443BX/ZX/DX AGP
+bridge
+(rev 03) (prog-if 00 [Normal decode])
+	Flags: bus master, 66MHz, medium devsel, latency 32
+	Bus: primary=00, secondary=01, subordinate=01, sec-latency=32
+	I/O behind bridge: 0000c000-0000cfff
+	Memory behind bridge: fd000000-feffffff
+	Prefetchable memory behind bridge: f8000000-f9ffffff
+
+00:03.0 CardBus bridge: Texas Instruments PCI1225 (rev 01)
+	Subsystem: Dell Latitude CPi A400XT
+	Flags: bus master, medium devsel, latency 168, IRQ 11
+	Memory at 10100000 (32-bit, non-prefetchable) [size=4K]
+	Bus: primary=00, secondary=02, subordinate=05, sec-latency=176
+	Memory window 0: 12000000-13fff000 (prefetchable)
+	Memory window 1: 14000000-15fff000
+	I/O window 0: 00001000-000010ff
+	I/O window 1: 00001400-000014ff
+	16-bit legacy interface ports at 0001
+
+00:03.1 CardBus bridge: Texas Instruments PCI1225 (rev 01)
+	Subsystem: Dell Latitude CPi A400XT
+	Flags: bus master, medium devsel, latency 168, IRQ 11
+	Memory at 10101000 (32-bit, non-prefetchable) [size=4K]
+	Bus: primary=00, secondary=06, subordinate=09, sec-latency=176
+	Memory window 0: 16000000-17fff000 (prefetchable)
+	Memory window 1: 18000000-19fff000
+	I/O window 0: 00001800-000018ff
+	I/O window 1: 00001c00-00001cff
+	16-bit legacy interface ports at 0001
+
+00:07.0 Bridge: Intel Corporation 82371AB/EB/MB PIIX4 ISA (rev 02)
+	Flags: bus master, medium devsel, latency 0
+
+00:07.1 IDE interface: Intel Corporation 82371AB/EB/MB PIIX4 IDE (rev 01)
+(prog-if 80 [Master])
+	Flags: bus master, medium devsel, latency 32
+	I/O ports at 0860 [size=16]
+
+00:07.2 USB Controller: Intel Corporation 82371AB/EB/MB PIIX4 USB (rev
+01)
+(prog-if 00 [UHCI])
+	Flags: bus master, medium devsel, latency 32, IRQ 11
+	I/O ports at ece0 [size=32]
+
+00:07.3 Bridge: Intel Corporation 82371AB/EB/MB PIIX4 ACPI (rev 02)
+	Flags: medium devsel, IRQ 9
+
+01:00.0 VGA compatible controller: Neomagic Corporation NM2200
+[MagicGraph
+256AV] (rev 12) (prog-if 00 [VGA])
+	Subsystem: Dell Latitude CPi A
+	Flags: bus master, medium devsel, latency 32, IRQ 11
+	Memory at f9000000 (32-bit, prefetchable) [size=16M]
+	Memory at fdc00000 (32-bit, non-prefetchable) [size=4M]
+	Memory at fdb00000 (32-bit, non-prefetchable) [size=1M]
+	Capabilities: [dc] Power Management version 1
+
+01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia
+256AV Audio] (rev 12)
+	Subsystem: Dell Latitude CPi A
+	Flags: medium devsel, IRQ 5
+	Memory at f8c00000 (32-bit, prefetchable) [disabled] [size=4M]
+	Memory at fda00000 (32-bit, non-prefetchable) [disabled] [size=1M]
+	Capabilities: [dc] Power Management version 1
+
+========================
+
+----------------------------------------------------------------------
+ tiwai - 11-08-05 18:47 
+----------------------------------------------------------------------
+1.0.10rc3 has a fix for this laptop.  Give it a try.
+
+----------------------------------------------------------------------
+ aaronkaplan - 11-12-05 17:58 
+----------------------------------------------------------------------
+No, it still hangs with 1.0.10rc3.
+
+During my testing, the first modprobe snd-nm256 after booting went ok, but
+then rmmod and modprobe again caused it to hang.  Not sure if this is by
+chance, but it happened three boots in a row.
+
+----------------------------------------------------------------------
+ rlrevell - 01-21-06 02:03 
+----------------------------------------------------------------------
+tiwai on LKML:
+
+"This might not conver all Dell models.  In such a case, try
+reset_workaround2=1.  See the section of nm256 in
+ALSA-Configuration.txt for details."
+
+Try the various reset_workaround options amd report which (if any) help.
+
+----------------------------------------------------------------------
+ aaronkaplan - 01-22-06 02:00 
+----------------------------------------------------------------------
+With alsa 1.0.11rc2, modprobe snd_nm256 hangs the machine with all four
+possible combinations of reset_workaround and reset_workaround_2.
+
+----------------------------------------------------------------------
+ rlrevell - 03-16-06 07:52 
+----------------------------------------------------------------------
+This bug should be fixed in CVS, can you please test it?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-05 16:17 Jean-Louis CrouzetNew Issue                                    
-02-01-05 16:17 Jean-Louis CrouzetKernel Version            => # uname -a
-Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
-02-02-05 11:18 tiwai          Note Added: 0003483                          
-02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
-02-02-05 12:46 tiwai          Note Added: 0003486                          
-02-02-05 13:05 Jean-Louis CrouzetNote Added: 0003487                          
-02-09-05 12:09 tiwai          Note Added: 0003547                          
-02-10-05 09:54 Jean-Louis CrouzetNote Added: 0003563                          
-02-14-05 19:46 tiwai          Note Added: 0003605                          
-02-15-05 10:08 Jean-Louis CrouzetNote Added: 0003617                          
-02-15-05 10:32 Jean-Louis CrouzetNote Added: 0003618                          
-03-16-05 08:50 Jean-Louis CrouzetNote Added: 0003934                          
-03-16-05 11:26 Jean-Louis CrouzetNote Added: 0003937                          
-03-16-05 12:27 tiwai          Note Added: 0003940                          
-03-16-05 14:53 Jean-Louis CrouzetNote Added: 0003960                          
-09-22-05 15:07 jdthood        Note Added: 0006343                          
-09-22-05 15:43 Jean-Louis CrouzetNote Added: 0006352                          
-10-05-05 19:12 tiwai          Note Added: 0006442                          
-10-11-05 19:24 tiwai          Note Added: 0006457                          
-10-11-05 19:25 tiwai          File Added: cs4232-pnpbios.diff                   
+06-08-04 23:13 aaronkaplan    New Issue                                    
+06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
+06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
+06-08-04 23:13 aaronkaplan    Issue Monitored: aaronkaplan                    
+06-30-04 16:55 tiwai          Note Added: 0001362                          
+06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                   
 
-10-11-05 19:51 Jean-Louis CrouzetNote Added: 0006458                          
-10-12-05 13:49 tiwai          Note Added: 0006464                          
-03-16-06 07:53 rlrevell       Note Added: 0008585                          
+07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
+07-01-04 16:03 aaronkaplan    Note Added: 0001370                          
+08-13-04 01:33 fridolin       Note Added: 0001559                          
+08-13-04 12:46 fridolin       Note Added: 0001562                          
+08-13-04 15:17 fridolin       Note Added: 0001564                          
+08-14-04 20:04 aaronkaplan    Note Added: 0001565                          
+08-19-04 19:18 tiwai          Status                   assigned => resolved
+08-19-04 19:18 tiwai          Resolution               open => fixed       
+08-19-04 19:18 tiwai          Note Added: 0001593                          
+09-24-04 13:43 tiwai          Status                   resolved => closed  
+09-03-05 22:43 aaronkaplan    Distribution             Fedora Core 2 => Fedora
+Core 4
+09-03-05 22:43 aaronkaplan    Kernel Version           2.6.5-1.358 =>
+2.6.12-1.1398
+09-03-05 22:43 aaronkaplan    Status                   closed => feedback  
+09-03-05 22:43 aaronkaplan    Resolution               fixed => reopened   
+09-03-05 22:43 aaronkaplan    Note Added: 0006030                          
+09-04-05 00:33 rlrevell       Note Added: 0006031                          
+09-13-05 11:49 florentb5      Note Added: 0006152                          
+11-08-05 18:47 tiwai          Note Added: 0006636                          
+11-12-05 17:58 aaronkaplan    Note Added: 0006687                          
+01-05-06 10:52 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+01-21-06 02:03 rlrevell       Note Added: 0007729                          
+01-22-06 02:00 aaronkaplan    Note Added: 0007742                          
+03-16-06 07:52 rlrevell       Note Added: 0008584                          
+03-16-06 07:54 rlrevell       Relationship added       has duplicate 0000914
 ======================================================================
 
 
