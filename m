@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001926]: No sound and no internal speakers with Samsung R65-T2300 Charis notebook
-Date: Thu, 16 Mar 2006 17:25:42 +0100
-Message-ID: <3ee48438093b78dbc71426e983037b6b@bugtrack.alsa-project.org>
+Date: Thu, 16 Mar 2006 17:31:41 +0100
+Message-ID: <277c4efa39bc61fdfe36e8b5aa03df6b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5FAD1F1
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 17:25:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03A8A1A1
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 17:31:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             03-15-2006 18:21 CET
-Last Modified:              03-16-2006 17:25 CET
+Last Modified:              03-16-2006 17:31 CET
 ======================================================================
 Summary:                    No sound and no internal speakers with Samsung
 R65-T2300 Charis notebook
@@ -66,11 +66,6 @@ works again (only headphones)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-16-06 16:27 
-----------------------------------------------------------------------
-The new, smaller patch is uploaded.
-
-----------------------------------------------------------------------
  tassilo80 - 03-16-06 17:25 
 ----------------------------------------------------------------------
 I'm at work now, so I could only test the internal mic which does not work.
@@ -93,6 +88,21 @@ It the Capture view I have Line, CD, Mic, Phone, Aux, Mono, Capture and
 Mix, but only Capture has a bar and can be muted. All others have a
 "------" above.
 
+----------------------------------------------------------------------
+ tiwai - 03-16-06 17:31 
+----------------------------------------------------------------------
+It's normal.
+
+Mic and internal mic have the volume/mute for playback, and the  capture
+switches (as available elements of "capture source").
+The playback volume/switch are for the loopback from mic to HP/speaker
+output, and independent from the capture source.
+
+On alsamixer, each capture source enum element is shown as if a capture
+switch, which works exclusive with each other.  And, there is a master
+capture switch (shown as "Capture") and an input gain (the volume in
+"Capture").
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -112,6 +122,7 @@ Date Modified  Username       Field                    Change
          
 03-16-06 16:27 tiwai          Note Added: 0008610                          
 03-16-06 17:25 tassilo80      Note Added: 0008613                          
+03-16-06 17:31 tiwai          Note Added: 0008614                          
 ======================================================================
 
 
