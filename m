@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
-Date: Thu, 16 Mar 2006 07:54:41 +0100
-Message-ID: <9fc8ed2193c7b2782fb877d91f6386a8@bugtrack.alsa-project.org>
+Date: Thu, 16 Mar 2006 07:55:26 +0100
+Message-ID: <cd20cf6516a601eb1bf9b570ebf08842@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 17146216
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 07:54:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4185216
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 07:55:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0000328.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.9 2.6.10
 ======================================================================
 Date Submitted:             02-16-2005 20:39 CET
-Last Modified:              03-16-2006 07:54 CET
+Last Modified:              03-16-2006 07:55 CET
 ======================================================================
 Summary:                    nm256 causes kernel to hard freeze
 Description: 
@@ -92,425 +92,17 @@ duplicate of        0000328 snd-nm256 freezes Dell Latitude LS
 ======================================================================
 
 ----------------------------------------------------------------------
- vaxen - 02-16-05 21:56 
-----------------------------------------------------------------------
-I tried booting from knoppix 3.4 which comes with kernel 2.6.5 and lsmod
-and dmesg tells me that it is using nm256_audio version 1.1p. This
-particular module works. Doing some research, the nm256_audio 1.1p is an
-OSS driver.
-
-ps:- knoppix 3.7 with kernel 2.6.9 also freeze.
-
-Thanks
-
-
-
-----------------------------------------------------------------------
- tiwai - 02-17-05 18:31 
-----------------------------------------------------------------------
-Well, it's really hard to debug this beast without hardware...
-
-Try reset_workaround=1 module option at first.
-Make sure that you load this module before starting X.  Once after you
-start X, the video RAM is cleared, and this confuses the sound driver
-(which uses the video RAM for the sound buffer).
-
-----------------------------------------------------------------------
- vaxen - 02-17-05 20:45 
-----------------------------------------------------------------------
-I tried this command
-'modprobe snd-nm256 reset_workaround=1' 
-The kernel freezes on me. Am I using the modprobe command properly?
-I did this before starting X.
-
-Thanks
-
-
-
-----------------------------------------------------------------------
- vaxen - 02-17-05 21:28 
-----------------------------------------------------------------------
-Linux version 2.6.10-morph23 (root@pegasos) (gcc version 3.4.3 20050110
-(Gentoo Linux 3.4.3.20050110, ssp-3.4.3.20050110-0, pie-8.7.7)) #4 Thu Feb
-17 20:11:00 GMT 2005
-BIOS-provided physical RAM map:
- BIOS-e820: 0000000000000000 - 000000000009f800 (usable)
- BIOS-e820: 000000000009f800 - 00000000000a0000 (reserved)
- BIOS-e820: 00000000000eac00 - 0000000000100000 (reserved)
- BIOS-e820: 0000000000100000 - 0000000007ff0000 (usable)
- BIOS-e820: 0000000007ff0000 - 0000000007fffc00 (ACPI data)
- BIOS-e820: 0000000007fffc00 - 0000000008000000 (ACPI NVS)
- BIOS-e820: 00000000fffeac00 - 0000000100000000 (reserved)
-127MB LOWMEM available.
-On node 0 totalpages: 32752
-  DMA zone: 4096 pages, LIFO batch:1
-  Normal zone: 28656 pages, LIFO batch:6
-  HighMem zone: 0 pages, LIFO batch:1
-DMI 2.3 present.
-ACPI: RSDP (v000 PTLTD                                 ) @ 0x000f6b10
-ACPI: RSDT (v001 GATEWA SOLO3300 0x20000529  LTP 0x00000000) @ 0x07ffcb5b
-ACPI: FADT (v001 GATEWA SOLO3300 0x20000529 PTL  0x000f4240) @ 0x07fffb65
-ACPI: BOOT (v001 GATEWA SOLO3300 0x20000529  LTP 0x00000001) @ 0x07fffbd9
-ACPI: DSDT (v001 GATEWA SOLO3300 0x20000529 MSFT 0x01000007) @ 0x00000000
-Built 1 zonelists
-Kernel command line: root=/dev/hda3 resume2=swap:/dev/hda2
-Local APIC disabled by BIOS -- you can enable it with "lapic"
-mapped APIC to ffffd000 (01102000)
-Initializing CPU#0
-CPU 0 irqstacks, hard=c0502000 soft=c0501000
-PID hash table entries: 512 (order: 9, 8192 bytes)
-Detected 497.959 MHz processor.
-Using tsc for high-res timesource
-Console: colour VGA+ 80x25
-Dentry cache hash table entries: 32768 (order: 5, 131072 bytes)
-Inode-cache hash table entries: 16384 (order: 4, 65536 bytes)
-Memory: 124956k/131008k available (2921k kernel code, 5540k reserved, 972k
-data, 180k init, 0k highmem)
-Checking if this processor honours the WP bit even in supervisor mode...
-Ok.
-Calibrating delay loop... 983.04 BogoMIPS (lpj=491520)
-Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-CPU: After generic identify, caps: 0383f9ff 00000000 00000000 00000000
-00000000 00000000
-CPU: After vendor identify, caps: 0383f9ff 00000000 00000000 00000000
-00000000 00000000
-CPU: L1 I cache: 16K, L1 D cache: 16K
-CPU: L2 cache: 256K
-CPU: After all inits, caps: 0383f9ff 00000000 00000000 00000040 00000000
-00000000
-Intel machine check architecture supported.
-Intel machine check reporting enabled on CPU#0.
-CPU: Intel Pentium III (Coppermine) stepping 03
-Enabling fast FPU save and restore... done.
-Enabling unmasked SIMD FPU exception support... done.
-Checking 'hlt' instruction... OK.
-ACPI: setting ELCR to 0200 (from 0408)
-NET: Registered protocol family 16
-PCI: PCI BIOS revision 2.10 entry at 0xfd9d5, last bus=1
-PCI: Using configuration type 1
-mtrr: v2.0 (20020519)
-ACPI: Subsystem revision 20050125
-ACPI: Interpreter enabled
-ACPI: Using PIC for interrupt routing
-ACPI: PCI Root Bridge [PCI0] (00:00)
-PCI: Probing PCI hardware (bus 00)
-ACPI: PCI Interrupt Routing Table [\_SB_.PCI0._PRT]
-ACPI: PCI Interrupt Routing Table [\_SB_.PCI0.AGP_._PRT]
-ACPI: PCI Interrupt Link [LNKA] (IRQs 3 4 5 6 7 9 *10 11 14 15)
-ACPI: PCI Interrupt Link [LNKB] (IRQs 3 4 5 6 7 9 *10 11 14 15)
-ACPI: PCI Interrupt Link [LNKC] (IRQs *3 4 5 6 7 9 10 11 14 15)
-ACPI: PCI Interrupt Link [LNKD] (IRQs 3 4 5 6 7 9 *10 11 14 15)
-ACPI: Device [FDDA] status [00000008]: functional but not present; setting
-present
-ACPI: Embedded Controller [EC0] (gpe 0)
-ACPI: Device [CDRM] status [00000008]: functional but not present; setting
-present
-ACPI: Power Resource [PIDE] (on)
-ACPI: Power Resource [PMDE] (on)
-ACPI: Power Resource [PFN0] (off)
-ACPI: Power Resource [PFN1] (off)
-Linux Plug and Play Support v0.97 (c) Adam Belay
-pnp: PnP ACPI init
-pnp: PnP ACPI: found 11 devices
-PnPBIOS: Disabled by ACPI PNP
-SCSI subsystem initialized
-Linux Kernel Card Services
-  options:  [pci] [cardbus] [pm]
-usbcore: registered new driver usbfs
-usbcore: registered new driver hub
-PCI: Using ACPI for IRQ routing
-** PCI interrupts are no longer routed automatically.  If this
-** causes a device to stop working, it is probably because the
-** driver failed to call pci_enable_device().  As a temporary
-** workaround, the "pci=routeirq" argument restores the old
-** behavior.  If this argument makes the device work again,
-** please email the output of "lspci" to bjorn.helgaas@hp.com
-** so I can fix the driver.
-pnp: 00:05: ioport range 0x4d0-0x4d1 has been reserved
-pnp: 00:05: ioport range 0x8000-0x803f could not be reserved
-pnp: 00:05: ioport range 0x2180-0x218f has been reserved
-pnp: 00:05: ioport range 0x398-0x399 has been reserved
-Simple Boot Flag at 0x63 set to 0x1
-Machine check exception polling timer started.
-audit: initializing netlink socket (disabled)
-audit(1108671266.066:0): initialized
-Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
-Limiting direct PCI/PCI transfers.
-inotify device minor=63
-Linux agpgart interface v0.100 (c) Dave Jones
-agpgart: Detected an Intel 440BX Chipset.
-agpgart: Maximum main memory to use for agp memory: 94M
-agpgart: AGP aperture is 64M @ 0xf8000000
-vesafb: NeoMagic, MagicMedia 256 AV, 01.0 (OEM: MagicGraph 256 AV 48K)
-vesafb: VBE version: 2.0
-vesafb: protected mode interface info at c000:a690
-vesafb: pmi: set display start = c00ca6c6, set palette = c00ca726
-vesafb: monitor limits: vf = 0 Hz, hf = 0 kHz, clk = 0 MHz
-vesafb: scrolling: redraw
-Console: switching to colour frame buffer device 100x37
-vesafb: framebuffer at 0xf6000000, mapped to 0xc8880000, using 937k, total
-2496k
-fb0: VESA VGA frame buffer device
-ACPI: AC Adapter [ACAD] (off-line)
-ACPI: Battery Slot [BAT1] (battery present)
-ACPI: Power Button (FF) [PWRF]
-ACPI: Lid Switch [LID]
-ACPI: Sleep Button (CM) [SBTN]
-ACPI: Fan [FAN0] (off)
-ACPI: Fan [FAN1] (off)
-ACPI: CPU0 (power states: C1[C1] C2[C2])
-ACPI: Processor [CPU0] (supports 8 throttling states)
-ACPI: Thermal Zone [THRM] (58 C)
-isapnp: Scanning for PnP cards...
-isapnp: No Plug & Play device found
-serio: i8042 AUX port at 0x60,0x64 irq 12
-serio: i8042 KBD port at 0x60,0x64 irq 1
-Serial: 8250/16550 driver $Revision: 1.90 $ 8 ports, IRQ sharing disabled
-ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A
-ttyS0 at I/O 0x3f8 (irq = 4) is a 16550A
-io scheduler noop registered
-io scheduler anticipatory registered
-io scheduler deadline registered
-io scheduler cfq registered
-elevator: using cfq as default io scheduler
-Floppy drive(s): fd0 is 1.44M
-FDC 0 is a National Semiconductor PC87306
-ACPI: PCI Interrupt Link [LNKA] enabled at IRQ 10
-PCI: setting IRQ 10 as level-triggered
-ACPI: PCI interrupt 0000:00:0d.0[A] -> GSI 10 (level, low) -> IRQ 10
-3c59x: Donald Becker and others. www.scyld.com/network/vortex.html
-0000:00:0d.0: 3Com PCI 3c905C Tornado at 0xfc00. Vers LK1.1.19
-Uniform Multi-Platform E-IDE driver Revision: 7.00alpha2
-ide: Assuming 33MHz system bus speed for PIO modes; override with
-idebus=xx
-PIIX4: IDE controller at PCI slot 0000:00:07.1
-PIIX4: chipset revision 1
-PIIX4: not 100% native mode: will probe irqs later
-    ide0: BM-DMA at 0xfcd0-0xfcd7, BIOS settings: hda:DMA, hdb:pio
-    ide1: BM-DMA at 0xfcd8-0xfcdf, BIOS settings: hdc:pio, hdd:pio
-Probing IDE interface ide0...
-hda: TOSHIBA MK1214GAP, ATA DISK drive
-ide0 at 0x1f0-0x1f7,0x3f6 on irq 14
-Probing IDE interface ide1...
-Probing IDE interface ide1...
-Probing IDE interface ide2...
-Probing IDE interface ide3...
-Probing IDE interface ide4...
-Probing IDE interface ide5...
-hda: max request size: 128KiB
-hda: 23579136 sectors (12072 MB), CHS=23392/16/63, UDMA(33)
-hda: cache flushes not supported
- hda: hda1 hda2 hda3
-ACPI: PCI interrupt 0000:00:0a.0[A] -> GSI 10 (level, low) -> IRQ 10
-Yenta: CardBus bridge found at 0000:00:0a.0 [107b:3300]
-Yenta: Enabling burst memory read transactions
-Yenta: Using CSCINT to route CSC interrupts to PCI
-Yenta: Routing CardBus interrupts to PCI
-Yenta TI: socket 0000:00:0a.0, mfunc 0x01201212, devctl 0x64
-Yenta: ISA IRQ mask 0x08b8, PCI irq 10
-Socket status: 30000006
-USB Universal Host Controller Interface driver v2.2
-ACPI: PCI Interrupt Link [LNKD] enabled at IRQ 10
-ACPI: PCI interrupt 0000:00:07.2[D] -> GSI 10 (level, low) -> IRQ 10
-uhci_hcd 0000:00:07.2: Intel Corp. 82371AB/EB/MB PIIX4 USB
-uhci_hcd 0000:00:07.2: irq 10, io base 0xfce0
-uhci_hcd 0000:00:07.2: new USB bus registered, assigned bus number 1
-hub 1-0:1.0: USB hub found
-hub 1-0:1.0: 2 ports detected
-hub 1-0:1.0: over-current change on port 2
-usbcore: registered new driver usblp
-drivers/usb/class/usblp.c: v0.13: USB Printer Device Class driver
-Initializing USB Mass Storage driver...
-usbcore: registered new driver usb-storage
-USB Mass Storage support registered.
-usbcore: registered new driver usbhid
-drivers/usb/input/hid-core.c: v2.01:USB HID core driver
-mice: PS/2 mouse device common for all mice
-input: AT Translated Set 2 keyboard on isa0060/serio0
-Synaptics Touchpad, model: 1
- Firmware: 4.1
- 180 degree mounted touchpad
- Sensor: 8
- new absolute packet format
-input: SynPS/2 Synaptics TouchPad on isa0060/serio1
-Advanced Linux Sound Architecture Driver Version 1.0.8 (Thu Jan 13
-09:39:32 2005 UTC).
-ALSA device list:
-  No soundcards found.
-oprofile: using timer interrupt.
-NET: Registered protocol family 2
-IP: routing cache hash table of 512 buckets, 4Kbytes
-TCP: Hash tables configured (established 8192 bind 16384)
-NET: Registered protocol family 1
-NET: Registered protocol family 17
-Software Suspend Core.
-Software Suspend text mode support loaded.
-Software Suspend LZF Compression Driver registered.
-Software Suspend Swap Writer registered.
-ACPI wakeup devices: 
-PCI0 COMA CRD0 MDEM  LID 
-ACPI: (supports S0 S3 S4 S5)
-Looking for first block of swap header at block 0.
-Setting logical block size of resume device to 4096.
-Software Suspend 2.1.5.15: Swap space signature found.
-Software Suspend 2.1.5.15: Suspending enabled.
-Software Suspend 2.1.5.15: This is normal swap space.
-ReiserFS: hda3: found reiserfs format "3.6" with standard journal
-ReiserFS: hda3: using ordered data mode
-ReiserFS: hda3: journal params: device hda3, size 8192, journal first
-block 18, max trans len 1024, max batch 900, max commit age 30, max trans
-age 30
-ReiserFS: hda3: checking transaction log (hda3)
-ReiserFS: hda3: Using r5 hash to sort names
-VFS: Mounted root (reiserfs filesystem) readonly.
-Freeing unused kernel memory: 180k freed
-Adding 506036k swap on /dev/hda2.  Priority:-1 extents:1
-cs: IO port probe 0x0c00-0x0cff: clean.
-cs: IO port probe 0x0800-0x08ff: clean.
-cs: IO port probe 0x0100-0x04ff: excluding 0x170-0x177 0x370-0x37f
-cs: IO port probe 0x0a00-0x0aff: clean.
-mtrr: 0xf6000000,0x400000 overlaps existing 0xf6000000,0x200000
-
-This is my current dmesg for 2.6.10-morph23. First I thought it would be
-the frame buffer giving problem since nm256 share the same mem as the
-video. I removed the frame buffer and still nm256 freezes the kernel. As
-you notice the alsa line in the dmesg says "No soundcards found." Why
-can't alsa see the card?
-
-----------------------------------------------------------------------
- vaxen - 02-17-05 22:40 
-----------------------------------------------------------------------
-I just tried compiling the free OSS in the kernel as modules. modprobe
-nm256_audio also freezes the kernel. So far only the OSS module from
-knoppix 3.4 is working.
-
-----------------------------------------------------------------------
- vaxen - 02-24-05 03:55 
-----------------------------------------------------------------------
-I have tested the alsa in 2.6.5, same result kernel hard freeze. The OSS
-module works though!
-
-----------------------------------------------------------------------
- vaxen - 02-24-05 04:01 
-----------------------------------------------------------------------
-Sorry to bug you, is there any progress on the problem? I can help with
-more debugging, or you can ssh into the box to see what is wrong. Thanks
-
-----------------------------------------------------------------------
- tiwai - 02-24-05 22:04 
-----------------------------------------------------------------------
-Unfortunately not.  This is a known bug of nm256 driver.  But I have no
-clue yet since I don't have the hardware.
-
-AFAIK, the freeze occurs in the AC97 part.  Although the driver tries to
-avoid the access of invalid registers, it seems not enough.
-Or, the allocation of video-ram buffer might be slightly different from
-OSS version.  Anyway, this hardware is really hard to debug.
-
-----------------------------------------------------------------------
- vaxen - 02-25-05 16:29 
-----------------------------------------------------------------------
-I finally got OSS module to work on the 2.6.10. The problem was the APIC,
-OSS worked after I disabled it. Unfortunately, the alsa is still broken. I
-am also resolving similar issue with the developers of 4front OSS driver,
-since OSS will soon be out of the 2.6 kernel. Eventhough it would be hard
-to debug this monster chipset, I won't give up. Please tell me what I
-should do to start debugging. Thanks
-
-----------------------------------------------------------------------
- interfaSys - 03-10-05 12:50 
-----------------------------------------------------------------------
-I just wanted to add that it's still a problem with kernel 2.6.11. Tested
-on Mandrake Cooker.
-
-----------------------------------------------------------------------
- tiwai - 03-10-05 14:38 
-----------------------------------------------------------------------
-Could you try the attached patch?
-
-----------------------------------------------------------------------
- vaxen - 03-10-05 18:56 
-----------------------------------------------------------------------
-This is a newbie question. How do I use this patch?
-
-1) copy the file nm256-test.diff /usr/src/linux
-
-2) /usr/src/linux # patch -p1 < nm256-test.diff
-
-Is this how I do it?
-
-----------------------------------------------------------------------
- vaxen - 03-10-05 19:57 
-----------------------------------------------------------------------
-Tested on 2.6.11 final. kernel hardlocks.
-
-----------------------------------------------------------------------
- tiwai - 03-11-05 12:15 
-----------------------------------------------------------------------
-Don't forget to add reset_workaround=1 option.  Also, load the driver
-before X starts.  If X was already running, reboot once.
-
-----------------------------------------------------------------------
- vaxen - 03-11-05 14:25 
-----------------------------------------------------------------------
-Just tried 2.6.10 and 2.6.11 with reset_workaround=1 option. Same result.
-
-----------------------------------------------------------------------
- MeneM - 05-09-05 22:20 
-----------------------------------------------------------------------
-Hi There,
-
-I've got the same issue here, and I think I can help figure it out.
-I'm using Debian, with a custom compiled Kernel version 2.6.11.
-
-I've got one kernel version 2.6.11 which I'll call "1". It's compiled
-without Alsa support and with OSS support.
-
-The other kernel, also 2.6.11, which i'll call "2", is vice versa, same
-options except that Alsa is compiled in and no OSS.
-
-When the driver crashes:
-
-I boot up with "1", so that the OSS driver runs. I can hear Audio.
-Everything works... The OSS way ;-)
-
-Then I boot up with the "2" kernel (with Alsa). Low and behold, the whole
-system boots up fine, and I have sound, I can control the audio with all
-kinds of programs etc. In other words: the ALSA way ;-)
-
-The when I boot the "2" kernel a second time, the boot hangs when trying
-to load the nm256 driver.
-
-Subsequent boot attempts fail as well.
-
-BUT!, when I boot into the "1" kernel, so that the OSS driver loads again,
-I can boot the "2" driver once again!
-
-So the whole story starts from the top.
-
-I've tried: buffer_top, reset_workaround and force_ac97 in different way's
-and combo's all with the exact same result as above.
-
-More then willing to do any kind of testing, as long as it does not
-destroy my laptop. If it will destroy the audio of the laptop, so be it,
-as long as I can use the rest.
-
-Later,
-Mark
-
-p.s.
-I guess that if one would be able to load and then unload the OSS module
-before loading the Alsa module, it would worked... Hacked, but workable.
-
-
-
-----------------------------------------------------------------------
  jpeak - 06-26-05 15:10 
 ----------------------------------------------------------------------
 I didn't see any recent activity on this and was wondering if there were
 any planned fixes.  I have this same lockup problem on my Dell Inspiron
 3500 using a custom 2.6.11-5 kernel.  I would also be glad to help do any
 testing.  Thanks.
+
+----------------------------------------------------------------------
+ rlrevell - 03-16-06 07:55 
+----------------------------------------------------------------------
+This bug should be fixed in CVS, can you please test it?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -542,6 +134,7 @@ Date Modified  Username       Field                    Change
 06-26-05 15:10 jpeak          Note Added: 0005264                          
 08-01-05 01:05 jpeak          Issue Monitored: jpeak                       
 03-16-06 07:54 rlrevell       Relationship added       duplicate of 0000328
+03-16-06 07:55 rlrevell       Note Added: 0008586                          
 ======================================================================
 
 
