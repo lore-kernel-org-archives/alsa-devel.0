@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001931]: Unknown AC97 codec, digital sound works
-Date: Thu, 16 Mar 2006 19:28:37 +0100
-Message-ID: <0b5c80290702b9a88aaa667627fc5fbb@bugtrack.alsa-project.org>
+Date: Thu, 16 Mar 2006 19:34:54 +0100
+Message-ID: <a7fc470f4dbbe2ebbe356618a0fbfc9d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42209196
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 19:28:38 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B231B196
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2006 19:34:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been set as DUPLICATE OF issue 0001134.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1931> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             03-16-2006 19:28 CET
-Last Modified:              03-16-2006 19:28 CET
+Last Modified:              03-16-2006 19:34 CET
 ======================================================================
 Summary:                    Unknown AC97 codec, digital sound works
 Description: 
@@ -79,6 +79,10 @@ i appended aadebug.txt for more information about my system.
 thanks in advance
 marc
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001134 alsa 1.0.9rc4 + intel 82801FB/.../ = No...
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -87,6 +91,7 @@ Date Modified  Username       Field                    Change
 03-16-06 19:28 marc           File Added: aadebug.txt                      
 03-16-06 19:28 marc           Distribution              => Gentoo Linux    
 03-16-06 19:28 marc           Kernel Version            => 2.6.15          
+03-16-06 19:34 rlrevell       Relationship added       duplicate of 0001134
 ======================================================================
 
 
