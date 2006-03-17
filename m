@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001935]: Adding support for other deviceclasses
-Date: Fri, 17 Mar 2006 14:26:24 +0100
-Message-ID: <16ead88dca8dc4a74c315f234533b7d1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000959]: After S3 resume: ali_stimer_read: stimer is not ready
+Date: Fri, 17 Mar 2006 16:06:16 +0100
+Message-ID: <45aea7e31d41b593060c39badcc95aa8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDED819E
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 14:26:24 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C2551AD
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 16:06:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,44 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1935> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=959> 
 ======================================================================
-Reported By:                Henne
+Reported By:                avuton
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1935
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   959
+Category:                   PCI - ali5451
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             03-17-2006 13:43 CET
-Last Modified:              03-17-2006 14:26 CET
+Date Submitted:             03-03-2005 18:41 CET
+Last Modified:              03-17-2006 16:06 CET
 ======================================================================
-Summary:                    Adding support for other deviceclasses
+Summary:                    After S3 resume: ali_stimer_read: stimer is not
+ready
 Description: 
-alsaconf filters, in find_device_name(), unrelevant outputs from lspci.
-If the classname of does not match "Multimedia audio controller", the
-output becomes unreadable.
-That is the case of the Sek'd ARC88, which classname is "Multimedia
-controller".
-This patch fixes that.
+After S3 resume, 'ali_stimer_read: stimer is not ready.' repeats until I
+reset/power down the computer.
+
+Workaround is to stop all audio activity and unload the driver, which
+works fine.
+
+This happens on my Libretto L5.
 ======================================================================
 
 ----------------------------------------------------------------------
- Henne - 03-17-06 14:26 
+ sluskyb - 02-17-06 18:09 
 ----------------------------------------------------------------------
-It seems to me that no first patch is perfect... :)
-Use patch_new.diff
+No news is bad news... still broken as of driver 1.0.11rc2 or kernel
+2.6.16-rc3.
+
+----------------------------------------------------------------------
+ sluskyb - 03-17-06 16:06 
+----------------------------------------------------------------------
+Same results with S4 suspend/resume (suspend to disk).
+
+Is anyone reading this??
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 13:43 Henne          New Issue                                    
-03-17-06 13:43 Henne          File Added: patch.diff                       
-03-17-06 14:26 Henne          Note Added: 0008646                          
+03-03-05 18:41 avuton         New Issue                                    
+03-03-05 18:41 avuton         Distribution              => Gentoo          
+03-03-05 18:41 avuton         Kernel Version            => 2.6.11          
+05-02-05 02:22 avuton         Note Added: 0004583                          
+06-27-05 03:52 avuton         Note Added: 0005270                          
+07-08-05 14:59 tiwai          Note Added: 0005431                          
+07-08-05 22:48 avuton         Note Added: 0005436                          
+12-14-05 17:28 sluskyb        File Added: ali5451-S3.txt                    
+12-14-05 17:38 sluskyb        Note Added: 0007038                          
+12-14-05 18:13 sluskyb        Issue Monitored: sluskyb                     
+02-17-06 18:09 sluskyb        Note Added: 0008109                          
+03-17-06 16:06 sluskyb        Note Added: 0008647                          
 ======================================================================
 
 
