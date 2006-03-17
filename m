@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001933]: Headphones work, but sound isn't muted when they are plugged in
-Date: Fri, 17 Mar 2006 22:59:50 +0100
-Message-ID: <53eb61bf4c2ff748e8c23346d86bb1c7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
+Date: Sat, 18 Mar 2006 00:07:49 +0100
+Message-ID: <be7b4b49afc8fd45a2b5640b89b7979c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D08671A9
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 22:59:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D099E1B4
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 00:07:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1933> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843> 
 ======================================================================
-Reported By:                jer
+Reported By:                richardfish
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1933
+Issue ID:                   1843
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Breezy
-Kernel Version:             2.6.12
+Distribution:               Gentoo
+Kernel Version:             suspend2-sources-2.6.15-r6
 ======================================================================
-Date Submitted:             03-17-2006 01:01 CET
-Last Modified:              03-17-2006 22:59 CET
+Date Submitted:             02-13-2006 04:04 CET
+Last Modified:              03-18-2006 00:07 CET
 ======================================================================
-Summary:                    Headphones work, but sound isn't muted when they are
-plugged in
+Summary:                    regression: no sound with sigmatel stac9200, works
+in alsa 1.0.10
 Description: 
-On a Dell Inspiron B120 laptop the headphones do not disengage the
-speakers.  I have already submitted a patch to the patch_sigmatel.c
-maintainer and to the alsa-dev mailing list, but decided that it would
-help if I also submitted a bug report as well.  I am including a patch in
-the additional information section.
+With alsa 1.0.10, my Intel HDA with the Sigmatel STAC9200 produces sound
+from both speakers and headphones (although the speakers are not muted
+when the headphones are inserted, but that is a separate problem).  
 
-The codec chip in question here is a stac9200 which prior to this patch
-doesn't support headphones.
+With alsa 1.0.11rc3, and the CVS version as of today, no sound is produced
+from either speakers or headphones.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001813 STAC9750 not recognised by hda-intel
+has duplicate       0001729 Only output through headphone jack
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-17-06 12:01 
+ tiwai - 03-17-06 21:31 
 ----------------------------------------------------------------------
-To be sure, I uploaded a newer patch included your fix (only the first
-chunk) in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843.
+OK, I fixed a bit more.  The final version, fix3, is uploaded.
+
+Please let me know if this works.  Then I'll merge it to CVS soon.
 
 ----------------------------------------------------------------------
- jer - 03-17-06 22:59 
+ Jeff250 - 03-18-06 00:07 
 ----------------------------------------------------------------------
-I just tried removing the call you mentioned.  Still works fine, I may have
-needed to use that since I don't believe in the 1.0.10 code it was being
-called in init as it appears to be now.  Anyway, I will test your full
-patch a little later this evening and let you know.
-
-Thanks.
+Seems to work great.  The headphone track is gone, and the auto-muting
+still works.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 01:01 jer            New Issue                                    
-03-17-06 01:01 jer            File Added: sigmatel.patch                    
-03-17-06 01:01 jer            Distribution              => Ubuntu Breezy   
-03-17-06 01:01 jer            Kernel Version            => 2.6.12          
-03-17-06 01:03 jer            Issue Monitored: jer                         
-03-17-06 01:26 tiwai          Note Added: 0008625                          
-03-17-06 01:55 jer            Note Added: 0008626                          
-03-17-06 02:38 jer            Note Added: 0008629                          
-03-17-06 02:57 jer            File Added: sigmatel.11rc3.patch                  
- 
-03-17-06 02:59 jer            Note Added: 0008631                          
-03-17-06 11:43 tiwai          Note Added: 0008636                          
-03-17-06 12:01 tiwai          Note Added: 0008639                          
-03-17-06 22:59 jer            Note Added: 0008663                          
+02-13-06 04:04 richardfish    New Issue                                    
+02-13-06 04:04 richardfish    File Added: alsa-rjf-1.patch                    
+02-13-06 04:04 richardfish    Distribution              => Gentoo          
+02-13-06 04:04 richardfish    Kernel Version            =>
+suspend2-sources-2.6.15-r6
+02-14-06 05:43 richardfish    Issue Monitored: richardfish                    
+02-20-06 22:51 lrupn          Issue Monitored: lrupn                       
+02-25-06 21:40 lrupn          Note Added: 0008192                          
+02-26-06 16:08 toshio         Note Added: 0008203                          
+02-27-06 23:45 richardfish    Note Added: 0008233                          
+03-01-06 17:07 lrupn          Note Added: 0008281                          
+03-01-06 17:59 mpt            Issue Monitored: mpt                         
+03-17-06 00:39 tiwai          Note Added: 0008622                          
+03-17-06 00:41 tiwai          File Added: hda-autoconfig-fix.diff               
+    
+03-17-06 01:03 tiwai          Relationship added       has duplicate 0001813
+03-17-06 01:09 tiwai          Relationship added       has duplicate 0001729
+03-17-06 04:55 error10        Note Added: 0008634                          
+03-17-06 11:59 tiwai          Note Added: 0008637                          
+03-17-06 11:59 tiwai          File Added: hda-autoconfig-fix2.diff              
+     
+03-17-06 12:00 tiwai          Note Added: 0008638                          
+03-17-06 20:39 Jeff250        Note Added: 0008657                          
+03-17-06 20:40 Jeff250        Note Edited: 0008657                         
+03-17-06 20:55 tiwai          Note Added: 0008658                          
+03-17-06 20:55 tiwai          File Added: stac9200-additional-fix.diff          
+         
+03-17-06 21:31 tiwai          Note Added: 0008660                          
+03-17-06 21:31 tiwai          File Added: hda-autoconfig-fix3.diff              
+     
+03-18-06 00:07 Jeff250        Note Added: 0008664                          
 ======================================================================
 
 
