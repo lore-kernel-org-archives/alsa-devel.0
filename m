@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001937]: rate plugin causes invalid free() at second open
-Date: Fri, 17 Mar 2006 19:06:32 +0100
-Message-ID: <6730e627f952070b95f052f91b726b02@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
+Date: Fri, 17 Mar 2006 19:23:04 +0100
+Message-ID: <44cd8128b811ae37fc79109e562a2c97@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 479D41AD
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 19:06:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6009B1AD
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 19:23:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,44 +22,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1937> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
 ======================================================================
-Reported By:                Cigaes
-Assigned To:                perex
+Reported By:                binilbenjamin
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1937
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   1920
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             03-17-2006 18:59 CET
-Last Modified:              03-17-2006 19:06 CET
+Date Submitted:             03-13-2006 19:02 CET
+Last Modified:              03-17-2006 19:23 CET
 ======================================================================
-Summary:                    rate plugin causes invalid free() at second open
+Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
-With the rate plugin, alsa programs (for example aplay) do an invalid
-free() when they open the PCM for the second time.
+i'm having a 5.1 speakers..when i play music ,only 2 of them are working!!!
+i had changed the channel mode in alsamixer to 6 channel..yet no
+changes!!! 
+Motherboard : Asus A8N-E
+OS: fedora core 4
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-17-06 19:06 
+ rlrevell - 03-16-06 19:27 
 ----------------------------------------------------------------------
-Fixed on CVS.
+Add the line:
+
+pcm.!default "mysurround"
+
+to your .asoundrc
+
+----------------------------------------------------------------------
+ binilbenjamin - 03-17-06 19:23 
+----------------------------------------------------------------------
+after adding that statement, all speakers work on mouse events(such as
+folder click etc).But when I try to play mp3 in xmms(and even in mplayer)
+, an error message is shown. I tried various settings of output
+plugin(ALSA 1.2.10 output plugin), but the error message shown is 
+
+"** WARNING **: alsa_setup(): Failed to open pcm device (default): Device
+or resource busy "
+
+Is it the problem with the player.What else player should i try??
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 18:59 Cigaes         New Issue                                    
-03-17-06 19:06 tiwai          Status                   assigned => resolved
-03-17-06 19:06 tiwai          Resolution               open => fixed       
-03-17-06 19:06 tiwai          Note Added: 0008651                          
+03-13-06 19:02 binilbenjamin  New Issue                                    
+03-13-06 19:02 binilbenjamin  Distribution              => Fedora Core 4   
+03-13-06 19:02 binilbenjamin  Kernel Version            => 2.6             
+03-13-06 19:33 rlrevell       Note Added: 0008455                          
+03-13-06 19:49 binilbenjamin  Note Added: 0008457                          
+03-13-06 19:54 rlrevell       Note Added: 0008458                          
+03-13-06 20:16 binilbenjamin  Note Added: 0008459                          
+03-13-06 20:25 rlrevell       Note Added: 0008460                          
+03-14-06 17:44 binilbenjamin  Note Added: 0008501                          
+03-14-06 17:56 rlrevell       Note Added: 0008504                          
+03-14-06 18:34 binilbenjamin  Note Added: 0008505                          
+03-14-06 18:52 rlrevell       Note Added: 0008506                          
+03-14-06 19:00 rlrevell       Note Added: 0008507                          
+03-14-06 19:02 binilbenjamin  Note Added: 0008508                          
+03-14-06 19:12 rlrevell       Note Added: 0008509                          
+03-14-06 19:23 tiwai          Note Added: 0008510                          
+03-14-06 19:27 binilbenjamin  Note Added: 0008511                          
+03-14-06 20:08 rlrevell       Note Added: 0008512                          
+03-15-06 18:27 binilbenjamin  Note Added: 0008560                          
+03-15-06 18:40 rlrevell       Note Added: 0008562                          
+03-15-06 19:10 binilbenjamin  Note Added: 0008566                          
+03-15-06 19:54 rlrevell       Note Added: 0008570                          
+03-16-06 17:53 binilbenjamin  Note Added: 0008616                          
+03-16-06 19:27 rlrevell       Note Added: 0008618                          
+03-17-06 19:23 binilbenjamin  Note Added: 0008652                          
 ======================================================================
 
 
