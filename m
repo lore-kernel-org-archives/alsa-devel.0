@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000959]: After S3 resume: ali_stimer_read: stimer is not ready
-Date: Fri, 17 Mar 2006 16:06:16 +0100
-Message-ID: <45aea7e31d41b593060c39badcc95aa8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001936]: wont give output and some features not present (i.e. alsamixer)
+Date: Fri, 17 Mar 2006 16:33:15 +0100
+Message-ID: <969b775174c7aae94c1fe4ee592abc35@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C2551AD
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 16:06:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26ACD188
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 16:33:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=959> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1936> 
 ======================================================================
-Reported By:                avuton
-Assigned To:                
+Reported By:                nielsd
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   959
-Category:                   PCI - ali5451
+Issue ID:                   1936
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               Gentoo
-Kernel Version:             2.6.11
+Kernel Version:             2.6.16 (vanilla - different rc)
 ======================================================================
-Date Submitted:             03-03-2005 18:41 CET
-Last Modified:              03-17-2006 16:06 CET
+Date Submitted:             03-17-2006 16:33 CET
+Last Modified:              03-17-2006 16:33 CET
 ======================================================================
-Summary:                    After S3 resume: ali_stimer_read: stimer is not
-ready
+Summary:                    wont give output and some features not present (i.e.
+alsamixer)
 Description: 
-After S3 resume, 'ali_stimer_read: stimer is not ready.' repeats until I
-reset/power down the computer.
+There comes no audio out. Alsamixer settings unmuted and every
+constellation tried. Every model parameter tried. Every DMA setting tried
+(fixed position).
 
-Workaround is to stop all audio activity and unload the driver, which
-works fine.
+Different kernels (build with gcc 3.4 and 4.0) from 2.6.13 up to
+2.6.16-rc6 (vanilla) didn't work. Tried to compile the kernel bundeled
+alsa and the stable plus unstable actual alsa-driver. Under some
+constellations the console hangs during alsa loads.
 
-This happens on my Libretto L5.
+Under Knoppix Linux (debian fork with own kernel) is no output too - but
+alsaconf seems to hang or crash every 2nd time.
+
+Tried two times with earplugs and micro - no work.
+
+The same model only seems to work partly and sometimes under a older
+ubuntu kernel 2.6.12-6-386 gcc 3.4.
+
+Can't find any info about the new DELL HDA in google or news...
+
+I "only" like to get the sound running on my notebook - best and nicest
+would be with micro... Hope there comes some help in the next for me.
 ======================================================================
-
-----------------------------------------------------------------------
- sluskyb - 02-17-06 18:09 
-----------------------------------------------------------------------
-No news is bad news... still broken as of driver 1.0.11rc2 or kernel
-2.6.16-rc3.
-
-----------------------------------------------------------------------
- sluskyb - 03-17-06 16:06 
-----------------------------------------------------------------------
-Same results with S4 suspend/resume (suspend to disk).
-
-Is anyone reading this??
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-03-05 18:41 avuton         New Issue                                    
-03-03-05 18:41 avuton         Distribution              => Gentoo          
-03-03-05 18:41 avuton         Kernel Version            => 2.6.11          
-05-02-05 02:22 avuton         Note Added: 0004583                          
-06-27-05 03:52 avuton         Note Added: 0005270                          
-07-08-05 14:59 tiwai          Note Added: 0005431                          
-07-08-05 22:48 avuton         Note Added: 0005436                          
-12-14-05 17:28 sluskyb        File Added: ali5451-S3.txt                    
-12-14-05 17:38 sluskyb        Note Added: 0007038                          
-12-14-05 18:13 sluskyb        Issue Monitored: sluskyb                     
-02-17-06 18:09 sluskyb        Note Added: 0008109                          
-03-17-06 16:06 sluskyb        Note Added: 0008647                          
+03-17-06 16:33 nielsd         New Issue                                    
+03-17-06 16:33 nielsd         Distribution              => Gentoo          
+03-17-06 16:33 nielsd         Kernel Version            => 2.6.16 (vanilla -
+different rc)
 ======================================================================
 
 
