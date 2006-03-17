@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Fri, 17 Mar 2006 12:07:22 +0100
-Message-ID: <b089762ae432e0debb3752fe7233a5fb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001520]: Soundchip was not detected
+Date: Fri, 17 Mar 2006 12:14:17 +0100
+Message-ID: <081ed97fcd1cbdf80c2048663755f6bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2A281C0
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 12:07:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D39FA1C0
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 12:14:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,116 +24,101 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1520> 
 ======================================================================
-Reported By:                liangalei
+Reported By:                Henne
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Issue ID:                   1520
+Category:                   ISA - cs4236
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Status:                     new
+Distribution:               Slackware 9.0
+Kernel Version:             2.6.14-rc4
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              03-17-2006 12:07 CET
+Date Submitted:             11-01-2005 10:35 CET
+Last Modified:              03-17-2006 12:14 CET
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    Soundchip was not detected
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+I have an HP Omnibook 5700 CTX with some CS423x chip onboard, which is not
+detected by alsaconf. I did not find the ids in cs4236.c so I think the
+Pnp ID's
+must added to this file.
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
-
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
-
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
-
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- Kooper - 03-17-06 04:10 
+ Henne - 03-16-06 13:57 
 ----------------------------------------------------------------------
-I've applied the patch (patch, make modules, cp
-sound/pci/ac97/snd-ac97-codec.ko /lib/modules/..., remove all sound/intel
-modules with rmmod, modprobe) - nothing changed at the first glance. Are
-there any debug information I can provide?
+I've played a little bit with my OMNIBOOK 5700 CTX and found out more.
+In the BIOS there are two switches which seem to have something to do
+with:
+
+1. Fast Boot (a hint from kerneltrap) which was enabled, so I disabled it,
+and
+2. Boot Configuration (was switched to "Auto-detect") the two other
+settings are "Full (DOS, Windows 3.x)" (now chosen by me) and "Boot
+devices only (Plug 'n Play)"
+
+The OSS-driver works and ALSA won't.
+modprobe snd-cs4232 makes the kernel say:
+
+pnp: the driver 'cs4232-pnpbios' has been registered
+pnp: match found with the PnP device '00:10' and the driver
+'cs4232-pnpbios'
+
+(that were the good news)
+
+ALSA sound/isa/cs423x/cs4236.c:293: CS4232 WSS PnP manual resources are
+invalid, using auto config
+CS4232 WSS PnP configure failed for WSS (out of resources?)
+PnP BIOS detection failed for CS4232
+pnp: Device 00:10 disabled.
+cs4232-pnpbios: probe of 00:10 failed with error -1
+
+snd_cs423x_pnp_init_wss() is the function where the init fails,
+in detail
+ err = pnp_manual_config_dev(pdev, cfg, 0);
+
+I've also tried:
+
+modprobe snd-cs4232 port=0x534 fm_port=0x388 sb_port=0x220 irq=0x05
+dma1=0x1 
+dma2=0x0
+
+with the same result.
+
+Any ideas?
 
 ----------------------------------------------------------------------
- tiwai - 03-17-06 12:07 
+ tiwai - 03-17-06 12:14 
 ----------------------------------------------------------------------
-To make sure, could you upload /proc/asound/card0/codec97#0/* files and
-/etc/asound.state for checking?
+First, the PnP stuff seems to have a problem with recent kernels.  It got
+fixed in the latest 2.6.16-rc.  Please try it.
+
+Also, build ALSA driver (use the CVS version instead of 1.0.11rc3) with
+--with-debug=detect option.  It will give you more debug messages.  At
+least, the driver shows the resources assigned by pnp, so you can compare
+with the desired values.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
-03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
-   
-03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
-03-17-06 04:10 Kooper         Note Added: 0008633                          
-03-17-06 12:07 tiwai          Note Added: 0008641                          
+11-01-05 10:35 Henne          New Issue                                    
+11-01-05 10:35 Henne          Distribution              => Slackware 9.0   
+11-01-05 10:35 Henne          Kernel Version            => 2.6.14-rc4      
+11-08-05 18:48 tiwai          Note Added: 0006637                          
+11-08-05 21:00 Henne          Note Added: 0006643                          
+11-12-05 19:33 Henne          Note Added: 0006688                          
+11-15-05 10:10 Henne          Note Added: 0006729                          
+02-06-06 09:34 Henne          Note Added: 0007944                          
+03-16-06 13:57 Henne          Note Added: 0008602                          
+03-17-06 12:14 tiwai          Note Added: 0008642                          
 ======================================================================
 
 
