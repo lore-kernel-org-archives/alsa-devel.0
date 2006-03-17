@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001729]: Only output through headphone jack
-Date: Fri, 17 Mar 2006 01:09:05 +0100
-Message-ID: <2119590ee7d1846918384ec79860270f@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Couple of questions
+Date: Thu, 16 Mar 2006 19:16:36 -0500
+Message-ID: <1142554597.9395.25.camel@mindpipe>
+References: <1142467271.9298.7.camel@localhost.localdomain>
+	 <s5hirqer7r5.wl%tiwai@suse.de>
+	 <1142552045.9236.9.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16B701BB
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 01:09:06 +0100 (MET)
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id F0137193
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 01:16:48 +0100 (MET)
+In-Reply-To: <1142552045.9236.9.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +22,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2006-03-16 at 23:34 +0000, Adrian McMenamin wrote:
+> On Thu, 2006-03-16 at 11:42 +0100, Takashi Iwai wrote:
+> > At Thu, 16 Mar 2006 00:01:11 +0000,
+> > Adrian McMenamin wrote:
+> > > 
+> > > If my driver declares this:
+> > > 
+> > > 	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
+> > > 
+> > > Can I expect samples to come in all left followed by all right, or how?
+> > 
+> > Yes.  It's the non-interleaved format (LLLLLLLL....RRRRRR.....).
+> > 
+> Will the middle layer still copy over data in the same period size as
+> for mono in this case?
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1729> 
-======================================================================
-Reported By:                Jeff250
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1729
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Ubuntu Breezy 5.10
-Kernel Version:             2.6.12-10-686
-Resolution:                 duplicate
-Duplicate:                  1843
-Fixed in Version:           
-======================================================================
-Date Submitted:             01-10-2006 09:16 CET
-Last Modified:              03-17-2006 01:09 CET
-======================================================================
-Summary:                    Only output through headphone jack
-Description: 
-I have an HDA Intel card with a Sigmatel STAC9200 chip on a Dell XPS m140
-laptop.
-In Alsa 1.0.10, sound was outputted to both the speakers and headphones. 
-I tried updating to a newer version of ALSA to see if there was any way to
-disable speaker output when my headphones are plugged in.
+Yes.  One 4 frame period interleaved is LRLRLRLR, non-interleaved
+LLLLRRRR.
 
-However, in Alsa 1.0.11rc2 and latest CVS, sound is only outputted through
-the headphone jack and never through the speakers, regardless of any
-alsamixer tinkering.  (I suppose that's irony).  Reverting back to 1.0.10
-solves the speaker output problem.
-
-Thank you for your time.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001843 regression: no sound with sigmatel stac...
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-17-06 01:09 
-----------------------------------------------------------------------
-Try the patch in #1843 with the latest CVS version.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-10-06 09:16 Jeff250        New Issue                                    
-01-10-06 09:16 Jeff250        Distribution              => Ubuntu Breezy 5.10
-01-10-06 09:16 Jeff250        Kernel Version            => 2.6.12-10-686   
-03-17-06 01:09 tiwai          Relationship added       duplicate of 0001843
-03-17-06 01:09 tiwai          Duplicate ID             0 => 1843           
-03-17-06 01:09 tiwai          Status                   assigned => resolved
-03-17-06 01:09 tiwai          Resolution               open => duplicate   
-03-17-06 01:09 tiwai          Note Added: 0008624                          
-======================================================================
-
+Lee
 
 
 
