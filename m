@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001939]: New (nifty) feature: GUI to create .asoundrc
-Date: Fri, 17 Mar 2006 21:52:45 +0100
-Message-ID: <8dc0fe546b7a0d4493fc23593beb178c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
+Date: Fri, 17 Mar 2006 21:53:02 +0100
+Message-ID: <0889c9b504f2b5adc4d63e34759cf22b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF7AC1B0
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 21:52:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09E551B0
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 21:53:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1939> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
 ======================================================================
-Reported By:                nur_temporär
+Reported By:                bambam
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1939
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   1938
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               n/a
-Kernel Version:             n/a
+Distribution:               Debian sid with custom x86-64 kernel
+Kernel Version:             2.6.16-rc6
 ======================================================================
-Date Submitted:             03-17-2006 21:16 CET
-Last Modified:              03-17-2006 21:52 CET
+Date Submitted:             03-17-2006 20:31 CET
+Last Modified:              03-17-2006 21:53 CET
 ======================================================================
-Summary:                    New (nifty) feature: GUI to create .asoundrc
+Summary:                    EPIPE on Audigy with surround sound when seeking in
+6 channel sound file
 Description: 
-Hello, 
+Seeking in a 6 channel sound or video file using a surround device gives
+EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
+is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
+userspace. I've tried libs and modules from CVS two days ago with no
+success.
 
-i do not know if this category fits for feature-requests, but i came here
-via the link "bug report/feature request" but could not spot the correct
-switch where to request this. So, could you rely this to the people who
-"are the right guys"? Thanks. 
-
-REQUEST: 
-A graphical tool which helps you set up the (quite cryptic) file .asoundrc
-file would be nifty. You just pick your card in a pulldown menu, can set
-the surround channels, the filter for the subwoofer and similar other
-things the average user would want (not all the complex stuff you can do
-with the file!). 
-
-Someone with clue(TM) should be able to code this pretty fast, yet the
-only problem would be to put in the different settings (eg for the
-surround channels). 
-
-If this is done, it could be included in the alsa-mixer. 
-Remeber: Windows does have those features, so it would be nifty if Linux
-had them as well (if you want to see this OS on desktops, easy usuable
-sound is a *must have*). 
-
-Sorry, i do not want to steal more of your precious time, i hope someone
-(who can do something about this) agrees to me the idea is good. 
-
-Have a nice day. ;) 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-17-06 21:52 
+ bambam - 03-17-06 21:07 
 ----------------------------------------------------------------------
-We are approaching this from another angle, by providing the functionality
-Windows users expect (software mixing, stereo->5.1 upmixing, etc) in the
-default configuration.
+Xine based players just hang using 100% CPU time when seeking in the media
+file.
 
-The idea is that a custom .asoundrc should only be required for advanced,
-specialized usage.
-
-"Remeber: Windows does have those features, so it would be nifty if Linux
-had them as well (if you want to see this OS on desktops, easy usuable
-sound is a *must have*)."
-
-Exactly which features are you referring to?  My experience is that each
-Windows driver provides its own set of features.  It certainly does not
-let you configure the device to the same extent that ALSA does...
+----------------------------------------------------------------------
+ bambam - 03-17-06 21:53 
+----------------------------------------------------------------------
+Think it might be important to point out that I don't have neither an
+.asoundrc nor an /etc/asound.conf file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 21:16 nur_temporär   New Issue                                    
-03-17-06 21:16 nur_temporär   Distribution              => n/a             
-03-17-06 21:16 nur_temporär   Kernel Version            => n/a             
-03-17-06 21:52 rlrevell       Note Added: 0008661                          
+03-17-06 20:31 bambam         New Issue                                    
+03-17-06 20:31 bambam         Distribution              => Debian sid with
+custom x86-64 kernel
+03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
+03-17-06 20:36 bambam         Note Added: 0008656                          
+03-17-06 21:07 bambam         Note Added: 0008659                          
+03-17-06 21:53 bambam         Note Added: 0008662                          
 ======================================================================
 
 
