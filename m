@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Fri, 17 Mar 2006 19:44:28 +0100
-Message-ID: <5c7773785b65dea5ee8b0b4ebae2e035@bugtrack.alsa-project.org>
+Date: Fri, 17 Mar 2006 19:54:16 +0100
+Message-ID: <74ba828e3a10c77d4846af77510dc758@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C6A01B0
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 19:44:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 256A217C
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 19:54:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1920> 
 ======================================================================
 Reported By:                binilbenjamin
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1920
@@ -35,12 +35,14 @@ Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Fedora Core 4
 Kernel Version:             2.6
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-17-2006 19:44 CET
+Last Modified:              03-17-2006 19:54 CET
 ======================================================================
 Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
@@ -53,23 +55,56 @@ OS: fedora core 4
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-17-06 19:41 
-----------------------------------------------------------------------
-That means another device is blocking the sound card.  If you use tiwai's
-config to have the default device upmix stereo to 5.1 you lose the ability
-to mix multiple streams.
-
-Check whether artsd or esd or some other app is blocking the sound
-device:
-
-fuser /dev/dsp
-fuser /dev/snd/*
-
-----------------------------------------------------------------------
  rlrevell - 03-17-06 19:44 
 ----------------------------------------------------------------------
 You could also set XMMS to artds/esd output (whichever sound server you're
 using)
+
+----------------------------------------------------------------------
+ tiwai - 03-17-06 19:54 
+----------------------------------------------------------------------
+Alternatively, you can use the following dmix defintion for 5.1 output.  It
+requires the very latest CVS version of alsa-lib (committed 30 minutes
+ago).
+
+Anyway, it's a non-bug, so I close this bug.
+For further questions, go to alsa-users ML, please.
+
+
+pcm.!default "dmix51"
+
+pcm.dmix51 {
+	type plug
+	slave {
+		pcm {
+			type dmix
+			ipc_key {
+				@func refer
+				name defaults.pcm.ipc_key
+			}
+			ipc_gid {
+				@func refer
+				name defaults.pcm.ipc_gid
+			}
+			slave {
+				pcm "hw"
+				period_size 1024
+				periods 16
+				channels 6
+			}
+		}
+	}
+	ttable {
+		0.0 1
+		1.1 1
+		0.2 1
+		1.3 1
+		0.4 0.5
+		1.4 0.5
+		0.5 0.5
+		1.5 0.5
+	}
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -101,6 +136,10 @@ Date Modified  Username       Field                    Change
 03-17-06 19:23 binilbenjamin  Note Added: 0008652                          
 03-17-06 19:41 rlrevell       Note Added: 0008653                          
 03-17-06 19:44 rlrevell       Note Added: 0008654                          
+03-17-06 19:54 tiwai          Status                   new => resolved     
+03-17-06 19:54 tiwai          Resolution               open => fixed       
+03-17-06 19:54 tiwai          Assigned To               => tiwai           
+03-17-06 19:54 tiwai          Note Added: 0008655                          
 ======================================================================
 
 
