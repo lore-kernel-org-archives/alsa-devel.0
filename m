@@ -1,16 +1,14 @@
-From: Dirk Jagdmann <doj@cubic.org>
-Subject: Re: libaoss.so hole?
-Date: Fri, 17 Mar 2006 18:49:58 +0100
-Message-ID: <441AF6C6.4090706@cubic.org>
-References: <7fe205990603170512j58c63e4es@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0001937]: rate plugin causes invalid free() at second open
+Date: Fri, 17 Mar 2006 18:59:47 +0100
+Message-ID: <c18da15842c85d03e3fa65dbc1e7fc8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from roasted.cubic.org (roasted.cubic.org [193.108.181.130])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0D1E1A0
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 18:49:56 +0100 (MET)
-In-Reply-To: <7fe205990603170512j58c63e4es@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D63A1AC
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 18:59:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,27 +18,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Joe Hsu <nagual.hsu@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->     I have an oss application which registers SIGCHLD signal handler
-> in the beginning and then opens /dev/dsp, and then forks a child
-> process. If the child process dies, the father process would receive a
-> SIGCHLD process and then free the allocated resources and then exit.
 
-I don't see any problem here if you did your code right.
-1) fork() does return the pid of the child
-2) in your SIGCHLD handler call wait(int*) which returns the pid of the 
-terminated process.
-3) If the pid from fork() and wait() match you can do your cleanup()
-4) If they don't match, simply ignore the signal, as some other process 
-(probably from the alsa lib) has died.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1937> 
+======================================================================
+Reported By:                Cigaes
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   1937
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             03-17-2006 18:59 CET
+Last Modified:              03-17-2006 18:59 CET
+======================================================================
+Summary:                    rate plugin causes invalid free() at second open
+Description: 
+With the rate plugin, alsa programs (for example aplay) do an invalid
+free() when they open the PCM for the second time.
+======================================================================
 
--- 
----> Dirk Jagdmann ^ doj / cubic
-----> http://cubic.org/~doj
------> http://llg.cubic.org
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-17-06 18:59 Cigaes         New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
