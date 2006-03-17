@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
-Date: Fri, 17 Mar 2006 20:39:52 +0100
-Message-ID: <c7deae41cf8012d0d087ae383f467ca9@bugtrack.alsa-project.org>
+Date: Fri, 17 Mar 2006 20:55:07 +0100
+Message-ID: <7c9b61dd382f2fc4f711667eddfd7ab8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2B8071B0
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 20:39:53 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 430721B4
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 20:55:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             suspend2-sources-2.6.15-r6
 ======================================================================
 Date Submitted:             02-13-2006 04:04 CET
-Last Modified:              03-17-2006 20:39 CET
+Last Modified:              03-17-2006 20:55 CET
 ======================================================================
 Summary:                    regression: no sound with sigmatel stac9200, works
 in alsa 1.0.10
@@ -59,16 +59,11 @@ has duplicate       0001729 Only output through headphone jack
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-17-06 12:00 
+ Jeff250 - 03-17-06 20:40 
 ----------------------------------------------------------------------
-BTW, the problem with position_fix=1 should be fixed in the CVS version,
-too...
-
-----------------------------------------------------------------------
- Jeff250 - 03-17-06 20:39 
-----------------------------------------------------------------------
-I used the second patch against CVS, and not only did it fix the no-sound
-issue but it also auto-mutes the speakers when headphones are plugged in!
+I have a Dell XPS m140.  I used the second patch against CVS, and not only
+did it fix the no-sound issue but it also auto-mutes the speakers when
+headphones are plugged in!
 
 I did notice though that there is now a headphone track in the mixer. 
 Strangely, adjusting the headphone track affects the speaker loudness, and
@@ -76,6 +71,16 @@ adjusting the master track affects the headphone loudness.  Either there
 is something fishy going on here or I don't understand what the headphone
 track is for.  But even if this is a bug, it's certainly very easy to look
 past now that everything is working perfectly.
+
+
+
+----------------------------------------------------------------------
+ tiwai - 03-17-06 20:55 
+----------------------------------------------------------------------
+Yes, the patch seems incomplete.  Could you try the patch
+stac9200-additional-fix.diff?  It's an additional patch over the fix2
+patch.
+It will remove the bogus headphone controls.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,6 +108,8 @@ suspend2-sources-2.6.15-r6
      
 03-17-06 12:00 tiwai          Note Added: 0008638                          
 03-17-06 20:39 Jeff250        Note Added: 0008657                          
+03-17-06 20:40 Jeff250        Note Edited: 0008657                         
+03-17-06 20:55 tiwai          Note Added: 0008658                          
 ======================================================================
 
 
