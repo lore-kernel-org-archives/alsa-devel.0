@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001940]: enemy territory has no sound on ICE1724
-Date: Sat, 18 Mar 2006 00:28:20 +0100
-Message-ID: <ae9ce8c04cad0b4cee29aa74ff7a769f@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Couple of questions
+Date: Fri, 17 Mar 2006 23:29:24 +0000
+Message-ID: <1142638164.9449.16.camel@localhost.localdomain>
+References: <1142467271.9298.7.camel@localhost.localdomain>
+	 <s5hirqer7r5.wl%tiwai@suse.de>
+	 <1142552045.9236.9.camel@localhost.localdomain>
+	 <1142554597.9395.25.camel@mindpipe> <s5hirqdv0oj.wl%tiwai@suse.de>
+	 <1142627252.9449.9.camel@localhost.localdomain>
+	 <s5hr750stlr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0CF721BB
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 00:28:21 +0100 (MET)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A19CC1BB
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 00:29:28 +0100 (MET)
+In-Reply-To: <s5hr750stlr.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +25,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2006-03-17 at 21:29 +0100, Takashi Iwai wrote:
+> At Fri, 17 Mar 2006 20:27:32 +0000,
+> Adrian McMenamin wrote:
+> > 
+> > On Fri, 2006-03-17 at 11:13 +0100, Takashi Iwai wrote:
+> > 
+> > > 
+> > > The period size is same, but the copy is not done like LLLLRRRR.
+> > > 
+> > > As default, the whole buffer is divided to number of channels.  For
+> > > example, using two channels,
+> > > 
+> > > 	|LLLLLLL..|RRRRRRR....|
+> > > 	|<--- buffer_size --->|
+> > > 
+> > > and using six channels,
+> > > 
+> > > 	|1111....|2222....|.....|6666....|
+> > > 	|<-------- buffer_size --------->|
+> > > 
+> > > where each channel has a length of (period_size * periods) samples.
+> > > Unless the buffer size is changed, this assignment of each channel
+> > > also isn't changed.
+> > > 
+> > > The above is the default behavior.  You can change the assignment as
+> > > you like by defining proper copy and silence callback, too.  For
+> > > mmap, you need to define CHANNEL_INFO ioctl, too.
+> > > 
+> > 
+> > Presumably this is what happens at the start, but when doing a single
+> > period update presumably it is split LLLLRRRR on non interleaved
+> 
+> No, as I wrote in the above, the assignment of each channel isn't
+> changed, i.e. the buffer position of each channel remains.
+> 
+> The middle layer handles the whole buffer simply as a bundle of
+> multiple mono streams.
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1940> 
-======================================================================
-Reported By:                oscar
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1940
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15 (Debian')
-======================================================================
-Date Submitted:             03-18-2006 00:28 CET
-Last Modified:              03-18-2006 00:28 CET
-======================================================================
-Summary:                    enemy territory has no sound on ICE1724
-Description: 
-
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
-13:30:21 2005 UTC).
-
-Enemy territory starts without sound.
-Reports this error:
-------- sound initialization -------
-/dev/dsp: Invalid argument
-Could not set /dev/dsp to stereo=2------------------------------------
-
-Strace:
-open("/dev/dsp", O_RDWR)                = 327
-getuid32()                              = 1000
-setresuid32(-1, 1000, -1)               = 0
-ioctl(327, SNDCTL_DSP_GETCAPS, 0xbfb7eddc) = 0
-ioctl(327, SNDCTL_DSP_STEREO, 0xbfb7edd4) = -1 EINVAL (Invalid argument)
-write(2, "/dev/dsp: Invalid argument\n", 27) = 27
-write(2, "Could not set /dev/dsp to stereo"..., 34) = 34
-close(327)                              = 0
-write(2, "--------------------------------"..., 37) = 37
-
-
-SNDCTL_DSP_STEREO fails on /dev/dsp.
-
-Unfortunately all wrappers misbehave with this damned game...
-I run this to get this far: "et.x86 0 0 direct" >
-/proc/asound/card0/pcm0p/oss
-without that the game exits with and MMAP error (it's a known issue with
-q3 engine, I am only writing it here so noone will suggest it as a
-workaround).
-
-I appreciate any help/advice.
-Willing to compile and test code.
-
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-18-06 00:28 oscar          New Issue                                    
-03-18-06 00:28 oscar          Distribution              => Debian          
-03-18-06 00:28 oscar          Kernel Version            => 2.6.15 (Debian')
-======================================================================
-
+So, just to be clear. When I am transferring a "period" I should
+actually stream half a period's worth of bytes into the channel playing
+the left and half a period into the right - and can advance each dma
+transfer through the buffer by half a period length on both the left and
+the right side of the buffer
 
 
 
