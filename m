@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
-Date: Fri, 17 Mar 2006 04:55:39 +0100
-Message-ID: <c96b264571d5aa969e29753c190fd71b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
+Date: Fri, 17 Mar 2006 10:52:24 +0100
+Message-ID: <c661b02c1d015df2813fe4b984a85fb5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BBCE199
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 04:55:39 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D4A71C4
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 10:52:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,108 +24,120 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
 ======================================================================
-Reported By:                richardfish
-Assigned To:                tiwai
+Reported By:                christophe
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1843
-Category:                   PCI - hda-intel
+Issue ID:                   917
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             suspend2-sources-2.6.15-r6
+Status:                     feedback
+Distribution:               Ununtu
+Kernel Version:             2.6.11-rc3
 ======================================================================
-Date Submitted:             02-13-2006 04:04 CET
-Last Modified:              03-17-2006 04:55 CET
+Date Submitted:             02-17-2005 20:16 CET
+Last Modified:              03-17-2006 10:52 CET
 ======================================================================
-Summary:                    regression: no sound with sigmatel stac9200, works
-in alsa 1.0.10
+Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
-With alsa 1.0.10, my Intel HDA with the Sigmatel STAC9200 produces sound
-from both speakers and headphones (although the speakers are not muted
-when the headphones are inserted, but that is a separate problem).  
+I have a problem with the driver for my soundcard after
+ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
+problem with prior kernels, I first tried with 2.6.8).
 
-With alsa 1.0.11rc3, and the CVS version as of today, no sound is produced
-from either speakers or headphones.
+This is a IBM x40 laptop (23865FU) with an intel chipset.
+
+The relevant lspci line is:
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
+Audio Controller (rev
++01)
+
+The driver I use is snd_intel8x0.
+
+The problem is that after a suspend/resume cycle the sound
+output is either off or only on one side or with statics.
+
+I tried to do:
+
+~$ alsactl power off
+~$ alsactl power on
+
+without any change.
+
+If I suspend/resume multiple time I can get the sound output
+a little better (like on one side instead of off). But so far
+to get the correct sound back I need to reboot.
+
+Is it a known problem?
+Is there a way to force the driver to reinitialized the chipset?
+
+Thanks for alsa,
+Christophe
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001813 STAC9750 not recognised by hda-intel
-has duplicate       0001729 Only output through headphone jack
-======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-17-06 00:39 
+ christophe - 03-02-06 13:00 
 ----------------------------------------------------------------------
-The patch attached includes fixes for the auto-configuration breakage to
-the latest CVS version.  Please give it a try.
+Well I have tried a new release since last december. But last time I tried
+it was not fixed. Unless you have a good reason to think that this bug has
+been fixed I think it should stay open. I will try a new release asap.
 
 ----------------------------------------------------------------------
- error10 - 03-17-06 04:55 
+ danone - 03-17-06 10:52 
 ----------------------------------------------------------------------
-Just a note that the hda-autoconfig-fix.diff patch worked for me on
-2.6.15-1.2054_FC5 (which is actually based on 2.6.16-rc6) on Fedora Core
-5-rawhide (though I did have to massage the patch a bit) on a new Dell
-Dimension E310 with the following hardware. :) :)
-
-00:1b.0 0403: 8086:2668 (rev 04)
-        Subsystem: 1028:01c4
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size 10
-        Interrupt: pin A routed to IRQ 16
-        Region 0: Memory at dff3c000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+I have a similar problem on my HP Compaq nx8220. After resuming from s3
+sound seems to work with headphones but the inbuild speakers stay mute.
+Tried several things: 
+rmmod/modprobe soundmodules => doesn't help
+alsactl power off => wrecks resume
+playback while suspending => wrecks suspend
+diff content of /proc/asound before/after => no difference
+Could it be related to this problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-06 04:04 richardfish    New Issue                                    
-02-13-06 04:04 richardfish    File Added: alsa-rjf-1.patch                    
-02-13-06 04:04 richardfish    Distribution              => Gentoo          
-02-13-06 04:04 richardfish    Kernel Version            =>
-suspend2-sources-2.6.15-r6
-02-14-06 05:43 richardfish    Issue Monitored: richardfish                    
-02-20-06 22:51 lrupn          Issue Monitored: lrupn                       
-02-25-06 21:40 lrupn          Note Added: 0008192                          
-02-26-06 16:08 toshio         Note Added: 0008203                          
-02-27-06 23:45 richardfish    Note Added: 0008233                          
-03-01-06 17:07 lrupn          Note Added: 0008281                          
-03-01-06 17:59 mpt            Issue Monitored: mpt                         
-03-17-06 00:39 tiwai          Note Added: 0008622                          
-03-17-06 00:41 tiwai          File Added: hda-autoconfig-fix.diff               
-    
-03-17-06 01:03 tiwai          Relationship added       has duplicate 0001813
-03-17-06 01:09 tiwai          Relationship added       has duplicate 0001729
-03-17-06 04:55 error10        Note Added: 0008634                          
+02-17-05 20:16 christophe     New Issue                                    
+02-17-05 20:16 christophe     Distribution              => Ununtu          
+02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
+02-17-05 20:30 tiwai          Note Added: 0003636                          
+02-17-05 21:01 christophe     Note Added: 0003639                          
+02-17-05 21:06 christophe     Note Added: 0003640                          
+02-17-05 22:38 christophe     Note Added: 0003643                          
+02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
+02-18-05 09:41 alexs81        Note Added: 0003649                          
+02-18-05 18:00 christophe     Note Added: 0003657                          
+02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
+               
+02-18-05 20:35 alexs81        Note Added: 0003659                          
+02-18-05 20:50 christophe     Note Added: 0003660                          
+02-18-05 21:13 alexs81        Note Added: 0003661                          
+02-18-05 21:16 christophe     Note Added: 0003662                          
+02-18-05 21:32 alexs81        Note Added: 0003663                          
+02-18-05 21:39 rlrevell       Note Added: 0003664                          
+02-19-05 02:40 christophe     Note Added: 0003668                          
+02-19-05 12:07 alexs81        Note Added: 0003669                          
+02-19-05 22:15 christophe     Note Added: 0003671                          
+02-19-05 22:16 christophe     Note Added: 0003672                          
+02-21-05 19:16 christophe     Note Added: 0003681                          
+02-21-05 19:21 christophe     Note Added: 0003682                          
+06-28-05 16:49 christophe     Note Added: 0005298                          
+06-29-05 16:04 christophe     Note Added: 0005306                          
+06-29-05 20:05 tiwai          Note Added: 0005308                          
+06-29-05 20:05 tiwai          File Added: ich-resume-fix.diff                   
+
+06-29-05 20:28 christophe     Note Added: 0005313                          
+06-29-05 23:17 christophe     Note Added: 0005320                          
+12-30-05 22:09 rlrevell       Note Added: 0007268                          
+03-01-06 00:59 rlrevell       Status                   new => closed       
+03-02-06 13:00 christophe     Status                   closed => feedback  
+03-02-06 13:00 christophe     Resolution               open => reopened    
+03-02-06 13:00 christophe     Note Added: 0008302                          
+03-17-06 10:52 danone         Note Added: 0008635                          
 ======================================================================
 
 
