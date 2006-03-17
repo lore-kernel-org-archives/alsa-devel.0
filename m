@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001939]: New (nifty) feature: GUI to create .asoundrc
-Date: Fri, 17 Mar 2006 21:16:59 +0100
-Message-ID: <8b3b58e55046a937d4e8d80b95ad282d@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Couple of questions
+Date: Fri, 17 Mar 2006 20:27:32 +0000
+Message-ID: <1142627252.9449.9.camel@localhost.localdomain>
+References: <1142467271.9298.7.camel@localhost.localdomain>
+	 <s5hirqer7r5.wl%tiwai@suse.de>
+	 <1142552045.9236.9.camel@localhost.localdomain>
+	 <1142554597.9395.25.camel@mindpipe>  <s5hirqdv0oj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDBD4174
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 21:16:59 +0100 (MET)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 1BCCD18F
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 21:27:36 +0100 (MET)
+In-Reply-To: <s5hirqdv0oj.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,69 +23,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2006-03-17 at 11:13 +0100, Takashi Iwai wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1939> 
-======================================================================
-Reported By:                nur_temporär
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1939
-Category:                   1_OTHERS
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               n/a
-Kernel Version:             n/a
-======================================================================
-Date Submitted:             03-17-2006 21:16 CET
-Last Modified:              03-17-2006 21:16 CET
-======================================================================
-Summary:                    New (nifty) feature: GUI to create .asoundrc
-Description: 
-Hello, 
+> 
+> The period size is same, but the copy is not done like LLLLRRRR.
+> 
+> As default, the whole buffer is divided to number of channels.  For
+> example, using two channels,
+> 
+> 	|LLLLLLL..|RRRRRRR....|
+> 	|<--- buffer_size --->|
+> 
+> and using six channels,
+> 
+> 	|1111....|2222....|.....|6666....|
+> 	|<-------- buffer_size --------->|
+> 
+> where each channel has a length of (period_size * periods) samples.
+> Unless the buffer size is changed, this assignment of each channel
+> also isn't changed.
+> 
+> The above is the default behavior.  You can change the assignment as
+> you like by defining proper copy and silence callback, too.  For
+> mmap, you need to define CHANNEL_INFO ioctl, too.
+> 
 
-i do not know if this category fits for feature-requests, but i came here
-via the link "bug report/feature request" but could not spot the correct
-switch where to request this. So, could you rely this to the people who
-"are the right guys"? Thanks. 
-
-REQUEST: 
-A graphical tool which helps you set up the (quite cryptic) file .asoundrc
-file would be nifty. You just pick your card in a pulldown menu, can set
-the surround channels, the filter for the subwoofer and similar other
-things the average user would want (not all the complex stuff you can do
-with the file!). 
-
-Someone with clue(TM) should be able to code this pretty fast, yet the
-only problem would be to put in the different settings (eg for the
-surround channels). 
-
-If this is done, it could be included in the alsa-mixer. 
-Remeber: Windows does have those features, so it would be nifty if Linux
-had them as well (if you want to see this OS on desktops, easy usuable
-sound is a *must have*). 
-
-Sorry, i do not want to steal more of your precious time, i hope someone
-(who can do something about this) agrees to me the idea is good. 
-
-Have a nice day. ;) 
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-17-06 21:16 nur_temporär   New Issue                                    
-03-17-06 21:16 nur_temporär   Distribution              => n/a             
-03-17-06 21:16 nur_temporär   Kernel Version            => n/a             
-======================================================================
-
+Presumably this is what happens at the start, but when doing a single
+period update presumably it is split LLLLRRRR on non interleaved
 
 
 
