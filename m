@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001937]: rate plugin causes invalid free() at second open
-Date: Fri, 17 Mar 2006 18:59:47 +0100
-Message-ID: <c18da15842c85d03e3fa65dbc1e7fc8f@bugtrack.alsa-project.org>
+Date: Fri, 17 Mar 2006 19:06:32 +0100
+Message-ID: <6730e627f952070b95f052f91b726b02@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D63A1AC
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 18:59:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 479D41AD
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 19:06:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1937> 
 ======================================================================
@@ -35,10 +35,12 @@ Category:                   1_pcm_d - direct PCM plugins (dmix+)
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-17-2006 18:59 CET
-Last Modified:              03-17-2006 18:59 CET
+Last Modified:              03-17-2006 19:06 CET
 ======================================================================
 Summary:                    rate plugin causes invalid free() at second open
 Description: 
@@ -46,10 +48,18 @@ With the rate plugin, alsa programs (for example aplay) do an invalid
 free() when they open the PCM for the second time.
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 03-17-06 19:06 
+----------------------------------------------------------------------
+Fixed on CVS.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-17-06 18:59 Cigaes         New Issue                                    
+03-17-06 19:06 tiwai          Status                   assigned => resolved
+03-17-06 19:06 tiwai          Resolution               open => fixed       
+03-17-06 19:06 tiwai          Note Added: 0008651                          
 ======================================================================
 
 
