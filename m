@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Fri, 17 Mar 2006 19:23:04 +0100
-Message-ID: <44cd8128b811ae37fc79109e562a2c97@bugtrack.alsa-project.org>
+Date: Fri, 17 Mar 2006 19:41:56 +0100
+Message-ID: <21e047854d0684b91a49778dff38bc13@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6009B1AD
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 19:23:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A01631B0
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 19:41:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6
 ======================================================================
 Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-17-2006 19:23 CET
+Last Modified:              03-17-2006 19:41 CET
 ======================================================================
 Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
@@ -51,15 +51,6 @@ Motherboard : Asus A8N-E
 OS: fedora core 4
 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 03-16-06 19:27 
-----------------------------------------------------------------------
-Add the line:
-
-pcm.!default "mysurround"
-
-to your .asoundrc
 
 ----------------------------------------------------------------------
  binilbenjamin - 03-17-06 19:23 
@@ -73,6 +64,19 @@ plugin(ALSA 1.2.10 output plugin), but the error message shown is
 or resource busy "
 
 Is it the problem with the player.What else player should i try??
+
+----------------------------------------------------------------------
+ rlrevell - 03-17-06 19:41 
+----------------------------------------------------------------------
+That means another device is blocking the sound card.  If you use tiwai's
+config to have the default device upmix stereo to 5.1 you lose the ability
+to mix multiple streams.
+
+Check whether artsd or esd or some other app is blocking the sound
+device:
+
+fuser /dev/dsp
+fuser /dev/snd/*
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -102,6 +106,7 @@ Date Modified  Username       Field                    Change
 03-16-06 17:53 binilbenjamin  Note Added: 0008616                          
 03-16-06 19:27 rlrevell       Note Added: 0008618                          
 03-17-06 19:23 binilbenjamin  Note Added: 0008652                          
+03-17-06 19:41 rlrevell       Note Added: 0008653                          
 ======================================================================
 
 
