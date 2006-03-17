@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001520]: Soundchip was not detected
-Date: Fri, 17 Mar 2006 18:42:18 +0100
-Message-ID: <4ad5d91d9483bd4765bedc6e413cb782@bugtrack.alsa-project.org>
+From: Dirk Jagdmann <doj@cubic.org>
+Subject: Re: libaoss.so hole?
+Date: Fri, 17 Mar 2006 18:49:58 +0100
+Message-ID: <441AF6C6.4090706@cubic.org>
+References: <7fe205990603170512j58c63e4es@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A5051BB
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 18:42:18 +0100 (MET)
+Received: from roasted.cubic.org (roasted.cubic.org [193.108.181.130])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0D1E1A0
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 18:49:56 +0100 (MET)
+In-Reply-To: <7fe205990603170512j58c63e4es@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +20,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Joe Hsu <nagual.hsu@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+>     I have an oss application which registers SIGCHLD signal handler
+> in the beginning and then opens /dev/dsp, and then forks a child
+> process. If the child process dies, the father process would receive a
+> SIGCHLD process and then free the allocated resources and then exit.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1520> 
-======================================================================
-Reported By:                Henne
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1520
-Category:                   ISA - cs4236
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 9.0
-Kernel Version:             2.6.14-rc4
-======================================================================
-Date Submitted:             11-01-2005 10:35 CET
-Last Modified:              03-17-2006 18:42 CET
-======================================================================
-Summary:                    Soundchip was not detected
-Description: 
-I have an HP Omnibook 5700 CTX with some CS423x chip onboard, which is not
-detected by alsaconf. I did not find the ids in cs4236.c so I think the
-Pnp ID's
-must added to this file.
+I don't see any problem here if you did your code right.
+1) fork() does return the pid of the child
+2) in your SIGCHLD handler call wait(int*) which returns the pid of the 
+terminated process.
+3) If the pid from fork() and wait() match you can do your cleanup()
+4) If they don't match, simply ignore the signal, as some other process 
+(probably from the alsa lib) has died.
 
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-17-06 12:14 
-----------------------------------------------------------------------
-First, the PnP stuff seems to have a problem with recent kernels.  It got
-fixed in the latest 2.6.16-rc.  Please try it.
-
-Also, build ALSA driver (use the CVS version instead of 1.0.11rc3) with
---with-debug=detect option.  It will give you more debug messages.  At
-least, the driver shows the resources assigned by pnp, so you can compare
-with the desired values.
-
-----------------------------------------------------------------------
- Henne - 03-17-06 18:42 
-----------------------------------------------------------------------
-I tried that(2.6.16-rc6,alsa-(driver/kernel)cvs), but it doesnt work. I
-also tried every configuration in the BIOS (Fastboot and PnP), but
-everytime I get EBUSY on ALSA, but OSS works.
-
-I compared the sources of the drivers and noticed that the OSS-driver uses
-another initialisation-routine, which writes a magic number to the chip.
-I looked at the spec of the CS4232, where this kind of init is described,
-too.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-01-05 10:35 Henne          New Issue                                    
-11-01-05 10:35 Henne          Distribution              => Slackware 9.0   
-11-01-05 10:35 Henne          Kernel Version            => 2.6.14-rc4      
-11-08-05 18:48 tiwai          Note Added: 0006637                          
-11-08-05 21:00 Henne          Note Added: 0006643                          
-11-12-05 19:33 Henne          Note Added: 0006688                          
-11-15-05 10:10 Henne          Note Added: 0006729                          
-02-06-06 09:34 Henne          Note Added: 0007944                          
-03-16-06 13:57 Henne          Note Added: 0008602                          
-03-17-06 12:14 tiwai          Note Added: 0008642                          
-03-17-06 18:42 Henne          Note Added: 0008650                          
-======================================================================
-
-
+-- 
+---> Dirk Jagdmann ^ doj / cubic
+----> http://cubic.org/~doj
+-----> http://llg.cubic.org
 
 
 -------------------------------------------------------
