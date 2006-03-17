@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
-Date: Fri, 17 Mar 2006 11:59:16 +0100
-Message-ID: <04c7c59adaab01387df9bbc537304fde@bugtrack.alsa-project.org>
+Date: Fri, 17 Mar 2006 12:00:27 +0100
+Message-ID: <481b21e052158d68203dbe01c3b6eded@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCB871BB
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 11:59:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9CF721BB
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 12:00:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             suspend2-sources-2.6.15-r6
 ======================================================================
 Date Submitted:             02-13-2006 04:04 CET
-Last Modified:              03-17-2006 11:59 CET
+Last Modified:              03-17-2006 12:00 CET
 ======================================================================
 Summary:                    regression: no sound with sigmatel stac9200, works
 in alsa 1.0.10
@@ -59,47 +59,6 @@ has duplicate       0001729 Only output through headphone jack
 ======================================================================
 
 ----------------------------------------------------------------------
- error10 - 03-17-06 04:55 
-----------------------------------------------------------------------
-Just a note that the hda-autoconfig-fix.diff patch worked for me on
-2.6.15-1.2054_FC5 (which is actually based on 2.6.16-rc6) on Fedora Core
-5-rawhide (though I did have to massage the patch a bit) on a new Dell
-Dimension E310 with the following hardware. :) :)
-
-00:1b.0 0403: 8086:2668 (rev 04)
-        Subsystem: 1028:01c4
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size 10
-        Interrupt: pin A routed to IRQ 16
-        Region 0: Memory at dff3c000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-----------------------------------------------------------------------
  tiwai - 03-17-06 11:59 
 ----------------------------------------------------------------------
 Great.  I guess this patch alone doesn't do the auto-muting of speaker when
@@ -111,6 +70,12 @@ the fix for Dell Inspiron B120
 
 Please let me know if the new patch works or not.  At least, I need to
 confirm that it doesn't break something again.
+
+----------------------------------------------------------------------
+ tiwai - 03-17-06 12:00 
+----------------------------------------------------------------------
+BTW, the problem with position_fix=1 should be fixed in the CVS version,
+too...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -134,6 +99,9 @@ suspend2-sources-2.6.15-r6
 03-17-06 01:09 tiwai          Relationship added       has duplicate 0001729
 03-17-06 04:55 error10        Note Added: 0008634                          
 03-17-06 11:59 tiwai          Note Added: 0008637                          
+03-17-06 11:59 tiwai          File Added: hda-autoconfig-fix2.diff              
+     
+03-17-06 12:00 tiwai          Note Added: 0008638                          
 ======================================================================
 
 
