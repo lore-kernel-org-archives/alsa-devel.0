@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001934]: make problem
-Date: Fri, 17 Mar 2006 12:19:50 +0100
-Message-ID: <9f127bbf6d3bf9c13dd882d9b754010f@85.132.177.35>
+Date: Fri, 17 Mar 2006 12:25:32 +0100
+Message-ID: <afc3492016a0b8379ad80e40b23b2c33@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 85.132.177.35 (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0434A1C0
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 12:19:50 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9BD3D1C0
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 12:25:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,9 +22,9 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://85.132.177.35/alsa-bug/view.php?id=1934> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
 ======================================================================
 Reported By:                kvo
 Assigned To:                perex
@@ -40,7 +40,7 @@ Distribution:               RHEL4 Update 3
 Kernel Version:             2.6.9-34.EL
 ======================================================================
 Date Submitted:             03-17-2006 12:19 CET
-Last Modified:              03-17-2006 12:19 CET
+Last Modified:              03-17-2006 12:25 CET
 ======================================================================
 Summary:                    make problem
 Description: 
@@ -50,12 +50,20 @@ Description:
 be produced.
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 03-17-06 12:25 
+----------------------------------------------------------------------
+Try the CVS version.  I cannot spot out in the latest version.
+
+Also, attach the exact error messages.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-17-06 12:19 kvo            New Issue                                    
 03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
 03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
+03-17-06 12:25 tiwai          Note Added: 0008643                          
 ======================================================================
 
 
