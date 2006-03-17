@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
-Date: Fri, 17 Mar 2006 21:53:02 +0100
-Message-ID: <0889c9b504f2b5adc4d63e34759cf22b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001933]: Headphones work, but sound isn't muted when they are plugged in
+Date: Fri, 17 Mar 2006 22:59:50 +0100
+Message-ID: <53eb61bf4c2ff748e8c23346d86bb1c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09E551B0
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 21:53:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D08671A9
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 22:59:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1933> 
 ======================================================================
-Reported By:                bambam
-Assigned To:                
+Reported By:                jer
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1938
-Category:                   PCI - emu10k1
+Issue ID:                   1933
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian sid with custom x86-64 kernel
-Kernel Version:             2.6.16-rc6
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             03-17-2006 20:31 CET
-Last Modified:              03-17-2006 21:53 CET
+Date Submitted:             03-17-2006 01:01 CET
+Last Modified:              03-17-2006 22:59 CET
 ======================================================================
-Summary:                    EPIPE on Audigy with surround sound when seeking in
-6 channel sound file
+Summary:                    Headphones work, but sound isn't muted when they are
+plugged in
 Description: 
-Seeking in a 6 channel sound or video file using a surround device gives
-EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
-is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
-userspace. I've tried libs and modules from CVS two days ago with no
-success.
+On a Dell Inspiron B120 laptop the headphones do not disengage the
+speakers.  I have already submitted a patch to the patch_sigmatel.c
+maintainer and to the alsa-dev mailing list, but decided that it would
+help if I also submitted a bug report as well.  I am including a patch in
+the additional information section.
 
+The codec chip in question here is a stac9200 which prior to this patch
+doesn't support headphones.
 ======================================================================
 
 ----------------------------------------------------------------------
- bambam - 03-17-06 21:07 
+ tiwai - 03-17-06 12:01 
 ----------------------------------------------------------------------
-Xine based players just hang using 100% CPU time when seeking in the media
-file.
+To be sure, I uploaded a newer patch included your fix (only the first
+chunk) in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843.
 
 ----------------------------------------------------------------------
- bambam - 03-17-06 21:53 
+ jer - 03-17-06 22:59 
 ----------------------------------------------------------------------
-Think it might be important to point out that I don't have neither an
-.asoundrc nor an /etc/asound.conf file.
+I just tried removing the call you mentioned.  Still works fine, I may have
+needed to use that since I don't believe in the 1.0.10 code it was being
+called in init as it appears to be now.  Anyway, I will test your full
+patch a little later this evening and let you know.
+
+Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 20:31 bambam         New Issue                                    
-03-17-06 20:31 bambam         Distribution              => Debian sid with
-custom x86-64 kernel
-03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
-03-17-06 20:36 bambam         Note Added: 0008656                          
-03-17-06 21:07 bambam         Note Added: 0008659                          
-03-17-06 21:53 bambam         Note Added: 0008662                          
+03-17-06 01:01 jer            New Issue                                    
+03-17-06 01:01 jer            File Added: sigmatel.patch                    
+03-17-06 01:01 jer            Distribution              => Ubuntu Breezy   
+03-17-06 01:01 jer            Kernel Version            => 2.6.12          
+03-17-06 01:03 jer            Issue Monitored: jer                         
+03-17-06 01:26 tiwai          Note Added: 0008625                          
+03-17-06 01:55 jer            Note Added: 0008626                          
+03-17-06 02:38 jer            Note Added: 0008629                          
+03-17-06 02:57 jer            File Added: sigmatel.11rc3.patch                  
+ 
+03-17-06 02:59 jer            Note Added: 0008631                          
+03-17-06 11:43 tiwai          Note Added: 0008636                          
+03-17-06 12:01 tiwai          Note Added: 0008639                          
+03-17-06 22:59 jer            Note Added: 0008663                          
 ======================================================================
 
 
