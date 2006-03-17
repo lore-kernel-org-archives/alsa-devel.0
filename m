@@ -1,23 +1,11 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Couple of questions
-Date: Fri, 17 Mar 2006 23:51:10 +0000
-Message-ID: <1142639470.9449.24.camel@localhost.localdomain>
-References: <1142467271.9298.7.camel@localhost.localdomain>
-	 <s5hirqer7r5.wl%tiwai@suse.de>
-	 <1142552045.9236.9.camel@localhost.localdomain>
-	 <1142554597.9395.25.camel@mindpipe> <s5hirqdv0oj.wl%tiwai@suse.de>
-	 <1142627252.9449.9.camel@localhost.localdomain>
-	 <s5hr750stlr.wl%tiwai@suse.de>
-	 <1142638164.9449.16.camel@localhost.localdomain>
-	 <1142639182.25258.126.camel@mindpipe>
+From: "S. Effendi" <osbebas@yahoo.co.id>
+Subject: [PATCH] nearest conv_rates matching
+Date: Sat, 18 Mar 2006 06:57:14 +0700 (ICT)
+Message-ID: <20060317235714.50540.qmail@web38612.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/mixed; boundary="0-1751506671-1142639834=:44781"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 003E91BB
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 00:51:13 +0100 (MET)
-In-Reply-To: <1142639182.25258.126.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,49 +15,111 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-03-17 at 18:46 -0500, Lee Revell wrote:
-> On Fri, 2006-03-17 at 23:29 +0000, Adrian McMenamin wrote:
-> > 
-> > So, just to be clear. When I am transferring a "period" I should
-> > actually stream half a period's worth of bytes into the channel
-> > playing
-> > the left and half a period into the right - and can advance each dma
-> > transfer through the buffer by half a period length on both the left
-> > and
-> > the right side of the buffer 
-> 
-> No, one period.
-> 
+--0-1751506671-1142639834=:44781
+Content-Type: text/plain; charset=utf-8
+Content-Id: 
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+attached you can find a simple patch to match
+"uncommon" rate in some USB speaker to the fixed
+conv_rates in usbaudio.c.
+
+I had problem using ALSA with "Typhoon Desktop Mini
+USB Speakers" (0e6a:0310 Megawin Technology Co., Ltd).
+
+mpg123 told me "No supported rate found!".
+
+# cat /proc/asound/card1/stream0
+USB Audio Device at usb-0000:00:1d.0-2.4, full speed :
+USB Audio
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 2 OUT (ADAPTIVE)
+    Rates: 46875
+
+With this patch now I get:
+
+USB Audio Device at usb-0000:00:1d.0-2.4, full speed :
+USB Audio
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 2 OUT (ADAPTIVE)
+    Rates: 44100
+
+and mpg123 works JustFine(TM) :)
+
+Hope you find it useful.
 
 
-How does that work? That would imply that there were half as many
-periods in the DMA buffer as specified here...
-
-static snd_pcm_hardware_t snd_pcm_aica_playback_hw = {
-
-	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
-	.formats =
-	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
-	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
-	.rates = SNDRV_PCM_RATE_8000_48000,
-	.rate_min = 8000,
-	.rate_max = 48000,
-	.channels_min = 2,
-	.channels_max = 2,
-	.buffer_bytes_max = AICA_BUFFER_SIZE,
-	.period_bytes_min = AICA_PERIOD_SIZE,
-	.period_bytes_max = AICA_PERIOD_SIZE,
-	.periods_min = AICA_PERIOD_NUMBER,
-	.periods_max = AICA_PERIOD_NUMBER,
-};
+Best regards,
+S. Effendi
 
 
-As the buffer and period (in bytes) size is constant. 
+=09
 
+=09
+	=09
+_________________________________________________________________________=
+______=20
+Apakah Anda Yahoo!?
+Kunjungi halaman depan Yahoo! Indonesia yang baru!=20
+http://beta.id.yahoo.com/
+--0-1751506671-1142639834=:44781
+Content-Type: text/x-patch; name="alsa_usbaudio_conv_rates.patch"
+Content-Description: 3723235254-alsa_usbaudio_conv_rates.patch
+Content-Disposition: inline; filename="alsa_usbaudio_conv_rates.patch"
+
+--- linux-2.6.15.6/sound/usb/usbaudio.c	2006-03-05 20:07:54.000000000 +0100
++++ linux-2.6.15.6-patched/sound/usb/usbaudio.c	2006-03-18 00:27:13.000000000 +0100
+@@ -2394,17 +2394,35 @@
+ 		fp->nr_rates = nr_rates;
+ 		fp->rate_min = fp->rate_max = combine_triple(&fmt[8]);
+ 		for (r = 0, idx = offset + 1; r < nr_rates; r++, idx += 3) {
++			unsigned int last_rate;
++			unsigned int rate_supported;
+ 			unsigned int rate = fp->rate_table[r] = combine_triple(&fmt[idx]);
+ 			if (rate < fp->rate_min)
+ 				fp->rate_min = rate;
+ 			else if (rate > fp->rate_max)
+ 				fp->rate_max = rate;
++			rate_supported = 0;
++			last_rate = 0;
+ 			for (c = 0; c < (int)ARRAY_SIZE(conv_rates); c++) {
+ 				if (rate == conv_rates[c]) {
+-					fp->rates |= (1 << c);
++					/* conv_rate matched */
++					rate_supported = (1 << c);
++					break;
++				} else if (rate > conv_rates[c]) {
++					/* nearest conv_rate matched */
++					rate_supported = (1 << c);
++					last_rate = conv_rates[c];
++				} else {
+ 					break;
+ 				}
+ 			}
++			fp->rates |= rate_supported;
++			if(last_rate > 0) {
++				if(fp->rate_min > last_rate)
++					fp->rate_min = last_rate; /* fix to nearest conv_rate matched */
++				/* nearest supported conv_rate */
++				fp->rate_table[r] = last_rate; 
++			}
+ 		}
+ 	} else {
+ 		/* continuous rates */
+
+--0-1751506671-1142639834=:44781--
 
 
 -------------------------------------------------------
