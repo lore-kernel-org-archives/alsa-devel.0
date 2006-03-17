@@ -1,13 +1,14 @@
-From: Carlos Munoz <carlos@kenati.com>
-Subject: Re: Fwd: memory allocate for substream->runtime->dma_area
-Date: Thu, 16 Mar 2006 16:45:24 -0800
-Message-ID: <441A06A4.7030100@kenati.com>
-References: <715d90900603141942y6c409027sb5a99be13f5ec462@mail.gmail.com>	 <715d90900603141943h423c0ffdydedec3f1ed50a375@mail.gmail.com>	 <1142394842.24603.77.camel@mindpipe>	 <715d90900603142003jd1b1d00he8daf7331cc72237@mail.gmail.com>	 <1142454177.1671.38.camel@mindpipe>	 <715d90900603151909o6bb834efv401392e5239a0435@mail.gmail.com>	 <715d90900603152107q30b76a85l4b428167d515ee8c@mail.gmail.com> <715d90900603152121t40c2c5ddg4e6bce9df9f6e5a9@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001933]: Headphones work, but sound isn't muted when they are plugged in
+Date: Fri, 17 Mar 2006 01:55:53 +0100
+Message-ID: <19ebf92a58154de32fec20e7f4e5d5b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <715d90900603152121t40c2c5ddg4e6bce9df9f6e5a9@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE8571B9
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 01:55:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,65 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: boku <boku0712@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-boku wrote:
 
->
-> Dear all,
->     Could you please tell me what the "frame" and "period" mean in alsa?
-> I saw snd_pcm_hardware_t struct has period_min,max, 
-> period_bytes_min,max etc but quite confused of their meaning. So is 
-> the fifo size.
->     And btw, which data struct has the info of how many bits per 
-> channel for the wav bitstream from alsa application aplay etc? Such as 
-> 16-bits, 24 or 32-bits.
-> Thanks for your great help~
->  
->  
-> On 3/16/06, *Lee Revell* <rlrevell@joe-job.com 
-> <mailto:rlrevell@joe-job.com> > wrote:
->
->     On Wed, 2006-03-15 at 12:03 +0800, boku wrote:
->> Hi, Lee,
->>      Thanks for quick response. Currently I'm designing the sound
->> driver for an ARM integrator/ap-like platform. But in the platform,
->> the audio controller is designated to move data only from a specific
->> address space. Therefore, doesn't it mean that i need to
->     constrain the
->> runtime->dma_area to the specified address so that the AIC can start
->> to do DMA access?
->> Sorry about the code still not done and thanks in advance.
->
->     Sorry I'm not really an ARM expert, but this has come up in the list
->     archive before.  You should look at some of the other ARM drivers
->     in the
->     tree...
->
->     Lee
->
->
->
-Hi Boku,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1933> 
+======================================================================
+Reported By:                jer
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1933
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Breezy
+Kernel Version:             2.6.12
+======================================================================
+Date Submitted:             03-17-2006 01:01 CET
+Last Modified:              03-17-2006 01:55 CET
+======================================================================
+Summary:                    Headphones work, but sound isn't muted when they are
+plugged in
+Description: 
+On a Dell Inspiron B120 laptop the headphones do not disengage the
+speakers.  I have already submitted a patch to the patch_sigmatel.c
+maintainer and to the alsa-dev mailing list, but decided that it would
+help if I also submitted a bug report as well.  I am including a patch in
+the additional information section.
 
-I'm not an expert but I recently looked into this.
+The codec chip in question here is a stac9200 which prior to this patch
+doesn't support headphones.
+======================================================================
 
-Frame: From the macro  bytes_to_frames() I gather that a frame is a 
-sample. For example, if the sample size is 16 bits, the frame is also 16 
-bits. That means that for every 2 bytes sent, one frame is sent.
+----------------------------------------------------------------------
+ tiwai - 03-17-06 01:26 
+----------------------------------------------------------------------
+Could you check that your change can work with the latest CVS version
+together with the patch in #1843?
 
-Period: It is driver dependent. It's the dma interrupt interval. It is 
-used to calculate latencies. For example, if a driver can only dma 1024 
-bytes at a time, the period will be 1024. That means during capture at 
-least 1024 bytes will be received before the first byte is passed to the 
-alsa middle layer.
+----------------------------------------------------------------------
+ jer - 03-17-06 01:55 
+----------------------------------------------------------------------
+I tried the latest CVS yesterday and I couldn't get any sound at all. 
+Thats why this patch is against 1.0.10.  Would you still like me to try
+the CVS with the additional patch you mentioned?
 
-I hope this helps,
+Thanks.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-17-06 01:01 jer            New Issue                                    
+03-17-06 01:01 jer            File Added: sigmatel.patch                    
+03-17-06 01:01 jer            Distribution              => Ubuntu Breezy   
+03-17-06 01:01 jer            Kernel Version            => 2.6.12          
+03-17-06 01:03 jer            Issue Monitored: jer                         
+03-17-06 01:26 tiwai          Note Added: 0008625                          
+03-17-06 01:55 jer            Note Added: 0008626                          
+======================================================================
 
 
-Carlos
 
 
 -------------------------------------------------------
