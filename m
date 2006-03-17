@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
-Date: Fri, 17 Mar 2006 21:07:09 +0100
-Message-ID: <d6a9a3bf39e3583ac1d5f91a98fe2412@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001939]: New (nifty) feature: GUI to create .asoundrc
+Date: Fri, 17 Mar 2006 21:16:59 +0100
+Message-ID: <8b3b58e55046a937d4e8d80b95ad282d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 563A11B9
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 21:07:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDBD4174
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 21:16:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1939> 
 ======================================================================
-Reported By:                bambam
+Reported By:                nur_temporär
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1938
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1939
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian sid with custom x86-64 kernel
-Kernel Version:             2.6.16-rc6
+Distribution:               n/a
+Kernel Version:             n/a
 ======================================================================
-Date Submitted:             03-17-2006 20:31 CET
-Last Modified:              03-17-2006 21:07 CET
+Date Submitted:             03-17-2006 21:16 CET
+Last Modified:              03-17-2006 21:16 CET
 ======================================================================
-Summary:                    EPIPE on Audigy with surround sound when seeking in
-6 channel sound file
+Summary:                    New (nifty) feature: GUI to create .asoundrc
 Description: 
-Seeking in a 6 channel sound or video file using a surround device gives
-EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
-is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
-userspace. I've tried libs and modules from CVS two days ago with no
-success.
+Hello, 
 
+i do not know if this category fits for feature-requests, but i came here
+via the link "bug report/feature request" but could not spot the correct
+switch where to request this. So, could you rely this to the people who
+"are the right guys"? Thanks. 
+
+REQUEST: 
+A graphical tool which helps you set up the (quite cryptic) file .asoundrc
+file would be nifty. You just pick your card in a pulldown menu, can set
+the surround channels, the filter for the subwoofer and similar other
+things the average user would want (not all the complex stuff you can do
+with the file!). 
+
+Someone with clue(TM) should be able to code this pretty fast, yet the
+only problem would be to put in the different settings (eg for the
+surround channels). 
+
+If this is done, it could be included in the alsa-mixer. 
+Remeber: Windows does have those features, so it would be nifty if Linux
+had them as well (if you want to see this OS on desktops, easy usuable
+sound is a *must have*). 
+
+Sorry, i do not want to steal more of your precious time, i hope someone
+(who can do something about this) agrees to me the idea is good. 
+
+Have a nice day. ;) 
 ======================================================================
-
-----------------------------------------------------------------------
- bambam - 03-17-06 20:36 
-----------------------------------------------------------------------
-I've just checked and this doesn't have to be a 6 channel sound file. You
-get Broken pipe also with a stereo file provided you output it to a
-surround device.
-
-----------------------------------------------------------------------
- bambam - 03-17-06 21:07 
-----------------------------------------------------------------------
-Xine based players just hang using 100% CPU time when seeking in the media
-file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 20:31 bambam         New Issue                                    
-03-17-06 20:31 bambam         Distribution              => Debian sid with
-custom x86-64 kernel
-03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
-03-17-06 20:36 bambam         Note Added: 0008656                          
-03-17-06 21:07 bambam         Note Added: 0008659                          
+03-17-06 21:16 nur_temporär   New Issue                                    
+03-17-06 21:16 nur_temporär   Distribution              => n/a             
+03-17-06 21:16 nur_temporär   Kernel Version            => n/a             
 ======================================================================
 
 
