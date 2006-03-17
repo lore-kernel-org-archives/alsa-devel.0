@@ -1,21 +1,14 @@
-From: "Joe Hsu" <nagual.hsu@gmail.com>
-Subject: Re: libaoss.so hole?
-Date: Sat, 18 Mar 2006 07:27:02 +0800
-Message-ID: <7fe205990603171527g229fdff1u@mail.gmail.com>
-References: <7fe205990603170512j58c63e4es@mail.gmail.com>
-	 <441AF6C6.4090706@cubic.org>
-	 <7fe205990603171520t29c81bag@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001940]: enemy territory has no sound on ICE1724
+Date: Sat, 18 Mar 2006 00:28:20 +0100
+Message-ID: <ae9ce8c04cad0b4cee29aa74ff7a769f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from zproxy.gmail.com (zproxy.gmail.com [64.233.162.199])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 331001BB
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 00:27:03 +0100 (MET)
-Received: by zproxy.gmail.com with SMTP id i11so644249nzh
-        for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 15:27:02 -0800 (PST)
-In-Reply-To: <7fe205990603171520t29c81bag@mail.gmail.com>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0CF721BB
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 00:28:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,30 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dirk Jagdmann <doj@cubic.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A
-     And if it will not be that transparent in the future, please add
-some comments in the document or it would be a bug caused by the
-ignorance of oss application developers and by the in-complete
-documnets. And that kind of bug is sometimes not easy to hunt down if
-the application is big.
 
-2006/3/18, Joe Hsu <nagual.hsu@gmail.com>:
->    Of course. I know what you mean. But that is like a work around to
-> me. And I did a work around too. Since many oss developers didn't
-> think about the oss-to-alsa layer, this layer must be as transparent
-> as possible.
->    Well, just my own opinion.
-> --
-> The sun is shinny but the ice is slippery.
->
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1940> 
+======================================================================
+Reported By:                oscar
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1940
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15 (Debian')
+======================================================================
+Date Submitted:             03-18-2006 00:28 CET
+Last Modified:              03-18-2006 00:28 CET
+======================================================================
+Summary:                    enemy territory has no sound on ICE1724
+Description: 
+
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+
+Enemy territory starts without sound.
+Reports this error:
+------- sound initialization -------
+/dev/dsp: Invalid argument
+Could not set /dev/dsp to stereo=2------------------------------------
+
+Strace:
+open("/dev/dsp", O_RDWR)                = 327
+getuid32()                              = 1000
+setresuid32(-1, 1000, -1)               = 0
+ioctl(327, SNDCTL_DSP_GETCAPS, 0xbfb7eddc) = 0
+ioctl(327, SNDCTL_DSP_STEREO, 0xbfb7edd4) = -1 EINVAL (Invalid argument)
+write(2, "/dev/dsp: Invalid argument\n", 27) = 27
+write(2, "Could not set /dev/dsp to stereo"..., 34) = 34
+close(327)                              = 0
+write(2, "--------------------------------"..., 37) = 37
 
 
---
-The sun is shinny but the ice is slippery.
+SNDCTL_DSP_STEREO fails on /dev/dsp.
+
+Unfortunately all wrappers misbehave with this damned game...
+I run this to get this far: "et.x86 0 0 direct" >
+/proc/asound/card0/pcm0p/oss
+without that the game exits with and MMAP error (it's a known issue with
+q3 engine, I am only writing it here so noone will suggest it as a
+workaround).
+
+I appreciate any help/advice.
+Willing to compile and test code.
+
+
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-18-06 00:28 oscar          New Issue                                    
+03-18-06 00:28 oscar          Distribution              => Debian          
+03-18-06 00:28 oscar          Kernel Version            => 2.6.15 (Debian')
+======================================================================
+
+
 
 
 -------------------------------------------------------
