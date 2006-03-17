@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001920]: output from only 2 speakers(out of 5 speakers)
-Date: Fri, 17 Mar 2006 19:41:56 +0100
-Message-ID: <21e047854d0684b91a49778dff38bc13@bugtrack.alsa-project.org>
+Date: Fri, 17 Mar 2006 19:44:28 +0100
+Message-ID: <5c7773785b65dea5ee8b0b4ebae2e035@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A01631B0
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 19:41:56 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C6A01B0
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 19:44:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6
 ======================================================================
 Date Submitted:             03-13-2006 19:02 CET
-Last Modified:              03-17-2006 19:41 CET
+Last Modified:              03-17-2006 19:44 CET
 ======================================================================
 Summary:                    output from only 2 speakers(out of 5 speakers)
 Description: 
@@ -51,19 +51,6 @@ Motherboard : Asus A8N-E
 OS: fedora core 4
 
 ======================================================================
-
-----------------------------------------------------------------------
- binilbenjamin - 03-17-06 19:23 
-----------------------------------------------------------------------
-after adding that statement, all speakers work on mouse events(such as
-folder click etc).But when I try to play mp3 in xmms(and even in mplayer)
-, an error message is shown. I tried various settings of output
-plugin(ALSA 1.2.10 output plugin), but the error message shown is 
-
-"** WARNING **: alsa_setup(): Failed to open pcm device (default): Device
-or resource busy "
-
-Is it the problem with the player.What else player should i try??
 
 ----------------------------------------------------------------------
  rlrevell - 03-17-06 19:41 
@@ -77,6 +64,12 @@ device:
 
 fuser /dev/dsp
 fuser /dev/snd/*
+
+----------------------------------------------------------------------
+ rlrevell - 03-17-06 19:44 
+----------------------------------------------------------------------
+You could also set XMMS to artds/esd output (whichever sound server you're
+using)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +100,7 @@ Date Modified  Username       Field                    Change
 03-16-06 19:27 rlrevell       Note Added: 0008618                          
 03-17-06 19:23 binilbenjamin  Note Added: 0008652                          
 03-17-06 19:41 rlrevell       Note Added: 0008653                          
+03-17-06 19:44 rlrevell       Note Added: 0008654                          
 ======================================================================
 
 
