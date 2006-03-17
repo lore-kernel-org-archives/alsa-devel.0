@@ -1,22 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Fwd: memory allocate for
-	substream->runtime->dma_area
-Date: Thu, 16 Mar 2006 20:17:37 -0500
-Message-ID: <1142558258.9395.34.camel@mindpipe>
-References: <715d90900603141942y6c409027sb5a99be13f5ec462@mail.gmail.com>
-	 <715d90900603141943h423c0ffdydedec3f1ed50a375@mail.gmail.com>
-	 <1142394842.24603.77.camel@mindpipe>
-	 <715d90900603142003jd1b1d00he8daf7331cc72237@mail.gmail.com>
-	 <1142454177.1671.38.camel@mindpipe>
-	 <715d90900603151909o6bb834efv401392e5239a0435@mail.gmail.com>
-	 <715d90900603152107q30b76a85l4b428167d515ee8c@mail.gmail.com>
-	 <715d90900603152121t40c2c5ddg4e6bce9df9f6e5a9@mail.gmail.com>
-	 <441A06A4.7030100@kenati.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001926]: No sound and no internal speakers with Samsung R65-T2300 Charis notebook
+Date: Fri, 17 Mar 2006 02:30:28 +0100
+Message-ID: <64de1ddfbe354b2eb6e367e004a1a8fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <441A06A4.7030100@kenati.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F30CB1C2
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 02:30:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,20 +18,109 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlos Munoz <carlos@kenati.com>
-Cc: boku <boku0712@gmail.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-03-16 at 16:45 -0800, Carlos Munoz wrote:
-> Frame: From the macro  bytes_to_frames() I gather that a frame is a 
-> sample. For example, if the sample size is 16 bits, the frame is also
-> 16 bits. That means that for every 2 bytes sent, one frame is sent.
-> 
 
-It's a sample for each channel.  Your example is correct for mono only.
-For standard CD format (stereo, 16 bits per sample) a frame is 4 bytes.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1926> 
+======================================================================
+Reported By:                tassilo80
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1926
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             03-15-2006 18:21 CET
+Last Modified:              03-17-2006 02:30 CET
+======================================================================
+Summary:                    No sound and no internal speakers with Samsung
+R65-T2300 Charis notebook
+Description: 
+I have no sound on my laptop. 
 
-Lee
+First I tried alsa-diver-1.0.11rc3:
+* The headphones are listed in alsamixer, but the internal speakers are
+not listed.
+* There's no sound with headphones
+* If I apply the patch mentioned in bug #1793
+(http://quaggaspace.org/a8nvm/a8nvmsound.patch) I have at least sound with
+my headphones
+
+The I tried the current CVS:
+* without model-option I had short a sound on my right headphone till I
+tweaked the mixer settings
+* with model=laptop I had no sound at all
+* with model=3stack I had no sount at all, too
+* if I apply the patch mentioned above and give no model-option, the sound
+works again (only headphones)
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001925 no sound from hda_intel
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 03-16-06 17:31 
+----------------------------------------------------------------------
+It's normal.
+
+Mic and internal mic have the volume/mute for playback, and the  capture
+switches (as available elements of "capture source").
+The playback volume/switch are for the loopback from mic to HP/speaker
+output, and independent from the capture source.
+
+On alsamixer, each capture source enum element is shown as if a capture
+switch, which works exclusive with each other.  And, there is a master
+capture switch (shown as "Capture") and an input gain (the volume in
+"Capture").
+
+----------------------------------------------------------------------
+ tassilo80 - 03-17-06 02:30 
+----------------------------------------------------------------------
+I checked out again and applied the new patch. Here are the results:
+
+  * Sound works with headphones and internal speakers (external amp toggle
+works, too)
+  * recording works with external microphone
+  * recording doesn't work with internal mic
+  * Playing CDs does not work (neither with the old patch where I had a CD
+toggle, nor with the new patch which offers only Mic, Mix and Internal)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-15-06 18:21 tassilo80      New Issue                                    
+03-15-06 18:21 tassilo80      File Added: asound.state                     
+03-15-06 18:26 tassilo80      File Added: codec-files                      
+03-15-06 18:50 tiwai          Note Added: 0008563                          
+03-15-06 18:59 tassilo80      Note Added: 0008565                          
+03-15-06 19:35 tiwai          Note Added: 0008568                          
+03-15-06 19:56 tassilo80      Note Added: 0008571                          
+03-16-06 14:54 tiwai          Note Added: 0008604                          
+03-16-06 14:56 tiwai          File Added: ad1986a-laptop-eapd.diff              
+     
+03-16-06 15:37 tassilo80      Note Added: 0008607                          
+03-16-06 16:14 tiwai          Note Added: 0008609                          
+03-16-06 16:26 tiwai          File Added: ad1986a-laptop-eapd-new.diff          
+         
+03-16-06 16:27 tiwai          Note Added: 0008610                          
+03-16-06 17:25 tassilo80      Note Added: 0008613                          
+03-16-06 17:31 tiwai          Note Added: 0008614                          
+03-16-06 17:33 tiwai          Relationship added       has duplicate 0001925
+03-16-06 20:14 stefanob       Issue Monitored: stefanob                    
+03-17-06 02:30 tassilo80      Note Added: 0008627                          
+======================================================================
+
 
 
 
