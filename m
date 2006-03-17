@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001936]: wont give output and some features not present (i.e. alsamixer)
-Date: Fri, 17 Mar 2006 16:33:15 +0100
-Message-ID: <969b775174c7aae94c1fe4ee592abc35@bugtrack.alsa-project.org>
+Date: Fri, 17 Mar 2006 16:54:32 +0100
+Message-ID: <e2723700172956d60fe5df89873d4edb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26ACD188
-	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 16:33:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABFA81B2
+	for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2006 16:54:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1936> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.16 (vanilla - different rc)
 ======================================================================
 Date Submitted:             03-17-2006 16:33 CET
-Last Modified:              03-17-2006 16:33 CET
+Last Modified:              03-17-2006 16:54 CET
 ======================================================================
 Summary:                    wont give output and some features not present (i.e.
 alsamixer)
@@ -68,6 +68,12 @@ I "only" like to get the sound running on my notebook - best and nicest
 would be with micro... Hope there comes some help in the next for me.
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 03-17-06 16:54 
+----------------------------------------------------------------------
+Sounds like a same issue with
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -75,6 +81,7 @@ Date Modified  Username       Field                    Change
 03-17-06 16:33 nielsd         Distribution              => Gentoo          
 03-17-06 16:33 nielsd         Kernel Version            => 2.6.16 (vanilla -
 different rc)
+03-17-06 16:54 tiwai          Note Added: 0008648                          
 ======================================================================
 
 
