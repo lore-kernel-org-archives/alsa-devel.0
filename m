@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
-Date: Sat, 18 Mar 2006 21:47:36 +0100
-Message-ID: <4b3764b28ea4b55c75f5b292729101e5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
+Date: Sat, 18 Mar 2006 21:48:12 +0100
+Message-ID: <0942a39f2c847d64fa253b46dbbd8349@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCB861D8
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 21:47:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 593661D8
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 21:48:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,89 +24,119 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
 ======================================================================
-Reported By:                aaronkaplan
+Reported By:                vaxen
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   328
+Issue ID:                   914
 Category:                   PCI - nm256
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     resolved
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398
+Distribution:               
+Kernel Version:             2.6.9 2.6.10
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-08-2004 23:13 CEST
-Last Modified:              03-18-2006 21:47 CET
+Date Submitted:             02-16-2005 20:39 CET
+Last Modified:              03-18-2006 21:48 CET
 ======================================================================
-Summary:                    snd-nm256 freezes Dell Latitude LS
+Summary:                    nm256 causes kernel to hard freeze
 Description: 
-My Dell Latitude LS with an NM256AV hangs when I insert the
-snd-nm256 module.
+Hi, here is my specs:
 
-The OSS driver works fine.
+Gateway solo 3300
+http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
+Audio chipset NM2200 interface to AC97 CODEC
 
+pegasos vaxen # lspci -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
+      +-0a.0  Texas Instruments PCI1211
+      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
+      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
+
+I am using a custom patched kernel at
+http://morph-sources.sourceforge.net/?q=node/27 
+
+It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
+alsa-bk-2005-01-14.patch.
+
+I compiled the drivers into the kernel, the kernel hard freezes after
+displaying these message:
+nm256:found card signature in video RAM: 0x27ec00
+nm256:Mapping port 1 from 0x2709a0-0x27ec00
+I have to switch off the laptop as it does not respond to any inputs.
+
+I also tried compiling the drivers as modules, when I tried to modprobe
+snd-nm256, the kernel hard freezes without any warning message.
+
+I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
+like 2.6.10.
+
+I have not tried alsa 1.0.7 driver.
+
+Please let me know if you need more diagnostic information to fix this
+problem.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0000914 nm256 causes kernel to hard freeze
+duplicate of        0000328 snd-nm256 freezes Dell Latitude LS
 ======================================================================
 
 ----------------------------------------------------------------------
- aaronkaplan - 03-18-06 21:33 
+ rlrevell - 03-16-06 07:55 
 ----------------------------------------------------------------------
-I confirm that the problem is fixed in CVS.
+This bug should be fixed in CVS, can you please test it?
 
 ----------------------------------------------------------------------
- rlrevell - 03-18-06 21:47 
+ rlrevell - 03-18-06 21:48 
 ----------------------------------------------------------------------
 Fixed in CVS
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-04 23:13 aaronkaplan    New Issue                                    
-06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
-06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
-06-08-04 23:13 aaronkaplan    Issue Monitored: aaronkaplan                    
-06-30-04 16:55 tiwai          Note Added: 0001362                          
-06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                   
-
-07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
-07-01-04 16:03 aaronkaplan    Note Added: 0001370                          
-08-13-04 01:33 fridolin       Note Added: 0001559                          
-08-13-04 12:46 fridolin       Note Added: 0001562                          
-08-13-04 15:17 fridolin       Note Added: 0001564                          
-08-14-04 20:04 aaronkaplan    Note Added: 0001565                          
-08-19-04 19:18 tiwai          Status                   assigned => resolved
-08-19-04 19:18 tiwai          Resolution               open => fixed       
-08-19-04 19:18 tiwai          Note Added: 0001593                          
-09-24-04 13:43 tiwai          Status                   resolved => closed  
-09-03-05 22:43 aaronkaplan    Distribution             Fedora Core 2 => Fedora
-Core 4
-09-03-05 22:43 aaronkaplan    Kernel Version           2.6.5-1.358 =>
-2.6.12-1.1398
-09-03-05 22:43 aaronkaplan    Status                   closed => feedback  
-09-03-05 22:43 aaronkaplan    Resolution               fixed => reopened   
-09-03-05 22:43 aaronkaplan    Note Added: 0006030                          
-09-04-05 00:33 rlrevell       Note Added: 0006031                          
-09-13-05 11:49 florentb5      Note Added: 0006152                          
-11-08-05 18:47 tiwai          Note Added: 0006636                          
-11-12-05 17:58 aaronkaplan    Note Added: 0006687                          
-01-05-06 10:52 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-01-21-06 02:03 rlrevell       Note Added: 0007729                          
-01-22-06 02:00 aaronkaplan    Note Added: 0007742                          
-03-16-06 07:52 rlrevell       Note Added: 0008584                          
-03-16-06 07:54 rlrevell       Relationship added       has duplicate 0000914
-03-18-06 21:33 aaronkaplan    Note Added: 0008672                          
-03-18-06 21:47 rlrevell       Status                   feedback => resolved
-03-18-06 21:47 rlrevell       Resolution               reopened => fixed   
-03-18-06 21:47 rlrevell       Note Added: 0008674                          
+02-16-05 20:39 vaxen          New Issue                                    
+02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
+02-16-05 21:36 vaxen          Note Added: 0003626                          
+02-16-05 21:38 vaxen          Note Edited: 0003626                         
+02-16-05 21:56 vaxen          Note Edited: 0003626                         
+02-17-05 18:31 tiwai          Note Added: 0003632                          
+02-17-05 20:44 vaxen          Note Added: 0003638                          
+02-17-05 20:45 vaxen          Note Edited: 0003638                         
+02-17-05 21:28 vaxen          Note Added: 0003641                          
+02-17-05 22:40 vaxen          Note Added: 0003644                          
+02-24-05 03:55 vaxen          Note Added: 0003717                          
+02-24-05 04:01 vaxen          Note Added: 0003718                          
+02-24-05 22:04 tiwai          Note Added: 0003727                          
+02-25-05 16:29 vaxen          Note Added: 0003735                          
+03-10-05 12:50 interfaSys     Note Added: 0003849                          
+03-10-05 14:38 tiwai          Note Added: 0003852                          
+03-10-05 14:38 tiwai          File Added: nm256-test.diff                    
+03-10-05 18:56 vaxen          Note Added: 0003870                          
+03-10-05 19:57 vaxen          Note Added: 0003871                          
+03-11-05 12:15 tiwai          Note Added: 0003886                          
+03-11-05 14:25 vaxen          Note Added: 0003888                          
+05-09-05 22:08 MeneM          Note Added: 0004630                          
+05-09-05 22:17 MeneM          Note Edited: 0004630                         
+05-09-05 22:20 MeneM          Note Edited: 0004630                         
+06-26-05 15:10 jpeak          Note Added: 0005264                          
+08-01-05 01:05 jpeak          Issue Monitored: jpeak                       
+03-16-06 07:54 rlrevell       Relationship added       duplicate of 0000328
+03-16-06 07:55 rlrevell       Note Added: 0008586                          
+03-18-06 21:48 rlrevell       Status                   assigned => resolved
+03-18-06 21:48 rlrevell       Resolution               open => fixed       
+03-18-06 21:48 rlrevell       Note Added: 0008675                          
 ======================================================================
 
 
