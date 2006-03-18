@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
-Date: Sat, 18 Mar 2006 05:22:20 +0100
-Message-ID: <55ffa72d4ceb0b5839eb0e61da28b94e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001941]: pmac_old.c does not compile
+Date: Sat, 18 Mar 2006 05:49:19 +0100
+Message-ID: <9bd69a47bbe4bfe513b08fb89909cbbe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16F581D0
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 05:22:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDF30181
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 05:49:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,89 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1941> 
 ======================================================================
-Reported By:                richardfish
-Assigned To:                tiwai
+Reported By:                ssinger_pg
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1843
-Category:                   PCI - hda-intel
+Issue ID:                   1941
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             suspend2-sources-2.6.15-r6
+Distribution:               
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             02-13-2006 04:04 CET
-Last Modified:              03-18-2006 05:22 CET
+Date Submitted:             03-18-2006 05:49 CET
+Last Modified:              03-18-2006 05:49 CET
 ======================================================================
-Summary:                    regression: no sound with sigmatel stac9200, works
-in alsa 1.0.10
+Summary:                    pmac_old.c does not compile
 Description: 
-With alsa 1.0.10, my Intel HDA with the Sigmatel STAC9200 produces sound
-from both speakers and headphones (although the speakers are not muted
-when the headphones are inserted, but that is a separate problem).  
+When compiling on a 2.6.12 kernel the powermac driver does not compile
 
-With alsa 1.0.11rc3, and the CVS version as of today, no sound is produced
-from either speakers or headphones.
+In file included from /usr/src/modules/alsa-driver/ppc/pmac.c:6:
+/usr/src/modules/alsa-driver/ppc/pmac_old.c: In function `snd_pmac_free':
+/usr/src/modules/alsa-driver/ppc/pmac_old.c:827: error: structure has no
+member named `of_requested'
+/usr/src/modules/alsa-driver/ppc/pmac_old.c: In function `snd_pmac_new':
+/usr/src/modules/alsa-driver/ppc/pmac_old.c:1207: error: structure has no
+member named `of_requested'
+/usr/src/modules/alsa-driver/ppc/pmac_old.c:1228: error: structure has no
+member named `of_requested'
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001813 STAC9750 not recognised by hda-intel
-has duplicate       0001729 Only output through headphone jack
-======================================================================
-
-----------------------------------------------------------------------
- Jeff250 - 03-18-06 00:07 
-----------------------------------------------------------------------
-Seems to work great.  The headphone track is gone, and the auto-muting
-still works.
-
-----------------------------------------------------------------------
- richardfish - 03-18-06 05:22 
-----------------------------------------------------------------------
-I have not tried fix2 yet, but fix3 gives me only headphone audio...no
-speakers.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-06 04:04 richardfish    New Issue                                    
-02-13-06 04:04 richardfish    File Added: alsa-rjf-1.patch                    
-02-13-06 04:04 richardfish    Distribution              => Gentoo          
-02-13-06 04:04 richardfish    Kernel Version            =>
-suspend2-sources-2.6.15-r6
-02-14-06 05:43 richardfish    Issue Monitored: richardfish                    
-02-20-06 22:51 lrupn          Issue Monitored: lrupn                       
-02-25-06 21:40 lrupn          Note Added: 0008192                          
-02-26-06 16:08 toshio         Note Added: 0008203                          
-02-27-06 23:45 richardfish    Note Added: 0008233                          
-03-01-06 17:07 lrupn          Note Added: 0008281                          
-03-01-06 17:59 mpt            Issue Monitored: mpt                         
-03-17-06 00:39 tiwai          Note Added: 0008622                          
-03-17-06 00:41 tiwai          File Added: hda-autoconfig-fix.diff               
-    
-03-17-06 01:03 tiwai          Relationship added       has duplicate 0001813
-03-17-06 01:09 tiwai          Relationship added       has duplicate 0001729
-03-17-06 04:55 error10        Note Added: 0008634                          
-03-17-06 11:59 tiwai          Note Added: 0008637                          
-03-17-06 11:59 tiwai          File Added: hda-autoconfig-fix2.diff              
-     
-03-17-06 12:00 tiwai          Note Added: 0008638                          
-03-17-06 20:39 Jeff250        Note Added: 0008657                          
-03-17-06 20:40 Jeff250        Note Edited: 0008657                         
-03-17-06 20:55 tiwai          Note Added: 0008658                          
-03-17-06 20:55 tiwai          File Added: stac9200-additional-fix.diff          
-         
-03-17-06 21:31 tiwai          Note Added: 0008660                          
-03-17-06 21:31 tiwai          File Added: hda-autoconfig-fix3.diff              
-     
-03-18-06 00:07 Jeff250        Note Added: 0008664                          
-03-18-06 05:22 richardfish    Note Added: 0008669                          
+03-18-06 05:49 ssinger_pg     New Issue                                    
+03-18-06 05:49 ssinger_pg     File Added: pmac_old.c.diff                    
+03-18-06 05:49 ssinger_pg     Kernel Version            => 2.6.12          
 ======================================================================
 
 
