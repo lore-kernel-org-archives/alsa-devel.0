@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
-Date: Sat, 18 Mar 2006 14:44:45 +0100
-Message-ID: <bfca725018cf183e73c517ec1b816797@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: Re: 2.6.16-rcX - no more sound with ALSA snd-hda-intel / Sigmatel
+Date: Sat, 18 Mar 2006 15:36:38 +0100
+Message-ID: <20060318143637.GB7471@stusta.de>
+References: <441C13C1.7000902@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA7881A7
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 14:44:46 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <441C13C1.7000902@web.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +17,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Marcus Hartig <m.f.h@web.de>
+Cc: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, perex@suse.cz, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, Mar 18, 2006 at 03:05:53PM +0100, Marcus Hartig wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
-======================================================================
-Reported By:                bambam
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1938
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian sid with custom x86-64 kernel
-Kernel Version:             2.6.16-rc6
-======================================================================
-Date Submitted:             03-17-2006 20:31 CET
-Last Modified:              03-18-2006 14:44 CET
-======================================================================
-Summary:                    EPIPE on Audigy with surround sound when seeking in
-6 channel sound file
-Description: 
-Seeking in a 6 channel sound or video file using a surround device gives
-EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
-is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
-userspace. I've tried libs and modules from CVS two days ago with no
-success.
+> Hello!
 
-======================================================================
+Hi Marcus!
 
-----------------------------------------------------------------------
- bambam - 03-18-06 01:11 
-----------------------------------------------------------------------
-No, it doesn't crash or exit. It's just caught in a loop printing the
-following to the console (in case of mplayer, vlc is similar):
+> Since the 2.6.16.rcX kernel versions I have no more sound with the ALSA 
+> snd-hda-intel driver. All modules load without errors, all  channels are 
+> unmuted, no errors in any log, but sound is death! :(
+> 
+> With kernel 2.6.15.6 (ALSA 1.0.10rc3) the sound is working, only that 
+> the headphones output is not doing any noise and then the internal 
+> speakers are not muted. With mplayer and ALSA sound output the CPU load 
+> goes very high and it stutters, with OSS output in mplayer OSS device 
+> not more.
+> 
+> This is an new DELL Inspiron 9400 Dual Core notebook with Sigmatel STAC 
+> 92XX C-Major HD Audio.
+> 
+> lspci:
+> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High 
+> Definition Audio Controller (rev 01) Subsystem: Dell Unknown device 01cd
+> 
+> Module options:
+> snd_hda_intel position_fix=1 index=0
+>...
 
-alsa-play: write error: Broken pipe
-alsa-play: trying to reset soundcard
-alsa-play: write error: Broken pipe
-alsa-play: trying to reset soundcard
-alsa-play: write error: Broken pipe
-alsa-play: trying to reset soundcard
+Does the patch from [1] help?
 
-----------------------------------------------------------------------
- bambam - 03-18-06 14:44 
-----------------------------------------------------------------------
-Looking at the code of mplayer in libao2/ao_alsa.c, stop_threshold is
-indeed set to boundary size, so snd_pcm_writei shouldn't ever return
-EPIPE. But for some reason it does and this affects not only mplayer.
+> Greetings,
+> Marcus
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-17-06 20:31 bambam         New Issue                                    
-03-17-06 20:31 bambam         Distribution              => Debian sid with
-custom x86-64 kernel
-03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
-03-17-06 20:36 bambam         Note Added: 0008656                          
-03-17-06 21:07 bambam         Note Added: 0008659                          
-03-17-06 21:53 bambam         Note Added: 0008662                          
-03-18-06 01:07 rlrevell       Note Added: 0008667                          
-03-18-06 01:11 bambam         Note Added: 0008668                          
-03-18-06 14:44 bambam         Note Added: 0008671                          
-======================================================================
+cu
+Adrian
 
+[1] http://lkml.org/lkml/2006/3/17/279
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 
