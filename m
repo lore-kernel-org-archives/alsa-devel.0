@@ -1,13 +1,15 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: 2.6.16-rcX - no more sound with ALSA snd-hda-intel / Sigmatel
-Date: Sat, 18 Mar 2006 15:36:38 +0100
-Message-ID: <20060318143637.GB7471@stusta.de>
-References: <441C13C1.7000902@web.de>
+From: "Michiel Hite" <hiteamichiel@bozz.com>
+Subject: Re: Pha6Jramacy news
+Date: Sat, 18 Mar 2006 11:35:44 -0500
+Message-ID: <000001c64aaa$00d08880$3e5ca8c0@qir65>
+Reply-To: "Michiel Hite" <hiteamichiel@bozz.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C64A80.17FA8080"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <441C13C1.7000902@web.de>
+Received: from sblear.com (24.Red-83-39-207.dynamicIP.rima-tde.net [83.39.207.24])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 300B01BD
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 17:36:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,53 +19,143 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Marcus Hartig <m.f.h@web.de>
-Cc: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, perex@suse.cz, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 18, 2006 at 03:05:53PM +0100, Marcus Hartig wrote:
+This is a multi-part message in MIME format.
 
-> Hello!
+------=_NextPart_000_0001_01C64A80.17FA8080
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Marcus!
+=20
+a C x i e a v I y i x s $ n 99 (1 EW 0  s p r i z l o l j s v )
+o V c a y I u i j u q m $ m 105 (30 LX   s p s i z l w l f s t )
+g V l i k a b g e r c a $ d 69 (1 tv 0  w p y i e l s l w s g )
+=20
+Many hd other, V B1 isit our sit c7 e <http://yuge13.inabiedor.com>  and
+Sav PS e o SW ver 5 E7 0%
 
-> Since the 2.6.16.rcX kernel versions I have no more sound with the ALSA 
-> snd-hda-intel driver. All modules load without errors, all  channels are 
-> unmuted, no errors in any log, but sound is death! :(
-> 
-> With kernel 2.6.15.6 (ALSA 1.0.10rc3) the sound is working, only that 
-> the headphones output is not doing any noise and then the internal 
-> speakers are not muted. With mplayer and ALSA sound output the CPU load 
-> goes very high and it stutters, with OSS output in mplayer OSS device 
-> not more.
-> 
-> This is an new DELL Inspiron 9400 Dual Core notebook with Sigmatel STAC 
-> 92XX C-Major HD Audio.
-> 
-> lspci:
-> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High 
-> Definition Audio Controller (rev 01) Subsystem: Dell Unknown device 01cd
-> 
-> Module options:
-> snd_hda_intel position_fix=1 index=0
->...
+------=_NextPart_000_0001_01C64A80.17FA8080
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Does the patch from [1] help?
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><span=20
+style
+=3D "float: right"> a </span>C<span=20
+style
+=3D "float: right"> x </span>i<span=20
+style
+=3D "float: right"> e </span>a<span=20
+style
+=3D "float: right"> v </span>I<span=20
+style
+=3D "float: right"> y </span>i<span=20
+style
+=3D "float: right"> x </span>s <FONT color=3D#EB351B>$<span=20
+style
+=3D "float: right"> n </span>99</FONT> (1<span=20
+style
+=3D "float: right"> EW </span>0&nbsp;<span=20
+style
+=3D "float: right"> s </span>p<span=20
+style
+=3D "float: right"> r </span>i<span=20
+style
+=3D "float: right"> z </span>l<span=20
+style
+=3D "float: right"> o </span>l<span=20
+style
+=3D "float: right"> j </span>s<span=20
+style
+=3D "float: right"> v </span>)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><span=20
+style
+=3D "float: right"> o </span>V<span=20
+style
+=3D "float: right"> c </span>a<span=20
+style
+=3D "float: right"> y </span>I<span=20
+style
+=3D "float: right"> u </span>i<span=20
+style
+=3D "float: right"> j </span>u<span=20
+style
+=3D "float: right"> q </span>m <FONT color=3D#EB351B>$<span=20
+style
+=3D "float: right"> m </span>105</FONT> (30<span=20
+style
+=3D "float: right"> LX </span>&nbsp;<span=20
+style
+=3D "float: right"> s </span>p<span=20
+style
+=3D "float: right"> s </span>i<span=20
+style
+=3D "float: right"> z </span>l<span=20
+style
+=3D "float: right"> w </span>l<span=20
+style
+=3D "float: right"> f </span>s<span=20
+style
+=3D "float: right"> t </span>)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2><span=20
+style
+=3D "float: right"> g </span>V<span=20
+style
+=3D "float: right"> l </span>i<span=20
+style
+=3D "float: right"> k </span>a<span=20
+style
+=3D "float: right"> b </span>g<span=20
+style
+=3D "float: right"> e </span>r<span=20
+style
+=3D "float: right"> c </span>a <FONT color=3D#EB351B>$<span=20
+style
+=3D "float: right"> d </span>69</FONT> (1<span=20
+style
+=3D "float: right"> tv </span>0&nbsp;<span=20
+style
+=3D "float: right"> w </span>p<span=20
+style
+=3D "float: right"> y </span>i<span=20
+style
+=3D "float: right"> e </span>l<span=20
+style
+=3D "float: right"> s </span>l<span=20
+style
+=3D "float: right"> w </span>s<span=20
+style
+=3D "float: right"> g </span>)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Many<span=20
+style
+=3D "float: right"> hd </span> other, <A =
+href=3D"http://yuge13.inabiedor.com">V<span=20
+style
+=3D "float: right"> B1 </span>isit our sit<span=20
+style
+=3D "float: right"> c7 </span>e</A> and Sav<span=20
+style
+=3D "float: right"> PS </span>e o<span=20
+style
+=3D "float: right"> SW </span>ver 5<span=20
+style
+=3D "float: right"> E7 </span>0%</FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C64A80.17FA8080--
 
-> Greetings,
-> Marcus
 
-cu
-Adrian
-
-[1] http://lkml.org/lkml/2006/3/17/279
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
 
 
 
