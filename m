@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
-Date: Sat, 18 Mar 2006 21:33:29 +0100
-Message-ID: <9d8e17798f620f33cdf756599262bc3d@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Odd behaviour with my driver
+Date: Sat, 18 Mar 2006 20:37:25 +0000
+Message-ID: <1142714245.9435.29.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CF191AB
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 21:33:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,92 +15,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I am testing out my driver (for the AICA sound device on the Dreamcast)
+with mpg123 compiled for OSS only (I am using the oss emulation as I
+cannot seem to get pure ALSA to work).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328> 
-======================================================================
-Reported By:                aaronkaplan
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   328
-Category:                   PCI - nm256
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398
-======================================================================
-Date Submitted:             06-08-2004 23:13 CEST
-Last Modified:              03-18-2006 21:33 CET
-======================================================================
-Summary:                    snd-nm256 freezes Dell Latitude LS
-Description: 
-My Dell Latitude LS with an NM256AV hangs when I insert the
-snd-nm256 module.
+For some reason the trigger (and prepare) callbacks are continually
+being called and this is (afaics) dynamically resizing the runtime
+buffer to the size of the samples being transferred (in this case 2
+periods - one for each channel), which is in turn generating bug reports
+such as the one below:
 
-The OSS driver works fine.
+ALSA sound/core/pcm_lib.c:158: BUG: stream = 0, pos = 0x3066, buffer
+size = 0x2000, period size = 0x400
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000914 nm256 causes kernel to hard freeze
-======================================================================
+The hardware buffer is 0x8000 in size and I think that means pos might
+quite legitamtely go as high as 0x3FFF.
 
-----------------------------------------------------------------------
- rlrevell - 03-16-06 07:52 
-----------------------------------------------------------------------
-This bug should be fixed in CVS, can you please test it?
-
-----------------------------------------------------------------------
- aaronkaplan - 03-18-06 21:33 
-----------------------------------------------------------------------
-I confirm that the problem is fixed in CVS.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-08-04 23:13 aaronkaplan    New Issue                                    
-06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
-06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
-06-08-04 23:13 aaronkaplan    Issue Monitored: aaronkaplan                    
-06-30-04 16:55 tiwai          Note Added: 0001362                          
-06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                   
-
-07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
-07-01-04 16:03 aaronkaplan    Note Added: 0001370                          
-08-13-04 01:33 fridolin       Note Added: 0001559                          
-08-13-04 12:46 fridolin       Note Added: 0001562                          
-08-13-04 15:17 fridolin       Note Added: 0001564                          
-08-14-04 20:04 aaronkaplan    Note Added: 0001565                          
-08-19-04 19:18 tiwai          Status                   assigned => resolved
-08-19-04 19:18 tiwai          Resolution               open => fixed       
-08-19-04 19:18 tiwai          Note Added: 0001593                          
-09-24-04 13:43 tiwai          Status                   resolved => closed  
-09-03-05 22:43 aaronkaplan    Distribution             Fedora Core 2 => Fedora
-Core 4
-09-03-05 22:43 aaronkaplan    Kernel Version           2.6.5-1.358 =>
-2.6.12-1.1398
-09-03-05 22:43 aaronkaplan    Status                   closed => feedback  
-09-03-05 22:43 aaronkaplan    Resolution               fixed => reopened   
-09-03-05 22:43 aaronkaplan    Note Added: 0006030                          
-09-04-05 00:33 rlrevell       Note Added: 0006031                          
-09-13-05 11:49 florentb5      Note Added: 0006152                          
-11-08-05 18:47 tiwai          Note Added: 0006636                          
-11-12-05 17:58 aaronkaplan    Note Added: 0006687                          
-01-05-06 10:52 Adrian Bunk    Issue Monitored: Adrian Bunk                    
-01-21-06 02:03 rlrevell       Note Added: 0007729                          
-01-22-06 02:00 aaronkaplan    Note Added: 0007742                          
-03-16-06 07:52 rlrevell       Note Added: 0008584                          
-03-16-06 07:54 rlrevell       Relationship added       has duplicate 0000914
-03-18-06 21:33 aaronkaplan    Note Added: 0008672                          
-======================================================================
-
+Does any of this make sense and can someone point me to a reason why
+this might be happening?
 
 
 
