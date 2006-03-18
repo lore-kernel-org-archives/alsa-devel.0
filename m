@@ -1,14 +1,12 @@
-From: "Dave" <info@loogtron.com>
-Subject: Would $3000 per week make a difference in your life?
-Date: Fri, 17 Mar 2006 22:48:41 -0800
-Message-ID: <20060318064831.953401D7@alsa.jcu.cz>
-Reply-To: info@loogtron.com
-Content-Type: text/html;
-	charset="us-ascii"
+From: "Jarvis Fair" <jfair_qr@sanlam.co.za>
+Subject: Want it larger?
+Date: Sat, 18 Mar 2006 11:22:04 +0100
+Message-ID: <fc1101c64a75$d565de8c$7f1f98ec@onlinehome.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from loogtron.com (loogtron.com [63.86.220.104])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 953401D7
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 07:48:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,43 +16,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-$$$$$$$$$$
 
-Would an extra $3,000 a week make a difference to your life?
- 
-How would YOU like a home-based business, where you do 
+You've seen them on TV.... You've read about them in the papers...
 
-NO Prospecting... 
+Our doctor developed pill will enlarge it up to 3 inches.
 
-NO Advertising... 
+NO JOKE! 100% results - you won't regret.
 
-NO Selling... 
+FACT: 68% of women think their lover's is to small,=20
+are you one of them?
 
-NO Answering questions... 
+Only click here if you want to increase your size:
+http://ca.geocities.com/lindon26130waldo91019/
 
-NO Speaking to prospects... 
-
-
-and make absolutely NO telephone calls? 
- 
-
-
-Discover the best kept secret to WEALTH right here! 
-
-
-FREE Information, NO Obligation! 
-
-
-http://www.MegaWealthy.com/510 
- 
-
-"Creating EXTRAORDINARY incomes for ORDINARY people!" <br><br><table width='500' border='0' align='center' cellpadding='2' cellspacing='3'><tr><td align='center'> <p align='center'>
-<div align='center'><a href='http://loogtron.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4340474546430E410E08.aspx'><img src='http://loogtron.com/img.gif' width='531' height='80' border='0'></a>
-<br><img src='http://loogtron.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4340474546430E410E430E420E08.aspx'>
-<font color="#999999" face="arial, verdana" size="2">Dave Moreen &#183; 7756 E. Kettle Place &#183; Centemial, Co 80112</font></p></td></tr></table></body></html>
 
 
 
