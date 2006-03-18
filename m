@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
-Date: Sat, 18 Mar 2006 21:48:12 +0100
-Message-ID: <0942a39f2c847d64fa253b46dbbd8349@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001850]: source available
+Date: Sat, 18 Mar 2006 22:02:43 +0100
+Message-ID: <3da56bb9822e4bc5526029ae16cf4757@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 593661D8
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 21:48:12 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD90D1D8
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 22:02:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,121 +22,82 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
 ======================================================================
-Reported By:                vaxen
-Assigned To:                tiwai
+Reported By:                coz
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   914
-Category:                   PCI - nm256
+Issue ID:                   1850
+Category:                   PCI - echoaudio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.9 2.6.10
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               ubuntu/breezy/Debian
+Kernel Version:             2.6.12.10.386
 ======================================================================
-Date Submitted:             02-16-2005 20:39 CET
-Last Modified:              03-18-2006 21:48 CET
+Date Submitted:             02-16-2006 13:05 CET
+Last Modified:              03-18-2006 22:02 CET
 ======================================================================
-Summary:                    nm256 causes kernel to hard freeze
+Summary:                    source available
 Description: 
-Hi, here is my specs:
-
-Gateway solo 3300
-http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
-Audio chipset NM2200 interface to AC97 CODEC
-
-pegasos vaxen # lspci -tv
--[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
-      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
-      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
-Audio]
-      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
-      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
-      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
-      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
-      +-0a.0  Texas Instruments PCI1211
-      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
-      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
-
-I am using a custom patched kernel at
-http://morph-sources.sourceforge.net/?q=node/27 
-
-It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
-alsa-bk-2005-01-14.patch.
-
-I compiled the drivers into the kernel, the kernel hard freezes after
-displaying these message:
-nm256:found card signature in video RAM: 0x27ec00
-nm256:Mapping port 1 from 0x2709a0-0x27ec00
-I have to switch off the laptop as it does not respond to any inputs.
-
-I also tried compiling the drivers as modules, when I tried to modprobe
-snd-nm256, the kernel hard freezes without any warning message.
-
-I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
-like 2.6.10.
-
-I have not tried alsa 1.0.7 driver.
-
-Please let me know if you need more diagnostic information to fix this
-problem.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000328 snd-nm256 freezes Dell Latitude LS
+can't start layla24
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-16-06 07:55 
+ coz - 03-16-06 14:54 
 ----------------------------------------------------------------------
-This bug should be fixed in CVS, can you please test it?
+Hello, yes the driver compiles without any problems.
+ i reinstalled dapper. I have downloded these files;
+alsa-driver-1.0.11rc3
+alsa-source_1.0.10+1.0.11rc3
+alsa-firmware-1.0.11rc3
+alsa-tools-1.0.11rc3
+alsa-utils-1.0.11rc3
+ in which order are these installed?
+Can I then follow your sites how to listed under Layla24?
+   The second how to on your site, listed under Layla24 talks of hotplug
+scripts but according to ubuntu scripts/init has been removed because it
+is taken care of by kernel.
+ So at least that part of the how to is out of date.
+ I apologize for my ingorance around this issue. i am in no way trying to
+tax your patience. I am sure that this is not exactly what you like to
+do.
+Ardour, apparently my client is aware of this and one reason he wasnts his
+layla card with ubuntu.
+ I have donwloade it to take a look at it. 
+Thanks
 
 ----------------------------------------------------------------------
- rlrevell - 03-18-06 21:48 
+ pochini - 03-18-06 22:02 
 ----------------------------------------------------------------------
-Fixed in CVS
+You can compile them in any order. I don't know what 
+alsa-source_1.0.10+1.0.11rc3 is. If the notes I wrote I refer to the
+official alsa releases only (the files downloadable from
+alsa-project.org).
+The hotplug interface is in the kernel, but it needs userspace programs to
+work. Those hutlplug script are the official scripts but you can use any
+other implementation. It is important that they look for firmware files
+inside /lib/firmware/ . Btw, are you sure the driver can't find the
+firmware (does "dmegs" show "Firmware not available" error message ?) ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-05 20:39 vaxen          New Issue                                    
-02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
-02-16-05 21:36 vaxen          Note Added: 0003626                          
-02-16-05 21:38 vaxen          Note Edited: 0003626                         
-02-16-05 21:56 vaxen          Note Edited: 0003626                         
-02-17-05 18:31 tiwai          Note Added: 0003632                          
-02-17-05 20:44 vaxen          Note Added: 0003638                          
-02-17-05 20:45 vaxen          Note Edited: 0003638                         
-02-17-05 21:28 vaxen          Note Added: 0003641                          
-02-17-05 22:40 vaxen          Note Added: 0003644                          
-02-24-05 03:55 vaxen          Note Added: 0003717                          
-02-24-05 04:01 vaxen          Note Added: 0003718                          
-02-24-05 22:04 tiwai          Note Added: 0003727                          
-02-25-05 16:29 vaxen          Note Added: 0003735                          
-03-10-05 12:50 interfaSys     Note Added: 0003849                          
-03-10-05 14:38 tiwai          Note Added: 0003852                          
-03-10-05 14:38 tiwai          File Added: nm256-test.diff                    
-03-10-05 18:56 vaxen          Note Added: 0003870                          
-03-10-05 19:57 vaxen          Note Added: 0003871                          
-03-11-05 12:15 tiwai          Note Added: 0003886                          
-03-11-05 14:25 vaxen          Note Added: 0003888                          
-05-09-05 22:08 MeneM          Note Added: 0004630                          
-05-09-05 22:17 MeneM          Note Edited: 0004630                         
-05-09-05 22:20 MeneM          Note Edited: 0004630                         
-06-26-05 15:10 jpeak          Note Added: 0005264                          
-08-01-05 01:05 jpeak          Issue Monitored: jpeak                       
-03-16-06 07:54 rlrevell       Relationship added       duplicate of 0000328
-03-16-06 07:55 rlrevell       Note Added: 0008586                          
-03-18-06 21:48 rlrevell       Status                   assigned => resolved
-03-18-06 21:48 rlrevell       Resolution               open => fixed       
-03-18-06 21:48 rlrevell       Note Added: 0008675                          
+02-16-06 13:05 coz            New Issue                                    
+02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
+02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
+02-18-06 13:34 pochini        Note Added: 0008119                          
+02-20-06 03:30 coz            Note Added: 0008140                          
+02-20-06 22:02 pochini        Note Added: 0008150                          
+03-13-06 19:49 coz            Note Added: 0008456                          
+03-13-06 22:38 pochini        Note Added: 0008465                          
+03-13-06 23:02 johnrigg       Note Added: 0008466                          
+03-16-06 14:54 coz            Note Added: 0008605                          
+03-18-06 22:02 pochini        Note Added: 0008676                          
 ======================================================================
 
 
