@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001492]: Echoaudio - soundcard matrix update
-Date: Sat, 18 Mar 2006 21:39:41 +0100
-Message-ID: <8196d577d875bdfe602139f403202566@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
+Date: Sat, 18 Mar 2006 21:47:36 +0100
+Message-ID: <4b3764b28ea4b55c75f5b292729101e5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 610CB1AB
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 21:39:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCB861D8
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 21:47:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,184 +22,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1492> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=328> 
 ======================================================================
-Reported By:                pochini
-Assigned To:                
+Reported By:                aaronkaplan
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1492
-Category:                   soundcard matrix
-Reproducibility:            N/A
-Severity:                   text
+Project:                    ALSA - driver
+Issue ID:                   328
+Category:                   PCI - nm256
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.12-1.1398
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             10-21-2005 23:37 CEST
-Last Modified:              03-18-2006 21:39 CET
+Date Submitted:             06-08-2004 23:13 CEST
+Last Modified:              03-18-2006 21:47 CET
 ======================================================================
-Summary:                    Echoaudio - soundcard matrix update
+Summary:                    snd-nm256 freezes Dell Latitude LS
 Description: 
-I updated the broken links and I added the latest (yet unsupported) cards.
+My Dell Latitude LS with an NM256AV hangs when I insert the
+snd-nm256 module.
 
+The OSS driver works fine.
 
---- vendor-Echo_Corporation__orig	2005-10-15 16:39:37.000000000 +0000
-+++ vendor-Echo_Corporation	2005-10-21 21:29:38.000000000 +0000
-@@ -17,7 +17,7 @@
-     <has_analog_out count="8"/>
-     <has_analog_in count="2"/>
-     <extrainfo>Discontinued</extrainfo>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device>
-@@ -34,7 +34,7 @@
-     <has_spdif_out count="1"/>
-     <has_spdif_in count="1"/>
-     <extrainfo>Discontinued</extrainfo>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device>
-@@ -53,7 +53,7 @@
-     <has_midi_out count="1"/>
-     <has_midi_in count="1"/>
-     <extrainfo>Discontinued</extrainfo>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device category="pro">
-@@ -68,7 +68,7 @@
-     <has_analog_out count="8"/>
-     <has_analog_in count="2"/>
-     <extrainfo>Discontinued</extrainfo>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device category="pro">
-@@ -90,7 +90,7 @@
-     <has_adat_out count="1"/>
-     <has_adat_in count="1"/>
-     <extrainfo>Discontinued</extrainfo>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device category="pro">
-@@ -119,7 +119,7 @@
-     <has_midi_out count="1"/>
-     <has_midi_in count="1"/>
-     <extrainfo>Discontinued</extrainfo>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device category="pro">
-@@ -146,7 +146,7 @@
-     <has_adat_out count="1"/>
-     <has_adat_in count="1"/>
-     <extrainfo>Discontinued</extrainfo>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device category="pro">
-@@ -165,7 +165,7 @@
-     <has_spdif_in count="1"/>
-     <has_mixing/>
-     <extrainfo>Discontinued</extrainfo>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device category="pro">
-@@ -185,7 +185,7 @@
-     <has_midi_out count="1"/>
-     <has_midi_in count="1"/>
-     <has_mixing/>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device category="pro">
-@@ -201,7 +201,7 @@
-     <has_analog_out count="2"/>
-     <has_mixing/>
-     <extrainfo>Discontinued</extrainfo>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device category="pro">
-@@ -218,7 +218,7 @@
-     <has_analog_out count="2"/>
-     <has_analog_in count="2"/>
-     <has_mixing/>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device category="pro">
-@@ -233,7 +233,7 @@
-     <pcmcia/>
-     <has_analog_out count="4"/>
-     <has_mixing/>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device category="pro">
-@@ -256,7 +256,7 @@
-     <has_adat_in count="1"/>
-     <has_midi_out count="1"/>
-     <has_midi_in count="1"/>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-   </device>
- 
-   <device category="pro">
-@@ -279,7 +279,19 @@
-     <has_adat_in count="1"/>
-     <has_midi_out count="1"/>
-     <has_midi_in count="1"/>
--    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
-+    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
-+  </device>
-+
-+  <device category="pro">
-+    <product>
-+      <name>Audiofire 8</name>
-+     
-<link>http://www.echoaudio.com/Products/FireWire/AudioFire8/index.php</link>
-+    </product>
-+    <product>
-+      <name>Audiofire 12</name>
-+     
-<link>http://www.echoaudio.com/Products/FireWire/AudioFire12/index.php</link>
-+    </product>
-+    <possible/>
-   </device>
- 
- </alsacards>
-
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000914 nm256 causes kernel to hard freeze
 ======================================================================
 
 ----------------------------------------------------------------------
- pochini - 03-18-06 21:39 
+ aaronkaplan - 03-18-06 21:33 
 ----------------------------------------------------------------------
-Please close this one.
+I confirm that the problem is fixed in CVS.
+
+----------------------------------------------------------------------
+ rlrevell - 03-18-06 21:47 
+----------------------------------------------------------------------
+Fixed in CVS
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-21-05 23:37 pochini        New Issue                                    
-03-18-06 21:39 pochini        Note Added: 0008673                          
+06-08-04 23:13 aaronkaplan    New Issue                                    
+06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
+06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
+06-08-04 23:13 aaronkaplan    Issue Monitored: aaronkaplan                    
+06-30-04 16:55 tiwai          Note Added: 0001362                          
+06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                   
+
+07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
+07-01-04 16:03 aaronkaplan    Note Added: 0001370                          
+08-13-04 01:33 fridolin       Note Added: 0001559                          
+08-13-04 12:46 fridolin       Note Added: 0001562                          
+08-13-04 15:17 fridolin       Note Added: 0001564                          
+08-14-04 20:04 aaronkaplan    Note Added: 0001565                          
+08-19-04 19:18 tiwai          Status                   assigned => resolved
+08-19-04 19:18 tiwai          Resolution               open => fixed       
+08-19-04 19:18 tiwai          Note Added: 0001593                          
+09-24-04 13:43 tiwai          Status                   resolved => closed  
+09-03-05 22:43 aaronkaplan    Distribution             Fedora Core 2 => Fedora
+Core 4
+09-03-05 22:43 aaronkaplan    Kernel Version           2.6.5-1.358 =>
+2.6.12-1.1398
+09-03-05 22:43 aaronkaplan    Status                   closed => feedback  
+09-03-05 22:43 aaronkaplan    Resolution               fixed => reopened   
+09-03-05 22:43 aaronkaplan    Note Added: 0006030                          
+09-04-05 00:33 rlrevell       Note Added: 0006031                          
+09-13-05 11:49 florentb5      Note Added: 0006152                          
+11-08-05 18:47 tiwai          Note Added: 0006636                          
+11-12-05 17:58 aaronkaplan    Note Added: 0006687                          
+01-05-06 10:52 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+01-21-06 02:03 rlrevell       Note Added: 0007729                          
+01-22-06 02:00 aaronkaplan    Note Added: 0007742                          
+03-16-06 07:52 rlrevell       Note Added: 0008584                          
+03-16-06 07:54 rlrevell       Relationship added       has duplicate 0000914
+03-18-06 21:33 aaronkaplan    Note Added: 0008672                          
+03-18-06 21:47 rlrevell       Status                   feedback => resolved
+03-18-06 21:47 rlrevell       Resolution               reopened => fixed   
+03-18-06 21:47 rlrevell       Note Added: 0008674                          
 ======================================================================
 
 
