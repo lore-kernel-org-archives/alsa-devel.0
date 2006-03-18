@@ -1,17 +1,21 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Couple of questions
-Date: Sat, 18 Mar 2006 11:08:56 +0000
-Message-ID: <1142680136.9435.2.camel@localhost.localdomain>
-References: <1142467271.9298.7.camel@localhost.localdomain>
-	 <s5hirqer7r5.wl%tiwai@suse.de>
+From: =?shift-jis?B?cnVsempvYXF4ZjM=?= <tsoajdg@tom.com>
+Subject: =?shift-jis?B?jcSTeILMgrKYQZeN?=
+Date: Sat, 18 Mar 2006 19:17:35 +0800
+Message-ID: <2006031801756.86640@chc02.vicp.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="shift-jis"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0A2611D0
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 12:09:00 +0100 (MET)
-In-Reply-To: <s5hirqer7r5.wl%tiwai@suse.de>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44AA71D7
+	for <ALSA-DEVEL@ALSA-PROJECT.ORG>; Sat, 18 Mar 2006 12:17:41 +0100 (MET)
+Received: from chc02.vicp.net (unknown [222.171.79.58])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id B59AA9947A
+	for <ALSA-DEVEL@ALSA-PROJECT.ORG>; Sat, 18 Mar 2006 12:17:37 +0100 (MET)
+Received: from rogtgpzo4 (unknown [15.109.9.185])
+	by chc02.vicp.net (Coremail) with SMTP id FVwesI357uwdzauf.1
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 19:17:35 +0800 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,29 +25,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-03-16 at 11:42 +0100, Takashi Iwai wrote:
-> At Thu, 16 Mar 2006 00:01:11 +0000,
-> Adrian McMenamin wrote:
-> > 
-> > If my driver declares this:
-> > 
-> > 	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
-> > 
-> > Can I expect samples to come in all left followed by all right, or how?
-> 
-> Yes.  It's the non-interleaved format (LLLLLLLL....RRRRRR.....).
-> 
-> > And will cat somefile.wav > /dev/dsp using oss emulation respect that?
-> 
-> Yes.
+gqiQophigsmCyILogtyCt4FCklOTloLMi2eRuoLFgreBQg0KgrOCq4LZgseLTI3aguCC6oKqgqCC
+6ILcgrWCvYLMgsWBQYKymEGXjYKigr2CtYLcgrWCvYFCDQoNCo6NkESXbILNgrGCv4LngsWCqJHS
+gr+CtYLEgqiC6ILcgreBQg0KaHR0cDovL3d3dy5haXJpc3BvcC5jb20vbWVldA0KDQqProFBjo2Q
+RJdsgs2KhJDYguiK85ZdgsaCooKkgrGCxoLFgUEzMDAwMIl+laqC8JdhgqmCwYLEgqiC6ILcgreC
+qoFBDQqCsYK/gueCxYLNgruC6ojIj+OCzIKxgsaCzZKHie6CxYKrgtyCuYLxgsyCxYFBkryQ2phB
+l42C8I7mguiNh4LBgsQNCoKigr2CvoKvgtyCt4LFgrWC5YKkgqmBQg0KDQqCUpP6itSXTIz4gUGR
+gYr6j0mXuYLMj+qNh4LggqCC6ILcgreCzILFgUGQVotLj9CJ7oLMlfuCzQ0KgqiRgYLfgsmCspNv
+mF6JuoKzgqKBQg0KDQqLWIK1gq2CqIrogqKSdoK1gtyCt4FC
 
-
-Are you sure about this bit? Either my code is extremely broken or cat
-isn't doing anything other than pump the bytes in as a simple stream
 
 
 
