@@ -1,25 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Couple of questions
-Date: Sat, 18 Mar 2006 00:08:56 +0000
-Message-ID: <1142640536.9449.29.camel@localhost.localdomain>
-References: <1142467271.9298.7.camel@localhost.localdomain>
-	 <s5hirqer7r5.wl%tiwai@suse.de>
-	 <1142552045.9236.9.camel@localhost.localdomain>
-	 <1142554597.9395.25.camel@mindpipe> <s5hirqdv0oj.wl%tiwai@suse.de>
-	 <1142627252.9449.9.camel@localhost.localdomain>
-	 <s5hr750stlr.wl%tiwai@suse.de>
-	 <1142638164.9449.16.camel@localhost.localdomain>
-	 <1142639182.25258.126.camel@mindpipe>
-	 <1142639470.9449.24.camel@localhost.localdomain>
-	 <1142639891.25258.134.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
+Date: Sat, 18 Mar 2006 01:11:11 +0100
+Message-ID: <6984987b15b1d7b92304918ad8b92a88@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 763F7148
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 01:09:00 +0100 (MET)
-In-Reply-To: <1142639891.25258.134.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E43D1BF
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 01:11:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,70 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2006-03-17 at 18:58 -0500, Lee Revell wrote:
-> On Fri, 2006-03-17 at 23:51 +0000, Adrian McMenamin wrote:
-> > On Fri, 2006-03-17 at 18:46 -0500, Lee Revell wrote:
-> > > On Fri, 2006-03-17 at 23:29 +0000, Adrian McMenamin wrote:
-> > > > 
-> > > > So, just to be clear. When I am transferring a "period" I should
-> > > > actually stream half a period's worth of bytes into the channel
-> > > > playing
-> > > > the left and half a period into the right - and can advance each dma
-> > > > transfer through the buffer by half a period length on both the left
-> > > > and
-> > > > the right side of the buffer 
-> > > 
-> > > No, one period.
-> > > 
-> > 
-> > 
-> > How does that work? That would imply that there were half as many
-> > periods in the DMA buffer as specified here...
-> > 
-> > static snd_pcm_hardware_t snd_pcm_aica_playback_hw = {
-> > 
-> > 	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
-> > 	.formats =
-> > 	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
-> > 	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
-> > 	.rates = SNDRV_PCM_RATE_8000_48000,
-> > 	.rate_min = 8000,
-> > 	.rate_max = 48000,
-> > 	.channels_min = 2,
-> > 	.channels_max = 2,
-> > 	.buffer_bytes_max = AICA_BUFFER_SIZE,
-> > 	.period_bytes_min = AICA_PERIOD_SIZE,
-> > 	.period_bytes_max = AICA_PERIOD_SIZE,
-> > 	.periods_min = AICA_PERIOD_NUMBER,
-> > 	.periods_max = AICA_PERIOD_NUMBER,
-> > };
-> > 
-> > 
-> > As the buffer and period (in bytes) size is constant. 
-> > 
-> > 
-> 
-> That's why the maximum buffer and period is in bytes not frames.  Stereo
-> has twice as many bytes per frame than mono.
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
+======================================================================
+Reported By:                bambam
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1938
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian sid with custom x86-64 kernel
+Kernel Version:             2.6.16-rc6
+======================================================================
+Date Submitted:             03-17-2006 20:31 CET
+Last Modified:              03-18-2006 01:11 CET
+======================================================================
+Summary:                    EPIPE on Audigy with surround sound when seeking in
+6 channel sound file
+Description: 
+Seeking in a 6 channel sound or video file using a surround device gives
+EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
+is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
+userspace. I've tried libs and modules from CVS two days ago with no
+success.
 
+======================================================================
 
-Err...yes :)
+----------------------------------------------------------------------
+ rlrevell - 03-18-06 01:07 
+----------------------------------------------------------------------
+EPIPE is just an underrun or overrun, it should not be a fatal error. 
+Consumer apps like media players should be ignoring underruns by setting
+stop_threshold equal to boundary for the PCM.
 
-I am still confused though. In mono, every time a period is played a new
-period is loaded into the DMA buffer and then transferred into the
-hardware's buffer.
+Does the app crash or exit when this occurs?
 
-How does this work now - wait for one period to play on the left (or
-right) channel and then transfer one period's worth on the left and
-right channel (ie ALSA fills the buffer up with 2 periods at a go in
-stereo) or transfer half a period's worth on each channel but move the
-copy pointer on a full period (ie ALSA transfers just one period's worth
-which translates as half a period in either channel) 
+----------------------------------------------------------------------
+ bambam - 03-18-06 01:11 
+----------------------------------------------------------------------
+No, it doesn't crash or exit. It's just caught in a loop printing the
+following to the console (in case of mplayer, vlc is similar):
+
+alsa-play: write error: Broken pipe
+alsa-play: trying to reset soundcard
+alsa-play: write error: Broken pipe
+alsa-play: trying to reset soundcard
+alsa-play: write error: Broken pipe
+alsa-play: trying to reset soundcard
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-17-06 20:31 bambam         New Issue                                    
+03-17-06 20:31 bambam         Distribution              => Debian sid with
+custom x86-64 kernel
+03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
+03-17-06 20:36 bambam         Note Added: 0008656                          
+03-17-06 21:07 bambam         Note Added: 0008659                          
+03-17-06 21:53 bambam         Note Added: 0008662                          
+03-18-06 01:07 rlrevell       Note Added: 0008667                          
+03-18-06 01:11 bambam         Note Added: 0008668                          
+======================================================================
+
 
 
 
