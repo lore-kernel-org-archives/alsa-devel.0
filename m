@@ -1,11 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Odd behaviour with my driver
-Date: Sat, 18 Mar 2006 20:37:25 +0000
-Message-ID: <1142714245.9435.29.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - WWW server 0001492]: Echoaudio - soundcard matrix update
+Date: Sat, 18 Mar 2006 21:39:41 +0100
+Message-ID: <8196d577d875bdfe602139f403202566@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 610CB1AB
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 21:39:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,27 +18,190 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am testing out my driver (for the AICA sound device on the Dreamcast)
-with mpg123 compiled for OSS only (I am using the oss emulation as I
-cannot seem to get pure ALSA to work).
 
-For some reason the trigger (and prepare) callbacks are continually
-being called and this is (afaics) dynamically resizing the runtime
-buffer to the size of the samples being transferred (in this case 2
-periods - one for each channel), which is in turn generating bug reports
-such as the one below:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1492> 
+======================================================================
+Reported By:                pochini
+Assigned To:                
+======================================================================
+Project:                    ALSA - WWW server
+Issue ID:                   1492
+Category:                   soundcard matrix
+Reproducibility:            N/A
+Severity:                   text
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             10-21-2005 23:37 CEST
+Last Modified:              03-18-2006 21:39 CET
+======================================================================
+Summary:                    Echoaudio - soundcard matrix update
+Description: 
+I updated the broken links and I added the latest (yet unsupported) cards.
 
-ALSA sound/core/pcm_lib.c:158: BUG: stream = 0, pos = 0x3066, buffer
-size = 0x2000, period size = 0x400
 
-The hardware buffer is 0x8000 in size and I think that means pos might
-quite legitamtely go as high as 0x3FFF.
+--- vendor-Echo_Corporation__orig	2005-10-15 16:39:37.000000000 +0000
++++ vendor-Echo_Corporation	2005-10-21 21:29:38.000000000 +0000
+@@ -17,7 +17,7 @@
+     <has_analog_out count="8"/>
+     <has_analog_in count="2"/>
+     <extrainfo>Discontinued</extrainfo>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device>
+@@ -34,7 +34,7 @@
+     <has_spdif_out count="1"/>
+     <has_spdif_in count="1"/>
+     <extrainfo>Discontinued</extrainfo>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device>
+@@ -53,7 +53,7 @@
+     <has_midi_out count="1"/>
+     <has_midi_in count="1"/>
+     <extrainfo>Discontinued</extrainfo>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device category="pro">
+@@ -68,7 +68,7 @@
+     <has_analog_out count="8"/>
+     <has_analog_in count="2"/>
+     <extrainfo>Discontinued</extrainfo>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device category="pro">
+@@ -90,7 +90,7 @@
+     <has_adat_out count="1"/>
+     <has_adat_in count="1"/>
+     <extrainfo>Discontinued</extrainfo>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device category="pro">
+@@ -119,7 +119,7 @@
+     <has_midi_out count="1"/>
+     <has_midi_in count="1"/>
+     <extrainfo>Discontinued</extrainfo>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device category="pro">
+@@ -146,7 +146,7 @@
+     <has_adat_out count="1"/>
+     <has_adat_in count="1"/>
+     <extrainfo>Discontinued</extrainfo>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device category="pro">
+@@ -165,7 +165,7 @@
+     <has_spdif_in count="1"/>
+     <has_mixing/>
+     <extrainfo>Discontinued</extrainfo>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device category="pro">
+@@ -185,7 +185,7 @@
+     <has_midi_out count="1"/>
+     <has_midi_in count="1"/>
+     <has_mixing/>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device category="pro">
+@@ -201,7 +201,7 @@
+     <has_analog_out count="2"/>
+     <has_mixing/>
+     <extrainfo>Discontinued</extrainfo>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device category="pro">
+@@ -218,7 +218,7 @@
+     <has_analog_out count="2"/>
+     <has_analog_in count="2"/>
+     <has_mixing/>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device category="pro">
+@@ -233,7 +233,7 @@
+     <pcmcia/>
+     <has_analog_out count="4"/>
+     <has_mixing/>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device category="pro">
+@@ -256,7 +256,7 @@
+     <has_adat_in count="1"/>
+     <has_midi_out count="1"/>
+     <has_midi_in count="1"/>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
+   </device>
+ 
+   <device category="pro">
+@@ -279,7 +279,19 @@
+     <has_adat_in count="1"/>
+     <has_midi_out count="1"/>
+     <has_midi_in count="1"/>
+-    <extralink>http://xoomer.virgilio.it/g_pochini/ea.html</extralink>
++    <extralink>http://www.webalice.it/g_pochini/ead</extralink>
++  </device>
++
++  <device category="pro">
++    <product>
++      <name>Audiofire 8</name>
++     
+<link>http://www.echoaudio.com/Products/FireWire/AudioFire8/index.php</link>
++    </product>
++    <product>
++      <name>Audiofire 12</name>
++     
+<link>http://www.echoaudio.com/Products/FireWire/AudioFire12/index.php</link>
++    </product>
++    <possible/>
+   </device>
+ 
+ </alsacards>
 
-Does any of this make sense and can someone point me to a reason why
-this might be happening?
+======================================================================
+
+----------------------------------------------------------------------
+ pochini - 03-18-06 21:39 
+----------------------------------------------------------------------
+Please close this one.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-21-05 23:37 pochini        New Issue                                    
+03-18-06 21:39 pochini        Note Added: 0008673                          
+======================================================================
+
 
 
 
