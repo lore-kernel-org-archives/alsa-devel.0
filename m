@@ -1,12 +1,17 @@
-From: "Jarvis Fair" <jfair_qr@sanlam.co.za>
-Subject: Want it larger?
-Date: Sat, 18 Mar 2006 11:22:04 +0100
-Message-ID: <fc1101c64a75$d565de8c$7f1f98ec@onlinehome.de>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Couple of questions
+Date: Sat, 18 Mar 2006 11:08:56 +0000
+Message-ID: <1142680136.9435.2.camel@localhost.localdomain>
+References: <1142467271.9298.7.camel@localhost.localdomain>
+	 <s5hirqer7r5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0A2611D0
+	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 12:09:00 +0100 (MET)
+In-Reply-To: <s5hirqer7r5.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,22 +21,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2006-03-16 at 11:42 +0100, Takashi Iwai wrote:
+> At Thu, 16 Mar 2006 00:01:11 +0000,
+> Adrian McMenamin wrote:
+> > 
+> > If my driver declares this:
+> > 
+> > 	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
+> > 
+> > Can I expect samples to come in all left followed by all right, or how?
+> 
+> Yes.  It's the non-interleaved format (LLLLLLLL....RRRRRR.....).
+> 
+> > And will cat somefile.wav > /dev/dsp using oss emulation respect that?
+> 
+> Yes.
 
-You've seen them on TV.... You've read about them in the papers...
 
-Our doctor developed pill will enlarge it up to 3 inches.
-
-NO JOKE! 100% results - you won't regret.
-
-FACT: 68% of women think their lover's is to small,=20
-are you one of them?
-
-Only click here if you want to increase your size:
-http://ca.geocities.com/lindon26130waldo91019/
-
+Are you sure about this bit? Either my code is extremely broken or cat
+isn't doing anything other than pump the bytes in as a simple stream
 
 
 
