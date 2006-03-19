@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001475]: Support for M Audio Audiophile 192
-Date: Sun, 19 Mar 2006 18:53:28 +0100
-Message-ID: <a109762499d813093db6f18a6d4e6c08@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
+Date: Sun, 19 Mar 2006 19:37:17 +0100
+Message-ID: <fac0644632842147a37fad268ced1b92@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8A001DD
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 18:53:28 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 05B7A1CA
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 19:37:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,111 +22,105 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1475> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1797> 
 ======================================================================
-Reported By:                Dazed
+Reported By:                ikari_01
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1475
+Issue ID:                   1797
 Category:                   PCI - ice1724
-Reproducibility:            N/A
-Severity:                   feature
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               FC3
-Kernel Version:             2.6.*
+Status:                     closed
+Distribution:               Debian unstable
+Kernel Version:             2.6.14.3
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             10-14-2005 13:41 CEST
-Last Modified:              03-19-2006 18:53 CET
+Date Submitted:             01-30-2006 23:46 CET
+Last Modified:              03-19-2006 19:37 CET
 ======================================================================
-Summary:                    Support for M Audio Audiophile 192
+Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
+muting, intermittent muting of single channel)
 Description: 
-Is it possible to add support for the M Audio Audiophile 192 sound card? It
-looks to me like it's based on the ICE1724 chipset. I'd settle for simple
-CD playback for starters. ;-)
+1. Setting (or muting/unmuting) of any of the Master, Center, LFE, or Side
+mixers eventually results in irrecoverably completely muted sound.
+Sometimes, at first only one channel is muted.
+Sometimes, at first the volume decreases before muting occurs.
+
+This does not occur when touching the "Front" mixer.
+The only way to recover sound is to unload and reload at least the
+snd_ice1724 module.
+
+2. When muting and unmuting "PCM" repeatedly, sound is not always muted or
+unmuted accordingly, but only about 50% of the time. (meaning you have to
+toggle a couple of times to get the desired setting)
+
+3. When muting or unmuting Master, sometimes only one of the channels is
+muted or unmuted.
+
+note: None of the problems occurred when testing on a 32-bit distribution
+(Knoppix 4.0 / 2.6.12 / ALSA 1.0.9; different version, but I had the same
+problem with 1.0.9 on x86_64 anyway.)
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001646 Wish for M-Audio AudioPhile 192 (AP192K...
-======================================================================
 
 ----------------------------------------------------------------------
- jorx - 11-14-05 23:00 
+ ikari_01 - 03-19-06 18:49 
 ----------------------------------------------------------------------
-I am also requesting a driver for this card. As Dazed states OSS has a
-driver for this card. It is working like anything. ALSA should also have
-one. I hope someone could start with this. I would love to myself, but I
-know way to little to even think about it.
+I've tried the 4Front OSS drivers and Windows, and they showed similar
+behaviour. Looks like it's been a hardware issue after all.
+When the front panel cable is disconnected, none of the described
+behaviour is shown. Interestingly, the issue also appears when *only* the
+cable without the front panel itself is connected to the card. Maybe there
+are unusual levels of noise in my box.
+
+Bottom line, I'm going to check the card in another machine and call
+Terratec support. Sorry.
+Thank you, ungod and rlevell, for taking the time!
 
 ----------------------------------------------------------------------
- paule - 03-19-06 18:53 
+ rlrevell - 03-19-06 19:37 
 ----------------------------------------------------------------------
-Hello!
-I'm also not able to run my AP192 under Linux (Knoppix,Debian, Fedora). 
-The people from M Audio Support means this Card is based on the Envy24HT
-Chipset. 
-Here my boot kernelmessage (loading snd_ice1724 module)
-
--->
-ice1724: No matching model found for ID 0x12143236
-<-- 
-
-Here the output from "lspci" on my box:
-
--->
-0000:02:0c.0 Multimedia audio controller: VIA Technologies Inc. VT1720/24
-[Envy24PT/HT] PCI Multi-Channel Audio Controller (rev 01)
-<---
-
-With snd_ice1724 module I only hear "audio sludge" when I play mp3 files.
-
-Here the output from "lsmod". It is a 2.6 Standardkernel from
-backports.org
-
--->
-Module                  Size  Used by
-shpchp                 43360  0
-pci_hotplug            26940  1 shpchp
-snd_ice1724            62948  1
-snd_ice17xx_ak4xxx      4192  1 snd_ice1724
-snd_ac97_codec         83840  1 snd_ice1724
-snd_ac97_bus            2432  1 snd_ac97_codec
-snd_ak4114              9408  1 snd_ice1724
-snd_pcm_oss            47200  0
-snd_mixer_oss          16768  1 snd_pcm_oss
-snd_pcm                81508  4
-snd_ice1724,snd_ac97_codec,snd_ak4114,snd_pcm_oss
-snd_timer              23364  1 snd_pcm
-snd_page_alloc         10568  1 snd_pcm
-snd_ak4xxx_adda         6208  2 snd_ice1724,snd_ice17xx_ak4xxx
-snd_mpu401_uart         7520  1 snd_ice1724
-snd_rawmidi            23808  1 snd_mpu401_uart
-snd_seq_device          8524  1 snd_rawmidi
-snd                    52804  13
-snd_ice1724,snd_ac97_codec,snd_ak4114,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_ak4xxx_adda,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-soundcore               9728  1 snd
-~~~
-
-Hope this helps.
-
-klaus
+Closing -> hardware problem.  Please reopen if this recurs with known good
+device.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-14-05 13:41 Dazed          New Issue                                    
-10-14-05 13:41 Dazed          Distribution              => FC3             
-10-14-05 13:41 Dazed          Kernel Version            => 2.6.*           
-10-14-05 13:56 Dazed          Note Added: 0006480                          
-10-14-05 15:05 Dazed          Note Edited: 0006480                         
-11-14-05 23:00 jorx           Note Added: 0006728                          
-11-14-05 23:02 jorx           Issue Monitored: jorx                        
-01-10-06 15:25 Dazed          Issue Monitored: Dazed                       
-03-14-06 17:30 rlrevell       Relationship added       related to 0001646  
-03-19-06 18:53 paule          Note Added: 0008694                          
+01-30-06 23:46 ikari_01       New Issue                                    
+01-30-06 23:46 ikari_01       Distribution              => Debian unstable 
+01-30-06 23:46 ikari_01       Kernel Version            => 2.6.14.3        
+01-30-06 23:48 ikari_01       Issue Monitored: ikari_01                    
+01-30-06 23:51 ikari_01       Note Added: 0007842                          
+01-30-06 23:53 ikari_01       Note Added: 0007843                          
+01-30-06 23:55 ikari_01       Note Edited: 0007842                         
+01-30-06 23:55 ikari_01       Note Deleted: 0007843                        
+01-30-06 23:56 ikari_01       Note Edited: 0007842                         
+01-31-06 00:04 ikari_01       Note Edited: 0007842                         
+03-19-06 02:05 ungod          Note Added: 0008677                          
+03-19-06 02:06 ungod          Note Edited: 0008677                         
+03-19-06 02:07 ungod          Note Edited: 0008677                         
+03-19-06 02:08 ungod          Note Edited: 0008677                         
+03-19-06 02:37 ikari_01       Note Added: 0008678                          
+03-19-06 02:41 ungod          File Added: aureon-mutex.diff                    
+03-19-06 02:44 ungod          Note Added: 0008679                          
+03-19-06 05:19 ikari_01       Note Added: 0008680                          
+03-19-06 05:22 ikari_01       Note Edited: 0008680                         
+03-19-06 05:35 rlrevell       Note Added: 0008681                          
+03-19-06 05:51 ikari_01       Note Added: 0008682                          
+03-19-06 06:33 ikari_01       Note Added: 0008683                          
+03-19-06 06:35 rlrevell       Note Added: 0008684                          
+03-19-06 06:57 ikari_01       Note Added: 0008685                          
+03-19-06 14:26 ungod          Note Added: 0008689                          
+03-19-06 16:36 ungod          File Added: aureon-mutex2.diff                    
+03-19-06 16:38 ungod          Note Added: 0008691                          
+03-19-06 18:49 ikari_01       Note Added: 0008693                          
+03-19-06 19:37 rlrevell       Status                   new => closed       
+03-19-06 19:37 rlrevell       Note Added: 0008695                          
 ======================================================================
 
 
