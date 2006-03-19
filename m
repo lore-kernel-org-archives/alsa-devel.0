@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001942]: [PATCH] added support uncommon "rate"
-Date: Sat, 18 Mar 2006 23:48:21 +0100
-Message-ID: <44d831826bc72d49466f428bf932cffc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
+Date: Sun, 19 Mar 2006 02:05:07 +0100
+Message-ID: <4b9aa34935b3db695b46708d74c87e9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 418F91D9
-	for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2006 23:48:22 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD4101CC
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 02:05:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,44 +22,113 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1942> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1797> 
 ======================================================================
-Reported By:                os-bebas
-Assigned To:                Clemens Ladisch
+Reported By:                ikari_01
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1942
-Category:                   USB - usb-audio
+Issue ID:                   1797
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               UBuntu Dapper Drake
-Kernel Version:             2.6.15.6
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.14.3
 ======================================================================
-Date Submitted:             03-18-2006 23:48 CET
-Last Modified:              03-18-2006 23:48 CET
+Date Submitted:             01-30-2006 23:46 CET
+Last Modified:              03-19-2006 02:05 CET
 ======================================================================
-Summary:                    [PATCH] added support uncommon "rate"
+Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
+muting, intermittent muting of single channel)
 Description: 
-attached you can find a simple patch to match
-"uncommon" rate in some USB speaker to the fixed
-conv_rates in usbaudio.c.
+1. Setting (or muting/unmuting) of any of the Master, Center, LFE, or Side
+mixers eventually results in irrecoverably completely muted sound.
+Sometimes, at first only one channel is muted.
+Sometimes, at first the volume decreases before muting occurs.
 
-Signed-off-by: S. Effendi <osbebas@yahoo.co.id>
+This does not occur when touching the "Front" mixer.
+The only way to recover sound is to unload and reload at least the
+snd_ice1724 module.
 
+2. When muting and unmuting "PCM" repeatedly, sound is not always muted or
+unmuted accordingly, but only about 50% of the time. (meaning you have to
+toggle a couple of times to get the desired setting)
+
+3. When muting or unmuting Master, sometimes only one of the channels is
+muted or unmuted.
+
+note: None of the problems occurred when testing on a 32-bit distribution
+(Knoppix 4.0 / 2.6.12 / ALSA 1.0.9; different version, but I had the same
+problem with 1.0.9 on x86_64 anyway.)
 ======================================================================
+
+----------------------------------------------------------------------
+ ikari_01 - 01-31-06 00:04 
+----------------------------------------------------------------------
+the mixer tends to break on initial setting (alsactl restore), so often
+there is no sound at all after system startup.
+
+I also tried #defining REALLY_SLOW_IO before #include <asm/io.h> in all
+relevant places, to no avail.
+
+Increasing the udelay() values did not help either.
+
+And that should be aureon.c, not ice1712.c in the last line... I need to
+get some sleep.
+
+
+
+----------------------------------------------------------------------
+ ungod - 03-19-06 02:05 
+----------------------------------------------------------------------
+I truely doubt that there should be anything wrong with the timing... There
+is no minimum speed for the WM8770 chip (The ADC/DAC), only a maximum. In
+essence the minimum delays between various events range from 20 to 80ns,
+and each and every time, the driver wait for a whole &#181;s.
+
+Since communication with the WM8770 is done in software-emulated SPI with
+GPIO pins, there might be some syncronization problems. If two threads
+operates on the GPIO pins simultaneously it may all go terrible wrong. To
+test my theory, I traced back which function wasn't protected by the gpio
+mutex, and ended up with five functions:
+
+aureon_cs8415_rate_get - Get IEC958 Capture Rate
+aureon_deemp_put - Set deemphasis
+aureon_oversampling_put - Set oversampling
+aureon_hpamp_put - Set state of HP amp
+aureon_hpamp_get - Get state of HP amp
+
+Now, I realize that these functions doesn't have anything to do with
+setting volumes and muting directly, but if the mixer is reading the value
+of the HP amp switch, or the ICE958 Capture Rate while you toggle the
+mute/change volume, the communication to the chip may go wrong. (Don't
+know to what extend amixer etc. probe the controls)
+
+I'll post a small shortly for you to try (that is, if you are actually
+still experincing the problem). Either way, the functions should be
+protected by the mutex.
+
+For the record, I personally have an Aureon 7.1 Space and am running
+x86-64, but have not been able to reproduce the failure myself.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-18-06 23:48 os-bebas       New Issue                                    
-03-18-06 23:48 os-bebas       File Added: alsa_usbaudio_conv_rates_fixed.patch  
-                 
-03-18-06 23:48 os-bebas       Distribution              => UBuntu Dapper Drake
-03-18-06 23:48 os-bebas       Kernel Version            => 2.6.15.6        
+01-30-06 23:46 ikari_01       New Issue                                    
+01-30-06 23:46 ikari_01       Distribution              => Debian unstable 
+01-30-06 23:46 ikari_01       Kernel Version            => 2.6.14.3        
+01-30-06 23:48 ikari_01       Issue Monitored: ikari_01                    
+01-30-06 23:51 ikari_01       Note Added: 0007842                          
+01-30-06 23:53 ikari_01       Note Added: 0007843                          
+01-30-06 23:55 ikari_01       Note Edited: 0007842                         
+01-30-06 23:55 ikari_01       Note Deleted: 0007843                        
+01-30-06 23:56 ikari_01       Note Edited: 0007842                         
+01-31-06 00:04 ikari_01       Note Edited: 0007842                         
+03-19-06 02:05 ungod          Note Added: 0008677                          
 ======================================================================
 
 
