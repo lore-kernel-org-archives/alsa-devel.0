@@ -1,14 +1,12 @@
-From: "vonnie jacobs" <evettem@clujnapoca.ro>
-Subject: Give your partner more pleasure
-Date: Sat, 18 Mar 2006 14:17:29 -0900
-Message-ID: <c5eb01c64a96$b065cfd0$064940fc@evettem>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: More detailed Acer (Intel HDA)
+Date: Sun, 19 Mar 2006 14:47:47 +0200
+Message-ID: <441D52F3.9010107@akl.lt>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_AF5_F41B_B062DBF9.2528AC0D"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigDCFCD0802B1D968AF3CC65AB"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF95F1AB
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 13:23:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,46 +16,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Taina Fields <alsa-devel@alsa-project.org>
-Cc: andy@alsa-project.org
+To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_AF5_F41B_B062DBF9.2528AC0D
-Content-Type: text/plain;
-	charset="us-ascii"
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigDCFCD0802B1D968AF3CC65AB
+Content-Type: text/plain; charset=windows-1257
 Content-Transfer-Encoding: quoted-printable
 
+Hi Jonathan, Takashi, and others,
 
-------=_NextPart_AF5_F41B_B062DBF9.2528AC0D
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I asked a user on Ubuntu forums to test Acer jack modes more
+extensively. The results are a bit surprising. You may want to check
+out http://ubuntuforums.org/showthread.php?p=3D825101#post825101.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-asci=
-i">
-<META content=3D"MSHTML 5.50.4133.2400" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD><FONT face=3DArial><FONT size=3D2>
-<BODY>
-<DIV>
-Announcing National poll suggests this is the reason why couples separa=
-te<br>
-<a href=3D"http://sg.geocities.com/hises462375/">The bigger the better =
-is what all women say</a><br>
-<br>
-<br>My address is on the site above<br>
-"was this spell, by any chance, another one from that potion book of yo=
-urs?" she asked. 
-"where have you been?" demanded ginny, as harry sprinted into the chang=
-ing rooms. the whole team was changed and ready; coote and peakes, the b=
-eaters, were both hitting their clubs nervously against their legs.
-</DIV></FONT></BODY></HTML>
+It's strange for me that it seems like Mic Preamplifier seems to be
+always off for LINE1 channel.
+It's also a bit strange that a jack connected to MIC1 always outputs
+in mono when set as output, but maybe that's just how Acer engineers
+decided it should be.
+And the third interesting thing is that the user could not select Mic
+modes at all for LINE-OUT channel. Did I skip this part in the
+datasheet, or is it undocumented?
 
-------=_NextPart_AF5_F41B_B062DBF9.2528AC0D--
+Also, is there really a difference between Mic 50% and Mic 80%? Maybe
+it's enough to only make one of these modes available in the mixer if
+there's no big difference between them? Same goes for
+Headphone/Line=96Out modes. What airbuds did you mention previously (you
+said Headphone mode might be useful for them)? Is it those small
+headphones that one can put INTO their ear and then hear poor sound?
+:) I don't have them handy ATM, so I can't test if there's any
+difference between Line-Out and Headphones modes for them...
+
+regards,
+Rimas
+
+
+
+--------------enigDCFCD0802B1D968AF3CC65AB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFEHVL5AlYAh8azrv8RAg00AJ9b3k8z3sMw6GRdSh9dvYOty3yd3wCeLWO/
+GheAQnCj/27abR8X7QFmRpc=
+=EGpE
+-----END PGP SIGNATURE-----
+
+--------------enigDCFCD0802B1D968AF3CC65AB--
 
 
 -------------------------------------------------------
