@@ -1,14 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
-Date: Sun, 19 Mar 2006 02:44:05 +0100
-Message-ID: <7a71c1d0a04866c982bd8c8478e56748@bugtrack.alsa-project.org>
+From: =?shift-jis?B?dnBmb2tnZjY=?= <tsoajdg@tom.com>
+Subject: =?shift-jis?B?lc+NWILMgqiSbYLngrmBQY6NkESXbINBg2iDjINYjPCKt4LJgsKCooLE?=
+Date: Sun, 19 Mar 2006 10:14:17 +0800
+Message-ID: <2006031935000.10287@chc02.vicp.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="shift-jis"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A241D14F
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 02:44:05 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5E711CA
+	for <ALSA-DEVEL@ALSA-PROJECT.ORG>; Sun, 19 Mar 2006 03:14:24 +0100 (MET)
+Received: from chc02.vicp.net (unknown [222.171.72.114])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 7012D9946F
+	for <ALSA-DEVEL@ALSA-PROJECT.ORG>; Sun, 19 Mar 2006 03:14:14 +0100 (MET)
+Received: from emtauw4 (unknown [202.195.83.70])
+	by chc02.vicp.net (Coremail) with SMTP id diTQ9OtMJruv3ldg.1
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 10:14:17 +0800 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,84 +28,13 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1797> 
-======================================================================
-Reported By:                ikari_01
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1797
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.14.3
-======================================================================
-Date Submitted:             01-30-2006 23:46 CET
-Last Modified:              03-19-2006 02:44 CET
-======================================================================
-Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
-muting, intermittent muting of single channel)
-Description: 
-1. Setting (or muting/unmuting) of any of the Master, Center, LFE, or Side
-mixers eventually results in irrecoverably completely muted sound.
-Sometimes, at first only one channel is muted.
-Sometimes, at first the volume decreases before muting occurs.
-
-This does not occur when touching the "Front" mixer.
-The only way to recover sound is to unload and reload at least the
-snd_ice1724 module.
-
-2. When muting and unmuting "PCM" repeatedly, sound is not always muted or
-unmuted accordingly, but only about 50% of the time. (meaning you have to
-toggle a couple of times to get the desired setting)
-
-3. When muting or unmuting Master, sometimes only one of the channels is
-muted or unmuted.
-
-note: None of the problems occurred when testing on a 32-bit distribution
-(Knoppix 4.0 / 2.6.12 / ALSA 1.0.9; different version, but I had the same
-problem with 1.0.9 on x86_64 anyway.)
-======================================================================
-
-----------------------------------------------------------------------
- ikari_01 - 03-19-06 02:37 
-----------------------------------------------------------------------
-I'd really appreciate that! I am still experiencing the same problem.
-
-----------------------------------------------------------------------
- ungod - 03-19-06 02:44 
-----------------------------------------------------------------------
-I've posted the patch...
-All it really does is to protect the five functions with
-snd_ice1712_save_gpio_status and snd_ice1712_restore_gpio_status.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-30-06 23:46 ikari_01       New Issue                                    
-01-30-06 23:46 ikari_01       Distribution              => Debian unstable 
-01-30-06 23:46 ikari_01       Kernel Version            => 2.6.14.3        
-01-30-06 23:48 ikari_01       Issue Monitored: ikari_01                    
-01-30-06 23:51 ikari_01       Note Added: 0007842                          
-01-30-06 23:53 ikari_01       Note Added: 0007843                          
-01-30-06 23:55 ikari_01       Note Edited: 0007842                         
-01-30-06 23:55 ikari_01       Note Deleted: 0007843                        
-01-30-06 23:56 ikari_01       Note Edited: 0007842                         
-01-31-06 00:04 ikari_01       Note Edited: 0007842                         
-03-19-06 02:05 ungod          Note Added: 0008677                          
-03-19-06 02:06 ungod          Note Edited: 0008677                         
-03-19-06 02:07 ungod          Note Edited: 0008677                         
-03-19-06 02:08 ungod          Note Edited: 0008677                         
-03-19-06 02:37 ikari_01       Note Added: 0008678                          
-03-19-06 02:41 ungod          File Added: aureon-mutex.diff                    
-03-19-06 02:44 ungod          Note Added: 0008679                          
-======================================================================
+k3iBWILMgrKYQZeNgsmCyILogUGR5ZXPkFyCtZbzgrKCtIKigtyCuYLxgUINCpJTk5aCzItnkbqC
+xYKygrSCooLcgreBQg0KDQqOjZBEl2yCqYLnmEGXjZDmgsyVz41YgqqCoILBgr2CxoLMgrGCxoLF
+greBQg0Ki32CyJXPjViCxY1zgquI4YKigsmCyILBgsSCzYKigq+CyIKigsaCooKkgrGCxoLFgUEN
+CoK3gq6CyYKymEGXjYKzgrmCxJK4gquC3IK1gr2BQg0KDQqCsYK/gueCxYKyim2URom6grOCooFC
+DQpodHRwOi8vd3d3LmFpcmlzcG9wLmNvbS9tZWV0DQoNCpK8kNqDQYNojPCKt4LgivOWXYKzgrmC
+xIKigumC5oKkgsWCt4LMgsWBQY/agrWCrYLNDQqCspZ7kGyCxoKomGKCooK9gr6Cr4Lqgs6Cxo52
+gqKC3IK3gUINCg0Ki1iCtYKtgqiK6IKiknaCtYLcgreBQg0KMTA6MTQ6MTc=
 
 
 
