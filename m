@@ -1,14 +1,17 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: Re: More detailed Acer (Intel HDA)
-Date: Mon, 20 Mar 2006 01:19:59 +0200
-Message-ID: <441DE71F.7080209@akl.lt>
-References: <441D52F3.9010107@akl.lt> <1142793842.4532.28.camel@mindpipe>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Detecting the sample format in the driver
+Date: Sun, 19 Mar 2006 23:20:12 +0000
+Message-ID: <1142810413.9700.45.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig9B1C22F3C2961E9E1F8830B9"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1142793842.4532.28.camel@mindpipe>
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 83C3C1CA
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 00:20:18 +0100 (MET)
+Received: from bossclass ([192.168.62.105])
+	by localhost.localdomain (8.13.4/8.13.4/Debian-3) with ESMTP id k2JNKE0I027030
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 23:20:15 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,47 +21,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig9B1C22F3C2961E9E1F8830B9
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+for some reason this isn't working for me - and I need to set hardware
+channel parameters on the basis of the sample.
 
-Hi,
-
->> I asked a user on Ubuntu forums to test Acer jack modes more
->> extensively. The results are a bit surprising. You may want to check
->> out http://ubuntuforums.org/showthread.php?p=3D825101#post825101.
->=20
-> Breezy is too old, that driver had many bugs fixed lately.  How does it=
-
-> work with the latest ALSA CVS version?
-
-He IS using the latest ALSA CVS version with Breezy. ;) That's why the
-sound does work for him. Just some of the details of HOW it works are
-quite interesting...
-
-Rimas
+My hardware plays signed 8 bit, signed 16 bit little endian and 8 bit
+adaptive differential PCM and I have this set...
 
 
---------------enig9B1C22F3C2961E9E1F8830B9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+.formats =
+	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
+	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
 
-iD8DBQFEHecfAlYAh8azrv8RAjXZAJ0alSIyMxetf515xo3Gd6CS73OLOQCePO+1
-xgMlOjAczNJTqMaDQ+5z/PE=
-=uADc
------END PGP SIGNATURE-----
 
---------------enig9B1C22F3C2961E9E1F8830B9--
+
+But when I try to detect the format...
+
+	if ((substream->runtime)->format == SNDRV_PCM_FMTBIT_S16_LE)
+		channel->sfmt = SM_16BIT;
+
+
+It doesn't seem to work.
+
+I am assuming the alsa subsystem ought to process the stream for me - ie
+any 16 bit stream will turn up as SNDRV_PCM_FMTBIT_S16_LE - is that
+right? And if it is, why isn't it working?
+
 
 
 -------------------------------------------------------
