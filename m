@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
-Date: Sun, 19 Mar 2006 11:12:05 +0100
-Message-ID: <01e4d67d1a0a1f6ff453d2ef819763a7@bugtrack.alsa-project.org>
+Date: Sun, 19 Mar 2006 11:21:32 +0100
+Message-ID: <8c3c4072d754e89f29b91d094777f602@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A5091C4
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 11:12:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1245D1C4
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 11:21:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -41,7 +41,7 @@ Kernel Version:             # uname -a
 Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 ======================================================================
 Date Submitted:             02-01-2005 16:17 CET
-Last Modified:              03-19-2006 11:12 CET
+Last Modified:              03-19-2006 11:21 CET
 ======================================================================
 Summary:                    Can't get nm256 up & running
 Description: 
@@ -115,11 +115,6 @@ Saving the mixer setup used for this in /var/lib/alsa/asound.state.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-16-06 07:53 
-----------------------------------------------------------------------
-Was this ever resolved?
-
-----------------------------------------------------------------------
  Jean-Louis Crouzet - 03-19-06 11:12 
 ----------------------------------------------------------------------
 Hi,
@@ -128,6 +123,11 @@ I'm now compiling new Debian 2.6.15-8 with ALSA in it and I will let you
 know the end result for sure. Let's cross fingers.
 
 JL
+
+----------------------------------------------------------------------
+ pzad - 03-19-06 11:21 
+----------------------------------------------------------------------
+You have to use CVS version of ALSA. I think, fix is not in kernel yet.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -158,6 +158,7 @@ Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 10-12-05 13:49 tiwai          Note Added: 0006464                          
 03-16-06 07:53 rlrevell       Note Added: 0008585                          
 03-19-06 11:12 Jean-Louis CrouzetNote Added: 0008686                          
+03-19-06 11:21 pzad           Note Added: 0008687                          
 ======================================================================
 
 
