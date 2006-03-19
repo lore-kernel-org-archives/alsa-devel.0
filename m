@@ -1,21 +1,14 @@
-From: =?shift-jis?B?d29kNQ==?= <tsoajdg@tom.com>
-Subject: =?shift-jis?B?i32CrIKylfGNkIKigr2CtYLcgreBQg==?=
-Date: Sun, 19 Mar 2006 18:33:03 +0800
-Message-ID: <2006031984178.76660@chc02.vicp.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
+Date: Sun, 19 Mar 2006 11:56:07 +0100
+Message-ID: <d73e9b33db55550c2f58afce3d16e523@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="shift-jis"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C1611C4
-	for <ALSA-DEVEL@ALSA-PROJECT.ORG>; Sun, 19 Mar 2006 11:33:15 +0100 (MET)
-Received: from chc02.vicp.net (unknown [222.171.72.114])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 21D079946B
-	for <ALSA-DEVEL@ALSA-PROJECT.ORG>; Sun, 19 Mar 2006 11:33:02 +0100 (MET)
-Received: from tkdysn7 (unknown [166.216.52.119])
-	by chc02.vicp.net (Coremail) with SMTP id c7itVwPuenWFAPz6.1
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 18:33:03 +0800 (CST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD7DC1A2
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 11:56:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -28,17 +21,99 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-i2eRuoLFgrKCtIKigtyCt4FCDQoNCoKggueCvYLfgsSOjZBEl2yCqYLngsyYQZeNgvCCoIK4gqmC
-6ILcgrWCvYFCDQqCsYLqiMiP44LNgrKTlpBsk6+ObYLMguKC6ILGguiCyYLIguiC3IK3jnyBQZDg
-lr6CtYK9gsyCxYK3gqqBQQ0KjfCT+oLMlc+NWILGmEGXjZDmgsyMj4Kqk2CC7YLBgsSCooLIgqKC
-zILFgs2BQYLGjnaC7YLqgsQNCoKoguiC3IK1gsSBQY6EgqmC54LMgqiSbYLngrmCxoLIguiC3IK1
-gr2BQg0KgrKXZY7NibqCs4KigtyCuYFCDQoNCmh0dHA6Ly93d3cuYWlyaXNwb3AuY29tL21lZXQN
-Cg0KgrOC54LJjo2QRJdsgqmC54LNg0mDdoNWg4eDk5e/gsaCtYLEkU+L4ILMk/yL4ILwkriCooLE
-grWC3IK1gtyCtYK9gUINCoKxgr+C54Lgj4iSdYLJjaKCwYLEgqKC6YLGgrGC64LFgreBQg0Kjo2Q
-RJdsgsmCqJXUgrWCt4LpkU+CyYFBi02V+5dsgsaYQZeNgqqO5oLojYeCpoLqgs6BQYK7gsyC3ILc
-DQqQVZHWgreC6YKxgsaC4I1sgqaCxIKoguiC3IK3gUINCg0KjaGJ8YLNgrKOUYnBl0yT74KkgrKC
-tIKigtyCt4FCDQqNc4KriOGCooLMj+qNh4LNgrKXZY7NibqCs4KigUINCg0KDQpodHRwOi8vd3d3
-LmFpcmlzcG9wLmNvbS9tZWV0DQoxODozMzowMw==
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843> 
+======================================================================
+Reported By:                richardfish
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1843
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             suspend2-sources-2.6.15-r6
+======================================================================
+Date Submitted:             02-13-2006 04:04 CET
+Last Modified:              03-19-2006 11:56 CET
+======================================================================
+Summary:                    regression: no sound with sigmatel stac9200, works
+in alsa 1.0.10
+Description: 
+With alsa 1.0.10, my Intel HDA with the Sigmatel STAC9200 produces sound
+from both speakers and headphones (although the speakers are not muted
+when the headphones are inserted, but that is a separate problem).  
+
+With alsa 1.0.11rc3, and the CVS version as of today, no sound is produced
+from either speakers or headphones.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001813 STAC9750 not recognised by hda-intel
+has duplicate       0001729 Only output through headphone jack
+======================================================================
+
+----------------------------------------------------------------------
+ gsmet - 03-18-06 12:41 
+----------------------------------------------------------------------
+The fix3 patch fixed the problem on the Dell Inspiron 630m too which is
+quite similar to the XPS model. Thanks for fixing this problem.
+
+There is still one problem remaining: the sound in the speakers is really
+low compared to the sound in the headphone. It's a detail but it's quite
+surprising when you switch often from the speakers to the headphone.
+tiwai: do you think something can be done for this?
+
+----------------------------------------------------------------------
+ lrupn - 03-19-06 11:56 
+----------------------------------------------------------------------
+fix3 is OK on acer travelmate 3002WTMi, however internal mic is still not
+working :(
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-13-06 04:04 richardfish    New Issue                                    
+02-13-06 04:04 richardfish    File Added: alsa-rjf-1.patch                    
+02-13-06 04:04 richardfish    Distribution              => Gentoo          
+02-13-06 04:04 richardfish    Kernel Version            =>
+suspend2-sources-2.6.15-r6
+02-14-06 05:43 richardfish    Issue Monitored: richardfish                    
+02-20-06 22:51 lrupn          Issue Monitored: lrupn                       
+02-25-06 21:40 lrupn          Note Added: 0008192                          
+02-26-06 16:08 toshio         Note Added: 0008203                          
+02-27-06 23:45 richardfish    Note Added: 0008233                          
+03-01-06 17:07 lrupn          Note Added: 0008281                          
+03-01-06 17:59 mpt            Issue Monitored: mpt                         
+03-17-06 00:39 tiwai          Note Added: 0008622                          
+03-17-06 00:41 tiwai          File Added: hda-autoconfig-fix.diff               
+    
+03-17-06 01:03 tiwai          Relationship added       has duplicate 0001813
+03-17-06 01:09 tiwai          Relationship added       has duplicate 0001729
+03-17-06 04:55 error10        Note Added: 0008634                          
+03-17-06 11:59 tiwai          Note Added: 0008637                          
+03-17-06 11:59 tiwai          File Added: hda-autoconfig-fix2.diff              
+     
+03-17-06 12:00 tiwai          Note Added: 0008638                          
+03-17-06 20:39 Jeff250        Note Added: 0008657                          
+03-17-06 20:40 Jeff250        Note Edited: 0008657                         
+03-17-06 20:55 tiwai          Note Added: 0008658                          
+03-17-06 20:55 tiwai          File Added: stac9200-additional-fix.diff          
+         
+03-17-06 21:31 tiwai          Note Added: 0008660                          
+03-17-06 21:31 tiwai          File Added: hda-autoconfig-fix3.diff              
+     
+03-18-06 00:07 Jeff250        Note Added: 0008664                          
+03-18-06 05:22 richardfish    Note Added: 0008669                          
+03-18-06 12:41 gsmet          Note Added: 0008670                          
+03-18-06 12:43 gsmet          Issue Monitored: gsmet                       
+03-19-06 11:56 lrupn          Note Added: 0008688                          
+======================================================================
 
 
 
