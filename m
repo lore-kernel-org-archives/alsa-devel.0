@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
-Date: Sun, 19 Mar 2006 02:37:33 +0100
-Message-ID: <17fd2279a1eec8b8faf6179501d06332@bugtrack.alsa-project.org>
+Date: Sun, 19 Mar 2006 02:44:05 +0100
+Message-ID: <7a71c1d0a04866c982bd8c8478e56748@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E1BFE1CC
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 02:37:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A241D14F
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 02:44:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian unstable
 Kernel Version:             2.6.14.3
 ======================================================================
 Date Submitted:             01-30-2006 23:46 CET
-Last Modified:              03-19-2006 02:37 CET
+Last Modified:              03-19-2006 02:44 CET
 ======================================================================
 Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
 muting, intermittent muting of single channel)
@@ -67,44 +67,16 @@ problem with 1.0.9 on x86_64 anyway.)
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 03-19-06 02:08 
-----------------------------------------------------------------------
-I truely doubt that there should be anything wrong with the timing... There
-is no minimum speed for the WM8770 chip (The ADC/DAC), only a maximum. In
-essence the minimum delays between various events range from 20 to 80ns,
-and each and every time, the driver wait for a whole us.
-
-Since communication with the WM8770 is done in software-emulated SPI with
-GPIO pins, there might be some syncronization problems. If two threads
-operates on the GPIO pins simultaneously it may all go terrible wrong. To
-test my theory, I traced back which function wasn't protected by the gpio
-mutex, and ended up with five functions:
-
-aureon_cs8415_rate_get - Get IEC958 Capture Rate
-aureon_deemp_put - Set deemphasis
-aureon_oversampling_put - Set oversampling
-aureon_hpamp_put - Set state of HP amp
-aureon_hpamp_get - Get state of HP amp
-
-Now, I realize that these functions doesn't have anything to do with
-setting volumes and muting directly, but if the mixer is reading the value
-of the HP amp switch, or the ICE958 Capture Rate while you toggle the
-mute/change volume, the communication to the chip may go wrong. (Don't
-know to what extend alsamixer probes the controls)
-
-I'll post a small patch shortly for you to try (that is, if you are
-actually still experincing the problem). Either way, the functions should
-be protected by the mutex.
-
-For the record, I personally have an Aureon 7.1 Space and am running
-x86-64, but have not been able to reproduce the failure myself.
-
-
-
-----------------------------------------------------------------------
  ikari_01 - 03-19-06 02:37 
 ----------------------------------------------------------------------
 I'd really appreciate that! I am still experiencing the same problem.
+
+----------------------------------------------------------------------
+ ungod - 03-19-06 02:44 
+----------------------------------------------------------------------
+I've posted the patch...
+All it really does is to protect the five functions with
+snd_ice1712_save_gpio_status and snd_ice1712_restore_gpio_status.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -124,6 +96,8 @@ Date Modified  Username       Field                    Change
 03-19-06 02:07 ungod          Note Edited: 0008677                         
 03-19-06 02:08 ungod          Note Edited: 0008677                         
 03-19-06 02:37 ikari_01       Note Added: 0008678                          
+03-19-06 02:41 ungod          File Added: aureon-mutex.diff                    
+03-19-06 02:44 ungod          Note Added: 0008679                          
 ======================================================================
 
 
