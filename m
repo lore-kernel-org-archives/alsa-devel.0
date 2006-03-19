@@ -1,18 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: How can I deal with this?
-Date: Sun, 19 Mar 2006 15:43:21 -0500
-Message-ID: <1142801002.4532.39.camel@mindpipe>
-References: <1142794869.9700.7.camel@localhost.localdomain>
-	 <1142795520.4532.32.camel@mindpipe>
-	 <1142795771.9700.9.camel@localhost.localdomain>
-	 <1142796695.4532.34.camel@mindpipe>
-	 <1142797755.9700.12.camel@localhost.localdomain>
-	 <1142800418.9700.15.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001934]: make problem
+Date: Sun, 19 Mar 2006 22:26:32 +0100
+Message-ID: <0ed55f43a23096e452c8de2a55d846e0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1142800418.9700.15.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 180C617E
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 22:26:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,30 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-03-19 at 20:33 +0000, Adrian McMenamin wrote:
-> On Sun, 2006-03-19 at 19:49 +0000, Adrian McMenamin wrote:
-> 
-> > 
-> > 
-> > I still get the bug reports when the play position extends beyond the
-> > 0x2000 frames point. I think I am going to have to mess about with the
-> > firmware
-> > 
-> That seems to have fixed the problem :)
-> 
-> Though it poses an issue if I try to use any more of the 64 channels
-> this thing has - I'll have to keep shrinking the play back buffers per
-> channel!
-> 
 
-Yep, exactly - most hardware has fixed buffer size and variable number
-of channels so more channels requires smaller period sizes.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
+======================================================================
+Reported By:                kvo
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1934
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               RHEL4 Update 3
+Kernel Version:             2.6.9-34.EL
+======================================================================
+Date Submitted:             03-17-2006 12:19 CET
+Last Modified:              03-19-2006 22:26 CET
+======================================================================
+Summary:                    make problem
+Description: 
+./configure works OK. running make give error during compilation: module
+'include/asound.h' (line 210) has some 'typedef' that doesn't match with
+(probably) OS include. As a result, compilation stops and driver can not
+be produced.
+======================================================================
 
-Lee
+----------------------------------------------------------------------
+ tiwai - 03-17-06 12:25 
+----------------------------------------------------------------------
+Try the CVS version.  I cannot spot out in the latest version.
+
+Also, attach the exact error messages.
+
+----------------------------------------------------------------------
+ kvo - 03-19-06 22:26 
+----------------------------------------------------------------------
+I did the build attempt with the latest CVS, please see results (extract)
+below:
+
+make[2]: Entering directory `/usr/src/kernels/2.6.9-34.EL-i686'
+  CC [M]  /home/tt/t/alsa-driver/acore/hwdep.o
+In file included from /home/tt/t/alsa-driver/include/sound/driver.h:47,
+                 from /home/tt/t/alsa-driver/acore/hwdep.c:22:
+/home/tt/t/alsa-driver/include/adriver.h:219: error: conflicting types for
+'gfp_t'
+include/linux/gfp.h:134: error: previous declaration of 'gfp_t' was here
+make[5]: *** [/home/tt/t/alsa-driver/acore/hwdep.o] Error 1
+make[4]: *** [/home/tt/t/alsa-driver/acore] Error 2
+make[3]: *** [_module_/home/tt/t/alsa-driver] Error 2
+make[2]: *** [modules] Error 2
+make[2]: Leaving directory `/usr/src/kernels/2.6.9-34.EL-i686'
+make[1]: *** [compile] Error 2
+
+As a result, the whole build fails.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-17-06 12:19 kvo            New Issue                                    
+03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
+03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
+03-17-06 12:25 tiwai          Note Added: 0008643                          
+03-19-06 22:26 kvo            Note Added: 0008697                          
+======================================================================
+
 
 
 
