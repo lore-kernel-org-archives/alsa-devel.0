@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
-Date: Sun, 19 Mar 2006 06:33:29 +0100
-Message-ID: <c9990830bbb2cc6ca3975610775aebe2@bugtrack.alsa-project.org>
+Date: Sun, 19 Mar 2006 06:35:51 +0100
+Message-ID: <4ae5e4bd25a35b84cacab450a41caf0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E73B1C5
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 06:33:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91A3413B
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 06:35:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian unstable
 Kernel Version:             2.6.14.3
 ======================================================================
 Date Submitted:             01-30-2006 23:46 CET
-Last Modified:              03-19-2006 06:33 CET
+Last Modified:              03-19-2006 06:35 CET
 ======================================================================
 Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
 muting, intermittent muting of single channel)
@@ -67,17 +67,15 @@ problem with 1.0.9 on x86_64 anyway.)
 ======================================================================
 
 ----------------------------------------------------------------------
- ikari_01 - 03-19-06 05:51 
-----------------------------------------------------------------------
-Will test with ALSA CVS shortly.
-For now, I quick-checked without .asoundrc or /etc/asound.conf and the
-problem persists. (192kHz 2ch s16le & 192kHz 2ch s32le)
-
-----------------------------------------------------------------------
  ikari_01 - 03-19-06 06:33 
 ----------------------------------------------------------------------
 I can confirm the described behaviour with ALSA CVS and without .asoundrc
 or /etc/asound.conf.
+
+----------------------------------------------------------------------
+ rlrevell - 03-19-06 06:35 
+----------------------------------------------------------------------
+And the problem disappears if you reboot with a 32 bit kernel?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -104,6 +102,7 @@ Date Modified  Username       Field                    Change
 03-19-06 05:35 rlrevell       Note Added: 0008681                          
 03-19-06 05:51 ikari_01       Note Added: 0008682                          
 03-19-06 06:33 ikari_01       Note Added: 0008683                          
+03-19-06 06:35 rlrevell       Note Added: 0008684                          
 ======================================================================
 
 
