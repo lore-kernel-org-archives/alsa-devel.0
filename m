@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: More detailed Acer (Intel HDA)
-Date: Sun, 19 Mar 2006 13:44:01 -0500
-Message-ID: <1142793842.4532.28.camel@mindpipe>
-References: <441D52F3.9010107@akl.lt>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001927]: Capture Device not working
+Date: Sun, 19 Mar 2006 19:46:36 +0100
+Message-ID: <9a131a48b7f91b6278b075ee1adf598f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <441D52F3.9010107@akl.lt>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 330481CA
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 19:46:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,21 +18,146 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rimas Kudelis <rq@akl.lt>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-03-19 at 14:47 +0200, Rimas Kudelis wrote:
-> Hi Jonathan, Takashi, and others,
-> 
-> I asked a user on Ubuntu forums to test Acer jack modes more
-> extensively. The results are a bit surprising. You may want to check
-> out http://ubuntuforums.org/showthread.php?p=825101#post825101.
 
-Breezy is too old, that driver had many bugs fixed lately.  How does it
-work with the latest ALSA CVS version?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1927> 
+======================================================================
+Reported By:                sk0rp10
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1927
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware current
+Kernel Version:             2.6.15.6 vanilla
+======================================================================
+Date Submitted:             03-15-2006 19:23 CET
+Last Modified:              03-19-2006 19:46 CET
+======================================================================
+Summary:                    Capture Device not working
+Description: 
+I tryed use krec to record from internal mic but no sound is recorded. 
+I applyed the patch from issue #1890.
 
-Lee
+here asound.state:
+
+state.Intel {
+        control.1 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 127'
+                iface MIXER
+                name 'Master Playback Volume'
+                value.0 121
+                value.1 121
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Master Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.3 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'CD Capture Volume'
+                value.0 7
+                value.1 7
+        }
+        control.4 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Capture Volume'
+                value.0 11
+                value.1 11
+        }
+        control.5 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Capture Switch'
+                value.0 false
+                value.1 false
+        }
+        control.6 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 HP
+                comment.item.1 Unknown
+                comment.item.2 Mic
+                comment.item.3 PCM
+                iface MIXER
+                name 'Capture Source'
+                value Mic
+        }
+        control.7 {
+                comment.access 'read write user'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 255'
+                iface MIXER
+                name 'PCM Playback Volume'
+                value.0 232
+                value.1 232
+        }
+}
+
+======================================================================
+
+----------------------------------------------------------------------
+ sk0rp10 - 03-19-06 17:48 
+----------------------------------------------------------------------
+Up!
+
+----------------------------------------------------------------------
+ rlrevell - 03-19-06 19:46 
+----------------------------------------------------------------------
+Unmute "Capture Switch":
+
+        control.5 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Capture Switch'
+                value.0 false
+                value.1 false
+        }
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-15-06 19:23 sk0rp10        New Issue                                    
+03-15-06 19:23 sk0rp10        Distribution              => Slackware current
+03-15-06 19:23 sk0rp10        Kernel Version            => 2.6.15.6 vanilla
+03-15-06 19:38 tiwai          Note Added: 0008569                          
+03-15-06 20:20 sk0rp10        Note Added: 0008572                          
+03-15-06 20:21 sk0rp10        File Added: codec.tar.gz                     
+03-15-06 20:47 sk0rp10        Issue Monitored: sk0rp10                     
+03-19-06 17:48 sk0rp10        Note Added: 0008692                          
+03-19-06 19:46 rlrevell       Note Added: 0008696                          
+======================================================================
+
 
 
 
