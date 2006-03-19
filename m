@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001527]: amixer fails to set right 'Capture Source' channel
-Date: Sun, 19 Mar 2006 22:44:31 +0100
-Message-ID: <11fd697b65b3c44b9c73aa4e02f4a023@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001347]: unable to configure sound card
+Date: Sun, 19 Mar 2006 23:42:35 +0100
+Message-ID: <8fbf3e8f4e631fc076a81bf8cab87347@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A0471DC
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 22:44:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CDAB1E1
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 23:42:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,186 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1527> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1347> 
 ======================================================================
-Reported By:                tartif
-Assigned To:                
+Reported By:                CptS
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1527
-Category:                   amixer
+Project:                    ALSA - driver
+Issue ID:                   1347
+Category:                   PCI - nm256
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Knoppix 4.0
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             11-04-2005 16:11 CET
-Last Modified:              03-19-2006 22:44 CET
+Date Submitted:             08-17-2005 11:05 CEST
+Last Modified:              03-19-2006 23:42 CET
 ======================================================================
-Summary:                    amixer fails to set right 'Capture Source' channel
+Summary:                    unable to configure sound card
 Description: 
-I use the ice1724 driver (Prodigy 7.1 card), ALSA 1.0.10_rc2 (also happens
-with 1.0.9).
+I'm having problems configuring my sound card with alsa, here are the
+details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
 
-amixer fails to set the 'capture source' for the right channel (left is
-OK). Left channel is set to that requested, right channel always set to
-0.
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
 
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??I'm having problems configuring my sound card with
+alsa, here are the details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
+
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
+
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??I'm having problems configuring my sound card with
+alsa, here are the details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
+
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
+
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001824 Always mixed into one channel when reco...
-======================================================================
 
 ----------------------------------------------------------------------
- ungod - 03-19-06 22:44 
+ rlrevell - 03-16-06 08:01 
 ----------------------------------------------------------------------
-I have just moved to x86-64 and found myself with the same problem. It is
-the aureon driver which does the job wrong. Instead of setting
-ucontrol->value.integer.value[0], it should be setting
-ucontrol->value.enumerated.item[0]. The ucontrol->value structure is in
-fact a union so the integer structure overlaps the enumerated structure,
-but while the integer structure have "long" values, the enumerated
-structure have "unsigned int". On a 32-bit machine, both "long" and
-"unsigned int" is 32-bit, but on a 64-bit machine "long" is 32-bit while
-"unsigned int" is 64-bit, hence the reason why only x86-64 is affected.
+Any improvement with later ALSA versions?
 
-I'll attach a patch which corrects the flaw.
+----------------------------------------------------------------------
+ CptS - 03-19-06 23:42 
+----------------------------------------------------------------------
+No improvements with later alsa, but oss made it work using sb16 module and
+the kind help of people from #ubuntu. i suggets you ditch alsa on this
+hardware and use oss.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-04-05 16:11 tartif         New Issue                                    
-02-11-06 03:49 ikari_01       Issue Monitored: ikari_01                    
-02-18-06 01:32 rlrevell       Relationship added       has duplicate 0001824
-03-19-06 22:44 ungod          Note Added: 0008698                          
+08-17-05 11:05 CptS           New Issue                                    
+08-17-05 11:05 CptS           Distribution              => Knoppix 4.0     
+08-17-05 11:05 CptS           Kernel Version            => 2.6.11          
+08-17-05 11:24 CptS           Note Added: 0005835                          
+08-20-05 19:48 CptS           Issue Monitored: CptS                        
+08-20-05 19:50 CptS           Note Added: 0005883                          
+08-20-05 20:32 rlrevell       Note Added: 0005884                          
+08-20-05 20:37 rlrevell       Note Added: 0005885                          
+08-22-05 22:00 CptS           Note Added: 0005901                          
+08-23-05 16:40 tiwai          Note Added: 0005908                          
+09-07-05 21:33 dcooppan       Note Added: 0006066                          
+03-16-06 08:01 rlrevell       Note Added: 0008588                          
+03-19-06 23:42 CptS           Note Added: 0008699                          
 ======================================================================
 
 
