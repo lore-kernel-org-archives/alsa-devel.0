@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
-Date: Sun, 19 Mar 2006 05:19:50 +0100
-Message-ID: <3724651b35998ff921606b75e6064ddd@bugtrack.alsa-project.org>
+Date: Sun, 19 Mar 2006 05:35:17 +0100
+Message-ID: <b7b67a9bbc2cef81d2353a3f5fa3312a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A546D1C4
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 05:19:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF2A11CA
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 05:35:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian unstable
 Kernel Version:             2.6.14.3
 ======================================================================
 Date Submitted:             01-30-2006 23:46 CET
-Last Modified:              03-19-2006 05:19 CET
+Last Modified:              03-19-2006 05:35 CET
 ======================================================================
 Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
 muting, intermittent muting of single channel)
@@ -67,14 +67,7 @@ problem with 1.0.9 on x86_64 anyway.)
 ======================================================================
 
 ----------------------------------------------------------------------
- ungod - 03-19-06 02:44 
-----------------------------------------------------------------------
-I've posted the patch...
-All it really does is to protect the five functions with
-snd_ice1712_save_gpio_status and snd_ice1712_restore_gpio_status.
-
-----------------------------------------------------------------------
- ikari_01 - 03-19-06 05:19 
+ ikari_01 - 03-19-06 05:22 
 ----------------------------------------------------------------------
 I must apologise.
 I obviously misinterpreted the problem. Even with the patched module, the
@@ -82,14 +75,22 @@ mixer remains unreliable (tested using xmms' volume control and alsamixer
 again, same symptoms).
 Thanks for pointing me to the problem again, though, as I now found out
 that the reliability of the mixer depends on the playback sample rate- the
-higher the rate, the less reliable the mixer. I tested this with dmixer as
-well as with a 192kHz wave file. The PCM "Mute" control is almost
-unresponsive at this rate, while it fails only in 1/100 of the time when
-playing back at 44100Hz.
+higher the rate, the less reliable the mixer. I tested this with dmixer
+(@44100, 96000, 176400 and 192000Hz mixing rate) as well as with a 192kHz
+wave file using plug with hw:0.0 as slave. The PCM "Mute" control is
+almost unresponsive at this rate, while it fails only in 1/100 of the time
+when playing back at 44100Hz.
 Playback itself is not choppy at high rates and my machine should be fast
 enough. Could it be that the GPIO port writes actually collide with the
 transfer of sample data or with interrupts? (This is just a wild, wild
 guess, though...)
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 03-19-06 05:35 
+----------------------------------------------------------------------
+Have you confirmed the problem with ALSA CVS and no .asoundrc?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +113,8 @@ Date Modified  Username       Field                    Change
 03-19-06 02:41 ungod          File Added: aureon-mutex.diff                    
 03-19-06 02:44 ungod          Note Added: 0008679                          
 03-19-06 05:19 ikari_01       Note Added: 0008680                          
+03-19-06 05:22 ikari_01       Note Edited: 0008680                         
+03-19-06 05:35 rlrevell       Note Added: 0008681                          
 ======================================================================
 
 
