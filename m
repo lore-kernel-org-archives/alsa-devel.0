@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
-Date: Sun, 19 Mar 2006 06:57:02 +0100
-Message-ID: <7604eb540e0b460716cbee0808173c17@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
+Date: Sun, 19 Mar 2006 11:12:05 +0100
+Message-ID: <01e4d67d1a0a1f6ff453d2ef819763a7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F30D18F
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 06:57:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A5091C4
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 11:12:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,92 +24,140 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1797> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=875> 
 ======================================================================
-Reported By:                ikari_01
-Assigned To:                
+Reported By:                Jean-Louis Crouzet
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1797
-Category:                   PCI - ice1724
+Issue ID:                   875
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.14.3
+Status:                     assigned
+Distribution:               
+Kernel Version:             # uname -a
+Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 ======================================================================
-Date Submitted:             01-30-2006 23:46 CET
-Last Modified:              03-19-2006 06:57 CET
+Date Submitted:             02-01-2005 16:17 CET
+Last Modified:              03-19-2006 11:12 CET
 ======================================================================
-Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
-muting, intermittent muting of single channel)
+Summary:                    Can't get nm256 up & running
 Description: 
-1. Setting (or muting/unmuting) of any of the Master, Center, LFE, or Side
-mixers eventually results in irrecoverably completely muted sound.
-Sometimes, at first only one channel is muted.
-Sometimes, at first the volume decreases before muting occurs.
+I trying since ages to get this nm256 up & running with ALSA, w/o any
+sucess.
 
-This does not occur when touching the "Front" mixer.
-The only way to recover sound is to unload and reload at least the
-snd_ice1724 module.
+PC Omnibook 900 (not a 900B)
 
-2. When muting and unmuting "PCM" repeatedly, sound is not always muted or
-unmuted accordingly, but only about 50% of the time. (meaning you have to
-toggle a couple of times to get the desired setting)
+# uname -a
+Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 
-3. When muting or unmuting Master, sometimes only one of the channels is
-muted or unmuted.
 
-note: None of the problems occurred when testing on a 32-bit distribution
-(Knoppix 4.0 / 2.6.12 / ALSA 1.0.9; different version, but I had the same
-problem with 1.0.9 on x86_64 anyway.)
+#lspci  -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-04.0  Texas Instruments PCI1225
+      +-04.1  Texas Instruments PCI1225
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      \-07.3  Intel Corp. 82371AB/EB/MB PIIX4 A	
+	
+# modinfo snd_nm256
+filename:      
+/lib/modules/2.6.8jlcv32/kernel/sound/pci/nm256/snd-nm256.ko
+author:         Takashi Iwai <tiwai@suse.de>
+description:    NeoMagic NM256AV/ZX
+license:        GPL
+vermagic:       2.6.8jlcv32 PENTIUMII gcc-3.3
+depends:        snd-pcm,snd,snd-ac97-codec
+alias:          pci:v000010C8d00008005sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008006sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008016sv*sd*bc*sc*i*
+parm:           vaio_hack:Enable workaround for Sony VAIO notebooks.
+parm:           use_cache:Enable the cache for coefficient table access.
+parm:           buffer_top:Set the top address of audio buffer for
+NeoMagic 256AV/ZX soundcard.
+parm:           force_ac97:Force to use AC97 codec for NeoMagic 256AV/ZX
+soundcard.
+parm:           capture_bufsize:ADC frame size in kB for NeoMagic 256AV/ZX
+soundcard.
+parm:           playback_bufsize:DAC frame size in kB for NeoMagic
+256AV/ZX soundcard.
+parm:           enable:Enable this soundcard.
+parm:           id:ID string for NeoMagic 256AV/ZX soundcard.
+parm:           index:Index value for NeoMagic 256AV/ZX soundcard.
+
+# alsaconf
+Unloading sound driver modules...done.
+Building card database..
+
+
+Running update-modules...
+Loading driver...
+FATAL: Error running install command for snd_nm256
+Setting default volumes...
+Saving the mixer setup used for this in /var/lib/alsa/asound.state.
+/usr/sbin/alsactl: save_state:1061: No soundcards found...
+
+===============================================================================
+
+ Now ALSA is ready to use.
+ For adjustment of volumes, use your favorite mixer.
+
+ Have a lot of fun!
+
+
+???????????????????????????,,
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-19-06 06:35 
+ rlrevell - 03-16-06 07:53 
 ----------------------------------------------------------------------
-And the problem disappears if you reboot with a 32 bit kernel?
+Was this ever resolved?
 
 ----------------------------------------------------------------------
- ikari_01 - 03-19-06 06:57 
+ Jean-Louis Crouzet - 03-19-06 11:12 
 ----------------------------------------------------------------------
-Shame on me, I never tested on 32bit before at high playback rates as I did
-not believe it to be the problem. :/
+Hi,
 
-The problem remains exactly the same under a 32 bit kernel.
+I'm now compiling new Debian 2.6.15-8 with ALSA in it and I will let you
+know the end result for sure. Let's cross fingers.
 
-Unfortunately, I do not currently have exactly the same versions
-available. The version matches the one in the original description.
-Maybe I should try swapping PCI slots...
+JL
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-30-06 23:46 ikari_01       New Issue                                    
-01-30-06 23:46 ikari_01       Distribution              => Debian unstable 
-01-30-06 23:46 ikari_01       Kernel Version            => 2.6.14.3        
-01-30-06 23:48 ikari_01       Issue Monitored: ikari_01                    
-01-30-06 23:51 ikari_01       Note Added: 0007842                          
-01-30-06 23:53 ikari_01       Note Added: 0007843                          
-01-30-06 23:55 ikari_01       Note Edited: 0007842                         
-01-30-06 23:55 ikari_01       Note Deleted: 0007843                        
-01-30-06 23:56 ikari_01       Note Edited: 0007842                         
-01-31-06 00:04 ikari_01       Note Edited: 0007842                         
-03-19-06 02:05 ungod          Note Added: 0008677                          
-03-19-06 02:06 ungod          Note Edited: 0008677                         
-03-19-06 02:07 ungod          Note Edited: 0008677                         
-03-19-06 02:08 ungod          Note Edited: 0008677                         
-03-19-06 02:37 ikari_01       Note Added: 0008678                          
-03-19-06 02:41 ungod          File Added: aureon-mutex.diff                    
-03-19-06 02:44 ungod          Note Added: 0008679                          
-03-19-06 05:19 ikari_01       Note Added: 0008680                          
-03-19-06 05:22 ikari_01       Note Edited: 0008680                         
-03-19-06 05:35 rlrevell       Note Added: 0008681                          
-03-19-06 05:51 ikari_01       Note Added: 0008682                          
-03-19-06 06:33 ikari_01       Note Added: 0008683                          
-03-19-06 06:35 rlrevell       Note Added: 0008684                          
-03-19-06 06:57 ikari_01       Note Added: 0008685                          
+02-01-05 16:17 Jean-Louis CrouzetNew Issue                                    
+02-01-05 16:17 Jean-Louis CrouzetKernel Version            => # uname -a
+Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+02-02-05 11:18 tiwai          Note Added: 0003483                          
+02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
+02-02-05 12:46 tiwai          Note Added: 0003486                          
+02-02-05 13:05 Jean-Louis CrouzetNote Added: 0003487                          
+02-09-05 12:09 tiwai          Note Added: 0003547                          
+02-10-05 09:54 Jean-Louis CrouzetNote Added: 0003563                          
+02-14-05 19:46 tiwai          Note Added: 0003605                          
+02-15-05 10:08 Jean-Louis CrouzetNote Added: 0003617                          
+02-15-05 10:32 Jean-Louis CrouzetNote Added: 0003618                          
+03-16-05 08:50 Jean-Louis CrouzetNote Added: 0003934                          
+03-16-05 11:26 Jean-Louis CrouzetNote Added: 0003937                          
+03-16-05 12:27 tiwai          Note Added: 0003940                          
+03-16-05 14:53 Jean-Louis CrouzetNote Added: 0003960                          
+09-22-05 15:07 jdthood        Note Added: 0006343                          
+09-22-05 15:43 Jean-Louis CrouzetNote Added: 0006352                          
+10-05-05 19:12 tiwai          Note Added: 0006442                          
+10-11-05 19:24 tiwai          Note Added: 0006457                          
+10-11-05 19:25 tiwai          File Added: cs4232-pnpbios.diff                   
+
+10-11-05 19:51 Jean-Louis CrouzetNote Added: 0006458                          
+10-12-05 13:49 tiwai          Note Added: 0006464                          
+03-16-06 07:53 rlrevell       Note Added: 0008585                          
+03-19-06 11:12 Jean-Louis CrouzetNote Added: 0008686                          
 ======================================================================
 
 
