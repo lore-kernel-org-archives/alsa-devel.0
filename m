@@ -1,11 +1,9 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: More detailed Acer (Intel HDA)
-Date: Sun, 19 Mar 2006 14:47:47 +0200
-Message-ID: <441D52F3.9010107@akl.lt>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigDCFCD0802B1D968AF3CC65AB"
+From: =?GB2312?B?u+O8zrrq?= <mr-zhan@126.com>
+Subject: (no subject)
+Date: Sun, 19 Mar 2006 21:05:19 +0800
+Message-ID: <E1FKxad-0005C5-P8@mail.sourceforge.net>
+Reply-To: misterzhan@tom.com
+Content-Type: text/plain;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,59 +14,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigDCFCD0802B1D968AF3CC65AB
-Content-Type: text/plain; charset=windows-1257
-Content-Transfer-Encoding: quoted-printable
+贵公司(经理/财务)您好:
 
-Hi Jonathan, Takashi, and others,
+    机会与竞争并存.因本公司进项较多,为要冲减进项,
+降低经营成本,现有部分外省市普通发票(商品销售,广告
+,建筑,服务).公路内河运输,国际运输等发票可优惠代开
+ 或合作,助您切实解决,理顺企业的财税,工商事宜.而且
+本公司郑重承诺所用票据均可以上网查询或税务局验证.
+自本公司成立以来,一直坚持以:诚信:立足于市场中,我们
+本着:互惠互利.共同发展的原则,来建立长期良好的经贸合
+作关系,多年来我司在入世贸后,开扩创新的精神和政治优势
+,积极发展都市交流贸易平台,此信息长期有效,欢迎来电!
+(注:税率的多少按金额大小而定!)
 
-I asked a user on Ubuntu forums to test Acer jack modes more
-extensively. The results are a bit surprising. You may want to check
-out http://ubuntuforums.org/showthread.php?p=3D825101#post825101.
+　　　　　　　　　　　电话：
 
-It's strange for me that it seems like Mic Preamplifier seems to be
-always off for LINE1 channel.
-It's also a bit strange that a jack connected to MIC1 always outputs
-in mono when set as output, but maybe that's just how Acer engineers
-decided it should be.
-And the third interesting thing is that the user could not select Mic
-modes at all for LINE-OUT channel. Did I skip this part in the
-datasheet, or is it undocumented?
+　　　　　　　　　　　传真：
 
-Also, is there really a difference between Mic 50% and Mic 80%? Maybe
-it's enough to only make one of these modes available in the mixer if
-there's no big difference between them? Same goes for
-Headphone/Line=96Out modes. What airbuds did you mention previously (you
-said Headphone mode might be useful for them)? Is it those small
-headphones that one can put INTO their ear and then hear poor sound?
-:) I don't have them handy ATM, so I can't test if there's any
-difference between Line-Out and Headphones modes for them...
+　　　　　　　　　　　手机：13631323086
 
-regards,
-Rimas
+　　　　　　　　　　联系人：林风(财务经理)　　　 　　　　　　　                            
 
 
 
---------------enigDCFCD0802B1D968AF3CC65AB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQFEHVL5AlYAh8azrv8RAg00AJ9b3k8z3sMw6GRdSh9dvYOty3yd3wCeLWO/
-GheAQnCj/27abR8X7QFmRpc=
-=EGpE
------END PGP SIGNATURE-----
 
---------------enigDCFCD0802B1D968AF3CC65AB--
+
+
+
+                                        顺祝商祺
+
 
 
 -------------------------------------------------------
