@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Sun, 19 Mar 2006 23:55:08 +0100
-Message-ID: <f52c6fb4758c07d195bb1d01a1b8cad5@bugtrack.alsa-project.org>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: More detailed Acer (Intel HDA)
+Date: Mon, 20 Mar 2006 01:19:59 +0200
+Message-ID: <441DE71F.7080209@akl.lt>
+References: <441D52F3.9010107@akl.lt> <1142793842.4532.28.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig9B1C22F3C2961E9E1F8830B9"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B84421E1
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 23:55:08 +0100 (MET)
+In-Reply-To: <1142793842.4532.28.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,57 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig9B1C22F3C2961E9E1F8830B9
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
-======================================================================
-Reported By:                drolyk
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1930
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.6
-======================================================================
-Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              03-19-2006 23:55 CET
-======================================================================
-Summary:                    Can`t get timidity woking in soft synth mode
-Description: 
-Can`t get timidity woking in "soft synth mode".
-======================================================================
+Hi,
 
-----------------------------------------------------------------------
- fdoffizi01 - 03-19-06 23:55 
-----------------------------------------------------------------------
-Well it seems it's not full of information here but it's something I can't
-get to make work too.
-I was using an intel8x0 and I had problems, now I've got a hda-intel and
-still having similar problems.
-I can start timidity as player without problem, I can start it as alsa
-soft synth but when I use some apps to play with it through virtual port I
-got no sound. It's the same with fluidsynth so maybe a problem with
-something in new alsalib (can't say how much new)?
+>> I asked a user on Ubuntu forums to test Acer jack modes more
+>> extensively. The results are a bit surprising. You may want to check
+>> out http://ubuntuforums.org/showthread.php?p=3D825101#post825101.
+>=20
+> Breezy is too old, that driver had many bugs fixed lately.  How does it=
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-15-06 23:41 drolyk         New Issue                                    
-03-15-06 23:41 drolyk         Distribution              => Debian          
-03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
-03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
-======================================================================
+> work with the latest ALSA CVS version?
+
+He IS using the latest ALSA CVS version with Breezy. ;) That's why the
+sound does work for him. Just some of the details of HOW it works are
+quite interesting...
+
+Rimas
 
 
+--------------enig9B1C22F3C2961E9E1F8830B9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQFEHecfAlYAh8azrv8RAjXZAJ0alSIyMxetf515xo3Gd6CS73OLOQCePO+1
+xgMlOjAczNJTqMaDQ+5z/PE=
+=uADc
+-----END PGP SIGNATURE-----
+
+--------------enig9B1C22F3C2961E9E1F8830B9--
 
 
 -------------------------------------------------------
