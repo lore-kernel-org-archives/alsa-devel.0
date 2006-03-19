@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001850]: source available
-Date: Sun, 19 Mar 2006 16:05:32 +0100
-Message-ID: <8b0d4f6cfb8a949355ceaeeadff2d1f3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001943]: No sound since ~2.6.3
+Date: Sun, 19 Mar 2006 16:15:44 +0100
+Message-ID: <9e626807b2bd99bb648f71bed0e7da54@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98DD01DC
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 16:05:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF0301DC
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 16:15:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,75 +22,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1943> 
 ======================================================================
-Reported By:                coz
+Reported By:                hazelsct
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1850
-Category:                   PCI - echoaudio
+Issue ID:                   1943
+Category:                   PCI - ali5451
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               ubuntu/breezy/Debian
-Kernel Version:             2.6.12.10.386
+Distribution:               Debian etch
+Kernel Version:             2.6.8 through 2.6.15-rc5
 ======================================================================
-Date Submitted:             02-16-2006 13:05 CET
-Last Modified:              03-19-2006 16:05 CET
+Date Submitted:             03-19-2006 16:15 CET
+Last Modified:              03-19-2006 16:15 CET
 ======================================================================
-Summary:                    source available
+Summary:                    No sound since ~2.6.3
 Description: 
-can't start layla24
+ Greetings,
+
+Running Debian woody/sarge/etch, the last time sound worked on my Fujitsu
+Lifebook P2120 was with 2.6.3 (or maybe 2.6.5, but not with 2.6.8 or
+anything since).  Esd doesn't work, nor do system beeps, and GNOME volume
+control says no volume control elements are found.  I can get ALSA working
+with 2.6.8 on all of my other machines, and with 2.6.15 on all that I have
+tried.  alsamixer runs and shows levels which I can change, but still no
+sound.
+
+An identical ALSA setup worked with sarge under 2.6.3 but not 2.6.8. Tried
+running alsaconf again to no avail.  Under 2.6.3, at least when doing
+hardware mute and then un-mute (Fn-F3), un-mute beeps; on newer kernels,
+there's no beep.
+
+Now under Debian etch (testing), even 2.6.3 no longer works properly:
+sounds played through esd simply repeat the first second or so over and
+over again. I keep upgrading the kernel (most recently to 2.6.16-rc5 in
+experimental) hoping that this time it will finally work, but it hasn't in
+that long...
+
+Debian etch has alsa 1.0.10-3, and lsmod shows the following sound modules
+installed:
+snd_ali5451 20172 1
+snd_ac97_codec 82784 1 snd_ali5451
+snd_ac97_bus 2048 1 snd_ac97_codec
+soundcore 8672 1 snd
+snd_page_alloc 9800 1 snd_pcm
+
+lspci shows:
+0000:00:04.0 Multimedia audio controller: ALi Corporation M5451 PCI
+AC-Link Controller Audio Device (rev 01)
+
+What other information would help to diagnose/fix this problem?
+
+Thanks,
+Adam
 ======================================================================
-
-----------------------------------------------------------------------
- pochini - 03-18-06 22:07 
-----------------------------------------------------------------------
-You can compile them in any order. I don't know what
-alsa-source_1.0.10+1.0.11rc3 is. The notes I wrote are about the official
-alsa releases only (ie. the files downloadable from alsa-project.org).
-The hotplug interface is in the kernel, but it needs userspace programs to
-work. Those hotlplug scripts are the official scripts but you can use any
-other implementation. It is important that they look for firmware files
-inside /lib/firmware/ . Btw, are you sure the driver can't find the
-firmware (does "dmegs" show "Firmware not available" error message ?) ?
-
-
-
-----------------------------------------------------------------------
- coz - 03-19-06 16:05 
-----------------------------------------------------------------------
-Hello,
- the alsa source package, in fact all packages were downloaded from the
-official alsa site/ftp
-   As I mentioned, I have no idea where to begin with this. i have gotten,
-along with yur directions, conflicting procedures. Iread that the driver
-has to be installed first, then the lib , then the tools etc.
-  I will continue to look for help on some of the forums and irc channels.
-I really hate to keep bothering you.
-thanks
-coz
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-06 13:05 coz            New Issue                                    
-02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
-02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
-02-18-06 13:34 pochini        Note Added: 0008119                          
-02-20-06 03:30 coz            Note Added: 0008140                          
-02-20-06 22:02 pochini        Note Added: 0008150                          
-03-13-06 19:49 coz            Note Added: 0008456                          
-03-13-06 22:38 pochini        Note Added: 0008465                          
-03-13-06 23:02 johnrigg       Note Added: 0008466                          
-03-16-06 14:54 coz            Note Added: 0008605                          
-03-18-06 22:02 pochini        Note Added: 0008676                          
-03-18-06 22:07 pochini        Note Edited: 0008676                         
-03-19-06 16:05 coz            Note Added: 0008690                          
+03-19-06 16:15 hazelsct       New Issue                                    
+03-19-06 16:15 hazelsct       Distribution              => Debian etch     
+03-19-06 16:15 hazelsct       Kernel Version            => 2.6.8 through
+2.6.15-rc5
 ======================================================================
 
 
