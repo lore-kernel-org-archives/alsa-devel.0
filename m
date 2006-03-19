@@ -1,18 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: Ludicrous amount of spam on this list
-Date: Sun, 19 Mar 2006 00:24:15 -0500
-Message-ID: <1142745856.4532.12.camel@mindpipe>
-References: <1142276619.9235.3.camel@localhost.localdomain>
-	 <s5hhd62ma6p.wl%tiwai@suse.de>
-	 <1142277553.9235.6.camel@localhost.localdomain>
-	 <s5hbqwam98f.wl%tiwai@suse.de> <yw1xk6ay6rg8.fsf@agrajag.inprovide.com>
-	 <s5h1wx6m6s4.wl%tiwai@suse.de> <20060314150754.GB9743@tigerbay>
-	 <2c746f620603182053y1033befew53e48d29f4741102@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
+Date: Sun, 19 Mar 2006 06:33:29 +0100
+Message-ID: <c9990830bbb2cc6ca3975610775aebe2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <2c746f620603182053y1033befew53e48d29f4741102@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E73B1C5
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 06:33:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,28 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eric Shattow <lucent@gmail.com>
-Cc: Florian Schlichting <Florian.Schlichting@gmx.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-03-18 at 22:53 -0600, Eric Shattow wrote:
-> Sorry, it was mentioned that the spam is only 10%;   I am experiencing
-> 50% or higher spam versus actual content here.  FYI.  Using filters,
-> the bugtracker info is easy enough to sort out.
-> 
 
-Actually I think the cutoff spam score should be lowered to 3:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1797> 
+======================================================================
+Reported By:                ikari_01
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1797
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.14.3
+======================================================================
+Date Submitted:             01-30-2006 23:46 CET
+Last Modified:              03-19-2006 06:33 CET
+======================================================================
+Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
+muting, intermittent muting of single channel)
+Description: 
+1. Setting (or muting/unmuting) of any of the Master, Center, LFE, or Side
+mixers eventually results in irrecoverably completely muted sound.
+Sometimes, at first only one channel is muted.
+Sometimes, at first the volume decreases before muting occurs.
 
-X-Spam-Score: 3.6 (+++)
-X-Spam-Report: Spam Filtering performed by sourceforge.net. See
-http://spamassassin.org/tag/ for more details. Report problems to
-http://sf.net/tracker/?func=add&group_id=1&atid=200001 3.4
-RATWARE_RCVD_PF  Bulk email fingerprint (Received PF) found 0.2
-DATE_IN_PAST_06_12     Date: is 6 to 12 hours before Received: date
-Subject: [Alsa-devel] fw: Valuable stock market information including
-insider data
+This does not occur when touching the "Front" mixer.
+The only way to recover sound is to unload and reload at least the
+snd_ice1724 module.
 
-Lee
+2. When muting and unmuting "PCM" repeatedly, sound is not always muted or
+unmuted accordingly, but only about 50% of the time. (meaning you have to
+toggle a couple of times to get the desired setting)
+
+3. When muting or unmuting Master, sometimes only one of the channels is
+muted or unmuted.
+
+note: None of the problems occurred when testing on a 32-bit distribution
+(Knoppix 4.0 / 2.6.12 / ALSA 1.0.9; different version, but I had the same
+problem with 1.0.9 on x86_64 anyway.)
+======================================================================
+
+----------------------------------------------------------------------
+ ikari_01 - 03-19-06 05:51 
+----------------------------------------------------------------------
+Will test with ALSA CVS shortly.
+For now, I quick-checked without .asoundrc or /etc/asound.conf and the
+problem persists. (192kHz 2ch s16le & 192kHz 2ch s32le)
+
+----------------------------------------------------------------------
+ ikari_01 - 03-19-06 06:33 
+----------------------------------------------------------------------
+I can confirm the described behaviour with ALSA CVS and without .asoundrc
+or /etc/asound.conf.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-30-06 23:46 ikari_01       New Issue                                    
+01-30-06 23:46 ikari_01       Distribution              => Debian unstable 
+01-30-06 23:46 ikari_01       Kernel Version            => 2.6.14.3        
+01-30-06 23:48 ikari_01       Issue Monitored: ikari_01                    
+01-30-06 23:51 ikari_01       Note Added: 0007842                          
+01-30-06 23:53 ikari_01       Note Added: 0007843                          
+01-30-06 23:55 ikari_01       Note Edited: 0007842                         
+01-30-06 23:55 ikari_01       Note Deleted: 0007843                        
+01-30-06 23:56 ikari_01       Note Edited: 0007842                         
+01-31-06 00:04 ikari_01       Note Edited: 0007842                         
+03-19-06 02:05 ungod          Note Added: 0008677                          
+03-19-06 02:06 ungod          Note Edited: 0008677                         
+03-19-06 02:07 ungod          Note Edited: 0008677                         
+03-19-06 02:08 ungod          Note Edited: 0008677                         
+03-19-06 02:37 ikari_01       Note Added: 0008678                          
+03-19-06 02:41 ungod          File Added: aureon-mutex.diff                    
+03-19-06 02:44 ungod          Note Added: 0008679                          
+03-19-06 05:19 ikari_01       Note Added: 0008680                          
+03-19-06 05:22 ikari_01       Note Edited: 0008680                         
+03-19-06 05:35 rlrevell       Note Added: 0008681                          
+03-19-06 05:51 ikari_01       Note Added: 0008682                          
+03-19-06 06:33 ikari_01       Note Added: 0008683                          
+======================================================================
 
 
 
