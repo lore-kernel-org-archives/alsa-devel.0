@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001934]: make problem
-Date: Sun, 19 Mar 2006 22:26:32 +0100
-Message-ID: <0ed55f43a23096e452c8de2a55d846e0@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001527]: amixer fails to set right 'Capture Source' channel
+Date: Sun, 19 Mar 2006 22:44:31 +0100
+Message-ID: <11fd697b65b3c44b9c73aa4e02f4a023@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 180C617E
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 22:26:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A0471DC
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 22:44:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1527> 
 ======================================================================
-Reported By:                kvo
-Assigned To:                perex
+Reported By:                tartif
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1934
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - utils
+Issue ID:                   1527
+Category:                   amixer
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               RHEL4 Update 3
-Kernel Version:             2.6.9-34.EL
+Status:                     new
 ======================================================================
-Date Submitted:             03-17-2006 12:19 CET
-Last Modified:              03-19-2006 22:26 CET
+Date Submitted:             11-04-2005 16:11 CET
+Last Modified:              03-19-2006 22:44 CET
 ======================================================================
-Summary:                    make problem
+Summary:                    amixer fails to set right 'Capture Source' channel
 Description: 
-./configure works OK. running make give error during compilation: module
-'include/asound.h' (line 210) has some 'typedef' that doesn't match with
-(probably) OS include. As a result, compilation stops and driver can not
-be produced.
+I use the ice1724 driver (Prodigy 7.1 card), ALSA 1.0.10_rc2 (also happens
+with 1.0.9).
+
+amixer fails to set the 'capture source' for the right channel (left is
+OK). Left channel is set to that requested, right channel always set to
+0.
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001824 Always mixed into one channel when reco...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-17-06 12:25 
+ ungod - 03-19-06 22:44 
 ----------------------------------------------------------------------
-Try the CVS version.  I cannot spot out in the latest version.
+I have just moved to x86-64 and found myself with the same problem. It is
+the aureon driver which does the job wrong. Instead of setting
+ucontrol->value.integer.value[0], it should be setting
+ucontrol->value.enumerated.item[0]. The ucontrol->value structure is in
+fact a union so the integer structure overlaps the enumerated structure,
+but while the integer structure have "long" values, the enumerated
+structure have "unsigned int". On a 32-bit machine, both "long" and
+"unsigned int" is 32-bit, but on a 64-bit machine "long" is 32-bit while
+"unsigned int" is 64-bit, hence the reason why only x86-64 is affected.
 
-Also, attach the exact error messages.
-
-----------------------------------------------------------------------
- kvo - 03-19-06 22:26 
-----------------------------------------------------------------------
-I did the build attempt with the latest CVS, please see results (extract)
-below:
-
-make[2]: Entering directory `/usr/src/kernels/2.6.9-34.EL-i686'
-  CC [M]  /home/tt/t/alsa-driver/acore/hwdep.o
-In file included from /home/tt/t/alsa-driver/include/sound/driver.h:47,
-                 from /home/tt/t/alsa-driver/acore/hwdep.c:22:
-/home/tt/t/alsa-driver/include/adriver.h:219: error: conflicting types for
-'gfp_t'
-include/linux/gfp.h:134: error: previous declaration of 'gfp_t' was here
-make[5]: *** [/home/tt/t/alsa-driver/acore/hwdep.o] Error 1
-make[4]: *** [/home/tt/t/alsa-driver/acore] Error 2
-make[3]: *** [_module_/home/tt/t/alsa-driver] Error 2
-make[2]: *** [modules] Error 2
-make[2]: Leaving directory `/usr/src/kernels/2.6.9-34.EL-i686'
-make[1]: *** [compile] Error 2
-
-As a result, the whole build fails.
+I'll attach a patch which corrects the flaw.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 12:19 kvo            New Issue                                    
-03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
-03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
-03-17-06 12:25 tiwai          Note Added: 0008643                          
-03-19-06 22:26 kvo            Note Added: 0008697                          
+11-04-05 16:11 tartif         New Issue                                    
+02-11-06 03:49 ikari_01       Issue Monitored: ikari_01                    
+02-18-06 01:32 rlrevell       Relationship added       has duplicate 0001824
+03-19-06 22:44 ungod          Note Added: 0008698                          
 ======================================================================
 
 
