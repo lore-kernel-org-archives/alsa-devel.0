@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001927]: Capture Device not working
-Date: Sun, 19 Mar 2006 17:48:53 +0100
-Message-ID: <9fe0510e6e2b1fb306726e5c05abf4ac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001797]: Aureon 7.1 Universe: mixer flakyness (irrecoverable muting, intermittent muting of single channel)
+Date: Sun, 19 Mar 2006 18:49:13 +0100
+Message-ID: <3c3b06a176ed15630b38d023464e2248@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 328D31A4
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 17:48:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36E7816F
+	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 18:49:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,132 +24,100 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1927> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1797> 
 ======================================================================
-Reported By:                sk0rp10
-Assigned To:                tiwai
+Reported By:                ikari_01
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1927
-Category:                   PCI - hda-intel
+Issue ID:                   1797
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware current
-Kernel Version:             2.6.15.6 vanilla
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.14.3
 ======================================================================
-Date Submitted:             03-15-2006 19:23 CET
-Last Modified:              03-19-2006 17:48 CET
+Date Submitted:             01-30-2006 23:46 CET
+Last Modified:              03-19-2006 18:49 CET
 ======================================================================
-Summary:                    Capture Device not working
+Summary:                    Aureon 7.1 Universe: mixer flakyness (irrecoverable
+muting, intermittent muting of single channel)
 Description: 
-I tryed use krec to record from internal mic but no sound is recorded. 
-I applyed the patch from issue #1890.
+1. Setting (or muting/unmuting) of any of the Master, Center, LFE, or Side
+mixers eventually results in irrecoverably completely muted sound.
+Sometimes, at first only one channel is muted.
+Sometimes, at first the volume decreases before muting occurs.
 
-here asound.state:
+This does not occur when touching the "Front" mixer.
+The only way to recover sound is to unload and reload at least the
+snd_ice1724 module.
 
-state.Intel {
-        control.1 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 127'
-                iface MIXER
-                name 'Master Playback Volume'
-                value.0 121
-                value.1 121
-        }
-        control.2 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Master Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.3 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'CD Capture Volume'
-                value.0 7
-                value.1 7
-        }
-        control.4 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'Capture Volume'
-                value.0 11
-                value.1 11
-        }
-        control.5 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Capture Switch'
-                value.0 false
-                value.1 false
-        }
-        control.6 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 HP
-                comment.item.1 Unknown
-                comment.item.2 Mic
-                comment.item.3 PCM
-                iface MIXER
-                name 'Capture Source'
-                value Mic
-        }
-        control.7 {
-                comment.access 'read write user'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 255'
-                iface MIXER
-                name 'PCM Playback Volume'
-                value.0 232
-                value.1 232
-        }
-}
+2. When muting and unmuting "PCM" repeatedly, sound is not always muted or
+unmuted accordingly, but only about 50% of the time. (meaning you have to
+toggle a couple of times to get the desired setting)
 
+3. When muting or unmuting Master, sometimes only one of the channels is
+muted or unmuted.
+
+note: None of the problems occurred when testing on a 32-bit distribution
+(Knoppix 4.0 / 2.6.12 / ALSA 1.0.9; different version, but I had the same
+problem with 1.0.9 on x86_64 anyway.)
 ======================================================================
 
 ----------------------------------------------------------------------
- sk0rp10 - 03-15-06 20:20 
+ ungod - 03-19-06 16:38 
 ----------------------------------------------------------------------
-Product Name: SONY VAIO VGN-FE11S (Notebook)
-
-Exixting I/O : headphone jack , mic in jack , embedded microphone
-(internal)
-
-Uploaded: codec output
+Did som further investigation on mutex locks, and find a few more.
+Basically these are within the init procedure, so it shouldn't matter, but
+in principle the mutex ought to be locked. The new patch replaces the old
 
 ----------------------------------------------------------------------
- sk0rp10 - 03-19-06 17:48 
+ ikari_01 - 03-19-06 18:49 
 ----------------------------------------------------------------------
-Up!
+I've tried the 4Front OSS drivers and Windows, and they showed similar
+behaviour. Looks like it's been a hardware issue after all.
+When the front panel cable is disconnected, none of the described
+behaviour is shown. Interestingly, the issue also appears when *only* the
+cable without the front panel itself is connected to the card. Maybe there
+are unusual levels of noise in my box.
+
+Bottom line, I'm going to check the card in another machine and call
+Terratec support. Sorry.
+Thank you, ungod and rlevell, for taking the time!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 19:23 sk0rp10        New Issue                                    
-03-15-06 19:23 sk0rp10        Distribution              => Slackware current
-03-15-06 19:23 sk0rp10        Kernel Version            => 2.6.15.6 vanilla
-03-15-06 19:38 tiwai          Note Added: 0008569                          
-03-15-06 20:20 sk0rp10        Note Added: 0008572                          
-03-15-06 20:21 sk0rp10        File Added: codec.tar.gz                     
-03-15-06 20:47 sk0rp10        Issue Monitored: sk0rp10                     
-03-19-06 17:48 sk0rp10        Note Added: 0008692                          
+01-30-06 23:46 ikari_01       New Issue                                    
+01-30-06 23:46 ikari_01       Distribution              => Debian unstable 
+01-30-06 23:46 ikari_01       Kernel Version            => 2.6.14.3        
+01-30-06 23:48 ikari_01       Issue Monitored: ikari_01                    
+01-30-06 23:51 ikari_01       Note Added: 0007842                          
+01-30-06 23:53 ikari_01       Note Added: 0007843                          
+01-30-06 23:55 ikari_01       Note Edited: 0007842                         
+01-30-06 23:55 ikari_01       Note Deleted: 0007843                        
+01-30-06 23:56 ikari_01       Note Edited: 0007842                         
+01-31-06 00:04 ikari_01       Note Edited: 0007842                         
+03-19-06 02:05 ungod          Note Added: 0008677                          
+03-19-06 02:06 ungod          Note Edited: 0008677                         
+03-19-06 02:07 ungod          Note Edited: 0008677                         
+03-19-06 02:08 ungod          Note Edited: 0008677                         
+03-19-06 02:37 ikari_01       Note Added: 0008678                          
+03-19-06 02:41 ungod          File Added: aureon-mutex.diff                    
+03-19-06 02:44 ungod          Note Added: 0008679                          
+03-19-06 05:19 ikari_01       Note Added: 0008680                          
+03-19-06 05:22 ikari_01       Note Edited: 0008680                         
+03-19-06 05:35 rlrevell       Note Added: 0008681                          
+03-19-06 05:51 ikari_01       Note Added: 0008682                          
+03-19-06 06:33 ikari_01       Note Added: 0008683                          
+03-19-06 06:35 rlrevell       Note Added: 0008684                          
+03-19-06 06:57 ikari_01       Note Added: 0008685                          
+03-19-06 14:26 ungod          Note Added: 0008689                          
+03-19-06 16:36 ungod          File Added: aureon-mutex2.diff                    
+03-19-06 16:38 ungod          Note Added: 0008691                          
+03-19-06 18:49 ikari_01       Note Added: 0008693                          
 ======================================================================
 
 
