@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001945]: aplay fails to complete on ppc
-Date: Mon, 20 Mar 2006 18:21:25 +0100
-Message-ID: <44c183e897d6760207f198ca6241fa49@bugtrack.alsa-project.org>
+From: Carlos Munoz <carlos@kenati.com>
+Subject: Re: Couple of questions
+Date: Mon, 20 Mar 2006 10:11:49 -0800
+Message-ID: <441EF065.4020407@kenati.com>
+References: <1142467271.9298.7.camel@localhost.localdomain>	 <s5hirqer7r5.wl%tiwai@suse.de> <1142680136.9435.2.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C66E6216
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 18:21:25 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D683B20E
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 19:06:06 +0100 (MET)
+Received: from mail.kenati.com (unknown [69.90.147.196])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 348899929C
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 19:06:06 +0100 (MET)
+In-Reply-To: <1142680136.9435.2.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,52 +23,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Adrian McMenamin wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1945> 
-======================================================================
-Reported By:                zarni
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1945
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               linuxfromscratch
-Kernel Version:             2.6
-======================================================================
-Date Submitted:             03-20-2006 16:28 CET
-Last Modified:              03-20-2006 18:21 CET
-======================================================================
-Summary:                    aplay fails to complete on ppc
-Description: 
-On my G5 SMU with an Audigy SE, aplay does not complete
+>On Thu, 2006-03-16 at 11:42 +0100, Takashi Iwai wrote:
+>  
+>
+>>At Thu, 16 Mar 2006 00:01:11 +0000,
+>>Adrian McMenamin wrote:
+>>    
+>>
+>>>If my driver declares this:
+>>>
+>>>	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
+>>>
+>>>Can I expect samples to come in all left followed by all right, or how?
+>>>      
+>>>
+>>Yes.  It's the non-interleaved format (LLLLLLLL....RRRRRR.....).
+>>
+>>    
+>>
+>>>And will cat somefile.wav > /dev/dsp using oss emulation respect that?
+>>>      
+>>>
+>>Yes.
+>>    
+>>
+>
+>
+>Are you sure about this bit? Either my code is extremely broken or cat
+>isn't doing anything other than pump the bytes in as a simple stream
+>  
+>
+Hi Adrian,
 
-'top' shows 99% cpu, there is no audible sound.
+If I cat a wav file to /dev/dsp I just hear noise. However, if  the 
+driver opens/reads the same wav file (bypassing the alsa layer) and 
+feeds it to the hardware I get perfect sound. Your may want to try that 
+to validate your driver and hardware. You might need to parse the file 
+into RL buffers as you read it.
 
-======================================================================
 
-----------------------------------------------------------------------
- zarni - 03-20-06 18:21 
-----------------------------------------------------------------------
-strace output (truncated after the point where it starts looping) at
-http://www.kenmoffat.uklinux.net/misc/trace-aplay.bz2
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-20-06 16:28 zarni          New Issue                                    
-03-20-06 16:28 zarni          Distribution              => linuxfromscratch
-03-20-06 16:28 zarni          Kernel Version            => 2.6             
-03-20-06 18:21 zarni          Note Added: 0008721                          
-======================================================================
+Carlos
 
 
 
