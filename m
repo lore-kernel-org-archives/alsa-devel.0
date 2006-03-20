@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Mon, 20 Mar 2006 01:42:31 +0100
-Message-ID: <1c68af64395775b2adda356f179bdb4b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
+Date: Mon, 20 Mar 2006 02:08:31 +0100
+Message-ID: <0de61a563c4cd7f929078bd7d589ae02@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C3761E3
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 01:42:32 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7BE641DD
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 02:08:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,87 +24,98 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843> 
 ======================================================================
-Reported By:                drolyk
-Assigned To:                
+Reported By:                richardfish
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1930
-Category:                   PCI - intel8x0
+Issue ID:                   1843
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.6
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             suspend2-sources-2.6.15-r6
 ======================================================================
-Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              03-20-2006 01:42 CET
+Date Submitted:             02-13-2006 04:04 CET
+Last Modified:              03-20-2006 02:08 CET
 ======================================================================
-Summary:                    Can`t get timidity woking in soft synth mode
+Summary:                    regression: no sound with sigmatel stac9200, works
+in alsa 1.0.10
 Description: 
-Can`t get timidity woking in "soft synth mode".
+With alsa 1.0.10, my Intel HDA with the Sigmatel STAC9200 produces sound
+from both speakers and headphones (although the speakers are not muted
+when the headphones are inserted, but that is a separate problem).  
+
+With alsa 1.0.11rc3, and the CVS version as of today, no sound is produced
+from either speakers or headphones.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001813 STAC9750 not recognised by hda-intel
+has duplicate       0001729 Only output through headphone jack
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-20-06 01:28 
+ lrupn - 03-19-06 11:56 
 ----------------------------------------------------------------------
-Please give the exact steps to reproduce the bug
+fix3 is OK on acer travelmate 3002WTMi, however internal mic is still not
+working :(
 
 ----------------------------------------------------------------------
- fdoffizi01 - 03-20-06 01:42 
+ richardfish - 03-20-06 02:08 
 ----------------------------------------------------------------------
-Even using timidity:
-timidity -iA -B2,8 -Os1l -s 44100
-Requested buffer size 2048, fragment size 1024
-ALSA pcm 'default' set buffer size 60208, period size 3760 bytes
-TiMidity starting in ALSA server mode
-Opening sequencer port: 128:0 128:1 128:2 128:3
+I have debugged why this didn't work for my Dell e1705.  It seems this
+model reports 2 speaker pins, and no line outs.  But only the first
+speaker pin actually seems to result in speaker output...the second needs
+to be ignored.
 
-that creates:
+The attached patch rjf-ignore-extra-speakers.diff provides a fix.
 
- Port    Client name                      Port name
-128:0    TiMidity                         TiMidity port 0
-128:1    TiMidity                         TiMidity port 1
-128:2    TiMidity                         TiMidity port 2
-128:3    TiMidity                         TiMidity port 3
-
-Then when I use aplaymidi, pmidi, kmid to play on one of these 4 ports I
-only get this output in timidity:
-
-Requested buffer size 2048, fragment size 1024
-ALSA pcm 'default' set buffer size 60208, period size 3760 bytes
-
-
-top tells me timidity seems working but I can't see nothing nor hear
-nothing.
-
-playing timidity namefile.mid works:
-
-timidity AHardDaysNight.mid
-Requested buffer size 32768, fragment size 8192
-ALSA pcm 'default' set buffer size 60208, period size 3760 bytes
-Playing AHardDaysNight.mid
-MIDI file: AHardDaysNight.mid
-Format: 1  Tracks: 11  Divisions: 384.
-
-Same with fluidsynt and qsynth, I see just a "flash" in qsynth control
-panel (when instruments are set up) and then nothing.
-
-Kernel is 2.6.15, alsa drivers are cvs for hda-intel Vaio FE11M support
-(but I told I had same problem with intel8x0 on my old notebook with
-2.6.15 stable driver&kernel).
+Also, one of the debug print statements in fix3 is incorrect. 
+rjf-fix-debug-print.diff provides a fix.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 23:41 drolyk         New Issue                                    
-03-15-06 23:41 drolyk         Distribution              => Debian          
-03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
-03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
-03-20-06 01:28 rlrevell       Note Added: 0008702                          
-03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
+02-13-06 04:04 richardfish    New Issue                                    
+02-13-06 04:04 richardfish    File Added: alsa-rjf-1.patch                    
+02-13-06 04:04 richardfish    Distribution              => Gentoo          
+02-13-06 04:04 richardfish    Kernel Version            =>
+suspend2-sources-2.6.15-r6
+02-14-06 05:43 richardfish    Issue Monitored: richardfish                    
+02-20-06 22:51 lrupn          Issue Monitored: lrupn                       
+02-25-06 21:40 lrupn          Note Added: 0008192                          
+02-26-06 16:08 toshio         Note Added: 0008203                          
+02-27-06 23:45 richardfish    Note Added: 0008233                          
+03-01-06 17:07 lrupn          Note Added: 0008281                          
+03-01-06 17:59 mpt            Issue Monitored: mpt                         
+03-17-06 00:39 tiwai          Note Added: 0008622                          
+03-17-06 00:41 tiwai          File Added: hda-autoconfig-fix.diff               
+    
+03-17-06 01:03 tiwai          Relationship added       has duplicate 0001813
+03-17-06 01:09 tiwai          Relationship added       has duplicate 0001729
+03-17-06 04:55 error10        Note Added: 0008634                          
+03-17-06 11:59 tiwai          Note Added: 0008637                          
+03-17-06 11:59 tiwai          File Added: hda-autoconfig-fix2.diff              
+     
+03-17-06 12:00 tiwai          Note Added: 0008638                          
+03-17-06 20:39 Jeff250        Note Added: 0008657                          
+03-17-06 20:40 Jeff250        Note Edited: 0008657                         
+03-17-06 20:55 tiwai          Note Added: 0008658                          
+03-17-06 20:55 tiwai          File Added: stac9200-additional-fix.diff          
+         
+03-17-06 21:31 tiwai          Note Added: 0008660                          
+03-17-06 21:31 tiwai          File Added: hda-autoconfig-fix3.diff              
+     
+03-18-06 00:07 Jeff250        Note Added: 0008664                          
+03-18-06 05:22 richardfish    Note Added: 0008669                          
+03-18-06 12:41 gsmet          Note Added: 0008670                          
+03-18-06 12:43 gsmet          Issue Monitored: gsmet                       
+03-19-06 11:56 lrupn          Note Added: 0008688                          
+03-20-06 02:08 richardfish    Note Added: 0008704                          
 ======================================================================
 
 
