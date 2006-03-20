@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001947]: Out-of-tree kernel drivers break when nodevfs patches are applied
-Date: Tue, 21 Mar 2006 00:14:02 +0100
-Message-ID: <695514664b70d7b4556dae40c8dacd03@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
+Date: Tue, 21 Mar 2006 00:14:44 +0100
+Message-ID: <6656223d29e0963ed7479389cff1ee83@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A24561FF
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 00:14:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11DBC1FF
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 00:14:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1947> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
 ======================================================================
-Reported By:                avuton
+Reported By:                drolyk
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1947
-Category:                   1_OTHERS
+Issue ID:                   1930
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Debian
+Kernel Version:             2.6.15.6
 ======================================================================
-Date Submitted:             03-21-2006 00:14 CET
+Date Submitted:             03-15-2006 23:41 CET
 Last Modified:              03-21-2006 00:14 CET
 ======================================================================
-Summary:                    Out-of-tree kernel drivers break when nodevfs
-patches are applied
+Summary:                    Can`t get timidity woking in soft synth mode
 Description: 
-http://www.kernel.org/pub/linux/kernel/people/gregkh/gregkh-2.6/gregkh-05-devfs/
-
-The patches to remove devfs will probably make it into the kernel sooner
-or later, but they do break the out-of-tree kernel drivers. I get the
-following warning.
-
-WARNING: //lib/modules/2.6.16/alsa-driver/acore/snd.ko needs unknown
-symbol devfs_mk_dir
-WARNING: //lib/modules/2.6.16/alsa-driver/acore/snd.ko needs unknown
-symbol devfs_mk_cdev
-WARNING: //lib/modules/2.6.16/alsa-driver/acore/snd.ko needs unknown
-symbol devfs_remove   
+Can`t get timidity woking in "soft synth mode".
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 03-20-06 23:54 
+----------------------------------------------------------------------
+Ah OK.  I was confused by your use of "soft synth mode", which I
+interpreted to mean synthesis vs. just triggering samples, but you are
+referring to the ability to receive MIDI input from a sequencer port vs. a
+file.
+
+What was the last kernel+ALSA version where this worked?
+
+----------------------------------------------------------------------
+ fdoffizi01 - 03-21-06 00:14 
+----------------------------------------------------------------------
+I'd like to use timidity or fluidsynth as a software synth to hear midi
+file from any midi application, rosegarden, kmid... web browser...
+
+I can't say when it stopped working... now I changed pc so I can't even
+tell if hw module make difference (but I'm tryin it on different machines
+and let you know soon!)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-21-06 00:14 avuton         New Issue                                    
+03-15-06 23:41 drolyk         New Issue                                    
+03-15-06 23:41 drolyk         Distribution              => Debian          
+03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
+03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
+03-20-06 01:28 rlrevell       Note Added: 0008702                          
+03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
+03-20-06 03:24 rlrevell       Note Added: 0008706                          
+03-20-06 06:08 drolyk         Note Added: 0008709                          
+03-20-06 06:22 rlrevell       Note Added: 0008710                          
+03-20-06 07:19 Raymond        Note Added: 0008711                          
+03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
+03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
+03-20-06 22:19 drolyk         Note Added: 0008726                          
+03-20-06 22:21 drolyk         Note Edited: 0008726                         
+03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
+03-20-06 23:29 rlrevell       Note Added: 0008729                          
+03-20-06 23:40 fdoffizi01     Note Added: 0008730                          
+03-20-06 23:54 rlrevell       Note Added: 0008731                          
+03-21-06 00:14 fdoffizi01     Note Added: 0008732                          
 ======================================================================
 
 
