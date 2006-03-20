@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001914]: playing 2-channel sound on surround device uses rear speakers
-Date: Mon, 20 Mar 2006 13:04:30 +0100
-Message-ID: <635669307efef6cbd351c99e9bc0b969@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001944]: 0001491: Onboard sound of HP Kayak workstation isn't detected properly
+Date: Mon, 20 Mar 2006 13:56:46 +0100
+Message-ID: <60ae7d3da208d6c0473161f661119e1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56550206
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 13:04:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 880CA1E7
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 13:56:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,73 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1914> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1944> 
 ======================================================================
-Reported By:                mru
-Assigned To:                tiwai
+Reported By:                axion
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1914
-Category:                   PCI - cmipci
+Issue ID:                   1944
+Category:                   ISA - ad1816a
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.15-gentoo-r1
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               slackware
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             03-11-2006 21:25 CET
-Last Modified:              03-20-2006 13:04 CET
+Date Submitted:             03-20-2006 13:56 CET
+Last Modified:              03-20-2006 13:56 CET
 ======================================================================
-Summary:                    playing 2-channel sound on surround device uses rear
-speakers
+Summary:                    0001491: Onboard sound of HP Kayak workstation isn't
+detected properly
 Description: 
-If I play regular 2-channel stereo sound specifying device "surround51" or
-"surround40" (or either of those with a "plug:" prefix) the sound is
-output on the rear speakers.  6-channel playback is correct.
+Detection of AD1816AJS chip contained on the board of HP Kayak workstation
+(chipset i440LX) is not detected by ALSA - tested in both PnP and non-PnP
+mode. With legacy OSS driver it works fine in non-PnP mode (PnP probably
+doesn't work), but there's need to hard-write all parameters like io, irq,
+dma and so...
 ======================================================================
-
-----------------------------------------------------------------------
- mru - 03-16-06 02:38 
-----------------------------------------------------------------------
-Sorry, that last bit must have been caused by something else.  Muting and
-unmuting the "PCM" control somehow fixed it, even though the PCM mute
-otherwise only affects the front speakers.
-
-With the patch, 2-channel samples are padded to 6 by the plug: wrapper so
-the sound is correctly played on the front speakers.  6-channel playback
-is unchanged, as it should.
-
-----------------------------------------------------------------------
- tiwai - 03-20-06 13:04 
-----------------------------------------------------------------------
-OK, closing this bug now.  The better upmixing is a different thing (which
-will be improved in near future).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 21:25 mru            New Issue                                    
-03-11-06 21:25 mru            Distribution              => Gentoo          
-03-11-06 21:25 mru            Kernel Version            => 2.6.15-gentoo-r1
-03-14-06 15:04 tiwai          Note Added: 0008477                          
-03-14-06 15:15 mru            Note Added: 0008478                          
-03-14-06 15:22 tiwai          Note Added: 0008481                          
-03-14-06 23:53 mru            Note Added: 0008524                          
-03-15-06 11:59 tiwai          Note Added: 0008536                          
-03-15-06 12:27 mru            Note Added: 0008541                          
-03-15-06 13:04 tiwai          Note Added: 0008545                          
-03-15-06 13:05 tiwai          File Added: pcm-hw-restrict.diff                  
- 
-03-16-06 02:06 mru            Note Added: 0008580                          
-03-16-06 02:38 mru            Note Added: 0008582                          
-03-20-06 13:04 tiwai          Status                   assigned => resolved
-03-20-06 13:04 tiwai          Resolution               open => fixed       
-03-20-06 13:04 tiwai          Note Added: 0008719                          
+03-20-06 13:56 axion          New Issue                                    
+03-20-06 13:56 axion          Distribution              => slackware       
+03-20-06 13:56 axion          Kernel Version            => 2.6.16          
 ======================================================================
 
 
