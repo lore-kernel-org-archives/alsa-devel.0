@@ -1,11 +1,14 @@
-From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
-Subject: [PATCH] AMD Au1x00: make driver build after cleanup
-Date: Mon, 20 Mar 2006 21:26:56 +0300
-Message-ID: <441EF3F0.9080105@ru.mvista.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001527]: amixer fails to set right 'Capture Source' channel
+Date: Mon, 20 Mar 2006 19:33:14 +0100
+Message-ID: <c133538534bc4fa8870e728da7bf4ca6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020900000106040407020808"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E8A2200
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 19:33:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,59 +18,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020900000106040407020808
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello.
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1527> 
+======================================================================
+Reported By:                tartif
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1527
+Category:                   amixer
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             11-04-2005 16:11 CET
+Last Modified:              03-20-2006 19:33 CET
+======================================================================
+Summary:                    amixer fails to set right 'Capture Source' channel
+Description: 
+I use the ice1724 driver (Prodigy 7.1 card), ALSA 1.0.10_rc2 (also happens
+with 1.0.9).
 
-      AMD Au1x00 ALSA driver doesn't build after the recent code cleanup:
+amixer fails to set the 'capture source' for the right channel (left is
+OK). Left channel is set to that requested, right channel always set to
+0.
 
-sound/mips/au1x00.c: In function `au1000_setup_dma_link':
-sound/mips/au1x00.c:173: error: `pointer' undeclared (first use in this function)
-sound/mips/au1x00.c:173: error: (Each undeclared identifier is reported only once
-sound/mips/au1x00.c:173: error: for each function it appears in.)
-sound/mips/au1x00.c: In function `snd_au1000_hw_params':
-sound/mips/au1x00.c:339: warning: implicit declaration of function `snd_mask_min'
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001824 Always mixed into one channel when reco...
+======================================================================
 
-WBR, Sergei
+----------------------------------------------------------------------
+ johnrigg - 03-20-06 19:19 
+----------------------------------------------------------------------
+That's the wrong way round. On x86_64 long is 64 bits, unsigned int is 32.
 
+----------------------------------------------------------------------
+ tiwai - 03-20-06 19:33 
+----------------------------------------------------------------------
+Nice catch.  Fixed on CVS.  In addition to your patch, similar fixes are
+needed for other functions.
 
---------------020900000106040407020808
-Content-Type: text/plain;
- name="Au1x00-make-ALSA-driver-build-after-cleanup.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="Au1x00-make-ALSA-driver-build-after-cleanup.patch"
-
-diff --git a/sound/mips/au1x00.c b/sound/mips/au1x00.c
-index 6d8f8b3..9517686 100644
---- a/sound/mips/au1x00.c
-+++ b/sound/mips/au1x00.c
-@@ -43,6 +43,7 @@
- #include <sound/core.h>
- #include <sound/initval.h>
- #include <sound/pcm.h>
-+#include <sound/pcm_params.h>
- #include <sound/ac97_codec.h>
- #include <asm/mach-au1x00/au1000.h>
- #include <asm/mach-au1x00/au1000_dma.h>
-@@ -153,6 +154,7 @@ au1000_setup_dma_link(struct audio_strea
- {
- 	struct snd_pcm_substream *substream = stream->substream;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct au1000_period *pointer;
- 	unsigned long dma_start;
- 	int i;
- 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-04-05 16:11 tartif         New Issue                                    
+02-11-06 03:49 ikari_01       Issue Monitored: ikari_01                    
+02-18-06 01:32 rlrevell       Relationship added       has duplicate 0001824
+03-19-06 22:44 ungod          Note Added: 0008698                          
+03-19-06 22:44 ungod          File Added: aureon-enumerated.diff                
+   
+03-20-06 19:19 johnrigg       Note Added: 0008722                          
+03-20-06 19:33 tiwai          Status                   new => resolved     
+03-20-06 19:33 tiwai          Resolution               open => fixed       
+03-20-06 19:33 tiwai          Assigned To               => tiwai           
+03-20-06 19:33 tiwai          Note Added: 0008723                          
+======================================================================
 
 
-
---------------020900000106040407020808--
 
 
 -------------------------------------------------------
