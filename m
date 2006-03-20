@@ -1,13 +1,13 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Can period_bytes_max equal to buffer_bytes_max??
-Date: Mon, 20 Mar 2006 20:14:37 +0000
-Message-ID: <1142885677.9244.2.camel@localhost.localdomain>
-References: <715d90900603200140ua8727depac39fff084d7a621@mail.gmail.com>
+From: Juergen Kreileder <jk@blackdown.de>
+Subject: Re: Any missing patches?
+Date: Mon, 20 Mar 2006 21:18:33 +0100
+Message-ID: <877j6oq38m.fsf@blackdown.de>
+References: <s5hmzfl9cql.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <715d90900603200140ua8727depac39fff084d7a621@mail.gmail.com>
+In-Reply-To: <s5hmzfl9cql.wl%tiwai@suse.de> (Takashi Iwai's message of "Mon,
+	20 Mar 2006 19:45:22 +0100")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,20 +17,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: boku <boku0712@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-03-20 at 17:40 +0800, boku wrote:
-> Dear all,
->     While setting the xxx_pcm_hardware paramaters, what it mean and
-> cause if period_bytes_max=buffer_bytes_max? Does it mean that one IRQ
-> is gen after all the buffer size is transferred? 
->  
+Takashi Iwai <tiwai@suse.de> writes:
 
-What is generating the IRQ? Does your hardware generate this? You
-shouldn't expect it to appear automagically.
+> if someone has patches intended for merging to ALSA tree, please
+> submit them ASAP.
+>
+> I think the current ALSA CVS tree is forming to a relatively good
+> shape now, and it's good time to push Linux kernel tree, too.
+> Let's be not too late to ride a bus.
 
+Here's a patch for generic dmix which fixes S16 byte swapping.
+
+Tested on powerpc with snd-usb-audio.  (Without the patch I get crackling.)
+
+
+BTW: Is it normal that the dmix plug-in consumes 100% CPU?
+
+
+        Juergen
+
+
+Signed-off-by: Juergen Kreileder <jk@blackdown.de>
+
+--- o/alsa-lib-1.0.11rc3/src/pcm/pcm_dmix_generic.c	2005-12-19 08:39:04.000000000 +0100
++++ alsa-lib-1.0.11rc3/src/pcm/pcm_dmix_generic.c	2006-03-10 02:04:56.000000000 +0100
+@@ -194,7 +194,7 @@ static void mix_areas1_swap(unsigned int
+ 	register signed int sample;
+ 
+ 	for (;;) {
+-		sample = bswap_16(*src);
++		sample = (signed short) bswap_16(*src);
+ 		if (! *dst) {
+ 			*sum = sample;
+ 			*dst = *src;
+@@ -205,7 +205,7 @@ static void mix_areas1_swap(unsigned int
+ 				sample = 0x7fff;
+ 			else if (sample < -0x8000)
+ 				sample = -0x8000;
+-			*dst = bswap_16((signed short)sample);
++			*dst = (signed short) bswap_16((signed short) sample);
+ 		}
+ 		if (!--size)
+ 			return;
+=
+
+
+-- 
+Juergen Kreileder, Blackdown Java-Linux Team
+http://blog.blackdown.de/
 
 
 -------------------------------------------------------
