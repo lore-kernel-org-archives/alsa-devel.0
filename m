@@ -1,11 +1,14 @@
-From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
-Subject: [PATCH] AMD Au1x00: fix DMA init/cleanup
-Date: Tue, 21 Mar 2006 00:20:28 +0300
-Message-ID: <441F1C9C.3080504@ru.mvista.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
+Date: Mon, 20 Mar 2006 22:36:49 +0100
+Message-ID: <40153df32f48e8b3fe8a348999ee22c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020100060906010509020509"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 487691FF
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 22:36:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,90 +18,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020100060906010509020509
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
+======================================================================
+Reported By:                drolyk
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1930
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15.6
+======================================================================
+Date Submitted:             03-15-2006 23:41 CET
+Last Modified:              03-20-2006 22:36 CET
+======================================================================
+Summary:                    Can`t get timidity woking in soft synth mode
+Description: 
+Can`t get timidity woking in "soft synth mode".
+======================================================================
 
-      AMD Au1x00 ALSA driver causes kernel oops in au1000_init() by trying to
-set DMA channel to -1 in yet unallocated audio streams. Here's the patch that
-staightens up DMA init/cleanup code.
+----------------------------------------------------------------------
+ drolyk - 03-20-06 22:21 
+----------------------------------------------------------------------
+fluidsynth works for me:
 
-WBR, Sergei
+$ fluidsynth -m alsa_seq -a alsa 8mbgmsfx.sf2 Desktop/MIDI/WALTZ.MID
 
+but, I`ve got sound from timidity too:
 
+$ timidity Desktop/MIDI/WALTZ.MID
 
---------------020100060906010509020509
-Content-Type: text/plain;
- name="Au1x00-ALSA-fix-DMA-init-and-cleanup.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="Au1x00-ALSA-fix-DMA-init-and-cleanup.patch"
-
-diff --git a/sound/mips/au1x00.c b/sound/mips/au1x00.c
-index 6d8f8b3..a7a221a 100644
---- a/sound/mips/au1x00.c
-+++ b/sound/mips/au1x00.c
-@@ -610,14 +610,17 @@ snd_au1000_free(struct snd_card *card)
- 		release_and_free_resource(au1000->ac97_res_port);
- 	}
- 
--	if (au1000->stream[PLAYBACK]->dma >= 0)
--		free_au1000_dma(au1000->stream[PLAYBACK]->dma);
--
--	if (au1000->stream[CAPTURE]->dma >= 0)
--		free_au1000_dma(au1000->stream[CAPTURE]->dma);
-+	if (au1000->stream[PLAYBACK]) {
-+	  	if (au1000->stream[PLAYBACK]->dma >= 0)
-+			free_au1000_dma(au1000->stream[PLAYBACK]->dma);
-+		kfree(au1000->stream[PLAYBACK]);
-+	}
- 
--	kfree(au1000->stream[PLAYBACK]);
--	kfree(au1000->stream[CAPTURE]);
-+	if (au1000->stream[CAPTURE]) {
-+		if (au1000->stream[CAPTURE]->dma >= 0)
-+			free_au1000_dma(au1000->stream[CAPTURE]->dma);
-+		kfree(au1000->stream[CAPTURE]);
-+	}
- }
- 
- 
-@@ -636,15 +630,19 @@ au1000_init(void)
- 
- 	card->private_free = snd_au1000_free;
- 	au1000 = card->private_data;
--	/* so that snd_au1000_free will work as intended */
- 	au1000->card = card;
--	au1000->stream[PLAYBACK]->dma = -1;
--	au1000->stream[CAPTURE]->dma = -1;
-- 	au1000->ac97_res_port = NULL;
-+
- 	au1000->stream[PLAYBACK] = kmalloc(sizeof(struct audio_stream), GFP_KERNEL);
--	au1000->stream[CAPTURE] = kmalloc(sizeof(struct audio_stream), GFP_KERNEL);
-+	au1000->stream[CAPTURE ] = kmalloc(sizeof(struct audio_stream), GFP_KERNEL);
-+	/* so that snd_au1000_free will work as intended */
-+ 	au1000->ac97_res_port = NULL;
-+	if (au1000->stream[PLAYBACK])
-+		au1000->stream[PLAYBACK]->dma = -1;
-+	if (au1000->stream[CAPTURE ])
-+		au1000->stream[CAPTURE ]->dma = -1;
-+
- 	if (au1000->stream[PLAYBACK] == NULL ||
--	    au1000->stream[CAPTURE] == NULL) {
-+	    au1000->stream[CAPTURE ] == NULL) {
- 		snd_card_free(card);
- 		return -ENOMEM;
- 	}
+My problem is that I can`t got any sound from timidity in soft synth mode.
 
 
 
---------------020100060906010509020509--
+----------------------------------------------------------------------
+ fdoffizi01 - 03-20-06 22:36 
+----------------------------------------------------------------------
+Same here, direct playing works, soft synth doesn't, for timidity and
+fluidsynth. Using pmidi, aplaymidi and kmid... don't know whatevere else
+to use to test soft synth but I think it's enough to understand there's
+some problem with the way these synth receive data from virtual port that
+I think alsa creates for them.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-15-06 23:41 drolyk         New Issue                                    
+03-15-06 23:41 drolyk         Distribution              => Debian          
+03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
+03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
+03-20-06 01:28 rlrevell       Note Added: 0008702                          
+03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
+03-20-06 03:24 rlrevell       Note Added: 0008706                          
+03-20-06 06:08 drolyk         Note Added: 0008709                          
+03-20-06 06:22 rlrevell       Note Added: 0008710                          
+03-20-06 07:19 Raymond        Note Added: 0008711                          
+03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
+03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
+03-20-06 22:19 drolyk         Note Added: 0008726                          
+03-20-06 22:21 drolyk         Note Edited: 0008726                         
+03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
