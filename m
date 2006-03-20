@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Mon, 20 Mar 2006 07:19:22 +0100
-Message-ID: <0eac4ad3dfda4745e909eb5e21e2aaa3@bugtrack.alsa-project.org>
+From: Rimas Kudelis <rq@akl.lt>
+Subject: Re: More detailed Acer (Intel HDA)
+Date: Mon, 20 Mar 2006 08:50:14 +0200
+Message-ID: <441E50A6.3030100@akl.lt>
+References: <441D52F3.9010107@akl.lt> <1142793842.4532.28.camel@mindpipe>	 <441DE71F.7080209@akl.lt> <1142814150.4532.45.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=windows-1257; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DCC116F
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 07:19:22 +0100 (MET)
+In-Reply-To: <1142814150.4532.45.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ALSA devel <alsa-devel@lists.sourceforge.net>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 List-Id: alsa-devel@alsa-project.org
 
+Hola,
+>>>> I asked a user on Ubuntu forums to test Acer jack modes more
+>>>> extensively. The results are a bit surprising. You may want to check
+>>>> out http://ubuntuforums.org/showthread.php?p=825101#post825101.
+>>>>         
+>>> Breezy is too old, that driver had many bugs fixed lately.  How does it
+>>> work with the latest ALSA CVS version?
+>>>       
+>> He IS using the latest ALSA CVS version with Breezy. ;) That's why the
+>> sound does work for him. Just some of the details of HOW it works are
+>> quite interesting...
+>>     
+> That thread is too long.  Please describe briefly exactly what the
+> unexpected behavior is and how you think it should work and file an ALSA
+> bug report.
+>   
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
-======================================================================
-Reported By:                drolyk
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1930
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.6
-======================================================================
-Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              03-20-2006 07:19 CET
-======================================================================
-Summary:                    Can`t get timidity woking in soft synth mode
-Description: 
-Can`t get timidity woking in "soft synth mode".
-======================================================================
+That thread was started long before the acer model was actually added to
+hda-intel driver. Everything that I find unexpected is written in the
+exact post I linked to.
 
-----------------------------------------------------------------------
- rlrevell - 03-20-06 06:22 
-----------------------------------------------------------------------
-Please tell me if the "fluidsynth" example I posted works.
+I'm not going to file a bug. Just asking for Jonathan's opinion about
+this (i.e., why doesn't LINE-OUT allow choosing Mic modes, but allows
+Line In). After I check everything, i'm willing to write a small patch
+that removes all non-working features (like CD and Beep controls) from
+the current acer model and, maybe, adds one or two that are not
+currently in.
 
-----------------------------------------------------------------------
- Raymond - 03-20-06 07:19 
-----------------------------------------------------------------------
-Why do you have "snd_seq_dummy" ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-15-06 23:41 drolyk         New Issue                                    
-03-15-06 23:41 drolyk         Distribution              => Debian          
-03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
-03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
-03-20-06 01:28 rlrevell       Note Added: 0008702                          
-03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
-03-20-06 03:24 rlrevell       Note Added: 0008706                          
-03-20-06 06:08 drolyk         Note Added: 0008709                          
-03-20-06 06:22 rlrevell       Note Added: 0008710                          
-03-20-06 07:19 Raymond        Note Added: 0008711                          
-======================================================================
+Rimas
 
 
 
