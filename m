@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
-Date: Mon, 20 Mar 2006 02:08:31 +0100
-Message-ID: <0de61a563c4cd7f929078bd7d589ae02@bugtrack.alsa-project.org>
+Date: Mon, 20 Mar 2006 02:48:24 +0100
+Message-ID: <19598cd08e5966f5e5d5fa1b15ce95bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7BE641DD
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 02:08:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C4DB1F1
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 02:48:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             suspend2-sources-2.6.15-r6
 ======================================================================
 Date Submitted:             02-13-2006 04:04 CET
-Last Modified:              03-20-2006 02:08 CET
+Last Modified:              03-20-2006 02:48 CET
 ======================================================================
 Summary:                    regression: no sound with sigmatel stac9200, works
 in alsa 1.0.10
@@ -59,12 +59,6 @@ has duplicate       0001729 Only output through headphone jack
 ======================================================================
 
 ----------------------------------------------------------------------
- lrupn - 03-19-06 11:56 
-----------------------------------------------------------------------
-fix3 is OK on acer travelmate 3002WTMi, however internal mic is still not
-working :(
-
-----------------------------------------------------------------------
  richardfish - 03-20-06 02:08 
 ----------------------------------------------------------------------
 I have debugged why this didn't work for my Dell e1705.  It seems this
@@ -76,6 +70,13 @@ The attached patch rjf-ignore-extra-speakers.diff provides a fix.
 
 Also, one of the debug print statements in fix3 is incorrect. 
 rjf-fix-debug-print.diff provides a fix.
+
+----------------------------------------------------------------------
+ richardfish - 03-20-06 02:48 
+----------------------------------------------------------------------
+The other possibility for the e1705 is to treat the extra speaker pins as
+line_outs.  But it is necessary to add some speaker_pin handling to
+patch_sigmatel.c for that.  See rjf-extra-speakers-as-lineouts.diff.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -116,6 +117,11 @@ suspend2-sources-2.6.15-r6
 03-18-06 12:43 gsmet          Issue Monitored: gsmet                       
 03-19-06 11:56 lrupn          Note Added: 0008688                          
 03-20-06 02:08 richardfish    Note Added: 0008704                          
+03-20-06 02:09 richardfish    File Added: rjf-ignore-extra-speakers.diff        
+           
+03-20-06 02:09 richardfish    File Added: rjf-fix-debug-print.diff              
+     
+03-20-06 02:48 richardfish    Note Added: 0008705                          
 ======================================================================
 
 
