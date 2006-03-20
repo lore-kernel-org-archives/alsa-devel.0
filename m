@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Tue, 21 Mar 2006 00:14:44 +0100
-Message-ID: <6656223d29e0963ed7479389cff1ee83@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
+Date: Tue, 21 Mar 2006 00:29:50 +0100
+Message-ID: <dbfcd1d6c03f7dc0ad025422fdf77a4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11DBC1FF
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 00:14:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48F2E203
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 00:29:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
 ======================================================================
-Reported By:                drolyk
+Reported By:                bambam
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1930
-Category:                   PCI - intel8x0
+Issue ID:                   1938
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.6
+Distribution:               Debian sid with custom x86-64 kernel
+Kernel Version:             2.6.16-rc6
 ======================================================================
-Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              03-21-2006 00:14 CET
+Date Submitted:             03-17-2006 20:31 CET
+Last Modified:              03-21-2006 00:29 CET
 ======================================================================
-Summary:                    Can`t get timidity woking in soft synth mode
+Summary:                    EPIPE on Audigy with surround sound when seeking in
+6 channel sound file
 Description: 
-Can`t get timidity woking in "soft synth mode".
+Seeking in a 6 channel sound or video file using a surround device gives
+EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
+is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
+userspace. I've tried libs and modules from CVS two days ago with no
+success.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-20-06 23:54 
+ tiwai - 03-20-06 12:25 
 ----------------------------------------------------------------------
-Ah OK.  I was confused by your use of "soft synth mode", which I
-interpreted to mean synthesis vs. just triggering samples, but you are
-referring to the ability to receive MIDI input from a sequencer port vs. a
-file.
-
-What was the last kernel+ALSA version where this worked?
+I fixed a missing opening mode restoration in hw plug on CVS tree right
+now, which might be related with this problem.   Please try the CVS
+version later.
 
 ----------------------------------------------------------------------
- fdoffizi01 - 03-21-06 00:14 
+ bambam - 03-21-06 00:29 
 ----------------------------------------------------------------------
-I'd like to use timidity or fluidsynth as a software synth to hear midi
-file from any midi application, rosegarden, kmid... web browser...
-
-I can't say when it stopped working... now I changed pc so I can't even
-tell if hw module make difference (but I'm tryin it on different machines
-and let you know soon!)
+I've just tried modules and libs from CVS and unfortunately they don't
+solve this issue.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 23:41 drolyk         New Issue                                    
-03-15-06 23:41 drolyk         Distribution              => Debian          
-03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
-03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
-03-20-06 01:28 rlrevell       Note Added: 0008702                          
-03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
-03-20-06 03:24 rlrevell       Note Added: 0008706                          
-03-20-06 06:08 drolyk         Note Added: 0008709                          
-03-20-06 06:22 rlrevell       Note Added: 0008710                          
-03-20-06 07:19 Raymond        Note Added: 0008711                          
-03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
-03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
-03-20-06 22:19 drolyk         Note Added: 0008726                          
-03-20-06 22:21 drolyk         Note Edited: 0008726                         
-03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
-03-20-06 23:29 rlrevell       Note Added: 0008729                          
-03-20-06 23:40 fdoffizi01     Note Added: 0008730                          
-03-20-06 23:54 rlrevell       Note Added: 0008731                          
-03-21-06 00:14 fdoffizi01     Note Added: 0008732                          
+03-17-06 20:31 bambam         New Issue                                    
+03-17-06 20:31 bambam         Distribution              => Debian sid with
+custom x86-64 kernel
+03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
+03-17-06 20:36 bambam         Note Added: 0008656                          
+03-17-06 21:07 bambam         Note Added: 0008659                          
+03-17-06 21:53 bambam         Note Added: 0008662                          
+03-18-06 01:07 rlrevell       Note Added: 0008667                          
+03-18-06 01:11 bambam         Note Added: 0008668                          
+03-18-06 14:44 bambam         Note Added: 0008671                          
+03-20-06 12:25 tiwai          Note Added: 0008715                          
+03-21-06 00:29 bambam         Note Added: 0008733                          
 ======================================================================
 
 
