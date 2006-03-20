@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Mon, 20 Mar 2006 06:22:28 +0100
-Message-ID: <ee2ecafb01be1ef89553b148e9fb20ea@bugtrack.alsa-project.org>
+Date: Mon, 20 Mar 2006 07:19:22 +0100
+Message-ID: <0eac4ad3dfda4745e909eb5e21e2aaa3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 035A01F7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 06:22:28 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DCC116F
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 07:19:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.15.6
 ======================================================================
 Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              03-20-2006 06:22 CET
+Last Modified:              03-20-2006 07:19 CET
 ======================================================================
 Summary:                    Can`t get timidity woking in soft synth mode
 Description: 
@@ -48,18 +48,14 @@ Can`t get timidity woking in "soft synth mode".
 ======================================================================
 
 ----------------------------------------------------------------------
- drolyk - 03-20-06 06:08 
-----------------------------------------------------------------------
-My steps are the same as fdoffizi01.
-
-On my system I`ve got alsa-*-1.0.10 installed
-
-PS: I put them in "Steps To Reproduce" field :)
-
-----------------------------------------------------------------------
  rlrevell - 03-20-06 06:22 
 ----------------------------------------------------------------------
 Please tell me if the "fluidsynth" example I posted works.
+
+----------------------------------------------------------------------
+ Raymond - 03-20-06 07:19 
+----------------------------------------------------------------------
+Why do you have "snd_seq_dummy" ?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -73,6 +69,7 @@ Date Modified  Username       Field                    Change
 03-20-06 03:24 rlrevell       Note Added: 0008706                          
 03-20-06 06:08 drolyk         Note Added: 0008709                          
 03-20-06 06:22 rlrevell       Note Added: 0008710                          
+03-20-06 07:19 Raymond        Note Added: 0008711                          
 ======================================================================
 
 
