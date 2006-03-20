@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Mon, 20 Mar 2006 22:36:49 +0100
-Message-ID: <40153df32f48e8b3fe8a348999ee22c7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001945]: aplay fails to complete on ppc
+Date: Mon, 20 Mar 2006 22:42:05 +0100
+Message-ID: <40e3ce93c4ce90ee7e6228930ba918ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 487691FF
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 22:36:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 367D0200
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 22:42:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1945> 
 ======================================================================
-Reported By:                drolyk
-Assigned To:                
+Reported By:                zarni
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1930
-Category:                   PCI - intel8x0
+Issue ID:                   1945
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.6
+Status:                     assigned
+Distribution:               linuxfromscratch
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              03-20-2006 22:36 CET
+Date Submitted:             03-20-2006 16:28 CET
+Last Modified:              03-20-2006 22:42 CET
 ======================================================================
-Summary:                    Can`t get timidity woking in soft synth mode
+Summary:                    aplay fails to complete on ppc
 Description: 
-Can`t get timidity woking in "soft synth mode".
+On my G5 SMU with an Audigy SE, aplay does not complete
+
+'top' shows 99% cpu, there is no audible sound.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- drolyk - 03-20-06 22:21 
+ zarni - 03-20-06 18:21 
 ----------------------------------------------------------------------
-fluidsynth works for me:
-
-$ fluidsynth -m alsa_seq -a alsa 8mbgmsfx.sf2 Desktop/MIDI/WALTZ.MID
-
-but, I`ve got sound from timidity too:
-
-$ timidity Desktop/MIDI/WALTZ.MID
-
-My problem is that I can`t got any sound from timidity in soft synth mode.
-
-
+strace output (truncated after the point where it starts looping) at
+http://www.kenmoffat.uklinux.net/misc/trace-aplay.bz2
 
 ----------------------------------------------------------------------
- fdoffizi01 - 03-20-06 22:36 
+ zarni - 03-20-06 22:42 
 ----------------------------------------------------------------------
-Same here, direct playing works, soft synth doesn't, for timidity and
-fluidsynth. Using pmidi, aplaymidi and kmid... don't know whatevere else
-to use to test soft synth but I think it's enough to understand there's
-some problem with the way these synth receive data from virtual port that
-I think alsa creates for them.
+It's in the eighth call to snd_pcm_writei : each time it passes 170 bytes,
+the last time it never comes back (this is an 8KHz mono file). 
+Unfortunately, I have no idea how to find the source for _snd_pcm_write,
+for which this call is a wrapper.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 23:41 drolyk         New Issue                                    
-03-15-06 23:41 drolyk         Distribution              => Debian          
-03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
-03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
-03-20-06 01:28 rlrevell       Note Added: 0008702                          
-03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
-03-20-06 03:24 rlrevell       Note Added: 0008706                          
-03-20-06 06:08 drolyk         Note Added: 0008709                          
-03-20-06 06:22 rlrevell       Note Added: 0008710                          
-03-20-06 07:19 Raymond        Note Added: 0008711                          
-03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
-03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
-03-20-06 22:19 drolyk         Note Added: 0008726                          
-03-20-06 22:21 drolyk         Note Edited: 0008726                         
-03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
+03-20-06 16:28 zarni          New Issue                                    
+03-20-06 16:28 zarni          Distribution              => linuxfromscratch
+03-20-06 16:28 zarni          Kernel Version            => 2.6             
+03-20-06 18:21 zarni          Note Added: 0008721                          
+03-20-06 22:42 zarni          Note Added: 0008728                          
 ======================================================================
 
 
