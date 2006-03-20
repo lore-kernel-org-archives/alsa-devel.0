@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
-Date: Mon, 20 Mar 2006 12:31:15 +0100
-Message-ID: <dc29bdc31317b81059969da237a1959a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001824]: Always mixed into one channel when recording stereo
+Date: Mon, 20 Mar 2006 12:35:31 +0100
+Message-ID: <b68ed29b6979a91487f9ac200849955f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 967811F7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 12:31:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 06C5A13A
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 12:35:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,104 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1824> 
 ======================================================================
-Reported By:                richardfish
-Assigned To:                tiwai
+Reported By:                Electro
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1843
-Category:                   PCI - hda-intel
+Issue ID:                   1824
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               Gentoo
-Kernel Version:             suspend2-sources-2.6.15-r6
+Kernel Version:             2.6.14-gentoo-r4
 ======================================================================
-Date Submitted:             02-13-2006 04:04 CET
-Last Modified:              03-20-2006 12:31 CET
+Date Submitted:             02-06-2006 06:56 CET
+Last Modified:              03-20-2006 12:35 CET
 ======================================================================
-Summary:                    regression: no sound with sigmatel stac9200, works
-in alsa 1.0.10
+Summary:                    Always mixed into one channel when recording stereo
 Description: 
-With alsa 1.0.10, my Intel HDA with the Sigmatel STAC9200 produces sound
-from both speakers and headphones (although the speakers are not muted
-when the headphones are inserted, but that is a separate problem).  
-
-With alsa 1.0.11rc3, and the CVS version as of today, no sound is produced
-from either speakers or headphones.
+When recording stereo audio (2 channels), the sound seems to mix to one
+channel and then saved in the left track. I do not have anything in
+asound.conf or ~/.asoundrc that will affect the recordings. I even cleared
+them out to make sure that my code is not screwing up the recordings. It
+has done this since I upgraded to 1.0.10 from 1.0.9. I thought 1.0.11rc3
+will fix the problem but it still does it.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001813 STAC9750 not recognised by hda-intel
-has duplicate       0001729 Only output through headphone jack
+duplicate of        0001527 amixer fails to set right 'Capture Sour...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-20-06 11:53 
+ Electro - 02-28-06 22:45 
 ----------------------------------------------------------------------
-Thanks for the patch.
-But I think we should better to change autocfg struct to hold multiple
-speaker_pins.
-
-What actually are the first and second pins used for?
+If AC97 is set for capture instead of Line in, the audio will be recorded
+in stereo. I think it is the snd-ice1724 driver. Not the library itself.
 
 ----------------------------------------------------------------------
- tiwai - 03-20-06 12:31 
+ ungod - 03-20-06 12:35 
 ----------------------------------------------------------------------
-The new patch (autoconfig-fix4) is uploaded.  It allows the multiple
-speaker pins.
-Give it a try.
+Which ice1724 audio card are we talking about?
+And have you verified that Line in is set as the recording source for both
+the left and right channel?
+
+$ amixer cget name="Capture Source"
+numid=36,iface=MIXER,name='Capture Source'
+  ; type=ENUMERATED,access=rw---,values=2,items=5
+  ; Item #0 'CD'
+  ; Item #1 'Aux'
+  ; Item #2 'Line'
+  ; Item #3 'Mic'
+  ; Item #4 'AC97'
+  : values=2,2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-06 04:04 richardfish    New Issue                                    
-02-13-06 04:04 richardfish    File Added: alsa-rjf-1.patch                    
-02-13-06 04:04 richardfish    Distribution              => Gentoo          
-02-13-06 04:04 richardfish    Kernel Version            =>
-suspend2-sources-2.6.15-r6
-02-14-06 05:43 richardfish    Issue Monitored: richardfish                    
-02-20-06 22:51 lrupn          Issue Monitored: lrupn                       
-02-25-06 21:40 lrupn          Note Added: 0008192                          
-02-26-06 16:08 toshio         Note Added: 0008203                          
-02-27-06 23:45 richardfish    Note Added: 0008233                          
-03-01-06 17:07 lrupn          Note Added: 0008281                          
-03-01-06 17:59 mpt            Issue Monitored: mpt                         
-03-17-06 00:39 tiwai          Note Added: 0008622                          
-03-17-06 00:41 tiwai          File Added: hda-autoconfig-fix.diff               
-    
-03-17-06 01:03 tiwai          Relationship added       has duplicate 0001813
-03-17-06 01:09 tiwai          Relationship added       has duplicate 0001729
-03-17-06 04:55 error10        Note Added: 0008634                          
-03-17-06 11:59 tiwai          Note Added: 0008637                          
-03-17-06 11:59 tiwai          File Added: hda-autoconfig-fix2.diff              
-     
-03-17-06 12:00 tiwai          Note Added: 0008638                          
-03-17-06 20:39 Jeff250        Note Added: 0008657                          
-03-17-06 20:40 Jeff250        Note Edited: 0008657                         
-03-17-06 20:55 tiwai          Note Added: 0008658                          
-03-17-06 20:55 tiwai          File Added: stac9200-additional-fix.diff          
-         
-03-17-06 21:31 tiwai          Note Added: 0008660                          
-03-17-06 21:31 tiwai          File Added: hda-autoconfig-fix3.diff              
-     
-03-18-06 00:07 Jeff250        Note Added: 0008664                          
-03-18-06 05:22 richardfish    Note Added: 0008669                          
-03-18-06 12:41 gsmet          Note Added: 0008670                          
-03-18-06 12:43 gsmet          Issue Monitored: gsmet                       
-03-19-06 11:56 lrupn          Note Added: 0008688                          
-03-20-06 02:08 richardfish    Note Added: 0008704                          
-03-20-06 02:09 richardfish    File Added: rjf-ignore-extra-speakers.diff        
-           
-03-20-06 02:09 richardfish    File Added: rjf-fix-debug-print.diff              
-     
-03-20-06 02:48 richardfish    Note Added: 0008705                          
-03-20-06 02:49 richardfish    File Added: rjf-extra-speakers-as-lineouts.diff   
-                
-03-20-06 11:53 tiwai          Note Added: 0008714                          
-03-20-06 12:31 tiwai          Note Added: 0008716                          
+02-06-06 06:56 Electro        New Issue                                    
+02-06-06 06:56 Electro        Distribution              => Gentoo          
+02-06-06 06:56 Electro        Kernel Version            => 2.6.14-gentoo-r4
+02-10-06 23:38 tartif         Note Added: 0008009                          
+02-16-06 07:26 Electro        Note Added: 0008087                          
+02-18-06 01:32 rlrevell       Relationship added       duplicate of 0001527
+02-28-06 22:45 Electro        Note Added: 0008248                          
+03-20-06 12:35 ungod          Note Added: 0008717                          
 ======================================================================
 
 
