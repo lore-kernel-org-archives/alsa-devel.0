@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001634]: lack of mmap support with ice1724
-Date: Mon, 20 Mar 2006 06:03:42 +0100
-Message-ID: <df03dec7908c94a8b49624aaa2290c05@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
+Date: Mon, 20 Mar 2006 06:08:35 +0100
+Message-ID: <a891f2deb6acd71b520db0b772682589@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1B121F7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 06:03:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16E5A1F7
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 06:08:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1634> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
 ======================================================================
-Reported By:                joecool
+Reported By:                drolyk
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1634
-Category:                   PCI - ice1724
+Issue ID:                   1930
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.14-mm2
+Distribution:               Debian
+Kernel Version:             2.6.15.6
 ======================================================================
-Date Submitted:             12-10-2005 09:02 CET
-Last Modified:              03-20-2006 06:03 CET
+Date Submitted:             03-15-2006 23:41 CET
+Last Modified:              03-20-2006 06:08 CET
 ======================================================================
-Summary:                    lack of mmap support with ice1724
+Summary:                    Can`t get timidity woking in soft synth mode
 Description: 
-I've dug around for awhile now as to why my m-audio revolution 7.1 doesn't
-work on enemy-territory because of an mmap error, and came to the
-conclusion it must be because there is no working mmap support.  So
-everything needs to run through arts, which is a poor, high-latency
-workaround to a major problem.
-
-This is a confirmable bug that 2 seconds of googling will pull up results.
- I do not want to hear of using a sound server (artsd, esd, jackd, etc.)
-as a workaround.  However, if the mmap support can be emulated driver
-level, then that would be fine.
+Can`t get timidity woking in "soft synth mode".
 ======================================================================
 
 ----------------------------------------------------------------------
- oscar - 03-18-06 00:21 
+ rlrevell - 03-20-06 03:24 
 ----------------------------------------------------------------------
-This error should go away once you do 
-'echo "et.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss'
+Does this work:
 
-At least it did fix it for me.
+fluidsynth -m alsa_seq -a alsa your_soundfont.sf2 foo.mid
 
 ----------------------------------------------------------------------
- joecool - 03-20-06 06:03 
+ drolyk - 03-20-06 06:08 
 ----------------------------------------------------------------------
-no, that won't fix it.  First of all the /proc layout is different now and
-more importantly that solution never worked for this card.  I doubt you
-also have a Revolution 7.1 or even a card with ice1724 and then tried to
-use that solution.
+My steps are the same as fdoffizi01.
 
-Anyways, thanks for trying to help, but it'll take more then that in this
-case :P
+On my system I`ve got alsa-*-1.0.10 installed
+
+PS: I put them in "Steps To Reproduce" field :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-10-05 09:02 joecool        New Issue                                    
-12-10-05 09:02 joecool        Distribution              => Gentoo Linux    
-12-10-05 09:02 joecool        Kernel Version            => 2.6.14-mm2      
-01-15-06 02:02 joecool        Issue Monitored: joecool                     
-03-18-06 00:21 oscar          Note Added: 0008665                          
-03-20-06 06:03 joecool        Note Added: 0008708                          
+03-15-06 23:41 drolyk         New Issue                                    
+03-15-06 23:41 drolyk         Distribution              => Debian          
+03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
+03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
+03-20-06 01:28 rlrevell       Note Added: 0008702                          
+03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
+03-20-06 03:24 rlrevell       Note Added: 0008706                          
+03-20-06 06:08 drolyk         Note Added: 0008709                          
 ======================================================================
 
 
