@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Mon, 20 Mar 2006 01:28:57 +0100
-Message-ID: <df9c364dce7ff2719d742f7b61cbad35@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Detecting the sample format in the driver
+Date: Sun, 19 Mar 2006 19:32:55 -0500
+Message-ID: <1142814775.4532.48.camel@mindpipe>
+References: <1142810413.9700.45.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B15A712A
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 01:28:57 +0100 (MET)
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 45EBE1D5
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 01:32:58 +0100 (MET)
+In-Reply-To: <1142810413.9700.45.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +20,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2006-03-19 at 23:20 +0000, Adrian McMenamin wrote:
+> for some reason this isn't working for me - and I need to set hardware
+> channel parameters on the basis of the sample.
+> 
+> My hardware plays signed 8 bit, signed 16 bit little endian and 8 bit
+> adaptive differential PCM and I have this set...
+> 
+> 
+> 
+> .formats =
+> 	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
+> 	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
+> 
+> 
+> 
+> But when I try to detect the format...
+> 
+> 	if ((substream->runtime)->format == SNDRV_PCM_FMTBIT_S16_LE)
+> 		channel->sfmt = SM_16BIT;
+> 
+> 
+> It doesn't seem to work.
+> 
+> I am assuming the alsa subsystem ought to process the stream for me - ie
+> any 16 bit stream will turn up as SNDRV_PCM_FMTBIT_S16_LE - is that
+> right? And if it is, why isn't it working?
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
-======================================================================
-Reported By:                drolyk
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1930
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.6
-======================================================================
-Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              03-20-2006 01:28 CET
-======================================================================
-Summary:                    Can`t get timidity woking in soft synth mode
-Description: 
-Can`t get timidity woking in "soft synth mode".
-======================================================================
+What does snd_pcm_format_width(runtime->format) return (check emupcm.c
+for examples)?
 
-----------------------------------------------------------------------
- fdoffizi01 - 03-19-06 23:55 
-----------------------------------------------------------------------
-Well it seems it's not full of information here but it's something I can't
-get to make work too.
-I was using an intel8x0 and I had problems, now I've got a hda-intel and
-still having similar problems.
-I can start timidity as player without problem, I can start it as alsa
-soft synth but when I use some apps to play with it through virtual port I
-got no sound. It's the same with fluidsynth so maybe a problem with
-something in new alsalib (can't say how much new)?
-
-----------------------------------------------------------------------
- rlrevell - 03-20-06 01:28 
-----------------------------------------------------------------------
-Please give the exact steps to reproduce the bug
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-15-06 23:41 drolyk         New Issue                                    
-03-15-06 23:41 drolyk         Distribution              => Debian          
-03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
-03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
-03-20-06 01:28 rlrevell       Note Added: 0008702                          
-======================================================================
-
+Lee
 
 
 
