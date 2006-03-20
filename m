@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001942]: [PATCH] added support uncommon "rate"
-Date: Mon, 20 Mar 2006 09:09:42 +0100
-Message-ID: <f779c93190260043fc363e6607ee2646@bugtrack.alsa-project.org>
+From: boku <boku0712@gmail.com>
+Subject: Can period_bytes_max equal to buffer_bytes_max??
+Date: Mon, 20 Mar 2006 17:40:38 +0800
+Message-ID: <715d90900603200140ua8727depac39fff084d7a621@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_5964_11461372.1142847638629"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 045EC1F3
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 09:09:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +15,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_5964_11461372.1142847638629
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1942> 
-======================================================================
-Reported By:                os-bebas
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1942
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               UBuntu Dapper Drake
-Kernel Version:             2.6.15.6
-======================================================================
-Date Submitted:             03-18-2006 23:48 CET
-Last Modified:              03-20-2006 09:09 CET
-======================================================================
-Summary:                    [PATCH] added support uncommon "rate"
-Description: 
-attached you can find a simple patch to match
-"uncommon" rate in some USB speaker to the fixed
-conv_rates in usbaudio.c.
+Dear all,
+    While setting the xxx_pcm_hardware paramaters, what it mean and cause i=
+f
+period_bytes_max=3Dbuffer_bytes_max? Does it mean that one IRQ is gen after
+all the buffer size is transferred?
 
-Signed-off-by: S. Effendi <osbebas@yahoo.co.id>
+Thanks!~
 
-======================================================================
+------=_Part_5964_11461372.1142847638629
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-----------------------------------------------------------------------
- Clemens Ladisch - 03-20-06 09:09 
-----------------------------------------------------------------------
-Your patch assumes that every device that doesn't happen to support one of
-the predefined rates is lying and actually does use the next-smaller rate
-instead.
-This assumptions is wrong for most devices, and probably for yours, too.
+<div>Dear all,</div>
+<div>&nbsp;&nbsp;&nbsp; While setting the xxx_pcm_hardware paramaters, what=
+ it mean and cause if period_bytes_max=3Dbuffer_bytes_max? Does it mean tha=
+t one IRQ is gen after all the&nbsp;buffer size is transferred? </div>
+<div>&nbsp;</div>
+<div>Thanks!~</div>
+<div>&nbsp;</div>
 
-What is the output of "time dd if=/dev/zero of=/dev/dsp1 bs=1000
-count=10000"?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-18-06 23:48 os-bebas       New Issue                                    
-03-18-06 23:48 os-bebas       File Added: alsa_usbaudio_conv_rates_fixed.patch  
-                 
-03-18-06 23:48 os-bebas       Distribution              => UBuntu Dapper Drake
-03-18-06 23:48 os-bebas       Kernel Version            => 2.6.15.6        
-03-20-06 09:09 Clemens LadischNote Added: 0008712                          
-======================================================================
-
-
+------=_Part_5964_11461372.1142847638629--
 
 
 -------------------------------------------------------
