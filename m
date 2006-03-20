@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Mon, 20 Mar 2006 23:29:29 +0100
-Message-ID: <08fd7bdb1b1c8df191ba0fe83f62b6ec@bugtrack.alsa-project.org>
+Date: Mon, 20 Mar 2006 23:40:02 +0100
+Message-ID: <bc06377842e84ca1278a938283ed7873@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 182B0152
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 23:29:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0DE47152
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 23:40:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,21 +40,12 @@ Distribution:               Debian
 Kernel Version:             2.6.15.6
 ======================================================================
 Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              03-20-2006 23:29 CET
+Last Modified:              03-20-2006 23:40 CET
 ======================================================================
 Summary:                    Can`t get timidity woking in soft synth mode
 Description: 
 Can`t get timidity woking in "soft synth mode".
 ======================================================================
-
-----------------------------------------------------------------------
- fdoffizi01 - 03-20-06 22:36 
-----------------------------------------------------------------------
-Same here, direct playing works, soft synth doesn't, for timidity and
-fluidsynth. Using pmidi, aplaymidi and kmid... don't know whatevere else
-to use to test soft synth but I think it's enough to understand there's
-some problem with the way these synth receive data from virtual port that
-I think alsa creates for them.
 
 ----------------------------------------------------------------------
  rlrevell - 03-20-06 23:29 
@@ -63,6 +54,23 @@ I think this is a Timidity issue not an ALSA problem.  Did it work with
 previous versions?
 
 Fluidsynth does not have a soft synth mode, it only supports soundfonts.
+
+----------------------------------------------------------------------
+ fdoffizi01 - 03-20-06 23:40 
+----------------------------------------------------------------------
+So this is something magic?
+
+ciccio@Vaiolo ~ $ aplaymidi -l
+ Port    Client name                      Port name
+128:0    FLUID Synth (5036)               Synth input port (5036:0)
+
+Fluid synth HAS soft synth function and suffer the same exact problems as
+timidity when used in this way: player plays but no sound comes out (and
+only first few midi (instrument settings I think) commands are received as
+I can see from fluidsynth message log).
+
+That's why I think it's not a timidity issue. Is alsa who actually creates
+port for these soft synths? May be the problem is there...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +91,7 @@ Date Modified  Username       Field                    Change
 03-20-06 22:21 drolyk         Note Edited: 0008726                         
 03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
 03-20-06 23:29 rlrevell       Note Added: 0008729                          
+03-20-06 23:40 fdoffizi01     Note Added: 0008730                          
 ======================================================================
 
 
