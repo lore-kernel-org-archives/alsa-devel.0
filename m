@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001944]: 0001491: Onboard sound of HP Kayak workstation isn't detected properly
-Date: Mon, 20 Mar 2006 13:56:46 +0100
-Message-ID: <60ae7d3da208d6c0473161f661119e1d@bugtrack.alsa-project.org>
+Date: Mon, 20 Mar 2006 13:58:29 +0100
+Message-ID: <28e9d59cc0deba7733527807abba3256@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 880CA1E7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 13:56:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A0901EE
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 13:58:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1944> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               slackware
 Kernel Version:             2.6.16
 ======================================================================
 Date Submitted:             03-20-2006 13:56 CET
-Last Modified:              03-20-2006 13:56 CET
+Last Modified:              03-20-2006 13:58 CET
 ======================================================================
 Summary:                    0001491: Onboard sound of HP Kayak workstation isn't
 detected properly
@@ -52,12 +52,18 @@ doesn't work), but there's need to hard-write all parameters like io, irq,
 dma and so...
 ======================================================================
 
+----------------------------------------------------------------------
+ axion - 03-20-06 13:58 
+----------------------------------------------------------------------
+alsa version is 1.0.11rc2 ( builtinto kernel 2.6.16 )
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-20-06 13:56 axion          New Issue                                    
 03-20-06 13:56 axion          Distribution              => slackware       
 03-20-06 13:56 axion          Kernel Version            => 2.6.16          
+03-20-06 13:58 axion          Note Added: 0008720                          
 ======================================================================
 
 
