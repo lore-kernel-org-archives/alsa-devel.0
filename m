@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001945]: aplay fails to complete on ppc
-Date: Mon, 20 Mar 2006 16:28:15 +0100
-Message-ID: <b7b6d0e16350f0e225087f5d2d9850f4@bugtrack.alsa-project.org>
+Date: Mon, 20 Mar 2006 18:21:25 +0100
+Message-ID: <44c183e897d6760207f198ca6241fa49@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03123201
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 16:28:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C66E6216
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 18:21:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1945> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               linuxfromscratch
 Kernel Version:             2.6
 ======================================================================
 Date Submitted:             03-20-2006 16:28 CET
-Last Modified:              03-20-2006 16:28 CET
+Last Modified:              03-20-2006 18:21 CET
 ======================================================================
 Summary:                    aplay fails to complete on ppc
 Description: 
@@ -50,12 +50,19 @@ On my G5 SMU with an Audigy SE, aplay does not complete
 
 ======================================================================
 
+----------------------------------------------------------------------
+ zarni - 03-20-06 18:21 
+----------------------------------------------------------------------
+strace output (truncated after the point where it starts looping) at
+http://www.kenmoffat.uklinux.net/misc/trace-aplay.bz2
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-20-06 16:28 zarni          New Issue                                    
 03-20-06 16:28 zarni          Distribution              => linuxfromscratch
 03-20-06 16:28 zarni          Kernel Version            => 2.6             
+03-20-06 18:21 zarni          Note Added: 0008721                          
 ======================================================================
 
 
