@@ -1,13 +1,14 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: Re: More detailed Acer (Intel HDA)
-Date: Mon, 20 Mar 2006 08:50:14 +0200
-Message-ID: <441E50A6.3030100@akl.lt>
-References: <441D52F3.9010107@akl.lt> <1142793842.4532.28.camel@mindpipe>	 <441DE71F.7080209@akl.lt> <1142814150.4532.45.camel@mindpipe>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Odd behaviour with my driver
+Date: Mon, 20 Mar 2006 08:58:10 +0100
+Message-ID: <20060320075810.GA5574@turing.informatik.uni-halle.de>
+References: <1142714245.9435.29.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1257; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1142814150.4532.45.camel@mindpipe>
+In-reply-to: <1142714245.9435.29.camel@localhost.localdomain>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,41 +18,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA devel <alsa-devel@lists.sourceforge.net>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hola,
->>>> I asked a user on Ubuntu forums to test Acer jack modes more
->>>> extensively. The results are a bit surprising. You may want to check
->>>> out http://ubuntuforums.org/showthread.php?p=825101#post825101.
->>>>         
->>> Breezy is too old, that driver had many bugs fixed lately.  How does it
->>> work with the latest ALSA CVS version?
->>>       
->> He IS using the latest ALSA CVS version with Breezy. ;) That's why the
->> sound does work for him. Just some of the details of HOW it works are
->> quite interesting...
->>     
-> That thread is too long.  Please describe briefly exactly what the
-> unexpected behavior is and how you think it should work and file an ALSA
-> bug report.
->   
+Adrian McMenamin wrote:
+> For some reason the trigger (and prepare) callbacks are continually
+> being called
 
-That thread was started long before the acer model was actually added to
-hda-intel driver. Everything that I find unexpected is written in the
-exact post I linked to.
+When the midlevel code thinks that there is an xrun, it calls stop,
+prepare, and start.
 
-I'm not going to file a bug. Just asking for Jonathan's opinion about
-this (i.e., why doesn't LINE-OUT allow choosing Mic modes, but allows
-Line In). After I check everything, i'm willing to write a small patch
-that removes all non-working features (like CD and Beep controls) from
-the current acer model and, maybe, adds one or two that are not
-currently in.
+> ALSA sound/core/pcm_lib.c:158: BUG: stream = 0, pos = 0x3066, buffer
+> size = 0x2000, period size = 0x400
+> 
+> The hardware buffer is 0x8000 in size and I think that means pos might
+> quite legitamtely go as high as 0x3FFF.
 
-Rimas
+This message shows that the buffer size is 0x2000 frames.  If your
+number 0x8000 is in bytes, then each frame has four bytes.
 
 
+HTH
+Clemens
 
 
 -------------------------------------------------------
