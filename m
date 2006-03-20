@@ -1,17 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Detecting the sample format in the driver
-Date: Sun, 19 Mar 2006 23:20:12 +0000
-Message-ID: <1142810413.9700.45.camel@localhost.localdomain>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: More detailed Acer (Intel HDA)
+Date: Sun, 19 Mar 2006 19:22:29 -0500
+Message-ID: <1142814150.4532.45.camel@mindpipe>
+References: <441D52F3.9010107@akl.lt> <1142793842.4532.28.camel@mindpipe>
+	 <441DE71F.7080209@akl.lt>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 83C3C1CA
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 00:20:18 +0100 (MET)
-Received: from bossclass ([192.168.62.105])
-	by localhost.localdomain (8.13.4/8.13.4/Debian-3) with ESMTP id k2JNKE0I027030
-	for <alsa-devel@alsa-project.org>; Sun, 19 Mar 2006 23:20:15 GMT
+In-Reply-To: <441DE71F.7080209@akl.lt>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,34 +18,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Rimas Kudelis <rq@akl.lt>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-for some reason this isn't working for me - and I need to set hardware
-channel parameters on the basis of the sample.
+On Mon, 2006-03-20 at 01:19 +0200, Rimas Kudelis wrote:
+> Hi,
+> 
+> >> I asked a user on Ubuntu forums to test Acer jack modes more
+> >> extensively. The results are a bit surprising. You may want to check
+> >> out http://ubuntuforums.org/showthread.php?p=825101#post825101.
+> > 
+> > Breezy is too old, that driver had many bugs fixed lately.  How does it
+> > work with the latest ALSA CVS version?
+> 
+> He IS using the latest ALSA CVS version with Breezy. ;) That's why the
+> sound does work for him. Just some of the details of HOW it works are
+> quite interesting...
 
-My hardware plays signed 8 bit, signed 16 bit little endian and 8 bit
-adaptive differential PCM and I have this set...
+That thread is too long.  Please describe briefly exactly what the
+unexpected behavior is and how you think it should work and file an ALSA
+bug report.
 
-
-
-.formats =
-	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
-	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
-
-
-
-But when I try to detect the format...
-
-	if ((substream->runtime)->format == SNDRV_PCM_FMTBIT_S16_LE)
-		channel->sfmt = SM_16BIT;
-
-
-It doesn't seem to work.
-
-I am assuming the alsa subsystem ought to process the stream for me - ie
-any 16 bit stream will turn up as SNDRV_PCM_FMTBIT_S16_LE - is that
-right? And if it is, why isn't it working?
+Lee
 
 
 
