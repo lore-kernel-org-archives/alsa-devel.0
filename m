@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001850]: source available
-Date: Mon, 20 Mar 2006 22:10:10 +0100
-Message-ID: <c8c6c850c7beb733e877dc3e909bbde1@bugtrack.alsa-project.org>
+From: Juergen Kreileder <jk@blackdown.de>
+Subject: Re: Any missing patches?
+Date: Mon, 20 Mar 2006 22:15:03 +0100
+Message-ID: <87k6aoom20.fsf@blackdown.de>
+References: <s5hmzfl9cql.wl%tiwai@suse.de> <877j6oq38m.fsf@blackdown.de>
+	<s5h8xr4amkw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EED7516E
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 22:10:10 +0100 (MET)
+In-Reply-To: <s5h8xr4amkw.wl%tiwai@suse.de> (Takashi Iwai's message of "Mon,
+	20 Mar 2006 21:27:27 +0100")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +18,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai <tiwai@suse.de> writes:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
-======================================================================
-Reported By:                coz
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1850
-Category:                   PCI - echoaudio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               ubuntu/breezy/Debian
-Kernel Version:             2.6.12.10.386
-======================================================================
-Date Submitted:             02-16-2006 13:05 CET
-Last Modified:              03-20-2006 22:10 CET
-======================================================================
-Summary:                    source available
-Description: 
-can't start layla24
-======================================================================
+> At Mon, 20 Mar 2006 21:18:33 +0100,
+> Juergen Kreileder wrote:
+>> BTW: Is it normal that the dmix plug-in consumes 100% CPU?
+>
+> No, it's a new problem.  Looks like happening only on ppc.
+> Did it happen with the older kernel, too?
 
-----------------------------------------------------------------------
- coz - 03-19-06 16:05 
-----------------------------------------------------------------------
-Hello,
- the alsa source package, in fact all packages were downloaded from the
-official alsa site/ftp
-   As I mentioned, I have no idea where to begin with this. i have gotten,
-along with yur directions, conflicting procedures. Iread that the driver
-has to be installed first, then the lib , then the tools etc.
-  I will continue to look for help on some of the forums and irc channels.
-I really hate to keep bothering you.
-thanks
-coz
+I'm not sure if it started with a kernel update or with the
+introduction of dmix in PMac.conf.
 
-----------------------------------------------------------------------
- pochini - 03-20-06 22:10 
-----------------------------------------------------------------------
-You have to install lib before tools and utils, otherwise you just can't
-compile them. There are not other dependencies. If you don't say what is
-the problem I can't help.
+> Anyway, the below are two different patches as workarounds.
+> Could you test if either of them has any influence?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-16-06 13:05 coz            New Issue                                    
-02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
-02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
-02-18-06 13:34 pochini        Note Added: 0008119                          
-02-20-06 03:30 coz            Note Added: 0008140                          
-02-20-06 22:02 pochini        Note Added: 0008150                          
-03-13-06 19:49 coz            Note Added: 0008456                          
-03-13-06 22:38 pochini        Note Added: 0008465                          
-03-13-06 23:02 johnrigg       Note Added: 0008466                          
-03-16-06 14:54 coz            Note Added: 0008605                          
-03-18-06 22:02 pochini        Note Added: 0008676                          
-03-18-06 22:07 pochini        Note Edited: 0008676                         
-03-19-06 16:05 coz            Note Added: 0008690                          
-03-20-06 22:10 pochini        Note Added: 0008725                          
-======================================================================
+alsa-lib-pcm-timer-tread-for-ppc.diff works.  The other patch had no
+effect.
 
 
+        Juergen
+
+-- 
+Juergen Kreileder, Blackdown Java-Linux Team
+http://blog.blackdown.de/
 
 
 -------------------------------------------------------
