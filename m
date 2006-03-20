@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001527]: amixer fails to set right 'Capture Source' channel
-Date: Mon, 20 Mar 2006 19:19:58 +0100
-Message-ID: <ad16d3d6d2c2e0cb0aeeafa65a182f93@bugtrack.alsa-project.org>
+From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
+Subject: [PATCH] AMD Au1x00: make driver build after cleanup
+Date: Mon, 20 Mar 2006 21:26:56 +0300
+Message-ID: <441EF3F0.9080105@ru.mvista.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------020900000106040407020808"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6241A219
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 19:19:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +15,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------020900000106040407020808
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1527> 
-======================================================================
-Reported By:                tartif
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1527
-Category:                   amixer
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-04-2005 16:11 CET
-Last Modified:              03-20-2006 19:19 CET
-======================================================================
-Summary:                    amixer fails to set right 'Capture Source' channel
-Description: 
-I use the ice1724 driver (Prodigy 7.1 card), ALSA 1.0.10_rc2 (also happens
-with 1.0.9).
+Hello.
 
-amixer fails to set the 'capture source' for the right channel (left is
-OK). Left channel is set to that requested, right channel always set to
-0.
+      AMD Au1x00 ALSA driver doesn't build after the recent code cleanup:
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001824 Always mixed into one channel when reco...
-======================================================================
+sound/mips/au1x00.c: In function `au1000_setup_dma_link':
+sound/mips/au1x00.c:173: error: `pointer' undeclared (first use in this function)
+sound/mips/au1x00.c:173: error: (Each undeclared identifier is reported only once
+sound/mips/au1x00.c:173: error: for each function it appears in.)
+sound/mips/au1x00.c: In function `snd_au1000_hw_params':
+sound/mips/au1x00.c:339: warning: implicit declaration of function `snd_mask_min'
 
-----------------------------------------------------------------------
- ungod - 03-19-06 22:44 
-----------------------------------------------------------------------
-I have just moved to x86-64 and found myself with the same problem. It is
-the aureon driver which does the job wrong. Instead of setting
-ucontrol->value.integer.value[0], it should be setting
-ucontrol->value.enumerated.item[0]. The ucontrol->value structure is in
-fact a union so the integer structure overlaps the enumerated structure,
-but while the integer structure have "long" values, the enumerated
-structure have "unsigned int". On a 32-bit machine, both "long" and
-"unsigned int" is 32-bit, but on a 64-bit machine "long" is 32-bit while
-"unsigned int" is 64-bit, hence the reason why only x86-64 is affected.
-
-I'll attach a patch which corrects the flaw.
-
-----------------------------------------------------------------------
- johnrigg - 03-20-06 19:19 
-----------------------------------------------------------------------
-That's the wrong way round. On x86_64 long is 64 bits, unsigned int is 32.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-04-05 16:11 tartif         New Issue                                    
-02-11-06 03:49 ikari_01       Issue Monitored: ikari_01                    
-02-18-06 01:32 rlrevell       Relationship added       has duplicate 0001824
-03-19-06 22:44 ungod          Note Added: 0008698                          
-03-19-06 22:44 ungod          File Added: aureon-enumerated.diff                
-   
-03-20-06 19:19 johnrigg       Note Added: 0008722                          
-======================================================================
+WBR, Sergei
 
 
+--------------020900000106040407020808
+Content-Type: text/plain;
+ name="Au1x00-make-ALSA-driver-build-after-cleanup.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="Au1x00-make-ALSA-driver-build-after-cleanup.patch"
+
+diff --git a/sound/mips/au1x00.c b/sound/mips/au1x00.c
+index 6d8f8b3..9517686 100644
+--- a/sound/mips/au1x00.c
++++ b/sound/mips/au1x00.c
+@@ -43,6 +43,7 @@
+ #include <sound/core.h>
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
++#include <sound/pcm_params.h>
+ #include <sound/ac97_codec.h>
+ #include <asm/mach-au1x00/au1000.h>
+ #include <asm/mach-au1x00/au1000_dma.h>
+@@ -153,6 +154,7 @@ au1000_setup_dma_link(struct audio_strea
+ {
+ 	struct snd_pcm_substream *substream = stream->substream;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct au1000_period *pointer;
+ 	unsigned long dma_start;
+ 	int i;
+ 
+
+
+
+--------------020900000106040407020808--
 
 
 -------------------------------------------------------
