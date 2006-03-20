@@ -1,19 +1,14 @@
-From: Carlos Munoz <carlos@kenati.com>
-Subject: Re: Couple of questions
-Date: Mon, 20 Mar 2006 10:11:49 -0800
-Message-ID: <441EF065.4020407@kenati.com>
-References: <1142467271.9298.7.camel@localhost.localdomain>	 <s5hirqer7r5.wl%tiwai@suse.de> <1142680136.9435.2.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001527]: amixer fails to set right 'Capture Source' channel
+Date: Mon, 20 Mar 2006 19:19:58 +0100
+Message-ID: <ad16d3d6d2c2e0cb0aeeafa65a182f93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D683B20E
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 19:06:06 +0100 (MET)
-Received: from mail.kenati.com (unknown [69.90.147.196])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 348899929C
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 19:06:06 +0100 (MET)
-In-Reply-To: <1142680136.9435.2.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6241A219
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 19:19:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,52 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Adrian McMenamin wrote:
 
->On Thu, 2006-03-16 at 11:42 +0100, Takashi Iwai wrote:
->  
->
->>At Thu, 16 Mar 2006 00:01:11 +0000,
->>Adrian McMenamin wrote:
->>    
->>
->>>If my driver declares this:
->>>
->>>	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
->>>
->>>Can I expect samples to come in all left followed by all right, or how?
->>>      
->>>
->>Yes.  It's the non-interleaved format (LLLLLLLL....RRRRRR.....).
->>
->>    
->>
->>>And will cat somefile.wav > /dev/dsp using oss emulation respect that?
->>>      
->>>
->>Yes.
->>    
->>
->
->
->Are you sure about this bit? Either my code is extremely broken or cat
->isn't doing anything other than pump the bytes in as a simple stream
->  
->
-Hi Adrian,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1527> 
+======================================================================
+Reported By:                tartif
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1527
+Category:                   amixer
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-04-2005 16:11 CET
+Last Modified:              03-20-2006 19:19 CET
+======================================================================
+Summary:                    amixer fails to set right 'Capture Source' channel
+Description: 
+I use the ice1724 driver (Prodigy 7.1 card), ALSA 1.0.10_rc2 (also happens
+with 1.0.9).
 
-If I cat a wav file to /dev/dsp I just hear noise. However, if  the 
-driver opens/reads the same wav file (bypassing the alsa layer) and 
-feeds it to the hardware I get perfect sound. Your may want to try that 
-to validate your driver and hardware. You might need to parse the file 
-into RL buffers as you read it.
+amixer fails to set the 'capture source' for the right channel (left is
+OK). Left channel is set to that requested, right channel always set to
+0.
 
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001824 Always mixed into one channel when reco...
+======================================================================
 
-Carlos
+----------------------------------------------------------------------
+ ungod - 03-19-06 22:44 
+----------------------------------------------------------------------
+I have just moved to x86-64 and found myself with the same problem. It is
+the aureon driver which does the job wrong. Instead of setting
+ucontrol->value.integer.value[0], it should be setting
+ucontrol->value.enumerated.item[0]. The ucontrol->value structure is in
+fact a union so the integer structure overlaps the enumerated structure,
+but while the integer structure have "long" values, the enumerated
+structure have "unsigned int". On a 32-bit machine, both "long" and
+"unsigned int" is 32-bit, but on a 64-bit machine "long" is 32-bit while
+"unsigned int" is 64-bit, hence the reason why only x86-64 is affected.
+
+I'll attach a patch which corrects the flaw.
+
+----------------------------------------------------------------------
+ johnrigg - 03-20-06 19:19 
+----------------------------------------------------------------------
+That's the wrong way round. On x86_64 long is 64 bits, unsigned int is 32.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-04-05 16:11 tartif         New Issue                                    
+02-11-06 03:49 ikari_01       Issue Monitored: ikari_01                    
+02-18-06 01:32 rlrevell       Relationship added       has duplicate 0001824
+03-19-06 22:44 ungod          Note Added: 0008698                          
+03-19-06 22:44 ungod          File Added: aureon-enumerated.diff                
+   
+03-20-06 19:19 johnrigg       Note Added: 0008722                          
+======================================================================
 
 
 
