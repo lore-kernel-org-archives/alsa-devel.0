@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Mon, 20 Mar 2006 12:55:07 +0100
-Message-ID: <90524926eb71c539bd9fbbaa2feaf093@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001914]: playing 2-channel sound on surround device uses rear speakers
+Date: Mon, 20 Mar 2006 13:04:30 +0100
+Message-ID: <635669307efef6cbd351c99e9bc0b969@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C3BB206
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 12:55:07 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56550206
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 13:04:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1914> 
 ======================================================================
-Reported By:                drolyk
-Assigned To:                
+Reported By:                mru
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1930
-Category:                   PCI - intel8x0
+Issue ID:                   1914
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.6
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.15-gentoo-r1
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              03-20-2006 12:55 CET
+Date Submitted:             03-11-2006 21:25 CET
+Last Modified:              03-20-2006 13:04 CET
 ======================================================================
-Summary:                    Can`t get timidity woking in soft synth mode
+Summary:                    playing 2-channel sound on surround device uses rear
+speakers
 Description: 
-Can`t get timidity woking in "soft synth mode".
+If I play regular 2-channel stereo sound specifying device "surround51" or
+"surround40" (or either of those with a "plug:" prefix) the sound is
+output on the rear speakers.  6-channel playback is correct.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-20-06 07:19 
+ mru - 03-16-06 02:38 
 ----------------------------------------------------------------------
-Why do you have "snd_seq_dummy" ?
+Sorry, that last bit must have been caused by something else.  Muting and
+unmuting the "PCM" control somehow fixed it, even though the PCM mute
+otherwise only affects the front speakers.
+
+With the patch, 2-channel samples are padded to 6 by the plug: wrapper so
+the sound is correctly played on the front speakers.  6-channel playback
+is unchanged, as it should.
 
 ----------------------------------------------------------------------
- fdoffizi01 - 03-20-06 12:55 
+ tiwai - 03-20-06 13:04 
 ----------------------------------------------------------------------
-fluidsynth -m alsa_seq -a alsa your_soundfont.sf2 foo.mid
-this works, I can hear midi notes... suddently fluidsynth get crazy with
-noise but this is another problem, the important thing I think it's I get
-some sound from it.
+OK, closing this bug now.  The better upmixing is a different thing (which
+will be improved in near future).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 23:41 drolyk         New Issue                                    
-03-15-06 23:41 drolyk         Distribution              => Debian          
-03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
-03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
-03-20-06 01:28 rlrevell       Note Added: 0008702                          
-03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
-03-20-06 03:24 rlrevell       Note Added: 0008706                          
-03-20-06 06:08 drolyk         Note Added: 0008709                          
-03-20-06 06:22 rlrevell       Note Added: 0008710                          
-03-20-06 07:19 Raymond        Note Added: 0008711                          
-03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
+03-11-06 21:25 mru            New Issue                                    
+03-11-06 21:25 mru            Distribution              => Gentoo          
+03-11-06 21:25 mru            Kernel Version            => 2.6.15-gentoo-r1
+03-14-06 15:04 tiwai          Note Added: 0008477                          
+03-14-06 15:15 mru            Note Added: 0008478                          
+03-14-06 15:22 tiwai          Note Added: 0008481                          
+03-14-06 23:53 mru            Note Added: 0008524                          
+03-15-06 11:59 tiwai          Note Added: 0008536                          
+03-15-06 12:27 mru            Note Added: 0008541                          
+03-15-06 13:04 tiwai          Note Added: 0008545                          
+03-15-06 13:05 tiwai          File Added: pcm-hw-restrict.diff                  
+ 
+03-16-06 02:06 mru            Note Added: 0008580                          
+03-16-06 02:38 mru            Note Added: 0008582                          
+03-20-06 13:04 tiwai          Status                   assigned => resolved
+03-20-06 13:04 tiwai          Resolution               open => fixed       
+03-20-06 13:04 tiwai          Note Added: 0008719                          
 ======================================================================
 
 
