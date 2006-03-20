@@ -1,17 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Detecting the sample format in the driver
-Date: Mon, 20 Mar 2006 08:06:27 +0000
-Message-ID: <1142841987.9459.7.camel@localhost.localdomain>
-References: <1142810413.9700.45.camel@localhost.localdomain>
-	 <20060320080019.GB5574@turing.informatik.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001942]: [PATCH] added support uncommon "rate"
+Date: Mon, 20 Mar 2006 09:09:42 +0100
+Message-ID: <f779c93190260043fc363e6607ee2646@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 32EE61E6
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 09:06:33 +0100 (MET)
-In-Reply-To: <20060320080019.GB5574@turing.informatik.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 045EC1F3
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2006 09:09:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,18 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-03-20 at 09:00 +0100, Clemens Ladisch wrote:
-> Adrian McMenamin wrote:
-> > 	if ((substream->runtime)->format == SNDRV_PCM_FMTBIT_S16_LE)
-> 
-> This should be SNDRV_PCM_FORMAT_S16_LE.
-> 
-> 
-Which works! Thanks.
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1942> 
+======================================================================
+Reported By:                os-bebas
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1942
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               UBuntu Dapper Drake
+Kernel Version:             2.6.15.6
+======================================================================
+Date Submitted:             03-18-2006 23:48 CET
+Last Modified:              03-20-2006 09:09 CET
+======================================================================
+Summary:                    [PATCH] added support uncommon "rate"
+Description: 
+attached you can find a simple patch to match
+"uncommon" rate in some USB speaker to the fixed
+conv_rates in usbaudio.c.
+
+Signed-off-by: S. Effendi <osbebas@yahoo.co.id>
+
+======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-20-06 09:09 
+----------------------------------------------------------------------
+Your patch assumes that every device that doesn't happen to support one of
+the predefined rates is lying and actually does use the next-smaller rate
+instead.
+This assumptions is wrong for most devices, and probably for yours, too.
+
+What is the output of "time dd if=/dev/zero of=/dev/dsp1 bs=1000
+count=10000"?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-18-06 23:48 os-bebas       New Issue                                    
+03-18-06 23:48 os-bebas       File Added: alsa_usbaudio_conv_rates_fixed.patch  
+                 
+03-18-06 23:48 os-bebas       Distribution              => UBuntu Dapper Drake
+03-18-06 23:48 os-bebas       Kernel Version            => 2.6.15.6        
+03-20-06 09:09 Clemens LadischNote Added: 0008712                          
+======================================================================
+
 
 
 
