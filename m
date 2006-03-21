@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001945]: aplay fails to complete on ppc
-Date: Tue, 21 Mar 2006 17:31:20 +0100
-Message-ID: <5719f0fcad85467ca600318ebd7c4b04@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001934]: make problem
+Date: Tue, 21 Mar 2006 17:33:58 +0100
+Message-ID: <ae33599e31a15c2a32c839d45c34d2be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 735B81EF
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 17:31:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BE5E31EF
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 17:33:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1945> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
 ======================================================================
-Reported By:                zarni
-Assigned To:                jcdutton
+Reported By:                kvo
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1945
-Category:                   PCI - ca0106
+Issue ID:                   1934
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               linuxfromscratch
-Kernel Version:             2.6
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               RHEL4 Update 3
+Kernel Version:             2.6.9-34.EL
 ======================================================================
-Date Submitted:             03-20-2006 16:28 CET
-Last Modified:              03-21-2006 17:31 CET
+Date Submitted:             03-17-2006 12:19 CET
+Last Modified:              03-21-2006 17:33 CET
 ======================================================================
-Summary:                    aplay fails to complete on ppc
+Summary:                    make problem
 Description: 
-On my G5 SMU with an Audigy SE, aplay does not complete
-
-'top' shows 99% cpu, there is no audible sound.
-
+./configure works OK. running make give error during compilation: module
+'include/asound.h' (line 210) has some 'typedef' that doesn't match with
+(probably) OS include. As a result, compilation stops and driver can not
+be produced.
 ======================================================================
 
 ----------------------------------------------------------------------
- zarni - 03-20-06 22:42 
+ kvo - 03-19-06 22:26 
 ----------------------------------------------------------------------
-It's in the eighth call to snd_pcm_writei : each time it passes 170 bytes,
-the last time it never comes back (this is an 8KHz mono file). 
-Unfortunately, I have no idea how to find the source for _snd_pcm_write,
-for which this call is a wrapper.
+I did the build attempt with the latest CVS, please see results (extract)
+below:
+
+make[2]: Entering directory `/usr/src/kernels/2.6.9-34.EL-i686'
+  CC [M]  /home/tt/t/alsa-driver/acore/hwdep.o
+In file included from /home/tt/t/alsa-driver/include/sound/driver.h:47,
+                 from /home/tt/t/alsa-driver/acore/hwdep.c:22:
+/home/tt/t/alsa-driver/include/adriver.h:219: error: conflicting types for
+'gfp_t'
+include/linux/gfp.h:134: error: previous declaration of 'gfp_t' was here
+make[5]: *** [/home/tt/t/alsa-driver/acore/hwdep.o] Error 1
+make[4]: *** [/home/tt/t/alsa-driver/acore] Error 2
+make[3]: *** [_module_/home/tt/t/alsa-driver] Error 2
+make[2]: *** [modules] Error 2
+make[2]: Leaving directory `/usr/src/kernels/2.6.9-34.EL-i686'
+make[1]: *** [compile] Error 2
+
+As a result, the whole build fails.
 
 ----------------------------------------------------------------------
- tiwai - 03-21-06 17:31 
+ tiwai - 03-21-06 17:33 
 ----------------------------------------------------------------------
-It's a 32/64bit incompatibility in struct snd_timer_tread.  Fixed on CVS.
+The detection in configure script didn't work by some reason.  Maybe due to
+a packed RHEL kernel.  Check config.log.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-20-06 16:28 zarni          New Issue                                    
-03-20-06 16:28 zarni          Distribution              => linuxfromscratch
-03-20-06 16:28 zarni          Kernel Version            => 2.6             
-03-20-06 18:21 zarni          Note Added: 0008721                          
-03-20-06 22:42 zarni          Note Added: 0008728                          
-03-21-06 17:31 tiwai          Status                   assigned => resolved
-03-21-06 17:31 tiwai          Resolution               open => fixed       
-03-21-06 17:31 tiwai          Note Added: 0008748                          
+03-17-06 12:19 kvo            New Issue                                    
+03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
+03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
+03-17-06 12:25 tiwai          Note Added: 0008643                          
+03-19-06 22:26 kvo            Note Added: 0008697                          
+03-21-06 17:33 tiwai          Note Added: 0008749                          
 ======================================================================
 
 
