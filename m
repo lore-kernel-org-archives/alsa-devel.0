@@ -1,11 +1,14 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: ice1712.c CVS typos re Bug 1472 fix
-Date: Tue, 21 Mar 2006 10:17:46 +0000
-Message-ID: <200603211017.46885.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
+Date: Tue, 21 Mar 2006 10:58:28 +0100
+Message-ID: <129f2a000b8bdf00886ee4207fbb8abf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_KL9HETE/ZJiKlyn"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B718919F
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 10:58:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,64 +18,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-00=_KL9HETE/ZJiKlyn
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
+======================================================================
+Reported By:                drolyk
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1930
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15.6
+======================================================================
+Date Submitted:             03-15-2006 23:41 CET
+Last Modified:              03-21-2006 10:58 CET
+======================================================================
+Summary:                    Can`t get timidity woking in soft synth mode
+Description: 
+Can`t get timidity woking in "soft synth mode".
+======================================================================
 
-I recently checked the functioning of 'dxr_enable' for DMX6fire you 
-implemented on CVS, and noticed a couple of typos which I think are best 
-sorted.  I've attached diff just to show the relevant lines.  L90 did 
-initialise to 500; I don't know if you think the explicit ={0} is necessary.
+----------------------------------------------------------------------
+ Raymond - 03-21-06 09:00 
+----------------------------------------------------------------------
+It work on my intel8x0 ( hw:1 ) or (default:1) FC1 kernel 2.4 alsa cvs
 
-However I would comment that the DXR extension (whatever that is -I've never 
-seen one) is still unsupported, and surely unlikely ever to be so.  All 
-DMX6fire specific code in ews.c etc assumes 6 DACs and ADCs, whereas the DXR 
-is using 7 & 8.  Specific driver functions may also be needed.  Adding 
-dxr_enable may give the false impression that it will work?  That is why I 
-thought it was OK to disable it completely in the original bug 1472 fix.
-
-With or without typo fix the original changes do work, turning on and off the 
-unused connections depending on value of dxr_enable.
-
-Regards  Alan
-
---Boundary-00=_KL9HETE/ZJiKlyn
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="CVSice1712.c-179-typofix.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="CVSice1712.c-179-typofix.diff"
-
---- alsa-kernel/pci/ice1712/ice1712.c-179	2006-03-20 22:16:21.000000000 +0000
-+++ alsa-kernel/pci/ice1712/ice1712.c	2006-03-21 00:02:06.000000000 +0000
-@@ -87,7 +87,7 @@
- static char *model[SNDRV_CARDS];
- static int omni[SNDRV_CARDS];	/* Delta44 & 66 Omni I/O support */
- static int cs8427_timeout[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] = 500}; /* CS8427 S/PDIF transciever reset timeout value in msec */
--static int dxr_enable[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] = 500}; /* DXR enable for DMX6FIRE */
-+static int dxr_enable[SNDRV_CARDS] = {0};  /* DXR enable for DMX6FIRE Default=disabled */
- 
- module_param_array(index, int, NULL, 0444);
- MODULE_PARM_DESC(index, "Index value for ICE1712 soundcard.");
-@@ -102,7 +102,7 @@
- module_param_array(model, charp, NULL, 0444);
- MODULE_PARM_DESC(model, "Use the given board model.");
- module_param_array(dxr_enable, int, NULL, 0444);
--MODULE_PARM_DESC(dsr_enable, "Enable DXR support for Terratec DMX6FIRE.");
-+MODULE_PARM_DESC(dxr_enable, "Enable DXR support for Terratec DMX6FIRE.");
+export TIMIDITY_PCM_NAME=hw:1,0
+timidity -iA -Os
+Requested buffer size 32768, fragment size 8192
+ALSA pcm 'hw:1,0' set buffer size 32768, period size 8192 bytes
+TiMidity starting in ALSA server mode
+Opening sequencer port: 128:0 128:1 128:2 128:3
+Requested buffer size 32768, fragment size 8192
+ALSA pcm 'hw:1,0' set buffer size 32768, period size 8192 bytes
 
 
- static struct pci_device_id snd_ice1712_ids[] = {
+aplaymidi -p 128:0 test.mid
 
---Boundary-00=_KL9HETE/ZJiKlyn--
+
+
+----------------------------------------------------------------------
+ fdoffizi01 - 03-21-06 10:58 
+----------------------------------------------------------------------
+I did some test with another pc (but with different sound card, sblive)
+with older kernel and new (2.6.11 2.6.15) but it worked and it works.
+I really don't know what to think.
+I tried exactly as Raymond but I get no sound or only the first note
+looping. (it depends on midi files I play). It seems as the virtual port
+receives the first midi event and then stop working.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-15-06 23:41 drolyk         New Issue                                    
+03-15-06 23:41 drolyk         Distribution              => Debian          
+03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
+03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
+03-20-06 01:28 rlrevell       Note Added: 0008702                          
+03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
+03-20-06 03:24 rlrevell       Note Added: 0008706                          
+03-20-06 06:08 drolyk         Note Added: 0008709                          
+03-20-06 06:22 rlrevell       Note Added: 0008710                          
+03-20-06 07:19 Raymond        Note Added: 0008711                          
+03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
+03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
+03-20-06 22:19 drolyk         Note Added: 0008726                          
+03-20-06 22:21 drolyk         Note Edited: 0008726                         
+03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
+03-20-06 23:29 rlrevell       Note Added: 0008729                          
+03-20-06 23:40 fdoffizi01     Note Added: 0008730                          
+03-20-06 23:54 rlrevell       Note Added: 0008731                          
+03-21-06 00:14 fdoffizi01     Note Added: 0008732                          
+03-21-06 08:46 Raymond        Note Added: 0008739                          
+03-21-06 09:00 Raymond        Note Edited: 0008739                         
+03-21-06 10:58 fdoffizi01     Note Added: 0008741                          
+======================================================================
+
 
 
 
