@@ -1,10 +1,10 @@
 From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
-Subject: [PATCH] AMD Au1x00: fix DMA init/cleanup
-Date: Tue, 21 Mar 2006 03:59:23 +0300
-Message-ID: <441F4FEB.6060806@ru.mvista.com>
+Subject: [PATCH] AMD Au1x00: AC'97 controller is memory mapped
+Date: Tue, 21 Mar 2006 04:01:01 +0300
+Message-ID: <441F504D.30909@ru.mvista.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------080900060407000702020209"
+ boundary="------------080506030206000500040606"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,7 +19,7 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------080900060407000702020209
+--------------080506030206000500040606
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
@@ -27,82 +27,47 @@ Hello.
 
     Reposting with signoff which I constantly forget about... :-/
 
-    AMD Au1x00 ALSA driver causes kernel oops in au1000_init() by trying to
-set DMA channel to -1 in yet unallocated audio streams. Here's the patch that
-staightens up DMA init/cleanup code.
+    AMD Au1x00 ALSA driver erroneously calls request_region() for AC'97
+controller registers -- the controller is actually memory mapped at addresses
+0x10000000 thru 0x100FFFFF.
 
 WBR, Sergei
 
 Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 
 
---------------080900060407000702020209
+--------------080506030206000500040606
 Content-Type: text/plain;
- name="Au1x00-ALSA-fix-DMA-init-and-cleanup.patch"
+ name="Au1x00-ALSA-AC97-memory-mapped.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="Au1x00-ALSA-fix-DMA-init-and-cleanup.patch"
+ filename="Au1x00-ALSA-AC97-memory-mapped.patch"
 
 diff --git a/sound/mips/au1x00.c b/sound/mips/au1x00.c
-index 6d8f8b3..a7a221a 100644
+index 6d8f8b3..aa9c5d5 100644
 --- a/sound/mips/au1x00.c
 +++ b/sound/mips/au1x00.c
-@@ -610,14 +610,17 @@ snd_au1000_free(struct snd_card *card)
- 		release_and_free_resource(au1000->ac97_res_port);
+@@ -561,12 +561,13 @@ snd_au1000_ac97_new(struct snd_au1000 *a
+ 		.read = snd_au1000_ac97_read,
+ 	};
+ 
+-	if ((au1000->ac97_res_port = request_region(AC97C_CONFIG,
+-	       		sizeof(struct au1000_ac97_reg), "Au1x00 AC97")) == NULL) {
++	if ((au1000->ac97_res_port = request_mem_region(CPHYSADDR(AC97C_CONFIG),
++	       		0x100000, "Au1x00 AC97")) == NULL) {
+ 		snd_printk(KERN_ERR "ALSA AC97: can't grap AC97 port\n");
+ 		return -EBUSY;
  	}
+-	au1000->ac97_ioport = (struct au1000_ac97_reg *) au1000->ac97_res_port->start;
++	au1000->ac97_ioport = (struct au1000_ac97_reg *)
++		KSEG1ADDR(au1000->ac97_res_port->start);
  
--	if (au1000->stream[PLAYBACK]->dma >= 0)
--		free_au1000_dma(au1000->stream[PLAYBACK]->dma);
--
--	if (au1000->stream[CAPTURE]->dma >= 0)
--		free_au1000_dma(au1000->stream[CAPTURE]->dma);
-+	if (au1000->stream[PLAYBACK]) {
-+	  	if (au1000->stream[PLAYBACK]->dma >= 0)
-+			free_au1000_dma(au1000->stream[PLAYBACK]->dma);
-+		kfree(au1000->stream[PLAYBACK]);
-+	}
+ 	spin_lock_init(&au1000->ac97_lock);
  
--	kfree(au1000->stream[PLAYBACK]);
--	kfree(au1000->stream[CAPTURE]);
-+	if (au1000->stream[CAPTURE]) {
-+		if (au1000->stream[CAPTURE]->dma >= 0)
-+			free_au1000_dma(au1000->stream[CAPTURE]->dma);
-+		kfree(au1000->stream[CAPTURE]);
-+	}
- }
- 
- 
-@@ -636,15 +630,19 @@ au1000_init(void)
- 
- 	card->private_free = snd_au1000_free;
- 	au1000 = card->private_data;
--	/* so that snd_au1000_free will work as intended */
- 	au1000->card = card;
--	au1000->stream[PLAYBACK]->dma = -1;
--	au1000->stream[CAPTURE]->dma = -1;
-- 	au1000->ac97_res_port = NULL;
-+
- 	au1000->stream[PLAYBACK] = kmalloc(sizeof(struct audio_stream), GFP_KERNEL);
--	au1000->stream[CAPTURE] = kmalloc(sizeof(struct audio_stream), GFP_KERNEL);
-+	au1000->stream[CAPTURE ] = kmalloc(sizeof(struct audio_stream), GFP_KERNEL);
-+	/* so that snd_au1000_free will work as intended */
-+ 	au1000->ac97_res_port = NULL;
-+	if (au1000->stream[PLAYBACK])
-+		au1000->stream[PLAYBACK]->dma = -1;
-+	if (au1000->stream[CAPTURE ])
-+		au1000->stream[CAPTURE ]->dma = -1;
-+
- 	if (au1000->stream[PLAYBACK] == NULL ||
--	    au1000->stream[CAPTURE] == NULL) {
-+	    au1000->stream[CAPTURE ] == NULL) {
- 		snd_card_free(card);
- 		return -ENOMEM;
- 	}
 
 
 
-
---------------080900060407000702020209--
+--------------080506030206000500040606--
 
 
 -------------------------------------------------------
