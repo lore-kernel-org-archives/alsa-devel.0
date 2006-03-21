@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001118]: es1868 - mono recording not working properly
-Date: Wed, 22 Mar 2006 00:38:41 +0100
-Message-ID: <f36c0b900c9465071954a7b4dae9e1cf@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Adding controls
+Date: Tue, 21 Mar 2006 23:39:20 +0000
+Message-ID: <1142984360.9284.33.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 541DA1DE
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 00:38:41 +0100 (MET)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id DE8611DE
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 00:39:26 +0100 (MET)
+Received: from bossclass ([192.168.62.105])
+	by localhost.localdomain (8.13.4/8.13.4/Debian-3) with ESMTP id k2LNdMCc014527
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 23:39:23 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,81 +24,84 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+When I try to compile my driver I get loads of messages like this...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1118> 
-======================================================================
-Reported By:                MStrecke
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1118
-Category:                   PCI - es1968
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             05-19-2005 23:36 CEST
-Last Modified:              03-22-2006 00:38 CET
-======================================================================
-Summary:                    es1868 - mono recording not working properly
-Description: 
-I'm using an old Fujitsu Lifebook E-6570. The on-board sound card is
-recognized as "ESS Technology ES1978 Maestro 2E (rev 10)", ID: 125d:1978.
+/home/adrian/aica/aica/snd_card_aica.c:489: warning: "struct
+snd_ctl_elem_info" declared inside parameter list
+/home/adrian/aica/aica/snd_card_aica.c:489: warning: its scope is only
+this definition or declaration, which is probably not what you want
+/home/adrian/aica/aica/snd_card_aica.c:489: warning: "struct
+snd_kcontrol" declared inside parameter list
+/home/adrian/aica/aica/snd_card_aica.c:494: warning: "struct
+snd_ctl_elem_value" declared inside parameter list
+/home/adrian/aica/aica/snd_card_aica.c:494: warning: "struct
+snd_kcontrol" declared inside parameter list
+/home/adrian/aica/aica/snd_card_aica.c:499: warning: "struct
+snd_ctl_elem_value" declared inside parameter list
+/home/adrian/aica/aica/snd_card_aica.c:499: warning: "struct
+snd_kcontrol" declared inside parameter list
 
-I'm having problems recording mono audio (mic input, line input, etc.).
-Only a medium pitched tone is recorded (not a sine waveform, no feed
-back).  Stereo recording works without problems (using audacity).
 
-======================================================================
+The code in question is this:
 
-----------------------------------------------------------------------
- MStrecke - 05-28-05 22:18 
-----------------------------------------------------------------------
-I installed sox and run a few tests using rec.
+/* Mixer controls */
+static int aica_controls_info(struct snd_kcontrol *kcontrol, struct
+snd_ctl_elem_info *uinfo)
+{
+	return 0;
+}
 
-I can record in stereo (--channels=2) using the following sample sizes
-(--size=): b, w, l
+static int aica_controls_get(struct snd_kcontrol *kcontrol, struct
+snd_ctl_elem_value *ucontrol)
+{
+	return 0;
+}
 
-Mono only works with --size=b
+static int aica_controls_put(struct snd_kcontrol *kcontrol, struct
+snd_ctl_elem_value *ucontrol)
+{
+	return 0;
+}
 
-The other sample sizes did not work with mono, e.g.
+static struct snd_kcontrol_new snd_aica_controls __devinitdata = {
+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+	.name = "PCM Playback Volume",
+	.index = 0,
+	.access = SND_CTL_ELEM_ACCESS_READWRITE,
+	.private_values = 0xffff,
+	.info = aica_controls_info,
+	.get = aica_controls_get,
+	.put = aica_controls_put
+};
 
-  rec --channels=1 --size=w test1.wav
 
-simply returned to the prompt without recording anything. No error
-message, no entry in /var/log/messages.
+And the includes are these:
 
-I then returned to audacity to try an 8 bit mono recording, only to
-discover that audacity don't support 8 bit recording. All other sample
-sizes in audacity (32, 24, 16) produce the above mentioned tone in mono
-mode.
+#include <linux/init.h>
+#include <linux/jiffies.h>
+#include <linux/slab.h>
+#include <linux/time.h>
+#include <linux/wait.h>
+#include <linux/moduleparam.h>
+#include <linux/platform_device.h>
+#include <linux/firmware.h>
+#include <linux/timer.h>
+#include <linux/delay.h>
+#include <asm-sh/io.h>
+#include <asm-sh/dma.h>
+#include <asm-sh/dreamcast/sysasic.h>
+#include <sound/driver.h>
+#include <sound/core.h>
+#include <sound/control.h>
+#include <sound/pcm.h>
+#include <sound/initval.h>
+#include <sound/info.h>
+#include "aica.h"
 
-----------------------------------------------------------------------
- rlrevell - 03-22-06 00:38 
-----------------------------------------------------------------------
-Do you still consider this a bug?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-19-05 23:36 MStrecke       New Issue                                    
-05-19-05 23:36 MStrecke       Distribution              => Ubuntu          
-05-19-05 23:36 MStrecke       Kernel Version            => 2.6.10          
-05-23-05 11:39 tiwai          Note Added: 0004702                          
-05-23-05 13:44 MStrecke       File Added: asound.state                     
-05-24-05 11:53 tiwai          Note Added: 0004709                          
-05-27-05 01:15 MStrecke       Note Added: 0004741                          
-05-27-05 12:29 tiwai          Note Added: 0004748                          
-05-28-05 22:18 MStrecke       Note Added: 0004776                          
-09-26-05 10:28 LawrenceG      Issue Monitored: LawrenceG                    
-03-22-06 00:38 rlrevell       Note Added: 0008764                          
-======================================================================
 
+Plainly I have missed something obvious - like a missing header file.
+but for the life of me I cannot spot what it is. Can anyone else?
 
 
 
