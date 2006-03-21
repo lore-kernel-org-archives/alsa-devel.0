@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001950]: got error related to kde in console
-Date: Tue, 21 Mar 2006 17:10:15 +0100
-Message-ID: <cafe82b5c4f2fc2839b514dc93187cd4@bugtrack.alsa-project.org>
+Date: Tue, 21 Mar 2006 17:05:49 +0100
+Message-ID: <f744e3ba8bd131980c7a484737ebf644@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E4961DE
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 17:10:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADD921DE
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 17:05:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1950> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               slackware
 Kernel Version:             2.6.15.6
 ======================================================================
 Date Submitted:             03-21-2006 17:05 CET
-Last Modified:              03-21-2006 17:10 CET
+Last Modified:              03-21-2006 17:05 CET
 ======================================================================
 Summary:                    got error related to kde in console
 Description: 
@@ -64,19 +64,12 @@ kernel 2.6.15.6
 
 ======================================================================
 
-----------------------------------------------------------------------
- tiwai - 03-21-06 17:10 
-----------------------------------------------------------------------
-mpg321 and ogg123 use libao.  Possibly your configuration is for using
-artsd.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-21-06 17:05 zebul666       New Issue                                    
 03-21-06 17:05 zebul666       Distribution              => slackware       
 03-21-06 17:05 zebul666       Kernel Version            => 2.6.15.6        
-03-21-06 17:10 tiwai          Note Added: 0008744                          
 ======================================================================
 
 
