@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
-Date: Tue, 21 Mar 2006 20:09:16 +0100
-Message-ID: <778b108592cde06b2d95d61cdf60289f@bugtrack.alsa-project.org>
+Date: Tue, 21 Mar 2006 20:10:29 +0100
+Message-ID: <de62be2e508e0cfb226e343729aa39d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 931261E7
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 20:09:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C92EF1E7
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 20:10:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               Debian sid with custom x86-64 kernel
 Kernel Version:             2.6.16-rc6
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-17-2006 20:31 CET
-Last Modified:              03-21-2006 20:09 CET
+Last Modified:              03-21-2006 20:10 CET
 ======================================================================
 Summary:                    EPIPE on Audigy with surround sound when seeking in
 6 channel sound file
@@ -54,17 +56,16 @@ success.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-21-06 17:30 
-----------------------------------------------------------------------
-It's a problem of 32/64 bit compatibility in timer tread struct.
-Fixed on CVS.
-
-----------------------------------------------------------------------
  bambam - 03-21-06 20:09 
 ----------------------------------------------------------------------
 I've just tried libs and drivers from CVS and the problem isn't solved yet.
 Both mplayer and vlc still loop with Broken pipe errors when seeking in a
 media file.
+
+----------------------------------------------------------------------
+ tiwai - 03-21-06 20:10 
+----------------------------------------------------------------------
+The anon CVS tree isn'y sync'ed yet.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -88,6 +89,9 @@ custom x86-64 kernel
 03-21-06 20:09 bambam         Status                   resolved => feedback
 03-21-06 20:09 bambam         Resolution               fixed => reopened   
 03-21-06 20:09 bambam         Note Added: 0008759                          
+03-21-06 20:10 tiwai          Status                   feedback => resolved
+03-21-06 20:10 tiwai          Resolution               reopened => fixed   
+03-21-06 20:10 tiwai          Note Added: 0008760                          
 ======================================================================
 
 
