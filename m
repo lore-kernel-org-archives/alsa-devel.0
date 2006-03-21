@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - plugins 0001949]: pcm.jack config in alsa-plugins/doc/README-jack
-Date: Tue, 21 Mar 2006 06:18:37 +0100
-Message-ID: <07ed23c3475d303a42dd655cb69d1f7e@bugtrack.alsa-project.org>
+Date: Tue, 21 Mar 2006 07:42:13 +0100
+Message-ID: <34fe1901ae42b64598944e7584cdfbc1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3569C1F7
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 06:18:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E2E01EC
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 07:42:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1949> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             03-21-2006 06:18 CET
-Last Modified:              03-21-2006 06:18 CET
+Last Modified:              03-21-2006 07:42 CET
 ======================================================================
 Summary:                    pcm.jack config in alsa-plugins/doc/README-jack
 Description: 
@@ -70,10 +70,24 @@ capture_2
 
 ======================================================================
 
+----------------------------------------------------------------------
+ Raymond - 03-21-06 07:42 
+----------------------------------------------------------------------
+aplay -Djack stereo.wav
+ALSA lib pcm.c:2109:(snd_pcm_open_conf) Cannot open shared library
+/usr/lib/alsa-lib/libasound_module_pcm_jack.so
+aplay: main:547: audio open error: No such file or directory
+
+ls /usr/lib/alsa-lib
+libasound_module_ctl_oss.la   libasound_module_pcm_jack.so  smixer
+libasound_module_ctl_oss.so   libasound_module_pcm_oss.la
+libasound_module_pcm_jack.la  libasound_module_pcm_oss.so
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-21-06 06:18 Raymond        New Issue                                    
+03-21-06 07:42 Raymond        Note Added: 0008738                          
 ======================================================================
 
 
