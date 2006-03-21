@@ -1,10 +1,14 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: ac3 in/out
-Date: Tue, 21 Mar 2006 11:27:16 +0100
-Message-ID: <1142936836.4759.3.camel@localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001948]: configure.in:2229: error: possibly undefined macro: AS_HELP_STRING
+Date: Tue, 21 Mar 2006 17:18:18 +0100
+Message-ID: <edfc55fbf9966c538feb41d4e8b7cc14@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ZPjmcy5S7Mn7OZaRfBos"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D02CD1E7
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 17:18:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,52 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-ZPjmcy5S7Mn7OZaRfBos
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1948> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1948
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             03-21-2006 02:14 CET
+Last Modified:              03-21-2006 17:18 CET
+======================================================================
+Summary:                    configure.in:2229: error: possibly undefined macro:
+AS_HELP_STRING
+Description: 
+./cvscompile --with-cards=intel8x0
+make: Nothing to be done for `all-deps'.
+configure.in:2229: error: possibly undefined macro: AS_HELP_STRING
+      If this token and others are legitimate, please use
+m4_pattern_allow.
+      See the Autoconf documentation.
 
-Hi,
+======================================================================
 
-=46rom what I've seen about ac3 in and also out, the support in alsa for
-that is more of a hack, and the data that is passed down the pcm
-interface actually contains the channel status bits for some drivers...
-Working on the new Apple stuff this isn't possible -- only some channel
-status bits can be set by the software, some are fixed. And they aren't
-interleaved in the stream, but set externally.
+----------------------------------------------------------------------
+ Raymond - 03-21-06 02:17 
+----------------------------------------------------------------------
+alsa-driver product version should be CVS instead of 1.0.11rc3
 
-So the question is -- are there any plans to abstract some digital out
-API within alsa? Otherwise the userspace will need to handle all kinds
-of different devices differently since the data on the stream is
-essentially the same as the data the chipset needs.
+----------------------------------------------------------------------
+ tiwai - 03-21-06 17:18 
+----------------------------------------------------------------------
+Your autoconf looks too old.  autoconf-2.59 is working well.
 
-johannes
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-21-06 02:14 Raymond        New Issue                                    
+03-21-06 02:14 Raymond        Distribution              => Fedora Core 1   
+03-21-06 02:14 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+03-21-06 02:17 Raymond        Note Added: 0008735                          
+03-21-06 17:18 tiwai          Status                   assigned => resolved
+03-21-06 17:18 tiwai          Resolution               open => fixed       
+03-21-06 17:18 tiwai          Note Added: 0008746                          
+======================================================================
 
---=-ZPjmcy5S7Mn7OZaRfBos
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIVAwUARB/VAqVg1VMiehFYAQLWXg/+LA9zeocyWEoT0MYJb9GVUpdCVMqYR73a
-eKSkqW4SpiHgN+d6UVN6H0MVcrcNNLCU3G4Ez1JaRC04CgjhJdCY2Vx8W0vVgv7P
-rgKPMUqfQ92uH2Y0+L9ysdlUppkj1pVToPfD6xX7Ecyto4DDgu0qfOHjpmRv4NAl
-0tw/54BI3/DboUTTEjCOZ7RJJgWZwRrNyiegNepCqGYL9K66Bg98ueTBRxFlvYZu
-Sd3cYVUgMpJgJauylvZUL+dgb7cDDo+JfTKjaSYAZLTHpoUuNsHsNfh+lpbRGAWD
-sIQWgcSJYTV4/hKdWPBpfvGv/h19fUnhMQKs/t8YDxPYL6O/wRcfzihQx0sZmOnn
-1EbxhBodV80FebZ2HObVgaN3ClgDpLKFwT3PCiPt4ymTPl+FHnrxpnHimTNSulEG
-ikWxFtwhDTTwMIytBZ6YqbMz3wC4w+LPKcMFC88/V9tw9APemK5gmLqGneFRehtc
-WEhItlwFCaY4qcJ8qDYIZ4swDt3pwXR4B3WxFhSvNXSiqwSlHBMuaxZSp8ZRiffW
-XEwxc+CYAW84PMQ6eP113M5eFDlTQ8TIIlvjkI4xrKylnCxasJinDT9un6576a5X
-+O5HIVZYvhi6p4n4j/W3JiP3wD/g8QruCIUfEjpype6kKOrITjfor2A0ERWpeKkT
-+iTwz8y137U=
-=fqmp
------END PGP SIGNATURE-----
-
---=-ZPjmcy5S7Mn7OZaRfBos--
 
 
 
