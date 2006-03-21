@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Tue, 21 Mar 2006 02:38:48 +0100
-Message-ID: <2a5ff8543406b12df861edc9624ec272@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001843]: regression: no sound with sigmatel stac9200, works in alsa 1.0.10
+Date: Tue, 21 Mar 2006 05:52:23 +0100
+Message-ID: <01d5d8b56dde22f65c74c34656b532e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81FEF1ED
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 02:38:48 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F7FB1F7
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 05:52:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,122 +24,109 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843> 
 ======================================================================
-Reported By:                liangalei
-Assigned To:                
+Reported By:                richardfish
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Issue ID:                   1843
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Distribution:               Gentoo
+Kernel Version:             suspend2-sources-2.6.15-r6
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              03-21-2006 02:38 CET
+Date Submitted:             02-13-2006 04:04 CET
+Last Modified:              03-21-2006 05:52 CET
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    regression: no sound with sigmatel stac9200, works
+in alsa 1.0.10
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+With alsa 1.0.10, my Intel HDA with the Sigmatel STAC9200 produces sound
+from both speakers and headphones (although the speakers are not muted
+when the headphones are inserted, but that is a separate problem).  
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
-
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
-
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
-
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
-
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
+With alsa 1.0.11rc3, and the CVS version as of today, no sound is produced
+from either speakers or headphones.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001931 Unknown AC97 codec, digital sound works
+has duplicate       0001813 STAC9750 not recognised by hda-intel
+has duplicate       0001729 Only output through headphone jack
 ======================================================================
 
 ----------------------------------------------------------------------
- Kooper - 03-17-06 12:35 
+ tiwai - 03-20-06 12:31 
 ----------------------------------------------------------------------
->  To make sure, could you upload /proc/asound/card0/codec97#0/* files and
-
-> /etc/asound.state for checking?
-
-kooper-alsa-bugreport.tgz attached
+The new patch (autoconfig-fix4) is uploaded.  It allows the multiple
+speaker pins.
+Give it a try.
 
 ----------------------------------------------------------------------
- JProgrammer - 03-21-06 02:38 
+ richardfish - 03-21-06 05:52 
 ----------------------------------------------------------------------
-I also applied the patch there is no sound that comes from internal
-speakers, headphone or microphone jack and all of the controls except for
-pcm do not display.
+fix4 works great for me.
+
+FYI the first pin seems to be for all of the speakers...or at least the 4
+'normal' ones.  The second pin doesn't seem to control anything.  There is
+a subwoofer in this laptop also, but I've never heard anything come out of
+it.  Someday I'll install windows on here temporarily just to see what it
+sounds like.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
-03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
-   
-03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
-03-17-06 04:10 Kooper         Note Added: 0008633                          
-03-17-06 12:07 tiwai          Note Added: 0008641                          
-03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
-      
-03-17-06 12:35 Kooper         Note Added: 0008644                          
-03-21-06 02:38 JProgrammer    Note Added: 0008736                          
+02-13-06 04:04 richardfish    New Issue                                    
+02-13-06 04:04 richardfish    File Added: alsa-rjf-1.patch                    
+02-13-06 04:04 richardfish    Distribution              => Gentoo          
+02-13-06 04:04 richardfish    Kernel Version            =>
+suspend2-sources-2.6.15-r6
+02-14-06 05:43 richardfish    Issue Monitored: richardfish                    
+02-20-06 22:51 lrupn          Issue Monitored: lrupn                       
+02-25-06 21:40 lrupn          Note Added: 0008192                          
+02-26-06 16:08 toshio         Note Added: 0008203                          
+02-27-06 23:45 richardfish    Note Added: 0008233                          
+03-01-06 17:07 lrupn          Note Added: 0008281                          
+03-01-06 17:59 mpt            Issue Monitored: mpt                         
+03-17-06 00:39 tiwai          Note Added: 0008622                          
+03-17-06 00:41 tiwai          File Added: hda-autoconfig-fix.diff               
+    
+03-17-06 01:03 tiwai          Relationship added       has duplicate 0001813
+03-17-06 01:09 tiwai          Relationship added       has duplicate 0001729
+03-17-06 04:55 error10        Note Added: 0008634                          
+03-17-06 11:59 tiwai          Note Added: 0008637                          
+03-17-06 11:59 tiwai          File Added: hda-autoconfig-fix2.diff              
+     
+03-17-06 12:00 tiwai          Note Added: 0008638                          
+03-17-06 20:39 Jeff250        Note Added: 0008657                          
+03-17-06 20:40 Jeff250        Note Edited: 0008657                         
+03-17-06 20:55 tiwai          Note Added: 0008658                          
+03-17-06 20:55 tiwai          File Added: stac9200-additional-fix.diff          
+         
+03-17-06 21:31 tiwai          Note Added: 0008660                          
+03-17-06 21:31 tiwai          File Added: hda-autoconfig-fix3.diff              
+     
+03-18-06 00:07 Jeff250        Note Added: 0008664                          
+03-18-06 05:22 richardfish    Note Added: 0008669                          
+03-18-06 12:41 gsmet          Note Added: 0008670                          
+03-18-06 12:43 gsmet          Issue Monitored: gsmet                       
+03-19-06 11:56 lrupn          Note Added: 0008688                          
+03-20-06 02:08 richardfish    Note Added: 0008704                          
+03-20-06 02:09 richardfish    File Added: rjf-ignore-extra-speakers.diff        
+           
+03-20-06 02:09 richardfish    File Added: rjf-fix-debug-print.diff              
+     
+03-20-06 02:48 richardfish    Note Added: 0008705                          
+03-20-06 02:49 richardfish    File Added: rjf-extra-speakers-as-lineouts.diff   
+                
+03-20-06 11:53 tiwai          Note Added: 0008714                          
+03-20-06 12:31 tiwai          Note Added: 0008716                          
+03-20-06 12:31 tiwai          File Added: hda-autoconfig-fix4.diff              
+     
+03-21-06 05:52 richardfish    Note Added: 0008737                          
 ======================================================================
 
 
