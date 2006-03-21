@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001935]: Adding support for other deviceclasses
-Date: Tue, 21 Mar 2006 17:53:47 +0100
-Message-ID: <17c45ccf22335ee80f149cae20b6f157@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001932]: snd_mixer_handle_events() documentation doesn't explain the return value correctly
+Date: Tue, 21 Mar 2006 17:58:41 +0100
+Message-ID: <9aac7ea7242b971c4de119b39c2d58e6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E00481F7
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 17:53:47 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F28B81F7
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 17:58:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1935> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1932> 
 ======================================================================
-Reported By:                Henne
+Reported By:                tilman
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1935
-Category:                   alsaconf
+Project:                    ALSA - lib
+Issue ID:                   1932
+Category:                   2_mixer
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-17-2006 13:43 CET
-Last Modified:              03-21-2006 17:53 CET
+Date Submitted:             03-16-2006 23:05 CET
+Last Modified:              03-21-2006 17:58 CET
 ======================================================================
-Summary:                    Adding support for other deviceclasses
+Summary:                    snd_mixer_handle_events() documentation doesn't
+explain the return value correctly
 Description: 
-alsaconf filters, in find_device_name(), unrelevant outputs from lspci.
-If the classname of does not match "Multimedia audio controller", the
-output becomes unreadable.
-That is the case of the Sek'd ARC88, which classname is "Multimedia
-controller".
-This patch fixes that.
+The docs for snd_mixer_handle_events() say the return value is:
+
+"0 otherwise a negative error code on failure"
+
+which suggests that 0 is the only valid return value that represents
+success.
+
+In fact, the function returns the number of mixer events that occurred on
+success, which makes any return value >=0 represent success.
+
+I suggest to apply the attached patch to actually document the return
+value correctly (applies to CVS HEAD).
 ======================================================================
 
 ----------------------------------------------------------------------
- Henne - 03-17-06 14:26 
+ tiwai - 03-21-06 17:58 
 ----------------------------------------------------------------------
-It seems to me that no first patch is perfect... :)
-Use patch_new.diff
-
-----------------------------------------------------------------------
- tiwai - 03-21-06 17:53 
-----------------------------------------------------------------------
-Thanks for the patch.  I fixed differently on CVS, since the patch doesn't
-handle class 0403 or other correctly.
+Applied to CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 13:43 Henne          New Issue                                    
-03-17-06 13:43 Henne          File Added: patch.diff                       
-03-17-06 14:26 Henne          Note Added: 0008646                          
-03-17-06 14:27 Henne          File Added: patch_new.diff                    
-03-21-06 17:53 tiwai          Status                   new => resolved     
-03-21-06 17:53 tiwai          Resolution               open => fixed       
-03-21-06 17:53 tiwai          Assigned To               => tiwai           
-03-21-06 17:53 tiwai          Note Added: 0008752                          
+03-16-06 23:05 tilman         New Issue                                    
+03-16-06 23:05 tilman         File Added:
+alsalib-snd_mixer_handle_events_documentation.diff                    
+03-21-06 17:58 tiwai          Status                   new => resolved     
+03-21-06 17:58 tiwai          Resolution               open => fixed       
+03-21-06 17:58 tiwai          Assigned To               => tiwai           
+03-21-06 17:58 tiwai          Note Added: 0008753                          
 ======================================================================
 
 
