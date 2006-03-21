@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Tue, 21 Mar 2006 08:46:41 +0100
-Message-ID: <0f239e87cbaac020ca08b7d9560907d0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001824]: Always mixed into one channel when recording stereo
+Date: Tue, 21 Mar 2006 09:28:36 +0100
+Message-ID: <1f61c788cc11703d367916f10e0328ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF73B1F0
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 08:46:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A1BD19F
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 09:28:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1824> 
 ======================================================================
-Reported By:                drolyk
+Reported By:                Electro
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1930
-Category:                   PCI - intel8x0
+Issue ID:                   1824
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.6
+Distribution:               Gentoo
+Kernel Version:             2.6.14-gentoo-r4
 ======================================================================
-Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              03-21-2006 08:46 CET
+Date Submitted:             02-06-2006 06:56 CET
+Last Modified:              03-21-2006 09:28 CET
 ======================================================================
-Summary:                    Can`t get timidity woking in soft synth mode
+Summary:                    Always mixed into one channel when recording stereo
 Description: 
-Can`t get timidity woking in "soft synth mode".
+When recording stereo audio (2 channels), the sound seems to mix to one
+channel and then saved in the left track. I do not have anything in
+asound.conf or ~/.asoundrc that will affect the recordings. I even cleared
+them out to make sure that my code is not screwing up the recordings. It
+has done this since I upgraded to 1.0.10 from 1.0.9. I thought 1.0.11rc3
+will fix the problem but it still does it.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001527 amixer fails to set right 'Capture Sour...
 ======================================================================
 
 ----------------------------------------------------------------------
- fdoffizi01 - 03-21-06 00:14 
+ ungod - 03-20-06 12:35 
 ----------------------------------------------------------------------
-I'd like to use timidity or fluidsynth as a software synth to hear midi
-file from any midi application, rosegarden, kmid... web browser...
+Which ice1724 audio card are we talking about?
+And have you verified that Line in is set as the recording source for both
+the left and right channel?
 
-I can't say when it stopped working... now I changed pc so I can't even
-tell if hw module make difference (but I'm tryin it on different machines
-and let you know soon!)
+$ amixer cget name="Capture Source"
+numid=36,iface=MIXER,name='Capture Source'
+  ; type=ENUMERATED,access=rw---,values=2,items=5
+  ; Item #0 'CD'
+  ; Item #1 'Aux'
+  ; Item #2 'Line'
+  ; Item #3 'Mic'
+  ; Item #4 'AC97'
+  : values=2,2
 
 ----------------------------------------------------------------------
- Raymond - 03-21-06 08:46 
+ Electro - 03-21-06 09:28 
 ----------------------------------------------------------------------
-It work on my intel8x0 ( hw:1 ) or (default:1) 
+If I set Line In as the capture, it will only capture one channel (left
+channel). Setting the capture to AC97 does capture in stereo, but system
+sounds can not be played during recording or else they will be capture
+too.
 
-export TIMIDITY_PCM_NAME=hw:1,0
-timidity -iA -Os
-Requested buffer size 32768, fragment size 8192
-ALSA pcm 'hw:1,0' set buffer size 32768, period size 8192 bytes
-TiMidity starting in ALSA server mode
-Opening sequencer port: 128:0 128:1 128:2 128:3
-Requested buffer size 32768, fragment size 8192
-ALSA pcm 'hw:1,0' set buffer size 32768, period size 8192 bytes
-
-
-aplaymidi -p 128:0 test.mid
+I already posted in earlier bug reports that I am using Audiotrak Prodigy
+7.1. I am not using Audiotrak Prodigy 7.1 LT.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 23:41 drolyk         New Issue                                    
-03-15-06 23:41 drolyk         Distribution              => Debian          
-03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
-03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
-03-20-06 01:28 rlrevell       Note Added: 0008702                          
-03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
-03-20-06 03:24 rlrevell       Note Added: 0008706                          
-03-20-06 06:08 drolyk         Note Added: 0008709                          
-03-20-06 06:22 rlrevell       Note Added: 0008710                          
-03-20-06 07:19 Raymond        Note Added: 0008711                          
-03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
-03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
-03-20-06 22:19 drolyk         Note Added: 0008726                          
-03-20-06 22:21 drolyk         Note Edited: 0008726                         
-03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
-03-20-06 23:29 rlrevell       Note Added: 0008729                          
-03-20-06 23:40 fdoffizi01     Note Added: 0008730                          
-03-20-06 23:54 rlrevell       Note Added: 0008731                          
-03-21-06 00:14 fdoffizi01     Note Added: 0008732                          
-03-21-06 08:46 Raymond        Note Added: 0008739                          
+02-06-06 06:56 Electro        New Issue                                    
+02-06-06 06:56 Electro        Distribution              => Gentoo          
+02-06-06 06:56 Electro        Kernel Version            => 2.6.14-gentoo-r4
+02-10-06 23:38 tartif         Note Added: 0008009                          
+02-16-06 07:26 Electro        Note Added: 0008087                          
+02-18-06 01:32 rlrevell       Relationship added       duplicate of 0001527
+02-28-06 22:45 Electro        Note Added: 0008248                          
+03-20-06 12:35 ungod          Note Added: 0008717                          
+03-21-06 09:28 Electro        Note Added: 0008740                          
 ======================================================================
 
 
