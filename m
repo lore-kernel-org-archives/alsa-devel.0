@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Tue, 21 Mar 2006 18:01:56 +0100
-Message-ID: <7b59917dbd04bfa3428f577a8beee5f5@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: ac3 in/out
+Date: Tue, 21 Mar 2006 13:17:04 -0500
+Message-ID: <1142965025.4532.132.camel@mindpipe>
+References: <1142936836.4759.3.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0248012C
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2006 18:01:56 +0100 (MET)
+In-Reply-To: <1142936836.4759.3.camel@localhost>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,126 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-03-21 at 11:27 +0100, Johannes Berg wrote:
+> Hi,
+> 
+> From what I've seen about ac3 in and also out, the support in alsa for
+> that is more of a hack, and the data that is passed down the pcm
+> interface actually contains the channel status bits for some drivers...
+> Working on the new Apple stuff this isn't possible -- only some channel
+> status bits can be set by the software, some are fixed. And they aren't
+> interleaved in the stream, but set externally.
+> 
+> So the question is -- are there any plans to abstract some digital out
+> API within alsa? Otherwise the userspace will need to handle all kinds
+> of different devices differently since the data on the stream is
+> essentially the same as the data the chipset needs.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
-======================================================================
-Reported By:                alien999999999
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1047
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              03-21-2006 18:01 CET
-======================================================================
-Summary:                    module hangs at seemingly random times
-Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
+I don't understand - ALSA fully supports AC3 passthrough and digital
+audio.
 
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
+What is the exact problem you are trying to solve?
 
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
-
-
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
-
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
-
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 03-21-06 02:02 
-----------------------------------------------------------------------
-au88x0_conf.patch - add channels parameter for au8810 and au8830 which
-using a single device for surround40
-
-http://sourceforge.net/mailarchive/forum.php?thread_id=9966493&forum_id=33141
-
-----------------------------------------------------------------------
- tiwai - 03-21-06 18:01 
-----------------------------------------------------------------------
-Could you send the series of fix patches to alsa-devel ML and to me ?  (Not
-URLs but real patches, please.)  I cannot follow which patches should be
-merged.
-
-Thanks.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-01-04-06 22:08 alien999999999 Note Added: 0007455                          
-01-05-06 07:21 Raymond        Note Added: 0007462                          
-01-05-06 20:32 shurick        Issue Monitored: shurick                     
-01-06-06 17:17 alien999999999 Note Added: 0007488                          
-01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
-      
-01-13-06 13:51 Raymond        Note Added: 0007639                          
-01-13-06 18:18 tiwai          Note Added: 0007648                          
-01-14-06 04:53 Raymond        Note Added: 0007653                          
-01-14-06 05:00 Raymond        Note Edited: 0007653                         
-01-17-06 12:27 Raymond        Note Added: 0007697                          
-01-18-06 15:51 Raymond        Note Added: 0007710                          
-01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
-01-19-06 13:51 Raymond        Note Added: 0007719                          
-02-05-06 05:20 Raymond        Note Edited: 0007710                         
-02-05-06 05:28 Raymond        Note Added: 0007930                          
-02-13-06 16:38 Raymond        Note Deleted: 0006564                        
-02-13-06 16:41 Raymond        Note Added: 0008054                          
-03-01-06 07:39 Raymond        Note Added: 0008273                          
-03-18-06 12:28 Raymond        Note Deleted: 0008273                        
-03-20-06 17:54 Raymond        File Added: au88x0_conf.patch                    
-03-21-06 02:02 Raymond        Note Added: 0008734                          
-03-21-06 18:01 tiwai          Note Added: 0008754                          
-======================================================================
-
+Lee
 
 
 
