@@ -1,10 +1,10 @@
-From: Pieter Palmers <pieterp@joow.be>
-Subject: Need help developing an ALSA plugin for FreeBob (firewire audio)
-Date: Tue, 21 Mar 2006 00:38:03 +0100
-Message-ID: <441F3CDB.7040906@joow.be>
+From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
+Subject: [PATCH] AMD Au1x00: fix DMA init/cleanup
+Date: Tue, 21 Mar 2006 03:59:23 +0300
+Message-ID: <441F4FEB.6060806@ru.mvista.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------080900060407000702020209"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,103 +15,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, linux-audio-developers@lists.sourceforge.net
-Cc: freebob-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+This is a multi-part message in MIME format.
+--------------080900060407000702020209
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I could use some help implementing an ALSA plugin for the FreeBob 
-project (firewire audio).
-I started off by tearing down the jack plugin for ALSA and managed to 
-get some understanding about the generic structure of a userspace ALSA 
-plugin. The problem at this point is that I'm a little confused about 
-the buffer format & layout I have available for the audio samples.
+Hello.
 
-The freebob library provides functions to depacketize the firewire 
-packets directly into user audio buffers (ALSA buffers in this case).
-A rough illustration to implement a freebob-lib using app would be:
+    Reposting with signoff which I constantly forget about... :-/
 
-... init stuff ...
+    AMD Au1x00 ALSA driver causes kernel oops in au1000_init() by trying to
+set DMA channel to -1 in yet unallocated audio streams. Here's the patch that
+staightens up DMA init/cleanup code.
 
-    //assign the user-provided buffers to the channels
-    for (i=0;i<nb_out_channels;i++) {
-        switch (freebob_streaming_get_playback_stream_type(dev,i)) {
-            case freebob_stream_type_audio:            
-                /* assign the audiobuffer to the stream */
-                freebob_streaming_set_playback_stream_buffer(dev, i, 
-(char *)audiobuffers[i], freebob_buffer_type_uint24);
-                break;
-            case freebob_stream_type_midi:
-            default:
-                break;
-        }
-    }
+WBR, Sergei
 
-    while(run) {
-        // wait for one period of samples
-        retval = freebob_streaming_wait(dev);
-
-        if (retval < 0) {
-            fprintf(stderr,"Xrun\n");
-            freebob_streaming_reset(dev);
-            continue;
-        }
-       
-        // transfer the samples to the buffer
-        freebob_streaming_transfer_playback_buffers(dev);
-
-    }
+Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 
 
-The sample format currently provided is unsigned 24bit, host-endian 
-packed into a 32bit integer. On the bus the actual sample format is 
-unsigned 24 bit big endian, so that could be provided too (would be even 
-more efficient).
+--------------080900060407000702020209
+Content-Type: text/plain;
+ name="Au1x00-ALSA-fix-DMA-init-and-cleanup.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="Au1x00-ALSA-fix-DMA-init-and-cleanup.patch"
 
-My first idea is to implement a 'basic' plugin, supporting only the 
-SND_PCM_FORMAT_U24 or SND_PCM_FORMAT_U24_BE format. I assume that the 
-plug layer will take care of all other stuff.
+diff --git a/sound/mips/au1x00.c b/sound/mips/au1x00.c
+index 6d8f8b3..a7a221a 100644
+--- a/sound/mips/au1x00.c
++++ b/sound/mips/au1x00.c
+@@ -610,14 +610,17 @@ snd_au1000_free(struct snd_card *card)
+ 		release_and_free_resource(au1000->ac97_res_port);
+ 	}
+ 
+-	if (au1000->stream[PLAYBACK]->dma >= 0)
+-		free_au1000_dma(au1000->stream[PLAYBACK]->dma);
+-
+-	if (au1000->stream[CAPTURE]->dma >= 0)
+-		free_au1000_dma(au1000->stream[CAPTURE]->dma);
++	if (au1000->stream[PLAYBACK]) {
++	  	if (au1000->stream[PLAYBACK]->dma >= 0)
++			free_au1000_dma(au1000->stream[PLAYBACK]->dma);
++		kfree(au1000->stream[PLAYBACK]);
++	}
+ 
+-	kfree(au1000->stream[PLAYBACK]);
+-	kfree(au1000->stream[CAPTURE]);
++	if (au1000->stream[CAPTURE]) {
++		if (au1000->stream[CAPTURE]->dma >= 0)
++			free_au1000_dma(au1000->stream[CAPTURE]->dma);
++		kfree(au1000->stream[CAPTURE]);
++	}
+ }
+ 
+ 
+@@ -636,15 +630,19 @@ au1000_init(void)
+ 
+ 	card->private_free = snd_au1000_free;
+ 	au1000 = card->private_data;
+-	/* so that snd_au1000_free will work as intended */
+ 	au1000->card = card;
+-	au1000->stream[PLAYBACK]->dma = -1;
+-	au1000->stream[CAPTURE]->dma = -1;
+- 	au1000->ac97_res_port = NULL;
++
+ 	au1000->stream[PLAYBACK] = kmalloc(sizeof(struct audio_stream), GFP_KERNEL);
+-	au1000->stream[CAPTURE] = kmalloc(sizeof(struct audio_stream), GFP_KERNEL);
++	au1000->stream[CAPTURE ] = kmalloc(sizeof(struct audio_stream), GFP_KERNEL);
++	/* so that snd_au1000_free will work as intended */
++ 	au1000->ac97_res_port = NULL;
++	if (au1000->stream[PLAYBACK])
++		au1000->stream[PLAYBACK]->dma = -1;
++	if (au1000->stream[CAPTURE ])
++		au1000->stream[CAPTURE ]->dma = -1;
++
+ 	if (au1000->stream[PLAYBACK] == NULL ||
+-	    au1000->stream[CAPTURE] == NULL) {
++	    au1000->stream[CAPTURE ] == NULL) {
+ 		snd_card_free(card);
+ 		return -ENOMEM;
+ 	}
 
-I would also think that in this case noninterleaved buffers would be 
-optimal, because that's the way they are internally stored for the 
-moment (the FW packetization doesn't favor the use of interleaved buffers).
 
-Now my questions:
-- what is the buffer structure layout (areas) when I implement something 
-like
-    snd_pcm_freebob_write(snd_pcm_ioplug_t *io,
-                   const snd_pcm_channel_area_t *areas,
-                   snd_pcm_uframes_t offset,
-                   snd_pcm_uframes_t size)
-- what would be the best type of SND_PCM_IOPLUG_HW_ACCESS mode?
-- where do I put the freebob_streaming_wait(dev) call that blocks until 
-a period of samples is present?
-- in firewire audio, midi and audio streams are interleaved, meaning 
-that you can't have one without the other. therefore I would like to 
-know if there is a possibility to implement midi I/O into the same plugin.
-- can I implement both capture and playback in the same plugin? it would 
-be possible to implement them as separate plugins (no technical problems 
-on the firewire side) but it would be easier if that wouldn't be nescessary.
 
-Is somebody interested in helping me out with this? I know the freebob 
-API, but I don't know the ALSA Plugin API. Maybe someone with the 
-opposite knowledge can free up some time to get me going? After all, the 
-ALSA userspace plugin is all that is keeping us from going to the beta 
-stage ;)
 
-Thanks,
-
-Pieter Palmers
-FreeBob Developer
-http://freebob.sf.net
-
-PS: my current alsa plugin try-out code is in our CVS repo at 
-sourceforge as alsa-plugin, should anyone want to take a look at the mess.
-cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/freebob co -P 
-/alsa-plugin
-
-/
+--------------080900060407000702020209--
 
 
 -------------------------------------------------------
