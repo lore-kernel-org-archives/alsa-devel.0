@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000872]: Mixer not functioning correctly
-Date: Wed, 22 Mar 2006 03:47:09 +0100
-Message-ID: <277797bdc509b96624a6578a4d73fa9e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Wed, 22 Mar 2006 04:00:54 +0100
+Message-ID: <24aba5692005ec3ecabcebc79278049b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6EED16C
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:47:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8326175
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 04:00:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,188 +22,122 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=872> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                Mutant_Fruit
-Assigned To:                rlrevell
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   872
-Category:                   CORE OSS - mixer
-Reproducibility:            always
-Severity:                   tweak
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian Testing (Sarge)
-Kernel Version:             2.6.8
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             01-31-2005 21:29 CET
-Last Modified:              03-22-2006 03:47 CET
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              03-22-2006 04:00 CET
 ======================================================================
-Summary:                    Mixer not functioning correctly
+Summary:                    module hangs at seemingly random times
 Description: 
-Some things seem to not be set up correctly in the volume controls in
-alsamixer (and therefore possibly everything based on alsamixer).
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
 
-1) The "Master" volume has no effect when i'm using headphones.
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
 
-2) If i turn everything off except "Headphones" i still get sound in
-headphones when i play music. I would have assumed this wouldn't be the
-case, as PCM volume is at zero. However if i mute PCM, i get no sound. The
-same is true for when i take out headphones and turn everything off except
-the master volume.
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
 
-3) I'm not sure if this is a bug with the mixer or the intel drivers, so i
-posted this as a bug for the drivers... I get severe distortion when the
-PCM volume is turned up.
+
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- Mutant_Fruit - 02-13-05 17:20 
+ Raymond - 03-22-06 04:00 
 ----------------------------------------------------------------------
-The distortion is fixed when i compiled using the ac97_quirk option.
-Everything is perfect except for the problem with the earphones. The
-"master" volume still does not affect the volume at all when i use
-earphones.
+au88x0_conf.patch is the corresponding patch for au8810/au8830 of your
+recent change to add channels parameter for surround40/surround51 which
+use a single device.
 
-Here's the contents of  lspci -nv:
-0000:00:00.0 0600: 8086:3580 (rev 02)
-        Subsystem: 1028:0163
-        Flags: bus master, fast devsel, latency 0
-        Memory at <unassigned> (32-bit, prefetchable)
-        Capabilities: [40] #09 [8105]
+As there are many drivers with .channels_min = 1 and upmix_1_to_40() and
+upmix_1_to_51() in new upmix plugin in alsa-plugins/mix/pcm_upmix.c
 
-0000:00:00.1 0880: 8086:3584 (rev 02)
-        Subsystem: 1028:0163
-        Flags: bus master, fast devsel, latency 0
-
-0000:00:00.3 0880: 8086:3585 (rev 02)
-        Subsystem: 1028:0163
-        Flags: bus master, fast devsel, latency 0
-
-0000:00:02.0 0300: 8086:3582 (rev 02)
-        Subsystem: 1028:0163
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at f0000000 (32-bit, prefetchable) [size=128M]
-        Memory at faf80000 (32-bit, non-prefetchable) [size=512K]
-        I/O ports at c000 [size=8]
-        Capabilities: [d0] Power Management version 1
-
-0000:00:02.1 0380: 8086:3582 (rev 02)
-        Subsystem: 1028:0163
-        Flags: bus master, fast devsel, latency 0
-        Memory at e8000000 (32-bit, prefetchable) [size=128M]
-        Memory at faf00000 (32-bit, non-prefetchable) [size=512K]
-        Capabilities: [d0] Power Management version 1
-
-0000:00:1d.0 0c03: 8086:24c2 (rev 01)
-        Subsystem: 1028:0163
-        Flags: bus master, medium devsel, latency 0, IRQ 11
-        I/O ports at bf80 [size=32]
-
-0000:00:1d.1 0c03: 8086:24c4 (rev 01)
-        Subsystem: 1028:0163
-        Flags: bus master, medium devsel, latency 0, IRQ 11
-        I/O ports at bf40 [size=32]
-
-0000:00:1d.2 0c03: 8086:24c7 (rev 01)
-        Subsystem: 1028:0163
-        Flags: bus master, medium devsel, latency 0, IRQ 11
-        I/O ports at bf20 [size=32]
-
-0000:00:1d.7 0c03: 8086:24cd (rev 01) (prog-if 20)
-        Subsystem: 1028:0163
-        Flags: bus master, medium devsel, latency 0, IRQ 11
-        Memory at faeffc00 (32-bit, non-prefetchable) [size=1K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [58] #0a [2080]
-
-0000:00:1e.0 0604: 8086:2448 (rev 81)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=01, subordinate=01, sec-latency=32
-        I/O behind bridge: 0000e000-0000efff
-        Memory behind bridge: fc000000-fdffffff
-
-0000:00:1f.0 0601: 8086:24cc (rev 01)
-        Flags: bus master, medium devsel, latency 0
-
-0000:00:1f.1 0101: 8086:24ca (rev 01) (prog-if 8a [Master SecP PriP])
-        Subsystem: 1028:0163
-        Flags: bus master, medium devsel, latency 0, IRQ 11
-        I/O ports at <ignored>
-        I/O ports at <ignored>
-        I/O ports at <ignored>
-        I/O ports at <ignored>
-        I/O ports at bfa0 [size=16]
-        Memory at 20000000 (32-bit, non-prefetchable) [size=1K]
-
-0000:00:1f.5 0401: 8086:24c5 (rev 01)
-        Subsystem: 1028:0163
-        Flags: bus master, medium devsel, latency 0, IRQ 7
-        I/O ports at d800 [size=256]
-        I/O ports at dc40 [size=64]
-        Memory at faeff800 (32-bit, non-prefetchable) [size=512]
-        Memory at faeff400 (32-bit, non-prefetchable) [size=256]
-        Capabilities: [50] Power Management version 2
-
-0000:01:01.0 0607: 104c:ac44 (rev 02)
-        Subsystem: 1028:0163
-        Flags: bus master, medium devsel, latency 168, IRQ 11
-        Memory at 20001000 (32-bit, non-prefetchable) [size=4K]
-        Bus: primary=01, secondary=02, subordinate=05, sec-latency=176
-        Memory window 0: 20400000-207ff000 (prefetchable)
-        Memory window 1: 20800000-20bff000
-        I/O window 0: 00004000-000040ff
-        I/O window 1: 00004400-000044ff
-        16-bit legacy interface ports at 0001
-
-0000:01:01.1 0c00: 104c:8029 (prog-if 10)
-        Subsystem: 1028:0163
-        Flags: bus master, medium devsel, latency 32, IRQ 11
-        Memory at fcfff800 (32-bit, non-prefetchable) [size=2K]
-        Memory at fcff8000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: [44] Power Management version 2
-
-0000:01:03.0 0280: 8086:4220 (rev 05)
-        Subsystem: 8086:2722
-        Flags: bus master, medium devsel, latency 32, IRQ 7
-        Memory at fcffe000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: [dc] Power Management version 2
-
-0000:01:08.0 0200: 8086:103d (rev 81)
-        Subsystem: 1028:2002
-        Flags: bus master, medium devsel, latency 32, IRQ 11
-        Memory at fcffd000 (32-bit, non-prefetchable) [size=4K]
-        I/O ports at ecc0 [size=64]
-        Capabilities: [dc] Power Management version 2
-
-
-
-----------------------------------------------------------------------
- tiwai - 02-14-05 16:19 
-----------------------------------------------------------------------
-You need to use the very latest CVS version.
+Why there is no mono.conf in
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/conf/pcm/ ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-05 21:29 Mutant_Fruit   New Issue                                    
-01-31-05 21:29 Mutant_Fruit   Distribution              => Debian Testing
-(Sarge)
-01-31-05 21:29 Mutant_Fruit   Kernel Version            => 2.6.8           
-02-04-05 13:21 tiwai          Note Added: 0003505                          
-02-05-05 01:32 Mutant_Fruit   Note Added: 0003516                          
-02-09-05 12:06 tiwai          Note Added: 0003546                          
-02-13-05 17:19 Mutant_Fruit   Note Added: 0003584                          
-02-13-05 17:20 Mutant_Fruit   Note Edited: 0003584                         
-02-14-05 16:19 tiwai          Note Added: 0003595                          
-03-22-06 03:47 rlrevell       Status                   new => resolved     
-03-22-06 03:47 rlrevell       Resolution               open => fixed       
-03-22-06 03:47 rlrevell       Assigned To               => rlrevell        
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+01-03-06 04:04 Raymond        Note Added: 0007397                          
+01-04-06 22:08 alien999999999 Note Added: 0007455                          
+01-05-06 07:21 Raymond        Note Added: 0007462                          
+01-05-06 20:32 shurick        Issue Monitored: shurick                     
+01-06-06 17:17 alien999999999 Note Added: 0007488                          
+01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
+      
+01-13-06 13:51 Raymond        Note Added: 0007639                          
+01-13-06 18:18 tiwai          Note Added: 0007648                          
+01-14-06 04:53 Raymond        Note Added: 0007653                          
+01-14-06 05:00 Raymond        Note Edited: 0007653                         
+01-17-06 12:27 Raymond        Note Added: 0007697                          
+01-18-06 15:51 Raymond        Note Added: 0007710                          
+01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
+01-19-06 13:51 Raymond        Note Added: 0007719                          
+02-05-06 05:20 Raymond        Note Edited: 0007710                         
+02-05-06 05:28 Raymond        Note Added: 0007930                          
+02-13-06 16:38 Raymond        Note Deleted: 0006564                        
+02-13-06 16:41 Raymond        Note Added: 0008054                          
+03-01-06 07:39 Raymond        Note Added: 0008273                          
+03-18-06 12:28 Raymond        Note Deleted: 0008273                        
+03-20-06 17:54 Raymond        File Added: au88x0_conf.patch                    
+03-21-06 02:02 Raymond        Note Added: 0008734                          
+03-21-06 18:01 tiwai          Note Added: 0008754                          
+03-22-06 02:05 Raymond        File Added: au88x0_mpu401.patch                   
+
+03-22-06 02:28 Raymond        Note Added: 0008779                          
+03-22-06 02:31 Raymond        Note Edited: 0008779                         
+03-22-06 02:38 rlrevell       Note Added: 0008782                          
+03-22-06 04:00 Raymond        Note Added: 0008836                          
 ======================================================================
 
 
