@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001952]: Simultaneous sound from speakers and headphone on DELL Inspiron 9400
-Date: Wed, 22 Mar 2006 16:13:13 +0100
-Message-ID: <24fd76cd2d7ca2ca45cc664bacde07a6@bugtrack.alsa-project.org>
+Subject: [ALSA - plugins 0001949]: pcm.jack config in alsa-plugins/doc/README-jack
+Date: Wed, 22 Mar 2006 16:54:16 +0100
+Message-ID: <c76335e70c6caf8c11267fe92a73d0ac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DC5A1A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 16:13:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E24D013E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 16:54:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,83 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1952> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1949> 
 ======================================================================
-Reported By:                crissi
-Assigned To:                tiwai
+Reported By:                Raymond
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1952
-Category:                   PCI - hda-intel
+Project:                    ALSA - plugins
+Issue ID:                   1949
+Category:                   PCM - jack
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             03-22-2006 02:12 CET
-Last Modified:              03-22-2006 16:13 CET
+Date Submitted:             03-21-2006 06:18 CET
+Last Modified:              03-22-2006 16:54 CET
 ======================================================================
-Summary:                    Simultaneous sound from speakers and headphone on
-DELL Inspiron 9400
+Summary:                    pcm.jack config in alsa-plugins/doc/README-jack
 Description: 
-This still happens with cvs.
+In  alsa-plugins/doc/README-jack
+
+   pcm.jack {
+		type jack
+		playback_ports {
+			0 alsa_pcm:playback_1
+			1 alsa_pcm:playback_1
+		}
+		capture_ports {
+			0 alsa_pcm:capture_1
+			1 alsa_pcm:pcapture_1
+		}
+	}
+
+There are four entries in Writable clients in qjackctl (jack-0.100.0) 
+
+playback_1
+playback_2
+playback_3
+playback_4
+
+two entries in Readable clients
+
+capture_1
+capture_2
+
 ======================================================================
 
 ----------------------------------------------------------------------
- crissi - 03-22-06 16:04 
+ Raymond - 03-21-06 07:42 
 ----------------------------------------------------------------------
-if model=auto it wont work. My /etc/modprobe.d/snd_hda_intel.modprobe
-says:
-options snd-hda-intel model=test position_fix=1
+aplay -Djack stereo.wav
+ALSA lib pcm.c:2109:(snd_pcm_open_conf) Cannot open shared library
+/usr/lib/alsa-lib/libasound_module_pcm_jack.so
+aplay: main:547: audio open error: No such file or directory
+
+ls /usr/lib/alsa-lib
+libasound_module_ctl_oss.la   libasound_module_pcm_jack.so  smixer
+libasound_module_ctl_oss.so   libasound_module_pcm_oss.la
+libasound_module_pcm_jack.la  libasound_module_pcm_oss.so
 
 ----------------------------------------------------------------------
- tiwai - 03-22-06 16:13 
+ Raymond - 03-22-06 16:54 
 ----------------------------------------------------------------------
-Neither "test" nor "auto" model is available for stac92xx code.
-You're passing wrong values in any cases.
+alsa-plugins-1.0.11rc4
+
+aplay  -Djack stereo.wav
+Playing WAVE 'stereo.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Mono
+aplay: set_params:901: Sample format non available
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-06 02:12 crissi         New Issue                                    
-03-22-06 04:54 crissi         Note Added: 0008843                          
-03-22-06 05:15 rlrevell       Status                   assigned => resolved
-03-22-06 05:15 rlrevell       Resolution               open => fixed       
-03-22-06 05:15 rlrevell       Note Added: 0008844                          
-03-22-06 15:45 crissi         Status                   resolved => feedback
-03-22-06 15:45 crissi         Resolution               fixed => reopened   
-03-22-06 15:45 crissi         Note Added: 0008857                          
-03-22-06 15:48 tiwai          Status                   feedback => resolved
-03-22-06 15:48 tiwai          Resolution               reopened => fixed   
-03-22-06 15:48 tiwai          Note Added: 0008859                          
-03-22-06 16:04 crissi         Status                   resolved => feedback
-03-22-06 16:04 crissi         Resolution               fixed => reopened   
-03-22-06 16:04 crissi         Note Added: 0008861                          
-03-22-06 16:13 tiwai          Status                   feedback => resolved
-03-22-06 16:13 tiwai          Resolution               reopened => fixed   
-03-22-06 16:13 tiwai          Note Added: 0008862                          
+03-21-06 06:18 Raymond        New Issue                                    
+03-21-06 07:42 Raymond        Note Added: 0008738                          
+03-22-06 16:54 Raymond        Note Added: 0008863                          
 ======================================================================
 
 
