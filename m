@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001951]: Microphone doesnt work
-Date: Wed, 22 Mar 2006 15:47:29 +0100
-Message-ID: <68e81af9661bf414c2fcecbc28503296@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001952]: Simultaneous sound from speakers and headphone on DELL Inspiron 9400
+Date: Wed, 22 Mar 2006 15:45:50 +0100
+Message-ID: <212e72b5bdcca8b66abdbfff978e6040@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A405F1A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 15:47:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F8F31A6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 15:45:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,48 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1951> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1952> 
 ======================================================================
 Reported By:                crissi
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1951
+Issue ID:                   1952
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             03-22-2006 01:31 CET
-Last Modified:              03-22-2006 15:47 CET
+Date Submitted:             03-22-2006 02:12 CET
+Last Modified:              03-22-2006 15:45 CET
 ======================================================================
-Summary:                    Microphone doesnt work
+Summary:                    Simultaneous sound from speakers and headphone on
+DELL Inspiron 9400
 Description: 
-I cant get any input from mic.
+This still happens with cvs.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 01:42 
+ rlrevell - 03-22-06 05:15 
 ----------------------------------------------------------------------
-Try CVS or the upcoming 1.0.11-rc4 release
+Great.  Closing this bug.
 
 ----------------------------------------------------------------------
- crissi - 03-22-06 15:47 
+ crissi - 03-22-06 15:45 
 ----------------------------------------------------------------------
-I still run cvs but no sucess :(
-What can I do?
+it works only if model=test, I found that later ;)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-06 01:31 crissi         New Issue                                    
-03-22-06 01:42 rlrevell       Note Added: 0008767                          
-03-22-06 15:47 crissi         Note Added: 0008858                          
+03-22-06 02:12 crissi         New Issue                                    
+03-22-06 04:54 crissi         Note Added: 0008843                          
+03-22-06 05:15 rlrevell       Status                   assigned => resolved
+03-22-06 05:15 rlrevell       Resolution               open => fixed       
+03-22-06 05:15 rlrevell       Note Added: 0008844                          
+03-22-06 15:45 crissi         Status                   resolved => feedback
+03-22-06 15:45 crissi         Resolution               fixed => reopened   
+03-22-06 15:45 crissi         Note Added: 0008857                          
 ======================================================================
 
 
