@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
-Date: Wed, 22 Mar 2006 03:15:20 +0100
-Message-ID: <271bd2824ffd19e995840985e9b6ff81@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000795]: Broken Pipe
+Date: Wed, 22 Mar 2006 03:16:45 +0100
+Message-ID: <14fb45c71c4a5de8731d7050a7aef1fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1784F1A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:15:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9110E1A6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:16:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,88 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=490> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=795> 
 ======================================================================
-Reported By:                feixm
-Assigned To:                tiwai
+Reported By:                ajir
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   490
-Category:                   PCI - atiixp
+Issue ID:                   795
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               linuxfromscratch, everything compiled from original
-sources
-Kernel Version:             2.6.8.1
+Distribution:               
+Kernel Version:             
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-08-2004 21:16 CEST
-Last Modified:              03-22-2006 03:15 CET
+Date Submitted:             01-08-2005 23:21 CET
+Last Modified:              03-22-2006 03:16 CET
 ======================================================================
-Summary:                     Choppy sound when playing on Acer TravelMate 2000
+Summary:                    Broken Pipe
 Description: 
-Hello,
+Hi!
 
-when playing any audio file from my new Acer TravelMate 2000, the sound is
-very choppy. I tried playing using xmms, mplayer and others. From lspci I
-see, it is an ATI IXP 150. I understand that this bugreport alone won't
-help you guys, so if I can give any more info, pls let me know.
-
-When playing movies with mplayer, I see lots of messages like:
-
-alsa-play: xrun of at least 0,131 msecs. resetting stream%  0%  0,0% 1 0
-0%
-alsa-play: xrun of at least 0,026 msecs. resetting stream 0%  0%  0,0% 7 0
-0%
-
-These appear even more where skipping back and forward in the movie.
-
-I found, that playing movies through SDL helps a little, but sound is
-still choppy and cannot be listened to.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000583 xruns when playing audio or video files
+I got a problem, with softvolume plugin and 1.0.8rc2 drivers( without
+softvol plugin too).
+When I changed ALSA from 1.0.5 to 1.0.8rc2 after system boot all modules
+load perfectly but! any program like amp(in text mode) or xmms(X mode)
+report broken pipe (no dsp device). When I enable softvol it remains the
+same. But if softvol is on and manualy set to off(deleting of .asoundrc
+without rebooting) Sustem is OK, I got all programs playing and I CAN
+FINALY set volume!!! (but starting and stoping .asoundrd by hand is
+annoying!). Without softvol set by asoundrc only aplay can give a sound
+from wave file
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-15-05 15:14 
+ jdthood - 09-14-05 16:20 
 ----------------------------------------------------------------------
-> alsa-play: xrun of at least 0,019 msecs. resetting stream
-
-See bug #583.
+Submitter: Did you manage to solve this problem?
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:15 
+ rlrevell - 03-22-06 03:16 
 ----------------------------------------------------------------------
-mplayer bug, confirmed fixed in mplayer CVS
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-08-04 21:16 feixm          New Issue                                    
-09-08-04 21:16 feixm          Distribution              => linuxfromscratch,
-everything compiled from original sources
-09-08-04 21:16 feixm          Kernel Version            => 2.6.8.1         
-01-18-05 07:56 rounin         Note Added: 0003242                          
-01-18-05 07:59 rounin         Issue Monitored: rounin                      
-01-18-05 08:09 rounin         Note Added: 0003245                          
-01-18-05 11:32 tiwai          Note Added: 0003247                          
-01-18-05 21:25 rlrevell       Note Added: 0003260                          
-01-18-05 22:47 feixm          Note Added: 0003261                          
-01-19-05 15:17 feixm          Note Added: 0003282                          
-01-19-05 15:20 tiwai          Note Added: 0003285                          
-01-21-05 14:19 feixm          Note Added: 0003347                          
-01-21-05 17:30 tiwai          Note Added: 0003350                          
-01-21-05 19:13 rlrevell       Note Added: 0003351                          
-01-22-05 13:30 feixm          Note Added: 0003376                          
-09-15-05 15:13 jdthood        Relationship added       duplicate of 0000583
-09-15-05 15:14 jdthood        Note Added: 0006205                          
-03-22-06 03:15 rlrevell       Status                   assigned => closed  
-03-22-06 03:15 rlrevell       Note Added: 0008805                          
+01-08-05 23:21 ajir           New Issue                                    
+01-08-05 23:22 ajir           Note Added: 0003130                          
+01-11-05 16:46 tiwai          Note Added: 0003155                          
+09-14-05 16:20 jdthood        Note Added: 0006181                          
+03-22-06 03:16 rlrevell       Status                   new => closed       
+03-22-06 03:16 rlrevell       Note Added: 0008806                          
 ======================================================================
 
 
