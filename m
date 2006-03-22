@@ -1,16 +1,14 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: ac3 in/out
-Date: Thu, 23 Mar 2006 08:39:53 +1100
-Message-ID: <1143063593.3823.21.camel@localhost.localdomain>
-References: <1142936836.4759.3.camel@localhost>
-	 <1142965025.4532.132.camel@mindpipe> <s5hbqvzzlss.wl%tiwai@suse.de>
-	 <1143020483.11724.46.camel@localhost>  <s5hveu6yd2u.wl%tiwai@suse.de>
-	 <1143024848.11724.64.camel@localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
+Date: Wed, 22 Mar 2006 23:15:41 +0100
+Message-ID: <ff6a03473dee707fb90b71128f69d4eb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1143024848.11724.64.camel@localhost>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ABA5B191
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 23:15:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,36 +18,119 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Takashi Iwai <tiwai@suse.de>, Lee Revell <rlrevell@joe-job.com>, ALSA devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-03-22 at 11:54 +0100, Johannes Berg wrote:
 
-> Ok that's what I figured. Well, it has to change if I shall be able to
-> write a driver for the digital output of above chip.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
+======================================================================
+Reported By:                mjsb
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1572
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.1.13-gentoo-r3
+======================================================================
+Date Submitted:             11-17-2005 16:31 CET
+Last Modified:              03-22-2006 23:15 CET
+======================================================================
+Summary:                    Simultaneous sound from speakers and headphone
+Description: 
+I cannot ear headphones without having sound from front speakers
+simultaneously.
+Volume of headphones is adjusted by front speakers and when muting front
+speakers also mutes headphones.
+(in MS Windows, inserting headphones automatically disables sound from
+front speakers)
 
-Well, you can be sneaky in the meantime :) If you use small buffers and
-large dbdma command lists, you can have the dbdma command list skip the
-status data but that mean one output command per sample (or packet),
-fairly horribly inefficient if your ratio data/status is not high :)
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001663 LW20 bugs with headphone input, realtek...
+======================================================================
 
-But then, as I said, ac3 is fairly low throughput so it may be worth
-just doing a conversion pass in the driver before the DMA...
+----------------------------------------------------------------------
+ tiwai - 03-22-06 21:01 
+----------------------------------------------------------------------
+Err, did you try my patch above (alc880-lg-lw-model.diff) ??
 
-> > The problem of compressed stream is that the rates of the input stream
-> > and the output audio signal are different especially if the input
-> > stream is VBR.  This style of input stream doesn't match with the
-> > current ALSA style because ALSA PCM assumes the constant rate.
-> > Changing this is more harder work. 
-> 
-> That's another issue, I haven't even started thinking about that.
+----------------------------------------------------------------------
+ mjsb - 03-22-06 23:15 
+----------------------------------------------------------------------
+Sorry... didn't notice the upload...
+I had uploaded a patch_realtek.c. Please remove it from the uploaded
+files.
 
-It's very similar to the limitations of apple's old sound manager ;)
-they never properly fixed it btw ... they just rewrote everything
-completely for OS X ...
+Your lg-lw model works perfectly!!! :D
 
-Ben.
+headphones OK
+speakers OK
+jack sense OK
+internal mic OK
+IEC958 Probably OK (I see the red light on the jack)
+Mic-in OK
+
+Bug Resolved.
+Thanks a lot!
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-17-05 16:31 mjsb           New Issue                                    
+11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
+11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
+12-08-05 21:23 mjsb           Note Added: 0006962                          
+01-16-06 11:19 mjsb           Note Added: 0007685                          
+01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
+01-21-06 03:24 mjsb           Note Added: 0007730                          
+01-21-06 03:25 mjsb           File Added: HPoff-speakeron                    
+01-21-06 03:25 mjsb           File Added: HPon-speakeroff                    
+01-21-06 03:30 mjsb           Note Edited: 0007730                         
+01-25-06 11:47 blackr2d       Issue Monitored: blackr2d                    
+01-25-06 11:56 blackr2d       Note Added: 0007778                          
+01-25-06 11:59 blackr2d       Note Edited: 0007778                         
+01-25-06 12:00 blackr2d       Note Edited: 0007778                         
+01-25-06 12:36 blackr2d       Note Edited: 0007778                         
+02-14-06 05:36 richardfish    Issue Monitored: richardfish                    
+02-14-06 05:37 richardfish    Note Added: 0008069                          
+02-16-06 13:49 mjsb           Note Added: 0008096                          
+03-01-06 18:00 mpt            Issue Monitored: mpt                         
+03-15-06 15:36 tiwai          Note Added: 0008552                          
+03-22-06 01:33 crissi         Note Added: 0008766                          
+03-22-06 01:33 crissi         Issue Monitored: crissi                      
+03-22-06 01:42 rlrevell       Note Added: 0008768                          
+03-22-06 01:44 rlrevell       Note Added: 0008769                          
+03-22-06 01:55 crissi         Note Added: 0008772                          
+03-22-06 01:58 rlrevell       Note Added: 0008773                          
+03-22-06 02:09 crissi         Note Added: 0008774                          
+03-22-06 02:25 rlrevell       Note Added: 0008777                          
+03-22-06 02:26 rlrevell       Note Deleted: 0008768                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008773                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008769                        
+03-22-06 02:27 rlrevell       Note Deleted: 0008777                        
+03-22-06 02:27 crissi         Note Added: 0008778                          
+03-22-06 02:30 rlrevell       Note Added: 0008780                          
+03-22-06 14:25 mjsb           Note Added: 0008855                          
+03-22-06 15:06 mjsb           Note Added: 0008856                          
+03-22-06 15:53 tiwai          Note Added: 0008860                          
+03-22-06 19:17 tiwai          Note Added: 0008867                          
+03-22-06 19:18 tiwai          File Added: alc880-lg-lw-model.diff               
+    
+03-22-06 20:44 mjsb           Note Added: 0008868                          
+03-22-06 21:01 tiwai          Note Added: 0008870                          
+03-22-06 21:35 crissi         Issue End Monitor: crissi                    
+03-22-06 22:52 mjsb           File Added: patch_realtek.c                    
+03-22-06 23:15 mjsb           Note Added: 0008875                          
+======================================================================
 
 
 
