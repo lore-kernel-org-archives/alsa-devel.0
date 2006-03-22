@@ -1,13 +1,14 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: ac3 in/out
-Date: Wed, 22 Mar 2006 10:41:22 +0100
-Message-ID: <1143020483.11724.46.camel@localhost>
-References: <1142936836.4759.3.camel@localhost>
-	 <1142965025.4532.132.camel@mindpipe>  <s5hbqvzzlss.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0000577]: Please make it possible for two (or more) mixer sliders to be locked together
+Date: Wed, 22 Mar 2006 11:00:30 +0100
+Message-ID: <7771d8393bd503f4d78c33035d6e3480@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-j0s/YA4flMQ+ocUrQN+5"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbqvzzlss.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A788219F
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 11:00:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,67 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, ALSA devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-j0s/YA4flMQ+ocUrQN+5
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+The following issue has been REOPENED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=577> 
+======================================================================
+Reported By:                ldarby
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   577
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+======================================================================
+Date Submitted:             10-10-2004 17:35 CEST
+Last Modified:              03-22-2006 11:00 CET
+======================================================================
+Summary:                    Please make it possible for two (or more) mixer
+sliders to be locked together
+Description: 
+I noticed that the only way to reduce the volume to the lowest (not muting
+it tho) is reducing both Master and PCM sliders, and to get the loudest
+non-distorted volume, both need to increased to almost max.  I think I
+remember a mixer for a windows driver that could lock two mixer sliders
+together to do this, and I've done this myself from within XMMS, but it
+relies on Master and PCM elems being in a certain position (probably sound
+card dependent).  Would it be a good idea to implement this in a general
+way in alsamixer, or has this already been done in another mixer?
+(googling for linux mixers reveals far too many to check through...)
 
-On Tue, 2006-03-21 at 19:37 +0100, Takashi Iwai wrote:
+Thanks,
+Laurence
+======================================================================
 
-> The SPDIF status bits are generic and rather depending on the data
-> than the device you output.  That is, more or less, the SPDIF I/O is
-> abstracted.
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 03:03 
+----------------------------------------------------------------------
+Not a bug
 
-Are you talking about alsa or spdif itself?
+----------------------------------------------------------------------
+ ldarby - 03-22-06 11:00 
+----------------------------------------------------------------------
+That right, it's not a bug, and it still says "feature requests" on
+alsa-project.org.
 
-> Regarding AC3, I'm not against to create a new easy-to-use API
-> function.  One reason is that AC3 over SPDIF needs conversions of
-> packets and also requires the sync work, in addition to the SPDIF
-> status bits mentioned in the above.  Such a job can be certainly
-> hidden in the system instead of application itself.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-10-04 17:35 ldarby         New Issue                                    
+10-11-04 16:15 tiwai          Note Added: 0002082                          
+10-11-04 20:26 ldarby         Note Added: 0002084                          
+10-12-04 11:49 tiwai          Note Added: 0002088                          
+10-14-04 14:45 ldarby         Note Added: 0002147                          
+10-14-04 14:58 tiwai          Note Added: 0002148                          
+08-20-05 15:57 jdthood        Summary                  locking two (or more)
+mixer sliders together to get full volume range => Please make it possible for
+two (or more) mixer sliders to be locked together
+03-22-06 03:03 rlrevell       Status                   new => closed       
+03-22-06 03:03 rlrevell       Note Added: 0008791                          
+03-22-06 11:00 ldarby         Status                   closed => feedback  
+03-22-06 11:00 ldarby         Resolution               open => reopened    
+03-22-06 11:00 ldarby         Note Added: 0008852                          
+======================================================================
 
-Yes, but apparently some hardware is capable of doing the conversion
-(the chip apple uses for example: pcm3052, download data sheet for
-pcm3052a if you're interested, it's the same chip)
-
-On the other hand, some other chips seem to rely on software to
-multiplex the channel status bits into the bitstream which is currently
-done by userspace as far as I can tell.
-
-> If we create a new one, we should better think of other compressed
-> formats, too...
-
-They're essentially the same to the spdif output though -- just a
-non-pcm bitstream.
-
-johannes
-
---=-j0s/YA4flMQ+ocUrQN+5
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIVAwUARCEbwKVg1VMiehFYAQIFXQ//YJZ2lF1NITLYxAvd9cD9JJllQjyYrVui
-pYgJ5xF0trET16JV2Ny65Lwi0D9ll+gZ2nwGExdmw8Gein6T5H/Gi+sds7jvR+iB
-Dv0zT3GbCGxSUewAr2v96jP/8caE2AEuWv8J9z1qRrVIMFCT1rKoAzbSQKSGR9td
-P0X/zIgKGJEeEtF8EMssVdFfM+q6zkphd1MpdXjfQGbFClu+tGqkCBqZYLOAwFLF
-eHCXdW5wWh8x7hjc3we3UpCCt7mbMYkEN0EjLri54M+e2FKrEEkjlHOWHVS56mnD
-m1VFfXGMvWjSbk4ONqxEQziXngRTgoCVa5l8nZMmStAlvesWmTFjS4KgsWGgl/nt
-aVdrvf33C84XWJzGwJpmu3qTQrePgNl1LpIPo61Aam7ObacskT5Ssvh2tL24GEgV
-qQKdCrKaiV9rSIfnUCxOyBfwzV3hwlfMTcHxTU/HjLkcRTJhtV8e4nuP4Zj5+Sg8
-pUl/10ruGjXhCBYDAlBZLxAxGfXiPxdkNwYQcIBKN13YvVyVwBl38LxeAr90ESmW
-mQNT8s3sQGs0XF99Sa9kdMvRv0vVKbZ4/voC9RxE01+beLKVfASggX3BuHMtCdO2
-yY445HKOYMiMDNzTK5pDTWwpygW0lGvZVWrT95w8t8P/b2rRuDIIoQM54LvHI7Lu
-kxJq9LbG0Zc=
-=ET+f
------END PGP SIGNATURE-----
-
---=-j0s/YA4flMQ+ocUrQN+5--
 
 
 
