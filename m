@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001118]: es1868 - mono recording not working properly
-Date: Wed, 22 Mar 2006 02:18:41 +0100
-Message-ID: <ff4de1f1695d27d511651381e38854ab@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
+Date: Wed, 22 Mar 2006 02:25:52 +0100
+Message-ID: <37bb99a096845f4641d240a8db779702@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 721D6181
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:18:41 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3A71181
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:25:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1118> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
 ======================================================================
-Reported By:                MStrecke
+Reported By:                mjsb
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1118
-Category:                   PCI - es1968
+Issue ID:                   1572
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.10
+Distribution:               Gentoo Linux
+Kernel Version:             2.1.13-gentoo-r3
 ======================================================================
-Date Submitted:             05-19-2005 23:36 CEST
-Last Modified:              03-22-2006 02:18 CET
+Date Submitted:             11-17-2005 16:31 CET
+Last Modified:              03-22-2006 02:25 CET
 ======================================================================
-Summary:                    es1868 - mono recording not working properly
+Summary:                    Simultaneous sound from speakers and headphone
 Description: 
-I'm using an old Fujitsu Lifebook E-6570. The on-board sound card is
-recognized as "ESS Technology ES1978 Maestro 2E (rev 10)", ID: 125d:1978.
+I cannot ear headphones without having sound from front speakers
+simultaneously.
+Volume of headphones is adjusted by front speakers and when muting front
+speakers also mutes headphones.
+(in MS Windows, inserting headphones automatically disables sound from
+front speakers)
 
-I'm having problems recording mono audio (mic input, line input, etc.).
-Only a medium pitched tone is recorded (not a sine waveform, no feed
-back).  Stereo recording works without problems (using audacity).
-
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001663 LW20 bugs with headphone input, realtek...
 ======================================================================
 
 ----------------------------------------------------------------------
- MStrecke - 03-22-06 02:15 
+ crissi - 03-22-06 02:09 
 ----------------------------------------------------------------------
-Yes.
-
-I just checked it (Mono recording with Audacity), same result.
-(Kernel version by now is 2.6.12-10, Ubuntu Breezy).
+Its cvs :(
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 02:18 
+ rlrevell - 03-22-06 02:25 
 ----------------------------------------------------------------------
-Is the problem still present with the latest ALSA version?  Kernel 2.6.12
-is rather old.
+Yes please file a new bug then (and let's delete our comments from this one
+to clean it up)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-19-05 23:36 MStrecke       New Issue                                    
-05-19-05 23:36 MStrecke       Distribution              => Ubuntu          
-05-19-05 23:36 MStrecke       Kernel Version            => 2.6.10          
-05-23-05 11:39 tiwai          Note Added: 0004702                          
-05-23-05 13:44 MStrecke       File Added: asound.state                     
-05-24-05 11:53 tiwai          Note Added: 0004709                          
-05-27-05 01:15 MStrecke       Note Added: 0004741                          
-05-27-05 12:29 tiwai          Note Added: 0004748                          
-05-28-05 22:18 MStrecke       Note Added: 0004776                          
-09-26-05 10:28 LawrenceG      Issue Monitored: LawrenceG                    
-03-22-06 00:38 rlrevell       Note Added: 0008764                          
-03-22-06 02:15 MStrecke       Note Added: 0008775                          
-03-22-06 02:18 rlrevell       Note Added: 0008776                          
+11-17-05 16:31 mjsb           New Issue                                    
+11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
+11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
+12-08-05 21:23 mjsb           Note Added: 0006962                          
+01-16-06 11:19 mjsb           Note Added: 0007685                          
+01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
+01-21-06 03:24 mjsb           Note Added: 0007730                          
+01-21-06 03:25 mjsb           File Added: HPoff-speakeron                    
+01-21-06 03:25 mjsb           File Added: HPon-speakeroff                    
+01-21-06 03:30 mjsb           Note Edited: 0007730                         
+01-25-06 11:47 blackr2d       Issue Monitored: blackr2d                    
+01-25-06 11:56 blackr2d       Note Added: 0007778                          
+01-25-06 11:59 blackr2d       Note Edited: 0007778                         
+01-25-06 12:00 blackr2d       Note Edited: 0007778                         
+01-25-06 12:36 blackr2d       Note Edited: 0007778                         
+02-14-06 05:36 richardfish    Issue Monitored: richardfish                    
+02-14-06 05:37 richardfish    Note Added: 0008069                          
+02-16-06 13:49 mjsb           Note Added: 0008096                          
+03-01-06 18:00 mpt            Issue Monitored: mpt                         
+03-15-06 15:36 tiwai          Note Added: 0008552                          
+03-22-06 01:33 crissi         Note Added: 0008766                          
+03-22-06 01:33 crissi         Issue Monitored: crissi                      
+03-22-06 01:42 rlrevell       Note Added: 0008768                          
+03-22-06 01:44 rlrevell       Note Added: 0008769                          
+03-22-06 01:55 crissi         Note Added: 0008772                          
+03-22-06 01:58 rlrevell       Note Added: 0008773                          
+03-22-06 02:09 crissi         Note Added: 0008774                          
+03-22-06 02:25 rlrevell       Note Added: 0008777                          
 ======================================================================
 
 
