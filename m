@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001953]: Onboard Soundcard (STAC9221) records only noise
-Date: Wed, 22 Mar 2006 21:11:04 +0100
-Message-ID: <ecf9be9041f257a20211f706f5ef70de@bugtrack.alsa-project.org>
+Date: Wed, 22 Mar 2006 21:12:58 +0100
+Message-ID: <2a6d2dfc127b7e7a23bd5c9336a19f4d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6FA2D1A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 21:11:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2A4A1A6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 21:12:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Opensuse 10.0
 Kernel Version:             2.6.13-15.8
 ======================================================================
 Date Submitted:             03-22-2006 08:04 CET
-Last Modified:              03-22-2006 21:11 CET
+Last Modified:              03-22-2006 21:12 CET
 ======================================================================
 Summary:                    Onboard Soundcard (STAC9221) records only noise
 Description: 
@@ -57,21 +57,15 @@ but does not make my voice sound any better :-/
 ======================================================================
 
 ----------------------------------------------------------------------
- derquader - 03-22-06 21:10 
-----------------------------------------------------------------------
-Oh, it seems that I did not use the search very well, (didnt know what to
-search for either)
-
-
-Bugs 1927 1951 1847 1826 1723 1643 seem to describe the same problem as I
-do.
-Apparently it's not only the microphone but also the line in that is not
-working correctly!
-
-----------------------------------------------------------------------
  tiwai - 03-22-06 21:11 
 ----------------------------------------------------------------------
 Does the attached patch have any influence?
+
+----------------------------------------------------------------------
+ tiwai - 03-22-06 21:12 
+----------------------------------------------------------------------
+The problem of VAIO is a bit different, BTW.  It doesn't use normal
+stac92xx routines.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -84,6 +78,9 @@ Date Modified  Username       Field                    Change
 03-22-06 20:57 derquader      Issue Monitored: derquader                    
 03-22-06 21:10 derquader      Note Added: 0008871                          
 03-22-06 21:11 tiwai          Note Added: 0008872                          
+03-22-06 21:11 tiwai          File Added: stac92xx-auto-vref.diff               
+    
+03-22-06 21:12 tiwai          Note Added: 0008873                          
 ======================================================================
 
 
