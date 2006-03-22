@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000614]: 2 x snd-usb-audio causes one or both USB dev to go mute after a day or two with heavy use
-Date: Wed, 22 Mar 2006 03:11:55 +0100
-Message-ID: <6e8e067334fda95669cc0246005cb2a6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
+Date: Wed, 22 Mar 2006 03:13:23 +0100
+Message-ID: <8716ba8dfa8696030ed06d415d4f2586@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8FBED100
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:11:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E02F2172
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:13:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,87 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=614> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=583> 
 ======================================================================
-Reported By:                cyrus7580
-Assigned To:                Clemens Ladisch
+Reported By:                KAtiOS
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   614
-Category:                   USB - usb-audio
-Reproducibility:            sometimes
+Issue ID:                   583
+Category:                   PCI - atiixp
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 1
-Kernel Version:             2.4
-Resolution:                 open
+Status:                     resolved
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.9_rc4
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-29-2004 07:41 CEST
-Last Modified:              03-22-2006 03:11 CET
+Date Submitted:             10-15-2004 16:27 CEST
+Last Modified:              03-22-2006 03:13 CET
 ======================================================================
-Summary:                    2 x snd-usb-audio causes one or both USB dev to go
-mute after a day or two with heavy use
+Summary:                    xruns when playing audio or video files
 Description: 
-I use alsa on all my machines (15 plus) and don't usually have problems
-with various combinations of snd-intel8x0, snd-ens1371, and snd-usb-audio.
-However, on the one machine that I have with 2 x snd-usb-audio (as well as
-1 x snd-intel8x0 and 1 x snd-ens1371), one of the USB devices will stop
-recording audio after a day or two. The settings look ok in alsamixer, but
-still no audio. I've tried rmmodding snd-usb-audio and reinserting, I've
-tried rmmoding ALL sound stuff and reinserting, and I've tried muting and
-unmuting... nothing works. The only thing that works is a total reboot,
-which I have been doing almost daily. On my 3-5 machines with a single
-usb-audio, they seem to work ok for long periods of time. Nothing like
-this is happening. 
+I get xruns when playing files.
+I tested with lots of 2.6 kernels, up to 2.6.9_rc4 with the same results.
+It seems that mplayer with sdl output works fine, but xruns with alsa.
+Using acpi=off or pci=noacpi helps in mplayer but not in vdr (with
+softdevice plugin - using alsa).
 
-Point of clarification: they don't "stop" recording audio per se... That
-is, there are no errors or crashes or dumps saying recording is not
-possible. It's just that the audio files produced (semi-succesfully) have
-no audio on them. 
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000776 desynchronization, xruns when running m...
+has duplicate       0000490 &nbsp;Choppy sound when playing on Acer...
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 15:55 
+ rlrevell - 09-14-05 21:58 
 ----------------------------------------------------------------------
-> If reloading the driver doesn't help but replugging the device does, it
-looks like a bug in the device.
+Hmm, this could have been the ACPI idle latency bug.  That would explain
+why generating load reduces the xruns.  This was fixed around 2.6.11.
 
-So is the bug in the device or in ALSA?
+Try kernel 2.6.13.
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:11 
+ rlrevell - 03-22-06 03:13 
 ----------------------------------------------------------------------
-No response
+Fixed in mplayer CVS (it should ignore xruns rather than resetting the
+stream)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-29-04 07:41 cyrus7580      New Issue                                    
-10-29-04 07:41 cyrus7580      Distribution              => Fedora Core 1   
-10-29-04 07:41 cyrus7580      Kernel Version            => 2.4             
-10-29-04 09:19 Clemens LadischNote Added: 0002288                          
-09-14-05 15:55 jdthood        Note Added: 0006163                          
-03-22-06 03:11 rlrevell       Status                   assigned => closed  
-03-22-06 03:11 rlrevell       Note Added: 0008802                          
+10-15-04 16:27 KAtiOS         New Issue                                    
+10-15-04 16:27 KAtiOS         Distribution              => Gentoo Linux    
+10-15-04 16:27 KAtiOS         Kernel Version            => 2.6.9_rc4       
+10-15-04 18:43 lee            Note Added: 0002168                          
+10-15-04 18:51 KAtiOS         Note Added: 0002169                          
+10-15-04 19:02 lee            Note Added: 0002170                          
+10-15-04 19:12 KAtiOS         Note Added: 0002171                          
+10-15-04 19:24 KAtiOS         Note Added: 0002172                          
+10-15-04 19:29 lee            Note Added: 0002173                          
+10-15-04 20:28 KAtiOS         Note Added: 0002174                          
+10-15-04 22:17 lee            Note Added: 0002175                          
+10-15-04 23:49 KAtiOS         Note Added: 0002176                          
+10-16-04 01:11 lee            Note Added: 0002180                          
+10-16-04 01:18 lee            Note Added: 0002181                          
+10-16-04 06:05 lee            Note Added: 0002183                          
+10-16-04 10:08 KAtiOS         Note Added: 0002185                          
+10-16-04 11:39 KAtiOS         Note Added: 0002186                          
+09-14-05 15:52 jdthood        Note Added: 0006161                          
+09-14-05 16:14 jdthood        Relationship added       has duplicate 0000776
+09-14-05 17:44 KAtiOS         Note Added: 0006185                          
+09-14-05 21:58 rlrevell       Note Added: 0006186                          
+09-15-05 15:13 jdthood        Relationship added       has duplicate 0000490
+03-22-06 03:13 rlrevell       Status                   assigned => resolved
+03-22-06 03:13 rlrevell       Resolution               open => fixed       
+03-22-06 03:13 rlrevell       Note Added: 0008803                          
 ======================================================================
 
 
