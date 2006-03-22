@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001342]: SOund is not working
-Date: Wed, 22 Mar 2006 06:27:46 +0100
-Message-ID: <9e0d5b5ce34265931583c16fe24c50c9@bugtrack.alsa-project.org>
+Date: Wed, 22 Mar 2006 06:36:55 +0100
+Message-ID: <b90b5acf1e2ff0ee8c6d23865871ff64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5D391A3
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 06:27:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4796C1A0
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 06:36:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.10-5-386
 ======================================================================
 Date Submitted:             08-16-2005 20:11 CEST
-Last Modified:              03-22-2006 06:27 CET
+Last Modified:              03-22-2006 06:36 CET
 ======================================================================
 Summary:                    SOund is not working
 Description: 
@@ -50,11 +50,6 @@ It seems that alsa driver is working, but it does not.
 Please correct this.
 Thanks
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 03-22-06 03:03 
-----------------------------------------------------------------------
-Was this resolved in later ALSA releases?
 
 ----------------------------------------------------------------------
  taya - 03-22-06 06:27 
@@ -74,6 +69,12 @@ Built-in speaker and microphone
 from:
 http://www.asus.com/products4.aspx?modelmenu=2&model=414&l1=5&l2=75&l3=0
 
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 06:36 
+----------------------------------------------------------------------
+In the latest ALSA CVS this should be fixed (I believe you have to use
+"model=asus").  Search the bug tracker for asus + hda-intel
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -81,6 +82,7 @@ Date Modified  Username       Field                    Change
 08-16-05 20:11 taya           Kernel Version            => 2.6.10-5-386    
 03-22-06 03:03 rlrevell       Note Added: 0008792                          
 03-22-06 06:27 taya           Note Added: 0008846                          
+03-22-06 06:36 rlrevell       Note Added: 0008847                          
 ======================================================================
 
 
