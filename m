@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000698]: Random beeps, ticks and clicks
-Date: Wed, 22 Mar 2006 03:17:36 +0100
-Message-ID: <21b63e177cfd639001a599b752f4bab1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000048]: M-Audio Quattro initialization problem
+Date: Wed, 22 Mar 2006 03:18:49 +0100
+Message-ID: <e5643d89521b5bfebcff2478bdf7ed90@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF6581A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:17:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D62C1A6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:18:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,103 +22,100 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=698> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=48> 
 ======================================================================
-Reported By:                moonlite
-Assigned To:                pzad
+Reported By:                giggls
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   698
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   48
+Category:                   USB - usb-audio
+Reproducibility:            sometimes
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9
+Status:                     closed
+Distribution:               
+Kernel Version:             2.4.24
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-02-2004 02:56 CET
-Last Modified:              03-22-2006 03:17 CET
+Date Submitted:             02-09-2004 11:45 CET
+Last Modified:              03-22-2006 03:18 CET
 ======================================================================
-Summary:                    Random beeps, ticks and clicks
+Summary:                    M-Audio Quattro initialization problem
 Description: 
-Below is what i posted to the gentoo-forums without getting without getting
-help that solved any of my problems.
- 
-URL:
-http://forums.gentoo.org/viewtopic.php?t=255710&start=0&postdays=0&postorder=asc&highlight=
----
-I have a problem with alsa and my SBLive-card and kernels newer than
-2.4.19.
-All in all it works without error-messages and the sound is pretty nice
-etc.
-But every now and then the music i listen to is interrupted for a small
-period of time (around 0.5s most of the time) and during this time i can't
-type or move the mouse and an annoying beep comes from my speakers. I am
-pretty sure that it is some sort of interruption because the few times the
-interrupts are long i am sure that the music continues from where it were
-and also, as i said above, i can't type etc during this small period.
-This seems to happen more during heavy load than under normal load but it
-still happens a lot at any given time. 
----
-This problem happened with these kernels:
-vanilla-sources-2.4.20
-vanilla-sources-2.4.28
-gentoo-sources-2.4.20
-gentoo-sources-2.4.26-r12
-gentoo-dev-sources-2.6.9-r4
+If a M-Audio Quattro device is plugged into the USB Port the driver does
+not always initialize the device in a correct way.
 
-(gentoo-sources are gentoo's own patchsets)
+It seems to work, but it does not record any useful sound.
 
-Anyway. Since i posted this i've realized that the beeps (and sometimes
-also clicks/ticks) also happen more frequent during high network-load and
-not only normal load.
-Especially the clicking and ticking noise appear more frequent when
-downloading large amount of data with high transfer-rates.
+Unfortunately it does work occasionally (about 50% of the time)!
+
+Replugging the device until it works does resolve the Problem.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 16:06 
+ jdthood - 09-14-05 16:03 
 ----------------------------------------------------------------------
-> I did this:
->
-> setpci -v -d *:* latency_timer=b0 #all cards
-> setpci -v -s 01:00.0 latency_timer=ff #graphics-card
-> setpci -v -s 00:0d.0 latency_timer=ff #network-card
-> 
-> Anyway. It seems to work pretty ok. 
-
-Any progress on this issue on the ALSA side?
+Submitter: Is this problem fixed in more recent ALSA versions or using more
+recent kernels?
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:17 
+ rlrevell - 03-22-06 03:18 
 ----------------------------------------------------------------------
-Any improvement with later ALSA versions?  Is the setpci hack still
-required?
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-02-04 02:56 moonlite       New Issue                                    
-12-02-04 02:56 moonlite       Distribution              => Gentoo          
-12-02-04 02:56 moonlite       Kernel Version            => 2.6.9           
-12-02-04 17:32 pzad           Note Added: 0002687                          
-12-02-04 23:27 moonlite       Note Added: 0002699                          
-12-02-04 23:54 moonlite       Note Added: 0002700                          
-12-03-04 00:23 moonlite       Note Added: 0002701                          
-12-03-04 00:23 moonlite       Note Added: 0002702                          
-12-03-04 00:23 moonlite       Note Deleted: 0002701                        
-12-03-04 00:35 rlrevell       Note Added: 0002703                          
-12-03-04 00:49 moonlite       Note Added: 0002704                          
-12-03-04 00:55 moonlite       Note Added: 0002705                          
-12-03-04 01:18 moonlite       Note Added: 0002706                          
-12-03-04 05:30 rlrevell       Note Added: 0002707                          
-12-03-04 12:27 moonlite       Note Added: 0002708                          
-12-03-04 12:28 moonlite       Note Edited: 0002708                         
-09-14-05 16:06 jdthood        Note Added: 0006172                          
-03-22-06 03:17 rlrevell       Note Added: 0008807                          
+02-09-04 11:45 giggls         New Issue                                    
+02-11-04 10:26 giggls         Issue Monitored: giggls                      
+02-11-04 14:58 v2             Note Added: 0000218                          
+02-11-04 14:58 v2             Issue Monitored: v2                          
+02-11-04 14:59 v2             Note Edited: 0000218                         
+02-11-04 14:59 v2             Note Edited: 0000218                         
+02-11-04 16:36 giggls         Note Added: 0000219                          
+02-24-04 08:48 Clemens LadischSeverity                 feature => minor    
+02-24-04 09:07 Clemens LadischNote Added: 0000302                          
+02-25-04 09:30 giggls         File Added: proc-stream1.txt                    
+02-25-04 09:30 giggls         File Added: proc-stream0.txt                    
+02-25-04 09:53 giggls         Note Added: 0000310                          
+02-25-04 10:12 Clemens LadischIssue Monitored: Clemens Ladisch                  
+ 
+02-25-04 10:15 Clemens LadischNote Added: 0000313                          
+02-25-04 16:10 giggls         Note Added: 0000315                          
+02-26-04 16:08 Clemens LadischFile Added: quattroif.patch                    
+02-26-04 16:12 Clemens LadischNote Added: 0000352                          
+02-26-04 16:12 Clemens LadischSeverity                 minor => major      
+02-26-04 16:12 Clemens LadischReproducibility          always => sometimes 
+02-27-04 15:42 giggls         Note Added: 0000381                          
+03-01-04 18:45 Clemens LadischNote Added: 0000413                          
+03-02-04 09:31 giggls         File Added: proc-asound-card1-stream0-junk.txt    
+               
+03-02-04 09:32 giggls         Note Added: 0000432                          
+03-02-04 17:11 Clemens LadischNote Added: 0000443                          
+03-04-04 10:09 giggls         Note Added: 0000471                          
+03-04-04 12:53 Clemens LadischNote Added: 0000477                          
+03-04-04 16:18 giggls         Note Added: 0000482                          
+03-04-04 16:18 giggls         File Added: sinus.raw                        
+03-04-04 16:19 giggls         File Added: silence.raw                      
+03-04-04 19:50 Clemens LadischNote Added: 0000491                          
+03-08-04 10:46 Clemens LadischFile Added: quattro-new.patch                    
+03-08-04 10:48 Clemens LadischNote Added: 0000527                          
+04-28-04 12:44 timblech       Note Added: 0000969                          
+11-17-04 15:09 giggls         Note Added: 0002435                          
+11-17-04 15:25 v2             Issue End Monitor: v2                        
+09-14-05 16:03 jdthood        Note Added: 0006170                          
+09-14-05 16:03 jdthood        Severity                 major => minor      
+09-14-05 16:03 jdthood        Summary                  M-Audio Quattro
+Initialisation Problem => M-Audio Quattro initialization problem
+09-14-05 16:03 jdthood        Description Updated                          
+03-22-06 03:18 rlrevell       Status                   assigned => closed  
+03-22-06 03:18 rlrevell       Note Added: 0008809                          
 ======================================================================
 
 
