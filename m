@@ -1,15 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: More detailed Acer (Intel HDA)
-Date: Wed, 22 Mar 2006 04:38:47 -0500
-Message-ID: <1143020328.1792.66.camel@mindpipe>
-References: <200603220041.k2M0f8uA011967@auster.physics.adelaide.edu.au>
-	 <1142988679.4532.197.camel@mindpipe>  <4420FB3E.3030804@akl.lt>
-	 <1143012964.1792.61.camel@mindpipe>  <44210F4D.8070508@akl.lt>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: ac3 in/out
+Date: Wed, 22 Mar 2006 10:41:22 +0100
+Message-ID: <1143020483.11724.46.camel@localhost>
+References: <1142936836.4759.3.camel@localhost>
+	 <1142965025.4532.132.camel@mindpipe>  <s5hbqvzzlss.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-j0s/YA4flMQ+ocUrQN+5"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <44210F4D.8070508@akl.lt>
+In-Reply-To: <s5hbqvzzlss.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,37 +17,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rimas Kudelis <rq@akl.lt>
-Cc: ALSA devel <alsa-devel@lists.sourceforge.net>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-03-22 at 10:48 +0200, Rimas Kudelis wrote:
-> Hi,
-> >>>> On these Acer laptops the evidence thus far indicates that there is no
-> >>>> audio connection between the CD drive and the sound card. 
-> >>>>         
-> >>> I haven't seen any evidence at all, just speculation, apparently no one
-> >>> is willing to try Windows to verify this.  Until there's some evidence
-> >>> IMHO the CD control should stay.
-> >>>       
-> >> The fact is that the CD control doesn't work now. And I didn't manage to 
-> >> find a way to make any control in the test model influence CD playback 
-> >> volume. Why would you want a non-working control to stay?
-> >>     
-> > Because it may work on some other laptops, and it's better for people to
-> > be able to test it.
-> >   
-> It may or may not work. And people can still use the test model for testing.
-> 
 
-Yes exactly, and a missing control is much worse than a control that
-does nothing.
+--=-j0s/YA4flMQ+ocUrQN+5
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-There just needs to be some shred of evidence beyond my speculation
-about the CD pins not being connected before controls are removed from a
-driver.
+On Tue, 2006-03-21 at 19:37 +0100, Takashi Iwai wrote:
 
-Lee 
+> The SPDIF status bits are generic and rather depending on the data
+> than the device you output.  That is, more or less, the SPDIF I/O is
+> abstracted.
+
+Are you talking about alsa or spdif itself?
+
+> Regarding AC3, I'm not against to create a new easy-to-use API
+> function.  One reason is that AC3 over SPDIF needs conversions of
+> packets and also requires the sync work, in addition to the SPDIF
+> status bits mentioned in the above.  Such a job can be certainly
+> hidden in the system instead of application itself.
+
+Yes, but apparently some hardware is capable of doing the conversion
+(the chip apple uses for example: pcm3052, download data sheet for
+pcm3052a if you're interested, it's the same chip)
+
+On the other hand, some other chips seem to rely on software to
+multiplex the channel status bits into the bitstream which is currently
+done by userspace as far as I can tell.
+
+> If we create a new one, we should better think of other compressed
+> formats, too...
+
+They're essentially the same to the spdif output though -- just a
+non-pcm bitstream.
+
+johannes
+
+--=-j0s/YA4flMQ+ocUrQN+5
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIVAwUARCEbwKVg1VMiehFYAQIFXQ//YJZ2lF1NITLYxAvd9cD9JJllQjyYrVui
+pYgJ5xF0trET16JV2Ny65Lwi0D9ll+gZ2nwGExdmw8Gein6T5H/Gi+sds7jvR+iB
+Dv0zT3GbCGxSUewAr2v96jP/8caE2AEuWv8J9z1qRrVIMFCT1rKoAzbSQKSGR9td
+P0X/zIgKGJEeEtF8EMssVdFfM+q6zkphd1MpdXjfQGbFClu+tGqkCBqZYLOAwFLF
+eHCXdW5wWh8x7hjc3we3UpCCt7mbMYkEN0EjLri54M+e2FKrEEkjlHOWHVS56mnD
+m1VFfXGMvWjSbk4ONqxEQziXngRTgoCVa5l8nZMmStAlvesWmTFjS4KgsWGgl/nt
+aVdrvf33C84XWJzGwJpmu3qTQrePgNl1LpIPo61Aam7ObacskT5Ssvh2tL24GEgV
+qQKdCrKaiV9rSIfnUCxOyBfwzV3hwlfMTcHxTU/HjLkcRTJhtV8e4nuP4Zj5+Sg8
+pUl/10ruGjXhCBYDAlBZLxAxGfXiPxdkNwYQcIBKN13YvVyVwBl38LxeAr90ESmW
+mQNT8s3sQGs0XF99Sa9kdMvRv0vVKbZ4/voC9RxE01+beLKVfASggX3BuHMtCdO2
+yY445HKOYMiMDNzTK5pDTWwpygW0lGvZVWrT95w8t8P/b2rRuDIIoQM54LvHI7Lu
+kxJq9LbG0Zc=
+=ET+f
+-----END PGP SIGNATURE-----
+
+--=-j0s/YA4flMQ+ocUrQN+5--
 
 
 
