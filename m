@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001410]: Request: please enable 44.1khz playback on Audigy 2 NX
-Date: Wed, 22 Mar 2006 10:06:28 +0100
-Message-ID: <a6def2db931f8ce0fcb86a4d54873616@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001438]: AC3 playback not working with Terratec Aureon 5.1 USB MK-II
+Date: Wed, 22 Mar 2006 10:11:56 +0100
+Message-ID: <293c616fb5eb578ce4ce7958053e9387@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BABB159
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 10:06:28 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 871FF18D
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 10:11:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1410> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1438> 
 ======================================================================
-Reported By:                wshtb
+Reported By:                mitch_f
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1410
+Issue ID:                   1438
 Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.13
+Distribution:               Gentoo
+Kernel Version:             2.4.28-gentoo-r9
 ======================================================================
-Date Submitted:             09-10-2005 06:41 CEST
-Last Modified:              03-22-2006 10:06 CET
+Date Submitted:             09-21-2005 21:26 CEST
+Last Modified:              03-22-2006 10:11 CET
 ======================================================================
-Summary:                    Request: please enable 44.1khz playback on Audigy 2
-NX
+Summary:                    AC3 playback not working with Terratec Aureon 5.1
+USB MK-II
 Description: 
-It saw somewhere in the changelog that 44.1khz playback on Audigy 2 NX is
-buggy so it is disabled in the latest source. However it seems that
-44.1khz playback in digital-output-only mode is working perfectly.
+If I try to playback a file containing AC3 audio data with mplayer, it
+complains with:
 
-I have used a Audigy 2 NX to send 44.1khz signal to external DAC for
-several month in my home theater setup (with kernel 2.6.12.x). The driver
-has been rock solid (thank you guys!). Although I do need to set the
-output frequency to 44.1khz using a Windows laptop, that is necessary only
-after the sound card lost its power, i.e. unplugging the power adapter. 
+alsa-init: 1 soundcard found, using: iec958:{CARD 0 AES0 0x02 AES1 0x82
+AES2 0x00 AES3 0x02}
+ALSA lib pcm.c:1959:(snd_pcm_open_conf) Invalid type for PCM iec958:{CARD
+0 AES0 0x02 AES1 0x82 AES2 0x00 AES3 0x02} definition (id: iec958, value:
+cards.pcm.iec958)
+alsa-init: playback open error: Invalid argument
+Could not open/initialize audio device -> no sound.
 
-In kernel 2.6.13 or the latest alsa-driver, 44.1khz playback is disabled.
-I'd like to know if it is possible to re-enable it? It is a nice feature
-that the hardware is capable and the driver is available. Maybe something
-similar to Windows can be done: user must select digital-only mode before
-44.1khz output becomes an option; once in digital-only mode, all analog
-channels are muted. 
-
-What do you think? Maybe the output frequency can be fixed by user intead
-of by the music source being played. Is it hard to implement?
+2-channel audio works fine (analog and SPDIF) and AC3 playback also worked
+on the cmipci-based card I used before.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:22 
+ rlrevell - 03-22-06 03:38 
 ----------------------------------------------------------------------
-Was this resolved in later ALSA releases?
+Does this device have an AC3 implementation that can be supported?
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 03-22-06 10:06 
+ Clemens Ladisch - 03-22-06 10:11 
 ----------------------------------------------------------------------
-Not yet.
+The output interface of this device accepts just standard PCM data with
+either two or six channels.  There is no visible means of setting the
+non-audio bit that would be required for AC3.  I can only guess that it
+uses some unknown vendor-specific command for this.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-10-05 06:41 wshtb          New Issue                                    
-09-10-05 06:41 wshtb          Distribution              => Fedora Core 4   
-09-10-05 06:41 wshtb          Kernel Version            => 2.6.13          
-09-11-05 18:32 wshtb          Issue Monitored: wshtb                       
-09-12-05 17:38 Clemens LadischNote Added: 0006147                          
-03-22-06 03:22 rlrevell       Note Added: 0008815                          
-03-22-06 10:06 Clemens LadischNote Added: 0008850                          
+09-21-05 21:26 mitch_f        New Issue                                    
+09-21-05 21:26 mitch_f        Distribution              => Gentoo          
+09-21-05 21:26 mitch_f        Kernel Version            => 2.4.28-gentoo-r9
+09-22-05 17:21 Clemens LadischNote Added: 0006354                          
+09-22-05 19:32 mitch_f        Note Added: 0006356                          
+03-22-06 03:38 rlrevell       Note Added: 0008826                          
+03-22-06 10:11 Clemens LadischNote Added: 0008851                          
 ======================================================================
 
 
