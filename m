@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001417]: external link to Echo Digital Audio drivers
-Date: Wed, 22 Mar 2006 03:21:51 +0100
-Message-ID: <92d71674eab8aa25c25c7eb58aeaa7d9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001410]: Request: please enable 44.1khz playback on Audigy 2 NX
+Date: Wed, 22 Mar 2006 03:22:26 +0100
+Message-ID: <412e4a4662585bc28687aa2855c2335d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D48991A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:21:51 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E79781A6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:22:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1417> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1410> 
 ======================================================================
-Reported By:                bkausler
-Assigned To:                rlrevell
+Reported By:                wshtb
+Assigned To:                Clemens Ladisch
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1417
-Category:                   bad link
+Project:                    ALSA - driver
+Issue ID:                   1410
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             09-14-2005 12:58 CEST
-Last Modified:              03-22-2006 03:21 CET
+Date Submitted:             09-10-2005 06:41 CEST
+Last Modified:              03-22-2006 03:22 CET
 ======================================================================
-Summary:                    external link to Echo Digital Audio drivers
+Summary:                    Request: please enable 44.1khz playback on Audigy 2
+NX
 Description: 
-The Link on
+It saw somewhere in the changelog that 44.1khz playback on Audigy 2 NX is
+buggy so it is disabled in the latest source. However it seems that
+44.1khz playback in digital-output-only mode is working perfectly.
 
-http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Echo_Corporation#matrix
+I have used a Audigy 2 NX to send 44.1khz signal to external DAC for
+several month in my home theater setup (with kernel 2.6.12.x). The driver
+has been rock solid (thank you guys!). Although I do need to set the
+output frequency to 44.1khz using a Windows laptop, that is necessary only
+after the sound card lost its power, i.e. unplugging the power adapter. 
 
-to external driver provider
+In kernel 2.6.13 or the latest alsa-driver, 44.1khz playback is disabled.
+I'd like to know if it is possible to re-enable it? It is a nice feature
+that the hardware is capable and the driver is available. Maybe something
+similar to Windows can be done: user must select digital-only mode before
+44.1khz output becomes an option; once in digital-only mode, all analog
+channels are muted. 
 
-http://xoomer.virgilio.it/g_pochini/ea.html
-
-ceased to exist.
+What do you think? Maybe the output frequency can be fixed by user intead
+of by the music source being played. Is it hard to implement?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:21 
+ Clemens Ladisch - 09-12-05 17:38 
 ----------------------------------------------------------------------
-Fixed
+The problem is that I haven't been able to reproduce the command(s) that
+the device needs to go into digital-only mode.  I'll have to do more
+reverse engineering ...
+
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 03:22 
+----------------------------------------------------------------------
+Was this resolved in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-14-05 12:58 bkausler       New Issue                                    
-03-22-06 03:21 rlrevell       Status                   new => resolved     
-03-22-06 03:21 rlrevell       Resolution               open => fixed       
-03-22-06 03:21 rlrevell       Assigned To               => rlrevell        
-03-22-06 03:21 rlrevell       Note Added: 0008814                          
+09-10-05 06:41 wshtb          New Issue                                    
+09-10-05 06:41 wshtb          Distribution              => Fedora Core 4   
+09-10-05 06:41 wshtb          Kernel Version            => 2.6.13          
+09-11-05 18:32 wshtb          Issue Monitored: wshtb                       
+09-12-05 17:38 Clemens LadischNote Added: 0006147                          
+03-22-06 03:22 rlrevell       Note Added: 0008815                          
 ======================================================================
 
 
