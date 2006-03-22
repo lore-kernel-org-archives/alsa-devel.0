@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0000209]: Sometimes XMMS stop playing songs (dmix used)
-Date: Wed, 22 Mar 2006 03:06:56 +0100
-Message-ID: <5a8262a8406c57b7eab04da201256ead@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
+Date: Wed, 22 Mar 2006 03:08:31 +0100
+Message-ID: <06545b2dcae26a170a3993c1e1473051@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 075701A1
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:06:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48ABD1A1
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:08:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,119 +24,138 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=209> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
 ======================================================================
-Reported By:                srr
+Reported By:                bji
 Assigned To:                
 ======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   209
-Category:                   
-Reproducibility:            sometimes
-Severity:                   minor
+Project:                    ALSA - driver
+Issue ID:                   660
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     acknowledged
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             04-14-2004 11:41 CEST
-Last Modified:              03-22-2006 03:06 CET
+Date Submitted:             11-21-2004 02:53 CET
+Last Modified:              03-22-2006 03:08 CET
 ======================================================================
-Summary:                    Sometimes XMMS stop playing songs (dmix used)
+Summary:                    No sound output  despite unmuting and maximizing all
+volume settings
 Description: 
-Sometimes XMMS stop playing songs and show message that says "Audio device
-not
-properly configured or busy". It happends when new song just start
-playing. If I click on Play button, songs continued playing. 
+I get no sound output from any program I have tried (xmms, play, aplay, cat
+> /dev/audio) with no error messages or any other indication that there is
+a problem which would cause sound to not occur.
 
-I can't repeat this bug, it happends 3-5 times in day.
+I have already run alsamixer many times and tried every combination of
+muted and unmuted settings with all volumes maximized.  With no volume
+settings muted, and all volume settings at maximum level, I still get no
+sound.
 
-If i start mpg123 and xmms they are play simultaniously (even if i start
-10
-copies of mpg123)
+Everything *looks* like it's working - output in the kernel log, xmms's
+display, everything.  But I get no sound out of the built-in speaker or
+the headphone jack.
 
-This is output from xmms:
+I have tried the following:
 
-ALSA lib pcm_hw.c:1057:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed:
-Device
-or resource busy
-ALSA lib pcm_dmix.c:868:(snd_pcm_dmix_open) unable to open slave
- 
-** WARNING **: alsa_setup(): Failed to open pcm device (default): Device
-or
-resource busy
+* Default install of Fedora Core 3; it recognized the sound card and
+installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
+I never got any sound out of this default install no matter what I tried.
 
+* Custom compiled the 2.6.9 kernel with no patches except the software
+suspend 2 patch.  This built the version of the ALSA drivers that come
+with 2.6.9.  Still no sound.
+
+* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
+them.  Still no sound.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Steve Fink - 07-21-05 08:21 
+ bji - 03-07-05 02:22 
 ----------------------------------------------------------------------
-I have a very similar problem with mplayer (mplayer-1.0pre3try2). I set the
-default device to go through dmix. After some combination of starting and
-stopping mplayers (some of them overlap in time), I will end up with an
-mplayer that sits and sleeps for half a second, over and over again.
+OK, here's another data point.
 
-That kind of sucks, but it's an mplayer problem. My real problem is that
-then when I start up the next program that uses ALSA (another mplayer, my
-application, aplay, or whatever), it gets the "open /dev/snd/pcmC0D0p
-failed: Device or resource busy" error.
+I recently got a Panasonic Y2 in addition to the Panasonic T2 that I was
+using when reporting this bug.  As far as I know, the hardware related to
+sound in these two laptops is essentially the same.
 
-If I kill the offending mplayer process, it fixes it.
+I discovered that I could get sound to work with the Panasonic Y2 if I did
+the following:
 
-I am using alsa-driver 1.0.8 and alsa-lib 1.0.8 with the snd-intel8x0
-driver. I tried compiling a 1.0.9 (or something calling itself that) and
-using it, but I still had the same problem.
+* Booted to Windows XP
+* Turned the Windows XP volume control to its highest setting
+* Muted sound in Windows XP (which is how I usually keep sound in Windows
+XP)
 
-Could anyone tell me what sort of thing is happening? I thought that if
-everything went through dmix, you should never be able to get into an
-EBUSY state. But it seems that the kernel driver is doing something behind
-the pcmC?D?p device that can get into this state? (I see similar output
-when I have a user play an ALSA sound app, and then try to play something
-from the root account. So it does seem like some state is sticking to the
-device somehow.) Is there anything that will dump out the state of a
-device? Where can I read more about how this all works?
+Now if I boot Linux with ALSA 1.0.6 (the stock alsa with Fedora Core 3), I
+can adjust the sound volumes using alsamixer, and everything works.  I can
+play musing using xmms with either the ALSA or OSS plugins, and this also
+works (although the volume slider in xmms does not work, not sure why, I
+have to use alsamixer or aumix to adjust sound volume).  Also, the
+speakers work.
 
-I don't have a simple test script that shows the problem yet. How I
-actually see it is that I start up my application (which itself opens up
-the pcm device, via SDL with SDL_AUDIODRIVER=alsa), and it forks off an
-mplayer (with -ao sdl:alsa). Then I flip rapidly between two different
-movies, where each flip kill -TERM's the old mplayer and starts up a new
-one. Oddly, every one of these mplayers is able to play sound. Then I shut
-down my app, and wait for the mplayers to stop. If I get the bug, which I
-do 80% of the time, then one of them will never stop, and when I try to
-restart my app (or aplay, or mplayer), it gives me the error message and
-fails to play sound.
+Thus I am convinced that the problem is that the ALSA driver for this
+hardware is for some reason not able to adjust the volume beyond some
+maximum value which was set by the BIOS, as remembered by the most recent
+Windows XP setting.
 
-fuser /dev/snd/pcmC0D0p shows only the mplayer processes (when my app has
-exited and there is an mplayer lurking around.)
+Does this help at all?
 
-
+Thanks!
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:06 
+ rlrevell - 03-22-06 03:08 
 ----------------------------------------------------------------------
-This should be fixed in CVS, can you please test?
+Any improvement with later releases?  ALSA 1.0.6 is way too old to debug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-14-04 11:41 srr            New Issue                                    
-04-16-04 11:54 tiwai          Note Added: 0000832                          
-04-20-04 07:39 srr            Note Added: 0000869                          
-04-20-04 07:41 srr            Issue Monitored: srr                         
-10-14-04 22:40 chtephan       Note Added: 0002160                          
-10-20-04 20:42 martin         Note Added: 0002218                          
-11-28-04 18:33 martin         Note Added: 0002626                          
-01-12-05 10:41 leahcim        Note Added: 0003161                          
-01-12-05 10:41 leahcim        Issue Monitored: leahcim                     
-01-12-05 20:26 Dawid Gajownik Issue Monitored: Dawid Gajownik                   
-
-01-19-05 16:54 tiwai          Note Added: 0003296                          
-01-19-05 16:54 tiwai          File Added: xmms-1.2.10-alsa-multithread.diff     
-              
-07-20-05 17:34 Steve Fink     Issue Monitored: Steve Fink                    
-07-21-05 01:03 Steve Fink     Note Added: 0005536                          
-07-21-05 08:21 Steve Fink     Note Edited: 0005536                         
-03-22-06 03:06 rlrevell       Note Added: 0008796                          
+11-21-04 02:53 bji            New Issue                                    
+11-21-04 02:53 bji            Distribution              => Fedora Core 3   
+11-21-04 02:53 bji            Kernel Version            => 2.6.9           
+11-21-04 02:55 bji            Note Added: 0002481                          
+11-21-04 02:56 bji            File Added: proc_asound.txt                    
+11-21-04 03:16 bji            Note Added: 0002483                          
+11-21-04 03:19 bji            Note Added: 0002484                          
+11-23-04 16:20 tiwai          Note Added: 0002522                          
+11-23-04 23:23 IceRAM         Note Added: 0002537                          
+11-23-04 23:24 IceRAM         File Added: asound.state                     
+11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
+11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
+11-23-04 23:27 IceRAM         Note Added: 0002538                          
+11-23-04 23:28 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Issue Monitored: IceRAM                      
+11-23-04 23:45 IceRAM         Note Added: 0002539                          
+11-23-04 23:45 IceRAM         File Added: .asoundrc                        
+11-23-04 23:46 IceRAM         Note Edited: 0002538                         
+11-24-04 12:32 bji            File Added: asound.state                     
+11-24-04 12:33 bji            Note Added: 0002550                          
+11-24-04 12:40 tiwai          Note Added: 0002552                          
+11-24-04 13:15 IceRAM         Note Deleted: 0002537                        
+11-24-04 13:16 IceRAM         Note Deleted: 0002539                        
+11-24-04 13:19 IceRAM         Note Deleted: 0002538                        
+11-24-04 13:26 IceRAM         Note Added: 0002561                          
+11-24-04 14:57 tiwai          Note Added: 0002565                          
+11-25-04 07:07 bji            Note Added: 0002587                          
+11-28-04 04:24 bji            Note Added: 0002619                          
+11-28-04 06:04 bji            Note Added: 0002620                          
+11-29-04 17:19 tiwai          Note Added: 0002654                          
+11-29-04 17:19 tiwai          File Added: stac9752a.diff                    
+11-30-04 08:56 bji            Note Added: 0002661                          
+11-30-04 21:02 tiwai          Note Added: 0002662                          
+12-02-04 06:37 bji            Note Added: 0002674                          
+12-02-04 19:20 tiwai          Note Added: 0002689                          
+12-06-04 19:47 jnm11          Note Added: 0002730                          
+12-06-04 19:47 jnm11          Issue Monitored: jnm11                       
+12-09-04 07:06 bji            Note Added: 0002797                          
+03-07-05 02:22 bji            Note Added: 0003806                          
+09-19-05 10:12 jdthood        Status                   new => acknowledged 
+03-22-06 03:08 rlrevell       Note Added: 0008797                          
 ======================================================================
 
 
