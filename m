@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000051]: system crashes running aplay as unprivileged user on a US428. No sound except very occasional <.5 sec bursts
-Date: Wed, 22 Mar 2006 03:20:19 +0100
-Message-ID: <cd8612e5c3cab186e516ddcb9084b154@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000588]: Mic Noise
+Date: Wed, 22 Mar 2006 03:21:11 +0100
+Message-ID: <708ba617eee8afef5caf1ac5322afeed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D7A61A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:20:19 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA4DE1A6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:21:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=51> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=588> 
 ======================================================================
-Reported By:                marqrdt
-Assigned To:                karsten
+Reported By:                helpme
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   51
-Category:                   USB - usb-usx2y
-Reproducibility:            sometimes
-Severity:                   crash
+Issue ID:                   588
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 1
-Kernel Version:              2.4.22-1.2115.nptl (stock Fedora kernel)
+Distribution:               SuSE
+Kernel Version:             2.6.4-52-smp
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-11-2004 15:39 CET
-Last Modified:              03-22-2006 03:20 CET
+Date Submitted:             10-20-2004 21:22 CEST
+Last Modified:              03-22-2006 03:21 CET
 ======================================================================
-Summary:                    system crashes running aplay as unprivileged user on
-a US428. No sound except very occasional <.5 sec bursts
+Summary:                    Mic Noise
 Description: 
-running the following command will cause a system crash +50% of the time:
-aplay -v -D plug:hw:USX2Y music/wav/chant-reverb.wav
-
-It runs file using the ALSA driver for the internal ALI5451 card.
-
-Also, no sound comes out of the US428 except for very occasional <.5
-bursts (never more than once per sound file). Headphones hooked to phone
-jack, ext. speaker hooked to line-out.
-No audio capture.
+When recording with the mic, i get a lot of static in the recording; this
+is not a problem with the mic, or when using Windows.  How do I fix this?
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 15:47 
+ jdthood - 09-14-05 15:53 
 ----------------------------------------------------------------------
-Submitter: Is this problem fixed in more recent ALSA versions?
+Submitter: Is the behavior improved in more recent ALSA versions?
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:20 
+ rlrevell - 03-22-06 03:21 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-11-04 15:39 marqrdt        New Issue                                    
-02-11-04 17:27 marqrdt        Issue Monitored: marqrdt                     
-02-11-04 20:09 karsten        Note Added: 0000221                          
-03-18-04 14:13 piem           Note Added: 0000641                          
-10-01-04 01:28 karsten        Note Added: 0001991                          
-09-14-05 15:47 jdthood        Note Added: 0006158                          
-03-22-06 03:20 rlrevell       Status                   assigned => closed  
-03-22-06 03:20 rlrevell       Note Added: 0008812                          
+10-20-04 21:22 helpme         New Issue                                    
+10-20-04 21:22 helpme         Distribution              => SuSE            
+10-20-04 21:22 helpme         Kernel Version            => 2.6.4-52-smp    
+09-14-05 15:53 jdthood        Note Added: 0006162                          
+03-22-06 03:21 rlrevell       Status                   assigned => closed  
+03-22-06 03:21 rlrevell       Note Added: 0008813                          
 ======================================================================
 
 
