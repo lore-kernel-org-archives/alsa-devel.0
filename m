@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
-Date: Wed, 22 Mar 2006 02:25:52 +0100
-Message-ID: <37bb99a096845f4641d240a8db779702@bugtrack.alsa-project.org>
+Date: Wed, 22 Mar 2006 02:27:29 +0100
+Message-ID: <80f5c704c4f28a3dc9ce40991efa01d4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3A71181
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:25:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3244181
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:27:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.1.13-gentoo-r3
 ======================================================================
 Date Submitted:             11-17-2005 16:31 CET
-Last Modified:              03-22-2006 02:25 CET
+Last Modified:              03-22-2006 02:27 CET
 ======================================================================
 Summary:                    Simultaneous sound from speakers and headphone
 Description: 
@@ -63,10 +63,12 @@ has duplicate       0001663 LW20 bugs with headphone input, realtek...
 Its cvs :(
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 02:25 
+ crissi - 03-22-06 02:27 
 ----------------------------------------------------------------------
-Yes please file a new bug then (and let's delete our comments from this one
-to clean it up)
+Its cvs :(
+
+So we have a new one:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1952
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +102,11 @@ Date Modified  Username       Field                    Change
 03-22-06 01:58 rlrevell       Note Added: 0008773                          
 03-22-06 02:09 crissi         Note Added: 0008774                          
 03-22-06 02:25 rlrevell       Note Added: 0008777                          
+03-22-06 02:26 rlrevell       Note Deleted: 0008768                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008773                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008769                        
+03-22-06 02:27 rlrevell       Note Deleted: 0008777                        
+03-22-06 02:27 crissi         Note Added: 0008778                          
 ======================================================================
 
 
