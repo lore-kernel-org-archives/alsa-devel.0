@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001663]: LW20 bugs with headphone input, realtek.com.tw has a fix, please intergrate it!
-Date: Wed, 22 Mar 2006 18:48:36 +0100
-Message-ID: <e76508327e7cf0b4a5116bf9bed3e604@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
+Date: Wed, 22 Mar 2006 18:50:44 +0100
+Message-ID: <7ccfb70088b840babf962b0859b0e483@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D20618E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 18:48:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A74A1B6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 18:50:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,82 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1663> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
 ======================================================================
-Reported By:                mikael
-Assigned To:                tiwai
+Reported By:                fmoraes
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1663
-Category:                   PCI - hda-intel
+Issue ID:                   371
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Archlinux
-Kernel Version:             2.4.13.4
-Resolution:                 duplicate
-Duplicate:                  1572
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
-Date Submitted:             12-20-2005 19:11 CET
-Last Modified:              03-22-2006 18:48 CET
+Date Submitted:             07-09-2004 15:59 CEST
+Last Modified:              03-22-2006 18:50 CET
 ======================================================================
-Summary:                    LW20 bugs with headphone input, realtek.com.tw has a
-fix, please intergrate it!
+Summary:                    dmix does not work with snd-cs46xx driver
 Description: 
-My new laptop has a HDA Intel (Realtek ALC880) soundcard. 
-
-It though for some reason do not turn off the main speaker when you insert
-headphones. On the site
-http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=2004052&famid=2004052&series=2004061&Software=True
-there is a patched alsa package available which fixes this issue by adding
-a "Headphone" mixer which you can turn on/off and also gives you the
-availability to mute the main speakers without (as in 1.0.10/11-rc1)
-muting the headphones aswell.
-
-Can you please intergrate this? I struggled trying to intergrate this
-properly but their alsa is built on 1.0.9 and I suppose I am not the
-sharpest of programers either for the job.
-
-Greets,
-  Mikael
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001572 Simultaneous sound from speakers and he...
+When trying to use dmix with the snd-cs46xx driver, no output is produced.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 01:47 
+ rlrevell - 03-22-06 03:42 
 ----------------------------------------------------------------------
-Is this fixed with the latest ALSA CVS sources?
+Any improvement in later releases?
 
 ----------------------------------------------------------------------
- mikael - 03-22-06 13:26 
+ tiwai - 03-22-06 18:50 
 ----------------------------------------------------------------------
-Not sure. I sold the laptop and bought a new one. :)
+Well, the primary question is why you need dmix with cs46xx.  It supports
+multiple playbacks, so dmix is not necessary at all...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-20-05 19:11 mikael         New Issue                                    
-12-20-05 19:11 mikael         Distribution              => Archlinux       
-12-20-05 19:11 mikael         Kernel Version            => 2.4.13.4        
-01-16-06 16:22 mikael         Note Added: 0007688                          
-01-16-06 19:24 rlrevell       Note Added: 0007691                          
-01-17-06 00:05 mikael         Note Added: 0007693                          
-01-19-06 14:05 mjsb           Note Added: 0007720                          
-01-19-06 14:31 mjsb           Issue Monitored: mjsb                        
-01-19-06 18:27 rlrevell       Relationship added       duplicate of 0001572
-03-01-06 18:00 mpt            Issue Monitored: mpt                         
-03-22-06 01:47 rlrevell       Note Added: 0008771                          
-03-22-06 13:26 mikael         Note Added: 0008854                          
-03-22-06 18:48 tiwai          Duplicate ID             0 => 1572           
-03-22-06 18:48 tiwai          Status                   assigned => resolved
-03-22-06 18:48 tiwai          Resolution               open => duplicate   
+07-09-04 15:59 fmoraes        New Issue                                    
+07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
+07-15-04 14:10 perex          Status                   new => assigned     
+07-15-04 14:10 perex          Assigned To               => perex           
+03-09-05 03:09 fmoraes        Note Added: 0003823                          
+03-09-05 18:37 tiwai          Note Added: 0003830                          
+03-10-05 15:03 jdthood        Note Added: 0003857                          
+03-11-05 22:14 fmoraes        File Added: .asoundrc                        
+03-11-05 22:15 fmoraes        Note Added: 0003894                          
+03-22-06 03:42 rlrevell       Note Added: 0008832                          
+03-22-06 18:50 tiwai          Note Added: 0008866                          
 ======================================================================
 
 
