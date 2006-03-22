@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000271]: Alsa no longer loads at boot - sound card not found
-Date: Wed, 22 Mar 2006 03:40:43 +0100
-Message-ID: <b95935f3386358e4de111944a57c21ec@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000941]: Behringer BCA 2000 USB device not recognized
+Date: Wed, 22 Mar 2006 03:44:36 +0100
+Message-ID: <5b69e59216183f9bf50da0255dc92ae6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 05C111A0
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:40:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 591711A0
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:44:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,102 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=271> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=941> 
 ======================================================================
-Reported By:                Mark Knecht
-Assigned To:                tiwai
+Reported By:                sten69
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   271
-Category:                   PCI - atiixp
+Issue ID:                   941
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.6_rc1
+Distribution:               Project CCRMA/Fedora Core 1
+Kernel Version:             2.4.26-1.ll.rhfc1.ccrma
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-12-2004 19:17 CEST
-Last Modified:              03-22-2006 03:40 CET
+Date Submitted:             02-24-2005 13:59 CET
+Last Modified:              03-22-2006 03:44 CET
 ======================================================================
-Summary:                    Alsa no longer loads at boot - sound card not found
+Summary:                    Behringer BCA 2000 USB device not recognized
 Description: 
-Alsa has been working very well on this machine for at least a month.
-Starting this last weekend it stopped loading at boot time. Interestingly
-it will load if I modprobe if by hand.
-
-I have tried rebuilding the kernel, rebuilding all associated part of Alsa
-but the problem continues.
-
-<From dmesg>
-Advanced Linux Sound Architecture Driver Version 1.0.4rc2 (Tue Mar 30
-08:19:30 2
-004 UTC).
-ALSA device list:
-  No soundcards found.
-oprofile: using NMI interrupt.
-NET: Registered protocol family 2
-IP: routing cache hash table of 4096 buckets, 32Kbytes
-TCP: Hash tables configured (established 32768 bind 32768)
-ip_conntrack version 2.1 (4091 buckets, 32728 max) - 300 bytes per
-conntrack
-ip_tables: (C) 2000-2002 Netfilter core team
-ipt_recent v0.3.1: Stephen Frost <sfrost@snowman.net>. 
-http://snowman.net/proje
-cts/ipt_recent/
-arp_tables: (C) 2002 David S. Miller
-NET: Registered protocol family 1
-NET: Registered protocol family 17
-ACPI: (supports S0 S3 S4 S5)
-kjournald starting.  Commit interval 5 seconds
-EXT3-fs: mounted filesystem with ordered data mode.
-VFS: Mounted root (ext3 filesystem) readonly.
-Freeing unused kernel memory: 196k freed
-Adding 1004020k swap on /dev/hda6.  Priority:-1 extents:1
-EXT3 FS on hda7, internal journal
-eth0: link up, 10Mbps, half-duplex, lpa 0x0000
-atkbd.c: Unknown key released (translated set 2, code 0x7a on
-isa0060/serio0).
-atkbd.c: This is an XFree86 bug. It shouldn't access hardware directly.
-atkbd.c: Unknown key released (translated set 2, code 0x7a on
-isa0060/serio0).
-atkbd.c: This is an XFree86 bug. It shouldn't access hardware directly.
-flash root # 
-
-flash root # lsmod
-Module                  Size  Used by
-flash root # modprobe snd-atiixp
-flash root # lsmod
-Module                  Size  Used by
-snd_atiixp             16420  0 
-snd_ac97_codec         61956  1 snd_atiixp
-flash root # 
+The Behringer BCA 2000 device is not recognized by ALSA as a USB sound
+card.  The device is recognized by Windows XP using the Behringer drivers.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000918 Behringer BCA-2000
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 15:07 
+ sten69 - 03-05-05 20:33 
 ----------------------------------------------------------------------
-This is a local configuration problem.
-I think that the report can be closed,
+The device didn't work even under Windows and with the newest Behringer
+drivers.  (It was recognized as a sound card, but playback stopped after
+1:30 or so; not something that you're apt to notice when you're just
+testing.  Recording did not work at all.)  Some people also have this
+problem and Behringer is working on the issue.
+
+That means that (a) the device won't work using a generic USB audio driver
+and (b) Behringer itself is having problems controlling its own device.  I
+have returned the BCA today and got my money back.
+
+The ALSA soundcard matrix only says about USB that "all USB devicews that
+are standards compliant will work."  Which standards are these? How can I,
+as a consumer, check whether a device that I have in mind is "standards
+compliant" or not?
+
+Thanks for the support and keep up the good work.
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:40 
+ rlrevell - 03-22-06 03:44 
 ----------------------------------------------------------------------
-Local issue
+Not a bug (device uses proprietary protocol which can't be supported)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-12-04 19:17 Mark Knecht    New Issue                                    
-05-12-04 19:17 Mark Knecht    File Added: modules.conf                     
-05-12-04 19:17 Mark Knecht    Distribution              => Gentoo          
-05-12-04 19:17 Mark Knecht    Kernel Version            => 2.6.6_rc1       
-05-12-04 19:21 tiwai          Note Added: 0001098                          
-03-19-05 15:07 jdthood        Note Added: 0004049                          
-03-22-06 03:40 rlrevell       Status                   assigned => closed  
-03-22-06 03:40 rlrevell       Note Added: 0008831                          
+02-24-05 13:59 sten69         New Issue                                    
+02-24-05 13:59 sten69         Distribution              => Project CCRMA/Fedora
+Core 1
+02-24-05 13:59 sten69         Kernel Version            =>
+2.4.26-1.ll.rhfc1.ccrma
+02-24-05 14:01 sten69         Issue Monitored: sten69                      
+02-28-05 18:15 Clemens LadischRelationship added       has duplicate 0000918
+02-28-05 18:21 Clemens LadischNote Added: 0003747                          
+02-28-05 21:33 rlrevell       Note Added: 0003748                          
+03-01-05 09:25 Clemens LadischNote Added: 0003754                          
+03-05-05 20:33 sten69         Note Added: 0003804                          
+03-22-06 03:44 rlrevell       Status                   assigned => closed  
+03-22-06 03:44 rlrevell       Note Added: 0008834                          
 ======================================================================
 
 
