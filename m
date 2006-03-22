@@ -1,13 +1,14 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: Any missing patches?
-Date: Wed, 22 Mar 2006 13:07:33 +1030 (CST)
-Message-ID: <200603220237.k2M2bXqD020575@auster.physics.adelaide.edu.au>
-References: <20060321223803.318AD16C42@sc8-sf-spam2.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001431]: no sound with msi km4am-l
+Date: Wed, 22 Mar 2006 03:39:42 +0100
+Message-ID: <fb3a0cc4a4da51875d088d595766b5e2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060321223803.318AD16C42@sc8-sf-spam2.sourceforge.net> from "alsa-devel-request@lists.sourceforge.net" at Mar 21, 2006 02:37:02 PM
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DED681A0
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:39:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,72 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, rq@akl.lt
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys
 
-> this patch cleans up the mixer interface by removing
-> unpractical/non-working features. Applies for ALC260 "acer" model in
-> hda-intel module. It also adds/changes a few comments in the source.
+The following issue has been CLOSED
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1431> 
+======================================================================
+Reported By:                bunni
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1431
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     closed
+Distribution:               lfs
+Kernel Version:             2.6.13.1
+Resolution:                 open
+Fixed in Version:           
+======================================================================
+Date Submitted:             09-17-2005 02:33 CEST
+Last Modified:              03-22-2006 03:39 CET
+======================================================================
+Summary:                    no sound with msi km4am-l
+Description: 
+I hace an msi km4am-l with via 8237 onboard chip. First time i have
+compiled the via82xx and bt87x modules (in 2.6.13.1), i haven't any sound
+(test with aplay english.au and mythtv). I tried with the alsa 1.09
+drivers same problem.
+I have plugin my sb live 5.1 and compiled it's module in kernel as module
+and it's work fine.
+======================================================================
 
-I have a few comments regarding this patch.
+----------------------------------------------------------------------
+ bunni - 09-23-05 09:53 
+----------------------------------------------------------------------
+There is no problem with the driver, i haven't jumper on my motherboard
+where i can plug the frontpanel. Sorry
 
-> +	/* Line jack doesn't actually preamplify the mic even if set to one of the
-> +	 * Mic modes. However, it doesn't seem like these can be disabled ATM.
-> +	 */
->  	ALC_PIN_MODE("Line Jack Mode", 0x14, ALC_PIN_DIR_INOUT),
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 03:39 
+----------------------------------------------------------------------
+Not a bug
 
-This comment is actually slightly misleading - see my posts earlier today.
-It's not that this jack "doesn't actually preamplify the mic".  At this
-stage, on the strength of a sample of one, it appears that at least some of
-the Acer laptops have a DC blocking capacitor between the ALC260 chip and
-the physical output jack.  This blocks the DC bias supplied by the ALC260
-but it doesn't stop "preamplification" - it simply stops unpowered condensor
-microphones from working.  If a self-powered mic was plugged in you'll find
-that it will work with either setting.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-17-05 02:33 bunni          New Issue                                    
+09-17-05 02:33 bunni          Distribution              => lfs             
+09-17-05 02:33 bunni          Kernel Version            => 2.6.13.1        
+09-23-05 09:53 bunni          Note Added: 0006364                          
+03-22-06 03:39 rlrevell       Status                   new => closed       
+03-22-06 03:39 rlrevell       Note Added: 0008829                          
+======================================================================
 
-It is true that ALC_PIN_MODE() can't disable the mic modes and leave the
-"line in" mode active at present.  I might do a patch at some stage to add
-this flexibility.  However, I would probably argue at this stage that it
-might not be desireable to omit the mic modes from this pin in the acer
-model, since the issue might simply go away with later/other acer models. 
-We would then need to define a new Acer model just to cope with this tiny
-variation.
 
-> -	/* Internal speaker/Headphone jack is connected to Line-out pin */
-> +	/* Internal speaker and Headphone jack are connected to line-out pin */=
->  	{0x0f, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
-
-Just a comment: this confirms that NID 0x0f is used for the headphone jack.
-This explains why the mic controls automagically revert to "line in" mode
-for this jack.  See my earlier post for the explanation.
-
-> -	/* Set ADC connection select to match default mixer setting - mic
-> +	/* Set ADC connection select to match default mixer setting - Mic
->  	 * (on mic1 pin)
->  	 */
->  	{0x04, AC_VERB_SET_CONNECT_SEL, 0x00},
->
->  	/* Do similar with the second ADC: mute capture input amp and
-> -	 * set ADC connection to line (on line1 pin)
-> +	 * set ADC connection to Line (on line1 pin)
-> +	 * FIXME: the connection is still set to Mic for some reason
->  	 */
-
-The point isn't that the init verbs don't work - it's that elsewhere during
-device initialisation the capture sources are set to the first one in the
-source list (or so it seems).  This is why the "to match default mixer
-setting" comment is there.  I haven't had time to track this down and I
-really didn't think it was important enough at this stage to worry about. I
-think it is perfectly acceptable to have all inputs default to "mic" and let
-the user work out what they want.  Most distros configure things so the alsa
-mixer is restored to its last state during a boot, so I don't think it's that
-big a deal.
-
-Regards
-  jonathan
 
 
 -------------------------------------------------------
