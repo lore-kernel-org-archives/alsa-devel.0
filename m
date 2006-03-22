@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000833]: [snd_via82xx] setting ac97_clock greater than 48000 should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
-Date: Wed, 22 Mar 2006 03:04:45 +0100
-Message-ID: <8a165d22f1fcdd8981ad4ac76d47632d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001283]: Allegro-1 does not generate interrupts - but does on linux 2.4.27
+Date: Wed, 22 Mar 2006 03:05:29 +0100
+Message-ID: <241beeed21e7437604f065bccf796a5e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9745B1A1
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:04:45 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DEBB11A1
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:05:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=833> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1283> 
 ======================================================================
-Reported By:                t35t0r
-Assigned To:                
+Reported By:                sclark46
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   833
-Category:                   PCI - via82xx
+Issue ID:                   1283
+Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               gentoo
-Kernel Version:             2.6.10-gentoo-r5 (but error is reproducible in stock
-kernels also)
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.12-1.1398_FC4
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-18-2005 17:35 CET
-Last Modified:              03-22-2006 03:04 CET
+Date Submitted:             07-27-2005 03:51 CEST
+Last Modified:              03-22-2006 03:05 CET
 ======================================================================
-Summary:                    [snd_via82xx] setting ac97_clock greater than 48000
-should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
+Summary:                    Allegro-1 does not generate interrupts - but does on
+linux 2.4.27
 Description: 
-Please read: http://bugs.gentoo.org/show_bug.cgi?id=78327
+Aplay fails with a write error and the following error message:
+Jul 26 21:06:14 joker4 kernel: ALSA
+/home/sclark/alsa-driver-1.0.9rc4a/acore/pcm_native.c:1442: playback drain
+error (DMA or IRQ trouble?)
 
-Forwarded email below
+The sound clip plays repeatedly until that error pops up.
 
-From: Jaroslav Kysela <perex@suse.cz>
-To: t35t0r@gmail.com
-Cc: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 18 Jan 2005 10:40:56 +0100 (CET)
-Subject: Re: snd_via82xx ac97_clock=96000 parameter doesn't work for
-kernels >= linux-2.6.9 (fwd)
+I booted a Knoppix CD to verify the HW worked and sound played correctly.
+The Knoppix kernel was 2.4.27
 
-> > Dear sir:
-> >
-> > If you get a chance can you look at
-> > http://bugs.gentoo.org/show_bug.cgi?id=78327 . It seems that setting
-> > ac97_clock=96000 no longer works for kernels >= linux-2.6.9. I didn't
-> > try any other ac97_clock settings since the 96000 setting was working
-> > for a 2.6.7 and 2.6.8.1 kernel. The url has some of my hardware
-> > specifications.
 
-It seems that the no-sound bug is caused with the AC'97 codec
-initialization. Specifying 96000 as ac97_clock parameter won't help,
-because this value must be from 8000 to 48000 otherwise it is ignored.
-Please, fill a bug to our bugtrack system.
-
-                                               Jaroslav
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 08-04-05 09:15 
+ rlrevell - 07-30-05 09:11 
 ----------------------------------------------------------------------
-To confirm: Does the driver work without using ac97_clock parameter?
+This should be reported to the kernel bugzilla.
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:04 
+ rlrevell - 03-22-06 03:05 
 ----------------------------------------------------------------------
-No response
+Not an ALSA bug
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-18-05 17:35 t35t0r         New Issue                                    
-01-18-05 17:35 t35t0r         Distribution              => gentoo          
-01-18-05 17:35 t35t0r         Kernel Version            => 2.6.10-gentoo-r5 (but
-error is reproducible in stock kernels also)
-01-18-05 17:44 tiwai          Note Added: 0003252                          
-07-22-05 02:46 connolly       Note Added: 0005544                          
-08-04-05 09:15 perex          Note Added: 0005642                          
-03-22-06 03:04 rlrevell       Status                   new => closed       
-03-22-06 03:04 rlrevell       Note Added: 0008793                          
+07-27-05 03:51 sclark46       New Issue                                    
+07-27-05 03:51 sclark46       Distribution              => Fedora Core 4   
+07-27-05 03:51 sclark46       Kernel Version            => 2.6.12-1.1398_FC4
+07-27-05 03:52 sclark46       Issue Monitored: sclark46                    
+07-27-05 03:52 sclark46       Issue End Monitor: sclark46                    
+07-30-05 05:21 sclark46       Note Added: 0005588                          
+07-30-05 09:11 rlrevell       Note Added: 0005590                          
+03-22-06 03:05 rlrevell       Status                   assigned => closed  
+03-22-06 03:05 rlrevell       Note Added: 0008794                          
 ======================================================================
 
 
