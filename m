@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001952]: Simultaneous sound from speakers and headphone on DELL Inspiron 9400
-Date: Wed, 22 Mar 2006 15:45:50 +0100
-Message-ID: <212e72b5bdcca8b66abdbfff978e6040@bugtrack.alsa-project.org>
+Date: Wed, 22 Mar 2006 15:48:55 +0100
+Message-ID: <049e06de838b99f4eb59d218b3e01910@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F8F31A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 15:45:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2B831A6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 15:48:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1952> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-22-2006 02:12 CET
-Last Modified:              03-22-2006 15:45 CET
+Last Modified:              03-22-2006 15:48 CET
 ======================================================================
 Summary:                    Simultaneous sound from speakers and headphone on
 DELL Inspiron 9400
@@ -49,14 +51,14 @@ This still happens with cvs.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 05:15 
-----------------------------------------------------------------------
-Great.  Closing this bug.
-
-----------------------------------------------------------------------
  crissi - 03-22-06 15:45 
 ----------------------------------------------------------------------
 it works only if model=test, I found that later ;)
+
+----------------------------------------------------------------------
+ tiwai - 03-22-06 15:48 
+----------------------------------------------------------------------
+It can't be.  There is no "test" model for sigmatel codecs.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -69,6 +71,9 @@ Date Modified  Username       Field                    Change
 03-22-06 15:45 crissi         Status                   resolved => feedback
 03-22-06 15:45 crissi         Resolution               fixed => reopened   
 03-22-06 15:45 crissi         Note Added: 0008857                          
+03-22-06 15:48 tiwai          Status                   feedback => resolved
+03-22-06 15:48 tiwai          Resolution               reopened => fixed   
+03-22-06 15:48 tiwai          Note Added: 0008859                          
 ======================================================================
 
 
