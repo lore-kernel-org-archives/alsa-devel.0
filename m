@@ -1,13 +1,14 @@
-From: ELOGIADO@sc8-sf-spam1.sourceforge.net,
-	POR@sc8-sf-spam1.sourceforge.net,
-	ADVOGADOS@sc8-sf-spam1.sourceforge.net,
-	JUÍZES E BIBLIOTECAS <emfltda@brturbo.com.br>
-Subject: IMPORTANTE OBRA DE DIREITO
-Date: Wed, 22 Mar 2006 03:32:00 GMT
-Message-ID: <bmuhqzdnwpud$5110051081221007110$tct@wincom>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001952]: Simultaneous sound from speakers and headphone on DELL Inspiron 9400
+Date: Wed, 22 Mar 2006 04:54:58 +0100
+Message-ID: <6848c87d4282dc5ffc1245ce90d3a1b1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA4ED192
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 04:54:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,32 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-. Cordiais Saudações
 
-. Convidamos V.Sa. a visitar nossa página http://www.emfor.com.br 
-para conhecer o tradicional EMENTARIO FORENSE em CD-ROM - Sistema EMFOR - 
-obra de pesquisa que já integra o acervo das mais importantes bibliotecas jurídicas do País. 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1952> 
+======================================================================
+Reported By:                crissi
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1952
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             03-22-2006 02:12 CET
+Last Modified:              03-22-2006 04:54 CET
+======================================================================
+Summary:                    Simultaneous sound from speakers and headphone on
+DELL Inspiron 9400
+Description: 
+This still happens with cvs.
+======================================================================
 
-. O primeiro repositório de Jurisprudência e Legislação lançado em mídia 
-digital (1992). Uma obra em permanente atualização. Incluindo um excelente banco de petições e contratos.
+----------------------------------------------------------------------
+ crissi - 03-22-06 04:54 
+----------------------------------------------------------------------
+Now its fixed is cvs because it works now :)
 
- . Use o telFAX: 21. 2556-9879 ou envie e-mail para  editora@emfor.com.br e peça mais infomações.
-
-.  BRINDE: Anexo ao programa um Sistema para cadastro de clientes com balanço financeiro, agenda 
-de compromissos e telefone. Construído com base na experência de grandes escritórios de advocacia. 
-Prático e Funcional.
-
-.  Para pedidos copie e cole o link  http://www.ementarioforense.com.br/formulario/index.php
-
-.  Editora Mundo Forense Ltda.
-   Eduardo M Macedo
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-22-06 02:12 crissi         New Issue                                    
+03-22-06 04:54 crissi         Note Added: 0008843                          
+======================================================================
 
 
-Editora MUNDO FORENSE Ltda. Desde 1948
-Conheça esta Obra de Consulta Obrigatória
 
 
 -------------------------------------------------------
