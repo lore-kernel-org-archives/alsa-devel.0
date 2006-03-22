@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000464]: Right Channel always +6dB Louder than Left Channel while recording in Stereo
-Date: Wed, 22 Mar 2006 03:40:24 +0100
-Message-ID: <fe3ca9263923d39eb364350823ea0a8e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
+Date: Wed, 22 Mar 2006 03:42:19 +0100
+Message-ID: <ea143d1cfd59284779acb322c0b4edfb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C4EC1A0
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:40:24 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 569BA1A0
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:42:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=464> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
 ======================================================================
-Reported By:                Electro
-Assigned To:                
+Reported By:                fmoraes
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   464
+Issue ID:                   371
 Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               Mandrake Linux
-Kernel Version:             2.4.19-16mdk
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
-Date Submitted:             08-26-2004 07:48 CEST
-Last Modified:              03-22-2006 03:40 CET
+Date Submitted:             07-09-2004 15:59 CEST
+Last Modified:              03-22-2006 03:42 CET
 ======================================================================
-Summary:                    Right Channel always +6dB Louder than Left Channel
-while recording in Stereo
+Summary:                    dmix does not work with snd-cs46xx driver
 Description: 
-The sound card is Turtle Beach Santa Cruz (CS4630). When trying to record
-from any stereo source (Line In, Aux, CDROM, Mix) the right channel is
-always +6dB louder than left channel. This happens with arecord, mencoder,
-audacity, or any program that can record audio. Recording in mono works
-perfectly.
-
-
+When trying to use dmix with the snd-cs46xx driver, no output is produced.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 15:34 
+ fmoraes - 03-11-05 22:15 
 ----------------------------------------------------------------------
-Submitter: That is pretty strange behavior.  Do you still see the problem
-with the latest ALSA release?
+I've attached my .asoundrc just in case. I tested it again today and I
+sitll have the same issue. Of course, I shouldn't need dmix setup on this
+card, but it should work.
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:40 
+ rlrevell - 03-22-06 03:42 
 ----------------------------------------------------------------------
-No response
+Any improvement in later releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-26-04 07:48 Electro        New Issue                                    
-08-26-04 07:48 Electro        Distribution              => Mandrake Linux  
-08-26-04 07:48 Electro        Kernel Version            => 2.4.19-16mdk    
-10-31-04 04:06 Electro        Note Added: 0002291                          
-03-19-05 15:34 jdthood        Note Added: 0004053                          
-03-22-06 03:40 rlrevell       Status                   new => closed       
-03-22-06 03:40 rlrevell       Note Added: 0008830                          
+07-09-04 15:59 fmoraes        New Issue                                    
+07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
+07-15-04 14:10 perex          Status                   new => assigned     
+07-15-04 14:10 perex          Assigned To               => perex           
+03-09-05 03:09 fmoraes        Note Added: 0003823                          
+03-09-05 18:37 tiwai          Note Added: 0003830                          
+03-10-05 15:03 jdthood        Note Added: 0003857                          
+03-11-05 22:14 fmoraes        File Added: .asoundrc                        
+03-11-05 22:15 fmoraes        Note Added: 0003894                          
+03-22-06 03:42 rlrevell       Note Added: 0008832                          
 ======================================================================
 
 
