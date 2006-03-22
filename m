@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000058]: Amixer will not recognize SB Extigy
-Date: Wed, 22 Mar 2006 03:26:05 +0100
-Message-ID: <44adb2f27378ef6cfc485792b40b7d23@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001062]: creative mp3+ doesnt work with external usb hub
+Date: Wed, 22 Mar 2006 03:27:16 +0100
+Message-ID: <2bb7503768aa319e9e1bde2409515bc8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 95A021A7
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:26:05 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5BF81A7
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:27:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=58> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1062> 
 ======================================================================
-Reported By:                shraps
-Assigned To:                tiwai
+Reported By:                TheCoop
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   58
+Issue ID:                   1062
 Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     closed
 Distribution:               Gentoo
-Kernel Version:             2.6.1
-Resolution:                 fixed
+Kernel Version:             2.6.12-rc2-mm3
+Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-13-2004 04:53 CET
-Last Modified:              03-22-2006 03:26 CET
+Date Submitted:             04-18-2005 12:04 CEST
+Last Modified:              03-22-2006 03:27 CET
 ======================================================================
-Summary:                    Amixer will not recognize SB Extigy
+Summary:                    creative mp3+ doesnt work with external usb hub
 Description: 
-No matter what I do, amixer/alsamixer cannot load the extigy card. 
-However, other volume control programs can unmute and control the volume.
+My usb creative mp3+ only works when it is plugged directly into the
+computer. When it is plugged into an external usb hub, sound doesnt play
+(the timer is stuck at 0:00), the following appears in the command line:
+ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
 
-Errorcode:
-amixer: Mixer load error: hw:1
+and the following appears in dmesg:
+cannot submit datapipe for urb 0, err = -38
+cannot submit datapipe for urb 0, err = -38
+cannot submit datapipe for urb 0, err = -38
+
+Details at http://forums.gentoo.org/viewtopic-t-272854.html
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 06-08-05 18:09 
+ andersin - 08-26-05 02:08 
 ----------------------------------------------------------------------
-Does this problem still exists in the current ALSA driver?
+I have a similar problem with my SB Extigy. However, I do not get the same
+error message. Here is what I get in dmesg:
+ALSA [...]/alsa-driver-1.0.9b/usb/usbaudio.c:771: cannot submit datapipe
+for urb 0, err = -28
+ALSA [...]//alsa-driver-1.0.9b/usb/usbmidi.c:178: urb status -108
+
+[...] inserted to improve readability.
+
+I tried this with kernel 2.6.12.1 and 2.6.13.
 
 ----------------------------------------------------------------------
- shraps - 09-21-05 22:54 
+ rlrevell - 03-22-06 03:27 
 ----------------------------------------------------------------------
-Sorry for the late response...  I hadn't been running linux for a while.  I
-recently put debian on one of my partitions and the alsa included in the
-2.6.8 kernel seems to perform well with my extigy.  I can get sound out of
-front right, front left, and center speakers (didn't test the two rear
-speakers because they aren't hooked up here).  I also have no problems
-seeing the extigy with amixer.
+Not an ALSA bug
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-04 04:53 shraps         New Issue                                    
-02-20-04 18:40 Clemens LadischNote Added: 0000277                          
-02-20-04 22:59 shraps         Note Added: 0000278                          
-02-24-04 08:46 Clemens LadischNote Added: 0000301                          
-02-24-04 22:50 shraps         Note Added: 0000306                          
-02-25-04 10:10 Clemens LadischIssue Monitored: Clemens Ladisch                  
- 
-02-25-04 10:11 Clemens LadischNote Added: 0000312                          
-02-25-04 22:33 shraps         Note Added: 0000326                          
-02-26-04 16:18 Clemens LadischNote Added: 0000353                          
-02-27-04 01:00 shraps         Note Added: 0000378                          
-03-01-04 18:49 Clemens LadischNote Added: 0000414                          
-03-01-04 18:49 Clemens LadischAssigned To              Clemens Ladisch => tiwai
-03-02-04 04:38 shraps         Note Added: 0000430                          
-03-04-04 18:47 tiwai          Note Added: 0000490                          
-03-04-04 22:56 shraps         Note Added: 0000493                          
-03-07-04 02:27 shraps         Note Added: 0000522                          
-03-10-04 17:51 tiwai          Note Added: 0000564                          
-03-11-04 17:07 shraps         Note Added: 0000572                          
-06-08-05 18:09 perex          Note Added: 0004969                          
-09-21-05 22:54 shraps         Note Added: 0006327                          
-03-22-06 03:26 rlrevell       Status                   assigned => resolved
-03-22-06 03:26 rlrevell       Resolution               open => fixed       
+04-18-05 12:04 TheCoop        New Issue                                    
+04-18-05 12:04 TheCoop        Distribution              => Gentoo          
+04-18-05 12:04 TheCoop        Kernel Version            => 2.6.12-rc2-mm3  
+04-25-05 10:45 Clemens LadischNote Added: 0004570                          
+08-26-05 02:08 andersin       Note Added: 0005945                          
+03-22-06 03:27 rlrevell       Status                   assigned => closed  
+03-22-06 03:27 rlrevell       Note Added: 0008819                          
 ======================================================================
 
 
