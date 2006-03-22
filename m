@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001118]: es1868 - mono recording not working properly
-Date: Wed, 22 Mar 2006 02:15:06 +0100
-Message-ID: <df8d72e499261eaba5fc25040d8aa3b3@bugtrack.alsa-project.org>
+Date: Wed, 22 Mar 2006 02:18:41 +0100
+Message-ID: <ff4de1f1695d27d511651381e38854ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90CC8181
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:15:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 721D6181
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:18:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             05-19-2005 23:36 CEST
-Last Modified:              03-22-2006 02:15 CET
+Last Modified:              03-22-2006 02:18 CET
 ======================================================================
 Summary:                    es1868 - mono recording not working properly
 Description: 
@@ -54,17 +54,18 @@ back).  Stereo recording works without problems (using audacity).
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 00:38 
-----------------------------------------------------------------------
-Do you still consider this a bug?
-
-----------------------------------------------------------------------
  MStrecke - 03-22-06 02:15 
 ----------------------------------------------------------------------
 Yes.
 
 I just checked it (Mono recording with Audacity), same result.
 (Kernel version by now is 2.6.12-10, Ubuntu Breezy).
+
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 02:18 
+----------------------------------------------------------------------
+Is the problem still present with the latest ALSA version?  Kernel 2.6.12
+is rather old.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -81,6 +82,7 @@ Date Modified  Username       Field                    Change
 09-26-05 10:28 LawrenceG      Issue Monitored: LawrenceG                    
 03-22-06 00:38 rlrevell       Note Added: 0008764                          
 03-22-06 02:15 MStrecke       Note Added: 0008775                          
+03-22-06 02:18 rlrevell       Note Added: 0008776                          
 ======================================================================
 
 
