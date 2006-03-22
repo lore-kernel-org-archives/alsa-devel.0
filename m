@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001118]: es1868 - mono recording not working properly
-Date: Wed, 22 Mar 2006 23:26:36 +0100
-Message-ID: <23191c816e43668485d241f0b8b2616d@bugtrack.alsa-project.org>
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: Any missing patches?
+Date: Thu, 23 Mar 2006 09:38:57 +1030 (CST)
+Message-ID: <200603222308.k2MN8v5T019968@auster.physics.adelaide.edu.au>
+References: <s5hu09qycgo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36A3119F
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 23:26:36 +0100 (MET)
+In-Reply-To: <s5hu09qycgo.wl%tiwai@suse.de> from "Takashi Iwai" at Mar 22, 2006 11:56:39 AM
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +17,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net, rq@akl.lt
 List-Id: alsa-devel@alsa-project.org
 
+> > > -	/* Set ADC connection select to match default mixer setting - mic
+> > > +	/* Set ADC connection select to match default mixer setting - Mic
+> > >  	 * (on mic1 pin)
+> > >  	 */
+> > >  	{0x04, AC_VERB_SET_CONNECT_SEL, 0x00},
+> > >
+> > >  	/* Do similar with the second ADC: mute capture input amp and
+> > > -	 * set ADC connection to line (on line1 pin)
+> > > +	 * set ADC connection to Line (on line1 pin)
+> > > +	 * FIXME: the connection is still set to Mic for some reason
+> > >  	 */
+> > 
+> > The point isn't that the init verbs don't work - it's that elsewhere during
+> > device initialisation the capture sources are set to the first one in the
+> > source list (or so it seems).
+> 
+> The mixer reads/modifies the values spec->cur_mux[idx] as caches.
+> The initial values are 0 = Mic.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1118> 
-======================================================================
-Reported By:                MStrecke
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1118
-Category:                   PCI - es1968
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             05-19-2005 23:36 CEST
-Last Modified:              03-22-2006 23:26 CET
-======================================================================
-Summary:                    es1868 - mono recording not working properly
-Description: 
-I'm using an old Fujitsu Lifebook E-6570. The on-board sound card is
-recognized as "ESS Technology ES1978 Maestro 2E (rev 10)", ID: 125d:1978.
+Yep, I figured it was something like that - no surprises there.  IMHO the
+current state should probably remain as is - that is, default to mic for all
+ADCs since not every laptop with an ALC260 has a "line" jack they can use
+for input.  That would then require the above patch to be tweaked so the
+second ADC is initialised to use the mic channel (if only for internal
+consistency).
 
-I'm having problems recording mono audio (mic input, line input, etc.).
-Only a medium pitched tone is recorded (not a sine waveform, no feed
-back).  Stereo recording works without problems (using audacity).
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 03-22-06 02:18 
-----------------------------------------------------------------------
-Is the problem still present with the latest ALSA version?  Kernel 2.6.12
-is rather old.
-
-----------------------------------------------------------------------
- MStrecke - 03-22-06 23:26 
-----------------------------------------------------------------------
-I downloaded a preview Live-CD of the next Ubuntu release, which runs on
-kernel 2.6.15. Same problem.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-19-05 23:36 MStrecke       New Issue                                    
-05-19-05 23:36 MStrecke       Distribution              => Ubuntu          
-05-19-05 23:36 MStrecke       Kernel Version            => 2.6.10          
-05-23-05 11:39 tiwai          Note Added: 0004702                          
-05-23-05 13:44 MStrecke       File Added: asound.state                     
-05-24-05 11:53 tiwai          Note Added: 0004709                          
-05-27-05 01:15 MStrecke       Note Added: 0004741                          
-05-27-05 12:29 tiwai          Note Added: 0004748                          
-05-28-05 22:18 MStrecke       Note Added: 0004776                          
-09-26-05 10:28 LawrenceG      Issue Monitored: LawrenceG                    
-03-22-06 00:38 rlrevell       Note Added: 0008764                          
-03-22-06 02:15 MStrecke       Note Added: 0008775                          
-03-22-06 02:18 rlrevell       Note Added: 0008776                          
-03-22-06 23:26 MStrecke       Note Added: 0008876                          
-======================================================================
-
-
+Regards
+  jonathan
 
 
 -------------------------------------------------------
