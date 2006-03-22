@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001062]: creative mp3+ doesnt work with external usb hub
-Date: Wed, 22 Mar 2006 03:27:16 +0100
-Message-ID: <2bb7503768aa319e9e1bde2409515bc8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000934]: crash in snd-serial-u16550 as non-root user
+Date: Wed, 22 Mar 2006 03:29:31 +0100
+Message-ID: <2a46ee1e48200e7f82706aa9039fa7ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5BF81A7
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:27:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 086F113C
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:29:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1062> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=934> 
 ======================================================================
-Reported By:                TheCoop
-Assigned To:                Clemens Ladisch
+Reported By:                laurent
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1062
-Category:                   USB - usb-audio
+Issue ID:                   934
+Category:                   GENERIC - serial-u16550
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
 Distribution:               Gentoo
-Kernel Version:             2.6.12-rc2-mm3
+Kernel Version:             2.4.29 and 2.6.10
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-18-2005 12:04 CEST
-Last Modified:              03-22-2006 03:27 CET
+Date Submitted:             02-23-2005 07:42 CET
+Last Modified:              03-22-2006 03:29 CET
 ======================================================================
-Summary:                    creative mp3+ doesnt work with external usb hub
+Summary:                    crash in snd-serial-u16550 as non-root user
 Description: 
-My usb creative mp3+ only works when it is plugged directly into the
-computer. When it is plugged into an external usb hub, sound doesnt play
-(the timer is stuck at 0:00), the following appears in the command line:
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
+Whenever I try to use a sequencer application (I tried: seq24, museseq,
+rosegarden) as a non-root user, I get a kernel Oops.
 
-and the following appears in dmesg:
-cannot submit datapipe for urb 0, err = -38
-cannot submit datapipe for urb 0, err = -38
-cannot submit datapipe for urb 0, err = -38
+I was using alsa-driver 1.0.8 with the 2.4.29 kernel, and the built-in
+modules for the 2.6.10 kernel.
 
-Details at http://forums.gentoo.org/viewtopic-t-272854.html
+If you need more information than the stacks traces and lsmod please ask
+and I will do my best to provide them.
 ======================================================================
 
 ----------------------------------------------------------------------
- andersin - 08-26-05 02:08 
+ jdthood - 09-22-05 14:56 
 ----------------------------------------------------------------------
-I have a similar problem with my SB Extigy. However, I do not get the same
-error message. Here is what I get in dmesg:
-ALSA [...]/alsa-driver-1.0.9b/usb/usbaudio.c:771: cannot submit datapipe
-for urb 0, err = -28
-ALSA [...]//alsa-driver-1.0.9b/usb/usbmidi.c:178: urb status -108
+Submitter: Do you still have this problem?
 
-[...] inserted to improve readability.
-
-I tried this with kernel 2.6.12.1 and 2.6.13.
+If so, what are the module parameters of snd-serial-u16550?
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:27 
+ rlrevell - 03-22-06 03:29 
 ----------------------------------------------------------------------
-Not an ALSA bug
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-05 12:04 TheCoop        New Issue                                    
-04-18-05 12:04 TheCoop        Distribution              => Gentoo          
-04-18-05 12:04 TheCoop        Kernel Version            => 2.6.12-rc2-mm3  
-04-25-05 10:45 Clemens LadischNote Added: 0004570                          
-08-26-05 02:08 andersin       Note Added: 0005945                          
-03-22-06 03:27 rlrevell       Status                   assigned => closed  
-03-22-06 03:27 rlrevell       Note Added: 0008819                          
+02-23-05 07:42 laurent        New Issue                                    
+02-23-05 07:42 laurent        Distribution              => Gentoo          
+02-23-05 07:42 laurent        Kernel Version            => 2.4.29 and 2.6.10
+03-08-05 11:45 Clemens LadischNote Added: 0003814                          
+09-22-05 14:56 jdthood        Note Added: 0006338                          
+03-22-06 03:29 rlrevell       Status                   new => closed       
+03-22-06 03:29 rlrevell       Note Added: 0008821                          
 ======================================================================
 
 
