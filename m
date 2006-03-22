@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001953]: Onboard Soundcard (STAC9221) records only noise
-Date: Wed, 22 Mar 2006 08:04:20 +0100
-Message-ID: <b005e5d2a4fa4a691e2419e9586948f3@bugtrack.alsa-project.org>
+Date: Wed, 22 Mar 2006 08:13:46 +0100
+Message-ID: <e7d342181cc830f86f0245ea0aac891c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FCCD1A3
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 08:04:20 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 432ED192
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 08:13:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1953> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Opensuse 10.0
 Kernel Version:             2.6.13-15.8
 ======================================================================
 Date Submitted:             03-22-2006 08:04 CET
-Last Modified:              03-22-2006 08:04 CET
+Last Modified:              03-22-2006 08:13 CET
 ======================================================================
 Summary:                    Onboard Soundcard (STAC9221) records only noise
 Description: 
@@ -56,12 +56,18 @@ but does not make my voice sound any better :-/
 (Recording works well with WinXP)
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 08:13 
+----------------------------------------------------------------------
+Is the problem still present with ALSA CVS?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-22-06 08:04 derquader      New Issue                                    
 03-22-06 08:04 derquader      Distribution              => Opensuse 10.0   
 03-22-06 08:04 derquader      Kernel Version            => 2.6.13-15.8     
+03-22-06 08:13 rlrevell       Note Added: 0008848                          
 ======================================================================
 
 
