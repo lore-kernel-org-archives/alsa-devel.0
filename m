@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001951]: Microphone doesnt work
-Date: Wed, 22 Mar 2006 01:42:01 +0100
-Message-ID: <57d0af25c6b2dc4ff190752c4539a764@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
+Date: Wed, 22 Mar 2006 01:44:14 +0100
+Message-ID: <8ccb5801c9edb745889a5730c2383158@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8203179
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 01:42:01 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3AEB179
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 01:44:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,27 +24,37 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1951> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
 ======================================================================
-Reported By:                crissi
+Reported By:                mjsb
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1951
+Issue ID:                   1572
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Gentoo Linux
+Kernel Version:             2.1.13-gentoo-r3
 ======================================================================
-Date Submitted:             03-22-2006 01:31 CET
-Last Modified:              03-22-2006 01:42 CET
+Date Submitted:             11-17-2005 16:31 CET
+Last Modified:              03-22-2006 01:44 CET
 ======================================================================
-Summary:                    Microphone doesnt work
+Summary:                    Simultaneous sound from speakers and headphone
 Description: 
-I cant get any input from mic.
+I cannot ear headphones without having sound from front speakers
+simultaneously.
+Volume of headphones is adjusted by front speakers and when muting front
+speakers also mutes headphones.
+(in MS Windows, inserting headphones automatically disables sound from
+front speakers)
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001663 LW20 bugs with headphone input, realtek...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -52,11 +62,43 @@ I cant get any input from mic.
 ----------------------------------------------------------------------
 Try CVS or the upcoming 1.0.11-rc4 release
 
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 01:44 
+----------------------------------------------------------------------
+crissi:  This is not the same bug as your problem (this one is for ALC880
+codec, you have STAC92xx):
+
+00-01: STAC92xx Digital : STAC92xx Digital : playback 1
+00-00: STAC92xx Analog : STAC92xx Analog : playback 1 : capture 2
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-06 01:31 crissi         New Issue                                    
-03-22-06 01:42 rlrevell       Note Added: 0008767                          
+11-17-05 16:31 mjsb           New Issue                                    
+11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
+11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
+12-08-05 21:23 mjsb           Note Added: 0006962                          
+01-16-06 11:19 mjsb           Note Added: 0007685                          
+01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
+01-21-06 03:24 mjsb           Note Added: 0007730                          
+01-21-06 03:25 mjsb           File Added: HPoff-speakeron                    
+01-21-06 03:25 mjsb           File Added: HPon-speakeroff                    
+01-21-06 03:30 mjsb           Note Edited: 0007730                         
+01-25-06 11:47 blackr2d       Issue Monitored: blackr2d                    
+01-25-06 11:56 blackr2d       Note Added: 0007778                          
+01-25-06 11:59 blackr2d       Note Edited: 0007778                         
+01-25-06 12:00 blackr2d       Note Edited: 0007778                         
+01-25-06 12:36 blackr2d       Note Edited: 0007778                         
+02-14-06 05:36 richardfish    Issue Monitored: richardfish                    
+02-14-06 05:37 richardfish    Note Added: 0008069                          
+02-16-06 13:49 mjsb           Note Added: 0008096                          
+03-01-06 18:00 mpt            Issue Monitored: mpt                         
+03-15-06 15:36 tiwai          Note Added: 0008552                          
+03-22-06 01:33 crissi         Note Added: 0008766                          
+03-22-06 01:33 crissi         Issue Monitored: crissi                      
+03-22-06 01:42 rlrevell       Note Added: 0008768                          
+03-22-06 01:44 rlrevell       Note Added: 0008769                          
 ======================================================================
 
 
