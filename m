@@ -1,14 +1,14 @@
-From: "Thibault LE MEUR" <Thibault.LeMeur@supelec.fr>
-Subject: M-Audio Quattro initialization problem
-Date: Wed, 22 Mar 2006 14:43:29 +0100
-Message-ID: <002a01c64db6$9dd3d510$a578e4a0@supelec.fr>
-References: <e5643d89521b5bfebcff2478bdf7ed90@bugtrack.alsa-project.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
+Date: Wed, 22 Mar 2006 15:06:36 +0100
+Message-ID: <00db16668fff4d26b6fb6c3b3002140f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <e5643d89521b5bfebcff2478bdf7ed90@bugtrack.alsa-project.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B52BF1A6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 15:06:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,45 +18,115 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-> The following issue has been CLOSED=20
-> =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D48>=20
-> =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Reported By:                giggls
-> Assigned To:                Clemens Ladisch
-...
-> It seems to work, but it does not record any useful sound.
->=20
-> Unfortunately it does work occasionally (about 50% of the time)!
->=20
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
+======================================================================
+Reported By:                mjsb
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1572
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.1.13-gentoo-r3
+======================================================================
+Date Submitted:             11-17-2005 16:31 CET
+Last Modified:              03-22-2006 15:06 CET
+======================================================================
+Summary:                    Simultaneous sound from speakers and headphone
+Description: 
+I cannot ear headphones without having sound from front speakers
+simultaneously.
+Volume of headphones is adjusted by front speakers and when muting front
+speakers also mutes headphones.
+(in MS Windows, inserting headphones automatically disables sound from
+front speakers)
 
-This issue looks exactly as the bug I patched for the M-Audio Audiophile =
-Usb
-device.
-I'd really like to know (if there are Quattro users in the list) if this
-issue has been fixed in CVS.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001663 LW20 bugs with headphone input, realtek...
+======================================================================
 
-The problem is certainly that the Alsa driver initiqlizes all available
-endpoints (both 16bits and 24bits) at startup. This leads in a corrupted
-state of the device which expects only that endpoints corresponding to =
-_one_
-sample depth to be initialize.
+----------------------------------------------------------------------
+ mjsb - 03-22-06 14:25 
+----------------------------------------------------------------------
+I'm trying to make the CVS sources work, but since its my first time with
+alsa-cvs i'm running into some trouble...
 
-Anyway, if some Quattro users still have this issue, you can contact me =
-to
-discuss the way of patching this.
+1) The file 'toplevel.config' is missing and I dont know how to generate
+it (there doesnt seem be be instructions on this subject). Copied from
+older tree and compilation was successful (alsa-driver, alsa-lib,
+alsa-utils).
 
-Thibault.
+2) Loading modules fails. dmesg shows all sorts of 'Unknown symbol'
+related with snd_hidden_kcalloc/malloc/zalloc/free, and some other stuff.
+No clues at this at the moment.
+
+----------------------------------------------------------------------
+ mjsb - 03-22-06 15:06 
+----------------------------------------------------------------------
+OK. I managed to compile/install from CVS. (please delete my last
+note#0008855)
+
+The new model lg from hda-intel driver does not work on laptop LG LW20
+Express:
+There is sound from headphones, but no sound from front speakers, never!
+So this bug still applies.
+
+The files that I uploaded sometime ago to this bug report should be
+helpfull to make sound work on this laptop.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-17-05 16:31 mjsb           New Issue                                    
+11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
+11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
+12-08-05 21:23 mjsb           Note Added: 0006962                          
+01-16-06 11:19 mjsb           Note Added: 0007685                          
+01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
+01-21-06 03:24 mjsb           Note Added: 0007730                          
+01-21-06 03:25 mjsb           File Added: HPoff-speakeron                    
+01-21-06 03:25 mjsb           File Added: HPon-speakeroff                    
+01-21-06 03:30 mjsb           Note Edited: 0007730                         
+01-25-06 11:47 blackr2d       Issue Monitored: blackr2d                    
+01-25-06 11:56 blackr2d       Note Added: 0007778                          
+01-25-06 11:59 blackr2d       Note Edited: 0007778                         
+01-25-06 12:00 blackr2d       Note Edited: 0007778                         
+01-25-06 12:36 blackr2d       Note Edited: 0007778                         
+02-14-06 05:36 richardfish    Issue Monitored: richardfish                    
+02-14-06 05:37 richardfish    Note Added: 0008069                          
+02-16-06 13:49 mjsb           Note Added: 0008096                          
+03-01-06 18:00 mpt            Issue Monitored: mpt                         
+03-15-06 15:36 tiwai          Note Added: 0008552                          
+03-22-06 01:33 crissi         Note Added: 0008766                          
+03-22-06 01:33 crissi         Issue Monitored: crissi                      
+03-22-06 01:42 rlrevell       Note Added: 0008768                          
+03-22-06 01:44 rlrevell       Note Added: 0008769                          
+03-22-06 01:55 crissi         Note Added: 0008772                          
+03-22-06 01:58 rlrevell       Note Added: 0008773                          
+03-22-06 02:09 crissi         Note Added: 0008774                          
+03-22-06 02:25 rlrevell       Note Added: 0008777                          
+03-22-06 02:26 rlrevell       Note Deleted: 0008768                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008773                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008769                        
+03-22-06 02:27 rlrevell       Note Deleted: 0008777                        
+03-22-06 02:27 crissi         Note Added: 0008778                          
+03-22-06 02:30 rlrevell       Note Added: 0008780                          
+03-22-06 14:25 mjsb           Note Added: 0008855                          
+03-22-06 15:06 mjsb           Note Added: 0008856                          
+======================================================================
 
 
 
