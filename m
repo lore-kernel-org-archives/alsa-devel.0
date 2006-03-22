@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001377]: tons of unknown symbols with 2.6.13 final
-Date: Wed, 22 Mar 2006 03:23:15 +0100
-Message-ID: <e1c7105b5e6437842198788e7f972a91@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001402]: No SOUND in ASUS A6
+Date: Wed, 22 Mar 2006 03:24:32 +0100
+Message-ID: <ab7506c9e5365da2730cc2c1d713462a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3283B1A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:23:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 345F31A7
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:24:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,90 +22,80 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1377> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1402> 
 ======================================================================
-Reported By:                spiral
+Reported By:                pedrosalazar
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1377
+Issue ID:                   1402
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Kubuntu Hoary
-Kernel Version:             2.6.13 final
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Red Hat Fedora Core 4
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             08-30-2005 09:34 CEST
-Last Modified:              03-22-2006 03:23 CET
+Date Submitted:             09-07-2005 23:47 CEST
+Last Modified:              03-22-2006 03:24 CET
 ======================================================================
-Summary:                    tons of unknown symbols with 2.6.13 final
+Summary:                    No SOUND in ASUS A6
 Description: 
-Hello !
+There is no sound in asus laptop A6 with alsa drivers.
 
-I have a laptop with a hda-intel based sound card... I recently tried to
-update my kernel to 2.6.13 with the official kernel.org source, with
-almost the same configuration I have on my 2.6.12.5... This worked nicely
-except for alsa, that I tried to build either from 1.0.10rc1 or from cvs
-(1.0.9 doesn't handle my sound card so I didn't try to rebuild this one)
+laptop: ASUS A6 (A6Q00VA) Intel Pentium M Processor 740
 
-In both cases, I can't load snd-hda-intel and I get a lot of unknown
-symbol messages in dmesg...
+Initially verified with the alsa-driver bundle in FC4 (1.0.9rc2 if I'm not
+wrong) with kernel 2.6.12-1.1398_FC4, then I updated to alsa-driver 1.0.9b
+working with alsa-lib 1.0.9 and alsa-utils 1.0.9a.
 
-I don't have this problem with my 2.6.12.5, but only with the 2.6.13...
+After, I updated kernel to 2.6.12.5, and now I'm using the 2.6.13.
+
+All would be fine (alsamixer, aplay, ...) unless there is no sound.
+
+I compiled alsa-driver with debug, and added the module option
+"model=asus", that prints the following message when module is inserted:
+
+Sep  7 21:59:39 undertaker kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] ->
+Link [LNKA] -> GSI 11 (level, low) -> IRQ 11
+Sep  7 21:59:39 undertaker kernel: ALSA
+/home/psalazar/build/alsa-driver-1.0.9b/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:1409:
+hda_codec: Unknown model for ALC880
+
 ======================================================================
 
 ----------------------------------------------------------------------
- spiral - 09-13-05 15:53 
+ tiwai - 09-09-05 12:37 
 ----------------------------------------------------------------------
-I just installed ubuntu breezy because I had a lot of problems with my good
-old hoary, and I took the same 2.6.13.1 kernel, alsa 1.0.10rc1, and it
-works fine on this system now...
+The ALSA code is merged with kernel tree occasionally, not always together
+with the kernel/ALSA releases.  That's why you see a difference.  But,
+anyway, you should use the latest ALSA version, 1.0.10rc1 (or more better,
+CVS version) for such a new driver and a new board.
 
-Thanks for your help
+Does your laptop have an SPDIF output?  If yes, ASUS_DIG can be chosen. 
+The only difference between ALC880_ASUS and ALC880_ASUS_DIG is the support
+of SPDIF.  W1V has additional "line2" output jack.
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:23 
+ rlrevell - 03-22-06 03:24 
 ----------------------------------------------------------------------
-Local issue
+Can this be closed or is more info needed from the submitter?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-05 09:34 spiral         New Issue                                    
-08-30-05 09:34 spiral         Distribution              => Kubuntu Hoary   
-08-30-05 09:34 spiral         Kernel Version            => 2.6.13 final    
-09-02-05 19:51 tiwai          Note Added: 0006017                          
-09-04-05 22:11 1g0R           Note Added: 0006038                          
-09-05-05 14:15 kSh            Note Added: 0006041                          
-09-05-05 14:15 kSh            Issue Monitored: kSh                         
-09-06-05 17:35 spiral         File Added: dmesgout.txt                     
-09-06-05 17:36 spiral         Note Added: 0006047                          
-09-06-05 20:17 1g0R           Note Added: 0006048                          
-09-07-05 15:48 tiwai          Note Added: 0006056                          
-09-07-05 17:25 spiral         Note Added: 0006059                          
-09-07-05 17:26 spiral         Note Edited: 0006059                         
-09-07-05 17:27 tiwai          Note Added: 0006060                          
-09-07-05 17:28 spiral         Note Added: 0006061                          
-09-07-05 17:35 tiwai          Note Added: 0006062                          
-09-09-05 17:30 Twey           Note Added: 0006102                          
-09-09-05 17:30 Twey           Note Edited: 0006102                         
-09-09-05 17:31 Twey           Issue Monitored: Twey                        
-09-09-05 17:48 tiwai          Note Added: 0006103                          
-09-10-05 23:59 spiral         Note Added: 0006125                          
-09-11-05 00:09 rlrevell       Note Added: 0006126                          
-09-11-05 00:15 spiral         Note Added: 0006127                          
-09-11-05 00:25 rlrevell       Note Added: 0006128                          
-09-11-05 00:33 spiral         Note Added: 0006129                          
-09-12-05 16:30 tiwai          Note Added: 0006146                          
-09-13-05 15:53 spiral         Note Added: 0006153                          
-03-22-06 03:23 rlrevell       Status                   assigned => closed  
-03-22-06 03:23 rlrevell       Note Added: 0008816                          
+09-07-05 23:47 pedrosalazar   New Issue                                    
+09-07-05 23:47 pedrosalazar   File Added: 2.6.13.config                    
+09-07-05 23:47 pedrosalazar   Distribution              => Red Hat Fedora Core 4
+09-07-05 23:47 pedrosalazar   Kernel Version            => 2.6.13          
+09-08-05 19:02 tiwai          Note Added: 0006078                          
+09-09-05 02:42 pedrosalazar   Note Added: 0006085                          
+09-09-05 03:12 pedrosalazar   Note Added: 0006087                          
+09-09-05 12:37 tiwai          Note Added: 0006095                          
+03-22-06 03:24 rlrevell       Note Added: 0008817                          
 ======================================================================
 
 
