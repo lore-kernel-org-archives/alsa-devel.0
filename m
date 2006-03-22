@@ -1,17 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Adding controls
-Date: Wed, 22 Mar 2006 20:36:13 +0000
-Message-ID: <1143059773.9254.3.camel@localhost.localdomain>
-References: <1142984360.9284.33.camel@localhost.localdomain>
-	 <1142985518.4532.193.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001953]: Onboard Soundcard (STAC9221) records only noise
+Date: Wed, 22 Mar 2006 21:37:43 +0100
+Message-ID: <b97dba964d245ebd4fe775cfe265eef2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6E36C18D
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 21:36:28 +0100 (MET)
-In-Reply-To: <1142985518.4532.193.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 74A3F18D
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 21:37:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,28 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-03-21 at 18:58 -0500, Lee Revell wrote:
-> On Tue, 2006-03-21 at 23:39 +0000, Adrian McMenamin wrote:
-> > When I try to compile my driver I get loads of messages like this...
-> 
-> Weird.  It is defined in asound.h, which should be included by:
-> 
-> cvs/alsa/alsa-kernel/include/asequencer.h:#include <sound/asound.h>
-> cvs/alsa/alsa-kernel/include/control.h:#include <sound/asound.h>
-> cvs/alsa/alsa-kernel/include/hwdep.h:#include <sound/asound.h>
-> cvs/alsa/alsa-kernel/include/pcm.h:#include <sound/asound.h>
-> cvs/alsa/alsa-kernel/include/rawmidi.h:#include <sound/asound.h>
-> cvs/alsa/alsa-kernel/include/sfnt_info.h:#include <sound/asound.h>
-> cvs/alsa/alsa-kernel/include/timer.h:#include <sound/asound.h>
-> 
-> Maybe it's an arch thing.  Try including <sound/asound.h> directly, or
-> just copy the declaration ;-)
-> 
-I did. Made no difference afaics
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1953> 
+======================================================================
+Reported By:                derquader
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1953
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Opensuse 10.0
+Kernel Version:             2.6.13-15.8
+======================================================================
+Date Submitted:             03-22-2006 08:04 CET
+Last Modified:              03-22-2006 21:37 CET
+======================================================================
+Summary:                    Onboard Soundcard (STAC9221) records only noise
+Description: 
+I am using a Intel 945GCZ board with an integrated Sigmatel STAC9221
+soundcard.
+
+When I try to record sound from my microphone I only get noise (and if I
+listen very closely there is my voice very quiet in the background).
+
+I have tried to set the amplification to maxium which gives me loud noise
+but does not make my voice sound any better :-/
+
+(Recording works well with WinXP)
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 03-22-06 21:12 
+----------------------------------------------------------------------
+The problem of VAIO is a bit different, BTW.  It doesn't use normal
+stac92xx routines.
+
+----------------------------------------------------------------------
+ derquader - 03-22-06 21:37 
+----------------------------------------------------------------------
+okay, I guess I have to believe you about that vaio thing ;-)
+
+um, I am not a programmer have never used the patch command before, but I
+think I got it...
+
+YES, this patch works indeed! *cheer* thank you a lot :-)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-22-06 08:04 derquader      New Issue                                    
+03-22-06 08:04 derquader      Distribution              => Opensuse 10.0   
+03-22-06 08:04 derquader      Kernel Version            => 2.6.13-15.8     
+03-22-06 08:13 rlrevell       Note Added: 0008848                          
+03-22-06 20:57 derquader      Note Added: 0008869                          
+03-22-06 20:57 derquader      Issue Monitored: derquader                    
+03-22-06 21:10 derquader      Note Added: 0008871                          
+03-22-06 21:11 tiwai          Note Added: 0008872                          
+03-22-06 21:11 tiwai          File Added: stac92xx-auto-vref.diff               
+    
+03-22-06 21:12 tiwai          Note Added: 0008873                          
+03-22-06 21:37 derquader      Note Added: 0008874                          
+======================================================================
+
 
 
 
