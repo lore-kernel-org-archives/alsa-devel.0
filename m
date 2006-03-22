@@ -1,15 +1,14 @@
-From: "Toire Whitley" <white@abraxis.net>
-Subject: Re: fuReC58 news
-Date: Wed, 22 Mar 2006 15:05:03 -0500
-Message-ID: <000001c64deb$e8379d50$d5bba8c0@urm6>
-Reply-To: "Toire Whitley" <white@abraxis.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001953]: Onboard Soundcard (STAC9221) records only noise
+Date: Wed, 22 Mar 2006 21:10:53 +0100
+Message-ID: <4cf455db5734596a2586520510ebf12a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C64DC1.FF619550"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from abraxis.net (adsl-69-106-215-28.dsl.irvnca.pacbell.net [69.106.215.28])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 3E5731A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 21:05:14 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CAAC41A6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 21:10:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,151 +21,76 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C64DC1.FF619550
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1953> 
+======================================================================
+Reported By:                derquader
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1953
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Opensuse 10.0
+Kernel Version:             2.6.13-15.8
+======================================================================
+Date Submitted:             03-22-2006 08:04 CET
+Last Modified:              03-22-2006 21:10 CET
+======================================================================
+Summary:                    Onboard Soundcard (STAC9221) records only noise
+Description: 
+I am using a Intel 945GCZ board with an integrated Sigmatel STAC9221
+soundcard.
 
-=20
-c C v I t A x L t I k S
-w V l A f L h I v U b M
-x V x I w A h G x R a A
-=20
-B ka uy your p M d e s d b i w c c a c t w i o o r n o lf nline at half
-n p i r j i z c c e http://www.domtruecatpak.com
-<http://www.domtruecatpak.com>=20
+When I try to record sound from my microphone I only get noise (and if I
+listen very closely there is my voice very quiet in the background).
 
-------=_NextPart_000_0001_01C64DC1.FF619550
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I have tried to set the amplification to maxium which gives me loud noise
+but does not make my voice sound any better :-/
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN style=3D"
-float
-:right
-"> c </SPAN>C<SPAN style=3D"
-float
-:right
-"> v </SPAN>I<SPAN style=3D"
-float
-:right
-"> t </SPAN>A<SPAN style=3D"
-float
-:right
-"> x </SPAN>L<SPAN style=3D"
-float
-:right
-"> t </SPAN>I<SPAN style=3D"
-float
-:right
-"> k </SPAN>S</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN style=3D"
-float
-:right
-"> w </SPAN>V<SPAN style=3D"
-float
-:right
-"> l </SPAN>A<SPAN style=3D"
-float
-:right
-"> f </SPAN>L<SPAN style=3D"
-float
-:right
-"> h </SPAN>I<SPAN style=3D"
-float
-:right
-"> v </SPAN>U<SPAN style=3D"
-float
-:right
-"> b </SPAN>M</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN style=3D"
-float
-:right
-"> x </SPAN>V<SPAN style=3D"
-float
-:right
-"> x </SPAN>I<SPAN style=3D"
-float
-:right
-"> w </SPAN>A<SPAN style=3D"
-float
-:right
-"> h </SPAN>G<SPAN style=3D"
-float
-:right
-"> x </SPAN>R<SPAN style=3D"
-float
-:right
-"> a </SPAN>A</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>B<SPAN style=3D"
-float
-:right
-"> ka </SPAN>uy your <SPAN style=3D"
-float
-:right
-"> p </SPAN>M<SPAN style=3D"
-float
-:right
-"> d </SPAN>e<SPAN style=3D"
-float
-:right
-"> s </SPAN>d<SPAN style=3D"
-float
-:right
-"> b </SPAN>i<SPAN style=3D"
-float
-:right
-"> w </SPAN>c<SPAN style=3D"
-float
-:right
-"> c </SPAN>a<SPAN style=3D"
-float
-:right
-"> c </SPAN>t<SPAN style=3D"
-float
-:right
-"> w </SPAN>i<SPAN style=3D"
-float
-:right
-"> o </SPAN>o<SPAN style=3D"
-float
-:right
-"> r </SPAN>n o<SPAN style=3D"
-float
-:right
-"> lf </SPAN>nline at half <SPAN style=3D"
-float
-:right
-"> n </SPAN>p<SPAN style=3D"
-float
-:right
-"> i </SPAN>r<SPAN style=3D"
-float
-:right
-"> j </SPAN>i<SPAN style=3D"
-float
-:right
-"> z </SPAN>c<SPAN style=3D"
-float
-:right
-"> c </SPAN>e <A href=3D"http://www.domtruecatpak.com"><FONT =
-face=3DArial =
-size=3D2>http://www.domtruecatpak.com</FONT></A></FONT></DIV></BODY></HTM=
-L>
-------=_NextPart_000_0001_01C64DC1.FF619550--
+(Recording works well with WinXP)
+======================================================================
 
+----------------------------------------------------------------------
+ derquader - 03-22-06 20:57 
+----------------------------------------------------------------------
+yes, I just downloaded and compiled the cvs version and the problem
+persists.
+
+In order to hear anything I put Capture to 100% and use the maximum level
+of amplification. My voice is very distant and hardly louder than the
+background noise.
+
+Is there any more information that I can provide?
+
+----------------------------------------------------------------------
+ derquader - 03-22-06 21:10 
+----------------------------------------------------------------------
+Oh, it seems that I did not use the search very well, (didnt know what to
+search for either)
+
+
+Bugs 1927 1951 1847 1826 1723 1643 seem to describe the same problem as I
+do.
+Apparently it's not only the microphone but also the line in that is not
+working correctly!
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-22-06 08:04 derquader      New Issue                                    
+03-22-06 08:04 derquader      Distribution              => Opensuse 10.0   
+03-22-06 08:04 derquader      Kernel Version            => 2.6.13-15.8     
+03-22-06 08:13 rlrevell       Note Added: 0008848                          
+03-22-06 20:57 derquader      Note Added: 0008869                          
+03-22-06 20:57 derquader      Issue Monitored: derquader                    
+03-22-06 21:10 derquader      Note Added: 0008871                          
+======================================================================
 
 
 
