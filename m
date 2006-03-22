@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000656]: ICE1712 and multiple cards clock sync
-Date: Wed, 22 Mar 2006 02:46:00 +0100
-Message-ID: <fcde75ecad88eb1a7bd22dea82791eee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000415]: Terratec EWS88D and clockword sync (Ice1712)
+Date: Wed, 22 Mar 2006 02:47:11 +0100
+Message-ID: <1bef4f59626c0354a1dd22caab55193d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 257D218E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:46:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3D4B18E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:47:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=656> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=415> 
 ======================================================================
 Reported By:                Michele Spinolo
 Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   656
+Issue ID:                   415
 Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.26
+Distribution:               Suse
+Kernel Version:             2.6.5
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-19-2004 09:41 CET
-Last Modified:              03-22-2006 02:45 CET
+Date Submitted:             07-30-2004 12:14 CEST
+Last Modified:              03-22-2006 02:47 CET
 ======================================================================
-Summary:                    ICE1712 and multiple cards clock sync
+Summary:                    Terratec EWS88D and clockword sync (Ice1712)
 Description: 
-I have set up my PC with 3 Terratec EWS88D cards, based on ICE1712 chip.
+Up to four Terratec EWS88D cards can be installed in one system, allowing
+an internal connection to sync the clocks.
+Using Envy24control "clockword sync" option is not present, so it is not
+possible to internally sync multiple cards if s/pdif in/out is used for
+other purposes.
 
-They offer the chance to be synched one to each other, defining a master
-one
-and using an internal connector to send the clock signal.
-
-The problem is that using both envy24control or alsa control panel there
-is
-no option releated to this feature, so multiple boards clock sync is
-impossible to be used.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 02:45 
+ rlrevell - 03-22-06 02:47 
 ----------------------------------------------------------------------
 Fixed in recent versions
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-19-04 09:41 Michele SpinoloNew Issue                                    
-11-19-04 09:41 Michele SpinoloDistribution              => Fedora Core 1   
-11-19-04 09:41 Michele SpinoloKernel Version            => 2.4.26          
+07-30-04 12:14 Michele SpinoloNew Issue                                    
+07-30-04 12:14 Michele SpinoloDistribution              => Suse            
+07-30-04 12:14 Michele SpinoloKernel Version            => 2.6.5           
 11-24-04 19:12 Michele SpinoloIssue Monitored: Michele Spinolo                  
  
-03-22-06 02:45 rlrevell       Status                   new => resolved     
-03-22-06 02:45 rlrevell       Resolution               open => fixed       
-03-22-06 02:45 rlrevell       Assigned To               => rlrevell        
-03-22-06 02:45 rlrevell       Note Added: 0008785                          
+03-22-06 02:47 rlrevell       Status                   new => resolved     
+03-22-06 02:47 rlrevell       Resolution               open => fixed       
+03-22-06 02:47 rlrevell       Assigned To               => rlrevell        
+03-22-06 02:47 rlrevell       Note Added: 0008786                          
 ======================================================================
 
 
