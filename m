@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000222]: Request for Microphone support.
-Date: Wed, 22 Mar 2006 02:44:57 +0100
-Message-ID: <21324751fb34695d1b41bdb6fcd497e2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000656]: ICE1712 and multiple cards clock sync
+Date: Wed, 22 Mar 2006 02:46:00 +0100
+Message-ID: <fcde75ecad88eb1a7bd22dea82791eee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7FB9D18D
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:44:57 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 257D218E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:46:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=222> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=656> 
 ======================================================================
-Reported By:                dolphy
-Assigned To:                tiwai
+Reported By:                Michele Spinolo
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   222
-Category:                   PPC - powermac
+Issue ID:                   656
+Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.5
+Status:                     resolved
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.26
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-19-2004 13:47 CEST
-Last Modified:              03-22-2006 02:44 CET
+Date Submitted:             11-19-2004 09:41 CET
+Last Modified:              03-22-2006 02:45 CET
 ======================================================================
-Summary:                    Request for Microphone support.
+Summary:                    ICE1712 and multiple cards clock sync
 Description: 
-I know my imac (ilamp model) has a microphone but no way to get it working
-with alsa. Is it supported ? Is it just alsamixer not supporting it ?
+I have set up my PC with 3 Terratec EWS88D cards, based on ICE1712 chip.
+
+They offer the chance to be synched one to each other, defining a master
+one
+and using an internal connector to send the clock signal.
+
+The problem is that using both envy24control or alsa control panel there
+is
+no option releated to this feature, so multiple boards clock sync is
+impossible to be used.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-23-04 17:37 
+ rlrevell - 03-22-06 02:45 
 ----------------------------------------------------------------------
-the codec chip on snapper is different from the tumbler, so it's
-not easy.  looking at the source code of drawin would be the only
-proper way.
-
-----------------------------------------------------------------------
- rlrevell - 03-22-06 02:44 
-----------------------------------------------------------------------
-Is this fixed in recent ALSA versions?
+Fixed in recent versions
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-04 13:47 dolphy         New Issue                                    
-04-19-04 13:47 dolphy         Distribution              => Debian          
-04-19-04 13:47 dolphy         Kernel Version            => 2.6.5           
-04-20-04 12:47 tiwai          Note Added: 0000874                          
-04-20-04 12:53 dolphy         Note Added: 0000877                          
-04-20-04 12:56 tiwai          Note Added: 0000879                          
-04-20-04 17:27 dolphy         Note Added: 0000887                          
-04-23-04 17:37 tiwai          Note Added: 0000910                          
-01-04-06 17:14 schwab         Issue Monitored: schwab                      
-03-22-06 02:44 rlrevell       Note Added: 0008784                          
+11-19-04 09:41 Michele SpinoloNew Issue                                    
+11-19-04 09:41 Michele SpinoloDistribution              => Fedora Core 1   
+11-19-04 09:41 Michele SpinoloKernel Version            => 2.4.26          
+11-24-04 19:12 Michele SpinoloIssue Monitored: Michele Spinolo                  
+ 
+03-22-06 02:45 rlrevell       Status                   new => resolved     
+03-22-06 02:45 rlrevell       Resolution               open => fixed       
+03-22-06 02:45 rlrevell       Assigned To               => rlrevell        
+03-22-06 02:45 rlrevell       Note Added: 0008785                          
 ======================================================================
 
 
