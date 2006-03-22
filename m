@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0000577]: Please make it possible for two (or more) mixer sliders to be locked together
-Date: Wed, 22 Mar 2006 11:00:30 +0100
-Message-ID: <7771d8393bd503f4d78c33035d6e3480@bugtrack.alsa-project.org>
+Date: Wed, 22 Mar 2006 11:04:06 +0100
+Message-ID: <5e9e13d6e45a2a02d9ceae217bda5c5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A788219F
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 11:00:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0196919F
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 11:04:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=577> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             10-10-2004 17:35 CEST
-Last Modified:              03-22-2006 11:00 CET
+Last Modified:              03-22-2006 11:04 CET
 ======================================================================
 Summary:                    Please make it possible for two (or more) mixer
 sliders to be locked together
@@ -58,15 +58,16 @@ Laurence
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:03 
-----------------------------------------------------------------------
-Not a bug
-
-----------------------------------------------------------------------
  ldarby - 03-22-06 11:00 
 ----------------------------------------------------------------------
 That right, it's not a bug, and it still says "feature requests" on
 alsa-project.org.
+
+----------------------------------------------------------------------
+ ldarby - 03-22-06 11:04 
+----------------------------------------------------------------------
+You can could this for some other reason like no one is interested in
+implementing it.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,6 +86,7 @@ two (or more) mixer sliders to be locked together
 03-22-06 11:00 ldarby         Status                   closed => feedback  
 03-22-06 11:00 ldarby         Resolution               open => reopened    
 03-22-06 11:00 ldarby         Note Added: 0008852                          
+03-22-06 11:04 ldarby         Note Added: 0008853                          
 ======================================================================
 
 
