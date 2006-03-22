@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000612]: Emu10k1's bass output sounds horrible
-Date: Wed, 22 Mar 2006 03:19:46 +0100
-Message-ID: <4eb039c8a716e020e7ec91f9001aa6d3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000051]: system crashes running aplay as unprivileged user on a US428. No sound except very occasional <.5 sec bursts
+Date: Wed, 22 Mar 2006 03:20:19 +0100
+Message-ID: <cd8612e5c3cab186e516ddcb9084b154@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C289A1A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:19:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D7A61A6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:20:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=612> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=51> 
 ======================================================================
-Reported By:                james
-Assigned To:                pzad
+Reported By:                marqrdt
+Assigned To:                karsten
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   612
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   51
+Category:                   USB - usb-usx2y
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               debian
-Kernel Version:             2.6.7
+Distribution:               Fedora Core 1
+Kernel Version:              2.4.22-1.2115.nptl (stock Fedora kernel)
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-28-2004 04:03 CEST
-Last Modified:              03-22-2006 03:19 CET
+Date Submitted:             02-11-2004 15:39 CET
+Last Modified:              03-22-2006 03:20 CET
 ======================================================================
-Summary:                    Emu10k1's bass output sounds horrible
+Summary:                    system crashes running aplay as unprivileged user on
+a US428. No sound except very occasional <.5 sec bursts
 Description: 
-I have a stereo (nothing special) speaker and speakers hooked up to my
-computer.  The bass output sounds terrible.  it's distorted and sounds
-terrible at low volumes.  With oss, the bass is crystal clear.  i have to
-reduce the bass volume to 38 for it to sound respectible.  And at that
-level, the high notes are much louder and noticable than the bass ones.
+running the following command will cause a system crash +50% of the time:
+aplay -v -D plug:hw:USX2Y music/wav/chant-reverb.wav
 
-i think there is a 12db boost applied to the speakers by the AC'97 mixer. 
- It would be nice if there was a way to disable this.
+It runs file using the ALSA driver for the internal ALI5451 card.
 
-i have the sb live value with digital output.  i'm not using digital
-output, so it's switched off.
-
-0000:00:0f.1 Input device controller: Creative Labs SB Live! MIDI/Game
-Port (rev 07)
-        Subsystem: Creative Labs Gameport Joystick
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR+ FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64
-        Region 0: I/O ports at dc00 [size=8]
-        Capabilities: [dc] Power Management version 1
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
+Also, no sound comes out of the US428 except for very occasional <.5
+bursts (never more than once per sound file). Headphones hooked to phone
+jack, ext. speaker hooked to line-out.
+No audio capture.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-14-05 15:57 
+ jdthood - 09-14-05 15:47 
 ----------------------------------------------------------------------
 Submitter: Is this problem fixed in more recent ALSA versions?
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:19 
+ rlrevell - 03-22-06 03:20 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-28-04 04:03 james          New Issue                                    
-10-28-04 04:03 james          Distribution              => debian          
-10-28-04 04:03 james          Kernel Version            => 2.6.7           
-10-28-04 07:28 james          Issue Monitored: james                       
-10-28-04 11:03 pzad           Note Added: 0002285                          
-10-28-04 23:54 james          Note Added: 0002287                          
-11-03-04 03:53 lee            Note Added: 0002301                          
-11-03-04 04:00 james          Note Added: 0002302                          
-09-14-05 15:57 jdthood        Note Added: 0006166                          
-03-22-06 03:19 rlrevell       Status                   assigned => closed  
-03-22-06 03:19 rlrevell       Note Added: 0008811                          
+02-11-04 15:39 marqrdt        New Issue                                    
+02-11-04 17:27 marqrdt        Issue Monitored: marqrdt                     
+02-11-04 20:09 karsten        Note Added: 0000221                          
+03-18-04 14:13 piem           Note Added: 0000641                          
+10-01-04 01:28 karsten        Note Added: 0001991                          
+09-14-05 15:47 jdthood        Note Added: 0006158                          
+03-22-06 03:20 rlrevell       Status                   assigned => closed  
+03-22-06 03:20 rlrevell       Note Added: 0008812                          
 ======================================================================
 
 
