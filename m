@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
-Date: Wed, 22 Mar 2006 02:51:03 +0100
-Message-ID: <e8812bdf8edb09e57b1e4c4e4f6ab040@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000343]: au8820 hangs the system at some occasions
+Date: Wed, 22 Mar 2006 03:01:47 +0100
+Message-ID: <d37c4561a629f58dc849fad2adcd4243@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5892618E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:51:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1AB8194
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:01:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,210 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=951> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=343> 
 ======================================================================
-Reported By:                charles_levert
-Assigned To:                
+Reported By:                sandman
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   951
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   343
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.4.22
+Status:                     acknowledged
+Distribution:               RedHat 9
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             02-28-2005 21:26 CET
-Last Modified:              03-22-2006 02:51 CET
+Date Submitted:             06-23-2004 07:20 CEST
+Last Modified:              03-22-2006 03:01 CET
 ======================================================================
-Summary:                    Fix bugs with early IRQs mishandling, missing
-silence fill, and wrong timing calculations
+Summary:                    au8820 hangs the system at some occasions
 Description: 
-A patch is forthcoming.
-
-Here is the text from the patch preamble.
-
-    This patch is against alsa-driver-1.0.8.
-    It covers:
-        alsa-kernel/core/pcm_lib.c
-        alsa-kernel/include/pcm.h
-        alsa-kernel/core/pcm_native.c
-        alsa-kernel/core/oss/pcm_oss.c
-    The main changes are in the first listed file.
-
-    An original bug description was filed
-    under "[ALSA - driver] PCI - cmipci":
-        <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946>
-    since the problems were first observed on this hardware.
-
-    The patch fixes the following problems:
-
-     -- Properly handle early IRQs in
-        snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c.
-
-        This does occur, at least with CMI8738MC6 hardware.
-
-        This bug had a major impact that caused the DMAs
-        to run for too long and irritating noise to be
-        heard at the end of playback.
-
-     -- Properly compute estimated time of next interrupt
-        in snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c;
-        this is no longer done with a
-        "... % runtime->period_size" kludge (which didn't
-        even attempt to round to nearest instead of merely
-        truncating).
-
-     -- Test whether hw_avail is big enough to handle
-        the next runtime->period_size in
-        snd_pcm_update_hw_ptr_post() in pcm_lib.c,
-        otherwise call snd_pcm_tick_prepare() to
-        tentatively set up a timer if needed (to be able
-        to take earlier action in that case).
-
-     -- Centralize all folding of values with regard to
-        runtime->boundary in the new snd_pcm_next_buf()
-        function in pcm_lib.c.
-
-        All relevant values are now systematically in
-        coherent synchronization without resorting to the
-        ugly and error-prone "value %= runtime->boundary"
-        kludge all over the place; unobvious wrapping
-        conditions testing is no longer needed in these
-        places.
-
-        A safe zone worth one runtime->buffer_size is now
-        kept on the left side of the operating interval,
-        just like it was the case for the right side;
-        this is necessary for proper simplified operation.
-
-     -- Direct manipulations of values with respect to
-        runtime->boundary needed to be brought in line
-        with new proper practices (and thus simplified)
-        in pcm.h, pcm_lib.c, pcm_native.c, and pcm_oss.c.
-
-     -- Isolate the second part of
-        snd_pcm_playback_silence() in the new
-        snd_pcm_playback_silence_fill() function in
-        pcm_lib.c.
-
-        This makes the code more readable since the
-        task this performs should not be confused with
-        what is done in the remaining first part of
-        snd_pcm_playback_silence().
-
-        The isolated code is unchanged.
-
-     -- Rewrite the remaining first part of
-        snd_pcm_playback_silence() to properly handle all
-        situations, including computing minimum silence
-        insertion even when "runtime->silence_size == 0".
-
-        This is needed for proper operation of the aplay
-        program, for one, and is much more forgiving on the
-        user; insertion of silence samples in user space
-        was always useless and a wrong solution anyway (but
-        user space specification of kernel space silence
-        insertion is useful and still very much supported).
-
-        The code is now much more straightforward to read.
-
-        Updates of runtime->control->appl_ptr (due
-        to the user writing samples) and updates to
-        runtime->status->hw_ptr (due to the audio hardware
-        consuming samples) are now _both_ properly
-        accounted for in all cases; the new code makes
-        this much more obvious.
-
-     -- All calls to snd_pcm_playback_silence() in
-        pcm_lib.c and pcm_native.c must no longer be under
-        the "runtime->silence_size > 0" condition.
-
-     -- Properly perform rounded-up integer division in
-        snd_pcm_system_tick_set() in pcm_lib.c.
-
-        This only had a minor impact.
-
-     -- Properly compute distance to next interrupt in
-        snd_pcm_tick_prepare() in pcm_lib.c; again, avoid
-        using any "... % runtime->period_size" kludge.
-
-     -- The usage of runtime->rate in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the timer was systematically
-        set to 1 single tick when it needed to be set to
-        typically hundreds of ticks.
-
-     -- The usage of runtime->sleep_min in
-        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
-        regarless of other changes.
-
-        The impact was that the number of ticks for
-        the timer was not properly adjusted up to what
-        sleep_min is documented to mean, when needed.
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000946 Early playback DMA IRQ with CMI8738MC6 ...
+At some occasions the system hangs without any means
+to recover other than reset button. No mouse, no pings and
+even the alt-SysRq feature doesn't help.
+As a result I reboot the system a few times a day (sometimes).
+The problem is present in 2.6.5, 2.6.6 and 2.6.7 kernels at
+least. 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-18-05 18:12 
+ Raymond - 08-25-05 18:51 
 ----------------------------------------------------------------------
-IMO, snd_pcm_timer_set() is confusing with the functions in pcm_timer.c.
-Also, if we use snd_pcm_timer_set(), we should rename
-snd_pcm_tick_prepare(), too.
+Do ALSA support dual Opteron (Dual CPU) ?
+
+The CVS version include the patch "Fixed missing spin_unlock" which may
+fix your problem.
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 02:51 
+ rlrevell - 03-22-06 03:01 
 ----------------------------------------------------------------------
-What is the status of this bug?
+Was this problem solved in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-28-05 21:26 charles_levert New Issue                                    
-02-28-05 21:26 charles_levert Kernel Version            => 2.4.22          
-02-28-05 21:29 charles_levert File Added: early-irqs.patch                    
-03-01-05 09:36 perex          Relationship added       related to 0000946  
-03-01-05 09:40 perex          Note Added: 0003755                          
-03-01-05 11:15 charles_levert Note Added: 0003757                          
-03-02-05 09:22 Clemens LadischNote Added: 0003761                          
-03-02-05 13:01 charles_levert Note Added: 0003768                          
-03-02-05 13:39 perex          Note Added: 0003771                          
-03-02-05 14:53 charles_levert Note Added: 0003776                          
-03-03-05 14:21 charles_levert File Added: hz-int-div.0b03.patch                 
-  
-03-03-05 14:22 charles_levert File Added: rate-sleep-ticks.0b03.patch           
-        
-03-03-05 14:23 charles_levert File Added: appl_ptr-boundary.0b03.patch          
-         
-03-03-05 14:23 charles_levert File Added: early-irqs.0b03.patch                 
-  
-03-03-05 14:37 charles_levert Note Added: 0003786                          
-03-03-05 15:03 perex          Note Added: 0003787                          
-03-03-05 15:33 charles_levert File Added: rate-sleep-ticks.0b03x.patch          
-         
-03-03-05 15:34 charles_levert Note Added: 0003788                          
-03-03-05 15:52 perex          Note Added: 0003789                          
-03-03-05 16:05 perex          Note Added: 0003790                          
-03-03-05 20:30 rlrevell       Note Added: 0003792                          
-03-04-05 03:34 charles_levert Note Added: 0003795                          
-03-04-05 04:46 charles_levert Note Added: 0003797                          
-03-04-05 06:26 charles_levert Note Added: 0003798                          
-03-04-05 11:00 perex          Note Added: 0003799                          
-03-04-05 11:01 perex          Note Edited: 0003799                         
-03-04-05 11:47 charles_levert File Added: timer_usec.0b05.patch                 
-  
-03-04-05 11:57 charles_levert Note Added: 0003800                          
-03-18-05 00:07 charles_levert Note Added: 0003987                          
-03-18-05 18:12 tiwai          Note Added: 0003998                          
-03-22-06 02:51 rlrevell       Note Added: 0008788                          
+06-23-04 07:20 sandman        New Issue                                    
+06-23-04 07:20 sandman        Distribution              => RedHat 9        
+06-23-04 07:20 sandman        Kernel Version            => 2.6.7           
+04-07-05 21:04 jdthood        Note Added: 0004370                          
+04-12-05 20:26 alien999999999 Issue Monitored: alien999999999                   
+
+04-19-05 09:47 sandman        Note Added: 0004519                          
+04-19-05 10:03 jdthood        Status                   assigned => acknowledged
+08-25-05 18:51 Raymond        Note Added: 0005942                          
+03-22-06 03:01 rlrevell       Note Added: 0008789                          
 ======================================================================
 
 
