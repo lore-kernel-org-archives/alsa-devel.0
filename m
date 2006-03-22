@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001423]: dxs_support=5 works on EPoX EP-8KRAI
-Date: Wed, 22 Mar 2006 03:09:26 +0100
-Message-ID: <b01668d79034df509312d1d078799656@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000821]: Audigy 2 NX USB
+Date: Wed, 22 Mar 2006 03:10:44 +0100
+Message-ID: <b30012e1225224fba5cb9abf9016f03a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B7E21A1
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:09:26 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9DB561A3
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:10:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1423> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=821> 
 ======================================================================
-Reported By:                wrar
-Assigned To:                
+Reported By:                clusty
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1423
-Category:                   PCI - via82xx
+Issue ID:                   821
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     closed
 Distribution:               
 Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             09-15-2005 19:06 CEST
-Last Modified:              03-22-2006 03:09 CET
+Date Submitted:             01-16-2005 16:47 CET
+Last Modified:              03-22-2006 03:10 CET
 ======================================================================
-Summary:                    dxs_support=5 works on EPoX EP-8KRAI
+Summary:                    Audigy 2 NX USB
 Description: 
-I set options snd-via82xx dxs_support=5  and didn't encounter any sound
-problems. I use ALSA 1.0.9b from kernel 2.6.13.
-
-I have EPoX EP-8KRAI on KT600/8237:
-
-$ lspci -vvx
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: EPoX Computer Co., Ltd.: Unknown device 300c
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin C routed to IRQ 185
-        Region 0: I/O ports at e700
-        Capabilities: <available only to root>
-00: 06 11 59 30 01 00 10 02 60 00 01 04 00 00 00 00
-10: 01 e7 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-20: 00 00 00 00 00 00 00 00 00 00 00 00 95 16 0c 30
-30: 00 00 00 00 c0 00 00 00 00 00 00 00 09 03 00 00
-
-$ lspci -vn
-0000:00:11.5 Class 0401: 1106:3059 (rev 60)
-        Subsystem: 1695:300c
-
+Whenever I play a song with XMMS using ALSA output plugin it works for 2-3
+seconds and then it mutes. If I restart the player it does the same.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:09 
+ jdthood - 09-15-05 15:07 
 ----------------------------------------------------------------------
-Can someone look at this?
+Submitter: Is there any improvement in more recent ALSA versions?
+
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 03:10 
+----------------------------------------------------------------------
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-15-05 19:06 wrar           New Issue                                    
-03-22-06 03:09 rlrevell       Note Added: 0008798                          
+01-16-05 16:47 clusty         New Issue                                    
+01-16-05 16:49 clusty         Issue Monitored: clusty                      
+01-19-05 17:52 kempokaraterulzNote Added: 0003308                          
+09-15-05 15:07 jdthood        Note Added: 0006201                          
+03-22-06 03:10 rlrevell       Status                   assigned => closed  
+03-22-06 03:10 rlrevell       Note Added: 0008800                          
 ======================================================================
 
 
