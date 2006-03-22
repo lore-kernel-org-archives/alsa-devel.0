@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001953]: Onboard Soundcard (STAC9221) records only noise
-Date: Wed, 22 Mar 2006 21:12:58 +0100
-Message-ID: <2a6d2dfc127b7e7a23bd5c9336a19f4d@bugtrack.alsa-project.org>
+From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
+Subject: Re: Cutting down spam on this list
+Date: Wed, 22 Mar 2006 23:16:03 +0300
+Message-ID: <4421B083.7090301@ru.mvista.com>
+References: <441F2AE4.1050601@redfish-solutions.com>	<4421A5CF.8010204@redfish-solutions.com>	<s5hslpajmsz.wl%tiwai@suse.de>	<4421A76F.5000005@redfish-solutions.com> <s5hpskejlmv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2A4A1A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 21:12:58 +0100 (MET)
+In-Reply-To: <s5hpskejlmv.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1953> 
-======================================================================
-Reported By:                derquader
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1953
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Opensuse 10.0
-Kernel Version:             2.6.13-15.8
-======================================================================
-Date Submitted:             03-22-2006 08:04 CET
-Last Modified:              03-22-2006 21:12 CET
-======================================================================
-Summary:                    Onboard Soundcard (STAC9221) records only noise
-Description: 
-I am using a Intel 945GCZ board with an integrated Sigmatel STAC9221
-soundcard.
+Takashi Iwai wrote:
 
-When I try to record sound from my microphone I only get noise (and if I
-listen very closely there is my voice very quiet in the background).
+>>>At Wed, 22 Mar 2006 12:30:23 -0700,
+>>>Philip Prindeville wrote:
 
-I have tried to set the amplification to maxium which gives me loud noise
-but does not make my voice sound any better :-/
+>>>>Someone tell me again why we need the alsa.jcu.cz gateway?  Since most
+>>>>people email directly to alsa-devel@lists.sourceforge.net, this backdoor
+>>>>would seem to be nothing but a spam collector.
 
-(Recording works well with WinXP)
-======================================================================
+>>>These are mails from alsa-devel@alsa-project.org, the old ML address,
+>>>which just redirects to SF.  I don't know why it's still needed, too,
+>>>maybe just for convenience...
 
-----------------------------------------------------------------------
- tiwai - 03-22-06 21:11 
-----------------------------------------------------------------------
-Does the attached patch have any influence?
+>>>Takashi
 
-----------------------------------------------------------------------
- tiwai - 03-22-06 21:12 
-----------------------------------------------------------------------
-The problem of VAIO is a bit different, BTW.  It doesn't use normal
-stac92xx routines.
+>>What would break if it were turned off?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-22-06 08:04 derquader      New Issue                                    
-03-22-06 08:04 derquader      Distribution              => Opensuse 10.0   
-03-22-06 08:04 derquader      Kernel Version            => 2.6.13-15.8     
-03-22-06 08:13 rlrevell       Note Added: 0008848                          
-03-22-06 20:57 derquader      Note Added: 0008869                          
-03-22-06 20:57 derquader      Issue Monitored: derquader                    
-03-22-06 21:10 derquader      Note Added: 0008871                          
-03-22-06 21:11 tiwai          Note Added: 0008872                          
-03-22-06 21:11 tiwai          File Added: stac92xx-auto-vref.diff               
-    
-03-22-06 21:12 tiwai          Note Added: 0008873                          
-======================================================================
+> Many people won't reach to ML :)
+> I found that the addresses are not updated in linux/MAINTAINERS.  Need
+> to fix it.  Sigh.
 
+    Looks like it doesn't work anyway -- at least my patches initially posted 
+to that address, seem to never reach the list...
 
+> Takashi
+
+WBR, Sergei
 
 
 -------------------------------------------------------
