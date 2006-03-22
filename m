@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: ac3 in/out
-Date: Wed, 22 Mar 2006 00:20:49 +0000
-Message-ID: <44209861.8090005@superbug.co.uk>
-References: <1142936836.4759.3.camel@localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001951]: Microphone doesnt work
+Date: Wed, 22 Mar 2006 01:31:12 +0100
+Message-ID: <e8e9d0ec583cb1b1b15ad9f35eab96fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1142936836.4759.3.camel@localhost>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7BBB197
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 01:31:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,32 +18,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Johannes Berg wrote:
-> Hi,
-> 
-> From what I've seen about ac3 in and also out, the support in alsa for
-> that is more of a hack, and the data that is passed down the pcm
-> interface actually contains the channel status bits for some drivers...
-> Working on the new Apple stuff this isn't possible -- only some channel
-> status bits can be set by the software, some are fixed. And they aren't
-> interleaved in the stream, but set externally.
-> 
-> So the question is -- are there any plans to abstract some digital out
-> API within alsa? Otherwise the userspace will need to handle all kinds
-> of different devices differently since the data on the stream is
-> essentially the same as the data the chipset needs.
-> 
-> johannes
 
-What is the problem?
-Application like xine and mplayer don't seem to have any problems with
-AC3 out.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1951> 
+======================================================================
+Reported By:                crissi
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1951
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             03-22-2006 01:31 CET
+Last Modified:              03-22-2006 01:31 CET
+======================================================================
+Summary:                    Microphone doesnt work
+Description: 
+I cant get any input from mic.
+======================================================================
 
-James
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-22-06 01:31 crissi         New Issue                                    
+======================================================================
+
 
 
 
