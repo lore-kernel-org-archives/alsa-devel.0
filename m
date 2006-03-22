@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001027]: Linux 2.4 oops
-Date: Wed, 22 Mar 2006 04:05:27 +0100
-Message-ID: <93f17b81fc3fa03f2fabd30c8986e8e4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000567]: "Loudness" and "Sim. stereo" controls missing in mixer
+Date: Wed, 22 Mar 2006 04:06:16 +0100
+Message-ID: <cb0133fcf238b72a7016f16898d75a30@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB54018C
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 04:05:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D542118C
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 04:06:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,88 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1027> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=567> 
 ======================================================================
-Reported By:                mdarwin
+Reported By:                pmatil
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1027
-Category:                   1_OTHERS
+Issue ID:                   567
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               debian
-Kernel Version:             Linux elk 2.4.27-2-k7 #1 Thu Jan 20 11:25:34 JST
-2005 i686 GNU/L
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.4.22
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-31-2005 08:03 CEST
-Last Modified:              03-22-2006 04:05 CET
+Date Submitted:             10-05-2004 17:47 CEST
+Last Modified:              03-22-2006 04:06 CET
 ======================================================================
-Summary:                    Linux 2.4 oops
+Summary:                    "Loudness" and "Sim. stereo" controls missing in
+mixer
 Description: 
-(from dmesg)
-
-intel8x0_measure_ac97_clock: measured 41953 usecs
-intel8x0: clocking to 46651
-Unable to handle kernel NULL pointer dereference at virtual address
-00000000
- printing eip:
-f8a74a85
-*pde = 00000000
-Oops: 0002
-CPU:    0
-EIP:    0010:[<f8a74a85>]    Tainted: PF
-EFLAGS: 00010203
-eax: 00000006   ebx: f5dd1f14   ecx: f5e55cc0   edx: 00000000
-esi: 00000000   edi: f5dd1f74   ebp: f5e55cc0   esp: f5dd1ef8
-ds: 0018   es: 0018   ss: 0018
-Process artsd (pid: 4763, stackpage=f5dd1000)
-Stack: bffff058 f8a7598a f5e55cc0 f5dd1f14 00000000 f5dd1f34 f7216400
-00000006
-       00000000 00000000 00000000 00000005 00000001 00000000 00000000
-00008002
-       00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-Call Trace:    [<f8a7598a>] [<f8a75cf4>] [<c014bb6b>] [<c013cc39>]
-[<c0108a7f>]
-
-Code: 89 02 8b 43 04 89 42 04 8b 43 08 89 42 08 8b 43 0c 89 42 0c
+Since 1.0.4 (somewhere around there), the S/PDIF-controls have disappeared
+from the mixer... It has been there before and there IS one on my
+soundcard (Terratec DMX Xfire 1024, cs46xx)
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 04:05 
+ pmatil - 03-29-05 17:47 
 ----------------------------------------------------------------------
-Tainted Oops, no stack trace, and a kernel too old to debug.
+'"Duplicate Front" should work. How did you test it?'
+-I suppose it should work something like copying the front channel audio
+to the rear channel? So when my soundcard has 4 outputs, front channel
+should be on the rear channel too?
+
+'I have no idea about your mixer save/restore problem. It sounds like a
+problem of installation... '
+-As you see from earlier notes, the problem was solved by adding
+--with-cards=cs46xx-new-dsp to the configure options. Now when this has
+been removed, mixer settings won't save. However, the IEC958 controls are
+present. This may be a Debian specifig bug, because I get ALSA from apt
+directly (source and then make-kpkg modules_image).
+
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 04:06 
+----------------------------------------------------------------------
+Not a bug
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-05 08:03 mdarwin        New Issue                                    
-03-31-05 08:03 mdarwin        Distribution              => debian          
-03-31-05 08:03 mdarwin        Kernel Version            => Linux elk 2.4.27-2-k7
-#1 Thu Jan 20 11:25:34 JST 2005 i686 GNU/L
-03-31-05 08:05 mdarwin        Issue Monitored: mdarwin                     
-03-22-06 04:05 rlrevell       Status                   new => closed       
-03-22-06 04:05 rlrevell       Note Added: 0008837                          
+10-05-04 17:47 pmatil         New Issue                                    
+10-05-04 17:47 pmatil         Distribution              => Debian GNU/Linux
+10-05-04 17:47 pmatil         Kernel Version            => 2.4.22          
+10-06-04 11:13 tiwai          Note Added: 0002018                          
+10-07-04 18:06 pmatil         File Added: asound.state                     
+10-07-04 18:20 pmatil         File Added: codec97#0                        
+10-07-04 18:23 pmatil         Note Added: 0002037                          
+10-11-04 14:07 tiwai          Note Added: 0002077                          
+10-11-04 14:08 tiwai          File Added: cs4298-spdif.diff                    
+10-13-04 13:05 pmatil         Note Added: 0002122                          
+10-13-04 15:50 tiwai          Note Added: 0002123                          
+10-14-04 13:11 pmatil         File Added: prev_+reg                        
+10-14-04 13:11 pmatil         File Added: current_+reg                     
+10-14-04 13:13 pmatil         Note Added: 0002143                          
+10-14-04 13:14 pmatil         Note Edited: 0002143                         
+10-14-04 14:27 tiwai          Note Added: 0002145                          
+10-14-04 14:39 tiwai          Note Added: 0002146                          
+10-14-04 16:20 pmatil         Note Added: 0002153                          
+10-14-04 16:31 tiwai          Note Added: 0002155                          
+10-14-04 18:08 pmatil         Note Added: 0002157                          
+10-15-04 13:53 pmatil         Note Edited: 0002157                         
+10-18-04 17:44 tiwai          Note Added: 0002196                          
+10-20-04 21:32 pmatil         Note Added: 0002219                          
+03-28-05 04:19 jdthood        Summary                  S/PDIF control missing in
+mixer => "Loudness" and "Sim. stereo" controls missing in mixer
+03-28-05 11:46 pmatil         Note Added: 0004237                          
+03-29-05 17:23 tiwai          Note Added: 0004249                          
+03-29-05 17:47 pmatil         Note Added: 0004252                          
+03-22-06 04:06 rlrevell       Status                   new => closed       
+03-22-06 04:06 rlrevell       Note Added: 0008838                          
 ======================================================================
 
 
