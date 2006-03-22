@@ -1,13 +1,14 @@
-From: Rimas Kudelis <rq@akl.lt>
-Subject: Re: More detailed Acer (Intel HDA)
-Date: Wed, 22 Mar 2006 10:48:13 +0200
-Message-ID: <44210F4D.8070508@akl.lt>
-References: <200603220041.k2M0f8uA011967@auster.physics.adelaide.edu.au>	 <1142988679.4532.197.camel@mindpipe>  <4420FB3E.3030804@akl.lt> <1143012964.1792.61.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
+Date: Wed, 22 Mar 2006 10:02:22 +0100
+Message-ID: <fa9e634137e852a38d10385b812ef953@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1257; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1143012964.1792.61.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8ADF159
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 10:02:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,48 +18,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: ALSA devel <alsa-devel@lists.sourceforge.net>, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
->>>> On these Acer laptops the evidence thus far indicates that there is no
->>>> audio connection between the CD drive and the sound card. 
->>>>         
->>> I haven't seen any evidence at all, just speculation, apparently no one
->>> is willing to try Windows to verify this.  Until there's some evidence
->>> IMHO the CD control should stay.
->>>       
->> The fact is that the CD control doesn't work now. And I didn't manage to 
->> find a way to make any control in the test model influence CD playback 
->> volume. Why would you want a non-working control to stay?
->>     
-> Because it may work on some other laptops, and it's better for people to
-> be able to test it.
->   
-It may or may not work. And people can still use the test model for testing.
 
->> I actually wanted to test everything on Windows, and was going to 
->> install it to my linux swap partition temporarily, but I only had an XP 
->> compact disc and it said the partition is too small by.... err.... 14 
->> megabytes... :D, so I didn't install it there.
->>
->> I thought we've agreed it's impractical to play CD's at 1x speed on a 
->> notebook, so I don't see a problem at all. However, if somebody would 
->> test the CD playback in windows with appropriate software on such 
->> notebook, it would be nice.
->>     
-> That was just speculation on my part about why the vendor may have left
-> the CD connection disabled, but we don't know that's the case.  Until we
-> have more information the control should stay.
-I would report a bug the next day I find it doesn't let me hear the CD 
-i'm playing at all. Who would fix it? Because I would not.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1228> 
+======================================================================
+Reported By:                hil
+Assigned To:                
+======================================================================
+Project:                    ALSA - liboss
+Issue ID:                   1228
+Category:                   
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-03-2005 09:09 CEST
+Last Modified:              03-22-2006 10:02 CET
+======================================================================
+Summary:                    Skype Does not work with aoss
+Description: 
+I downloaded alsa-oss-1.0.9rc2 and install by
+# ./configure --with-aoss=yes && make && make install
+as root. Virtually every program works except skype
+(http://www.skype.com/) version 1.1.0.13_API. I downloaded the Fedora
+version of skype from the skype official website. Skype only uses
+/dev/dsp. I guess skype uses /dev/dsp as microphone input as well. I could
+not hear anything and the microphone did not work as well if I run  skype
+like aoss /usr/bin/skype. If I run skype without aoss, then skype works
+just fine.
+======================================================================
+Relazioni           ID      Riassunto
+----------------------------------------------------------------------
+in relazione con    0001224 artsd-like style
+======================================================================
 
-OTOH, I just remembered I know one guy who has windows (hopefully, XP) 
-on a similar notebook. Maybe he'll test it, if I catch him online. What 
-app should he use for that?
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 00:28 
+----------------------------------------------------------------------
+I am afraid these Skype+aoss problems may be unfixable from the ALSA side. 
+It appears that the Skype binary is self modifying and takes extensive
+measures to make sure it is not being run in a debugger or emulator.  This
+almost certainly would eliminate any LD_PRELOAD hacks from working.
 
-Rimas
+http://www.secdev.org/conf/skype_BHEU06.handout.pdf
+
+I believe the only solution to get Skype working with dmix etc. is for the
+Skype developers to add proper native ALSA support.
+
+----------------------------------------------------------------------
+ Hetfield - 03-22-06 10:02 
+----------------------------------------------------------------------
+oki, but kiax still has the same problem and kiax is open, you may try to
+fix that, hoping it's a similar bug
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-03-05 09:09 hil            New Issue                                    
+08-09-05 15:33 rapand         Note Added: 0005732                          
+08-10-05 00:49 rlrevell       Relationship added       duplicate of 0001224
+08-10-05 00:50 rlrevell       Note Added: 0005740                          
+12-31-05 00:19 rlrevell       Note Added: 0007315                          
+01-02-06 18:54 rlrevell       Relationship deleted     duplicate of 0001224
+01-02-06 18:55 rlrevell       Relationship added       related to 0001224  
+01-02-06 18:56 rlrevell       Note Added: 0007375                          
+01-05-06 21:36 Hetfield       Note Added: 0007479                          
+01-05-06 21:40 rlrevell       Note Added: 0007480                          
+01-05-06 21:42 rlrevell       Note Added: 0007481                          
+01-05-06 22:01 Hetfield       Note Added: 0007482                          
+01-28-06 05:34 nono31         Note Added: 0007824                          
+01-28-06 05:35 nono31         Issue Monitored: nono31                      
+01-28-06 05:38 rlrevell       Note Added: 0007825                          
+01-28-06 06:11 nono31         Note Added: 0007826                          
+01-28-06 06:12 nono31         File Added: strace_aoss_kiax.bz2                  
+ 
+01-28-06 06:13 nono31         Note Added: 0007827                          
+03-22-06 00:28 rlrevell       Note Added: 0008761                          
+03-22-06 10:02 Hetfield       Note Added: 0008849                          
+======================================================================
+
 
 
 
