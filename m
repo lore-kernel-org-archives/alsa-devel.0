@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001283]: Allegro-1 does not generate interrupts - but does on linux 2.4.27
-Date: Wed, 22 Mar 2006 03:05:29 +0100
-Message-ID: <241beeed21e7437604f065bccf796a5e@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001277]: Choosing of default playback device on the fly
+Date: Wed, 22 Mar 2006 03:06:16 +0100
+Message-ID: <d168ebba168982d71516e9e7e183953e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DEBB11A1
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:05:29 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E19C1A1
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:06:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1283> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1277> 
 ======================================================================
-Reported By:                sclark46
-Assigned To:                tiwai
+Reported By:                oldium
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1283
-Category:                   PCI - maestro3
+Project:                    ALSA - lib
+Issue ID:                   1277
+Category:                   0_general
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398_FC4
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-27-2005 03:51 CEST
-Last Modified:              03-22-2006 03:05 CET
+Date Submitted:             07-23-2005 10:42 CEST
+Last Modified:              03-22-2006 03:06 CET
 ======================================================================
-Summary:                    Allegro-1 does not generate interrupts - but does on
-linux 2.4.27
+Summary:                    Choosing of default playback device on the fly
 Description: 
-Aplay fails with a write error and the following error message:
-Jul 26 21:06:14 joker4 kernel: ALSA
-/home/sclark/alsa-driver-1.0.9rc4a/acore/pcm_native.c:1442: playback drain
-error (DMA or IRQ trouble?)
+Situation: There is on-board sound card and one pluggable (USB/PCMCIA)
+sound card which is preferred to play the sound.
 
-The sound clip plays repeatedly until that error pops up.
+Problem: If the preferred sound card is plugged-in before the boot time,
+it is taken as the default output card (as of snd-card-0 settings and
+driver is loaded first), but when the sound card is plugged after the
+boot, it gets index 1 and is not the default.
 
-I booted a Knoppix CD to verify the HW worked and sound played correctly.
-The Knoppix kernel was 2.4.27
+Suggestion: Please consider creating plugin to use preferred sound card as
+default output whenever it is plugged in and use fallback card whenever it
+is not available, or let the user space program (shell script) decide
+which card is default.
 
-
+Usage: This is good for laptops using external sound card at home and
+built-in on the way.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 07-30-05 09:11 
+ rlrevell - 03-22-06 03:06 
 ----------------------------------------------------------------------
-This should be reported to the kernel bugzilla.
-
-----------------------------------------------------------------------
- rlrevell - 03-22-06 03:05 
-----------------------------------------------------------------------
-Not an ALSA bug
+Not a bug (feature requests should be discussed on alsa-devel ML)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-27-05 03:51 sclark46       New Issue                                    
-07-27-05 03:51 sclark46       Distribution              => Fedora Core 4   
-07-27-05 03:51 sclark46       Kernel Version            => 2.6.12-1.1398_FC4
-07-27-05 03:52 sclark46       Issue Monitored: sclark46                    
-07-27-05 03:52 sclark46       Issue End Monitor: sclark46                    
-07-30-05 05:21 sclark46       Note Added: 0005588                          
-07-30-05 09:11 rlrevell       Note Added: 0005590                          
-03-22-06 03:05 rlrevell       Status                   assigned => closed  
-03-22-06 03:05 rlrevell       Note Added: 0008794                          
+07-23-05 10:42 oldium         New Issue                                    
+03-22-06 03:06 rlrevell       Status                   new => closed       
+03-22-06 03:06 rlrevell       Note Added: 0008795                          
 ======================================================================
 
 
