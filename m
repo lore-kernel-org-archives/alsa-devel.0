@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
-Date: Wed, 22 Mar 2006 01:58:16 +0100
-Message-ID: <9888e381b968fb3dbf1e4aed00d39784@bugtrack.alsa-project.org>
+Date: Wed, 22 Mar 2006 02:09:30 +0100
+Message-ID: <6ce2e95cb666ccc54bbe1824a6a0b05a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AEBF4179
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 01:58:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9024181
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:09:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.1.13-gentoo-r3
 ======================================================================
 Date Submitted:             11-17-2005 16:31 CET
-Last Modified:              03-22-2006 01:58 CET
+Last Modified:              03-22-2006 02:09 CET
 ======================================================================
 Summary:                    Simultaneous sound from speakers and headphone
 Description: 
@@ -58,14 +58,14 @@ has duplicate       0001663 LW20 bugs with headphone input, realtek...
 ======================================================================
 
 ----------------------------------------------------------------------
- crissi - 03-22-06 01:55 
-----------------------------------------------------------------------
-should I open a new bug?
-
-----------------------------------------------------------------------
  rlrevell - 03-22-06 01:58 
 ----------------------------------------------------------------------
 If you test CVS and it does not work then yes.
+
+----------------------------------------------------------------------
+ crissi - 03-22-06 02:09 
+----------------------------------------------------------------------
+Its cvs :(
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,6 +97,7 @@ Date Modified  Username       Field                    Change
 03-22-06 01:44 rlrevell       Note Added: 0008769                          
 03-22-06 01:55 crissi         Note Added: 0008772                          
 03-22-06 01:58 rlrevell       Note Added: 0008773                          
+03-22-06 02:09 crissi         Note Added: 0008774                          
 ======================================================================
 
 
