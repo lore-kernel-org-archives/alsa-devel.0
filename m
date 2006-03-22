@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
-Date: Wed, 22 Mar 2006 18:50:44 +0100
-Message-ID: <7ccfb70088b840babf962b0859b0e483@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
+Date: Wed, 22 Mar 2006 19:17:55 +0100
+Message-ID: <ab22fefaddbf6874da5d27cc434e6b5f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A74A1B6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 18:50:44 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C05441B6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 19:17:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
 ======================================================================
-Reported By:                fmoraes
-Assigned To:                perex
+Reported By:                mjsb
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   371
-Category:                   PCI - cs46xx
+Issue ID:                   1572
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.6-1.435.2.3
+Distribution:               Gentoo Linux
+Kernel Version:             2.1.13-gentoo-r3
 ======================================================================
-Date Submitted:             07-09-2004 15:59 CEST
-Last Modified:              03-22-2006 18:50 CET
+Date Submitted:             11-17-2005 16:31 CET
+Last Modified:              03-22-2006 19:17 CET
 ======================================================================
-Summary:                    dmix does not work with snd-cs46xx driver
+Summary:                    Simultaneous sound from speakers and headphone
 Description: 
-When trying to use dmix with the snd-cs46xx driver, no output is produced.
+I cannot ear headphones without having sound from front speakers
+simultaneously.
+Volume of headphones is adjusted by front speakers and when muting front
+speakers also mutes headphones.
+(in MS Windows, inserting headphones automatically disables sound from
+front speakers)
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001663 LW20 bugs with headphone input, realtek...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:42 
+ tiwai - 03-22-06 15:53 
 ----------------------------------------------------------------------
-Any improvement in later releases?
+Looks like the pin assingment is different.  Try to edit
+alc880_lg_init_verbs[], alc880_lg_mixer[] and NIDs in alc880_lgauotmute().
 
 ----------------------------------------------------------------------
- tiwai - 03-22-06 18:50 
+ tiwai - 03-22-06 19:17 
 ----------------------------------------------------------------------
-Well, the primary question is why you need dmix with cs46xx.  It supports
-multiple playbacks, so dmix is not necessary at all...
+OK, please try the uploaded patch with 1.0.11rc4.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-04 15:59 fmoraes        New Issue                                    
-07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
-07-15-04 14:10 perex          Status                   new => assigned     
-07-15-04 14:10 perex          Assigned To               => perex           
-03-09-05 03:09 fmoraes        Note Added: 0003823                          
-03-09-05 18:37 tiwai          Note Added: 0003830                          
-03-10-05 15:03 jdthood        Note Added: 0003857                          
-03-11-05 22:14 fmoraes        File Added: .asoundrc                        
-03-11-05 22:15 fmoraes        Note Added: 0003894                          
-03-22-06 03:42 rlrevell       Note Added: 0008832                          
-03-22-06 18:50 tiwai          Note Added: 0008866                          
+11-17-05 16:31 mjsb           New Issue                                    
+11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
+11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
+12-08-05 21:23 mjsb           Note Added: 0006962                          
+01-16-06 11:19 mjsb           Note Added: 0007685                          
+01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
+01-21-06 03:24 mjsb           Note Added: 0007730                          
+01-21-06 03:25 mjsb           File Added: HPoff-speakeron                    
+01-21-06 03:25 mjsb           File Added: HPon-speakeroff                    
+01-21-06 03:30 mjsb           Note Edited: 0007730                         
+01-25-06 11:47 blackr2d       Issue Monitored: blackr2d                    
+01-25-06 11:56 blackr2d       Note Added: 0007778                          
+01-25-06 11:59 blackr2d       Note Edited: 0007778                         
+01-25-06 12:00 blackr2d       Note Edited: 0007778                         
+01-25-06 12:36 blackr2d       Note Edited: 0007778                         
+02-14-06 05:36 richardfish    Issue Monitored: richardfish                    
+02-14-06 05:37 richardfish    Note Added: 0008069                          
+02-16-06 13:49 mjsb           Note Added: 0008096                          
+03-01-06 18:00 mpt            Issue Monitored: mpt                         
+03-15-06 15:36 tiwai          Note Added: 0008552                          
+03-22-06 01:33 crissi         Note Added: 0008766                          
+03-22-06 01:33 crissi         Issue Monitored: crissi                      
+03-22-06 01:42 rlrevell       Note Added: 0008768                          
+03-22-06 01:44 rlrevell       Note Added: 0008769                          
+03-22-06 01:55 crissi         Note Added: 0008772                          
+03-22-06 01:58 rlrevell       Note Added: 0008773                          
+03-22-06 02:09 crissi         Note Added: 0008774                          
+03-22-06 02:25 rlrevell       Note Added: 0008777                          
+03-22-06 02:26 rlrevell       Note Deleted: 0008768                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008773                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008769                        
+03-22-06 02:27 rlrevell       Note Deleted: 0008777                        
+03-22-06 02:27 crissi         Note Added: 0008778                          
+03-22-06 02:30 rlrevell       Note Added: 0008780                          
+03-22-06 14:25 mjsb           Note Added: 0008855                          
+03-22-06 15:06 mjsb           Note Added: 0008856                          
+03-22-06 15:53 tiwai          Note Added: 0008860                          
+03-22-06 19:17 tiwai          Note Added: 0008867                          
 ======================================================================
 
 
