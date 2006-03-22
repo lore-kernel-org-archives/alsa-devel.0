@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Wed, 22 Mar 2006 04:00:54 +0100
-Message-ID: <24aba5692005ec3ecabcebc79278049b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001027]: Linux 2.4 oops
+Date: Wed, 22 Mar 2006 04:05:27 +0100
+Message-ID: <93f17b81fc3fa03f2fabd30c8986e8e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8326175
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 04:00:54 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB54018C
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 04:05:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,122 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1027> 
 ======================================================================
-Reported By:                alien999999999
-Assigned To:                mjander
+Reported By:                mdarwin
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1047
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   block
+Issue ID:                   1027
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
+Status:                     closed
+Distribution:               debian
+Kernel Version:             Linux elk 2.4.27-2-k7 #1 Thu Jan 20 11:25:34 JST
+2005 i686 GNU/L
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              03-22-2006 04:00 CET
+Date Submitted:             03-31-2005 08:03 CEST
+Last Modified:              03-22-2006 04:05 CET
 ======================================================================
-Summary:                    module hangs at seemingly random times
+Summary:                    Linux 2.4 oops
 Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
+(from dmesg)
 
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
+intel8x0_measure_ac97_clock: measured 41953 usecs
+intel8x0: clocking to 46651
+Unable to handle kernel NULL pointer dereference at virtual address
+00000000
+ printing eip:
+f8a74a85
+*pde = 00000000
+Oops: 0002
+CPU:    0
+EIP:    0010:[<f8a74a85>]    Tainted: PF
+EFLAGS: 00010203
+eax: 00000006   ebx: f5dd1f14   ecx: f5e55cc0   edx: 00000000
+esi: 00000000   edi: f5dd1f74   ebp: f5e55cc0   esp: f5dd1ef8
+ds: 0018   es: 0018   ss: 0018
+Process artsd (pid: 4763, stackpage=f5dd1000)
+Stack: bffff058 f8a7598a f5e55cc0 f5dd1f14 00000000 f5dd1f34 f7216400
+00000006
+       00000000 00000000 00000000 00000005 00000001 00000000 00000000
+00008002
+       00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+Call Trace:    [<f8a7598a>] [<f8a75cf4>] [<c014bb6b>] [<c013cc39>]
+[<c0108a7f>]
 
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
-
-
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
-
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
-
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
+Code: 89 02 8b 43 04 89 42 04 8b 43 08 89 42 08 8b 43 0c 89 42 0c
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-22-06 04:00 
+ rlrevell - 03-22-06 04:05 
 ----------------------------------------------------------------------
-au88x0_conf.patch is the corresponding patch for au8810/au8830 of your
-recent change to add channels parameter for surround40/surround51 which
-use a single device.
-
-As there are many drivers with .channels_min = 1 and upmix_1_to_40() and
-upmix_1_to_51() in new upmix plugin in alsa-plugins/mix/pcm_upmix.c
-
-Why there is no mono.conf in
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/conf/pcm/ ?
+Tainted Oops, no stack trace, and a kernel too old to debug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-01-04-06 22:08 alien999999999 Note Added: 0007455                          
-01-05-06 07:21 Raymond        Note Added: 0007462                          
-01-05-06 20:32 shurick        Issue Monitored: shurick                     
-01-06-06 17:17 alien999999999 Note Added: 0007488                          
-01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
-      
-01-13-06 13:51 Raymond        Note Added: 0007639                          
-01-13-06 18:18 tiwai          Note Added: 0007648                          
-01-14-06 04:53 Raymond        Note Added: 0007653                          
-01-14-06 05:00 Raymond        Note Edited: 0007653                         
-01-17-06 12:27 Raymond        Note Added: 0007697                          
-01-18-06 15:51 Raymond        Note Added: 0007710                          
-01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
-01-19-06 13:51 Raymond        Note Added: 0007719                          
-02-05-06 05:20 Raymond        Note Edited: 0007710                         
-02-05-06 05:28 Raymond        Note Added: 0007930                          
-02-13-06 16:38 Raymond        Note Deleted: 0006564                        
-02-13-06 16:41 Raymond        Note Added: 0008054                          
-03-01-06 07:39 Raymond        Note Added: 0008273                          
-03-18-06 12:28 Raymond        Note Deleted: 0008273                        
-03-20-06 17:54 Raymond        File Added: au88x0_conf.patch                    
-03-21-06 02:02 Raymond        Note Added: 0008734                          
-03-21-06 18:01 tiwai          Note Added: 0008754                          
-03-22-06 02:05 Raymond        File Added: au88x0_mpu401.patch                   
-
-03-22-06 02:28 Raymond        Note Added: 0008779                          
-03-22-06 02:31 Raymond        Note Edited: 0008779                         
-03-22-06 02:38 rlrevell       Note Added: 0008782                          
-03-22-06 04:00 Raymond        Note Added: 0008836                          
+03-31-05 08:03 mdarwin        New Issue                                    
+03-31-05 08:03 mdarwin        Distribution              => debian          
+03-31-05 08:03 mdarwin        Kernel Version            => Linux elk 2.4.27-2-k7
+#1 Thu Jan 20 11:25:34 JST 2005 i686 GNU/L
+03-31-05 08:05 mdarwin        Issue Monitored: mdarwin                     
+03-22-06 04:05 rlrevell       Status                   new => closed       
+03-22-06 04:05 rlrevell       Note Added: 0008837                          
 ======================================================================
 
 
