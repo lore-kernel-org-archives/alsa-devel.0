@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001663]: LW20 bugs with headphone input, realtek.com.tw has a fix, please intergrate it!
-Date: Wed, 22 Mar 2006 13:26:50 +0100
-Message-ID: <b3e40ee3caae87f557fe3975d0165556@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
+Date: Wed, 22 Mar 2006 14:25:36 +0100
+Message-ID: <836d0255868a0fb06b3f8869b5af5303@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19F4E1A3
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 13:26:50 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27C1316B
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 14:25:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,98 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1663> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
 ======================================================================
-Reported By:                mikael
+Reported By:                mjsb
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1663
+Issue ID:                   1572
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Archlinux
-Kernel Version:             2.4.13.4
+Distribution:               Gentoo Linux
+Kernel Version:             2.1.13-gentoo-r3
 ======================================================================
-Date Submitted:             12-20-2005 19:11 CET
-Last Modified:              03-22-2006 13:26 CET
+Date Submitted:             11-17-2005 16:31 CET
+Last Modified:              03-22-2006 14:25 CET
 ======================================================================
-Summary:                    LW20 bugs with headphone input, realtek.com.tw has a
-fix, please intergrate it!
+Summary:                    Simultaneous sound from speakers and headphone
 Description: 
-My new laptop has a HDA Intel (Realtek ALC880) soundcard. 
+I cannot ear headphones without having sound from front speakers
+simultaneously.
+Volume of headphones is adjusted by front speakers and when muting front
+speakers also mutes headphones.
+(in MS Windows, inserting headphones automatically disables sound from
+front speakers)
 
-It though for some reason do not turn off the main speaker when you insert
-headphones. On the site
-http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=2004052&famid=2004052&series=2004061&Software=True
-there is a patched alsa package available which fixes this issue by adding
-a "Headphone" mixer which you can turn on/off and also gives you the
-availability to mute the main speakers without (as in 1.0.10/11-rc1)
-muting the headphones aswell.
-
-Can you please intergrate this? I struggled trying to intergrate this
-properly but their alsa is built on 1.0.9 and I suppose I am not the
-sharpest of programers either for the job.
-
-Greets,
-  Mikael
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0001572 Simultaneous sound from speakers and he...
+has duplicate       0001663 LW20 bugs with headphone input, realtek...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 01:47 
+ rlrevell - 03-22-06 02:30 
 ----------------------------------------------------------------------
-Is this fixed with the latest ALSA CVS sources?
+mjsb: have you had a chance to test tiwai's recommendation yet?
 
 ----------------------------------------------------------------------
- mikael - 03-22-06 13:26 
+ mjsb - 03-22-06 14:25 
 ----------------------------------------------------------------------
-Not sure. I sold the laptop and bought a new one. :)
+I'm trying to make the CVS sources work, but since its my first time with
+alsa-cvs i'm running into some trouble...
+
+1) The file 'toplevel.config' is missing and I dont know how to generate
+it (there doesnt seem be be instructions on this subject). Copied from
+older tree and compilation was successful (alsa-driver, alsa-lib,
+alsa-utils).
+
+2) Loading modules fails. dmesg shows all sorts of 'Unknown symbol'
+related with snd_hidden_kcalloc/malloc/zalloc/free, and some other stuff.
+No clues at this at the moment.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-20-05 19:11 mikael         New Issue                                    
-12-20-05 19:11 mikael         Distribution              => Archlinux       
-12-20-05 19:11 mikael         Kernel Version            => 2.4.13.4        
-01-16-06 16:22 mikael         Note Added: 0007688                          
-01-16-06 19:24 rlrevell       Note Added: 0007691                          
-01-17-06 00:05 mikael         Note Added: 0007693                          
-01-19-06 14:05 mjsb           Note Added: 0007720                          
-01-19-06 14:31 mjsb           Issue Monitored: mjsb                        
-01-19-06 18:27 rlrevell       Relationship added       duplicate of 0001572
+11-17-05 16:31 mjsb           New Issue                                    
+11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
+11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
+12-08-05 21:23 mjsb           Note Added: 0006962                          
+01-16-06 11:19 mjsb           Note Added: 0007685                          
+01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
+01-21-06 03:24 mjsb           Note Added: 0007730                          
+01-21-06 03:25 mjsb           File Added: HPoff-speakeron                    
+01-21-06 03:25 mjsb           File Added: HPon-speakeroff                    
+01-21-06 03:30 mjsb           Note Edited: 0007730                         
+01-25-06 11:47 blackr2d       Issue Monitored: blackr2d                    
+01-25-06 11:56 blackr2d       Note Added: 0007778                          
+01-25-06 11:59 blackr2d       Note Edited: 0007778                         
+01-25-06 12:00 blackr2d       Note Edited: 0007778                         
+01-25-06 12:36 blackr2d       Note Edited: 0007778                         
+02-14-06 05:36 richardfish    Issue Monitored: richardfish                    
+02-14-06 05:37 richardfish    Note Added: 0008069                          
+02-16-06 13:49 mjsb           Note Added: 0008096                          
 03-01-06 18:00 mpt            Issue Monitored: mpt                         
-03-22-06 01:47 rlrevell       Note Added: 0008771                          
-03-22-06 13:26 mikael         Note Added: 0008854                          
+03-15-06 15:36 tiwai          Note Added: 0008552                          
+03-22-06 01:33 crissi         Note Added: 0008766                          
+03-22-06 01:33 crissi         Issue Monitored: crissi                      
+03-22-06 01:42 rlrevell       Note Added: 0008768                          
+03-22-06 01:44 rlrevell       Note Added: 0008769                          
+03-22-06 01:55 crissi         Note Added: 0008772                          
+03-22-06 01:58 rlrevell       Note Added: 0008773                          
+03-22-06 02:09 crissi         Note Added: 0008774                          
+03-22-06 02:25 rlrevell       Note Added: 0008777                          
+03-22-06 02:26 rlrevell       Note Deleted: 0008768                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008773                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008769                        
+03-22-06 02:27 rlrevell       Note Deleted: 0008777                        
+03-22-06 02:27 crissi         Note Added: 0008778                          
+03-22-06 02:30 rlrevell       Note Added: 0008780                          
+03-22-06 14:25 mjsb           Note Added: 0008855                          
 ======================================================================
 
 
