@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001041]: link to "ALSA wiki" is broken
-Date: Wed, 22 Mar 2006 04:29:45 +0100
-Message-ID: <611ddfe3a124a5ed98b79a707f135890@bugtrack.alsa-project.org>
+From: ELOGIADO@sc8-sf-spam1.sourceforge.net,
+	POR@sc8-sf-spam1.sourceforge.net,
+	ADVOGADOS@sc8-sf-spam1.sourceforge.net,
+	JUÍZES E BIBLIOTECAS <emfltda@brturbo.com.br>
+Subject: IMPORTANTE OBRA DE DIREITO
+Date: Wed, 22 Mar 2006 03:32:00 GMT
+Message-ID: <bmuhqzdnwpud$5110051081221007110$tct@wincom>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 70CD018E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 04:29:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+. Cordiais Saudações
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1041> 
-======================================================================
-Reported By:                Stephan Wurm
-Assigned To:                
-======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1041
-Category:                   bad link
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     closed
-Resolution:                 open
-Fixed in Version:           
-======================================================================
-Date Submitted:             04-09-2005 15:31 CEST
-Last Modified:              03-22-2006 04:29 CET
-======================================================================
-Summary:                    link to "ALSA wiki" is broken
-Description: 
-On your main page, the link to "ALSA wiki"
-(http://www.alsa-project.org/local-alsa/index.php/) on left menu leads to
-a dead end (404 Not Found).
-======================================================================
+. Convidamos V.Sa. a visitar nossa página http://www.emfor.com.br 
+para conhecer o tradicional EMENTARIO FORENSE em CD-ROM - Sistema EMFOR - 
+obra de pesquisa que já integra o acervo das mais importantes bibliotecas jurídicas do País. 
 
-----------------------------------------------------------------------
- Stephan Wurm - 04-16-05 12:33 
-----------------------------------------------------------------------
-Strange, I've tried Mozilla Firefox and Lynx to get the described result.
-Maybe it's a DNS-Problem?
+. O primeiro repositório de Jurisprudência e Legislação lançado em mídia 
+digital (1992). Uma obra em permanente atualização. Incluindo um excelente banco de petições e contratos.
 
-----------------------------------------------------------------------
- rlrevell - 03-22-06 04:29 
-----------------------------------------------------------------------
-Not a bug
+ . Use o telFAX: 21. 2556-9879 ou envie e-mail para  editora@emfor.com.br e peça mais infomações.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-09-05 15:31 Stephan Wurm   New Issue                                    
-04-16-05 11:39 Stephan Wurm   Note Added: 0004506                          
-04-16-05 11:53 jcdutton       Note Added: 0004507                          
-04-16-05 12:33 Stephan Wurm   Note Added: 0004508                          
-03-22-06 04:29 rlrevell       Status                   new => closed       
-03-22-06 04:29 rlrevell       Note Added: 0008842                          
-======================================================================
+.  BRINDE: Anexo ao programa um Sistema para cadastro de clientes com balanço financeiro, agenda 
+de compromissos e telefone. Construído com base na experência de grandes escritórios de advocacia. 
+Prático e Funcional.
+
+.  Para pedidos copie e cole o link  http://www.ementarioforense.com.br/formulario/index.php
+
+.  Editora Mundo Forense Ltda.
+   Eduardo M Macedo
 
 
+Editora MUNDO FORENSE Ltda. Desde 1948
+Conheça esta Obra de Consulta Obrigatória
 
 
 -------------------------------------------------------
