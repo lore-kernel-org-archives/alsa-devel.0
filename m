@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000567]: "Loudness" and "Sim. stereo" controls missing in mixer
-Date: Wed, 22 Mar 2006 04:06:16 +0100
-Message-ID: <cb0133fcf238b72a7016f16898d75a30@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Wed, 22 Mar 2006 04:09:21 +0100
+Message-ID: <d7fca1117b5fcec277255837f8a79038@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D542118C
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 04:06:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CAD1918C
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 04:09:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,90 +22,123 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=567> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                pmatil
-Assigned To:                
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   567
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   block
 Priority:                   normal
-Status:                     closed
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.4.22
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             10-05-2004 17:47 CEST
-Last Modified:              03-22-2006 04:06 CET
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              03-22-2006 04:09 CET
 ======================================================================
-Summary:                    "Loudness" and "Sim. stereo" controls missing in
-mixer
+Summary:                    module hangs at seemingly random times
 Description: 
-Since 1.0.4 (somewhere around there), the S/PDIF-controls have disappeared
-from the mixer... It has been there before and there IS one on my
-soundcard (Terratec DMX Xfire 1024, cs46xx)
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
+
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
+
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
+
+
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- pmatil - 03-29-05 17:47 
+ Raymond - 03-22-06 04:00 
 ----------------------------------------------------------------------
-'"Duplicate Front" should work. How did you test it?'
--I suppose it should work something like copying the front channel audio
-to the rear channel? So when my soundcard has 4 outputs, front channel
-should be on the rear channel too?
+au88x0_conf.patch is the corresponding patch for au8810/au8830 of your
+recent change to add channels parameter for surround40/surround51 which
+use a single device.
 
-'I have no idea about your mixer save/restore problem. It sounds like a
-problem of installation... '
--As you see from earlier notes, the problem was solved by adding
---with-cards=cs46xx-new-dsp to the configure options. Now when this has
-been removed, mixer settings won't save. However, the IEC958 controls are
-present. This may be a Debian specifig bug, because I get ALSA from apt
-directly (source and then make-kpkg modules_image).
+As there are many drivers with .channels_min = 1 and upmix_1_to_40() and
+upmix_1_to_51() in new upmix plugin in alsa-plugins/mix/pcm_upmix.c
 
-----------------------------------------------------------------------
- rlrevell - 03-22-06 04:06 
-----------------------------------------------------------------------
-Not a bug
+Why there is no mono.conf in
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/conf/pcm/ ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-05-04 17:47 pmatil         New Issue                                    
-10-05-04 17:47 pmatil         Distribution              => Debian GNU/Linux
-10-05-04 17:47 pmatil         Kernel Version            => 2.4.22          
-10-06-04 11:13 tiwai          Note Added: 0002018                          
-10-07-04 18:06 pmatil         File Added: asound.state                     
-10-07-04 18:20 pmatil         File Added: codec97#0                        
-10-07-04 18:23 pmatil         Note Added: 0002037                          
-10-11-04 14:07 tiwai          Note Added: 0002077                          
-10-11-04 14:08 tiwai          File Added: cs4298-spdif.diff                    
-10-13-04 13:05 pmatil         Note Added: 0002122                          
-10-13-04 15:50 tiwai          Note Added: 0002123                          
-10-14-04 13:11 pmatil         File Added: prev_+reg                        
-10-14-04 13:11 pmatil         File Added: current_+reg                     
-10-14-04 13:13 pmatil         Note Added: 0002143                          
-10-14-04 13:14 pmatil         Note Edited: 0002143                         
-10-14-04 14:27 tiwai          Note Added: 0002145                          
-10-14-04 14:39 tiwai          Note Added: 0002146                          
-10-14-04 16:20 pmatil         Note Added: 0002153                          
-10-14-04 16:31 tiwai          Note Added: 0002155                          
-10-14-04 18:08 pmatil         Note Added: 0002157                          
-10-15-04 13:53 pmatil         Note Edited: 0002157                         
-10-18-04 17:44 tiwai          Note Added: 0002196                          
-10-20-04 21:32 pmatil         Note Added: 0002219                          
-03-28-05 04:19 jdthood        Summary                  S/PDIF control missing in
-mixer => "Loudness" and "Sim. stereo" controls missing in mixer
-03-28-05 11:46 pmatil         Note Added: 0004237                          
-03-29-05 17:23 tiwai          Note Added: 0004249                          
-03-29-05 17:47 pmatil         Note Added: 0004252                          
-03-22-06 04:06 rlrevell       Status                   new => closed       
-03-22-06 04:06 rlrevell       Note Added: 0008838                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+01-03-06 04:04 Raymond        Note Added: 0007397                          
+01-04-06 22:08 alien999999999 Note Added: 0007455                          
+01-05-06 07:21 Raymond        Note Added: 0007462                          
+01-05-06 20:32 shurick        Issue Monitored: shurick                     
+01-06-06 17:17 alien999999999 Note Added: 0007488                          
+01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
+      
+01-13-06 13:51 Raymond        Note Added: 0007639                          
+01-13-06 18:18 tiwai          Note Added: 0007648                          
+01-14-06 04:53 Raymond        Note Added: 0007653                          
+01-14-06 05:00 Raymond        Note Edited: 0007653                         
+01-17-06 12:27 Raymond        Note Added: 0007697                          
+01-18-06 15:51 Raymond        Note Added: 0007710                          
+01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
+01-19-06 13:51 Raymond        Note Added: 0007719                          
+02-05-06 05:20 Raymond        Note Edited: 0007710                         
+02-05-06 05:28 Raymond        Note Added: 0007930                          
+02-13-06 16:38 Raymond        Note Deleted: 0006564                        
+02-13-06 16:41 Raymond        Note Added: 0008054                          
+03-01-06 07:39 Raymond        Note Added: 0008273                          
+03-18-06 12:28 Raymond        Note Deleted: 0008273                        
+03-20-06 17:54 Raymond        File Added: au88x0_conf.patch                    
+03-21-06 02:02 Raymond        Note Added: 0008734                          
+03-21-06 18:01 tiwai          Note Added: 0008754                          
+03-22-06 02:05 Raymond        File Added: au88x0_mpu401.patch                   
+
+03-22-06 02:28 Raymond        Note Added: 0008779                          
+03-22-06 02:31 Raymond        Note Edited: 0008779                         
+03-22-06 02:38 rlrevell       Note Added: 0008782                          
+03-22-06 04:00 Raymond        Note Added: 0008836                          
+03-22-06 04:09 rlrevell       Note Added: 0008839                          
 ======================================================================
 
 
