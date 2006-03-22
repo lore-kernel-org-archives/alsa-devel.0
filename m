@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001462]: Internal OSS emulation doesn't use the hardware mixer?
-Date: Wed, 22 Mar 2006 01:45:59 +0100
-Message-ID: <a445c6b2d2fb67d40f6d3881d62851b4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001663]: LW20 bugs with headphone input, realtek.com.tw has a fix, please intergrate it!
+Date: Wed, 22 Mar 2006 01:47:43 +0100
+Message-ID: <faddd83796927c9ac7f7e285370471d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 629A4179
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 01:45:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57239179
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 01:47:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1462> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1663> 
 ======================================================================
-Reported By:                mador
+Reported By:                mikael
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1462
+Issue ID:                   1663
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1456_FC4smp #1 SMP Thu Sep 22 02:23:57 EDT
-2005 x86_64 x86_64 x86_64 GNU/Linux
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Archlinux
+Kernel Version:             2.4.13.4
 ======================================================================
-Date Submitted:             09-26-2005 16:38 CEST
-Last Modified:              03-22-2006 01:45 CET
+Date Submitted:             12-20-2005 19:11 CET
+Last Modified:              03-22-2006 01:47 CET
 ======================================================================
-Summary:                    Internal OSS emulation doesn't use the hardware
-mixer?
+Summary:                    LW20 bugs with headphone input, realtek.com.tw has a
+fix, please intergrate it!
 Description: 
-When using the alsa hardware device (not dmix) I can play multiple sounds
-in parallel but not with the OSS device. In addition, the OSS device shows
-as in use while Alsa device is used and vice-versa, the Alsa device is
-blocked when the OSS device is used. More then that the alsa
-infrastructure reports that there is only one available subdevice as if
-hardware mixing wasn't available. But when playing on hw:0 with aplay, I
-can have multiple sound files mixed.
-On ESS cards with 4 hardware mixed channels I was able to use in parallel
-the alsa  and the oss devices and I would like to be possible to use the
-emulated oss and not the aoss wrapper for the oss only applications.
+My new laptop has a HDA Intel (Realtek ALC880) soundcard. 
+
+It though for some reason do not turn off the main speaker when you insert
+headphones. On the site
+http://www.realtek.com.tw/downloads/dlhd-2.aspx?lineid=2004052&famid=2004052&series=2004061&Software=True
+there is a patched alsa package available which fixes this issue by adding
+a "Headphone" mixer which you can turn on/off and also gives you the
+availability to mute the main speakers without (as in 1.0.10/11-rc1)
+muting the headphones aswell.
+
+Can you please intergrate this? I struggled trying to intergrate this
+properly but their alsa is built on 1.0.9 and I suppose I am not the
+sharpest of programers either for the job.
+
+Greets,
+  Mikael
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001572 Simultaneous sound from speakers and he...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 09-26-05 19:10 
+ mjsb - 01-19-06 14:05 
 ----------------------------------------------------------------------
-You card does not support hardware mixing so this is not possible.  You'll
-have to use aoss.
+I had submited bug #0001572 describing the same problem back in November
+17, 2005.
+The bug still applies to current alsa-driver 1.0.11_rc2.
+I'm running the same laptop LG LW20 with gentoo linux (kernel 2.6.14).
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 01:45 
+ rlrevell - 03-22-06 01:47 
 ----------------------------------------------------------------------
-Not a bug
+Is this fixed with the latest ALSA CVS sources?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-05 16:38 mador          New Issue                                    
-09-26-05 16:38 mador          Distribution              => Fedora Core 4   
-09-26-05 16:38 mador          Kernel Version            => 2.6.12-1.1456_FC4smp
-#1 SMP Thu Sep 22 02:23:57 EDT 2005 x86_64 x86_64 x86_64 GNU/Linux
-09-26-05 19:10 rlrevell       Note Added: 0006395                          
-03-22-06 01:45 rlrevell       Status                   assigned => closed  
-03-22-06 01:45 rlrevell       Note Added: 0008770                          
+12-20-05 19:11 mikael         New Issue                                    
+12-20-05 19:11 mikael         Distribution              => Archlinux       
+12-20-05 19:11 mikael         Kernel Version            => 2.4.13.4        
+01-16-06 16:22 mikael         Note Added: 0007688                          
+01-16-06 19:24 rlrevell       Note Added: 0007691                          
+01-17-06 00:05 mikael         Note Added: 0007693                          
+01-19-06 14:05 mjsb           Note Added: 0007720                          
+01-19-06 14:31 mjsb           Issue Monitored: mjsb                        
+01-19-06 18:27 rlrevell       Relationship added       duplicate of 0001572
+03-01-06 18:00 mpt            Issue Monitored: mpt                         
+03-22-06 01:47 rlrevell       Note Added: 0008771                          
 ======================================================================
 
 
