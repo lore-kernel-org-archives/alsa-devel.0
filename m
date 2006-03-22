@@ -1,13 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Routing of channels, more than one output.
-Date: Wed, 22 Mar 2006 12:29:19 +0100
-Message-ID: <20060322112919.GB7675@turing.informatik.uni-halle.de>
-References: <20060322014203.83101.qmail@web60816.mail.yahoo.com>
+Subject: Re: Digitech GNX-4 Guitar Workstation ( w/ usb audio/midi
+ ports)
+Date: Wed, 22 Mar 2006 12:31:51 +0100
+Message-ID: <20060322113151.GC7675@turing.informatik.uni-halle.de>
+References: <1142980408.13175.15.camel@Pippin.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20060322014203.83101.qmail@web60816.mail.yahoo.com>
+Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9C701A3
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 12:32:49 +0100 (MET)
+In-reply-to: <1142980408.13175.15.camel@Pippin.home>
 Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,44 +22,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tsw@johana.com
-Cc: alsa development <alsa-devel@lists.sourceforge.net>
+To: John Shillinglaw <jshillinglaw@hotpop.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tom Watson wrote:
-> What I desire to do is by specifying a sound 'device' have the audio routed
-> specially.  If I specify 'mono2' for example, I'd like my mono sound samples
-> routed to BOTH the left and right speaker.
+John Shillinglaw wrote:
+> I just purchased a Digitech gnx-4 guitar workstation. It has an usb port
+> which provides 4 channels of audio to the pc, 2 back down, midi in/out,
+> and a cf readable from the pc.
+> 
+> I've been testing it under linux, and it seems to work, but doesn't seem
+> to be explicitly listed in the usb drivers. The cf card will show up
+> under linux, and the midi ports show up under aplaymidi -l. The audio
+> seems to be present, but doesn't show up under the mixer.
 
-untested:
+Please show the output of "lsusb -v" for this device, but I guess it
+doesn't have any mixer controls that would be accessible from the
+computer.
 
-pcm.mono2 {
-	type route
-	slave {
-		pcm "hw:42"    # or whatever ...
-		channels 2
-	}
-	ttable.0.0 1
-	ttable.0.1 1
-}
-
-> If I say 'stereo4' I'd like my stereo channels (sent with 'writei' calls)
-> routed to both the front AND rear speakers.
-
-pcm.stereo4 {
-	type route
-	slave {
-		pcm "hw:42"    # or whatever ...
-		channels 4
-	}
-	ttable.0.0 1
-	ttable.1.1 1
-	ttable.0.2 1
-	ttable.1.3 1
-}
+Please add it to the database at <http://qbik.ch/usb/devices/>.
 
 
-HTH
+Regards,
 Clemens
 
 
