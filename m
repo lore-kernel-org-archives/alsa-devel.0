@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001431]: no sound with msi km4am-l
-Date: Wed, 22 Mar 2006 03:39:42 +0100
-Message-ID: <fb3a0cc4a4da51875d088d595766b5e2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000696]: Doom 3 crashes when using alsa
+Date: Wed, 22 Mar 2006 03:39:23 +0100
+Message-ID: <08de99ac2dec87c1c92e96101cb8b137@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DED681A0
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:39:42 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B46A81A0
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:39:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1431> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=696> 
 ======================================================================
-Reported By:                bunni
+Reported By:                Mo6eB
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1431
-Category:                   PCI - via82xx
+Issue ID:                   696
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               lfs
-Kernel Version:             2.6.13.1
+Distribution:               Gentoo
+Kernel Version:             2.6.9
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-17-2005 02:33 CEST
+Date Submitted:             12-01-2004 20:18 CET
 Last Modified:              03-22-2006 03:39 CET
 ======================================================================
-Summary:                    no sound with msi km4am-l
+Summary:                    Doom 3 crashes when using alsa
 Description: 
-I hace an msi km4am-l with via 8237 onboard chip. First time i have
-compiled the via82xx and bt87x modules (in 2.6.13.1), i haven't any sound
-(test with aplay english.au and mythtv). I tried with the alsa 1.09
-drivers same problem.
-I have plugin my sb live 5.1 and compiled it's module in kernel as module
-and it's work fine.
+Doom 3 crashes with the following error message:
+snd_pcm_writei short write: 4095 out of 4096
+snd_pcm_writei short write: 4095 out of 4096
+doom.x86: pcm.c:5957: snd_pcm_mmap_commit: Assertion `frames <=
+snd_pcm_mmap_avail(pcm)' failed.
+signal caught: Aborted
+
 ======================================================================
 
 ----------------------------------------------------------------------
- bunni - 09-23-05 09:53 
+ jdthood - 09-22-05 15:21 
 ----------------------------------------------------------------------
-There is no problem with the driver, i haven't jumper on my motherboard
-where i can plug the frontpanel. Sorry
+Does Doom3 work properly with the latest ALSA intel8x0 driver?
 
 ----------------------------------------------------------------------
  rlrevell - 03-22-06 03:39 
 ----------------------------------------------------------------------
-Not a bug
+No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-17-05 02:33 bunni          New Issue                                    
-09-17-05 02:33 bunni          Distribution              => lfs             
-09-17-05 02:33 bunni          Kernel Version            => 2.6.13.1        
-09-23-05 09:53 bunni          Note Added: 0006364                          
+12-01-04 20:18 Mo6eB          New Issue                                    
+12-01-04 20:18 Mo6eB          Distribution              => Gentoo          
+12-01-04 20:18 Mo6eB          Kernel Version            => 2.6.9           
+12-01-04 23:26 tiwai          Note Added: 0002671                          
+03-19-05 16:32 jdthood        Note Added: 0004055                          
+09-22-05 15:21 jdthood        Note Added: 0006349                          
 03-22-06 03:39 rlrevell       Status                   new => closed       
-03-22-06 03:39 rlrevell       Note Added: 0008829                          
+03-22-06 03:39 rlrevell       Note Added: 0008828                          
 ======================================================================
 
 
