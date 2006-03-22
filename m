@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
-Date: Wed, 22 Mar 2006 15:06:36 +0100
-Message-ID: <00db16668fff4d26b6fb6c3b3002140f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001951]: Microphone doesnt work
+Date: Wed, 22 Mar 2006 15:47:29 +0100
+Message-ID: <68e81af9661bf414c2fcecbc28503296@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B52BF1A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 15:06:36 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A405F1A6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 15:47:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,108 +24,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1951> 
 ======================================================================
-Reported By:                mjsb
+Reported By:                crissi
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1572
+Issue ID:                   1951
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.1.13-gentoo-r3
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-17-2005 16:31 CET
-Last Modified:              03-22-2006 15:06 CET
+Date Submitted:             03-22-2006 01:31 CET
+Last Modified:              03-22-2006 15:47 CET
 ======================================================================
-Summary:                    Simultaneous sound from speakers and headphone
+Summary:                    Microphone doesnt work
 Description: 
-I cannot ear headphones without having sound from front speakers
-simultaneously.
-Volume of headphones is adjusted by front speakers and when muting front
-speakers also mutes headphones.
-(in MS Windows, inserting headphones automatically disables sound from
-front speakers)
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001663 LW20 bugs with headphone input, realtek...
+I cant get any input from mic.
 ======================================================================
 
 ----------------------------------------------------------------------
- mjsb - 03-22-06 14:25 
+ rlrevell - 03-22-06 01:42 
 ----------------------------------------------------------------------
-I'm trying to make the CVS sources work, but since its my first time with
-alsa-cvs i'm running into some trouble...
-
-1) The file 'toplevel.config' is missing and I dont know how to generate
-it (there doesnt seem be be instructions on this subject). Copied from
-older tree and compilation was successful (alsa-driver, alsa-lib,
-alsa-utils).
-
-2) Loading modules fails. dmesg shows all sorts of 'Unknown symbol'
-related with snd_hidden_kcalloc/malloc/zalloc/free, and some other stuff.
-No clues at this at the moment.
+Try CVS or the upcoming 1.0.11-rc4 release
 
 ----------------------------------------------------------------------
- mjsb - 03-22-06 15:06 
+ crissi - 03-22-06 15:47 
 ----------------------------------------------------------------------
-OK. I managed to compile/install from CVS. (please delete my last
-note#0008855)
-
-The new model lg from hda-intel driver does not work on laptop LG LW20
-Express:
-There is sound from headphones, but no sound from front speakers, never!
-So this bug still applies.
-
-The files that I uploaded sometime ago to this bug report should be
-helpfull to make sound work on this laptop.
+I still run cvs but no sucess :(
+What can I do?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-17-05 16:31 mjsb           New Issue                                    
-11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
-11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
-11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
-12-08-05 21:23 mjsb           Note Added: 0006962                          
-01-16-06 11:19 mjsb           Note Added: 0007685                          
-01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
-01-21-06 03:24 mjsb           Note Added: 0007730                          
-01-21-06 03:25 mjsb           File Added: HPoff-speakeron                    
-01-21-06 03:25 mjsb           File Added: HPon-speakeroff                    
-01-21-06 03:30 mjsb           Note Edited: 0007730                         
-01-25-06 11:47 blackr2d       Issue Monitored: blackr2d                    
-01-25-06 11:56 blackr2d       Note Added: 0007778                          
-01-25-06 11:59 blackr2d       Note Edited: 0007778                         
-01-25-06 12:00 blackr2d       Note Edited: 0007778                         
-01-25-06 12:36 blackr2d       Note Edited: 0007778                         
-02-14-06 05:36 richardfish    Issue Monitored: richardfish                    
-02-14-06 05:37 richardfish    Note Added: 0008069                          
-02-16-06 13:49 mjsb           Note Added: 0008096                          
-03-01-06 18:00 mpt            Issue Monitored: mpt                         
-03-15-06 15:36 tiwai          Note Added: 0008552                          
-03-22-06 01:33 crissi         Note Added: 0008766                          
-03-22-06 01:33 crissi         Issue Monitored: crissi                      
-03-22-06 01:42 rlrevell       Note Added: 0008768                          
-03-22-06 01:44 rlrevell       Note Added: 0008769                          
-03-22-06 01:55 crissi         Note Added: 0008772                          
-03-22-06 01:58 rlrevell       Note Added: 0008773                          
-03-22-06 02:09 crissi         Note Added: 0008774                          
-03-22-06 02:25 rlrevell       Note Added: 0008777                          
-03-22-06 02:26 rlrevell       Note Deleted: 0008768                        
-03-22-06 02:26 rlrevell       Note Deleted: 0008773                        
-03-22-06 02:26 rlrevell       Note Deleted: 0008769                        
-03-22-06 02:27 rlrevell       Note Deleted: 0008777                        
-03-22-06 02:27 crissi         Note Added: 0008778                          
-03-22-06 02:30 rlrevell       Note Added: 0008780                          
-03-22-06 14:25 mjsb           Note Added: 0008855                          
-03-22-06 15:06 mjsb           Note Added: 0008856                          
+03-22-06 01:31 crissi         New Issue                                    
+03-22-06 01:42 rlrevell       Note Added: 0008767                          
+03-22-06 15:47 crissi         Note Added: 0008858                          
 ======================================================================
 
 
