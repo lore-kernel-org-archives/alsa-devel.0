@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000955]: CN-126 - USB 5.1 Audio adapter
-Date: Wed, 22 Mar 2006 03:28:28 +0100
-Message-ID: <24ad5f7828d012a7a3839dc2e7812829@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001279]: Audigy2 NX produces crackles on USB2, fine on USB1
+Date: Wed, 22 Mar 2006 03:30:44 +0100
+Message-ID: <f9042405d5ba95d857630b8a9931d0ec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F6841A6
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:28:28 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 86A0419F
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 03:30:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=955> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1279> 
 ======================================================================
-Reported By:                mano1979
+Reported By:                bluebottle
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   955
+Issue ID:                   1279
 Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Mandrake 10.1
-Kernel Version:             2.6.10.3
+Distribution:               Ubuntu
+Kernel Version:             2.6.12.2
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-02-2005 00:13 CET
-Last Modified:              03-22-2006 03:28 CET
+Date Submitted:             07-24-2005 07:03 CEST
+Last Modified:              03-22-2006 03:30 CET
 ======================================================================
-Summary:                    CN-126 - USB 5.1 Audio adapter
+Summary:                    Audigy2 NX produces crackles on USB2, fine on USB1
 Description: 
-I am in really need of a driver for this card. It needs to support 5.1
-surround and speaker setup....... well like the original software.
+I recently upgraded to a 2.6.12.2 kernel (from 2.6.12) and now the Audigy2
+NX is detected as a fully-fledged USB2 device. :)
 
-Please let me know if you're able to make it.
+But... it produces crackles in the sound that fade in and out over about a
+two second period, continuously, upon trying to play any sound. The sound
+does play, but has all those crackles in it. :(
 
-Regards, 
-
-Armand Blaaker
+If I go into BIOS and disable USB2, making my Audigy a USB1 device again,
+it works very well indeed. :)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-22-05 14:56 
+ jdthood - 09-22-05 15:12 
 ----------------------------------------------------------------------
-mano1979: Were you able to solve this problem with the advice provided?
+Has this bug been fixed in the latest ALSA release?
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:28 
+ rlrevell - 03-22-06 03:30 
 ----------------------------------------------------------------------
 No response
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-02-05 00:13 mano1979       New Issue                                    
-03-02-05 00:13 mano1979       Distribution              => Mandrake 10.1   
-03-02-05 00:13 mano1979       Kernel Version            => 2.6.10.3        
-03-02-05 00:14 mano1979       Issue Monitored: mano1979                    
-03-02-05 09:28 Clemens LadischNote Added: 0003762                          
-03-02-05 12:34 mano1979       Note Added: 0003763                          
-03-02-05 12:44 Clemens LadischNote Added: 0003764                          
-03-02-05 12:46 mano1979       Note Added: 0003765                          
-03-02-05 12:48 mano1979       Note Added: 0003766                          
-03-02-05 12:58 Clemens LadischNote Added: 0003767                          
-03-02-05 13:05 mano1979       Note Added: 0003769                          
-03-02-05 14:14 Clemens LadischNote Added: 0003773                          
-03-02-05 14:19 mano1979       Note Added: 0003774                          
-03-02-05 15:07 Clemens LadischNote Added: 0003777                          
-03-03-05 11:44 perex          View Status              private => public   
-09-22-05 14:56 jdthood        Note Added: 0006337                          
-03-22-06 03:28 rlrevell       Status                   assigned => closed  
-03-22-06 03:28 rlrevell       Note Added: 0008820                          
+07-24-05 07:03 bluebottle     New Issue                                    
+07-24-05 07:03 bluebottle     Distribution              => Ubuntu          
+07-24-05 07:03 bluebottle     Kernel Version            => 2.6.12.2        
+07-24-05 09:58 bluebottle     Note Added: 0005557                          
+07-25-05 11:03 Clemens LadischNote Added: 0005561                          
+07-26-05 09:52 bluebottle     Note Added: 0005569                          
+07-26-05 10:16 Clemens LadischFile Added: itd.patch                        
+07-26-05 10:19 Clemens LadischNote Added: 0005570                          
+07-27-05 10:09 bluebottle     File Added: libs-compile-error.txt                
+   
+07-27-05 10:53 bluebottle     Note Added: 0005572                          
+07-27-05 16:42 Clemens LadischNote Added: 0005573                          
+09-22-05 15:12 jdthood        Note Added: 0006344                          
+03-22-06 03:30 rlrevell       Status                   assigned => closed  
+03-22-06 03:30 rlrevell       Note Added: 0008822                          
 ======================================================================
 
 
