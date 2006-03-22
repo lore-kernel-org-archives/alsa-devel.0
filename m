@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001342]: SOund is not working
-Date: Wed, 22 Mar 2006 06:36:55 +0100
-Message-ID: <b90b5acf1e2ff0ee8c6d23865871ff64@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001953]: Onboard Soundcard (STAC9221) records only noise
+Date: Wed, 22 Mar 2006 08:04:20 +0100
+Message-ID: <b005e5d2a4fa4a691e2419e9586948f3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4796C1A0
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 06:36:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FCCD1A3
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 08:04:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1342> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1953> 
 ======================================================================
-Reported By:                taya
+Reported By:                derquader
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1342
+Issue ID:                   1953
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.10-5-386
+Distribution:               Opensuse 10.0
+Kernel Version:             2.6.13-15.8
 ======================================================================
-Date Submitted:             08-16-2005 20:11 CEST
-Last Modified:              03-22-2006 06:36 CET
+Date Submitted:             03-22-2006 08:04 CET
+Last Modified:              03-22-2006 08:04 CET
 ======================================================================
-Summary:                    SOund is not working
+Summary:                    Onboard Soundcard (STAC9221) records only noise
 Description: 
-Hi, I have laptop: Asus w500
-It has integrated sound card: Intel high definition audio.
-It seems that alsa driver is working, but it does not.
-Please correct this.
-Thanks
+I am using a Intel 945GCZ board with an integrated Sigmatel STAC9221
+soundcard.
+
+When I try to record sound from my microphone I only get noise (and if I
+listen very closely there is my voice very quiet in the background).
+
+I have tried to set the amplification to maxium which gives me loud noise
+but does not make my voice sound any better :-/
+
+(Recording works well with WinXP)
 ======================================================================
-
-----------------------------------------------------------------------
- taya - 03-22-06 06:27 
-----------------------------------------------------------------------
-In later alsa drivers, sound works visualy (I mean when I make sound up, or
-down, or mute it shoes visualy, but still, no sound...)
-
-It appears that it's maybe realtek soundcard..
-Anyway, I have this laptop already 1 year, and on Linux sound is not
-working :(
-I have to still use windows for sound.....
-
-The soundcard is: 	
-Built-in Intel High Definition Audio chip, with 3D effect & full duplex
-Built-in speaker and microphone
-
-from:
-http://www.asus.com/products4.aspx?modelmenu=2&model=414&l1=5&l2=75&l3=0
-
-----------------------------------------------------------------------
- rlrevell - 03-22-06 06:36 
-----------------------------------------------------------------------
-In the latest ALSA CVS this should be fixed (I believe you have to use
-"model=asus").  Search the bug tracker for asus + hda-intel
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-16-05 20:11 taya           New Issue                                    
-08-16-05 20:11 taya           Kernel Version            => 2.6.10-5-386    
-03-22-06 03:03 rlrevell       Note Added: 0008792                          
-03-22-06 06:27 taya           Note Added: 0008846                          
-03-22-06 06:36 rlrevell       Note Added: 0008847                          
+03-22-06 08:04 derquader      New Issue                                    
+03-22-06 08:04 derquader      Distribution              => Opensuse 10.0   
+03-22-06 08:04 derquader      Kernel Version            => 2.6.13-15.8     
 ======================================================================
 
 
