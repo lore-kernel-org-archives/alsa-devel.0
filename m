@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000415]: Terratec EWS88D and clockword sync (Ice1712)
-Date: Wed, 22 Mar 2006 02:47:11 +0100
-Message-ID: <1bef4f59626c0354a1dd22caab55193d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001850]: source available
+Date: Wed, 22 Mar 2006 02:48:39 +0100
+Message-ID: <660d9d0ddcffb23c564751d79a55c4b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3D4B18E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:47:11 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2CBDC18E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2006 02:48:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=415> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
 ======================================================================
-Reported By:                Michele Spinolo
-Assigned To:                rlrevell
+Reported By:                coz
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   415
-Category:                   PCI - ice1712
+Issue ID:                   1850
+Category:                   PCI - echoaudio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Suse
-Kernel Version:             2.6.5
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               ubuntu/breezy/Debian
+Kernel Version:             2.6.12.10.386
 ======================================================================
-Date Submitted:             07-30-2004 12:14 CEST
-Last Modified:              03-22-2006 02:47 CET
+Date Submitted:             02-16-2006 13:05 CET
+Last Modified:              03-22-2006 02:48 CET
 ======================================================================
-Summary:                    Terratec EWS88D and clockword sync (Ice1712)
+Summary:                    source available
 Description: 
-Up to four Terratec EWS88D cards can be installed in one system, allowing
-an internal connection to sync the clocks.
-Using Envy24control "clockword sync" option is not present, so it is not
-possible to internally sync multiple cards if s/pdif in/out is used for
-other purposes.
-
+can't start layla24
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 02:47 
+ coz - 03-22-06 02:38 
 ----------------------------------------------------------------------
-Fixed in recent versions
+hello,
+ well the problem is when I installall of the required elements I still
+get no sound. i also get no errors.
+ As I metioned before, a fellow from ubuntu even wlked me through this and
+he was stumped as well.
+i hae noidea , apparently, how to do this but even with someone who is
+familiar with alsa installation it turned out not to work.
+ So, I can keep trying, alsa driver first then lib then tools then u
+tilities right/
+i can try again. thanks
+ Coz
+
+----------------------------------------------------------------------
+ rlrevell - 03-22-06 02:48 
+----------------------------------------------------------------------
+What is CONFIG_FW_LOADER set to in your kernel config?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-30-04 12:14 Michele SpinoloNew Issue                                    
-07-30-04 12:14 Michele SpinoloDistribution              => Suse            
-07-30-04 12:14 Michele SpinoloKernel Version            => 2.6.5           
-11-24-04 19:12 Michele SpinoloIssue Monitored: Michele Spinolo                  
- 
-03-22-06 02:47 rlrevell       Status                   new => resolved     
-03-22-06 02:47 rlrevell       Resolution               open => fixed       
-03-22-06 02:47 rlrevell       Assigned To               => rlrevell        
-03-22-06 02:47 rlrevell       Note Added: 0008786                          
+02-16-06 13:05 coz            New Issue                                    
+02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
+02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
+02-18-06 13:34 pochini        Note Added: 0008119                          
+02-20-06 03:30 coz            Note Added: 0008140                          
+02-20-06 22:02 pochini        Note Added: 0008150                          
+03-13-06 19:49 coz            Note Added: 0008456                          
+03-13-06 22:38 pochini        Note Added: 0008465                          
+03-13-06 23:02 johnrigg       Note Added: 0008466                          
+03-16-06 14:54 coz            Note Added: 0008605                          
+03-18-06 22:02 pochini        Note Added: 0008676                          
+03-18-06 22:07 pochini        Note Edited: 0008676                         
+03-19-06 16:05 coz            Note Added: 0008690                          
+03-20-06 22:10 pochini        Note Added: 0008725                          
+03-22-06 02:38 coz            Note Added: 0008781                          
+03-22-06 02:48 rlrevell       Note Added: 0008787                          
 ======================================================================
 
 
