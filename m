@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
-Date: Thu, 23 Mar 2006 16:06:46 +0100
-Message-ID: <4b83e14e139fe3d080d93a18885f13ba@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001953]: Onboard Soundcard (STAC9221) records only noise
+Date: Thu, 23 Mar 2006 16:08:16 +0100
+Message-ID: <2fb7679640a975a383ec96cb8b8f11f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB7AF1BB
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 16:06:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2A7F1BB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 16:08:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,119 +22,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1953> 
 ======================================================================
-Reported By:                mjsb
+Reported By:                derquader
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1572
+Issue ID:                   1953
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo Linux
-Kernel Version:             2.1.13-gentoo-r3
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Opensuse 10.0
+Kernel Version:             2.6.13-15.8
 ======================================================================
-Date Submitted:             11-17-2005 16:31 CET
-Last Modified:              03-23-2006 16:06 CET
+Date Submitted:             03-22-2006 08:04 CET
+Last Modified:              03-23-2006 16:08 CET
 ======================================================================
-Summary:                    Simultaneous sound from speakers and headphone
+Summary:                    Onboard Soundcard (STAC9221) records only noise
 Description: 
-I cannot ear headphones without having sound from front speakers
-simultaneously.
-Volume of headphones is adjusted by front speakers and when muting front
-speakers also mutes headphones.
-(in MS Windows, inserting headphones automatically disables sound from
-front speakers)
+I am using a Intel 945GCZ board with an integrated Sigmatel STAC9221
+soundcard.
 
+When I try to record sound from my microphone I only get noise (and if I
+listen very closely there is my voice very quiet in the background).
+
+I have tried to set the amplification to maxium which gives me loud noise
+but does not make my voice sound any better :-/
+
+(Recording works well with WinXP)
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001663 LW20 bugs with headphone input, realtek...
-======================================================================
 
 ----------------------------------------------------------------------
- mjsb - 03-22-06 23:15 
+ derquader - 03-22-06 21:37 
 ----------------------------------------------------------------------
-Sorry... didn't notice the upload...
-I had uploaded a patch_realtek.c. Please remove it from the uploaded
-files.
+okay, I guess I have to believe you about that vaio thing ;-)
 
-Your lg-lw model works perfectly!!! :D
+um, I am not a programmer have never used the patch command before, but I
+think I got it...
 
-headphones OK
-speakers OK
-jack sense OK
-internal mic OK
-IEC958 Probably OK (I see the red light on the jack)
-Mic-in OK
-
-Bug Resolved.
-Thanks a lot!
+YES, this patch works indeed! *cheer* thank you a lot :-)
 
 ----------------------------------------------------------------------
- tiwai - 03-23-06 16:06 
+ tiwai - 03-23-06 16:08 
 ----------------------------------------------------------------------
-Thanks for confirmation.  The patch is committed to CVS now.
+Good to hear.  Could you try the second patch instead?  It's a bit
+imrpvoed.
+If it works, I'll commit it to CVS tree.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-17-05 16:31 mjsb           New Issue                                    
-11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
-11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
-11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
-12-08-05 21:23 mjsb           Note Added: 0006962                          
-01-16-06 11:19 mjsb           Note Added: 0007685                          
-01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
-01-21-06 03:24 mjsb           Note Added: 0007730                          
-01-21-06 03:25 mjsb           File Added: HPoff-speakeron                    
-01-21-06 03:25 mjsb           File Added: HPon-speakeroff                    
-01-21-06 03:30 mjsb           Note Edited: 0007730                         
-01-25-06 11:47 blackr2d       Issue Monitored: blackr2d                    
-01-25-06 11:56 blackr2d       Note Added: 0007778                          
-01-25-06 11:59 blackr2d       Note Edited: 0007778                         
-01-25-06 12:00 blackr2d       Note Edited: 0007778                         
-01-25-06 12:36 blackr2d       Note Edited: 0007778                         
-02-14-06 05:36 richardfish    Issue Monitored: richardfish                    
-02-14-06 05:37 richardfish    Note Added: 0008069                          
-02-16-06 13:49 mjsb           Note Added: 0008096                          
-03-01-06 18:00 mpt            Issue Monitored: mpt                         
-03-15-06 15:36 tiwai          Note Added: 0008552                          
-03-22-06 01:33 crissi         Note Added: 0008766                          
-03-22-06 01:33 crissi         Issue Monitored: crissi                      
-03-22-06 01:42 rlrevell       Note Added: 0008768                          
-03-22-06 01:44 rlrevell       Note Added: 0008769                          
-03-22-06 01:55 crissi         Note Added: 0008772                          
-03-22-06 01:58 rlrevell       Note Added: 0008773                          
-03-22-06 02:09 crissi         Note Added: 0008774                          
-03-22-06 02:25 rlrevell       Note Added: 0008777                          
-03-22-06 02:26 rlrevell       Note Deleted: 0008768                        
-03-22-06 02:26 rlrevell       Note Deleted: 0008773                        
-03-22-06 02:26 rlrevell       Note Deleted: 0008769                        
-03-22-06 02:27 rlrevell       Note Deleted: 0008777                        
-03-22-06 02:27 crissi         Note Added: 0008778                          
-03-22-06 02:30 rlrevell       Note Added: 0008780                          
-03-22-06 14:25 mjsb           Note Added: 0008855                          
-03-22-06 15:06 mjsb           Note Added: 0008856                          
-03-22-06 15:53 tiwai          Note Added: 0008860                          
-03-22-06 19:17 tiwai          Note Added: 0008867                          
-03-22-06 19:18 tiwai          File Added: alc880-lg-lw-model.diff               
+03-22-06 08:04 derquader      New Issue                                    
+03-22-06 08:04 derquader      Distribution              => Opensuse 10.0   
+03-22-06 08:04 derquader      Kernel Version            => 2.6.13-15.8     
+03-22-06 08:13 rlrevell       Note Added: 0008848                          
+03-22-06 20:57 derquader      Note Added: 0008869                          
+03-22-06 20:57 derquader      Issue Monitored: derquader                    
+03-22-06 21:10 derquader      Note Added: 0008871                          
+03-22-06 21:11 tiwai          Note Added: 0008872                          
+03-22-06 21:11 tiwai          File Added: stac92xx-auto-vref.diff               
     
-03-22-06 20:44 mjsb           Note Added: 0008868                          
-03-22-06 21:01 tiwai          Note Added: 0008870                          
-03-22-06 21:35 crissi         Issue End Monitor: crissi                    
-03-22-06 22:52 mjsb           File Added: patch_realtek.c                    
-03-22-06 23:15 mjsb           Note Added: 0008875                          
-03-23-06 16:06 tiwai          Status                   assigned => resolved
-03-23-06 16:06 tiwai          Resolution               open => fixed       
-03-23-06 16:06 tiwai          Note Added: 0008883                          
+03-22-06 21:12 tiwai          Note Added: 0008873                          
+03-22-06 21:37 derquader      Note Added: 0008874                          
+03-22-06 21:37 derquader      Issue End Monitor: derquader                    
+03-23-06 16:08 tiwai          Note Added: 0008884                          
 ======================================================================
 
 
