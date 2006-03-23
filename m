@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
-Date: Thu, 23 Mar 2006 17:45:16 +0100
-Message-ID: <e7d4cbed3f75cc20e868eabe5718bcb5@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001900]: alsactl stores incorrect values; overwrites non-writable file; does not set emu10k1 mixer
+Date: Thu, 23 Mar 2006 17:46:03 +0100
+Message-ID: <942a1fda09e4c7a03c5c807acd9553ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FC781BB
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:45:17 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 480CC1BB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:46:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,94 +22,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1900> 
 ======================================================================
-Reported By:                kratz00
+Reported By:                covex
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1714
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - utils
+Issue ID:                   1900
+Category:                   alsactl
+Reproducibility:            sometimes
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               LFS
-Kernel Version:             2.6.15
+Status:                     resolved
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-04-2006 18:04 CET
-Last Modified:              03-23-2006 17:45 CET
+Date Submitted:             03-09-2006 17:38 CET
+Last Modified:              03-23-2006 17:46 CET
 ======================================================================
-Summary:                    Intel HDA (AD1986A) no sound
+Summary:                    alsactl stores incorrect values; overwrites
+non-writable file; does not set emu10k1 mixer
 Description: 
-It's a Samsung M50 Notebook.
-I also tried Alsa 1.0.10 but the problem is the same.
-There are no specific module options for the AD1986A chip, right?
+I have one main problem with alsa and emu10k1 based SB Live! card. 
 
-00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03)
-        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+It's some time ago I notice that very often (not always) after reboot my
+sound card has setup strange values in mixer (e.g wave volume is righ 75
+and left 0, see attached asound.state). First I thought it's some
+application setting these nonsenses but it's not true - those values are
+set SOMETIMES on module removal at reboot.
 
-loaded modules:
-snd_pcm_oss            47136  0 
-snd_mixer_oss          16512  1 snd_pcm_oss
-snd_hda_intel          14224  0 
-snd_hda_codec         122624  1 snd_hda_intel
-snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              19844  1 snd_pcm
-snd                    46144  6
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
+What I noticed during digging around:
+1) Always on user logout I have message in log: ainit: Operation not
+permitted
+It is not specified what operation.
+2) see this situation:
+# modprobe -r snd-emu10k1
+# modprobe --ignore-install snd-emu10k1 && alsactl restore 0
+/usr/sbin/alsactl: load_state:1250: Cannot find soundcard '0'...
+The only thing that works is:
+# modprobe --ignore-install snd-emu10k1; sleep 1; alsactl restore 0
+As the first one is very common situation in all modprobe.conf setups I
+see this as fairly bad problem.
+
+3) I set permitions of /etc/asound.state to r--r--r-- to protect it from
+being overwriten but issuing alsactl store overwrites this file!
+
+None of these explain why, on module removal the asound is filled with
+incorrect values (asound.state is attached). 
+BTW: there are three states in that file - for CK804 (it is nForce4
+chipset with internal AC97 disabled), for Unknown (guh?!) and Live (finaly
+correct).
+
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001841 Mixer not working  / fujitsu laptop V20...
-======================================================================
 
 ----------------------------------------------------------------------
- kratz00 - 03-15-06 21:49 
+ tiwai - 03-15-06 11:50 
 ----------------------------------------------------------------------
-sorry that i have to reopen this bug again
+The -F option has no influence for alsactl save.  It's *nix tradition that
+root can do everything.  (For example, you can do "echo XXX >
+any-file-without-read-bit" as root.)
 
-if I use your attached patch from #1841 line out works but after you
-checked it in and changed something in current cvs it dosen't work anymore
-:(
+alsactl has, so far, no function to remove the old entries.  Please use
+editor to remove the entries of "Unknown" (although that entry must be
+harmless except for place holder).
 
 ----------------------------------------------------------------------
- tiwai - 03-23-06 17:45 
+ tiwai - 03-23-06 17:46 
 ----------------------------------------------------------------------
-Could you try 1.0.11rc4?
+Since these are no real bugs, I close now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 18:04 kratz00        New Issue                                    
-01-04-06 18:04 kratz00        Distribution              => LFS             
-01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
-01-30-06 13:40 kratz00        Note Added: 0007837                          
-02-07-06 00:48 gerick         Issue Monitored: gerick                      
-02-08-06 13:13 simonckenyon   Issue Monitored: simonckenyon                    
-03-10-06 18:26 tiwai          Relationship added       duplicate of 0001841
-03-10-06 18:26 tiwai          Duplicate ID             0 => 1841           
-03-10-06 18:26 tiwai          Status                   new => resolved     
-03-10-06 18:26 tiwai          Resolution               open => duplicate   
-03-10-06 18:26 tiwai          Assigned To               => tiwai           
-03-10-06 18:26 tiwai          Note Added: 0008408                          
-03-15-06 21:49 kratz00        Status                   resolved => feedback
-03-15-06 21:49 kratz00        Resolution               duplicate => reopened
-03-15-06 21:49 kratz00        Note Added: 0008574                          
-03-23-06 17:45 tiwai          Note Added: 0008896                          
+03-09-06 17:38 covex          New Issue                                    
+03-09-06 17:38 covex          File Added: asound.state.wrong                    
+03-14-06 15:53 tiwai          Note Added: 0008483                          
+03-14-06 21:54 covex          Note Added: 0008517                          
+03-14-06 22:03 rlrevell       Note Added: 0008518                          
+03-15-06 11:50 tiwai          Note Added: 0008534                          
+03-23-06 17:46 tiwai          Status                   new => resolved     
+03-23-06 17:46 tiwai          Resolution               open => not an issue
+03-23-06 17:46 tiwai          Assigned To               => tiwai           
+03-23-06 17:46 tiwai          Note Added: 0008897                          
 ======================================================================
 
 
