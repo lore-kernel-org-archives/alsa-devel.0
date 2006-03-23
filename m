@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001902]: aplay: prints snd_timer_hw_open warning message
-Date: Thu, 23 Mar 2006 17:51:18 +0100
-Message-ID: <f6ed16d9218e3d244e05ed7c2a8b957c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001891]: Sound freezes until I move the mouse
+Date: Thu, 23 Mar 2006 17:53:46 +0100
+Message-ID: <d5e6d1da6fba94b2af99075b35a5b849@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E68D1BB
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:51:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA86B1BB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:53:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1902> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1891> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                moobaxx
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1902
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   minor
+Project:                    ALSA - driver
+Issue ID:                   1891
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Slackware
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             03-09-2006 19:22 CET
-Last Modified:              03-23-2006 17:51 CET
+Date Submitted:             03-04-2006 22:31 CET
+Last Modified:              03-23-2006 17:53 CET
 ======================================================================
-Summary:                    aplay: prints snd_timer_hw_open warning message
+Summary:                    Sound freezes until I move the mouse
 Description: 
-Version: 1.0.10-1
-
-$ aplay audio.wav
-ALSA lib timer_hw.c:269:(snd_timer_hw_open) extended read is not
-supported (SNDRV_TIMER_IOCTL_TREAD)
-Playing WAVE 'audio.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-
-(It works despite the message.)
+I have a strange problem: when a sound is played (ex. beep when I get a
+message in Gaim, or in UT2004,or xmms etc.) then the sound sort of freezes
+and keeps repeating until I move the mouse. If I move it fast, sounds
+great... 
+Does anyone have any idea ? Tnx!
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-13-06 20:48 
+ rlrevell - 03-05-06 22:59 
 ----------------------------------------------------------------------
-It's harmless, just warning that you're using a newer alsa-lib with older
-kernel.
-Will fix later.
+What hardware?
+
+Can you try a newer kernel like 2.6.15?
 
 ----------------------------------------------------------------------
- tiwai - 03-23-06 17:51 
+ tiwai - 03-23-06 17:53 
 ----------------------------------------------------------------------
-Already fixed in 1.0.11rc4.
+I bet it's an IRQ routing problem.  Play with ACPI boot option.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-06 19:22 jdthood        New Issue                                    
-03-13-06 20:48 tiwai          Note Added: 0008461                          
-03-23-06 17:51 tiwai          Status                   new => resolved     
-03-23-06 17:51 tiwai          Resolution               open => fixed       
-03-23-06 17:51 tiwai          Assigned To               => tiwai           
-03-23-06 17:51 tiwai          Note Added: 0008898                          
+03-04-06 22:31 moobaxx        New Issue                                    
+03-04-06 22:31 moobaxx        Distribution              => Slackware       
+03-04-06 22:31 moobaxx        Kernel Version            => 2.4             
+03-05-06 22:59 rlrevell       Note Added: 0008359                          
+03-23-06 17:53 tiwai          Note Added: 0008899                          
 ======================================================================
 
 
