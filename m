@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001942]: [PATCH] added support uncommon "rate"
-Date: Thu, 23 Mar 2006 18:30:21 +0100
-Message-ID: <958fda19853a62e5fa4148ce62f92b10@bugtrack.alsa-project.org>
+Date: Thu, 23 Mar 2006 19:09:19 +0100
+Message-ID: <06778d16a3ee4c228c3eb3cfe3bf7cbc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 98B661AD
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 18:30:21 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F2B51B4
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 19:09:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               UBuntu Dapper Drake
 Kernel Version:             2.6.15.6
 ======================================================================
 Date Submitted:             03-18-2006 23:48 CET
-Last Modified:              03-23-2006 18:30 CET
+Last Modified:              03-23-2006 19:09 CET
 ======================================================================
 Summary:                    [PATCH] added support uncommon "rate"
 Description: 
@@ -51,17 +51,6 @@ conv_rates in usbaudio.c.
 Signed-off-by: S. Effendi <osbebas@yahoo.co.id>
 
 ======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 03-20-06 09:09 
-----------------------------------------------------------------------
-Your patch assumes that every device that doesn't happen to support one of
-the predefined rates is lying and actually does use the next-smaller rate
-instead.
-This assumptions is wrong for most devices, and probably for yours, too.
-
-What is the output of "time dd if=/dev/zero of=/dev/dsp1 bs=1000
-count=10000"?
 
 ----------------------------------------------------------------------
  os-bebas - 03-23-06 18:30 
@@ -133,6 +122,17 @@ sys     0m0.178s
 
 best regards
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-23-06 19:09 
+----------------------------------------------------------------------
+What the USB audio specification says has only a rather vague similarity
+with what real devices implement.
+
+I wanted to see how many bytes per second the device accepts, but the OSS
+emulation automatically converted from 8000 Hz.
+Please show the output of "time ( dd if=/dev/zero bs=1000 count=4000 |
+aplay -D hw:1 -t raw -f cd - )".
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -143,6 +143,7 @@ Date Modified  Username       Field                    Change
 03-18-06 23:48 os-bebas       Kernel Version            => 2.6.15.6        
 03-20-06 09:09 Clemens LadischNote Added: 0008712                          
 03-23-06 18:30 os-bebas       Note Added: 0008900                          
+03-23-06 19:09 Clemens LadischNote Added: 0008901                          
 ======================================================================
 
 
