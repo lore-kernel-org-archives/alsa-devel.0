@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001954]: Patch from bug 0001895 hasn't been put in CVS yet
-Date: Thu, 23 Mar 2006 21:01:27 +0100
-Message-ID: <afc6665d21087bea13628b25ac56fd3b@bugtrack.alsa-project.org>
+Date: Thu, 23 Mar 2006 21:08:03 +0100
+Message-ID: <09669125f341156d8a6f1c6598b92037@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD90919D
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 21:01:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E561B1B4
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 21:08:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora 5 x86_64
 Kernel Version:             2.6.15-1.2054_FC5
 ======================================================================
 Date Submitted:             03-23-2006 07:17 CET
-Last Modified:              03-23-2006 21:01 CET
+Last Modified:              03-23-2006 21:08 CET
 ======================================================================
 Summary:                    Patch from bug 0001895 hasn't been put in CVS yet
 Description: 
@@ -54,20 +54,18 @@ be working fine now. My mobo is an Asus A8N-VM, same chip discussed in bug
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-23-06 11:08 
-----------------------------------------------------------------------
-The model is named as "laptop", since it's mainly designed for laptops.
-
-If it doesn't work or any mixer controls don't match with the actual I/O,
-let me know.
-
-----------------------------------------------------------------------
  johnfivealive - 03-23-06 21:01 
 ----------------------------------------------------------------------
 tiwai, I downloaded the just released rc4 drivers and the hda-intel driver
 now works fine with my A8N-VM with model=laptop passed as an option in
 modprobe.conf. Without this option the driver still is buggy like before.
 But with model=laptop everything seems to be fine. Thanks very much!
+
+----------------------------------------------------------------------
+ tiwai - 03-23-06 21:08 
+----------------------------------------------------------------------
+OK, then please show the output of "lspci -nv" (only for class 0403).
+I'll add it to the config table so that the model is chosen automatically.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -78,6 +76,7 @@ Date Modified  Username       Field                    Change
 03-23-06 07:19 johnfivealive  Issue Monitored: johnfivealive                    
 03-23-06 11:08 tiwai          Note Added: 0008880                          
 03-23-06 21:01 johnfivealive  Note Added: 0008902                          
+03-23-06 21:08 tiwai          Note Added: 0008903                          
 ======================================================================
 
 
