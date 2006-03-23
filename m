@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001951]: Microphone doesnt work
-Date: Thu, 23 Mar 2006 16:24:59 +0100
-Message-ID: <ca8284d00e4f7778bdfd421aaa931a02@bugtrack.alsa-project.org>
+Date: Thu, 23 Mar 2006 16:47:50 +0100
+Message-ID: <c424705bee1326b51cc22486bd9e9301@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32C701BF
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 16:25:00 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57D571BB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 16:47:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,17 +40,12 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             03-22-2006 01:31 CET
-Last Modified:              03-23-2006 16:24 CET
+Last Modified:              03-23-2006 16:47 CET
 ======================================================================
 Summary:                    Microphone doesnt work
 Description: 
 I cant get any input from mic.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-23-06 16:10 
-----------------------------------------------------------------------
-Try the patch (second one) in bug #1953.
 
 ----------------------------------------------------------------------
  crissi - 03-23-06 16:24 
@@ -64,6 +59,11 @@ Hunk #3 FAILED at 970.
 3 out of 3 hunks FAILED -- saving rejects to file
 pci/hda/patch_sigmatel.c.rej
 
+----------------------------------------------------------------------
+ tiwai - 03-23-06 16:47 
+----------------------------------------------------------------------
+Apply it on alsa-kernel directory.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -73,6 +73,7 @@ Date Modified  Username       Field                    Change
 03-22-06 15:47 crissi         Issue Monitored: crissi                      
 03-23-06 16:10 tiwai          Note Added: 0008885                          
 03-23-06 16:24 crissi         Note Added: 0008887                          
+03-23-06 16:47 tiwai          Note Added: 0008888                          
 ======================================================================
 
 
