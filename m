@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001951]: Microphone doesnt work
-Date: Thu, 23 Mar 2006 17:02:43 +0100
-Message-ID: <ec9aac2f42ad478e690b3287a0a3b536@bugtrack.alsa-project.org>
+Date: Thu, 23 Mar 2006 17:04:11 +0100
+Message-ID: <447be0e99b5a3e871dacabf89a56aab3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 97AF01BB
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:02:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3EE731BB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:04:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1951> 
 ======================================================================
@@ -35,16 +35,23 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 duplicate
+Duplicate:                  1953
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-22-2006 01:31 CET
-Last Modified:              03-23-2006 17:02 CET
+Last Modified:              03-23-2006 17:04 CET
 ======================================================================
 Summary:                    Microphone doesnt work
 Description: 
 I cant get any input from mic.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001953 Onboard Soundcard (STAC9221) records on...
 ======================================================================
 
 ----------------------------------------------------------------------
@@ -68,6 +75,10 @@ Date Modified  Username       Field                    Change
 03-23-06 16:24 crissi         Note Added: 0008887                          
 03-23-06 16:47 tiwai          Note Added: 0008888                          
 03-23-06 17:02 crissi         Note Added: 0008890                          
+03-23-06 17:04 tiwai          Relationship added       duplicate of 0001953
+03-23-06 17:04 tiwai          Duplicate ID             0 => 1953           
+03-23-06 17:04 tiwai          Status                   assigned => resolved
+03-23-06 17:04 tiwai          Resolution               open => duplicate   
 ======================================================================
 
 
