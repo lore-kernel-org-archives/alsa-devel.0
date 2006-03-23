@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001954]: Patch from bug 0001895 hasn't been put in CVS yet
-Date: Thu, 23 Mar 2006 11:09:00 +0100
-Message-ID: <23c5fd3fb686c7adc502562901b4e0fc@bugtrack.alsa-project.org>
+From: =?iso-8859-1?B?QXNiavhybiBT5mL4?= <asbjs@stud.ntnu.no>
+Subject: Q: Compiling ALSA for 2.6.16
+Date: Thu, 23 Mar 2006 11:26:14 +0100
+Message-ID: <20060323102614.GA19835@stud.ntnu.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE8CD13C
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 11:09:00 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +16,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+In an attempt to get my vxpocet sound card to work (see thread at=20
+alsa-user), I have installed the 2.6.16 kernel.  Now I would like to=20
+have a suitably recent ALSA along with it.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1954> 
-======================================================================
-Reported By:                johnfivealive
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1954
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora 5 x86_64
-Kernel Version:             2.6.15-1.2054_FC5
-======================================================================
-Date Submitted:             03-23-2006 07:17 CET
-Last Modified:              03-23-2006 11:08 CET
-======================================================================
-Summary:                    Patch from bug 0001895 hasn't been put in CVS yet
-Description: 
-Hello, the patch created in bug 0001895 as far as I can see hasn't been
-applied to CVS yet. The last note from tiwai says he put it in CVS, but
-I'm assuming he meant to but perhaps forgot. This is just a reminder if
-that is the case. I tried the patch myself and my onboard sound seems to
-be working fine now. My mobo is an Asus A8N-VM, same chip discussed in bug
-0001895. Thanks.
+Should I go for the stable alsa release (1.0.10), or for the development=20
+release?
 
-======================================================================
+How do I proceed?  Just download all the packages and follow the INSTALL=20
+instructions?  Are there things I need to do to avoid conflicting with=20
+the kernel in any way?  Is there a _recent_ "Compile and Install ALSA=20
+Howto" or similar somewhere?
 
-----------------------------------------------------------------------
- tiwai - 03-23-06 11:08 
-----------------------------------------------------------------------
-The model is named as "laptop", since it's mainly designed for laptops.
+Any hints to get started in the right direction are most welcom.
 
-If it doesn't work or any mixer controls don't match with the actual I/O,
-let me know.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-23-06 07:17 johnfivealive  New Issue                                    
-03-23-06 07:17 johnfivealive  Distribution              => Fedora 5 x86_64 
-03-23-06 07:17 johnfivealive  Kernel Version            => 2.6.15-1.2054_FC5
-03-23-06 07:19 johnfivealive  Issue Monitored: johnfivealive                    
-03-23-06 11:08 tiwai          Note Added: 0008880                          
-======================================================================
-
-
+With kind regards
+Asbj=F8rn
 
 
 -------------------------------------------------------
