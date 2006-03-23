@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001953]: Onboard Soundcard (STAC9221) records only noise
-Date: Thu, 23 Mar 2006 16:08:16 +0100
-Message-ID: <2fb7679640a975a383ec96cb8b8f11f6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001951]: Microphone doesnt work
+Date: Thu, 23 Mar 2006 16:10:43 +0100
+Message-ID: <50efe0df571c5d586af77b7b8390324f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2A7F1BB
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 16:08:16 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B25B61BB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 16:10:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1953> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1951> 
 ======================================================================
-Reported By:                derquader
+Reported By:                crissi
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1953
+Issue ID:                   1951
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Opensuse 10.0
-Kernel Version:             2.6.13-15.8
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-22-2006 08:04 CET
-Last Modified:              03-23-2006 16:08 CET
+Date Submitted:             03-22-2006 01:31 CET
+Last Modified:              03-23-2006 16:10 CET
 ======================================================================
-Summary:                    Onboard Soundcard (STAC9221) records only noise
+Summary:                    Microphone doesnt work
 Description: 
-I am using a Intel 945GCZ board with an integrated Sigmatel STAC9221
-soundcard.
-
-When I try to record sound from my microphone I only get noise (and if I
-listen very closely there is my voice very quiet in the background).
-
-I have tried to set the amplification to maxium which gives me loud noise
-but does not make my voice sound any better :-/
-
-(Recording works well with WinXP)
+I cant get any input from mic.
 ======================================================================
 
 ----------------------------------------------------------------------
- derquader - 03-22-06 21:37 
+ crissi - 03-22-06 15:47 
 ----------------------------------------------------------------------
-okay, I guess I have to believe you about that vaio thing ;-)
-
-um, I am not a programmer have never used the patch command before, but I
-think I got it...
-
-YES, this patch works indeed! *cheer* thank you a lot :-)
+I still run cvs but no sucess :(
+What can I do?
 
 ----------------------------------------------------------------------
- tiwai - 03-23-06 16:08 
+ tiwai - 03-23-06 16:10 
 ----------------------------------------------------------------------
-Good to hear.  Could you try the second patch instead?  It's a bit
-imrpvoed.
-If it works, I'll commit it to CVS tree.
+Try the patch (second one) in bug #1953.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-06 08:04 derquader      New Issue                                    
-03-22-06 08:04 derquader      Distribution              => Opensuse 10.0   
-03-22-06 08:04 derquader      Kernel Version            => 2.6.13-15.8     
-03-22-06 08:13 rlrevell       Note Added: 0008848                          
-03-22-06 20:57 derquader      Note Added: 0008869                          
-03-22-06 20:57 derquader      Issue Monitored: derquader                    
-03-22-06 21:10 derquader      Note Added: 0008871                          
-03-22-06 21:11 tiwai          Note Added: 0008872                          
-03-22-06 21:11 tiwai          File Added: stac92xx-auto-vref.diff               
-    
-03-22-06 21:12 tiwai          Note Added: 0008873                          
-03-22-06 21:37 derquader      Note Added: 0008874                          
-03-22-06 21:37 derquader      Issue End Monitor: derquader                    
-03-23-06 16:08 tiwai          Note Added: 0008884                          
+03-22-06 01:31 crissi         New Issue                                    
+03-22-06 01:42 rlrevell       Note Added: 0008767                          
+03-22-06 15:47 crissi         Note Added: 0008858                          
+03-22-06 15:47 crissi         Issue Monitored: crissi                      
+03-23-06 16:10 tiwai          Note Added: 0008885                          
 ======================================================================
 
 
