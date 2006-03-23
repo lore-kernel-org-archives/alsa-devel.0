@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001949]: pcm.jack config in alsa-plugins/doc/README-jack
-Date: Thu, 23 Mar 2006 15:17:43 +0100
-Message-ID: <340d478c3dfb09d19ccb8ca2e3a1156a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001572]: Simultaneous sound from speakers and headphone
+Date: Thu, 23 Mar 2006 16:06:46 +0100
+Message-ID: <4b83e14e139fe3d080d93a18885f13ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A9431BB
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 15:17:43 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB7AF1BB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 16:06:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,193 +22,119 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1949> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1572> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                
+Reported By:                mjsb
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - plugins
-Issue ID:                   1949
-Category:                   PCM - jack
+Project:                    ALSA - driver
+Issue ID:                   1572
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               Gentoo Linux
+Kernel Version:             2.1.13-gentoo-r3
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-21-2006 06:18 CET
-Last Modified:              03-23-2006 15:17 CET
+Date Submitted:             11-17-2005 16:31 CET
+Last Modified:              03-23-2006 16:06 CET
 ======================================================================
-Summary:                    pcm.jack config in alsa-plugins/doc/README-jack
+Summary:                    Simultaneous sound from speakers and headphone
 Description: 
-In  alsa-plugins/doc/README-jack
+I cannot ear headphones without having sound from front speakers
+simultaneously.
+Volume of headphones is adjusted by front speakers and when muting front
+speakers also mutes headphones.
+(in MS Windows, inserting headphones automatically disables sound from
+front speakers)
 
-   pcm.jack {
-		type jack
-		playback_ports {
-			0 alsa_pcm:playback_1
-			1 alsa_pcm:playback_1
-		}
-		capture_ports {
-			0 alsa_pcm:capture_1
-			1 alsa_pcm:pcapture_1
-		}
-	}
-
-There are four entries in Writable clients in qjackctl (jack-0.100.0) 
-
-playback_1
-playback_2
-playback_3
-playback_4
-
-two entries in Readable clients
-
-capture_1
-capture_2
-
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001663 LW20 bugs with headphone input, realtek...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-23-06 05:51 
+ mjsb - 03-22-06 23:15 
 ----------------------------------------------------------------------
-No sound heard.
+Sorry... didn't notice the upload...
+I had uploaded a patch_realtek.c. Please remove it from the uploaded
+files.
 
-Do plugins auto connect to jack server ?
+Your lg-lw model works perfectly!!! :D
 
- aplay -v -Dplug:jack outls.wav
-Playing WAVE 'outls.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
-Stereo
-Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 22050
-  exact rate   : 22050 (22050/1)
-  msbits       : 16
-  buffer_size  : 11025
-  period_size  : 2756
-  period_time  : 125000
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 2756
-  xfer_align   : 2756
-  start_threshold  : 11024
-  stop_threshold   : 11025
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 722534400
-Slave: Linear Integer <-> Linear Float conversion PCM (FLOAT_LE)
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 24000
-  period_size  : 6000
-  period_time  : 125000
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 6000
-  xfer_align   : 6000
-  start_threshold  : 24000
-  stop_threshold   : 24000
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1572864000
-Slave: ALSA <-> JACK PCM I/O Plugin
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : FLOAT_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 32
-  buffer_size  : 24000
-  period_size  : 6000
-  period_time  : 125000
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 6000
-  xfer_align   : 6000
-  start_threshold  : 24000
-  stop_threshold   : 24000
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1572864000
+headphones OK
+speakers OK
+jack sense OK
+internal mic OK
+IEC958 Probably OK (I see the red light on the jack)
+Mic-in OK
 
-speaker-test -Dplug:jack -c 2 -t wav
- 
-speaker-test 1.0.11rc4
- 
-Playback device is plug:jack
-Stream parameters are 48000Hz, S16_LE, 2 channels
-WAV file(s)
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 32 to 524288
-Period size range from 16 to 8192
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 524288
-To choose period_size = 131072
-was set period_size = 8192
-was set buffer_size = 524288
- 0 - Front Left
- 1 - Front Right
-Time per period = 0.122627
- 0 - Front Left
- 1 - Front Right
-Time per period = 0.064292
- 0 - Front Left
- 1 - Front Right
-Time per period = 0.063705
- 0 - Front Left
- 1 - Front Right
-
-
+Bug Resolved.
+Thanks a lot!
 
 ----------------------------------------------------------------------
- Raymond - 03-23-06 15:17 
+ tiwai - 03-23-06 16:06 
 ----------------------------------------------------------------------
-The reason of not hearing any sound from the front speakers of au8830 using
-alsa-plugin - jack is due to front and rear swap bug in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
-
-It will also need the fix in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1766 for jackd to open
-the correct
-capture channels of au8830
-
-It seem that snd_pcm_hw_params_get_rate_max() return max_rate 10000 for
-"plug:jack"
+Thanks for confirmation.  The patch is committed to CVS now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-21-06 06:18 Raymond        New Issue                                    
-03-21-06 07:42 Raymond        Note Added: 0008738                          
-03-22-06 16:54 Raymond        Note Added: 0008863                          
-03-22-06 17:02 Raymond        Note Edited: 0008863                         
-03-22-06 18:47 tiwai          Note Added: 0008865                          
-03-23-06 03:44 Raymond        Note Added: 0008878                          
-03-23-06 05:51 Raymond        Note Edited: 0008878                         
-03-23-06 15:17 Raymond        Note Added: 0008882                          
+11-17-05 16:31 mjsb           New Issue                                    
+11-17-05 16:31 mjsb           Distribution              => Gentoo Linux    
+11-17-05 16:31 mjsb           Kernel Version            => 2.1.13-gentoo-r3
+11-17-05 16:33 mjsb           Issue Monitored: mjsb                        
+12-08-05 21:23 mjsb           Note Added: 0006962                          
+01-16-06 11:19 mjsb           Note Added: 0007685                          
+01-19-06 18:27 rlrevell       Relationship added       has duplicate 0001663
+01-21-06 03:24 mjsb           Note Added: 0007730                          
+01-21-06 03:25 mjsb           File Added: HPoff-speakeron                    
+01-21-06 03:25 mjsb           File Added: HPon-speakeroff                    
+01-21-06 03:30 mjsb           Note Edited: 0007730                         
+01-25-06 11:47 blackr2d       Issue Monitored: blackr2d                    
+01-25-06 11:56 blackr2d       Note Added: 0007778                          
+01-25-06 11:59 blackr2d       Note Edited: 0007778                         
+01-25-06 12:00 blackr2d       Note Edited: 0007778                         
+01-25-06 12:36 blackr2d       Note Edited: 0007778                         
+02-14-06 05:36 richardfish    Issue Monitored: richardfish                    
+02-14-06 05:37 richardfish    Note Added: 0008069                          
+02-16-06 13:49 mjsb           Note Added: 0008096                          
+03-01-06 18:00 mpt            Issue Monitored: mpt                         
+03-15-06 15:36 tiwai          Note Added: 0008552                          
+03-22-06 01:33 crissi         Note Added: 0008766                          
+03-22-06 01:33 crissi         Issue Monitored: crissi                      
+03-22-06 01:42 rlrevell       Note Added: 0008768                          
+03-22-06 01:44 rlrevell       Note Added: 0008769                          
+03-22-06 01:55 crissi         Note Added: 0008772                          
+03-22-06 01:58 rlrevell       Note Added: 0008773                          
+03-22-06 02:09 crissi         Note Added: 0008774                          
+03-22-06 02:25 rlrevell       Note Added: 0008777                          
+03-22-06 02:26 rlrevell       Note Deleted: 0008768                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008773                        
+03-22-06 02:26 rlrevell       Note Deleted: 0008769                        
+03-22-06 02:27 rlrevell       Note Deleted: 0008777                        
+03-22-06 02:27 crissi         Note Added: 0008778                          
+03-22-06 02:30 rlrevell       Note Added: 0008780                          
+03-22-06 14:25 mjsb           Note Added: 0008855                          
+03-22-06 15:06 mjsb           Note Added: 0008856                          
+03-22-06 15:53 tiwai          Note Added: 0008860                          
+03-22-06 19:17 tiwai          Note Added: 0008867                          
+03-22-06 19:18 tiwai          File Added: alc880-lg-lw-model.diff               
+    
+03-22-06 20:44 mjsb           Note Added: 0008868                          
+03-22-06 21:01 tiwai          Note Added: 0008870                          
+03-22-06 21:35 crissi         Issue End Monitor: crissi                    
+03-22-06 22:52 mjsb           File Added: patch_realtek.c                    
+03-22-06 23:15 mjsb           Note Added: 0008875                          
+03-23-06 16:06 tiwai          Status                   assigned => resolved
+03-23-06 16:06 tiwai          Resolution               open => fixed       
+03-23-06 16:06 tiwai          Note Added: 0008883                          
 ======================================================================
 
 
