@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001954]: Patch from bug 0001895 hasn't been put in CVS yet
-Date: Thu, 23 Mar 2006 21:08:03 +0100
-Message-ID: <09669125f341156d8a6f1c6598b92037@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
+Date: Thu, 23 Mar 2006 21:30:39 +0100
+Message-ID: <4680392f1bfa5b309ea326071cc40b72@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E561B1B4
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 21:08:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A017A1AC
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 21:30:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,38 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1954> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
 ======================================================================
-Reported By:                johnfivealive
+Reported By:                flujan
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1954
+Issue ID:                   1956
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora 5 x86_64
-Kernel Version:             2.6.15-1.2054_FC5
+Distribution:               Slackware
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             03-23-2006 07:17 CET
-Last Modified:              03-23-2006 21:08 CET
+Date Submitted:             03-23-2006 21:30 CET
+Last Modified:              03-23-2006 21:30 CET
 ======================================================================
-Summary:                    Patch from bug 0001895 hasn't been put in CVS yet
+Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
 Description: 
-Hello, the patch created in bug 0001895 as far as I can see hasn't been
-applied to CVS yet. The last note from tiwai says he put it in CVS, but
-I'm assuming he meant to but perhaps forgot. This is just a reminder if
-that is the case. I tried the patch myself and my onboard sound seems to
-be working fine now. My mobo is an Asus A8N-VM, same chip discussed in bug
-0001895. Thanks.
-
+The problem where solved in the CVS from 2006-03-01 but in the rc4 version
+the problem returns. 
 ======================================================================
-
-----------------------------------------------------------------------
- johnfivealive - 03-23-06 21:01 
-----------------------------------------------------------------------
-tiwai, I downloaded the just released rc4 drivers and the hda-intel driver
-now works fine with my A8N-VM with model=laptop passed as an option in
-modprobe.conf. Without this option the driver still is buggy like before.
-But with model=laptop everything seems to be fine. Thanks very much!
-
-----------------------------------------------------------------------
- tiwai - 03-23-06 21:08 
-----------------------------------------------------------------------
-OK, then please show the output of "lspci -nv" (only for class 0403).
-I'll add it to the config table so that the model is chosen automatically.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-06 07:17 johnfivealive  New Issue                                    
-03-23-06 07:17 johnfivealive  Distribution              => Fedora 5 x86_64 
-03-23-06 07:17 johnfivealive  Kernel Version            => 2.6.15-1.2054_FC5
-03-23-06 07:19 johnfivealive  Issue Monitored: johnfivealive                    
-03-23-06 11:08 tiwai          Note Added: 0008880                          
-03-23-06 21:01 johnfivealive  Note Added: 0008902                          
-03-23-06 21:08 tiwai          Note Added: 0008903                          
+03-23-06 21:30 flujan         New Issue                                    
+03-23-06 21:30 flujan         Distribution              => Slackware       
+03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
 ======================================================================
 
 
