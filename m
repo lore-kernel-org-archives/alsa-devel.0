@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001954]: Patch from bug 0001895 hasn't been put in CVS yet
-Date: Thu, 23 Mar 2006 07:17:58 +0100
-Message-ID: <18c7a888f3d359ec2797421c68fb69fc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000343]: au8820 hangs the system at some occasions
+Date: Thu, 23 Mar 2006 08:59:30 +0100
+Message-ID: <2a52409f0f897af183e5f89fd3c8bd89@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8992B1AD
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 07:17:58 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C16531A7
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 08:59:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,43 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1954> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=343> 
 ======================================================================
-Reported By:                johnfivealive
-Assigned To:                tiwai
+Reported By:                sandman
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1954
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   343
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora 5 x86_64
-Kernel Version:             2.6.15-1.2054_FC5
+Status:                     acknowledged
+Distribution:               RedHat 9
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             03-23-2006 07:17 CET
-Last Modified:              03-23-2006 07:17 CET
+Date Submitted:             06-23-2004 07:20 CEST
+Last Modified:              03-23-2006 08:59 CET
 ======================================================================
-Summary:                    Patch from bug 0001895 hasn't been put in CVS yet
+Summary:                    au8820 hangs the system at some occasions
 Description: 
-Hello, the patch created in bug 0001895 as far as I can see hasn't been
-applied to CVS yet. The last note from tiwai says he put it in CVS, but
-I'm assuming he meant to but perhaps forgot. This is just a reminder if
-that is the case. I tried the patch myself and my onboard sound seems to
-be working fine now. My mobo is an Asus A8N-VM, same chip discussed in bug
-0001895. Thanks.
-
+At some occasions the system hangs without any means
+to recover other than reset button. No mouse, no pings and
+even the alt-SysRq feature doesn't help.
+As a result I reboot the system a few times a day (sometimes).
+The problem is present in 2.6.5, 2.6.6 and 2.6.7 kernels at
+least. 
 ======================================================================
+
+----------------------------------------------------------------------
+ sandman - 03-22-06 18:05 
+----------------------------------------------------------------------
+I'm sorry, but I no longer have that PC, so I can not check if this is
+fixed. I saw a number of problems with the au88x0 driver on 64 bit
+platform - it used to cause kernel panics back then until I made a small
+change (it was something related to long being 64 bit on amd64 - I think I
+even sent the patch once). Although the hangs were on both 32 and 64 bit
+kernels.
+
+----------------------------------------------------------------------
+ Raymond - 03-23-06 08:59 
+----------------------------------------------------------------------
+ponchick report oops with au8830 mpu401 on his SMP
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833
+
+Why aplaymidi do not report any error if no mpu401 is connected ?
+
+aplaymidi -p 16:0 test.mid
+
+
+
+dmesg
+
+ALSA ../../alsa-kernel/drivers/mpu401/mpu401_uart.c:222: cmd: 0xff failed
+at 0xe1daa800 (status = 0x80, data = 0xd1)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-06 07:17 johnfivealive  New Issue                                    
-03-23-06 07:17 johnfivealive  Distribution              => Fedora 5 x86_64 
-03-23-06 07:17 johnfivealive  Kernel Version            => 2.6.15-1.2054_FC5
+06-23-04 07:20 sandman        New Issue                                    
+06-23-04 07:20 sandman        Distribution              => RedHat 9        
+06-23-04 07:20 sandman        Kernel Version            => 2.6.7           
+04-07-05 21:04 jdthood        Note Added: 0004370                          
+04-12-05 20:26 alien999999999 Issue Monitored: alien999999999                   
+
+04-19-05 09:47 sandman        Note Added: 0004519                          
+04-19-05 10:03 jdthood        Status                   assigned => acknowledged
+08-25-05 18:51 Raymond        Note Added: 0005942                          
+03-22-06 03:01 rlrevell       Note Added: 0008789                          
+03-22-06 18:05 sandman        Note Added: 0008864                          
+03-23-06 08:59 Raymond        Note Added: 0008879                          
 ======================================================================
 
 
