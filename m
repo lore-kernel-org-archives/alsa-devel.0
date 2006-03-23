@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001927]: Capture Device not working
-Date: Thu, 23 Mar 2006 17:37:23 +0100
-Message-ID: <5cf793c1dc297aa505e638fffa446f2b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001936]: wont give output and some features not present (i.e. alsamixer)
+Date: Thu, 23 Mar 2006 17:40:48 +0100
+Message-ID: <a28dcc8e99a69d685c73ad602fe20a40@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED3421BB
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:37:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADB691BB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:40:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,196 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1927> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1936> 
 ======================================================================
-Reported By:                sk0rp10
+Reported By:                nielsd
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1927
+Issue ID:                   1936
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware current
-Kernel Version:             2.6.15.6 vanilla
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.16 (vanilla - different rc)
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-15-2006 19:23 CET
-Last Modified:              03-23-2006 17:37 CET
+Date Submitted:             03-17-2006 16:33 CET
+Last Modified:              03-23-2006 17:40 CET
 ======================================================================
-Summary:                    Capture Device not working
+Summary:                    wont give output and some features not present (i.e.
+alsamixer)
 Description: 
-I tryed use krec to record from internal mic but no sound is recorded. 
-I applyed the patch from issue #1890.
+There comes no audio out. Alsamixer settings unmuted and every
+constellation tried. Every model parameter tried. Every DMA setting tried
+(fixed position).
 
-here asound.state:
+Different kernels (build with gcc 3.4 and 4.0) from 2.6.13 up to
+2.6.16-rc6 (vanilla) didn't work. Tried to compile the kernel bundeled
+alsa and the stable plus unstable actual alsa-driver. Under some
+constellations the console hangs during alsa loads.
 
-state.Intel {
-        control.1 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 127'
-                iface MIXER
-                name 'Master Playback Volume'
-                value.0 121
-                value.1 121
-        }
-        control.2 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Master Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.3 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'CD Capture Volume'
-                value.0 7
-                value.1 7
-        }
-        control.4 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'Capture Volume'
-                value.0 11
-                value.1 11
-        }
-        control.5 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Capture Switch'
-                value.0 false
-                value.1 false
-        }
-        control.6 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 HP
-                comment.item.1 Unknown
-                comment.item.2 Mic
-                comment.item.3 PCM
-                iface MIXER
-                name 'Capture Source'
-                value Mic
-        }
-        control.7 {
-                comment.access 'read write user'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 255'
-                iface MIXER
-                name 'PCM Playback Volume'
-                value.0 232
-                value.1 232
-        }
-}
+Under Knoppix Linux (debian fork with own kernel) is no output too - but
+alsaconf seems to hang or crash every 2nd time.
 
+Tried two times with earplugs and micro - no work.
+
+The same model only seems to work partly and sometimes under a older
+ubuntu kernel 2.6.12-6-386 gcc 3.4.
+
+Can't find any info about the new DELL HDA in google or news...
+
+I "only" like to get the sound running on my notebook - best and nicest
+would be with micro... Hope there comes some help in the next for me.
 ======================================================================
 
 ----------------------------------------------------------------------
- sk0rp10 - 03-21-06 11:08 
+ tiwai - 03-17-06 16:54 
 ----------------------------------------------------------------------
-Rised Capture Volume to max, installed current CVS, but no sound captured
-by mic. 
-
-here the state:
-
-state.Intel {
-        control.1 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 127'
-                iface MIXER
-                name 'Master Playback Volume'
-                value.0 108
-                value.1 108
-        }
-        control.2 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Master Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.3 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'Capture Volume'
-                value.0 15
-                value.1 15
-        }
-        control.4 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Capture Switch'
-                value.0 true
-                value.1 true
-        }
-        control.5 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 Mic
-                comment.item.1 PCM
-                iface MIXER
-                name 'Capture Source'
-                value Mic
-        }
-        control.6 {
-                comment.access 'read write user'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 255'
-                iface MIXER
-                name 'PCM Playback Volume'
-                value.0 255
-                value.1 255
-        }
-}
+Sounds like a same issue with
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1843.
 
 ----------------------------------------------------------------------
- tiwai - 03-23-06 17:37 
+ tiwai - 03-23-06 17:40 
 ----------------------------------------------------------------------
-The Mic is for the mic jack.  Maybe the internal mic is not supported.
+Should have been fixed with 1.0.11rc4.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 19:23 sk0rp10        New Issue                                    
-03-15-06 19:23 sk0rp10        Distribution              => Slackware current
-03-15-06 19:23 sk0rp10        Kernel Version            => 2.6.15.6 vanilla
-03-15-06 19:38 tiwai          Note Added: 0008569                          
-03-15-06 20:20 sk0rp10        Note Added: 0008572                          
-03-15-06 20:21 sk0rp10        File Added: codec.tar.gz                     
-03-15-06 20:47 sk0rp10        Issue Monitored: sk0rp10                     
-03-19-06 17:48 sk0rp10        Note Added: 0008692                          
-03-19-06 19:46 rlrevell       Note Added: 0008696                          
-03-21-06 11:08 sk0rp10        Note Added: 0008742                          
-03-23-06 17:37 tiwai          Note Added: 0008893                          
+03-17-06 16:33 nielsd         New Issue                                    
+03-17-06 16:33 nielsd         Distribution              => Gentoo          
+03-17-06 16:33 nielsd         Kernel Version            => 2.6.16 (vanilla -
+different rc)
+03-17-06 16:54 tiwai          Note Added: 0008648                          
+03-23-06 17:40 tiwai          Status                   assigned => resolved
+03-23-06 17:40 tiwai          Resolution               open => fixed       
+03-23-06 17:40 tiwai          Note Added: 0008894                          
 ======================================================================
 
 
