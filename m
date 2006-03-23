@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001953]: Onboard Soundcard (STAC9221) records only noise
-Date: Thu, 23 Mar 2006 17:07:04 +0100
-Message-ID: <c30061a1c4e224254ad9b87f94d34b2c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001423]: dxs_support=5 works on EPoX EP-8KRAI
+Date: Thu, 23 Mar 2006 17:11:52 +0100
+Message-ID: <7bed08c4fe107d630ec90d2298da9ab8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5E6C1BB
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:07:04 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFA991BB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:11:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,81 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1953> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1423> 
 ======================================================================
-Reported By:                derquader
+Reported By:                wrar
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1953
-Category:                   PCI - hda-intel
+Issue ID:                   1423
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               Opensuse 10.0
-Kernel Version:             2.6.13-15.8
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-22-2006 08:04 CET
-Last Modified:              03-23-2006 17:07 CET
+Date Submitted:             09-15-2005 19:06 CEST
+Last Modified:              03-23-2006 17:11 CET
 ======================================================================
-Summary:                    Onboard Soundcard (STAC9221) records only noise
+Summary:                    dxs_support=5 works on EPoX EP-8KRAI
 Description: 
-I am using a Intel 945GCZ board with an integrated Sigmatel STAC9221
-soundcard.
+I set options snd-via82xx dxs_support=5  and didn't encounter any sound
+problems. I use ALSA 1.0.9b from kernel 2.6.13.
 
-When I try to record sound from my microphone I only get noise (and if I
-listen very closely there is my voice very quiet in the background).
+I have EPoX EP-8KRAI on KT600/8237:
 
-I have tried to set the amplification to maxium which gives me loud noise
-but does not make my voice sound any better :-/
+$ lspci -vvx
+0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+        Subsystem: EPoX Computer Co., Ltd.: Unknown device 300c
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin C routed to IRQ 185
+        Region 0: I/O ports at e700
+        Capabilities: <available only to root>
+00: 06 11 59 30 01 00 10 02 60 00 01 04 00 00 00 00
+10: 01 e7 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+20: 00 00 00 00 00 00 00 00 00 00 00 00 95 16 0c 30
+30: 00 00 00 00 c0 00 00 00 00 00 00 00 09 03 00 00
 
-(Recording works well with WinXP)
+$ lspci -vn
+0000:00:11.5 Class 0401: 1106:3059 (rev 60)
+        Subsystem: 1695:300c
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001951 Microphone doesnt work
-======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-23-06 16:08 
+ rlrevell - 03-22-06 03:09 
 ----------------------------------------------------------------------
-Good to hear.  Could you try the second patch instead?  It's a bit
-imrpvoed.
-If it works, I'll commit it to CVS tree.
+Can someone look at this?
 
 ----------------------------------------------------------------------
- tiwai - 03-23-06 17:07 
+ tiwai - 03-23-06 17:11 
 ----------------------------------------------------------------------
-OK now I committed the second patch to CVS since a positive report in
-#1951.
-Closing now.
+Fixed on CVS.  WIll appear in 1.0.11-final.
+Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-06 08:04 derquader      New Issue                                    
-03-22-06 08:04 derquader      Distribution              => Opensuse 10.0   
-03-22-06 08:04 derquader      Kernel Version            => 2.6.13-15.8     
-03-22-06 08:13 rlrevell       Note Added: 0008848                          
-03-22-06 20:57 derquader      Note Added: 0008869                          
-03-22-06 20:57 derquader      Issue Monitored: derquader                    
-03-22-06 21:10 derquader      Note Added: 0008871                          
-03-22-06 21:11 tiwai          Note Added: 0008872                          
-03-22-06 21:11 tiwai          File Added: stac92xx-auto-vref.diff               
-    
-03-22-06 21:12 tiwai          Note Added: 0008873                          
-03-22-06 21:37 derquader      Note Added: 0008874                          
-03-22-06 21:37 derquader      Issue End Monitor: derquader                    
-03-23-06 16:08 tiwai          Note Added: 0008884                          
-03-23-06 16:08 tiwai          File Added: stac92xx-auto-vref2.diff              
-     
-03-23-06 17:04 tiwai          Relationship added       has duplicate 0001951
-03-23-06 17:07 tiwai          Status                   assigned => resolved
-03-23-06 17:07 tiwai          Resolution               open => fixed       
-03-23-06 17:07 tiwai          Note Added: 0008891                          
+09-15-05 19:06 wrar           New Issue                                    
+03-22-06 03:09 rlrevell       Note Added: 0008798                          
+03-23-06 17:11 tiwai          Status                   new => resolved     
+03-23-06 17:11 tiwai          Resolution               open => fixed       
+03-23-06 17:11 tiwai          Assigned To               => tiwai           
+03-23-06 17:11 tiwai          Note Added: 0008892                          
 ======================================================================
 
 
