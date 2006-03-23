@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001545]: Flash player hangs in Firefox when using aoss
-Date: Thu, 23 Mar 2006 23:30:23 +0100
-Message-ID: <ae565acadfeb25997704d1c207d2d702@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001942]: [PATCH] added support uncommon "rate"
+Date: Thu, 23 Mar 2006 23:47:22 +0100
+Message-ID: <84f81dbc6dfaeac4e3a192b8ec37a670@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 96247148
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 23:30:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1AA151CD
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 23:47:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1545> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1942> 
 ======================================================================
-Reported By:                smagoun
-Assigned To:                
+Reported By:                os-bebas
+Assigned To:                Clemens Ladisch
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1545
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1942
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               UBuntu Dapper Drake
+Kernel Version:             2.6.15.6
 ======================================================================
-Date Submitted:             11-11-2005 21:30 CET
-Last Modified:              03-23-2006 23:30 CET
+Date Submitted:             03-18-2006 23:48 CET
+Last Modified:              03-23-2006 23:47 CET
 ======================================================================
-Summary:                    Flash player hangs in Firefox when using aoss
+Summary:                    [PATCH] added support uncommon "rate"
 Description: 
-I'm trying to get aoss to work with Firefox 1.5b2 and the Flash 7 plugin on
-an XScale (PXA 270) running Linux 2.6.13.4. Problem is, the browser hangs
-when navigating off a page that has Flash w/ sounds. The problem only
-happens when using aoss. GDB reports that the browser's hung up in
-snd_pcm_wait_nocheck, called from snd_pcm_dmix_drain.
+attached you can find a simple patch to match
+"uncommon" rate in some USB speaker to the fixed
+conv_rates in usbaudio.c.
 
-This sounds a bit like
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306, which was
-reportedly fixed in ALSA
-1.0.9a. I'm using the 1.0.9b drivers from 2.6.13.4 (plus patches for the
-AC97 that were subsequently rolled into 2.6.14). Upgrading alsa-oss and
-alsa-libs to 1.0.10rc3 didn't fix the problem.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001559 hang in snd_pcm_drain()
+Signed-off-by: S. Effendi <osbebas@yahoo.co.id>
+
 ======================================================================
 
 ----------------------------------------------------------------------
- gvy - 03-07-06 15:30 
+ Clemens Ladisch - 03-23-06 19:09 
 ----------------------------------------------------------------------
-alsa-lib 1.0.11rc3 seems enough to fix this (confirmed by a person who
-raised the problem in our unstable and by me on i8xx)
+What the USB audio specification says has only a rather vague similarity
+with what real devices implement.
+
+I wanted to see how many bytes per second the device accepts, but the OSS
+emulation automatically converted from 8000 Hz.
+Please show the output of "time ( dd if=/dev/zero bs=1000 count=4000 |
+aplay -D hw:1 -t raw -f cd - )".
 
 ----------------------------------------------------------------------
- smagoun - 03-23-06 23:30 
+ os-bebas - 03-23-06 23:47 
 ----------------------------------------------------------------------
-I can no longer reproduce this after upgrading to alsa-lib 1.0.11rc4,
-alsa-utils 1.0.11rc4, and alsa-oss 1.0.11rc3.
+I hope this will help.
+
+best regards.
+
+---
+root@d1:~# time ( dd if=/dev/zero bs=1000 count=4000 | aplay -D hw:1 -t
+raw -f cd - )
+Playing raw data 'stdin' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+4000+0 records in
+4000+0 records out
+4000000 bytes (4.0 MB) copied, 22.1492 seconds, 181 kB/s
+
+real    0m23.171s
+user    0m0.013s
+sys     0m0.014s
+
+---
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-11-05 21:30 smagoun        New Issue                                    
-12-22-05 11:43 ikonst         Issue Monitored: ikonst                      
-12-22-05 11:43 ikonst         Note Added: 0007122                          
-03-04-06 16:32 gvy            Note Added: 0008349                          
-03-04-06 16:33 gvy            Issue Monitored: gvy                         
-03-04-06 19:07 rlrevell       Relationship added       related to 0001559  
-03-04-06 19:15 gvy            Note Added: 0008353                          
-03-07-06 15:25 tiwai          Note Added: 0008366                          
-03-07-06 15:30 gvy            Note Added: 0008368                          
-03-23-06 23:30 smagoun        Note Added: 0008905                          
+03-18-06 23:48 os-bebas       New Issue                                    
+03-18-06 23:48 os-bebas       File Added: alsa_usbaudio_conv_rates_fixed.patch  
+                 
+03-18-06 23:48 os-bebas       Distribution              => UBuntu Dapper Drake
+03-18-06 23:48 os-bebas       Kernel Version            => 2.6.15.6        
+03-20-06 09:09 Clemens LadischNote Added: 0008712                          
+03-23-06 18:30 os-bebas       Note Added: 0008900                          
+03-23-06 19:09 Clemens LadischNote Added: 0008901                          
+03-23-06 23:47 os-bebas       Note Added: 0008906                          
 ======================================================================
 
 
