@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001423]: dxs_support=5 works on EPoX EP-8KRAI
-Date: Thu, 23 Mar 2006 17:11:52 +0100
-Message-ID: <7bed08c4fe107d630ec90d2298da9ab8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001927]: Capture Device not working
+Date: Thu, 23 Mar 2006 17:37:23 +0100
+Message-ID: <5cf793c1dc297aa505e638fffa446f2b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFA991BB
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:11:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED3421BB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 17:37:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,77 +22,196 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1423> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1927> 
 ======================================================================
-Reported By:                wrar
+Reported By:                sk0rp10
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1423
-Category:                   PCI - via82xx
+Issue ID:                   1927
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Slackware current
+Kernel Version:             2.6.15.6 vanilla
 ======================================================================
-Date Submitted:             09-15-2005 19:06 CEST
-Last Modified:              03-23-2006 17:11 CET
+Date Submitted:             03-15-2006 19:23 CET
+Last Modified:              03-23-2006 17:37 CET
 ======================================================================
-Summary:                    dxs_support=5 works on EPoX EP-8KRAI
+Summary:                    Capture Device not working
 Description: 
-I set options snd-via82xx dxs_support=5  and didn't encounter any sound
-problems. I use ALSA 1.0.9b from kernel 2.6.13.
+I tryed use krec to record from internal mic but no sound is recorded. 
+I applyed the patch from issue #1890.
 
-I have EPoX EP-8KRAI on KT600/8237:
+here asound.state:
 
-$ lspci -vvx
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: EPoX Computer Co., Ltd.: Unknown device 300c
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin C routed to IRQ 185
-        Region 0: I/O ports at e700
-        Capabilities: <available only to root>
-00: 06 11 59 30 01 00 10 02 60 00 01 04 00 00 00 00
-10: 01 e7 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-20: 00 00 00 00 00 00 00 00 00 00 00 00 95 16 0c 30
-30: 00 00 00 00 c0 00 00 00 00 00 00 00 09 03 00 00
-
-$ lspci -vn
-0000:00:11.5 Class 0401: 1106:3059 (rev 60)
-        Subsystem: 1695:300c
+state.Intel {
+        control.1 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 127'
+                iface MIXER
+                name 'Master Playback Volume'
+                value.0 121
+                value.1 121
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Master Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.3 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'CD Capture Volume'
+                value.0 7
+                value.1 7
+        }
+        control.4 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Capture Volume'
+                value.0 11
+                value.1 11
+        }
+        control.5 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Capture Switch'
+                value.0 false
+                value.1 false
+        }
+        control.6 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 HP
+                comment.item.1 Unknown
+                comment.item.2 Mic
+                comment.item.3 PCM
+                iface MIXER
+                name 'Capture Source'
+                value Mic
+        }
+        control.7 {
+                comment.access 'read write user'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 255'
+                iface MIXER
+                name 'PCM Playback Volume'
+                value.0 232
+                value.1 232
+        }
+}
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:09 
+ sk0rp10 - 03-21-06 11:08 
 ----------------------------------------------------------------------
-Can someone look at this?
+Rised Capture Volume to max, installed current CVS, but no sound captured
+by mic. 
+
+here the state:
+
+state.Intel {
+        control.1 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 127'
+                iface MIXER
+                name 'Master Playback Volume'
+                value.0 108
+                value.1 108
+        }
+        control.2 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Master Playback Switch'
+                value.0 true
+                value.1 true
+        }
+        control.3 {
+                comment.access 'read write'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 15'
+                iface MIXER
+                name 'Capture Volume'
+                value.0 15
+                value.1 15
+        }
+        control.4 {
+                comment.access 'read write'
+                comment.type BOOLEAN
+                comment.count 2
+                iface MIXER
+                name 'Capture Switch'
+                value.0 true
+                value.1 true
+        }
+        control.5 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 Mic
+                comment.item.1 PCM
+                iface MIXER
+                name 'Capture Source'
+                value Mic
+        }
+        control.6 {
+                comment.access 'read write user'
+                comment.type INTEGER
+                comment.count 2
+                comment.range '0 - 255'
+                iface MIXER
+                name 'PCM Playback Volume'
+                value.0 255
+                value.1 255
+        }
+}
 
 ----------------------------------------------------------------------
- tiwai - 03-23-06 17:11 
+ tiwai - 03-23-06 17:37 
 ----------------------------------------------------------------------
-Fixed on CVS.  WIll appear in 1.0.11-final.
-Thanks.
+The Mic is for the mic jack.  Maybe the internal mic is not supported.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-15-05 19:06 wrar           New Issue                                    
-03-22-06 03:09 rlrevell       Note Added: 0008798                          
-03-23-06 17:11 tiwai          Status                   new => resolved     
-03-23-06 17:11 tiwai          Resolution               open => fixed       
-03-23-06 17:11 tiwai          Assigned To               => tiwai           
-03-23-06 17:11 tiwai          Note Added: 0008892                          
+03-15-06 19:23 sk0rp10        New Issue                                    
+03-15-06 19:23 sk0rp10        Distribution              => Slackware current
+03-15-06 19:23 sk0rp10        Kernel Version            => 2.6.15.6 vanilla
+03-15-06 19:38 tiwai          Note Added: 0008569                          
+03-15-06 20:20 sk0rp10        Note Added: 0008572                          
+03-15-06 20:21 sk0rp10        File Added: codec.tar.gz                     
+03-15-06 20:47 sk0rp10        Issue Monitored: sk0rp10                     
+03-19-06 17:48 sk0rp10        Note Added: 0008692                          
+03-19-06 19:46 rlrevell       Note Added: 0008696                          
+03-21-06 11:08 sk0rp10        Note Added: 0008742                          
+03-23-06 17:37 tiwai          Note Added: 0008893                          
 ======================================================================
 
 
