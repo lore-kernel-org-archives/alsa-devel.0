@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
-Date: Fri, 24 Mar 2006 20:12:40 +0100
-Message-ID: <f3242433ef7e1b0571563ce91cb2a9fd@bugtrack.alsa-project.org>
+Date: Fri, 24 Mar 2006 20:47:16 +0100
+Message-ID: <5864834bb110ac84994e1e6a2261e519@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6A021A7
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 20:12:40 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E1B4B1C5
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 20:47:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian sid with custom x86-64 kernel
 Kernel Version:             2.6.16-rc6
 ======================================================================
 Date Submitted:             03-17-2006 20:31 CET
-Last Modified:              03-24-2006 20:12 CET
+Last Modified:              03-24-2006 20:47 CET
 ======================================================================
 Summary:                    EPIPE on Audigy with surround sound when seeking in
 6 channel sound file
@@ -54,18 +54,19 @@ success.
 ======================================================================
 
 ----------------------------------------------------------------------
- bambam - 03-24-06 18:07 
-----------------------------------------------------------------------
-It happens only with 32-bit apps when using a surround device (surround40
-or surround51). It doesn't matter how many channels the file actually has
-(contrary to what I've written in the first post).
-
-----------------------------------------------------------------------
  bambam - 03-24-06 20:12 
 ----------------------------------------------------------------------
 Attached you will find a strace log from 32-bit mplayer playing an 6
 channel AC3 file to the surround51 device. There are actually two strace
 logfiles because mplayer forks for reading the input file.
+
+----------------------------------------------------------------------
+ bambam - 03-24-06 20:47 
+----------------------------------------------------------------------
+In order to find the place where mplayer reports Broken pipe, search for
+"write error" in mplayer.strace. Strange enough, there's no system call
+returning EPIPE but I don't know the internals of ALSA so that might not
+mean anything.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -108,6 +109,7 @@ custom x86-64 kernel
 03-24-06 18:07 bambam         Note Added: 0008931                          
 03-24-06 20:11 bambam         File Added: strace.tar.bz2                    
 03-24-06 20:12 bambam         Note Added: 0008935                          
+03-24-06 20:47 bambam         Note Added: 0008936                          
 ======================================================================
 
 
