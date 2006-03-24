@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
-Date: Fri, 24 Mar 2006 17:34:45 +0100
-Message-ID: <b4b6110685e25b2a37c2e6bd148febbb@bugtrack.alsa-project.org>
+Date: Fri, 24 Mar 2006 17:36:23 +0100
+Message-ID: <ba4f5deccd38ab8bf582962ef3ffe88e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E7571A7
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 17:34:46 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58CBB1A7
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 17:36:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               Debian sid with custom x86-64 kernel
 Kernel Version:             2.6.16-rc6
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-17-2006 20:31 CET
-Last Modified:              03-24-2006 17:34 CET
+Last Modified:              03-24-2006 17:36 CET
 ======================================================================
 Summary:                    EPIPE on Audigy with surround sound when seeking in
 6 channel sound file
@@ -54,23 +56,16 @@ success.
 ======================================================================
 
 ----------------------------------------------------------------------
- bambam - 03-24-06 17:29 
-----------------------------------------------------------------------
-This issue with bug id #1938 is about sound_pcm_writei returning EPIPE in
-mixed 64/32 bit environment and this is the bug number that pcm_direct.c
-log refers to. I've tried today's CVS which I understnd contains all the
-changes in rc4 and this bug still exists.
-There is another bug with id #1584 regarding 100% CPU load with dmix
-device on mixed 64/32 bit systems where I added a note. I will check later
-if it has been solved because I requires the builtin soundcard to be
-reenabled in the BIOS.
-
-----------------------------------------------------------------------
  tiwai - 03-24-06 17:34 
 ----------------------------------------------------------------------
 OK, and it doesn't happen if you use only two channels even with 32bit
 apps?
 Could try strace to see the calls until -EPIPE occurs?
+
+----------------------------------------------------------------------
+ tiwai - 03-24-06 17:36 
+----------------------------------------------------------------------
+Fixed.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,6 +98,9 @@ custom x86-64 kernel
 03-24-06 17:06 tiwai          Note Added: 0008922                          
 03-24-06 17:29 bambam         Note Added: 0008923                          
 03-24-06 17:34 tiwai          Note Added: 0008925                          
+03-24-06 17:36 tiwai          Status                   feedback => resolved
+03-24-06 17:36 tiwai          Resolution               reopened => fixed   
+03-24-06 17:36 tiwai          Note Added: 0008926                          
 ======================================================================
 
 
