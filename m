@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001959]: Compilation warning in control_compat.c
-Date: Fri, 24 Mar 2006 20:58:34 +0100
-Message-ID: <13ae84bbda7d1dedd29ed0d41f20cf73@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001960]: Compilation warning in control_compat.c
+Date: Fri, 24 Mar 2006 21:02:45 +0100
+Message-ID: <d530ab216fd10803ca6bc6f587be93d9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 136D01D5
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 20:58:34 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8287193
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 21:02:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,23 +24,23 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1959> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1960> 
 ======================================================================
 Reported By:                Henne
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1959
+Issue ID:                   1960
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Suse 10.0 x86_64
+Kernel Version:             2.6.15-rc1-kj1
 ======================================================================
-Date Submitted:             03-24-2006 20:58 CET
-Last Modified:              03-24-2006 20:58 CET
+Date Submitted:             03-24-2006 21:02 CET
+Last Modified:              03-24-2006 21:02 CET
 ======================================================================
 Summary:                    Compilation warning in control_compat.c
 Description: 
@@ -51,14 +51,15 @@ I've compiled the new alsa-driver-1.0.11rc4 and got a warning message:
 /alsa-kernel/core/control_compat.c:222: warning: &#8216;count&#8217; may
 be used uninitialized in this function
 
-I belive that this is a gcc-error (I use gcc version 4.0.2 20050901
-(prerelease) (SUSE Linux)), since I looked at the code and  
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-06 20:58 Henne          New Issue                                    
+03-24-06 21:02 Henne          New Issue                                    
+03-24-06 21:02 Henne          Distribution              => Suse 10.0 x86_64
+03-24-06 21:02 Henne          Kernel Version            => 2.6.15-rc1-kj1  
 ======================================================================
 
 
