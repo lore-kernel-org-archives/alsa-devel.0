@@ -1,14 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Chip support for CS4270 and CS4265
-Date: Fri, 24 Mar 2006 14:21:49 +0100
-Message-ID: <20060324132149.GD1671@turing.informatik.uni-halle.de>
-References: <44206189.5070208@pianodisc.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001942]: [PATCH] added support uncommon "rate"
+Date: Fri, 24 Mar 2006 14:35:27 +0100
+Message-ID: <f3a2d7c61a383538e9405597de762476@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <44206189.5070208@pianodisc.com>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E9F6189
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 14:35:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,30 +18,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Steve deRosier <derosier@pianodisc.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Steve deRosier wrote:
-> Does anyone know if the CS4270 and CS4265 are supported in Alsa?
 
-These chips cannot be connected directly to a PCI (or similar) bus; they
-expect audio data in a simple serial format and require some controller
-chip that does DMA from/to the computer's memory.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1942> 
+======================================================================
+Reported By:                os-bebas
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1942
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               UBuntu Dapper Drake
+Kernel Version:             2.6.15.6
+======================================================================
+Date Submitted:             03-18-2006 23:48 CET
+Last Modified:              03-24-2006 14:35 CET
+======================================================================
+Summary:                    [PATCH] added support uncommon "rate"
+Description: 
+attached you can find a simple patch to match
+"uncommon" rate in some USB speaker to the fixed
+conv_rates in usbaudio.c.
 
-The ALSA driver, if it existed, would be for this controller chip.
+Signed-off-by: S. Effendi <osbebas@yahoo.co.id>
 
-Do you have some particular sound card in mind?
+======================================================================
 
-> I don't see either one on the matrix on the website, and also noted
-> that ALL CS chips mentioned are listed as discontinued on Cirrus
-> Logic's web site.
+----------------------------------------------------------------------
+ os-bebas - 03-23-06 23:47 
+----------------------------------------------------------------------
+I hope this will help.
 
-Those are chips that have a PCI or ISA interface.
+best regards.
+
+---
+root@d1:~# time ( dd if=/dev/zero bs=1000 count=4000 | aplay -D hw:1 -t
+raw -f cd - )
+Playing raw data 'stdin' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+4000+0 records in
+4000+0 records out
+4000000 bytes (4.0 MB) copied, 22.1492 seconds, 181 kB/s
+
+real    0m23.171s
+user    0m0.013s
+sys     0m0.014s
+
+---
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-24-06 14:35 
+----------------------------------------------------------------------
+>From your computer's POV, the device runs at about 45148 Hz.  You might try
+"count=40000" for a more precise measurement.
+
+Anyway, mpg123 shouldn't complain, the OSS emulation is able to resample
+from any frequency.
+
+Please try to use the ALSA interface instead of OSS.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-18-06 23:48 os-bebas       New Issue                                    
+03-18-06 23:48 os-bebas       File Added: alsa_usbaudio_conv_rates_fixed.patch  
+                 
+03-18-06 23:48 os-bebas       Distribution              => UBuntu Dapper Drake
+03-18-06 23:48 os-bebas       Kernel Version            => 2.6.15.6        
+03-20-06 09:09 Clemens LadischNote Added: 0008712                          
+03-23-06 18:30 os-bebas       Note Added: 0008900                          
+03-23-06 19:09 Clemens LadischNote Added: 0008901                          
+03-23-06 23:47 os-bebas       Note Added: 0008906                          
+03-24-06 14:35 Clemens LadischNote Added: 0008917                          
+======================================================================
 
 
-HTH
-Clemens
 
 
 -------------------------------------------------------
