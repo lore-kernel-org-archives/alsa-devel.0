@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001942]: [PATCH] added support uncommon "rate"
-Date: Fri, 24 Mar 2006 14:35:27 +0100
-Message-ID: <f3a2d7c61a383538e9405597de762476@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
+Date: Fri, 24 Mar 2006 15:05:00 +0100
+Message-ID: <d5aa0e315d5697234b45664d10a8be26@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E9F6189
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 14:35:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 460271CD
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 15:05:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,117 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1942> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
 ======================================================================
-Reported By:                os-bebas
-Assigned To:                Clemens Ladisch
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1942
-Category:                   USB - usb-audio
+Issue ID:                   1726
+Category:                   PCI - au88x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               UBuntu Dapper Drake
-Kernel Version:             2.6.15.6
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             03-18-2006 23:48 CET
-Last Modified:              03-24-2006 14:35 CET
+Date Submitted:             01-08-2006 17:41 CET
+Last Modified:              03-24-2006 15:04 CET
 ======================================================================
-Summary:                    [PATCH] added support uncommon "rate"
+Summary:                    Front and Rear channels swap after first play when
+playing Surround40 on au8830
 Description: 
-attached you can find a simple patch to match
-"uncommon" rate in some USB speaker to the fixed
-conv_rates in usbaudio.c.
+The front and rear channels are correct for playing Surround40 only at the
+first time after the driver is loaded. 
 
-Signed-off-by: S. Effendi <osbebas@yahoo.co.id>
+The front and rear channels (Surround40) always swapped afterward using
+speaker-test or xine. 
+
+Playing stereo sound is OK.
+
+
+ speaker-test -c4 -D hw:0,0
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+Time per period = 11.856821
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
 
 ======================================================================
 
 ----------------------------------------------------------------------
- os-bebas - 03-23-06 23:47 
+ Raymond - 03-03-06 09:19 
 ----------------------------------------------------------------------
-I hope this will help.
+As hook function is called when snd_xxx_pcm_open(), using hook and
+subdevice volume control cannot provide a true "front" and "rear" device
+since the hardware mixer is allocated at snd_xxx_hw_params() and
+snd_pcm_get_channels_max() is still 4 not 2.
 
-best regards.
 
----
-root@d1:~# time ( dd if=/dev/zero bs=1000 count=4000 | aplay -D hw:1 -t
-raw -f cd - )
-Playing raw data 'stdin' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-4000+0 records in
-4000+0 records out
-4000000 bytes (4.0 MB) copied, 22.1492 seconds, 181 kB/s
-
-real    0m23.171s
-user    0m0.013s
-sys     0m0.014s
-
----
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 03-24-06 14:35 
+ Raymond - 03-24-06 15:04 
 ----------------------------------------------------------------------
->From your computer's POV, the device runs at about 45148 Hz.  You might try
-"count=40000" for a more precise measurement.
-
-Anyway, mpg123 shouldn't complain, the OSS emulation is able to resample
-from any frequency.
-
-Please try to use the ALSA interface instead of OSS.
+I upload the au8830.conf which allow xine and cvs version of mplayer to
+play surround51
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-18-06 23:48 os-bebas       New Issue                                    
-03-18-06 23:48 os-bebas       File Added: alsa_usbaudio_conv_rates_fixed.patch  
-                 
-03-18-06 23:48 os-bebas       Distribution              => UBuntu Dapper Drake
-03-18-06 23:48 os-bebas       Kernel Version            => 2.6.15.6        
-03-20-06 09:09 Clemens LadischNote Added: 0008712                          
-03-23-06 18:30 os-bebas       Note Added: 0008900                          
-03-23-06 19:09 Clemens LadischNote Added: 0008901                          
-03-23-06 23:47 os-bebas       Note Added: 0008906                          
-03-24-06 14:35 Clemens LadischNote Added: 0008917                          
+01-08-06 17:41 Raymond        New Issue                                    
+01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
+01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
+    
+02-04-06 06:26 Raymond        Note Added: 0007912                          
+02-10-06 05:36 ponchick       Note Added: 0007987                          
+02-10-06 06:32 Raymond        Note Added: 0007991                          
+02-10-06 10:50 ponchick       Note Added: 0007998                          
+02-10-06 11:25 Raymond        Note Added: 0008000                          
+02-10-06 13:49 Raymond        Note Added: 0008003                          
+02-10-06 13:56 Raymond        Note Edited: 0008003                         
+02-12-06 07:48 Raymond        Note Edited: 0008003                         
+02-12-06 10:12 Raymond        Note Edited: 0008000                         
+02-16-06 05:37 ponchick       Note Added: 0008085                          
+02-16-06 08:12 Raymond        Note Added: 0008088                          
+02-16-06 10:12 Raymond        Note Added: 0008090                          
+02-16-06 10:28 Raymond        Note Edited: 0008090                         
+02-16-06 16:07 Raymond        Note Added: 0008097                          
+02-17-06 03:35 ponchick       Note Added: 0008104                          
+02-17-06 04:28 Raymond        Note Added: 0008105                          
+02-17-06 04:35 Raymond        Note Edited: 0008105                         
+02-17-06 05:56 Raymond        Note Edited: 0008105                         
+02-17-06 06:09 Raymond        Note Edited: 0008105                         
+02-26-06 07:22 ponchick       Note Added: 0008198                          
+02-26-06 13:28 Raymond        Note Added: 0008200                          
+02-26-06 14:08 Raymond        Note Edited: 0008200                         
+02-27-06 06:57 ponchick       Note Added: 0008216                          
+02-27-06 14:09 Raymond        Note Added: 0008222                          
+02-28-06 04:42 Raymond        Note Added: 0008239                          
+03-03-06 07:18 Raymond        Note Added: 0008334                          
+03-03-06 09:19 Raymond        Note Edited: 0008334                         
+03-24-06 14:57 Raymond        File Added: AU8830.conf                      
+03-24-06 15:04 Raymond        Note Added: 0008918                          
 ======================================================================
 
 
