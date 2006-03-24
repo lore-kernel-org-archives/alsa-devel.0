@@ -1,14 +1,14 @@
 From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: [ALSA] ISA drivers bailing on first !enable[i]
-Date: Fri, 24 Mar 2006 06:32:50 +0100
-Message-ID: <44238482.50401@keyaccess.nl>
+Subject: [ALSA] ISA drivers bailing on first IS_ERR
+Date: Fri, 24 Mar 2006 06:33:02 +0100
+Message-ID: <4423848E.9030805@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------010904020002050806060005"
+ boundary="------------070003090208090007090509"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl [213.51.130.201])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 15A321C3
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 06:31:54 +0100 (MET)
+Received: from smtpq3.groni1.gr.home.nl (smtpq3.groni1.gr.home.nl [213.51.130.202])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C1741C3
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 06:32:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,294 +19,534 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------010904020002050806060005
+--------------070003090208090007090509
 Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Hi Takashi.
 
-After the change to the platform_driver stuff in 2.6.16, all ISA card
-module_inits loop over the cards using:
+If as per the previous message an error return from the probe() method
+should make platform_driver_register_simple() return IS_ERR, then the
+SNDRV_CARDS loop should continue with the next one, instead of bailing.
 
-	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
+If the bus_add_device() patch and the attached is applied, the pre
+platform_driver behaviour of not loading on not finding any devices (and
+printing a message to that effect) is restored. Without, the printk is
+dead code.
 
-This means that the driver bails completely on the first !enable[i].
-This did not use to be the case and does not seem right. I believe it
-should rather be:
+This has been generated against 2.6.16 + the earlier !enable[i] patch.
 
-	for (i = 0; i < SNDRV_CARDS; i++) {
-		if (!enable[i])
-			continue;
-
-This would restore the previous behaviour for the enable parameter; ie,
-only ignore the one.
-
-Assuming this was indeed the idea, I've attached a patch against 2.6.16.
-If it's correct, but you need it against ALSA CVS instead, please say so
-
-     sound/isa/ad1848/ad1848.c       |    4 +++-
-     sound/isa/cmi8330.c             |    4 ++--
-     sound/isa/cs423x/cs4231.c       |    4 +++-
-     sound/isa/cs423x/cs4236.c       |    4 ++--
-     sound/isa/es1688/es1688.c       |    4 +++-
-     sound/isa/gus/gusclassic.c      |    4 +++-
-     sound/isa/gus/gusextreme.c      |    4 +++-
-     sound/isa/gus/gusmax.c          |    4 +++-
-     sound/isa/gus/interwave.c       |    4 +++-
-     sound/isa/opl3sa2.c             |    4 +++-
-     sound/isa/sb/sb16.c             |    4 ++--
-     sound/isa/sb/sb8.c              |    4 +++-
-     sound/isa/sgalaxy.c             |    4 +++-
-     sound/isa/wavefront/wavefront.c |    4 +++-
-     14 files changed, 39 insertions(+), 17 deletions(-)
+   sound/isa/ad1848/ad1848.c       |   14 ++++----------
+   sound/isa/cmi8330.c             |   14 ++++----------
+   sound/isa/cs423x/cs4231.c       |   14 ++++----------
+   sound/isa/cs423x/cs4236.c       |   14 ++++----------
+   sound/isa/es1688/es1688.c       |   14 ++++----------
+   sound/isa/gus/gusclassic.c      |   14 ++++----------
+   sound/isa/gus/gusextreme.c      |   14 ++++----------
+   sound/isa/gus/gusmax.c          |   14 ++++----------
+   sound/isa/gus/interwave.c       |   14 ++++----------
+   sound/isa/opl3sa2.c             |   14 ++++----------
+   sound/isa/sb/sb16.c             |   14 ++++----------
+   sound/isa/sb/sb8.c              |   14 ++++----------
+   sound/isa/sgalaxy.c             |   14 ++++----------
+   sound/isa/wavefront/wavefront.c |   14 ++++----------
+   14 files changed, 56 insertions(+), 140 deletions(-)
 
 Rene.
 
 
 
-
-
---------------010904020002050806060005
+--------------070003090208090007090509
 Content-Type: text/plain;
- name="alsa_platform_enable.diff"
+ name="alsa_platform_dont_bail_on_error.diff"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="alsa_platform_enable.diff"
+ filename="alsa_platform_dont_bail_on_error.diff"
 
 Index: local/sound/isa/ad1848/ad1848.c
 ===================================================================
---- local.orig/sound/isa/ad1848/ad1848.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/ad1848/ad1848.c	2006-03-24 02:39:20.000000000 +0100
-@@ -187,8 +187,10 @@ static int __init alsa_card_ad1848_init(
- 		return err;
- 
- 	cards = 0;
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
-+		if (!enable[i])
-+			continue;
+--- local.orig/sound/isa/ad1848/ad1848.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/ad1848/ad1848.c	2006-03-24 05:10:00.000000000 +0100
+@@ -193,10 +193,8 @@ static int __init alsa_card_ad1848_init(
+ 			continue;
  		device = platform_device_register_simple(SND_AD1848_DRIVER,
  							 i, NULL, 0);
- 		if (IS_ERR(device)) {
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		devices[i] = device;
+ 		cards++;
+ 	}
+@@ -204,14 +202,10 @@ static int __init alsa_card_ad1848_init(
+ #ifdef MODULE
+ 		printk(KERN_ERR "AD1848 soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_ad1848_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_ad1848_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_ad1848_exit(void)
 Index: local/sound/isa/cmi8330.c
 ===================================================================
---- local.orig/sound/isa/cmi8330.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/cmi8330.c	2006-03-24 02:34:03.000000000 +0100
-@@ -690,9 +690,9 @@ static int __init alsa_card_cmi8330_init
- 	if ((err = platform_driver_register(&snd_cmi8330_driver)) < 0)
- 		return err;
- 
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
--		if (is_isapnp_selected(i))
-+		if (!enable[i] || is_isapnp_selected(i))
+--- local.orig/sound/isa/cmi8330.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/cmi8330.c	2006-03-24 04:46:48.000000000 +0100
+@@ -696,10 +696,8 @@ static int __init alsa_card_cmi8330_init
  			continue;
  		device = platform_device_register_simple(CMI8330_DRIVER,
  							 i, NULL, 0);
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		platform_devices[i] = device;
+ 		cards++;
+ 	}
+@@ -716,14 +714,10 @@ static int __init alsa_card_cmi8330_init
+ #ifdef MODULE
+ 		snd_printk(KERN_ERR "CMI8330 not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_cmi8330_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_cmi8330_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_cmi8330_exit(void)
 Index: local/sound/isa/cs423x/cs4231.c
 ===================================================================
---- local.orig/sound/isa/cs423x/cs4231.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/cs423x/cs4231.c	2006-03-24 02:38:21.000000000 +0100
-@@ -203,8 +203,10 @@ static int __init alsa_card_cs4231_init(
- 		return err;
- 
- 	cards = 0;
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
-+		if (!enable[i])
-+			continue;
+--- local.orig/sound/isa/cs423x/cs4231.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/cs423x/cs4231.c	2006-03-24 04:48:15.000000000 +0100
+@@ -209,10 +209,8 @@ static int __init alsa_card_cs4231_init(
+ 			continue;
  		device = platform_device_register_simple(SND_CS4231_DRIVER,
  							 i, NULL, 0);
- 		if (IS_ERR(device)) {
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		devices[i] = device;
+ 		cards++;
+ 	}
+@@ -220,14 +218,10 @@ static int __init alsa_card_cs4231_init(
+ #ifdef MODULE
+ 		printk(KERN_ERR "CS4231 soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_cs4231_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_cs4231_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_cs4231_exit(void)
 Index: local/sound/isa/cs423x/cs4236.c
 ===================================================================
---- local.orig/sound/isa/cs423x/cs4236.c	2006-03-23 04:11:11.000000000 +0100
-+++ local/sound/isa/cs423x/cs4236.c	2006-03-24 02:37:58.000000000 +0100
-@@ -771,9 +771,9 @@ static int __init alsa_card_cs423x_init(
- 	if ((err = platform_driver_register(&cs423x_nonpnp_driver)) < 0)
- 		return err;
- 
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
--		if (is_isapnp_selected(i))
-+		if (!enable[i] || is_isapnp_selected(i))
+--- local.orig/sound/isa/cs423x/cs4236.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/cs423x/cs4236.c	2006-03-24 04:50:04.000000000 +0100
+@@ -777,10 +777,8 @@ static int __init alsa_card_cs423x_init(
  			continue;
  		device = platform_device_register_simple(CS423X_DRIVER,
  							 i, NULL, 0);
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		platform_devices[i] = device;
+ 		cards++;
+ 	}
+@@ -803,14 +801,10 @@ static int __init alsa_card_cs423x_init(
+ #ifdef MODULE
+ 		printk(KERN_ERR IDENT " soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_cs423x_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_cs423x_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_cs423x_exit(void)
 Index: local/sound/isa/es1688/es1688.c
 ===================================================================
---- local.orig/sound/isa/es1688/es1688.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/es1688/es1688.c	2006-03-24 02:42:14.000000000 +0100
-@@ -207,8 +207,10 @@ static int __init alsa_card_es1688_init(
- 		return err;
- 
- 	cards = 0;
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
-+		if (!enable[i])
-+			continue;
+--- local.orig/sound/isa/es1688/es1688.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/es1688/es1688.c	2006-03-24 04:52:52.000000000 +0100
+@@ -213,10 +213,8 @@ static int __init alsa_card_es1688_init(
+ 			continue;
  		device = platform_device_register_simple(ES1688_DRIVER,
  							 i, NULL, 0);
- 		if (IS_ERR(device)) {
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		devices[i] = device;
+ 		cards++;
+ 	}
+@@ -224,14 +222,10 @@ static int __init alsa_card_es1688_init(
+ #ifdef MODULE
+ 		printk(KERN_ERR "ESS AudioDrive ES1688 soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_es1688_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_es1688_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_es1688_exit(void)
 Index: local/sound/isa/gus/gusclassic.c
 ===================================================================
---- local.orig/sound/isa/gus/gusclassic.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/gus/gusclassic.c	2006-03-24 02:43:12.000000000 +0100
-@@ -247,8 +247,10 @@ static int __init alsa_card_gusclassic_i
- 		return err;
- 
- 	cards = 0;
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
-+		if (!enable[i])
-+			continue;
+--- local.orig/sound/isa/gus/gusclassic.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/gus/gusclassic.c	2006-03-24 04:53:46.000000000 +0100
+@@ -253,10 +253,8 @@ static int __init alsa_card_gusclassic_i
+ 			continue;
  		device = platform_device_register_simple(GUSCLASSIC_DRIVER,
  							 i, NULL, 0);
- 		if (IS_ERR(device)) {
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		devices[i] = device;
+ 		cards++;
+ 	}
+@@ -264,14 +262,10 @@ static int __init alsa_card_gusclassic_i
+ #ifdef MODULE
+ 		printk(KERN_ERR "GUS Classic soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_gusclassic_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_gusclassic_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_gusclassic_exit(void)
 Index: local/sound/isa/gus/gusextreme.c
 ===================================================================
---- local.orig/sound/isa/gus/gusextreme.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/gus/gusextreme.c	2006-03-24 02:44:56.000000000 +0100
-@@ -357,8 +357,10 @@ static int __init alsa_card_gusextreme_i
- 		return err;
- 
- 	cards = 0;
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
-+		if (!enable[i])
-+			continue;
+--- local.orig/sound/isa/gus/gusextreme.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/gus/gusextreme.c	2006-03-24 04:55:00.000000000 +0100
+@@ -363,10 +363,8 @@ static int __init alsa_card_gusextreme_i
+ 			continue;
  		device = platform_device_register_simple(GUSEXTREME_DRIVER,
  							 i, NULL, 0);
- 		if (IS_ERR(device)) {
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		devices[i] = device;
+ 		cards++;
+ 	}
+@@ -374,14 +372,10 @@ static int __init alsa_card_gusextreme_i
+ #ifdef MODULE
+ 		printk(KERN_ERR "GUS Extreme soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_gusextreme_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_gusextreme_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_gusextreme_exit(void)
 Index: local/sound/isa/gus/gusmax.c
 ===================================================================
---- local.orig/sound/isa/gus/gusmax.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/gus/gusmax.c	2006-03-24 02:44:03.000000000 +0100
-@@ -384,8 +384,10 @@ static int __init alsa_card_gusmax_init(
- 		return err;
- 
- 	cards = 0;
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
-+		if (!enable[i])
-+			continue;
+--- local.orig/sound/isa/gus/gusmax.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/gus/gusmax.c	2006-03-24 04:56:05.000000000 +0100
+@@ -390,10 +390,8 @@ static int __init alsa_card_gusmax_init(
+ 			continue;
  		device = platform_device_register_simple(GUSMAX_DRIVER,
  							 i, NULL, 0);
- 		if (IS_ERR(device)) {
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		devices[i] = device;
+ 		cards++;
+ 	}
+@@ -401,14 +399,10 @@ static int __init alsa_card_gusmax_init(
+ #ifdef MODULE
+ 		printk(KERN_ERR "GUS MAX soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_gusmax_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_gusmax_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_gusmax_exit(void)
 Index: local/sound/isa/gus/interwave.c
 ===================================================================
---- local.orig/sound/isa/gus/interwave.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/gus/interwave.c	2006-03-24 02:45:43.000000000 +0100
-@@ -935,8 +935,10 @@ static int __init alsa_card_interwave_in
- 	if ((err = platform_driver_register(&snd_interwave_driver)) < 0)
- 		return err;
- 
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
-+		if (!enable[i])
+--- local.orig/sound/isa/gus/interwave.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/gus/interwave.c	2006-03-24 04:56:52.000000000 +0100
+@@ -945,10 +945,8 @@ static int __init alsa_card_interwave_in
+ #endif
+ 		device = platform_device_register_simple(INTERWAVE_DRIVER,
+ 							 i, NULL, 0);
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
 +			continue;
- #ifdef CONFIG_PNP
- 		if (isapnp[i])
- 			continue;
+ 		platform_devices[i] = device;
+ 		cards++;
+ 	}
+@@ -964,14 +962,10 @@ static int __init alsa_card_interwave_in
+ #ifdef MODULE
+ 		printk(KERN_ERR "InterWave soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_interwave_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_interwave_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_interwave_exit(void)
 Index: local/sound/isa/opl3sa2.c
 ===================================================================
---- local.orig/sound/isa/opl3sa2.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/opl3sa2.c	2006-03-24 02:47:22.000000000 +0100
-@@ -949,8 +949,10 @@ static int __init alsa_card_opl3sa2_init
- 	if ((err = platform_driver_register(&snd_opl3sa2_nonpnp_driver)) < 0)
- 		return err;
- 
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
-+		if (!enable[i])
+--- local.orig/sound/isa/opl3sa2.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/opl3sa2.c	2006-03-24 04:58:02.000000000 +0100
+@@ -959,10 +959,8 @@ static int __init alsa_card_opl3sa2_init
+ #endif
+ 		device = platform_device_register_simple(OPL3SA2_DRIVER,
+ 							 i, NULL, 0);
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
 +			continue;
- #ifdef CONFIG_PNP
- 		if (isapnp[i])
- 			continue;
+ 		platform_devices[i] = device;
+ 		cards++;
+ 	}
+@@ -984,14 +982,10 @@ static int __init alsa_card_opl3sa2_init
+ #ifdef MODULE
+ 		snd_printk(KERN_ERR "Yamaha OPL3-SA soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_opl3sa2_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_opl3sa2_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_opl3sa2_exit(void)
 Index: local/sound/isa/sb/sb16.c
 ===================================================================
---- local.orig/sound/isa/sb/sb16.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/sb/sb16.c	2006-03-24 02:49:24.000000000 +0100
-@@ -712,9 +712,9 @@ static int __init alsa_card_sb16_init(vo
- 	if ((err = platform_driver_register(&snd_sb16_nonpnp_driver)) < 0)
- 		return err;
- 
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
--		if (is_isapnp_selected(i))
-+		if (!enable[i] || is_isapnp_selected(i))
+--- local.orig/sound/isa/sb/sb16.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/sb/sb16.c	2006-03-24 05:01:09.000000000 +0100
+@@ -718,10 +718,8 @@ static int __init alsa_card_sb16_init(vo
  			continue;
  		device = platform_device_register_simple(SND_SB16_DRIVER,
  							 i, NULL, 0);
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		platform_devices[i] = device;
+ 		cards++;
+ 	}
+@@ -743,14 +741,10 @@ static int __init alsa_card_sb16_init(vo
+ 		snd_printk(KERN_ERR "In case, if you have AWE card, try snd-sbawe module\n");
+ #endif
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_sb16_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_sb16_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_sb16_exit(void)
 Index: local/sound/isa/sb/sb8.c
 ===================================================================
---- local.orig/sound/isa/sb/sb8.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/sb/sb8.c	2006-03-24 02:50:20.000000000 +0100
-@@ -258,8 +258,10 @@ static int __init alsa_card_sb8_init(voi
- 		return err;
- 
- 	cards = 0;
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
-+		if (!enable[i])
-+			continue;
+--- local.orig/sound/isa/sb/sb8.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/sb/sb8.c	2006-03-24 05:01:46.000000000 +0100
+@@ -264,10 +264,8 @@ static int __init alsa_card_sb8_init(voi
+ 			continue;
  		device = platform_device_register_simple(SND_SB8_DRIVER,
  							 i, NULL, 0);
- 		if (IS_ERR(device)) {
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		devices[i] = device;
+ 		cards++;
+ 	}
+@@ -275,14 +273,10 @@ static int __init alsa_card_sb8_init(voi
+ #ifdef MODULE
+ 		snd_printk(KERN_ERR "Sound Blaster soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_sb8_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_sb8_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_sb8_exit(void)
 Index: local/sound/isa/sgalaxy.c
 ===================================================================
---- local.orig/sound/isa/sgalaxy.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/sgalaxy.c	2006-03-24 02:51:11.000000000 +0100
-@@ -360,8 +360,10 @@ static int __init alsa_card_sgalaxy_init
- 		return err;
- 
- 	cards = 0;
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
-+		if (!enable[i])
-+			continue;
+--- local.orig/sound/isa/sgalaxy.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/sgalaxy.c	2006-03-24 05:05:21.000000000 +0100
+@@ -366,10 +366,8 @@ static int __init alsa_card_sgalaxy_init
+ 			continue;
  		device = platform_device_register_simple(SND_SGALAXY_DRIVER,
  							 i, NULL, 0);
- 		if (IS_ERR(device)) {
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		devices[i] = device;
+ 		cards++;
+ 	}
+@@ -377,14 +375,10 @@ static int __init alsa_card_sgalaxy_init
+ #ifdef MODULE
+ 		snd_printk(KERN_ERR "Sound Galaxy soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_sgalaxy_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_sgalaxy_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_sgalaxy_exit(void)
 Index: local/sound/isa/wavefront/wavefront.c
 ===================================================================
---- local.orig/sound/isa/wavefront/wavefront.c	2006-02-27 19:22:35.000000000 +0100
-+++ local/sound/isa/wavefront/wavefront.c	2006-03-24 02:53:05.000000000 +0100
-@@ -710,8 +710,10 @@ static int __init alsa_card_wavefront_in
- 	if ((err = platform_driver_register(&snd_wavefront_driver)) < 0)
- 		return err;
- 
--	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
-+	for (i = 0; i < SNDRV_CARDS; i++) {
- 		struct platform_device *device;
-+		if (!enable[i])
+--- local.orig/sound/isa/wavefront/wavefront.c	2006-03-24 03:16:06.000000000 +0100
++++ local/sound/isa/wavefront/wavefront.c	2006-03-24 05:07:05.000000000 +0100
+@@ -720,10 +720,8 @@ static int __init alsa_card_wavefront_in
+ #endif
+ 		device = platform_device_register_simple(WAVEFRONT_DRIVER,
+ 							 i, NULL, 0);
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
 +			continue;
- #ifdef CONFIG_PNP
- 		if (isapnp[i])
- 			continue;
+ 		platform_devices[i] = device;
+ 		cards++;
+ 	}
+@@ -740,14 +738,10 @@ static int __init alsa_card_wavefront_in
+ #ifdef MODULE
+ 		printk (KERN_ERR "No WaveFront cards found or devices busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_wavefront_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_wavefront_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_wavefront_exit(void)
 
 
 
-
-
---------------010904020002050806060005--
+--------------070003090208090007090509--
 
 
 -------------------------------------------------------
