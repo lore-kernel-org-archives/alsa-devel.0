@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Fri, 24 Mar 2006 19:22:31 +0100
-Message-ID: <137527d2706d8572f4540bc185b6fc6a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
+Date: Fri, 24 Mar 2006 20:12:40 +0100
+Message-ID: <f3242433ef7e1b0571563ce91cb2a9fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 992EE138
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 19:22:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6A021A7
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 20:12:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
 ======================================================================
-Reported By:                kiwi
-Assigned To:                
+Reported By:                bambam
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1898
-Category:                   PCI - intel8x0
+Issue ID:                   1938
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 5 test3
-Kernel Version:             2.6.15-1.2009.4.2_FC5
+Status:                     feedback
+Distribution:               Debian sid with custom x86-64 kernel
+Kernel Version:             2.6.16-rc6
 ======================================================================
-Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              03-24-2006 19:22 CET
+Date Submitted:             03-17-2006 20:31 CET
+Last Modified:              03-24-2006 20:12 CET
 ======================================================================
-Summary:                    no sound from headphones or speakers on asus a6km
-laptop
+Summary:                    EPIPE on Audigy with surround sound when seeking in
+6 channel sound file
 Description: 
-The headphone port and the speakers just don't work. Seems like there is
-some control hidden in the mixer which is muted. 
-By setting the master and pcm volume at 100% I can hear just some static
-on song beats only on headphones. Speakers always stay mute.
-I can only get sound by attaching the headphones to line-in and enabling
-"shared" surround mode.
-
-Same issues with a knoppix 4.0.2.
+Seeking in a 6 channel sound or video file using a surround device gives
+EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
+is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
+userspace. I've tried libs and modules from CVS two days ago with no
+success.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- lbenini - 03-23-06 13:59 
+ bambam - 03-24-06 18:07 
 ----------------------------------------------------------------------
-This works for me:
-
-"With alsamixer, select "Duplicate front", unmute Surround 3D and use it
-if it were the Master Control. Bring the Channels to 4 or 6 and then plug
-your headphones in line-in. It worked for me, even if I am still not able
-to hear any sound from the built-in speakers. "
-
-Copied from
-http://forum.hardware.fr/hardwarefr/MiniPCPortablesPDA/Asus-A6K-MT30-Install-Win-Nux-cours-sujet-17894-4.htm
-
-
-Without this problem remains with 2.6.16-git6 (alsa in kernel)
-and/or with alsa 1.0.11rc4
-
-
+It happens only with 32-bit apps when using a surround device (surround40
+or surround51). It doesn't matter how many channels the file actually has
+(contrary to what I've written in the first post).
 
 ----------------------------------------------------------------------
- kiwi - 03-24-06 19:22 
+ bambam - 03-24-06 20:12 
 ----------------------------------------------------------------------
-It works for me too, I already said that in the original bugreport.
+Attached you will find a strace log from 32-bit mplayer playing an 6
+channel AC3 file to the surround51 device. There are actually two strace
+logfiles because mplayer forks for reading the input file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-06 00:30 kiwi           New Issue                                    
-03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
-03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
-03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
-03-09-06 16:41 kiwi           Note Added: 0008391                          
-03-09-06 20:09 michele26x1    Note Added: 0008396                          
-03-09-06 21:02 kiwi           Note Added: 0008397                          
-03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
-03-12-06 15:49 kiwi           Note Added: 0008432                          
-03-12-06 16:40 Rollsappletree Note Added: 0008433                          
-03-13-06 10:10 u238           Note Added: 0008439                          
-03-13-06 10:11 u238           Note Edited: 0008439                         
-03-13-06 10:12 u238           Note Edited: 0008439                         
-03-13-06 23:59 lbenini        Note Added: 0008469                          
-03-23-06 13:56 lbenini        Note Added: 0008881                          
-03-23-06 13:59 lbenini        Note Edited: 0008881                         
-03-24-06 19:22 kiwi           Note Added: 0008934                          
+03-17-06 20:31 bambam         New Issue                                    
+03-17-06 20:31 bambam         Distribution              => Debian sid with
+custom x86-64 kernel
+03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
+03-17-06 20:36 bambam         Note Added: 0008656                          
+03-17-06 21:07 bambam         Note Added: 0008659                          
+03-17-06 21:53 bambam         Note Added: 0008662                          
+03-18-06 01:07 rlrevell       Note Added: 0008667                          
+03-18-06 01:11 bambam         Note Added: 0008668                          
+03-18-06 14:44 bambam         Note Added: 0008671                          
+03-20-06 12:25 tiwai          Note Added: 0008715                          
+03-21-06 00:29 bambam         Note Added: 0008733                          
+03-21-06 17:30 tiwai          Status                   new => resolved     
+03-21-06 17:30 tiwai          Resolution               open => fixed       
+03-21-06 17:30 tiwai          Assigned To               => tiwai           
+03-21-06 17:30 tiwai          Note Added: 0008747                          
+03-21-06 20:09 bambam         Status                   resolved => feedback
+03-21-06 20:09 bambam         Resolution               fixed => reopened   
+03-21-06 20:09 bambam         Note Added: 0008759                          
+03-21-06 20:10 tiwai          Status                   feedback => resolved
+03-21-06 20:10 tiwai          Resolution               reopened => fixed   
+03-21-06 20:10 tiwai          Note Added: 0008760                          
+03-24-06 16:55 bambam         Status                   resolved => feedback
+03-24-06 16:55 bambam         Resolution               fixed => reopened   
+03-24-06 16:55 bambam         Note Added: 0008921                          
+03-24-06 17:06 tiwai          Note Added: 0008922                          
+03-24-06 17:29 bambam         Note Added: 0008923                          
+03-24-06 17:34 tiwai          Note Added: 0008925                          
+03-24-06 17:36 tiwai          Status                   feedback => resolved
+03-24-06 17:36 tiwai          Resolution               reopened => fixed   
+03-24-06 17:36 tiwai          Note Added: 0008926                          
+03-24-06 17:38 tiwai          Note Added: 0008927                          
+03-24-06 17:39 tiwai          Status                   resolved => feedback
+03-24-06 17:39 tiwai          Resolution               fixed => reopened   
+03-24-06 17:39 tiwai          Note Added: 0008928                          
+03-24-06 18:07 bambam         Note Added: 0008931                          
+03-24-06 20:11 bambam         File Added: strace.tar.bz2                    
+03-24-06 20:12 bambam         Note Added: 0008935                          
 ======================================================================
 
 
