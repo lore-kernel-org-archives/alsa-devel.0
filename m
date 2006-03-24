@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
-Date: Fri, 24 Mar 2006 17:38:09 +0100
-Message-ID: <2dd144483d01145eabfee01b20eb9ccb@bugtrack.alsa-project.org>
+Date: Fri, 24 Mar 2006 17:39:56 +0100
+Message-ID: <828361fa0be65aed6a2f81dd079cc86c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB5241A7
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 17:38:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE6921A7
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 17:39:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
 ======================================================================
@@ -35,14 +35,12 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     feedback
 Distribution:               Debian sid with custom x86-64 kernel
 Kernel Version:             2.6.16-rc6
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
 Date Submitted:             03-17-2006 20:31 CET
-Last Modified:              03-24-2006 17:38 CET
+Last Modified:              03-24-2006 17:39 CET
 ======================================================================
 Summary:                    EPIPE on Audigy with surround sound when seeking in
 6 channel sound file
@@ -56,14 +54,14 @@ success.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-24-06 17:36 
-----------------------------------------------------------------------
-Fixed.  Thanks.
-
-----------------------------------------------------------------------
  tiwai - 03-24-06 17:38 
 ----------------------------------------------------------------------
 Oops, sorry, a wrong bug!  Reopened.
+
+----------------------------------------------------------------------
+ tiwai - 03-24-06 17:39 
+----------------------------------------------------------------------
+... hopefully now reopened really.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +98,9 @@ custom x86-64 kernel
 03-24-06 17:36 tiwai          Resolution               reopened => fixed   
 03-24-06 17:36 tiwai          Note Added: 0008926                          
 03-24-06 17:38 tiwai          Note Added: 0008927                          
+03-24-06 17:39 tiwai          Status                   resolved => feedback
+03-24-06 17:39 tiwai          Resolution               fixed => reopened   
+03-24-06 17:39 tiwai          Note Added: 0008928                          
 ======================================================================
 
 
