@@ -1,11 +1,14 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Bug 1472-wrong register value in my patch
-Date: Fri, 24 Mar 2006 09:46:24 +0000
-Message-ID: <200603240946.24547.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
+Date: Fri, 24 Mar 2006 11:57:01 +0100
+Message-ID: <3e49409b9ed2b2cd36670a719c4df1dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_w/7IEWcTUydeFs9"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA1B81D0
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 11:57:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,49 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-00=_w/7IEWcTUydeFs9
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
+======================================================================
+Reported By:                flujan
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1956
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.6.13
+======================================================================
+Date Submitted:             03-23-2006 21:30 CET
+Last Modified:              03-24-2006 11:57 CET
+======================================================================
+Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
+Description: 
+The problem where solved in the CVS from 2006-03-01 but in the rc4 version
+the problem returns. 
+======================================================================
 
-I have just discovered I made an error in the register value set in 'Limit 
-dmx6fire to 6 dacs' patch (bug1472).  The value set should be '2a' not '0a' 
-as in the original patch, which unintentionally disables the 2nd MPU 401 
-UART.  Sorry about that.  Diff is attached for reference.
+----------------------------------------------------------------------
+ tiwai - 03-24-06 11:57 
+----------------------------------------------------------------------
+Use "model=laptop".
+If it solves the problem, let me know the output of "lspci -nv" for class
+0403 device.
 
-bug1472-ice1712.c-corr-reg-val.diff
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-23-06 21:30 flujan         New Issue                                    
+03-23-06 21:30 flujan         Distribution              => Slackware       
+03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
+03-24-06 11:57 tiwai          Note Added: 0008914                          
+======================================================================
 
-Correct config register value in previous patch
-
-Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
-
---Boundary-00=_w/7IEWcTUydeFs9
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="bug1472-ice1712.c-corr-reg-val.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="bug1472-ice1712.c-corr-reg-val.diff"
-
---- alsa-kernel/pci/ice1712/ice1712.c-179	2006-03-20 22:16:21.000000000 +0000
-+++ alsa-kernel/pci/ice1712/ice1712.c	2006-03-24 09:08:38.000000000 +0000
-@@ -2399,7 +2399,7 @@
- 	if (ice->eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE && !ice->dxr_enable) {
-                 /* Limit active ADCs and DACs to 6;  */
-                 /* Note: DXR extension not supported */
--		pci_write_config_byte(ice->pci, 0x60, 0x0a);
-+		pci_write_config_byte(ice->pci, 0x60, 0x2a);
- 	} else {
- 		pci_write_config_byte(ice->pci, 0x60, ice->eeprom.data[ICE_EEP1_CODEC]);
- 	}
-
---Boundary-00=_w/7IEWcTUydeFs9--
 
 
 
