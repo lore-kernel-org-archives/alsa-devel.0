@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001584]: Load rises to 100% when dmix is used with ICE1724 (SN25P)
-Date: Fri, 24 Mar 2006 18:21:54 +0100
-Message-ID: <9230f50f5966c8703d4a6ca138f7bc6c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
+Date: Fri, 24 Mar 2006 19:22:31 +0100
+Message-ID: <137527d2706d8572f4540bc185b6fc6a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BB8319C
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 18:21:55 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 992EE138
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 19:22:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1584> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
 ======================================================================
-Reported By:                mr511
-Assigned To:                perex
+Reported By:                kiwi
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1584
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   1898
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Fedora Core 5 test3
+Kernel Version:             2.6.15-1.2009.4.2_FC5
 ======================================================================
-Date Submitted:             11-20-2005 20:33 CET
-Last Modified:              03-24-2006 18:21 CET
+Date Submitted:             03-09-2006 00:30 CET
+Last Modified:              03-24-2006 19:22 CET
 ======================================================================
-Summary:                    Load rises to 100% when dmix is used with ICE1724
-(SN25P)
+Summary:                    no sound from headphones or speakers on asus a6km
+laptop
 Description: 
-ALSA applications using the dmix plugin run at 100% load. Verified with
-aplay, alsaplayer, xine, aoss+mpg123 and several others.
+The headphone port and the speakers just don't work. Seems like there is
+some control hidden in the mixer which is muted. 
+By setting the master and pcm volume at 100% I can hear just some static
+on song beats only on headphones. Speakers always stay mute.
+I can only get sound by attaching the headphones to line-in and enabling
+"shared" surround mode.
 
-Approximately 1/3 of the load appears to be in user space, 2/3 in system
-space.
+Same issues with a knoppix 4.0.2.
 
-Re-installing alsa-lib 1.0.8 makes the problem go away.
 ======================================================================
 
 ----------------------------------------------------------------------
- mr511 - 03-24-06 18:09 
+ lbenini - 03-23-06 13:59 
 ----------------------------------------------------------------------
-Confirmed. Works nicely again, even with mixed 32/64 bit clients.
+This works for me:
+
+"With alsamixer, select "Duplicate front", unmute Surround 3D and use it
+if it were the Master Control. Bring the Channels to 4 or 6 and then plug
+your headphones in line-in. It worked for me, even if I am still not able
+to hear any sound from the built-in speakers. "
+
+Copied from
+http://forum.hardware.fr/hardwarefr/MiniPCPortablesPDA/Asus-A6K-MT30-Install-Win-Nux-cours-sujet-17894-4.htm
+
+
+Without this problem remains with 2.6.16-git6 (alsa in kernel)
+and/or with alsa 1.0.11rc4
+
+
 
 ----------------------------------------------------------------------
- tiwai - 03-24-06 18:21 
+ kiwi - 03-24-06 19:22 
 ----------------------------------------------------------------------
-Closing now.
+It works for me too, I already said that in the original bugreport.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-20-05 20:33 mr511          New Issue                                    
-11-21-05 14:37 mr511          Note Added: 0006771                          
-11-21-05 21:43 mr511          Note Added: 0006777                          
-12-17-05 20:16 rlrevell       Note Added: 0007067                          
-12-17-05 23:37 mr511          Note Added: 0007068                          
-02-19-06 17:05 bambam         Note Added: 0008135                          
-03-24-06 17:45 bambam         Note Added: 0008930                          
-03-24-06 18:09 mr511          Note Added: 0008932                          
-03-24-06 18:21 tiwai          Status                   assigned => resolved
-03-24-06 18:21 tiwai          Resolution               open => fixed       
-03-24-06 18:21 tiwai          Note Added: 0008933                          
+03-09-06 00:30 kiwi           New Issue                                    
+03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
+03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
+03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
+03-09-06 16:41 kiwi           Note Added: 0008391                          
+03-09-06 20:09 michele26x1    Note Added: 0008396                          
+03-09-06 21:02 kiwi           Note Added: 0008397                          
+03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
+03-12-06 15:49 kiwi           Note Added: 0008432                          
+03-12-06 16:40 Rollsappletree Note Added: 0008433                          
+03-13-06 10:10 u238           Note Added: 0008439                          
+03-13-06 10:11 u238           Note Edited: 0008439                         
+03-13-06 10:12 u238           Note Edited: 0008439                         
+03-13-06 23:59 lbenini        Note Added: 0008469                          
+03-23-06 13:56 lbenini        Note Added: 0008881                          
+03-23-06 13:59 lbenini        Note Edited: 0008881                         
+03-24-06 19:22 kiwi           Note Added: 0008934                          
 ======================================================================
 
 
