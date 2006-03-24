@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001257]: 'Sample format non available' when using jack-plugin
-Date: Fri, 24 Mar 2006 05:11:59 +0100
-Message-ID: <6e4a59519d7edbf5167ea7c60deb5cae@bugtrack.alsa-project.org>
+Subject: [ALSA - plugins 0001411]: plug:jack interface not working for apps that both read and write
+Date: Fri, 24 Mar 2006 05:49:38 +0100
+Message-ID: <12be31158bea951939f6e987dedc2ff3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2FBA11D
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 05:11:59 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D6991AD
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 05:49:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,133 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1257> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1411> 
 ======================================================================
-Reported By:                Robert_Schulze
+Reported By:                b0ef
 Assigned To:                
 ======================================================================
 Project:                    ALSA - plugins
-Issue ID:                   1257
+Issue ID:                   1411
 Category:                   PCM - jack
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             07-14-2005 17:50 CEST
-Last Modified:              03-24-2006 05:11 CET
+Date Submitted:             09-10-2005 17:57 CEST
+Last Modified:              03-24-2006 05:49 CET
 ======================================================================
-Summary:                    'Sample format non available' when using jack-plugin
+Summary:                    plug:jack interface not working for apps that both
+read and write
 Description: 
-1. Start Jackd:
-
-/usr/local/jack/bin/jackd -vd alsa -d emi -S
-
-2. Start arecord:
-
-arecord -D "emijack12" -t wav -f S16_LE -c 2 -r 48000 > test.wav
-
-gives: "arecord: set_params:882: Sample format non available"
-
-arecord -D "emijack12" > test.wav
-
-gives the same.
-
-my .asoundr:
-
-pcm.emijack12
-    {
-    type jack
-    playback_ports
-        {
-        0 alsa_pcm:playback_1
-        1 alsa_pcm:playback_2
-        }
-    capture_ports
-        {
-        0 alsa_pcm:capture_1
-        1 alsa_pcm:capture_2
-        }
-    }
-
-ctl.emi
-    {
-    type hw
-    card 1
-    }
-
-pcm.emi
-    {
-    type hw
-    card 1
-    }
-
-emi is a Emagic a62m USB-Audiointerface
-
-
+This is a general problem with any app that both read and write to the
+plug:jack device. It (plug:jack) however works for apps that only do one
+or the other. 
 ======================================================================
 
 ----------------------------------------------------------------------
- Robert_Schulze - 07-20-05 17:48 
+ b0ef - 09-10-05 18:11 
 ----------------------------------------------------------------------
-It hangs even wihtout -vv.
-I started jack verbosely and noticed a failure in disconnection of the
-ports.
+I have applied the realtime patch to linux from
+http://people.redhat.com/mingo/realtime-preempt/ but I've also tested
+without and see the same problem
 
-If I start arecord, jackd logs:
+I'm running linux-2.6.13-rt4
 
-"
-connect alsa_pcm:capture_1 and alsaC.3308.0:in_000
-...
-connect alsa_pcm:capture_2 and alsaC.3308.0:in_001
-"
+ALSA apps that use both playback and capture fails to work with plug:jack
 
-If I quit arecord via ctrl+c, jackd logs:
+I have tested with several applications, primarily asterisk and kphone
 
-"
-DIS-connect alsa_pcm:capture_2 and alsaC.3308.0:in_001
-"
-
-So it just disconnects the last given port-pair.
-When I kill arecord with SIGKILL, jack logs:
-
-"
-cannot read event responce from client [alsaC.3308.0] (Connection reset by
-peer)
-bad status for client event handling (type=4)
-DIS-connect alsa_pcm:capture_1 and alsaC.3308.0:in_000
-
-cannot send event to client [alsaC.3308.0] (Broken pipe)
-bad status for client event handling (type=4)
-...
-cannot write request result to client
-could not handle external client request
-"
+I have not found any app that uses both playback and capture that works
+with plug:jack. Normal playback and capture separate with plug:jack works
+great.
 
 ----------------------------------------------------------------------
- Raymond - 03-24-06 05:11 
+ Raymond - 03-24-06 05:49 
 ----------------------------------------------------------------------
-It is ok to use arecord, mplayer with alsa, jack using alsa-plugins
-1.0.11rc4
+arecord and aplay works concurrently with plug:jack
 
-arecord -Dplug:jack -f S16_LE -r 48000 -c 2 stereo.wav
-
-mplayer -ao alsa stereo.wav 
-mplayer -ao jack stereo.wav 
-
-However, mplayer hangs after play sound for a few seconds for plug:jack
-
-mplayer -ao alsa:device=plug=jack stereo.wav
+Do you alsa driver support full duplex ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-14-05 17:50 Robert_Schulze New Issue                                    
-07-14-05 18:03 Clemens LadischNote Added: 0005477                          
-07-19-05 17:21 Robert_Schulze Note Added: 0005528                          
-07-19-05 18:26 Clemens LadischNote Added: 0005530                          
-07-20-05 17:48 Robert_Schulze Note Added: 0005533                          
-03-24-06 05:11 Raymond        Note Added: 0008911                          
+09-10-05 17:57 b0ef           New Issue                                    
+09-10-05 18:11 b0ef           Note Added: 0006123                          
+03-24-06 05:49 Raymond        Note Added: 0008912                          
 ======================================================================
 
 
