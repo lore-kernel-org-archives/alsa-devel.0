@@ -1,13 +1,14 @@
-From: ECentral <ECentral@triplealdo.com>
-Subject: Two Proven Tools Deliver Outstanding Results for Real Estate Professionals
-Date: Fri, 24 Mar 2006 01:13:30 +0000
-Message-ID: <442347ba@www.aaaaldo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
+Date: Fri, 24 Mar 2006 02:54:01 +0100
+Message-ID: <546270f6b570928ce0a85141ac75dcfc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html;
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www.aaaaldo.com (aaaaldo.com [66.103.151.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 4686A1A7
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 02:48:06 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8FA51A7
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 02:54:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,66 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Friend <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<head>
-<title>Printing_For_Profits_eCentralad_3_copy</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-<table width="800" height="576" border="0" align="center" cellpadding="0" cellspacing="0" id="Table_01">
-	<tr>
-		<td>
-			<a href="http://www.mybizoppsdirect.com/Printing_For_Profits_files/Printing_For_Profits.htm" target="_blank"><img src="http://www.mybizoppsdirect.com/Printing_For_Profits_files/lazor_03_24_01.gif" alt="" width="800" height="142" border="0"></a></td>
-	</tr>
-	<tr>
-		<td>
-			<a href="http://www.mybizoppsdirect.com/Printing_For_Profits_files/Printing_For_Profits.htm" target="_blank"><img src="http://www.mybizoppsdirect.com/Printing_For_Profits_files/lazor_03_24_02.gif" alt="" width="800" height="143" border="0"></a></td>
-	</tr>
-	<tr>
-		<td>
-			<a href="http://www.mybizoppsdirect.com/Printing_For_Profits_files/Printing_For_Profits.htm" target="_blank"><img src="http://www.mybizoppsdirect.com/Printing_For_Profits_files/lazor_03_24_03.gif" alt="" width="800" height="124" border="0"></a></td>
-	</tr>
-	<tr>
-		<td>
-			<a href="http://www.mybizoppsdirect.com/BobsMyeCentral/Real_Estate_Folder/Real_Estate_eCentral_Sales_Page.html" target="_blank"><img src="http://www.mybizoppsdirect.com/Printing_For_Profits_files/lazor_03_24_04.gif" alt="" width="800" height="106" border="0"></a></td>
-	</tr>
-	<tr>
-		<td>
-			<a href="http://www.mybizoppsdirect.com/BobsMyeCentral/Real_Estate_Folder/Real_Estate_eCentral_Sales_Page.html" target="_blank"><img src="http://www.mybizoppsdirect.com/Printing_For_Profits_files/lazor_03_24_05.gif" alt="" width="800" height="61" border="0"></a></td>
-	</tr>
-</table>
-<table width="779" border="0" align="center" cellpadding="0" cellspacing="0">
-  <tr>
-    <td width="729"><p><font color="#999999" 
 
-size="1" face="Arial, Helvetica, sans-serif"><br>
-        www.triplealdo.com is a leading permission-based e-mail marketer for
-              the RealEstate Industry. This message is intended for <strong>them</strong> only.
-              To unsubscribe from triplealdo the fastest way, you may remove
-              your address by &quot;Clicking the Link on the very bottom&quot;</font></p>
-        <p align="right"><font color="#999999" size="1" face="Arial, Helvetica, sans-serif"><span 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
+======================================================================
+Reported By:                fmoraes
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   371
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.6-1.435.2.3
+======================================================================
+Date Submitted:             07-09-2004 15:59 CEST
+Last Modified:              03-24-2006 02:54 CET
+======================================================================
+Summary:                    dmix does not work with snd-cs46xx driver
+Description: 
+When trying to use dmix with the snd-cs46xx driver, no output is produced.
+======================================================================
 
-DEFANGED_STYLE="FONT-FAMILY: 'Arial'">To advertise your product or service fax
-              or email us for info:<br>
-                      <a href="http://www.triplealdo.com">www.triplealdo.com </a>P.O.
-                      Box 161526 Altamonte Springs, FL 32716 For info about advertising <br>
-        Please Fax 604-608-3104 <a 
+----------------------------------------------------------------------
+ fmoraes - 03-24-06 02:16 
+----------------------------------------------------------------------
+I was trying to debug the dmix issues where bad resampling was done (zeros
+were added at the end of the buffer in some cases), so that's why I tried
+on this card.
 
-href="mailto:Info@triplealdo.com">Info@triplealdo.com</a></span></font><font color="#999999"> </font></p>
-    </td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
+Is there a reason why it doesn't work on this card?
 
-<br><br>
-______________________________________________________<br>
-<br>
-To change your subscription details or stop receiving emails, <a href="http://www.aaaaldo.com/c/4/alsa-devel%40alsa-project.org">click here</a>
-<img src="http://www.aaaaldo.com/ctx.pl?m=520"></body></html>
+In any case, I've retested with ALSA 1.0.11rc2 (FC5) and the problem still
+persists.
+
+----------------------------------------------------------------------
+ Raymond - 03-24-06 02:54 
+----------------------------------------------------------------------
+Enable CS46XX_NEW_DSP option when you configure the ALSA CS46XX driver to
+use hardware mixing
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-09-04 15:59 fmoraes        New Issue                                    
+07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
+07-15-04 14:10 perex          Status                   new => assigned     
+07-15-04 14:10 perex          Assigned To               => perex           
+03-09-05 03:09 fmoraes        Note Added: 0003823                          
+03-09-05 18:37 tiwai          Note Added: 0003830                          
+03-10-05 15:03 jdthood        Note Added: 0003857                          
+03-11-05 22:14 fmoraes        File Added: .asoundrc                        
+03-11-05 22:15 fmoraes        Note Added: 0003894                          
+03-22-06 03:42 rlrevell       Note Added: 0008832                          
+03-22-06 18:50 tiwai          Note Added: 0008866                          
+03-24-06 02:16 fmoraes        Note Added: 0008907                          
+03-24-06 02:54 Raymond        Note Added: 0008909                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
