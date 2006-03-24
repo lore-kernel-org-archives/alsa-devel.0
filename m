@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001584]: Load rises to 100% when dmix is used with ICE1724 (SN25P)
-Date: Fri, 24 Mar 2006 18:09:49 +0100
-Message-ID: <bba1cd05222c7802425b34311cb7a8e8@bugtrack.alsa-project.org>
+Date: Fri, 24 Mar 2006 18:21:54 +0100
+Message-ID: <9230f50f5966c8703d4a6ca138f7bc6c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7B411D9
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 18:09:49 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BB8319C
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 18:21:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1584> 
 ======================================================================
@@ -35,10 +35,12 @@ Category:                   1_pcm_d - direct PCM plugins (dmix+)
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-20-2005 20:33 CET
-Last Modified:              03-24-2006 18:09 CET
+Last Modified:              03-24-2006 18:21 CET
 ======================================================================
 Summary:                    Load rises to 100% when dmix is used with ICE1724
 (SN25P)
@@ -53,14 +55,14 @@ Re-installing alsa-lib 1.0.8 makes the problem go away.
 ======================================================================
 
 ----------------------------------------------------------------------
- bambam - 03-24-06 17:45 
-----------------------------------------------------------------------
-This has been solved in today's CVS.
-
-----------------------------------------------------------------------
  mr511 - 03-24-06 18:09 
 ----------------------------------------------------------------------
 Confirmed. Works nicely again, even with mixed 32/64 bit clients.
+
+----------------------------------------------------------------------
+ tiwai - 03-24-06 18:21 
+----------------------------------------------------------------------
+Closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -73,6 +75,9 @@ Date Modified  Username       Field                    Change
 02-19-06 17:05 bambam         Note Added: 0008135                          
 03-24-06 17:45 bambam         Note Added: 0008930                          
 03-24-06 18:09 mr511          Note Added: 0008932                          
+03-24-06 18:21 tiwai          Status                   assigned => resolved
+03-24-06 18:21 tiwai          Resolution               open => fixed       
+03-24-06 18:21 tiwai          Note Added: 0008933                          
 ======================================================================
 
 
