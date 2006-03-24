@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
-Date: Fri, 24 Mar 2006 13:01:09 +0100
-Message-ID: <790dc5bec69ef77d38d68c0ddb0b4bd1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001958]: /proc/asound/card0/codec#0 missing
+Date: Fri, 24 Mar 2006 13:28:23 +0100
+Message-ID: <8219959f01a9a1ec796e6de2068bbfd0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DFD81AD
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 13:01:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0C6B1D0
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 13:28:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1958> 
 ======================================================================
-Reported By:                flujan
-Assigned To:                tiwai
+Reported By:                chibo
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1956
-Category:                   PCI - hda-intel
+Issue ID:                   1958
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.13
+Status:                     new
+Distribution:               Ubuntu (Breezy)
+Kernel Version:             2.6.12-10-386
 ======================================================================
-Date Submitted:             03-23-2006 21:30 CET
-Last Modified:              03-24-2006 13:01 CET
+Date Submitted:             03-24-2006 13:28 CET
+Last Modified:              03-24-2006 13:28 CET
 ======================================================================
-Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
+Summary:                    /proc/asound/card0/codec#0 missing
 Description: 
-The problem where solved in the CVS from 2006-03-01 but in the rc4 version
-the problem returns. 
+The file /proc/asound/card0/codec#0 doesn't exist and /proc/asound/cards
+has only a single line: --- no soundcards ---
+
+lsmod | grep snd
+snd_hda_intel          18196  0
+snd_hda_codec         139056  1 snd_hda_intel
+snd_pcm_oss            45984  0
+snd_mixer_oss          16640  1 snd_pcm_oss
+snd_pcm                85768  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd_timer              23044  1 snd_pcm
+snd                    56904  7
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore               9184  1 snd
+snd_page_alloc         10632  2 snd_hda_intel,snd_pcm
+
+lspci | grep Audio
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 04)
+
 ======================================================================
-
-----------------------------------------------------------------------
- er-ku - 03-24-06 12:52 
-----------------------------------------------------------------------
-hmm... I can't see a "laptop" model option in patch_realtek.c v.1.64 I can
-however see a laptop model in patch_analog.c, but it is not related to bug
-#1517.
-
-flujan, which codec does your notebook use?
-
-----------------------------------------------------------------------
- tiwai - 03-24-06 13:01 
-----------------------------------------------------------------------
-Sorry, not "laptop" but "acer".
-
-If the model doesn't work, first, make sure that you set up mixer
-correctly.
-Upload /etc/asound.state (after "alsactl store"), and
-/proc/asound/card0/codec#* files for checking, together with the output of
-"lspci -nv" for class 0403 device.
-(All these important files are missing in the old bug report...)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-06 21:30 flujan         New Issue                                    
-03-23-06 21:30 flujan         Distribution              => Slackware       
-03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
-03-24-06 11:57 tiwai          Note Added: 0008914                          
-03-24-06 12:52 er-ku          Note Added: 0008915                          
-03-24-06 13:01 tiwai          Note Added: 0008916                          
+03-24-06 13:28 chibo          New Issue                                    
+03-24-06 13:28 chibo          Distribution              => Ubuntu (Breezy) 
+03-24-06 13:28 chibo          Kernel Version            => 2.6.12-10-386   
 ======================================================================
 
 
