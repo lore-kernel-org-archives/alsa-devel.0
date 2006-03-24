@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001942]: [PATCH] added support uncommon "rate"
-Date: Thu, 23 Mar 2006 23:47:22 +0100
-Message-ID: <84f81dbc6dfaeac4e3a192b8ec37a670@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
+Date: Fri, 24 Mar 2006 02:16:21 +0100
+Message-ID: <0687671458ffd19edc5ca1a6764baebf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1AA151CD
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2006 23:47:23 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3E1517B
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 02:16:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1942> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
 ======================================================================
-Reported By:                os-bebas
-Assigned To:                Clemens Ladisch
+Reported By:                fmoraes
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1942
-Category:                   USB - usb-audio
+Issue ID:                   371
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               UBuntu Dapper Drake
-Kernel Version:             2.6.15.6
+Distribution:               
+Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
-Date Submitted:             03-18-2006 23:48 CET
-Last Modified:              03-23-2006 23:47 CET
+Date Submitted:             07-09-2004 15:59 CEST
+Last Modified:              03-24-2006 02:16 CET
 ======================================================================
-Summary:                    [PATCH] added support uncommon "rate"
+Summary:                    dmix does not work with snd-cs46xx driver
 Description: 
-attached you can find a simple patch to match
-"uncommon" rate in some USB speaker to the fixed
-conv_rates in usbaudio.c.
-
-Signed-off-by: S. Effendi <osbebas@yahoo.co.id>
-
+When trying to use dmix with the snd-cs46xx driver, no output is produced.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 03-23-06 19:09 
+ tiwai - 03-22-06 18:50 
 ----------------------------------------------------------------------
-What the USB audio specification says has only a rather vague similarity
-with what real devices implement.
-
-I wanted to see how many bytes per second the device accepts, but the OSS
-emulation automatically converted from 8000 Hz.
-Please show the output of "time ( dd if=/dev/zero bs=1000 count=4000 |
-aplay -D hw:1 -t raw -f cd - )".
+Well, the primary question is why you need dmix with cs46xx.  It supports
+multiple playbacks, so dmix is not necessary at all...
 
 ----------------------------------------------------------------------
- os-bebas - 03-23-06 23:47 
+ fmoraes - 03-24-06 02:16 
 ----------------------------------------------------------------------
-I hope this will help.
+I was trying to debug the dmix issues where bad resampling was done (zeros
+were added at the end of the buffer in some cases), so that's why I tried
+on this card.
 
-best regards.
+Is there a reason why it doesn't work on this card?
 
----
-root@d1:~# time ( dd if=/dev/zero bs=1000 count=4000 | aplay -D hw:1 -t
-raw -f cd - )
-Playing raw data 'stdin' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-4000+0 records in
-4000+0 records out
-4000000 bytes (4.0 MB) copied, 22.1492 seconds, 181 kB/s
-
-real    0m23.171s
-user    0m0.013s
-sys     0m0.014s
-
----
+In any case, I've retested with ALSA 1.0.11rc2 (FC5) and the problem still
+persists.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-18-06 23:48 os-bebas       New Issue                                    
-03-18-06 23:48 os-bebas       File Added: alsa_usbaudio_conv_rates_fixed.patch  
-                 
-03-18-06 23:48 os-bebas       Distribution              => UBuntu Dapper Drake
-03-18-06 23:48 os-bebas       Kernel Version            => 2.6.15.6        
-03-20-06 09:09 Clemens LadischNote Added: 0008712                          
-03-23-06 18:30 os-bebas       Note Added: 0008900                          
-03-23-06 19:09 Clemens LadischNote Added: 0008901                          
-03-23-06 23:47 os-bebas       Note Added: 0008906                          
+07-09-04 15:59 fmoraes        New Issue                                    
+07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
+07-15-04 14:10 perex          Status                   new => assigned     
+07-15-04 14:10 perex          Assigned To               => perex           
+03-09-05 03:09 fmoraes        Note Added: 0003823                          
+03-09-05 18:37 tiwai          Note Added: 0003830                          
+03-10-05 15:03 jdthood        Note Added: 0003857                          
+03-11-05 22:14 fmoraes        File Added: .asoundrc                        
+03-11-05 22:15 fmoraes        Note Added: 0003894                          
+03-22-06 03:42 rlrevell       Note Added: 0008832                          
+03-22-06 18:50 tiwai          Note Added: 0008866                          
+03-24-06 02:16 fmoraes        Note Added: 0008907                          
 ======================================================================
 
 
