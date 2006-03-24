@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
-Date: Fri, 24 Mar 2006 12:52:15 +0100
-Message-ID: <a941f5091e74735575163e405adf2228@bugtrack.alsa-project.org>
+Date: Fri, 24 Mar 2006 13:01:09 +0100
+Message-ID: <790dc5bec69ef77d38d68c0ddb0b4bd1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A73DE1AD
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 12:52:15 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DFD81AD
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 13:01:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,20 +40,13 @@ Distribution:               Slackware
 Kernel Version:             2.6.13
 ======================================================================
 Date Submitted:             03-23-2006 21:30 CET
-Last Modified:              03-24-2006 12:52 CET
+Last Modified:              03-24-2006 13:01 CET
 ======================================================================
 Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
 Description: 
 The problem where solved in the CVS from 2006-03-01 but in the rc4 version
 the problem returns. 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-24-06 11:57 
-----------------------------------------------------------------------
-Use "model=laptop".
-If it solves the problem, let me know the output of "lspci -nv" for class
-0403 device.
 
 ----------------------------------------------------------------------
  er-ku - 03-24-06 12:52 
@@ -64,6 +57,18 @@ however see a laptop model in patch_analog.c, but it is not related to bug
 
 flujan, which codec does your notebook use?
 
+----------------------------------------------------------------------
+ tiwai - 03-24-06 13:01 
+----------------------------------------------------------------------
+Sorry, not "laptop" but "acer".
+
+If the model doesn't work, first, make sure that you set up mixer
+correctly.
+Upload /etc/asound.state (after "alsactl store"), and
+/proc/asound/card0/codec#* files for checking, together with the output of
+"lspci -nv" for class 0403 device.
+(All these important files are missing in the old bug report...)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -72,6 +77,7 @@ Date Modified  Username       Field                    Change
 03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
 03-24-06 11:57 tiwai          Note Added: 0008914                          
 03-24-06 12:52 er-ku          Note Added: 0008915                          
+03-24-06 13:01 tiwai          Note Added: 0008916                          
 ======================================================================
 
 
