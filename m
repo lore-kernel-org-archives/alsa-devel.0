@@ -1,14 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001958]: /proc/asound/card0/codec#0 missing
-Date: Fri, 24 Mar 2006 13:28:23 +0100
-Message-ID: <8219959f01a9a1ec796e6de2068bbfd0@bugtrack.alsa-project.org>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: pcm hw parameters?
+Date: Fri, 24 Mar 2006 14:19:47 +0100
+Message-ID: <1143206387.28247.22.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-7OO9q0bzXU8v6hD+zDfD"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0C6B1D0
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 13:28:23 +0100 (MET)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 129BF1D0
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 14:19:57 +0100 (MET)
+Received: from sipsolutions.net (unknown [213.151.39.204])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 959E99943E
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 14:19:56 +0100 (MET)
+Received: from [131.234.73.110] (helo=dhcp-73-110.uni-paderborn.de)
+	by sipsolutions.net with esmtpsa (TLS-1.0:RSA_ARCFOUR_MD5:16)
+	(Exim 4.60)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1FMmFq-0000Jh-7f
+	for alsa-devel@alsa-project.org; Fri, 24 Mar 2006 13:23:02 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,57 +30,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1958> 
-======================================================================
-Reported By:                chibo
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1958
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu (Breezy)
-Kernel Version:             2.6.12-10-386
-======================================================================
-Date Submitted:             03-24-2006 13:28 CET
-Last Modified:              03-24-2006 13:28 CET
-======================================================================
-Summary:                    /proc/asound/card0/codec#0 missing
-Description: 
-The file /proc/asound/card0/codec#0 doesn't exist and /proc/asound/cards
-has only a single line: --- no soundcards ---
+--=-7OO9q0bzXU8v6hD+zDfD
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-lsmod | grep snd
-snd_hda_intel          18196  0
-snd_hda_codec         139056  1 snd_hda_intel
-snd_pcm_oss            45984  0
-snd_mixer_oss          16640  1 snd_pcm_oss
-snd_pcm                85768  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
-snd_timer              23044  1 snd_pcm
-snd                    56904  7
-snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               9184  1 snd
-snd_page_alloc         10632  2 snd_hda_intel,snd_pcm
+Hi,
 
-lspci | grep Audio
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 04)
+Quick question: When are the pcm hardware parameters surfaced to
+userspace? Are those the ones I register in snd_pcm_new?
 
-======================================================================
+Thing is -- I have the problem that in theory, my codec can support
+anything from 8KHz to 96KHz but when turning on digital output, it needs
+to be restricted to the ones the digital output is ok with.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-24-06 13:28 chibo          New Issue                                    
-03-24-06 13:28 chibo          Distribution              => Ubuntu (Breezy) 
-03-24-06 13:28 chibo          Kernel Version            => 2.6.12-10-386   
-======================================================================
+Of course I can trivially forbid turning on the digital out when a wrong
+stream is open, but what about the other way around? When digital out is
+turned on, and I forbid opening the stream when say 8KHz is selected,
+does it screw over userspace and fail, or can I tell it what else to
+use?
 
+Similar things happen when you have digital input and it clocks both out
+and in -- then you have to output the same bitrate as the input is
+coming in at...
+
+Thanks,
+johannes
+
+--=-7OO9q0bzXU8v6hD+zDfD
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIVAwUARCPx8aVg1VMiehFYAQK/lg//fxNZTajuviRxIXRuVrxBTS6gLQN0S5bq
+Tdzu0cD9pcjYL0uQYPaOsoWwGvmbTXdMdOGnlXc8gW18vS78wyRB8D5PcGFQnl0z
+/38ZLl2dm58hIzCb9Lj7Ocl6ZbKr5o4UZBorP841zs1kklazw0jc3Lh0xXq86r69
+Ww2p6KQjoit3dxNK7iKjMkpWpFt38sQy5gQSeMMdWB4dMPWJedQnFO854uVHwXGB
+ll3VwoaSP6MspLGjfGFBmR5f4nvRt8N9cqmoMzMd1lSbdj99wWPLF4cqPwNvhNWf
+lzSDlAduEYoK9JGT9kF19ikAQk7cT7CfD/cwMy57jxYxgUM525fA9z9ZVBh6MoPy
+9STURvGYB9KNOj8qNITIfdFYLlebG1CAfshPEftYG6LJBcZwu6J9Va2BnYGlvxrT
++nrw307+Mnu2sqHmSjMvmF5u3Bpxx3t3jjmXU2q9qzCxi9Dzu5DQJmH1GaMrKhLV
+/R5RjOe9BUXm2T5rGScSqcJBflUQLoLM6/x0+xkq7WCkqHrAnWUCNGe34LRxuOed
+VjxJF4/dnRkoEbKsozx8g6vCEbS4ImB3TApRjDYaRqsSYuvWhmRIvdvJBkfV9bx5
+Lb+xROVs3NKy+ENHHs0GkAJIJHExJkIxAygg9q6ZlG9VxtupnedZWnjNeeAduIPz
+ZsjSgtH5r88=
+=vvt0
+-----END PGP SIGNATURE-----
+
+--=-7OO9q0bzXU8v6hD+zDfD--
 
 
 
