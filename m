@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Fri, 24 Mar 2006 16:38:01 +0100
-Message-ID: <34b9aeb0512c6d2d1ca3a9297c8c2252@bugtrack.alsa-project.org>
+Date: Fri, 24 Mar 2006 16:39:41 +0100
+Message-ID: <c6ef4022924d3c1b822936138ed13f58@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14F6E1B5
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 16:38:02 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1AB3D1C4
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 16:39:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-rc2
 ======================================================================
 Date Submitted:             11-24-2005 11:26 CET
-Last Modified:              03-24-2006 16:38 CET
+Last Modified:              03-24-2006 16:39 CET
 ======================================================================
 Summary:                    No sound or High pitched noise, dissapears if change
 made on mixer
@@ -302,62 +302,17 @@ has duplicate       0001678 nForce (10de:026c) left channel squeals...
 ======================================================================
 
 ----------------------------------------------------------------------
- trekjunky - 03-24-06 03:30 
-----------------------------------------------------------------------
-Hello All,
-
-I finally got it working using the instructions here, but there were typos
-in the instructions so I am going to cut and paste from my XTerm into here
-in hopes that other people get it right the first time. 
-
-First I want to thank the three people here who figured it out. Thanks
-Merin, Tiwai, and RLRevell.
-
-I did quite a few things this last time and am not sure which step did it,
-so I am including all the steps I took.
-
-1) CVS Install of latest ALSA (I had trouble with this as other noobs will
-have, so I leave it up to the experts to explain it)
-
-2) lsmod | grep ^snd | cut -d/ -f1 | xargs rmmod
-
-3) modprobe snd_hda_intel model=laptop position_fix=1
-
-4) cd /sys/module/snd_hda_intel/parameters
-
-5) for i in `ls`; do echo $i value: `cat $i`; done;
-The results from command 5) was nothing. Files were missing, so I ran the
-command 6)
-
-6) modprobe snd_hda_intel model=laptop
-
-7)  for i in `ls`; do echo $i value: `cat $i`; done;
-The results from this command this time was:
-cat: .: Is a directory
-. value:
-cat: ..: Is a directory
-.. value:
-enable value: N
-id value: <NULL>
-index value: -1
-model value: laptop
-position_fix value: 1
-probe_mask value: -1
-single_cmd value: N
-
-At this point, the screach stopped during playback and adjusting the
-volume doesn't stop playback anymore. It works great. Email me at
-trekjunky at gmail.com if you need to ask me how I did something. I
-probably won't be checking this thread anymore now that it's working. So
-long and good luck!!!!
-
-----------------------------------------------------------------------
  tiwai - 03-24-06 16:38 
 ----------------------------------------------------------------------
 OK, then could you check whether the uploaded patch
 (ad1986a-3stack-fix.diff) works _without_ model option?  It should fix the
 noise problem with 3stack model, and 3stack is chosen for your device as
 default.
+
+----------------------------------------------------------------------
+ tiwai - 03-24-06 16:39 
+----------------------------------------------------------------------
+In case it doesn't work, try to specify model=3stack to be sure.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -417,6 +372,9 @@ Date Modified  Username       Field                    Change
 03-20-06 20:56 trekjunky      Note Added: 0008724                          
 03-24-06 03:30 trekjunky      Note Added: 0008910                          
 03-24-06 16:38 tiwai          Note Added: 0008919                          
+03-24-06 16:38 tiwai          File Added: ad1986a-3stack-fix.diff               
+    
+03-24-06 16:39 tiwai          Note Added: 0008920                          
 ======================================================================
 
 
