@@ -1,16 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: [ALSA] ISA drivers bailing on first IS_ERR
-Date: Sat, 25 Mar 2006 01:39:11 +0100
-Message-ID: <4424912F.2080109__46434.6510627822$1143247162$gmane$org@keyaccess.nl>
-References: <4423848E.9030805@keyaccess.nl> <s5hslp8nlpk.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
+Date: Sat, 25 Mar 2006 02:17:10 +0100
+Message-ID: <86c7002b0a4b67013c31b3be28a92957@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq3.tilbu1.nb.home.nl (smtpq3.tilbu1.nb.home.nl [213.51.146.202])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AA3319D
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 01:38:09 +0100 (MET)
-In-Reply-To: <s5hslp8nlpk.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CC481D5
+	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 02:17:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,41 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Greg Kroah-Hartman <gregkh@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
-> These looks OK to me.  Could you regenerate patches against the latest
-> git (or ALSA CVS) ?
-> 
-> Or, it might be better against to mm tree, since pnp registrations
-> will be modified there, too.  They should go also to mainstream
-> together.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
+======================================================================
+Reported By:                fmoraes
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   371
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.6-1.435.2.3
+======================================================================
+Date Submitted:             07-09-2004 15:59 CEST
+Last Modified:              03-25-2006 02:17 CET
+======================================================================
+Summary:                    dmix does not work with snd-cs46xx driver
+Description: 
+When trying to use dmix with the snd-cs46xx driver, no output is produced.
+======================================================================
 
-Will do.
+----------------------------------------------------------------------
+ Raymond - 03-24-06 02:54 
+----------------------------------------------------------------------
+Enable CS46XX_NEW_DSP option when you configure the ALSA CS46XX driver to
+use hardware mixing
 
-> Nevertheless, the patches (this and the previous one) are good to go
-> to stable tree, too.
+----------------------------------------------------------------------
+ fmoraes - 03-25-06 02:17 
+----------------------------------------------------------------------
+Is this a compile time only option? If so, then it is of no use. This is a
+legitimate dmix or cs46xx driver bug unless there is a real reason why
+this is happening.
 
-I'll wait a bit for a comment from Greg on the error propagation thing 
-and will submit both then.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-09-04 15:59 fmoraes        New Issue                                    
+07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
+07-15-04 14:10 perex          Status                   new => assigned     
+07-15-04 14:10 perex          Assigned To               => perex           
+03-09-05 03:09 fmoraes        Note Added: 0003823                          
+03-09-05 18:37 tiwai          Note Added: 0003830                          
+03-10-05 15:03 jdthood        Note Added: 0003857                          
+03-11-05 22:14 fmoraes        File Added: .asoundrc                        
+03-11-05 22:15 fmoraes        Note Added: 0003894                          
+03-22-06 03:42 rlrevell       Note Added: 0008832                          
+03-22-06 18:50 tiwai          Note Added: 0008866                          
+03-24-06 02:16 fmoraes        Note Added: 0008907                          
+03-24-06 02:54 Raymond        Note Added: 0008909                          
+03-25-06 02:17 fmoraes        Note Added: 0008940                          
+======================================================================
 
-Even when simply returning the error as the patch to bus_add_device() 
-did, there's a problem in that driver_probe_device() specifically 
-ignores -ENODEV and -ENXIO. I suppose that's for hotpluggable stuff, 
-where do you do want the driver loaded even without devices...
 
-I guess for -stable the minimal fix would be to make sure all the probe 
-methods do not return -ENODEV. I'll audit them for that. For mainline, 
-it might be a better idea to have an option in the platform_driver 
-struct that, no, we certainly don't want to ignore -ENODEV for this 
-ancient non-hotplug non-pnp ISA stuff.
-
-Needs a comment from Greg as well.
-
-Rene.
 
 
 -------------------------------------------------------
