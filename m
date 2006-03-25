@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
-Date: Sat, 25 Mar 2006 23:27:33 +0100
-Message-ID: <a3d7200a1e12f44940afe5e818e59812@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001808]: Line 6 Toneport UX1 driver
+Date: Sun, 26 Mar 2006 00:33:15 +0100
+Message-ID: <ff04bc1b3267365c5645bce8c3d5d6fa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D417C19C
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 23:27:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F198C167
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 00:33:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1808> 
 ======================================================================
-Reported By:                flujan
-Assigned To:                tiwai
+Reported By:                daste
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1956
-Category:                   PCI - hda-intel
+Issue ID:                   1808
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.13
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-23-2006 21:30 CET
-Last Modified:              03-25-2006 23:27 CET
+Date Submitted:             02-02-2006 00:49 CET
+Last Modified:              03-26-2006 00:33 CET
 ======================================================================
-Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
+Summary:                    Line 6 Toneport UX1 driver
 Description: 
-The problem where solved in the CVS from 2006-03-01 but in the rc4 version
-the problem returns. 
+I recently bought a Line 6 Toneport UX1 USB sound card, but I can't use it
+under Linux, since it's not supported by ALSA.
+So I'd like to ask you what can I do: altough I'm quite capable of
+programming in C, I never developed any kind of driver either for Linux or
+any other OS.
+I thought that maybe it was my turn to learn, so I wrote an e-mail to Line
+6 asking them if they had plans on a Linux driver for such soundcard, or
+otherwise, if they would have sent me infos, so that I could have tried to
+spend some time trying to develop a driver. They haven't answered yet.
+I do want to use that unbelivable sound card under Linux, so I think I'm
+going to code, but I don't know where to start: can you give me any
+suggestions?
+And since I think I have to do some reverse engineering on Microsoft
+Windows drivers, can you give some other advice on such topic too?
+Otherwise, I'd like to ask you whether you're already developing a
+solution for such a problem or not. Thanks in advance.
 ======================================================================
 
 ----------------------------------------------------------------------
- flujan - 03-25-06 04:33 
+ daste - 03-03-06 10:46 
 ----------------------------------------------------------------------
-This is the output provided by alsaconf. It detects the hda-intel driver
-and then produces this:
-
-
-WARNING: Error inserting snd_page_alloc
-(/lib/modules/2.6.13/kernel/sound/acore/snd-page-alloc.ko): Invalid module
-format
-WARNING: Error inserting snd
-(/lib/modules/2.6.13/kernel/sound/acore/snd.ko): Invalid module format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.13/kernel/sound/acore/snd-timer.ko): Invalid module
-format
-WARNING: Error inserting snd_pcm
-(/lib/modules/2.6.13/kernel/sound/acore/snd-pcm.ko): Invalid module
-format
-WARNING: Error inserting snd_hda_codec
-(/lib/modules/2.6.13/kernel/sound/pci/hda/snd-hda-codec.ko): Invalid
-module format
-FATAL: Error inserting snd_hda_intel
-(/lib/modules/2.6.13/kernel/sound/pci/hda/snd-hda-intel.ko): Invalid
-module format
+Ok, there's some news!
+Take a look at http://www.tanzband-scream.at/line6/
+I haven't tried it yet but it seems like that this driver supports Line6
+USB stuff, so maybe you can consider to port it on the ALSA architecture
+(if it's not working this way yet), and maybe improve it.
+Let me know!
 
 ----------------------------------------------------------------------
- flujan - 03-25-06 23:27 
+ suamor - 03-26-06 00:33 
 ----------------------------------------------------------------------
-tiwaii, here goes the output of the lspci -nv commad.
-
-00:1b.0 Class 0403: 8086:2668 (rev 04)
-        Subsystem: 1025:008f
-        Flags: bus master, fast devsel, latency 0
-        Memory at d000c000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] #10 [0091]
-
-Thanks in advance.
+No way with this driver. It's only for the Pods and the Variax guitar. Of
+course integrating these into alsa is still very interesting. The author
+does not seem to own a Toneport device.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-06 21:30 flujan         New Issue                                    
-03-23-06 21:30 flujan         Distribution              => Slackware       
-03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
-03-24-06 11:57 tiwai          Note Added: 0008914                          
-03-24-06 12:52 er-ku          Note Added: 0008915                          
-03-24-06 13:01 tiwai          Note Added: 0008916                          
-03-25-06 04:33 flujan         Note Added: 0008941                          
-03-25-06 23:27 flujan         Note Added: 0008954                          
+02-02-06 00:49 daste          New Issue                                    
+02-02-06 01:31 rlrevell       Note Added: 0007866                          
+02-02-06 08:58 Clemens LadischNote Added: 0007870                          
+02-02-06 12:47 daste          File Added: lsusb                            
+02-02-06 12:47 daste          Note Added: 0007875                          
+02-02-06 16:29 daste          Issue Monitored: daste                       
+02-03-06 08:37 Clemens LadischNote Added: 0007892                          
+02-03-06 08:37 Clemens LadischAssigned To               => Clemens Ladisch 
+02-03-06 08:37 Clemens LadischReproducibility          N/A => always       
+02-03-06 08:37 Clemens LadischStatus                   new => assigned     
+02-03-06 10:57 daste          Note Added: 0007895                          
+03-03-06 10:46 daste          Note Added: 0008339                          
+03-26-06 00:33 suamor         Note Added: 0008955                          
 ======================================================================
 
 
