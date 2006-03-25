@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001964]: CMedia 9880 ECS 915p-a 1.2a NO MIC/LINE IN
-Date: Sat, 25 Mar 2006 08:24:09 +0100
-Message-ID: <0dbe99bb91100991f6accfcf3b09659e@bugtrack.alsa-project.org>
+Date: Sat, 25 Mar 2006 08:38:26 +0100
+Message-ID: <74b27c566ecab1f4f81f4c032b46eda9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB0301B5
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 08:24:09 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6EA941B5
+	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 08:38:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1964> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             03-25-2006 08:24 CET
-Last Modified:              03-25-2006 08:24 CET
+Last Modified:              03-25-2006 08:38 CET
 ======================================================================
 Summary:                    CMedia 9880 ECS 915p-a 1.2a NO MIC/LINE IN
 Description: 
@@ -50,10 +50,25 @@ what to do tell me what to post and youll get it
 thanks!
 ======================================================================
 
+----------------------------------------------------------------------
+ sharpen047 - 03-25-06 08:38 
+----------------------------------------------------------------------
+localhost ~ # modprobe snd-hda-intel
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.15-gentoo-r1/kernel/sound/acore/snd-timer.ko): Unknown
+symbol in module, or unknown parameter (see dmesg)
+WARNING: Error inserting snd_pcm
+(/lib/modules/2.6.15-gentoo-r1/kernel/sound/acore/snd-pcm.ko): Unknown
+symbol in module, or unknown parameter (see dmesg)
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.15-gentoo-r1/alsa-driver/pci/snd-hda-intel.ko): Unknown
+symbol in module, or unknown parameter (see dmesg)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-25-06 08:24 sharpen047     New Issue                                    
+03-25-06 08:38 sharpen047     Note Added: 0008943                          
 ======================================================================
 
 
