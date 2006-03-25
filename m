@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Sat, 25 Mar 2006 10:51:27 +0100
-Message-ID: <6f6430688cf298ea528a0a5e4a467637@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001850]: source available
+Date: Sat, 25 Mar 2006 12:04:37 +0100
+Message-ID: <419834970a550a2b71b529aa783d6cc2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5FE91198
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 10:51:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2C84184
+	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 12:04:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,120 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
 ======================================================================
-Reported By:                liangalei
+Reported By:                coz
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Issue ID:                   1850
+Category:                   PCI - echoaudio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Status:                     new
+Distribution:               ubuntu/breezy/Debian
+Kernel Version:             2.6.12.10.386
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              03-25-2006 10:51 CET
+Date Submitted:             02-16-2006 13:05 CET
+Last Modified:              03-25-2006 12:04 CET
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    source available
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
-
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
-
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
-
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
-
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
-
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001931 Unknown AC97 codec, digital sound works
+can't start layla24
 ======================================================================
 
 ----------------------------------------------------------------------
- JProgrammer - 03-21-06 02:38 
+ rlrevell - 03-22-06 02:48 
 ----------------------------------------------------------------------
-I also applied the patch there is no sound that comes from internal
-speakers, headphone or microphone jack and all of the controls except for
-pcm do not display.
+What is CONFIG_FW_LOADER set to in your kernel config?
 
 ----------------------------------------------------------------------
- alessiodf - 03-25-06 10:51 
+ pochini - 03-25-06 12:04 
 ----------------------------------------------------------------------
-Hi all!
-I've a benq S53 and i have the same problem with the mute sound! :(
+You can also try to enable debugging in alsa-driver by passing the
+"--with-debug=full" option to configure. It make the driver print a lot of
+stuff in the system logs. Maybe when you load the module it prints
+something useful.
+Also, make sure the modules are installed (dir
+/lib/modules/2.6.14.2/kernel/sound/pci/echoaudio/ (you kernel version may
+differ)) and the firmware binaries are installed (dir /lib/firmware/ea/).
+Type "modprobe snd-<yourcard>" and then "dmesg" to see the debug messages.
+You may need to unload the modules if they're already loaded. Use "lsmod"
+to the the list and "modprobe -r <name>" to onload a module.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
-03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
-   
-03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
-03-17-06 04:10 Kooper         Note Added: 0008633                          
-03-17-06 12:07 tiwai          Note Added: 0008641                          
-03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
-      
-03-17-06 12:35 Kooper         Note Added: 0008644                          
-03-21-06 02:38 JProgrammer    Note Added: 0008736                          
-03-25-06 10:51 alessiodf      Note Added: 0008944                          
+02-16-06 13:05 coz            New Issue                                    
+02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
+02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
+02-18-06 13:34 pochini        Note Added: 0008119                          
+02-20-06 03:30 coz            Note Added: 0008140                          
+02-20-06 22:02 pochini        Note Added: 0008150                          
+03-13-06 19:49 coz            Note Added: 0008456                          
+03-13-06 22:38 pochini        Note Added: 0008465                          
+03-13-06 23:02 johnrigg       Note Added: 0008466                          
+03-16-06 14:54 coz            Note Added: 0008605                          
+03-18-06 22:02 pochini        Note Added: 0008676                          
+03-18-06 22:07 pochini        Note Edited: 0008676                         
+03-19-06 16:05 coz            Note Added: 0008690                          
+03-20-06 22:10 pochini        Note Added: 0008725                          
+03-22-06 02:38 coz            Note Added: 0008781                          
+03-22-06 02:48 rlrevell       Note Added: 0008787                          
+03-25-06 12:04 pochini        Note Added: 0008945                          
 ======================================================================
 
 
