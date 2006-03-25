@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
-Date: Sat, 25 Mar 2006 02:17:10 +0100
-Message-ID: <86c7002b0a4b67013c31b3be28a92957@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
+Date: Sat, 25 Mar 2006 03:35:27 +0100
+Message-ID: <0fd80343c27108570c55db0f9dc376c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CC481D5
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 02:17:10 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 87E371C3
+	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 03:35:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
 ======================================================================
-Reported By:                fmoraes
-Assigned To:                perex
+Reported By:                Jeff250
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   371
-Category:                   PCI - cs46xx
+Issue ID:                   1963
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.6-1.435.2.3
+Distribution:               Ubuntu Dapper
+Kernel Version:             2.6.15-19-686
 ======================================================================
-Date Submitted:             07-09-2004 15:59 CEST
-Last Modified:              03-25-2006 02:17 CET
+Date Submitted:             03-25-2006 03:35 CET
+Last Modified:              03-25-2006 03:35 CET
 ======================================================================
-Summary:                    dmix does not work with snd-cs46xx driver
+Summary:                    Returning from suspend-to-ram "mutes" sounds
 Description: 
-When trying to use dmix with the snd-cs46xx driver, no output is produced.
+I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
+STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
+the sound is "muted" in that alsamixer does not actually show any tracks
+to be muted, but changing the master volume up or down restores sound
+output.  As a workaround, I've added to my resume script an amixer command
+to slightly modify the volume automatically on resume from suspend.  I'm
+using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
+1.0.10.  Thanks for your time.
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 03-24-06 02:54 
-----------------------------------------------------------------------
-Enable CS46XX_NEW_DSP option when you configure the ALSA CS46XX driver to
-use hardware mixing
-
-----------------------------------------------------------------------
- fmoraes - 03-25-06 02:17 
-----------------------------------------------------------------------
-Is this a compile time only option? If so, then it is of no use. This is a
-legitimate dmix or cs46xx driver bug unless there is a real reason why
-this is happening.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-04 15:59 fmoraes        New Issue                                    
-07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
-07-15-04 14:10 perex          Status                   new => assigned     
-07-15-04 14:10 perex          Assigned To               => perex           
-03-09-05 03:09 fmoraes        Note Added: 0003823                          
-03-09-05 18:37 tiwai          Note Added: 0003830                          
-03-10-05 15:03 jdthood        Note Added: 0003857                          
-03-11-05 22:14 fmoraes        File Added: .asoundrc                        
-03-11-05 22:15 fmoraes        Note Added: 0003894                          
-03-22-06 03:42 rlrevell       Note Added: 0008832                          
-03-22-06 18:50 tiwai          Note Added: 0008866                          
-03-24-06 02:16 fmoraes        Note Added: 0008907                          
-03-24-06 02:54 Raymond        Note Added: 0008909                          
-03-25-06 02:17 fmoraes        Note Added: 0008940                          
+03-25-06 03:35 Jeff250        New Issue                                    
+03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
+03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
 ======================================================================
 
 
