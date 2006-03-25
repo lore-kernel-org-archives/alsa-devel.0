@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001824]: Always mixed into one channel when recording stereo
-Date: Sat, 25 Mar 2006 20:37:13 +0100
-Message-ID: <12f53f19e0aa0f124dff7d9b865037d0@bugtrack.alsa-project.org>
+Date: Sat, 25 Mar 2006 20:44:07 +0100
+Message-ID: <2a08d4d2af2fbd8aeba09ce5c62849c5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 162961BB
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 20:37:13 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7563518A
+	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 20:44:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.14-gentoo-r4
 ======================================================================
 Date Submitted:             02-06-2006 06:56 CET
-Last Modified:              03-25-2006 20:37 CET
+Last Modified:              03-25-2006 20:44 CET
 ======================================================================
 Summary:                    Always mixed into one channel when recording stereo
 Description: 
@@ -55,88 +55,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 duplicate of        0001527 amixer fails to set right 'Capture Sour...
 ======================================================================
-
-----------------------------------------------------------------------
- Electro - 03-25-06 06:53 
-----------------------------------------------------------------------
-1) No
-2) Nope. At the time I have not had the need to record from Mic, Aux, and
-CD-ROM. I use DAE to play audio CD. For the tests below I deactivate DAE
-in xmms for the tests below.
-3) It states the value as 2,2 but it still records only the left channel.
-I can always listen from Line in and play a PCM stream. 
-4) When I pass model=universe to the snd-ice1724 module, recording stereo
-through Line in and CD-ROM works. The cset values for each input is as
-follows.
-
-:: CD-ROM ::
-$ amixer cset name="Capture Source" 0,0
-numid=36,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw---,values=2,items=8
-  ; Item #0 'Aux1'
-  ; Item #1 'CD'
-  ; Item #2 'Phono'
-  ; Item #3 'Line'
-  ; Item #4 'Aux2'
-  ; Item #5 'Mic'
-  ; Item #6 'Aux3'
-  ; Item #7 'AC97'
-  : values=0,0
-The Phono mix control have to be unmuted and its volume have to be
-adjusted in order for the CD-ROM to be heard. Adjusting CD-ROM mix control
-does not work.
-
-
-:: Line In ::
-$ amixer cset name="Capture Source" 2,2
-numid=36,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw---,values=2,items=8
-  ; Item #0 'Aux1'
-  ; Item #1 'CD'
-  ; Item #2 'Phono'
-  ; Item #3 'Line'
-  ; Item #4 'Aux2'
-  ; Item #5 'Mic'
-  ; Item #6 'Aux3'
-  ; Item #7 'AC97'
-  : values=2,2
-Records in stereo. Uses correct control to adjust Line in volume.
-
-
-:: Mic ::
-$ amixer cset name="Capture Source" 3,3
-numid=36,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw---,values=2,items=8
-  ; Item #0 'Aux1'
-  ; Item #1 'CD'
-  ; Item #2 'Phono'
-  ; Item #3 'Line'
-  ; Item #4 'Aux2'
-  ; Item #5 'Mic'
-  ; Item #6 'Aux3'
-  ; Item #7 'AC97'
-  : values=3,3
-
-
-:: AC97 ::
-$ amixer cset name="Capture Source" 4,4
-numid=36,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw---,values=2,items=8
-  ; Item #0 'Aux1'
-  ; Item #1 'CD'
-  ; Item #2 'Phono'
-  ; Item #3 'Line'
-  ; Item #4 'Aux2'
-  ; Item #5 'Mic'
-  ; Item #6 'Aux3'
-  ; Item #7 'AC97'
-  : values=4,4
-Records from everything such as Line in, Mic, CD-ROM, and PCM stream only
-if they are not muted.
-
-
-I have not tested AUX. I assume it uses the cset values of 1,1, but I do
-not know.
 
 ----------------------------------------------------------------------
  ungod - 03-25-06 20:37 
@@ -164,6 +82,15 @@ bits related to DAC (Playback) are vaild, the bits related to ADC
 I'll attach a patch which sets the register to the same value as for
 aureon.
 
+----------------------------------------------------------------------
+ ungod - 03-25-06 20:44 
+----------------------------------------------------------------------
+The patch is uploaded as prodigy-wminit.diff
+
+And I see now why you are capable of hearing both line in and PCM
+regardless of the WM8770 initialization. The AC97 switch is actually
+directly related to this bit.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -180,6 +107,9 @@ Date Modified  Username       Field                    Change
 03-21-06 16:48 ungod          Note Edited: 0008743                         
 03-25-06 06:53 Electro        Note Added: 0008942                          
 03-25-06 20:37 ungod          Note Added: 0008949                          
+03-25-06 20:38 ungod          File Added: prodigy-wminit.diff                   
+
+03-25-06 20:44 ungod          Note Added: 0008950                          
 ======================================================================
 
 
