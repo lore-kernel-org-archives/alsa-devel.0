@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001850]: source available
-Date: Sat, 25 Mar 2006 12:04:37 +0100
-Message-ID: <419834970a550a2b71b529aa783d6cc2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
+Date: Sat, 25 Mar 2006 13:16:03 +0100
+Message-ID: <f5b9ef953e2062429be6aae00a66c243@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2C84184
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 12:04:37 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3D111BF
+	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 13:16:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1850> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
 ======================================================================
-Reported By:                coz
-Assigned To:                
+Reported By:                bambam
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1850
-Category:                   PCI - echoaudio
+Issue ID:                   1938
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               ubuntu/breezy/Debian
-Kernel Version:             2.6.12.10.386
+Status:                     feedback
+Distribution:               Debian sid with custom x86-64 kernel
+Kernel Version:             2.6.16-rc6
 ======================================================================
-Date Submitted:             02-16-2006 13:05 CET
-Last Modified:              03-25-2006 12:04 CET
+Date Submitted:             03-17-2006 20:31 CET
+Last Modified:              03-25-2006 13:16 CET
 ======================================================================
-Summary:                    source available
+Summary:                    EPIPE on Audigy with surround sound when seeking in
+6 channel sound file
 Description: 
-can't start layla24
+Seeking in a 6 channel sound or video file using a surround device gives
+EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
+is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
+userspace. I've tried libs and modules from CVS two days ago with no
+success.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 02:48 
+ bambam - 03-24-06 20:47 
 ----------------------------------------------------------------------
-What is CONFIG_FW_LOADER set to in your kernel config?
+In order to find the place where mplayer reports Broken pipe, search for
+"write error" in mplayer.strace. Strange enough, there's no system call
+returning EPIPE but I don't know the internals of ALSA so that might not
+mean anything.
 
 ----------------------------------------------------------------------
- pochini - 03-25-06 12:04 
+ bambam - 03-25-06 13:16 
 ----------------------------------------------------------------------
-You can also try to enable debugging in alsa-driver by passing the
-"--with-debug=full" option to configure. It make the driver print a lot of
-stuff in the system logs. Maybe when you load the module it prints
-something useful.
-Also, make sure the modules are installed (dir
-/lib/modules/2.6.14.2/kernel/sound/pci/echoaudio/ (you kernel version may
-differ)) and the firmware binaries are installed (dir /lib/firmware/ea/).
-Type "modprobe snd-<yourcard>" and then "dmesg" to see the debug messages.
-You may need to unload the modules if they're already loaded. Use "lsmod"
-to the the list and "modprobe -r <name>" to onload a module.
+I've done some tests with another soundcard (builtin nforce4, intel8x0
+driver) and this bug doesn't appear there. So it seems that this problem
+is somehow specific to the Audigy soundcard.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-06 13:05 coz            New Issue                                    
-02-16-06 13:05 coz            Distribution              => ubuntu/breezy/Debian
-02-16-06 13:05 coz            Kernel Version            => 2.6.12.10.386   
-02-18-06 13:34 pochini        Note Added: 0008119                          
-02-20-06 03:30 coz            Note Added: 0008140                          
-02-20-06 22:02 pochini        Note Added: 0008150                          
-03-13-06 19:49 coz            Note Added: 0008456                          
-03-13-06 22:38 pochini        Note Added: 0008465                          
-03-13-06 23:02 johnrigg       Note Added: 0008466                          
-03-16-06 14:54 coz            Note Added: 0008605                          
-03-18-06 22:02 pochini        Note Added: 0008676                          
-03-18-06 22:07 pochini        Note Edited: 0008676                         
-03-19-06 16:05 coz            Note Added: 0008690                          
-03-20-06 22:10 pochini        Note Added: 0008725                          
-03-22-06 02:38 coz            Note Added: 0008781                          
-03-22-06 02:48 rlrevell       Note Added: 0008787                          
-03-25-06 12:04 pochini        Note Added: 0008945                          
+03-17-06 20:31 bambam         New Issue                                    
+03-17-06 20:31 bambam         Distribution              => Debian sid with
+custom x86-64 kernel
+03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
+03-17-06 20:36 bambam         Note Added: 0008656                          
+03-17-06 21:07 bambam         Note Added: 0008659                          
+03-17-06 21:53 bambam         Note Added: 0008662                          
+03-18-06 01:07 rlrevell       Note Added: 0008667                          
+03-18-06 01:11 bambam         Note Added: 0008668                          
+03-18-06 14:44 bambam         Note Added: 0008671                          
+03-20-06 12:25 tiwai          Note Added: 0008715                          
+03-21-06 00:29 bambam         Note Added: 0008733                          
+03-21-06 17:30 tiwai          Status                   new => resolved     
+03-21-06 17:30 tiwai          Resolution               open => fixed       
+03-21-06 17:30 tiwai          Assigned To               => tiwai           
+03-21-06 17:30 tiwai          Note Added: 0008747                          
+03-21-06 20:09 bambam         Status                   resolved => feedback
+03-21-06 20:09 bambam         Resolution               fixed => reopened   
+03-21-06 20:09 bambam         Note Added: 0008759                          
+03-21-06 20:10 tiwai          Status                   feedback => resolved
+03-21-06 20:10 tiwai          Resolution               reopened => fixed   
+03-21-06 20:10 tiwai          Note Added: 0008760                          
+03-24-06 16:55 bambam         Status                   resolved => feedback
+03-24-06 16:55 bambam         Resolution               fixed => reopened   
+03-24-06 16:55 bambam         Note Added: 0008921                          
+03-24-06 17:06 tiwai          Note Added: 0008922                          
+03-24-06 17:29 bambam         Note Added: 0008923                          
+03-24-06 17:34 tiwai          Note Added: 0008925                          
+03-24-06 17:36 tiwai          Status                   feedback => resolved
+03-24-06 17:36 tiwai          Resolution               reopened => fixed   
+03-24-06 17:36 tiwai          Note Added: 0008926                          
+03-24-06 17:38 tiwai          Note Added: 0008927                          
+03-24-06 17:39 tiwai          Status                   resolved => feedback
+03-24-06 17:39 tiwai          Resolution               fixed => reopened   
+03-24-06 17:39 tiwai          Note Added: 0008928                          
+03-24-06 18:07 bambam         Note Added: 0008931                          
+03-24-06 20:11 bambam         File Added: strace.tar.bz2                    
+03-24-06 20:12 bambam         Note Added: 0008935                          
+03-24-06 20:47 bambam         Note Added: 0008936                          
+03-25-06 13:16 bambam         Note Added: 0008946                          
 ======================================================================
 
 
