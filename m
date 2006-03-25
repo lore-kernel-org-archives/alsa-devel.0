@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
-Date: Sat, 25 Mar 2006 13:16:03 +0100
-Message-ID: <f5b9ef953e2062429be6aae00a66c243@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001882]: Use ESC key to stop the speaker-test instead of using ctrl-C
+Date: Sat, 25 Mar 2006 13:22:35 +0100
+Message-ID: <8827e85f9d54a89b4a58fbb1fbf3d21e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3D111BF
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 13:16:03 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 912621BF
+	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 13:22:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,95 +22,95 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1882> 
 ======================================================================
-Reported By:                bambam
+Reported By:                Raymond
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1938
-Category:                   PCI - emu10k1
+Project:                    ALSA - utils
+Issue ID:                   1882
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     feedback
-Distribution:               Debian sid with custom x86-64 kernel
-Kernel Version:             2.6.16-rc6
 ======================================================================
-Date Submitted:             03-17-2006 20:31 CET
-Last Modified:              03-25-2006 13:16 CET
+Date Submitted:             02-27-2006 03:57 CET
+Last Modified:              03-25-2006 13:22 CET
 ======================================================================
-Summary:                    EPIPE on Audigy with surround sound when seeking in
-6 channel sound file
+Summary:                    Use ESC key to stop the speaker-test instead of
+using ctrl-C
 Description: 
-Seeking in a 6 channel sound or video file using a surround device gives
-EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
-is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
-userspace. I've tried libs and modules from CVS two days ago with no
-success.
+Is it possible to use ESC key to stop the speaker-test instead of abort the
+test by using control-C ?
 
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
 ======================================================================
 
 ----------------------------------------------------------------------
- bambam - 03-24-06 20:47 
+ tiwai - 03-24-06 17:42 
 ----------------------------------------------------------------------
-In order to find the place where mplayer reports Broken pipe, search for
-"write error" in mplayer.strace. Strange enough, there's no system call
-returning EPIPE but I don't know the internals of ALSA so that might not
-mean anything.
+Fixed on CVS.  Thanks.
 
 ----------------------------------------------------------------------
- bambam - 03-25-06 13:16 
+ Raymond - 03-25-06 13:22 
 ----------------------------------------------------------------------
-I've done some tests with another soundcard (builtin nforce4, intel8x0
-driver) and this bug doesn't appear there. So it seems that this problem
-is somehow specific to the Audigy soundcard.
+-n,--nloops     specify number of loops to test, 0 = infinite
+
+
+ ./speaker-test -n
+ 
+speaker-test 1.0.11rc4
+ 
+./speaker-test: invalid option -- n
+Unknown option '?'
+
+
+It should exit when encounter error 
+
+speaker-test -c 4 -D surround51 
+ 
+speaker-test 1.0.11rc4
+ 
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Channels count (4) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
+Channels count (4) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
+Channels count (4) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
+Channels count (4) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 20:31 bambam         New Issue                                    
-03-17-06 20:31 bambam         Distribution              => Debian sid with
-custom x86-64 kernel
-03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
-03-17-06 20:36 bambam         Note Added: 0008656                          
-03-17-06 21:07 bambam         Note Added: 0008659                          
-03-17-06 21:53 bambam         Note Added: 0008662                          
-03-18-06 01:07 rlrevell       Note Added: 0008667                          
-03-18-06 01:11 bambam         Note Added: 0008668                          
-03-18-06 14:44 bambam         Note Added: 0008671                          
-03-20-06 12:25 tiwai          Note Added: 0008715                          
-03-21-06 00:29 bambam         Note Added: 0008733                          
-03-21-06 17:30 tiwai          Status                   new => resolved     
-03-21-06 17:30 tiwai          Resolution               open => fixed       
-03-21-06 17:30 tiwai          Assigned To               => tiwai           
-03-21-06 17:30 tiwai          Note Added: 0008747                          
-03-21-06 20:09 bambam         Status                   resolved => feedback
-03-21-06 20:09 bambam         Resolution               fixed => reopened   
-03-21-06 20:09 bambam         Note Added: 0008759                          
-03-21-06 20:10 tiwai          Status                   feedback => resolved
-03-21-06 20:10 tiwai          Resolution               reopened => fixed   
-03-21-06 20:10 tiwai          Note Added: 0008760                          
-03-24-06 16:55 bambam         Status                   resolved => feedback
-03-24-06 16:55 bambam         Resolution               fixed => reopened   
-03-24-06 16:55 bambam         Note Added: 0008921                          
-03-24-06 17:06 tiwai          Note Added: 0008922                          
-03-24-06 17:29 bambam         Note Added: 0008923                          
-03-24-06 17:34 tiwai          Note Added: 0008925                          
-03-24-06 17:36 tiwai          Status                   feedback => resolved
-03-24-06 17:36 tiwai          Resolution               reopened => fixed   
-03-24-06 17:36 tiwai          Note Added: 0008926                          
-03-24-06 17:38 tiwai          Note Added: 0008927                          
-03-24-06 17:39 tiwai          Status                   resolved => feedback
-03-24-06 17:39 tiwai          Resolution               fixed => reopened   
-03-24-06 17:39 tiwai          Note Added: 0008928                          
-03-24-06 18:07 bambam         Note Added: 0008931                          
-03-24-06 20:11 bambam         File Added: strace.tar.bz2                    
-03-24-06 20:12 bambam         Note Added: 0008935                          
-03-24-06 20:47 bambam         Note Added: 0008936                          
-03-25-06 13:16 bambam         Note Added: 0008946                          
+02-27-06 03:57 Raymond        New Issue                                    
+02-27-06 04:01 rlrevell       Note Added: 0008212                          
+03-01-06 09:51 Raymond        Note Added: 0008277                          
+03-01-06 09:53 Raymond        Note Edited: 0008277                         
+03-01-06 18:01 rlrevell       Note Added: 0008284                          
+03-02-06 04:36 Raymond        Note Added: 0008293                          
+03-02-06 04:46 Raymond        Note Edited: 0008293                         
+03-02-06 04:49 Raymond        Note Edited: 0008293                         
+03-02-06 12:44 tiwai          Status                   new => resolved     
+03-02-06 12:44 tiwai          Resolution               open => won't fix   
+03-02-06 12:44 tiwai          Assigned To               => tiwai           
+03-02-06 12:44 tiwai          Note Added: 0008298                          
+03-24-06 17:29 Raymond        Status                   resolved => feedback
+03-24-06 17:29 Raymond        Resolution               won't fix => reopened
+03-24-06 17:29 Raymond        Note Added: 0008924                          
+03-24-06 17:32 Raymond        Note Edited: 0008924                         
+03-24-06 17:42 tiwai          Status                   feedback => resolved
+03-24-06 17:42 tiwai          Resolution               reopened => fixed   
+03-24-06 17:42 tiwai          Note Added: 0008929                          
+03-25-06 13:22 Raymond        Status                   resolved => feedback
+03-25-06 13:22 Raymond        Resolution               fixed => reopened   
+03-25-06 13:22 Raymond        Note Added: 0008947                          
 ======================================================================
 
 
