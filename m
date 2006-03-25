@@ -1,21 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Adding controls
-Date: Sat, 25 Mar 2006 17:57:39 +0000
-Message-ID: <1143309459.9313.8.camel@localhost.localdomain>
-References: <1142984360.9284.33.camel@localhost.localdomain>
-	 <1142985518.4532.193.camel@mindpipe>
-	 <1143059773.9254.3.camel@localhost.localdomain>
-	 <1143060946.9254.5.camel@localhost.localdomain>
-	 <s5hek0tjy2y.wl%tiwai@suse.de>
-	 <1143307500.9313.6.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001824]: Always mixed into one channel when recording stereo
+Date: Sat, 25 Mar 2006 20:37:13 +0100
+Message-ID: <12f53f19e0aa0f124dff7d9b865037d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B1ADE19C
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 18:57:43 +0100 (MET)
-In-Reply-To: <1143307500.9313.6.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 162961BB
+	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 20:37:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,25 +18,170 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-03-25 at 17:25 +0000, Adrian McMenamin wrote:
-> On Thu, 2006-03-23 at 10:43 +0100, Takashi Iwai wrote:
-> > At Wed, 22 Mar 2006 20:55:46 +0000,
-> > Adrian McMenamin wrote:
-> > > 
-> > > On Wed, 2006-03-22 at 20:36 +0000, Adrian McMenamin wrote:
-> > > 
-> > > > > 
-> > > > I did. Made no difference afaics
-> > > > 
-> > > 
-> > > By which I mean I included the asound header file
-> > > 
-> > > :(
-Testing shows it is definitely being included - very strange
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1824> 
+======================================================================
+Reported By:                Electro
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1824
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.14-gentoo-r4
+======================================================================
+Date Submitted:             02-06-2006 06:56 CET
+Last Modified:              03-25-2006 20:37 CET
+======================================================================
+Summary:                    Always mixed into one channel when recording stereo
+Description: 
+When recording stereo audio (2 channels), the sound seems to mix to one
+channel and then saved in the left track. I do not have anything in
+asound.conf or ~/.asoundrc that will affect the recordings. I even cleared
+them out to make sure that my code is not screwing up the recordings. It
+has done this since I upgraded to 1.0.10 from 1.0.9. I thought 1.0.11rc3
+will fix the problem but it still does it.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001527 amixer fails to set right 'Capture Sour...
+======================================================================
+
+----------------------------------------------------------------------
+ Electro - 03-25-06 06:53 
+----------------------------------------------------------------------
+1) No
+2) Nope. At the time I have not had the need to record from Mic, Aux, and
+CD-ROM. I use DAE to play audio CD. For the tests below I deactivate DAE
+in xmms for the tests below.
+3) It states the value as 2,2 but it still records only the left channel.
+I can always listen from Line in and play a PCM stream. 
+4) When I pass model=universe to the snd-ice1724 module, recording stereo
+through Line in and CD-ROM works. The cset values for each input is as
+follows.
+
+:: CD-ROM ::
+$ amixer cset name="Capture Source" 0,0
+numid=36,iface=MIXER,name='Capture Source'
+  ; type=ENUMERATED,access=rw---,values=2,items=8
+  ; Item #0 'Aux1'
+  ; Item #1 'CD'
+  ; Item #2 'Phono'
+  ; Item #3 'Line'
+  ; Item #4 'Aux2'
+  ; Item #5 'Mic'
+  ; Item #6 'Aux3'
+  ; Item #7 'AC97'
+  : values=0,0
+The Phono mix control have to be unmuted and its volume have to be
+adjusted in order for the CD-ROM to be heard. Adjusting CD-ROM mix control
+does not work.
+
+
+:: Line In ::
+$ amixer cset name="Capture Source" 2,2
+numid=36,iface=MIXER,name='Capture Source'
+  ; type=ENUMERATED,access=rw---,values=2,items=8
+  ; Item #0 'Aux1'
+  ; Item #1 'CD'
+  ; Item #2 'Phono'
+  ; Item #3 'Line'
+  ; Item #4 'Aux2'
+  ; Item #5 'Mic'
+  ; Item #6 'Aux3'
+  ; Item #7 'AC97'
+  : values=2,2
+Records in stereo. Uses correct control to adjust Line in volume.
+
+
+:: Mic ::
+$ amixer cset name="Capture Source" 3,3
+numid=36,iface=MIXER,name='Capture Source'
+  ; type=ENUMERATED,access=rw---,values=2,items=8
+  ; Item #0 'Aux1'
+  ; Item #1 'CD'
+  ; Item #2 'Phono'
+  ; Item #3 'Line'
+  ; Item #4 'Aux2'
+  ; Item #5 'Mic'
+  ; Item #6 'Aux3'
+  ; Item #7 'AC97'
+  : values=3,3
+
+
+:: AC97 ::
+$ amixer cset name="Capture Source" 4,4
+numid=36,iface=MIXER,name='Capture Source'
+  ; type=ENUMERATED,access=rw---,values=2,items=8
+  ; Item #0 'Aux1'
+  ; Item #1 'CD'
+  ; Item #2 'Phono'
+  ; Item #3 'Line'
+  ; Item #4 'Aux2'
+  ; Item #5 'Mic'
+  ; Item #6 'Aux3'
+  ; Item #7 'AC97'
+  : values=4,4
+Records from everything such as Line in, Mic, CD-ROM, and PCM stream only
+if they are not muted.
+
+
+I have not tested AUX. I assume it uses the cset values of 1,1, but I do
+not know.
+
+----------------------------------------------------------------------
+ ungod - 03-25-06 20:37 
+----------------------------------------------------------------------
+Since it works with Universe, but not Prodigy71, there problem can only be
+in the initialization of the WM8770 chip (The chip responsible of A/D and
+D/A conversion and volume control).
+There are a few differences in the way the two initialize the chip. Here's
+how prodigy71 behave compared to the universe:
+
+1. Capture source is CD by default instead of AC'97
+2. Front channel is not mixed with AC'97 output (Means that you can't hear
+Line in and PCM simultaniously, but apparently you can do that anyway if I
+understood correctly)
+3. High-pass filter is enabled
+4. The Master Mode Control register in the chip is set to an invalid
+value.
+
+My guess is that it is the 4th point which does the damage. The register
+controls three clock pins related to both Analogue-to-Digital and
+Digital-to-Analogue conversion (ADC and DAC respectively), and while the
+bits related to DAC (Playback) are vaild, the bits related to ADC
+(Capture) aren't.
+
+I'll attach a patch which sets the register to the same value as for
+aureon.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-06-06 06:56 Electro        New Issue                                    
+02-06-06 06:56 Electro        Distribution              => Gentoo          
+02-06-06 06:56 Electro        Kernel Version            => 2.6.14-gentoo-r4
+02-10-06 23:38 tartif         Note Added: 0008009                          
+02-16-06 07:26 Electro        Note Added: 0008087                          
+02-18-06 01:32 rlrevell       Relationship added       duplicate of 0001527
+02-28-06 22:45 Electro        Note Added: 0008248                          
+03-20-06 12:35 ungod          Note Added: 0008717                          
+03-21-06 09:28 Electro        Note Added: 0008740                          
+03-21-06 16:47 ungod          Note Added: 0008743                          
+03-21-06 16:48 ungod          Note Edited: 0008743                         
+03-25-06 06:53 Electro        Note Added: 0008942                          
+03-25-06 20:37 ungod          Note Added: 0008949                          
+======================================================================
+
 
 
 
