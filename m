@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001964]: CMedia 9880 ECS 915p-a 1.2a NO MIC/LINE IN
-Date: Sat, 25 Mar 2006 21:40:29 +0100
-Message-ID: <ac080b95ba24ee6c492d98217a130535@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001934]: make problem
+Date: Sat, 25 Mar 2006 22:19:18 +0100
+Message-ID: <0d60e803377f570fe771d197d67ec5f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1FEB81B7
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 21:40:30 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBD1E188
+	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 22:19:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1964> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
 ======================================================================
-Reported By:                sharpen047
-Assigned To:                tiwai
+Reported By:                kvo
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1964
-Category:                   PCI - hda-intel
+Issue ID:                   1934
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               RHEL4 Update 3
+Kernel Version:             2.6.9-34.EL
 ======================================================================
-Date Submitted:             03-25-2006 08:24 CET
-Last Modified:              03-25-2006 21:40 CET
+Date Submitted:             03-17-2006 12:19 CET
+Last Modified:              03-25-2006 22:19 CET
 ======================================================================
-Summary:                    CMedia 9880 ECS 915p-a 1.2a NO MIC/LINE IN
+Summary:                    make problem
 Description: 
-alsa mixer is up tried for about 2 months now to fix this... i dont know
-what to do tell me what to post and youll get it 
-
-thanks!
+./configure works OK. running make give error during compilation: module
+'include/asound.h' (line 210) has some 'typedef' that doesn't match with
+(probably) OS include. As a result, compilation stops and driver can not
+be produced.
 ======================================================================
 
 ----------------------------------------------------------------------
- sharpen047 - 03-25-06 08:38 
+ tiwai - 03-21-06 17:33 
 ----------------------------------------------------------------------
-localhost ~ # modprobe snd-hda-intel
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.15-gentoo-r1/kernel/sound/acore/snd-timer.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
-WARNING: Error inserting snd_pcm
-(/lib/modules/2.6.15-gentoo-r1/kernel/sound/acore/snd-pcm.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
-FATAL: Error inserting snd_hda_intel
-(/lib/modules/2.6.15-gentoo-r1/alsa-driver/pci/snd-hda-intel.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
+The detection in configure script didn't work by some reason.  Maybe due to
+a packed RHEL kernel.  Check config.log.
 
 ----------------------------------------------------------------------
- sharpen047 - 03-25-06 21:40 
+ kvo - 03-25-06 22:19 
 ----------------------------------------------------------------------
-ok well i got modules to load but still no mic...using 1.0.11_rc4
+I sent config.log (I did´t see any strange things in it). Recently I
+compiled wireless driver for the same system and everything went smoothly,
+so, compression isn´t a reason, most probably.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-06 08:24 sharpen047     New Issue                                    
-03-25-06 08:38 sharpen047     Note Added: 0008943                          
-03-25-06 21:40 sharpen047     Note Added: 0008951                          
+03-17-06 12:19 kvo            New Issue                                    
+03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
+03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
+03-17-06 12:25 tiwai          Note Added: 0008643                          
+03-19-06 22:26 kvo            Note Added: 0008697                          
+03-21-06 17:33 tiwai          Note Added: 0008749                          
+03-25-06 20:47 kvo            File Added: config.log                       
+03-25-06 22:19 kvo            Note Added: 0008952                          
 ======================================================================
 
 
