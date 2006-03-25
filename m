@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001847]: hda-intel on acer laptop (travelmate 3002) - no recording
-Date: Fri, 24 Mar 2006 23:57:59 +0100
-Message-ID: <b4b8b572a70d38bb9807aeedd0285e45@bugtrack.alsa-project.org>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: [ALSA] ISA drivers bailing on first !enable[i]
+Date: Sat, 25 Mar 2006 01:28:07 +0100
+Message-ID: <44248E97.2000900@keyaccess.nl>
+References: <44238482.50401@keyaccess.nl> <s5hu09onlzd.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------060901030309040100050101"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27CBE19D
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2006 23:58:00 +0100 (MET)
+Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl [213.51.146.200])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94FB11DB
+	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 01:27:06 +0100 (MET)
+In-Reply-To: <s5hu09onlzd.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +20,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------060901030309040100050101
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1847> 
-======================================================================
-Reported By:                lrupn
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1847
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10.1
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             02-15-2006 14:18 CET
-Last Modified:              03-24-2006 23:57 CET
-======================================================================
-Summary:                    hda-intel on acer laptop (travelmate 3002) - no
-recording
-Description: 
-I have an Acer laptop with sound card that claim to be Intel Corporation
-82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio Controller (rev
-04)
-that is recognized as a SigmaTel STAC9200. 
-With 1.0.11rc2 there is some noise when I unmute line-in (external
-microphone) and try to record something. The amplitude response is ok and
-actualy i am able to hear my voice but there is a lot of noise. I thing
-that the problem is the mixer... The internal micorphone is not working at
-all.\
-With 1.0.11rc3 some new controls apear in the alsamixer but neither
-speakers nor microphone is working....
-I have found a similr bug report:
-http://sourceforge.net/tracker/index.php?func=detail&aid=1389026&group_id=27464&atid=390601
+Takashi Iwai wrote:
 
+>> Assuming this was indeed the idea, I've attached a patch against 2.6.16.
+>> If it's correct, but you need it against ALSA CVS instead, please say so
+> 
+> Yes, these are correct fixes.  Most of them should have been already
+> in the latest ALSA tree, i.e. also in Linus git tree now.
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001643 Microphone is muted and no mic option a...
-======================================================================
+I had a feeling I should've checked that when I was composing the message...
 
-----------------------------------------------------------------------
- MACHINE - 02-16-06 12:13 
-----------------------------------------------------------------------
-The problem is also described here:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1643
+> Could you check what's still missing?  I might missed some drivers.
 
-----------------------------------------------------------------------
- MACHINE - 03-24-06 23:57 
-----------------------------------------------------------------------
-microphone problem on HDA/ALC260 might be solved by 1.0.11RC4, but HDA w/
-SigmaTel has not yet been solved the problem.
+CMI8330 was missing, see attached (generated against -git9). Yes, the 
+original patch is still useful for -stable; will submit.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-15-06 14:18 lrupn          New Issue                                    
-02-15-06 14:18 lrupn          Distribution              => Slackware 10.1  
-02-15-06 14:18 lrupn          Kernel Version            => 2.6.12          
-02-16-06 12:13 MACHINE        Note Added: 0008095                          
-02-18-06 01:32 rlrevell       Relationship added       duplicate of 0001643
-03-24-06 23:57 MACHINE        Note Added: 0008939                          
-======================================================================
+Rene.
 
+--------------060901030309040100050101
+Content-Type: text/plain;
+ name="alsa_cmi8330_enable.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa_cmi8330_enable.diff"
 
+Index: linux-2.6.16-git9/sound/isa/cmi8330.c
+===================================================================
+--- linux-2.6.16-git9.orig/sound/isa/cmi8330.c	2006-03-20 06:53:29.000000000 +0100
++++ linux-2.6.16-git9/sound/isa/cmi8330.c	2006-03-25 01:10:37.000000000 +0100
+@@ -690,9 +690,9 @@ static int __init alsa_card_cmi8330_init
+ 	if ((err = platform_driver_register(&snd_cmi8330_driver)) < 0)
+ 		return err;
+ 
+-	for (i = 0; i < SNDRV_CARDS && enable[i]; i++) {
++	for (i = 0; i < SNDRV_CARDS; i++) {
+ 		struct platform_device *device;
+-		if (is_isapnp_selected(i))
++		if (! enable[i] || is_isapnp_selected(i))
+ 			continue;
+ 		device = platform_device_register_simple(CMI8330_DRIVER,
+ 							 i, NULL, 0);
+
+--------------060901030309040100050101--
 
 
 -------------------------------------------------------
