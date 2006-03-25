@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
-Date: Sat, 25 Mar 2006 03:35:27 +0100
-Message-ID: <0fd80343c27108570c55db0f9dc376c0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
+Date: Sat, 25 Mar 2006 04:33:50 +0100
+Message-ID: <9bc930edb8f211573915726640ce522a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 87E371C3
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 03:35:27 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A68E1B8
+	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2006 04:33:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,44 +22,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
 ======================================================================
-Reported By:                Jeff250
+Reported By:                flujan
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1963
+Issue ID:                   1956
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15-19-686
+Distribution:               Slackware
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             03-25-2006 03:35 CET
-Last Modified:              03-25-2006 03:35 CET
+Date Submitted:             03-23-2006 21:30 CET
+Last Modified:              03-25-2006 04:33 CET
 ======================================================================
-Summary:                    Returning from suspend-to-ram "mutes" sounds
+Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
 Description: 
-I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
-STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
-the sound is "muted" in that alsamixer does not actually show any tracks
-to be muted, but changing the master volume up or down restores sound
-output.  As a workaround, I've added to my resume script an amixer command
-to slightly modify the volume automatically on resume from suspend.  I'm
-using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
-1.0.10.  Thanks for your time.
+The problem where solved in the CVS from 2006-03-01 but in the rc4 version
+the problem returns. 
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 03-24-06 13:01 
+----------------------------------------------------------------------
+Sorry, not "laptop" but "acer".
+
+If the model doesn't work, first, make sure that you set up mixer
+correctly.
+Upload /etc/asound.state (after "alsactl store"), and
+/proc/asound/card0/codec#* files for checking, together with the output of
+"lspci -nv" for class 0403 device.
+(All these important files are missing in the old bug report...)
+
+----------------------------------------------------------------------
+ flujan - 03-25-06 04:33 
+----------------------------------------------------------------------
+This is the output provided by alsaconf. It detects the hda-intel driver
+and then produces this:
+
+
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.13/kernel/sound/acore/snd-page-alloc.ko): Invalid module
+format
+WARNING: Error inserting snd
+(/lib/modules/2.6.13/kernel/sound/acore/snd.ko): Invalid module format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.13/kernel/sound/acore/snd-timer.ko): Invalid module
+format
+WARNING: Error inserting snd_pcm
+(/lib/modules/2.6.13/kernel/sound/acore/snd-pcm.ko): Invalid module
+format
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.13/kernel/sound/pci/hda/snd-hda-codec.ko): Invalid
+module format
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.13/kernel/sound/pci/hda/snd-hda-intel.ko): Invalid
+module format
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-06 03:35 Jeff250        New Issue                                    
-03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
-03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
+03-23-06 21:30 flujan         New Issue                                    
+03-23-06 21:30 flujan         Distribution              => Slackware       
+03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
+03-24-06 11:57 tiwai          Note Added: 0008914                          
+03-24-06 12:52 er-ku          Note Added: 0008915                          
+03-24-06 13:01 tiwai          Note Added: 0008916                          
+03-25-06 04:33 flujan         Note Added: 0008941                          
 ======================================================================
 
 
