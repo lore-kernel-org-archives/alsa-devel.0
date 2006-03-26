@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
-Date: Sun, 26 Mar 2006 01:39:06 +0100
-Message-ID: <e2cfa961013f7ba0d3149b453ea2d985@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001402]: No SOUND in ASUS A6
+Date: Sun, 26 Mar 2006 01:50:33 +0100
+Message-ID: <73feef02987453bf949428a43d59d383@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46D5618B
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:39:06 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D3AD1D4
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:50:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,97 +22,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1402> 
 ======================================================================
-Reported By:                kratz00
+Reported By:                pedrosalazar
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1714
-Category:                   1_OTHERS
+Issue ID:                   1402
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               LFS
-Kernel Version:             2.6.15
+Status:                     resolved
+Distribution:               Red Hat Fedora Core 4
+Kernel Version:             2.6.13
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-04-2006 18:04 CET
-Last Modified:              03-26-2006 01:39 CET
+Date Submitted:             09-07-2005 23:47 CEST
+Last Modified:              03-26-2006 01:50 CET
 ======================================================================
-Summary:                    Intel HDA (AD1986A) no sound
+Summary:                    No SOUND in ASUS A6
 Description: 
-It's a Samsung M50 Notebook.
-I also tried Alsa 1.0.10 but the problem is the same.
-There are no specific module options for the AD1986A chip, right?
+There is no sound in asus laptop A6 with alsa drivers.
 
-00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03)
-        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+laptop: ASUS A6 (A6Q00VA) Intel Pentium M Processor 740
 
-loaded modules:
-snd_pcm_oss            47136  0 
-snd_mixer_oss          16512  1 snd_pcm_oss
-snd_hda_intel          14224  0 
-snd_hda_codec         122624  1 snd_hda_intel
-snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              19844  1 snd_pcm
-snd                    46144  6
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
+Initially verified with the alsa-driver bundle in FC4 (1.0.9rc2 if I'm not
+wrong) with kernel 2.6.12-1.1398_FC4, then I updated to alsa-driver 1.0.9b
+working with alsa-lib 1.0.9 and alsa-utils 1.0.9a.
+
+After, I updated kernel to 2.6.12.5, and now I'm using the 2.6.13.
+
+All would be fine (alsamixer, aplay, ...) unless there is no sound.
+
+I compiled alsa-driver with debug, and added the module option
+"model=asus", that prints the following message when module is inserted:
+
+Sep  7 21:59:39 undertaker kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] ->
+Link [LNKA] -> GSI 11 (level, low) -> IRQ 11
+Sep  7 21:59:39 undertaker kernel: ALSA
+/home/psalazar/build/alsa-driver-1.0.9b/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:1409:
+hda_codec: Unknown model for ALC880
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001841 Mixer not working  / fujitsu laptop V20...
-======================================================================
 
 ----------------------------------------------------------------------
- kratz00 - 03-25-06 15:31 
+ rlrevell - 03-22-06 03:24 
 ----------------------------------------------------------------------
-i did, still the same :(
-
-i will attach asound.state
+Can this be closed or is more info needed from the submitter?
 
 ----------------------------------------------------------------------
- tiwai - 03-26-06 01:39 
+ tiwai - 03-26-06 01:50 
 ----------------------------------------------------------------------
-Try "model=laptop" module optoin.  It should work.
-
-Show the output of "lspci -nv" for class 0403 device.
+Already fixed, at least in 1.0.11rc4.
+The device is already registered in the config table.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 18:04 kratz00        New Issue                                    
-01-04-06 18:04 kratz00        Distribution              => LFS             
-01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
-01-30-06 13:40 kratz00        Note Added: 0007837                          
-02-07-06 00:48 gerick         Issue Monitored: gerick                      
-02-08-06 13:13 simonckenyon   Issue Monitored: simonckenyon                    
-03-10-06 18:26 tiwai          Relationship added       duplicate of 0001841
-03-10-06 18:26 tiwai          Duplicate ID             0 => 1841           
-03-10-06 18:26 tiwai          Status                   new => resolved     
-03-10-06 18:26 tiwai          Resolution               open => duplicate   
-03-10-06 18:26 tiwai          Assigned To               => tiwai           
-03-10-06 18:26 tiwai          Note Added: 0008408                          
-03-15-06 21:49 kratz00        Status                   resolved => feedback
-03-15-06 21:49 kratz00        Resolution               duplicate => reopened
-03-15-06 21:49 kratz00        Note Added: 0008574                          
-03-23-06 17:45 tiwai          Note Added: 0008896                          
-03-25-06 15:31 kratz00        Note Added: 0008948                          
-03-25-06 15:31 kratz00        File Added: asound.state                     
-03-26-06 01:39 tiwai          Note Added: 0008959                          
+09-07-05 23:47 pedrosalazar   New Issue                                    
+09-07-05 23:47 pedrosalazar   File Added: 2.6.13.config                    
+09-07-05 23:47 pedrosalazar   Distribution              => Red Hat Fedora Core 4
+09-07-05 23:47 pedrosalazar   Kernel Version            => 2.6.13          
+09-08-05 19:02 tiwai          Note Added: 0006078                          
+09-09-05 02:42 pedrosalazar   Note Added: 0006085                          
+09-09-05 03:12 pedrosalazar   Note Added: 0006087                          
+09-09-05 12:37 tiwai          Note Added: 0006095                          
+03-22-06 03:24 rlrevell       Note Added: 0008817                          
+03-26-06 01:50 tiwai          Status                   assigned => resolved
+03-26-06 01:50 tiwai          Resolution               open => fixed       
+03-26-06 01:50 tiwai          Note Added: 0008961                          
 ======================================================================
 
 
