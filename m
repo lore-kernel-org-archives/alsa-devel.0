@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Sun, 26 Mar 2006 22:54:14 +0200
-Message-ID: <d9a197bc77fc2088a26bed5c825e27c2@bugtrack.alsa-project.org>
+Date: Sun, 26 Mar 2006 23:13:34 +0200
+Message-ID: <28d7373614d2fa456baf58cfea8bfc0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E97F1E3
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 22:54:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B09861E5
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 23:13:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5 test3
 Kernel Version:             2.6.15-1.2009.4.2_FC5
 ======================================================================
 Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              03-26-2006 22:54 CEST
+Last Modified:              03-26-2006 23:13 CEST
 ======================================================================
 Summary:                    no sound from headphones or speakers on asus a6km
 laptop
@@ -57,11 +57,6 @@ Same issues with a knoppix 4.0.2.
 ======================================================================
 
 ----------------------------------------------------------------------
- kiwi - 03-26-06 22:35 
-----------------------------------------------------------------------
-It still works after the reboot (and running the command).
-
-----------------------------------------------------------------------
  lbenini - 03-26-06 22:54 
 ----------------------------------------------------------------------
 Thanks, i can't test it now (bios battery alignament..) but i'll do...
@@ -70,6 +65,14 @@ About external Amplifier have you tried to play with reg 26?
 
 P.S.
 I love you :-D
+
+----------------------------------------------------------------------
+ kiwi - 03-26-06 23:13 
+----------------------------------------------------------------------
+Nope, just used the control switch in the mixer. I played with that
+register some time ago but if I remember well almost everything is enabled
+by default.
+Hope it will work for you too :)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -94,6 +97,8 @@ Date Modified  Username       Field                    Change
 03-26-06 21:56 kiwi           Note Added: 0008975                          
 03-26-06 22:35 kiwi           Note Added: 0008977                          
 03-26-06 22:54 lbenini        Note Added: 0008978                          
+03-26-06 23:11 kiwi           Note Edited: 0008975                         
+03-26-06 23:13 kiwi           Note Added: 0008979                          
 ======================================================================
 
 
