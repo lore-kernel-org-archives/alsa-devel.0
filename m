@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
-Date: Sun, 26 Mar 2006 01:28:35 +0100
-Message-ID: <42f5e250537a4b31ed435c2871cc998a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001398]: volume level either 0% or 100%
+Date: Sun, 26 Mar 2006 01:33:52 +0100
+Message-ID: <8a3885f86612ee4e306d7e9a9ca62b4e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1000A187
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:28:35 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D702A187
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:33:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1398> 
 ======================================================================
-Reported By:                Jeff250
+Reported By:                KamMing
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1963
+Issue ID:                   1398
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15-19-686
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.6.13
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-25-2006 03:35 CET
-Last Modified:              03-26-2006 01:28 CET
+Date Submitted:             09-05-2005 06:33 CEST
+Last Modified:              03-26-2006 01:33 CET
 ======================================================================
-Summary:                    Returning from suspend-to-ram "mutes" sounds
+Summary:                    volume level either 0% or 100%
 Description: 
-I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
-STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
-the sound is "muted" in that alsamixer does not actually show any tracks
-to be muted, but changing the master volume up or down restores sound
-output.  As a workaround, I've added to my resume script an amixer command
-to slightly modify the volume automatically on resume from suspend.  I'm
-using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
-1.0.10.  Thanks for your time.
+The volume can be tuned by aumix. But sound level only 2 levels 0% and
+100%.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-26-06 01:28 
+ KamMing - 03-24-06 02:25 
 ----------------------------------------------------------------------
-Does the suspend-to-disk work?
+It is fixed by 1.0.11rc4.
+
+----------------------------------------------------------------------
+ tiwai - 03-26-06 01:33 
+----------------------------------------------------------------------
+OK, closing.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-06 03:35 Jeff250        New Issue                                    
-03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
-03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
-03-26-06 01:28 tiwai          Note Added: 0008956                          
+09-05-05 06:33 KamMing        New Issue                                    
+09-05-05 06:33 KamMing        Kernel Version            => 2.6.13          
+03-22-06 03:25 rlrevell       Note Added: 0008818                          
+03-23-06 16:12 tiwai          Note Added: 0008886                          
+03-24-06 02:25 KamMing        Note Added: 0008908                          
+03-26-06 01:33 tiwai          Status                   assigned => resolved
+03-26-06 01:33 tiwai          Resolution               open => fixed       
+03-26-06 01:33 tiwai          Note Added: 0008957                          
 ======================================================================
 
 
