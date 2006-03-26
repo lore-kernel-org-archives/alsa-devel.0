@@ -1,16 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: bus_add_device() losing an error return from the probe() method
-Date: Mon, 27 Mar 2006 00:30:19 +0200
-Message-ID: <442715FB.7060404__7108.84490185908$1143412273$gmane$org@keyaccess.nl>
-References: <44238489.8090402@keyaccess.nl> <20060325175322.1e04852b.akpm@osdl.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001966]: Mislabeled items in mixer
+Date: Mon, 27 Mar 2006 00:31:20 +0200
+Message-ID: <25cacac0239456397b79993687ebc320@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl [213.51.146.200])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 204B41E5
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 00:30:20 +0200 (MEST)
-In-Reply-To: <20060325175322.1e04852b.akpm@osdl.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 889731E5
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 00:31:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,30 +18,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew Morton <akpm@osdl.org>
-Cc: gregkh@suse.de, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Andrew Morton wrote:
 
-> Looks sane, but please don't sprinkle `return' statements all over a 
-> function in this manner.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1966> 
+======================================================================
+Reported By:                zeug
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1966
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             03-27-2006 00:31 CEST
+Last Modified:              03-27-2006 00:31 CEST
+======================================================================
+Summary:                    Mislabeled items in mixer
+Description: 
+output of /proc/asound/cards:
 
-I actually prefer the multiple returns. You then don't have to "visually 
-scroll down" to the label to see what would happen when reading the 
-code. Even when there's common code before the return, I've never seen 
-GCC not optimise that to the goto form itself. You obviously the boss 
-though.
+ 0 [Audigy         ]: Audigy - Audigy 1 [SB0090]
+                      Audigy 1 [SB0090] (rev.3, serial:0x511102) at
+0xe000, irq 20
 
-> It's a little surprising that this function returns "OK" if bus==NULL.
-> 
-> Note that sysfs_create_link() can fail too.  This was one optimistic
-> function.
+In the playback and capture controls, "Analog M" controls the volume to
+the line input on the sound card. The "Line" slider controls the volume of
+"Analog M" going to the speakers. There is no "Line" slider in the capture
+controls, but a "Line2" slider. Appears to be mainly cosmetic.
+======================================================================
 
-I assume that Greg hasn't commented yet since he's busy rewriting it 
-all, so that'll be okay :-)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-27-06 00:31 zeug           New Issue                                    
+03-27-06 00:31 zeug           Distribution              => Debian          
+03-27-06 00:31 zeug           Kernel Version            => 2.6.14          
+======================================================================
 
-Rene.
 
 
 
