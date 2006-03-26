@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001808]: Line 6 Toneport UX1 driver
-Date: Sun, 26 Mar 2006 09:23:24 +0200
-Message-ID: <91db8f476bb32be66c8c916558fe20d2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Sun, 26 Mar 2006 09:55:32 +0200
+Message-ID: <f1420a635750264f93ac555f42667fb5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2D4A196
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 09:23:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66D2C1B7
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 09:55:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,76 +24,179 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1808> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                daste
-Assigned To:                Clemens Ladisch
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1808
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   feature
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             02-02-2006 00:49 CET
-Last Modified:              03-26-2006 09:23 CEST
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              03-26-2006 09:55 CEST
 ======================================================================
-Summary:                    Line 6 Toneport UX1 driver
+Summary:                    module hangs at seemingly random times
 Description: 
-I recently bought a Line 6 Toneport UX1 USB sound card, but I can't use it
-under Linux, since it's not supported by ALSA.
-So I'd like to ask you what can I do: altough I'm quite capable of
-programming in C, I never developed any kind of driver either for Linux or
-any other OS.
-I thought that maybe it was my turn to learn, so I wrote an e-mail to Line
-6 asking them if they had plans on a Linux driver for such soundcard, or
-otherwise, if they would have sent me infos, so that I could have tried to
-spend some time trying to develop a driver. They haven't answered yet.
-I do want to use that unbelivable sound card under Linux, so I think I'm
-going to code, but I don't know where to start: can you give me any
-suggestions?
-And since I think I have to do some reverse engineering on Microsoft
-Windows drivers, can you give some other advice on such topic too?
-Otherwise, I'd like to ask you whether you're already developing a
-solution for such a problem or not. Thanks in advance.
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
+
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
+
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
+
+
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- suamor - 03-26-06 00:33 
+ Raymond - 03-26-06 09:55 
 ----------------------------------------------------------------------
-No way with this driver. It's only for the Pods and the Variax guitar. Of
-course integrating these into alsa is still very interesting. The author
-does not seem to own a Toneport device.
+For au88x0 with stereo codec, instead of using vdownmix plugin 1.0.11rc4 
 
-----------------------------------------------------------------------
- daste - 03-26-06 09:23 
-----------------------------------------------------------------------
-Yes I know, but I belive that PODxt and Toneport UX1/UX2 have similar
-driver interfaces (can't remember where I read something about this). I
-also tried to hack this driver to make it work with my Toneport UX1, but I
-didn't succeed, so I'm trying to contact the author right now.
+       pcm.!surround51 {
+                type vdownmix
+                slave.pcm "default"
+       }
+
+you can use multi plugin and hardware mixing, the drawback is 6 sample
+rate convertors are used 
+
+
+<confdir:pcm/surround51.conf>
+
+AU8810.pcm.surround51.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type multi
+	slaves [
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.AU8810.pcm.front.0:CARD=" $CARD
+				]
+			}
+			channels 2
+		}
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.AU8810.pcm.front.0:CARD=" $CARD
+				]
+			}
+			channels 2
+		}
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.AU8810.pcm.front.0:CARD=" $CARD
+				]
+			}
+			channels 1
+		}
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.AU8810.pcm.front.0:CARD=" $CARD
+				]
+			}
+			channels 1
+		}
+	]
+	bindings [
+		{ slave 0 channel 0 }
+		{ slave 0 channel 1 }
+		{ slave 1 channel 0 }
+		{ slave 1 channel 1 }
+		{ slave 2 channel 0 }
+		{ slave 3 channel 0 }
+	]
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-02-06 00:49 daste          New Issue                                    
-02-02-06 01:31 rlrevell       Note Added: 0007866                          
-02-02-06 08:58 Clemens LadischNote Added: 0007870                          
-02-02-06 12:47 daste          File Added: lsusb                            
-02-02-06 12:47 daste          Note Added: 0007875                          
-02-02-06 16:29 daste          Issue Monitored: daste                       
-02-03-06 08:37 Clemens LadischNote Added: 0007892                          
-02-03-06 08:37 Clemens LadischAssigned To               => Clemens Ladisch 
-02-03-06 08:37 Clemens LadischReproducibility          N/A => always       
-02-03-06 08:37 Clemens LadischStatus                   new => assigned     
-02-03-06 10:57 daste          Note Added: 0007895                          
-03-03-06 10:46 daste          Note Added: 0008339                          
-03-26-06 00:33 suamor         Note Added: 0008955                          
-03-26-06 09:23 daste          Note Added: 0008966                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+01-03-06 04:04 Raymond        Note Added: 0007397                          
+01-04-06 22:08 alien999999999 Note Added: 0007455                          
+01-05-06 07:21 Raymond        Note Added: 0007462                          
+01-05-06 20:32 shurick        Issue Monitored: shurick                     
+01-06-06 17:17 alien999999999 Note Added: 0007488                          
+01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
+      
+01-13-06 13:51 Raymond        Note Added: 0007639                          
+01-13-06 18:18 tiwai          Note Added: 0007648                          
+01-14-06 04:53 Raymond        Note Added: 0007653                          
+01-14-06 05:00 Raymond        Note Edited: 0007653                         
+01-17-06 12:27 Raymond        Note Added: 0007697                          
+01-18-06 15:51 Raymond        Note Added: 0007710                          
+01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
+01-19-06 13:51 Raymond        Note Added: 0007719                          
+02-05-06 05:20 Raymond        Note Edited: 0007710                         
+02-05-06 05:28 Raymond        Note Added: 0007930                          
+02-13-06 16:38 Raymond        Note Deleted: 0006564                        
+02-13-06 16:41 Raymond        Note Added: 0008054                          
+03-01-06 07:39 Raymond        Note Added: 0008273                          
+03-18-06 12:28 Raymond        Note Deleted: 0008273                        
+03-20-06 17:54 Raymond        File Added: au88x0_conf.patch                    
+03-21-06 02:02 Raymond        Note Added: 0008734                          
+03-21-06 18:01 tiwai          Note Added: 0008754                          
+03-22-06 02:05 Raymond        File Added: au88x0_mpu401.patch                   
+
+03-22-06 02:28 Raymond        Note Added: 0008779                          
+03-22-06 02:31 Raymond        Note Edited: 0008779                         
+03-22-06 02:38 rlrevell       Note Added: 0008782                          
+03-22-06 04:00 Raymond        Note Added: 0008836                          
+03-22-06 04:09 rlrevell       Note Added: 0008839                          
+03-26-06 09:55 Raymond        Note Added: 0008967                          
 ======================================================================
 
 
