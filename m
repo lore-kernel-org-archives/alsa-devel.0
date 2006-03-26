@@ -1,16 +1,14 @@
-From: Andrew Morton <akpm@osdl.org>
-Subject: Re: bus_add_device() losing an error return from the probe() method
-Date: Sat, 25 Mar 2006 17:53:22 -0800
-Message-ID: <20060325175322.1e04852b.akpm__30368.9374625266$1143338295$gmane$org@osdl.org>
-References: <44238489.8090402@keyaccess.nl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
+Date: Sun, 26 Mar 2006 04:26:03 +0200
+Message-ID: <e3f52cd5cdd14c6b9c22a5fcf43fbcfa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 571E31D4
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 03:57:06 +0200 (MEST)
-In-Reply-To: <44238489.8090402@keyaccess.nl>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2D0A1D4
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 04:26:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,78 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: gregkh@suse.de, tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Rene Herman <rene.herman@keyaccess.nl> wrote:
->
->  ===================================================================
->  --- local.orig/drivers/base/bus.c	2006-02-27 19:22:08.000000000 +0100
->  +++ local/drivers/base/bus.c	2006-03-24 04:27:02.000000000 +0100
->  @@ -363,19 +363,21 @@ static void device_remove_attrs(struct b
->   int bus_add_device(struct device * dev)
->   {
->   	struct bus_type * bus = get_bus(dev->bus);
->  -	int error = 0;
->  +	int error;
->   
->   	if (bus) {
->   		pr_debug("bus %s: add device %s\n", bus->name, dev->bus_id);
->  -		device_attach(dev);
->  +		error = device_attach(dev);
->  +		if (error < 0)
->  +			return error;
->   		klist_add_tail(&dev->knode_bus, &bus->klist_devices);
->   		error = device_add_attrs(bus, dev);
->  -		if (!error) {
->  -			sysfs_create_link(&bus->devices.kobj, &dev->kobj, dev->bus_id);
->  -			sysfs_create_link(&dev->kobj, &dev->bus->subsys.kset.kobj, "bus");
->  -		}
->  +		if (error)
->  +			return error;
->  +		sysfs_create_link(&bus->devices.kobj, &dev->kobj, dev->bus_id);
->  +		sysfs_create_link(&dev->kobj, &dev->bus->subsys.kset.kobj, "bus");
->   	}
->  -	return error;
->  +	return 0;
->   }
->   
 
-Looks sane, but please don't sprinkle `return' statements all over a
-function in this manner.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
+======================================================================
+Reported By:                Jeff250
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1963
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Dapper
+Kernel Version:             2.6.15-19-686
+======================================================================
+Date Submitted:             03-25-2006 03:35 CET
+Last Modified:              03-26-2006 04:26 CEST
+======================================================================
+Summary:                    Returning from suspend-to-ram "mutes" sounds
+Description: 
+I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
+STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
+the sound is "muted" in that alsamixer does not actually show any tracks
+to be muted, but changing the master volume up or down restores sound
+output.  As a workaround, I've added to my resume script an amixer command
+to slightly modify the volume automatically on resume from suspend.  I'm
+using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
+1.0.10.  Thanks for your time.
+======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 03-26-06 01:28 
+----------------------------------------------------------------------
+Does the suspend-to-disk work?
 
---- devel/drivers/base/bus.c~bus_add_device-losing-an-error-return-from-the-probe-method	2006-03-25 17:46:34.000000000 -0800
-+++ devel-akpm/drivers/base/bus.c	2006-03-25 17:49:45.000000000 -0800
-@@ -372,14 +372,17 @@ int bus_add_device(struct device * dev)
- 
- 	if (bus) {
- 		pr_debug("bus %s: add device %s\n", bus->name, dev->bus_id);
--		device_attach(dev);
-+		error = device_attach(dev);
-+		if (error < 0)
-+			goto out;
- 		klist_add_tail(&dev->knode_bus, &bus->klist_devices);
- 		error = device_add_attrs(bus, dev);
--		if (!error) {
--			sysfs_create_link(&bus->devices.kobj, &dev->kobj, dev->bus_id);
--			sysfs_create_link(&dev->kobj, &dev->bus->subsys.kset.kobj, "bus");
--		}
-+		if (error)
-+			goto out;
-+		sysfs_create_link(&bus->devices.kobj, &dev->kobj, dev->bus_id);
-+		sysfs_create_link(&dev->kobj,&dev->bus->subsys.kset.kobj,"bus");
- 	}
-+out:
- 	return error;
- }
- 
+----------------------------------------------------------------------
+ Jeff250 - 03-26-06 04:26 
+----------------------------------------------------------------------
+I just tested it, and it suffers from the same problem.
 
-It's a little surprising that this function returns "OK" if bus==NULL.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-25-06 03:35 Jeff250        New Issue                                    
+03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
+03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
+03-26-06 01:28 tiwai          Note Added: 0008956                          
+03-26-06 04:26 Jeff250        Note Added: 0008965                          
+======================================================================
 
-Note that sysfs_create_link() can fail too.  This was one optimistic
-function.
 
 
 
