@@ -1,13 +1,14 @@
-From: Martin Habets <errandir_news@mph.eclipse.co.uk>
-Subject: Re: Chip support for CS4270 and CS4265
-Date: Sun, 26 Mar 2006 12:37:02 +0100
-Message-ID: <20060326113702.GB11406@palantir8>
-References: <DB99F0250CDF5F438C525F4695C888DC0DA027@exchange01-srv.pianodisc.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - WWW server 0001965]: Error in "Writing an ALSA driver" document
+Date: Sun, 26 Mar 2006 13:49:32 +0200
+Message-ID: <d170a33a12a4d5e20cfa2c37bbf76bd2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <DB99F0250CDF5F438C525F4695C888DC0DA027@exchange01-srv.pianodisc.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2458E19C
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 13:49:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,49 +18,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Steve DeRosier <derosier@pianodisc.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 24, 2006 at 07:37:01AM -0800, Steve DeRosier wrote:
-> Thanks Clemens.  Makes perfect sense.  
-> 
-> No particular sound card in mind; Got someone working on an embedded design that will eventually run linux and this is what they're looking at puting in the audio portion.  Though I guess since the contract says they're responsible for the Alsa drivers I'm not going to worry about it; I just hope they understand what they're doing.  ;)
 
-Just make sure they plan to support DMA! :)
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1965> 
+======================================================================
+Reported By:                zx80user
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - WWW server
+Issue ID:                   1965
+Category:                   a typo
+Reproducibility:            always
+Severity:                   text
+Priority:                   normal
+Status:                     resolved
+Resolution:                 not an issue
+Fixed in Version:           
+======================================================================
+Date Submitted:             03-26-2006 01:54 CET
+Last Modified:              03-26-2006 13:49 CEST
+======================================================================
+Summary:                    Error in "Writing an ALSA driver" document
+Description: 
+In the section on writing control code
 
-Martin
+This: struct snd_ctl_elem_info
 
-> - Steve
-> 
-> -----Original Message-----
-> From: Clemens Ladisch [mailto:clemens@ladisch.de]
-> Sent: Friday, March 24, 2006 5:22 AM
-> To: Steve DeRosier
-> Cc: Alsa-Devel
-> Subject: Re: [Alsa-devel] Chip support for CS4270 and CS4265
-> 
-> 
-> Steve deRosier wrote:
-> > Does anyone know if the CS4270 and CS4265 are supported in Alsa?
-> 
-> These chips cannot be connected directly to a PCI (or similar) bus; they
-> expect audio data in a simple serial format and require some controller
-> chip that does DMA from/to the computer's memory.
-> 
-> The ALSA driver, if it existed, would be for this controller chip.
-> 
-> Do you have some particular sound card in mind?
-> 
-> > I don't see either one on the matrix on the website, and also noted
-> > that ALL CS chips mentioned are listed as discontinued on Cirrus
-> > Logic's web site.
-> 
-> Those are chips that have a PCI or ISA interface.
-> 
-> 
-> HTH
-> Clemens
+and similar types referred to in the documentation (the how to write a
+driver docs) doesn't actually exist...
+
+snd_ctl_elem_info_t does exist as does sndrv_ctl_elem_info 
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 03-26-06 13:49 
+----------------------------------------------------------------------
+struct snd_ctl_elem_info _does_ exist in the recent version.
+You're referring to a too old version of alsa-driver code.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-26-06 01:54 zx80user       New Issue                                    
+03-26-06 13:49 tiwai          Status                   new => resolved     
+03-26-06 13:49 tiwai          Resolution               open => not an issue
+03-26-06 13:49 tiwai          Assigned To               => tiwai           
+03-26-06 13:49 tiwai          Note Added: 0008970                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
