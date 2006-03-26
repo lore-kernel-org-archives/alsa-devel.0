@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Sun, 26 Mar 2006 22:35:54 +0200
-Message-ID: <0752f1a14d46458290d4445080d54dc2@bugtrack.alsa-project.org>
+Date: Sun, 26 Mar 2006 22:54:14 +0200
+Message-ID: <d9a197bc77fc2088a26bed5c825e27c2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3421D16D
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 22:35:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E97F1E3
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 22:54:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5 test3
 Kernel Version:             2.6.15-1.2009.4.2_FC5
 ======================================================================
 Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              03-26-2006 22:35 CEST
+Last Modified:              03-26-2006 22:54 CEST
 ======================================================================
 Summary:                    no sound from headphones or speakers on asus a6km
 laptop
@@ -57,95 +57,19 @@ Same issues with a knoppix 4.0.2.
 ======================================================================
 
 ----------------------------------------------------------------------
- kiwi - 03-26-06 21:56 
-----------------------------------------------------------------------
-I tried the istructions from this old post:
-http://sourceforge.net/mailarchive/forum.php?thread_id=8072079&forum_id=1752
-and it WORKS!
-I used this command: echo "7a 57c1" >
-/proc/asound/card0/codec97#0/ac97#0-0+regs to enable bit 1 (counting from
-0) of register 7a.
-Note that to try that you will likely need to recompile alsa with
---debug=full.
-I already did this before and didn't worked.  Weird. Maybe that time I
-messed too much with other registers, or maybe it's because of the newer
-alsa version (1.0.11rc4).
-Lineout and headphones works too, and speakers automatically switch off
-when I attach the headphones.
-Note I only hear sound with External Amplifier checked (not muted).
-Here is the registers dump when working:
-# cat /proc/asound/card0/codec97#0/ac97#0-0+regs
-0:00 = 5980
-0:02 = 1313
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 0000
-0:0c = 0000
-0:0e = 0040
-0:10 = 0000
-0:12 = 0000
-0:14 = 0000
-0:16 = 0000
-0:18 = 0606
-0:1a = 0707
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 05c7
-0:2a = 01f5
-0:2c = ac44
-0:2e = ac44
-0:30 = ac44
-0:32 = bb80
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0824
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0808
-0:66 = 0808
-0:68 = 0000
-0:6a = 520f
-0:6c = 0000
-0:6e = 0025
-0:70 = 0231
-0:72 = 00a0
-0:74 = 0043
-0:76 = 0001
-0:78 = 8102
-0:7a = 57c1
-0:7c = 414c
-0:7e = 4720
-
-Now I'm rebooting to see if this is reproducible.
-
-----------------------------------------------------------------------
  kiwi - 03-26-06 22:35 
 ----------------------------------------------------------------------
 It still works after the reboot (and running the command).
+
+----------------------------------------------------------------------
+ lbenini - 03-26-06 22:54 
+----------------------------------------------------------------------
+Thanks, i can't test it now (bios battery alignament..) but i'll do...
+About external Amplifier have you tried to play with reg 26?
+...
+
+P.S.
+I love you :-D
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -169,6 +93,7 @@ Date Modified  Username       Field                    Change
 03-24-06 19:22 kiwi           Note Added: 0008934                          
 03-26-06 21:56 kiwi           Note Added: 0008975                          
 03-26-06 22:35 kiwi           Note Added: 0008977                          
+03-26-06 22:54 lbenini        Note Added: 0008978                          
 ======================================================================
 
 
