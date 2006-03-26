@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001965]: Error in "Writing an ALSA driver" document
-Date: Sun, 26 Mar 2006 01:54:18 +0100
-Message-ID: <9472358ee9d8710847a6ca0552c2d1ac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001954]: Patch from bug 0001895 hasn't been put in CVS yet
+Date: Sun, 26 Mar 2006 01:54:35 +0100
+Message-ID: <5f23930fe4b2df0c98c29983bbfd8413@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B024A1CC
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:54:18 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF3781CC
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:54:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,40 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1965> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1954> 
 ======================================================================
-Reported By:                zx80user
-Assigned To:                
+Reported By:                johnfivealive
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1965
-Category:                   a typo
+Project:                    ALSA - driver
+Issue ID:                   1954
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   text
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Fedora 5 x86_64
+Kernel Version:             2.6.15-1.2054_FC5
 ======================================================================
-Date Submitted:             03-26-2006 01:54 CET
+Date Submitted:             03-23-2006 07:17 CET
 Last Modified:              03-26-2006 01:54 CET
 ======================================================================
-Summary:                    Error in "Writing an ALSA driver" document
+Summary:                    Patch from bug 0001895 hasn't been put in CVS yet
 Description: 
-In the section on writing control code
+Hello, the patch created in bug 0001895 as far as I can see hasn't been
+applied to CVS yet. The last note from tiwai says he put it in CVS, but
+I'm assuming he meant to but perhaps forgot. This is just a reminder if
+that is the case. I tried the patch myself and my onboard sound seems to
+be working fine now. My mobo is an Asus A8N-VM, same chip discussed in bug
+0001895. Thanks.
 
-This: struct snd_ctl_elem_info
-
-and similar types referred to in the documentation (the how to write a
-driver docs) doesn't actually exist...
-
-snd_ctl_elem_info_t does exist as does sndrv_ctl_elem_info 
 ======================================================================
+
+----------------------------------------------------------------------
+ johnfivealive - 03-24-06 06:18 
+----------------------------------------------------------------------
+Is this the info you're looking for? If not let me know...
+
+00:10.1 0403: 10de:026c (rev a2)
+        Subsystem: 10de:cb84
+        Flags: bus master, 66MHz, fast devsel, latency 0, IRQ 5
+        Memory at febd8000 (32-bit, non-prefetchable) [size=16K]
+        Capabilities: [44] Power Management version 2
+        Capabilities: [50] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [6c] HyperTransport: MSI Mapping
+
+----------------------------------------------------------------------
+ tiwai - 03-26-06 01:54 
+----------------------------------------------------------------------
+Thanks.
+
+Also, try the patch in #1596, and choose model "3stack".
+Basically it's more suitable for a mobo.  If it works, I'll patch it in.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-26-06 01:54 zx80user       New Issue                                    
+03-23-06 07:17 johnfivealive  New Issue                                    
+03-23-06 07:17 johnfivealive  Distribution              => Fedora 5 x86_64 
+03-23-06 07:17 johnfivealive  Kernel Version            => 2.6.15-1.2054_FC5
+03-23-06 07:19 johnfivealive  Issue Monitored: johnfivealive                    
+03-23-06 11:08 tiwai          Note Added: 0008880                          
+03-23-06 21:01 johnfivealive  Note Added: 0008902                          
+03-23-06 21:08 tiwai          Note Added: 0008903                          
+03-24-06 06:18 johnfivealive  Note Added: 0008913                          
+03-26-06 01:54 tiwai          Note Added: 0008962                          
 ======================================================================
 
 
