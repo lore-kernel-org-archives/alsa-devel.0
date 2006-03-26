@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0001965]: Error in "Writing an ALSA driver" document
-Date: Sun, 26 Mar 2006 14:30:28 +0200
-Message-ID: <d0621c87e94b4c0b9541d946c91265ea@bugtrack.alsa-project.org>
+Date: Sun, 26 Mar 2006 14:32:29 +0200
+Message-ID: <139289207527c270bda86d0050d429c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13B351AA
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 14:30:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25EF71AA
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 14:32:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             03-26-2006 01:54 CET
-Last Modified:              03-26-2006 14:30 CEST
+Last Modified:              03-26-2006 14:32 CEST
 ======================================================================
 Summary:                    Error in "Writing an ALSA driver" document
 Description: 
@@ -53,21 +53,18 @@ snd_ctl_elem_info_t does exist as does sndrv_ctl_elem_info
 ======================================================================
 
 ----------------------------------------------------------------------
- zx80user - 03-26-06 14:23 
-----------------------------------------------------------------------
-Only re-opening this to comment to say I was building my driver against the
-standard headers from a 2.6.15 kernel - which was the stable release until
-less than a week ago. Maybe the document should include a warning about
-this sort of thing?
-
-
-
-----------------------------------------------------------------------
  Raymond - 03-26-06 14:30 
 ----------------------------------------------------------------------
 you will know why your acia driver fail  
 
 strace aplay hw:0,0 test.wav with an alsa driver on a pc.
+
+----------------------------------------------------------------------
+ zx80user - 03-26-06 14:32 
+----------------------------------------------------------------------
+It doesn't fail. It works. And it's not for pc hardware either.
+
+It wasn't compiling, which is a different thing.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -82,6 +79,7 @@ Date Modified  Username       Field                    Change
 03-26-06 14:23 zx80user       Note Added: 0008971                          
 03-26-06 14:23 zx80user       Note Edited: 0008971                         
 03-26-06 14:30 Raymond        Note Added: 0008972                          
+03-26-06 14:32 zx80user       Note Added: 0008973                          
 ======================================================================
 
 
