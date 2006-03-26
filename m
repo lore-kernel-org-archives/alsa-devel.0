@@ -1,11 +1,14 @@
-From: "Triphahn Regina" <hpabohsh@telia.se>
-Subject: Gisela hat eine und ist ganz stolz damit
-Date: Sat, 25 Mar 2006 22:27:07 -0800
-Message-ID: <000901c650a0$f5db0980$c8dde4e6@AEVO>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001808]: Line 6 Toneport UX1 driver
+Date: Sun, 26 Mar 2006 09:23:24 +0200
+Message-ID: <91db8f476bb32be66c8c916558fe20d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0006_01C6505D.E7B7C980"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2D4A196
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 09:23:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,60 +18,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Felicia <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0006_01C6505D.E7B7C980
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1808> 
+======================================================================
+Reported By:                daste
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1808
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             02-02-2006 00:49 CET
+Last Modified:              03-26-2006 09:23 CEST
+======================================================================
+Summary:                    Line 6 Toneport UX1 driver
+Description: 
+I recently bought a Line 6 Toneport UX1 USB sound card, but I can't use it
+under Linux, since it's not supported by ALSA.
+So I'd like to ask you what can I do: altough I'm quite capable of
+programming in C, I never developed any kind of driver either for Linux or
+any other OS.
+I thought that maybe it was my turn to learn, so I wrote an e-mail to Line
+6 asking them if they had plans on a Linux driver for such soundcard, or
+otherwise, if they would have sent me infos, so that I could have tried to
+spend some time trying to develop a driver. They haven't answered yet.
+I do want to use that unbelivable sound card under Linux, so I think I'm
+going to code, but I don't know where to start: can you give me any
+suggestions?
+And since I think I have to do some reverse engineering on Microsoft
+Windows drivers, can you give some other advice on such topic too?
+Otherwise, I'd like to ask you whether you're already developing a
+solution for such a problem or not. Thanks in advance.
+======================================================================
 
-Guten Morgen Felicia,
-Gisela hat eine und ist ganz stolz damit
-http://nqipid.treamex.com/?vdlr
-------=_NextPart_000_0006_01C6505D.E7B7C980
-Content-Type: text/html;;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ suamor - 03-26-06 00:33 
+----------------------------------------------------------------------
+No way with this driver. It's only for the Pods and the Variax guitar. Of
+course integrating these into alsa is still very interesting. The author
+does not seem to own a Toneport device.
 
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<STYLE type=3Dtext/css><!--body {padding-top:16px; padding-left:22px; } =
-table {font-size: 12px; font-family: arial, helvetica, sans-serif; } .t1 { =
- background-color:#ffffcc; border-left:#000000 1px solid; =
-border-top:#000000 1px solid; padding-right:0px; font-size:24px; =
-font-family:arial, helvetica, sans-serif; font-weight:bold; } .t2 {  =
-background-color:#ffffcc; border-top:#000000 1px solid; =
-border-right:#000000 1px solid; padding-left:0px; font-size:24px; =
-font-weight:bold; font-family:arial, helvetica, sans-serif; } .t3 { =
-background-image:url(http://seutil.info/rolex/shop/img_b/patrimonypowerrese=
-rve_resize.jpg); border-top:#000000 1px solid; border-left:#000000 1px =
-solid; border-left:#000000 1px solid; border-right:#000000 1px solid; =
-border-bottom:#000000 1px solid;} .t4 { border-top:#000000 1px solid; =
-border-bottom:#000000 1px solid; border-right:#000000 1px solid; =
-padding-left:10px; padding-right:10px; } --></STYLE>
+----------------------------------------------------------------------
+ daste - 03-26-06 09:23 
+----------------------------------------------------------------------
+Yes I know, but I belive that PODxt and Toneport UX1/UX2 have similar
+driver interfaces (can't remember where I read something about this). I
+also tried to hack this driver to make it work with my Toneport UX1, but I
+didn't succeed, so I'm trying to contact the author right now.
 
-</HEAD><BODY><TABLE cellSpacing=3D0 cellPadding=3D0 width=3D500 =
-border=3D0>
-<TR><TD class=3Dt1 width=3D250 height=3D40><DIV =
-align=3Dright>Vacheron&nbsp;</DIV></TD>
-<TD class=3Dt2 width=3D250><DIV =
-align=3Dleft>&nbsp;Constantin</DIV></TD></TR><TR>
-<TD class=3Dt3 width=3D220 height=3D293>&nbsp;</TD><TD class=3Dt4 =
-width=3D280>Edle, zeitlos sch=F6ne <B>Kopie von Marken-Uhren</B> finden =
-Sie in unserem <A href=3D"http://nqipid.treamex.com/?vdlr">Online-Shop</A> =
-<BR><BR>
-<LI><B>Perfekte Qualit=E4t</B>
-<LI>Weltweiter Versand 
-<LI>Sicheres Zahlungssystem
-<LI><B>Vom Orginal nicht zu =
-unterscheiden</B></LI><BR><BR><BR><BR><BR></TD></TR></TABLE><BR>
-<P align=3Dright><BR><BR><BR><BR><BR><A =
-href=3D"http://nqipid.treamex.com/?ffqv">nein</A></P></LI></BODY></HTML>
-------=_NextPart_000_0006_01C6505D.E7B7C980--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-02-06 00:49 daste          New Issue                                    
+02-02-06 01:31 rlrevell       Note Added: 0007866                          
+02-02-06 08:58 Clemens LadischNote Added: 0007870                          
+02-02-06 12:47 daste          File Added: lsusb                            
+02-02-06 12:47 daste          Note Added: 0007875                          
+02-02-06 16:29 daste          Issue Monitored: daste                       
+02-03-06 08:37 Clemens LadischNote Added: 0007892                          
+02-03-06 08:37 Clemens LadischAssigned To               => Clemens Ladisch 
+02-03-06 08:37 Clemens LadischReproducibility          N/A => always       
+02-03-06 08:37 Clemens LadischStatus                   new => assigned     
+02-03-06 10:57 daste          Note Added: 0007895                          
+03-03-06 10:46 daste          Note Added: 0008339                          
+03-26-06 00:33 suamor         Note Added: 0008955                          
+03-26-06 09:23 daste          Note Added: 0008966                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
