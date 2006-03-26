@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0001965]: Error in "Writing an ALSA driver" document
-Date: Sun, 26 Mar 2006 14:32:29 +0200
-Message-ID: <139289207527c270bda86d0050d429c6@bugtrack.alsa-project.org>
+Date: Sun, 26 Mar 2006 14:50:55 +0200
+Message-ID: <0bddea90c00df37efe592751a9e8243d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25EF71AA
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 14:32:30 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCB131AA
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 14:50:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             03-26-2006 01:54 CET
-Last Modified:              03-26-2006 14:32 CEST
+Last Modified:              03-26-2006 14:50 CEST
 ======================================================================
 Summary:                    Error in "Writing an ALSA driver" document
 Description: 
@@ -53,18 +53,16 @@ snd_ctl_elem_info_t does exist as does sndrv_ctl_elem_info
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-26-06 14:30 
-----------------------------------------------------------------------
-you will know why your acia driver fail  
-
-strace aplay hw:0,0 test.wav with an alsa driver on a pc.
-
-----------------------------------------------------------------------
  zx80user - 03-26-06 14:32 
 ----------------------------------------------------------------------
 It doesn't fail. It works. And it's not for pc hardware either.
 
 It wasn't compiling, which is a different thing.
+
+----------------------------------------------------------------------
+ Raymond - 03-26-06 14:50 
+----------------------------------------------------------------------
+you need to put your aica driver inside the alsa-driver tree.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -80,6 +78,7 @@ Date Modified  Username       Field                    Change
 03-26-06 14:23 zx80user       Note Edited: 0008971                         
 03-26-06 14:30 Raymond        Note Added: 0008972                          
 03-26-06 14:32 zx80user       Note Added: 0008973                          
+03-26-06 14:50 Raymond        Note Added: 0008974                          
 ======================================================================
 
 
