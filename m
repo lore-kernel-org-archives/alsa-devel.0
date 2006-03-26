@@ -1,21 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Adding controls
-Date: Sun, 26 Mar 2006 00:05:25 +0000
-Message-ID: <1143331525.10201.9.camel@localhost.localdomain>
-References: <1142984360.9284.33.camel@localhost.localdomain>
-	 <1142985518.4532.193.camel@mindpipe>
-	 <1143059773.9254.3.camel@localhost.localdomain>
-	 <1143060946.9254.5.camel@localhost.localdomain>
-	 <s5hek0tjy2y.wl%tiwai@suse.de>
-	 <1143307500.9313.6.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
+Date: Sun, 26 Mar 2006 01:28:35 +0100
+Message-ID: <42f5e250537a4b31ed435c2871cc998a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id A952E168
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:05:29 +0100 (MET)
-In-Reply-To: <1143307500.9313.6.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1000A187
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:28:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,20 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I think I have found one of the reasons why my code was failing...
 
-This: struct snd_ctl_elem_info
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
+======================================================================
+Reported By:                Jeff250
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1963
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Dapper
+Kernel Version:             2.6.15-19-686
+======================================================================
+Date Submitted:             03-25-2006 03:35 CET
+Last Modified:              03-26-2006 01:28 CET
+======================================================================
+Summary:                    Returning from suspend-to-ram "mutes" sounds
+Description: 
+I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
+STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
+the sound is "muted" in that alsamixer does not actually show any tracks
+to be muted, but changing the master volume up or down restores sound
+output.  As a workaround, I've added to my resume script an amixer command
+to slightly modify the volume automatically on resume from suspend.  I'm
+using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
+1.0.10.  Thanks for your time.
+======================================================================
 
-and similar types referred to in the documentation (the how to write a
-driver docs) doesn't actually exist...
+----------------------------------------------------------------------
+ tiwai - 03-26-06 01:28 
+----------------------------------------------------------------------
+Does the suspend-to-disk work?
 
-snd_ctl_elem_info_t does exist as does sndrv_ctl_elem_info 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-25-06 03:35 Jeff250        New Issue                                    
+03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
+03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
+03-26-06 01:28 tiwai          Note Added: 0008956                          
+======================================================================
 
-If I knew how docbook worked I'd post a patch :)
 
 
 
