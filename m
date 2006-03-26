@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
-Date: Sun, 26 Mar 2006 12:11:34 +0200
-Message-ID: <a2fbcc9d691e8c40f158f5798da124eb@bugtrack.alsa-project.org>
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: Re: Chip support for CS4270 and CS4265
+Date: Sun, 26 Mar 2006 12:37:02 +0100
+Message-ID: <20060326113702.GB11406@palantir8>
+References: <DB99F0250CDF5F438C525F4695C888DC0DA027@exchange01-srv.pianodisc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB9301BA
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 12:11:34 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <DB99F0250CDF5F438C525F4695C888DC0DA027@exchange01-srv.pianodisc.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,114 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Steve DeRosier <derosier@pianodisc.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Mar 24, 2006 at 07:37:01AM -0800, Steve DeRosier wrote:
+> Thanks Clemens.  Makes perfect sense.  
+> 
+> No particular sound card in mind; Got someone working on an embedded design that will eventually run linux and this is what they're looking at puting in the audio portion.  Though I guess since the contract says they're responsible for the Alsa drivers I'm not going to worry about it; I just hope they understand what they're doing.  ;)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
-======================================================================
-Reported By:                kratz00
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1714
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               LFS
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             01-04-2006 18:04 CET
-Last Modified:              03-26-2006 12:11 CEST
-======================================================================
-Summary:                    Intel HDA (AD1986A) no sound
-Description: 
-It's a Samsung M50 Notebook.
-I also tried Alsa 1.0.10 but the problem is the same.
-There are no specific module options for the AD1986A chip, right?
+Just make sure they plan to support DMA! :)
 
-00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03)
-        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+Martin
 
-loaded modules:
-snd_pcm_oss            47136  0 
-snd_mixer_oss          16512  1 snd_pcm_oss
-snd_hda_intel          14224  0 
-snd_hda_codec         122624  1 snd_hda_intel
-snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              19844  1 snd_pcm
-snd                    46144  6
-snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001841 Mixer not working  / fujitsu laptop V20...
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-26-06 01:39 
-----------------------------------------------------------------------
-Try "model=laptop" module optoin.  It should work.
-
-Show the output of "lspci -nv" for class 0403 device.
-
-----------------------------------------------------------------------
- kratz00 - 03-26-06 12:11 
-----------------------------------------------------------------------
-tried model=laptop but still the same
-
-00:1b.0 0403: 8086:2668 (rev 03)
-        Subsystem: 144d:c01e
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-04-06 18:04 kratz00        New Issue                                    
-01-04-06 18:04 kratz00        Distribution              => LFS             
-01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
-01-30-06 13:40 kratz00        Note Added: 0007837                          
-02-07-06 00:48 gerick         Issue Monitored: gerick                      
-02-08-06 13:13 simonckenyon   Issue Monitored: simonckenyon                    
-03-10-06 18:26 tiwai          Relationship added       duplicate of 0001841
-03-10-06 18:26 tiwai          Duplicate ID             0 => 1841           
-03-10-06 18:26 tiwai          Status                   new => resolved     
-03-10-06 18:26 tiwai          Resolution               open => duplicate   
-03-10-06 18:26 tiwai          Assigned To               => tiwai           
-03-10-06 18:26 tiwai          Note Added: 0008408                          
-03-15-06 21:49 kratz00        Status                   resolved => feedback
-03-15-06 21:49 kratz00        Resolution               duplicate => reopened
-03-15-06 21:49 kratz00        Note Added: 0008574                          
-03-23-06 17:45 tiwai          Note Added: 0008896                          
-03-25-06 15:31 kratz00        Note Added: 0008948                          
-03-25-06 15:31 kratz00        File Added: asound.state                     
-03-26-06 01:39 tiwai          Note Added: 0008959                          
-03-26-06 12:11 kratz00        Note Added: 0008969                          
-======================================================================
-
-
+> - Steve
+> 
+> -----Original Message-----
+> From: Clemens Ladisch [mailto:clemens@ladisch.de]
+> Sent: Friday, March 24, 2006 5:22 AM
+> To: Steve DeRosier
+> Cc: Alsa-Devel
+> Subject: Re: [Alsa-devel] Chip support for CS4270 and CS4265
+> 
+> 
+> Steve deRosier wrote:
+> > Does anyone know if the CS4270 and CS4265 are supported in Alsa?
+> 
+> These chips cannot be connected directly to a PCI (or similar) bus; they
+> expect audio data in a simple serial format and require some controller
+> chip that does DMA from/to the computer's memory.
+> 
+> The ALSA driver, if it existed, would be for this controller chip.
+> 
+> Do you have some particular sound card in mind?
+> 
+> > I don't see either one on the matrix on the website, and also noted
+> > that ALL CS chips mentioned are listed as discontinued on Cirrus
+> > Logic's web site.
+> 
+> Those are chips that have a PCI or ISA interface.
+> 
+> 
+> HTH
+> Clemens
 
 
 -------------------------------------------------------
