@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
-Date: Sun, 26 Mar 2006 10:02:23 +0200
-Message-ID: <fd7ed4b41e6fc7636efe3a3a533be1bb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
+Date: Sun, 26 Mar 2006 12:11:34 +0200
+Message-ID: <a2fbcc9d691e8c40f158f5798da124eb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51EE41B7
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 10:02:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB9301BA
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 12:11:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,141 +24,105 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=875> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
 ======================================================================
-Reported By:                Jean-Louis Crouzet
+Reported By:                kratz00
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   875
-Category:                   PCI - nm256
+Issue ID:                   1714
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             # uname -a
-Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+Status:                     feedback
+Distribution:               LFS
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             02-01-2005 16:17 CET
-Last Modified:              03-26-2006 10:02 CEST
+Date Submitted:             01-04-2006 18:04 CET
+Last Modified:              03-26-2006 12:11 CEST
 ======================================================================
-Summary:                    Can't get nm256 up & running
+Summary:                    Intel HDA (AD1986A) no sound
 Description: 
-I trying since ages to get this nm256 up & running with ALSA, w/o any
-sucess.
+It's a Samsung M50 Notebook.
+I also tried Alsa 1.0.10 but the problem is the same.
+There are no specific module options for the AD1986A chip, right?
 
-PC Omnibook 900 (not a 900B)
+00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 03)
+        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-# uname -a
-Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+loaded modules:
+snd_pcm_oss            47136  0 
+snd_mixer_oss          16512  1 snd_pcm_oss
+snd_hda_intel          14224  0 
+snd_hda_codec         122624  1 snd_hda_intel
+snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              19844  1 snd_pcm
+snd                    46144  6
+snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
 
-
-#lspci  -tv
--[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
-      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
-      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
-Audio]
-      +-04.0  Texas Instruments PCI1225
-      +-04.1  Texas Instruments PCI1225
-      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
-      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
-      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
-      \-07.3  Intel Corp. 82371AB/EB/MB PIIX4 A	
-	
-# modinfo snd_nm256
-filename:      
-/lib/modules/2.6.8jlcv32/kernel/sound/pci/nm256/snd-nm256.ko
-author:         Takashi Iwai <tiwai@suse.de>
-description:    NeoMagic NM256AV/ZX
-license:        GPL
-vermagic:       2.6.8jlcv32 PENTIUMII gcc-3.3
-depends:        snd-pcm,snd,snd-ac97-codec
-alias:          pci:v000010C8d00008005sv*sd*bc*sc*i*
-alias:          pci:v000010C8d00008006sv*sd*bc*sc*i*
-alias:          pci:v000010C8d00008016sv*sd*bc*sc*i*
-parm:           vaio_hack:Enable workaround for Sony VAIO notebooks.
-parm:           use_cache:Enable the cache for coefficient table access.
-parm:           buffer_top:Set the top address of audio buffer for
-NeoMagic 256AV/ZX soundcard.
-parm:           force_ac97:Force to use AC97 codec for NeoMagic 256AV/ZX
-soundcard.
-parm:           capture_bufsize:ADC frame size in kB for NeoMagic 256AV/ZX
-soundcard.
-parm:           playback_bufsize:DAC frame size in kB for NeoMagic
-256AV/ZX soundcard.
-parm:           enable:Enable this soundcard.
-parm:           id:ID string for NeoMagic 256AV/ZX soundcard.
-parm:           index:Index value for NeoMagic 256AV/ZX soundcard.
-
-# alsaconf
-Unloading sound driver modules...done.
-Building card database..
-
-
-Running update-modules...
-Loading driver...
-FATAL: Error running install command for snd_nm256
-Setting default volumes...
-Saving the mixer setup used for this in /var/lib/alsa/asound.state.
-/usr/sbin/alsactl: save_state:1061: No soundcards found...
-
-===============================================================================
-
- Now ALSA is ready to use.
- For adjustment of volumes, use your favorite mixer.
-
- Have a lot of fun!
-
-
-???????????????????????????,,
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001841 Mixer not working  / fujitsu laptop V20...
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 03-19-06 11:21 
+ tiwai - 03-26-06 01:39 
 ----------------------------------------------------------------------
-You have to use CVS version of ALSA. I think, fix is not in kernel yet.
+Try "model=laptop" module optoin.  It should work.
+
+Show the output of "lspci -nv" for class 0403 device.
 
 ----------------------------------------------------------------------
- Jean-Louis Crouzet - 03-26-06 10:02 
+ kratz00 - 03-26-06 12:11 
 ----------------------------------------------------------------------
-Thanks Pzad, I will certainly wait prior doing this (I saw it could lockup
-qnd prefer to avoid for now). Unless I ear about good news under similar
-machine.
-Have a nice day,
-JL
+tried model=laptop but still the same
+
+00:1b.0 0403: 8086:2668 (rev 03)
+        Subsystem: 144d:c01e
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-05 16:17 Jean-Louis CrouzetNew Issue                                    
-02-01-05 16:17 Jean-Louis CrouzetKernel Version            => # uname -a
-Linux hp900 2.6.8jlcv34 #1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
-02-02-05 11:18 tiwai          Note Added: 0003483                          
-02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
-02-02-05 12:46 tiwai          Note Added: 0003486                          
-02-02-05 13:05 Jean-Louis CrouzetNote Added: 0003487                          
-02-09-05 12:09 tiwai          Note Added: 0003547                          
-02-10-05 09:54 Jean-Louis CrouzetNote Added: 0003563                          
-02-14-05 19:46 tiwai          Note Added: 0003605                          
-02-15-05 10:08 Jean-Louis CrouzetNote Added: 0003617                          
-02-15-05 10:32 Jean-Louis CrouzetNote Added: 0003618                          
-03-16-05 08:50 Jean-Louis CrouzetNote Added: 0003934                          
-03-16-05 11:26 Jean-Louis CrouzetNote Added: 0003937                          
-03-16-05 12:27 tiwai          Note Added: 0003940                          
-03-16-05 14:53 Jean-Louis CrouzetNote Added: 0003960                          
-09-22-05 15:07 jdthood        Note Added: 0006343                          
-09-22-05 15:43 Jean-Louis CrouzetNote Added: 0006352                          
-10-05-05 19:12 tiwai          Note Added: 0006442                          
-10-11-05 19:24 tiwai          Note Added: 0006457                          
-10-11-05 19:25 tiwai          File Added: cs4232-pnpbios.diff                   
-
-10-11-05 19:51 Jean-Louis CrouzetNote Added: 0006458                          
-10-12-05 13:49 tiwai          Note Added: 0006464                          
-03-16-06 07:53 rlrevell       Note Added: 0008585                          
-03-19-06 11:12 Jean-Louis CrouzetNote Added: 0008686                          
-03-19-06 11:21 pzad           Note Added: 0008687                          
-03-26-06 10:02 Jean-Louis CrouzetNote Added: 0008968                          
+01-04-06 18:04 kratz00        New Issue                                    
+01-04-06 18:04 kratz00        Distribution              => LFS             
+01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
+01-30-06 13:40 kratz00        Note Added: 0007837                          
+02-07-06 00:48 gerick         Issue Monitored: gerick                      
+02-08-06 13:13 simonckenyon   Issue Monitored: simonckenyon                    
+03-10-06 18:26 tiwai          Relationship added       duplicate of 0001841
+03-10-06 18:26 tiwai          Duplicate ID             0 => 1841           
+03-10-06 18:26 tiwai          Status                   new => resolved     
+03-10-06 18:26 tiwai          Resolution               open => duplicate   
+03-10-06 18:26 tiwai          Assigned To               => tiwai           
+03-10-06 18:26 tiwai          Note Added: 0008408                          
+03-15-06 21:49 kratz00        Status                   resolved => feedback
+03-15-06 21:49 kratz00        Resolution               duplicate => reopened
+03-15-06 21:49 kratz00        Note Added: 0008574                          
+03-23-06 17:45 tiwai          Note Added: 0008896                          
+03-25-06 15:31 kratz00        Note Added: 0008948                          
+03-25-06 15:31 kratz00        File Added: asound.state                     
+03-26-06 01:39 tiwai          Note Added: 0008959                          
+03-26-06 12:11 kratz00        Note Added: 0008969                          
 ======================================================================
 
 
