@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001402]: No SOUND in ASUS A6
-Date: Sun, 26 Mar 2006 01:50:33 +0100
-Message-ID: <73feef02987453bf949428a43d59d383@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001847]: hda-intel on acer laptop (travelmate 3002) - no recording
+Date: Sun, 26 Mar 2006 01:50:30 +0100
+Message-ID: <cbd4286e8a9eddecd661052a67ad917a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D3AD1D4
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:50:33 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E03B1CC
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:50:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1402> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1847> 
 ======================================================================
-Reported By:                pedrosalazar
+Reported By:                lrupn
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1402
+Issue ID:                   1847
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Red Hat Fedora Core 4
-Kernel Version:             2.6.13
+Distribution:               Slackware 10.1
+Kernel Version:             2.6.12
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-07-2005 23:47 CEST
+Date Submitted:             02-15-2006 14:18 CET
 Last Modified:              03-26-2006 01:50 CET
 ======================================================================
-Summary:                    No SOUND in ASUS A6
+Summary:                    hda-intel on acer laptop (travelmate 3002) - no
+recording
 Description: 
-There is no sound in asus laptop A6 with alsa drivers.
+I have an Acer laptop with sound card that claim to be Intel Corporation
+82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio Controller (rev
+04)
+that is recognized as a SigmaTel STAC9200. 
+With 1.0.11rc2 there is some noise when I unmute line-in (external
+microphone) and try to record something. The amplitude response is ok and
+actualy i am able to hear my voice but there is a lot of noise. I thing
+that the problem is the mixer... The internal micorphone is not working at
+all.\
+With 1.0.11rc3 some new controls apear in the alsamixer but neither
+speakers nor microphone is working....
+I have found a similr bug report:
+http://sourceforge.net/tracker/index.php?func=detail&aid=1389026&group_id=27464&atid=390601
 
-laptop: ASUS A6 (A6Q00VA) Intel Pentium M Processor 740
 
-Initially verified with the alsa-driver bundle in FC4 (1.0.9rc2 if I'm not
-wrong) with kernel 2.6.12-1.1398_FC4, then I updated to alsa-driver 1.0.9b
-working with alsa-lib 1.0.9 and alsa-utils 1.0.9a.
-
-After, I updated kernel to 2.6.12.5, and now I'm using the 2.6.13.
-
-All would be fine (alsamixer, aplay, ...) unless there is no sound.
-
-I compiled alsa-driver with debug, and added the module option
-"model=asus", that prints the following message when module is inserted:
-
-Sep  7 21:59:39 undertaker kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] ->
-Link [LNKA] -> GSI 11 (level, low) -> IRQ 11
-Sep  7 21:59:39 undertaker kernel: ALSA
-/home/psalazar/build/alsa-driver-1.0.9b/pci/hda/../../alsa-kernel/pci/hda/patch_realtek.c:1409:
-hda_codec: Unknown model for ALC880
-
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001643 Microphone is muted and no mic option a...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-22-06 03:24 
+ MACHINE - 03-24-06 23:57 
 ----------------------------------------------------------------------
-Can this be closed or is more info needed from the submitter?
+microphone problem on HDA/ALC260 might be solved by 1.0.11RC4, but HDA w/
+SigmaTel has not yet been solved the problem.
 
 ----------------------------------------------------------------------
  tiwai - 03-26-06 01:50 
 ----------------------------------------------------------------------
-Already fixed, at least in 1.0.11rc4.
-The device is already registered in the config table.
+Fixed on CVS now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-07-05 23:47 pedrosalazar   New Issue                                    
-09-07-05 23:47 pedrosalazar   File Added: 2.6.13.config                    
-09-07-05 23:47 pedrosalazar   Distribution              => Red Hat Fedora Core 4
-09-07-05 23:47 pedrosalazar   Kernel Version            => 2.6.13          
-09-08-05 19:02 tiwai          Note Added: 0006078                          
-09-09-05 02:42 pedrosalazar   Note Added: 0006085                          
-09-09-05 03:12 pedrosalazar   Note Added: 0006087                          
-09-09-05 12:37 tiwai          Note Added: 0006095                          
-03-22-06 03:24 rlrevell       Note Added: 0008817                          
+02-15-06 14:18 lrupn          New Issue                                    
+02-15-06 14:18 lrupn          Distribution              => Slackware 10.1  
+02-15-06 14:18 lrupn          Kernel Version            => 2.6.12          
+02-16-06 12:13 MACHINE        Note Added: 0008095                          
+02-18-06 01:32 rlrevell       Relationship added       duplicate of 0001643
+03-24-06 23:57 MACHINE        Note Added: 0008939                          
 03-26-06 01:50 tiwai          Status                   assigned => resolved
 03-26-06 01:50 tiwai          Resolution               open => fixed       
-03-26-06 01:50 tiwai          Note Added: 0008961                          
+03-26-06 01:50 tiwai          Note Added: 0008960                          
 ======================================================================
 
 
