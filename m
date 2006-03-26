@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
-Date: Sun, 26 Mar 2006 04:26:03 +0200
-Message-ID: <e3f52cd5cdd14c6b9c22a5fcf43fbcfa@bugtrack.alsa-project.org>
+From: "Triphahn Regina" <hpabohsh@telia.se>
+Subject: Gisela hat eine und ist ganz stolz damit
+Date: Sat, 25 Mar 2006 22:27:07 -0800
+Message-ID: <000901c650a0$f5db0980$c8dde4e6@AEVO>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0006_01C6505D.E7B7C980"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2D0A1D4
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 04:26:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +15,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Felicia <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
-======================================================================
-Reported By:                Jeff250
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1963
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15-19-686
-======================================================================
-Date Submitted:             03-25-2006 03:35 CET
-Last Modified:              03-26-2006 04:26 CEST
-======================================================================
-Summary:                    Returning from suspend-to-ram "mutes" sounds
-Description: 
-I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
-STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
-the sound is "muted" in that alsamixer does not actually show any tracks
-to be muted, but changing the master volume up or down restores sound
-output.  As a workaround, I've added to my resume script an amixer command
-to slightly modify the volume automatically on resume from suspend.  I'm
-using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
-1.0.10.  Thanks for your time.
-======================================================================
+------=_NextPart_000_0006_01C6505D.E7B7C980
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- tiwai - 03-26-06 01:28 
-----------------------------------------------------------------------
-Does the suspend-to-disk work?
+Guten Morgen Felicia,
+Gisela hat eine und ist ganz stolz damit
+http://nqipid.treamex.com/?vdlr
+------=_NextPart_000_0006_01C6505D.E7B7C980
+Content-Type: text/html;;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- Jeff250 - 03-26-06 04:26 
-----------------------------------------------------------------------
-I just tested it, and it suffers from the same problem.
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<STYLE type=3Dtext/css><!--body {padding-top:16px; padding-left:22px; } =
+table {font-size: 12px; font-family: arial, helvetica, sans-serif; } .t1 { =
+ background-color:#ffffcc; border-left:#000000 1px solid; =
+border-top:#000000 1px solid; padding-right:0px; font-size:24px; =
+font-family:arial, helvetica, sans-serif; font-weight:bold; } .t2 {  =
+background-color:#ffffcc; border-top:#000000 1px solid; =
+border-right:#000000 1px solid; padding-left:0px; font-size:24px; =
+font-weight:bold; font-family:arial, helvetica, sans-serif; } .t3 { =
+background-image:url(http://seutil.info/rolex/shop/img_b/patrimonypowerrese=
+rve_resize.jpg); border-top:#000000 1px solid; border-left:#000000 1px =
+solid; border-left:#000000 1px solid; border-right:#000000 1px solid; =
+border-bottom:#000000 1px solid;} .t4 { border-top:#000000 1px solid; =
+border-bottom:#000000 1px solid; border-right:#000000 1px solid; =
+padding-left:10px; padding-right:10px; } --></STYLE>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-25-06 03:35 Jeff250        New Issue                                    
-03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
-03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
-03-26-06 01:28 tiwai          Note Added: 0008956                          
-03-26-06 04:26 Jeff250        Note Added: 0008965                          
-======================================================================
-
-
+</HEAD><BODY><TABLE cellSpacing=3D0 cellPadding=3D0 width=3D500 =
+border=3D0>
+<TR><TD class=3Dt1 width=3D250 height=3D40><DIV =
+align=3Dright>Vacheron&nbsp;</DIV></TD>
+<TD class=3Dt2 width=3D250><DIV =
+align=3Dleft>&nbsp;Constantin</DIV></TD></TR><TR>
+<TD class=3Dt3 width=3D220 height=3D293>&nbsp;</TD><TD class=3Dt4 =
+width=3D280>Edle, zeitlos sch=F6ne <B>Kopie von Marken-Uhren</B> finden =
+Sie in unserem <A href=3D"http://nqipid.treamex.com/?vdlr">Online-Shop</A> =
+<BR><BR>
+<LI><B>Perfekte Qualit=E4t</B>
+<LI>Weltweiter Versand 
+<LI>Sicheres Zahlungssystem
+<LI><B>Vom Orginal nicht zu =
+unterscheiden</B></LI><BR><BR><BR><BR><BR></TD></TR></TABLE><BR>
+<P align=3Dright><BR><BR><BR><BR><BR><A =
+href=3D"http://nqipid.treamex.com/?ffqv">nein</A></P></LI></BODY></HTML>
+------=_NextPart_000_0006_01C6505D.E7B7C980--
 
 
 -------------------------------------------------------
