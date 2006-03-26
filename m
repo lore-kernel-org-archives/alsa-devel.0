@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001398]: volume level either 0% or 100%
-Date: Sun, 26 Mar 2006 01:33:52 +0100
-Message-ID: <8a3885f86612ee4e306d7e9a9ca62b4e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
+Date: Sun, 26 Mar 2006 01:35:41 +0100
+Message-ID: <ae43c8104ff2ecdcc9c645009fadf379@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D702A187
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:33:52 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE6A1187
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:35:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1398> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
 ======================================================================
-Reported By:                KamMing
+Reported By:                flujan
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1398
+Issue ID:                   1956
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
+Status:                     assigned
+Distribution:               Slackware
 Kernel Version:             2.6.13
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
-Date Submitted:             09-05-2005 06:33 CEST
-Last Modified:              03-26-2006 01:33 CET
+Date Submitted:             03-23-2006 21:30 CET
+Last Modified:              03-26-2006 01:35 CET
 ======================================================================
-Summary:                    volume level either 0% or 100%
+Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
 Description: 
-The volume can be tuned by aumix. But sound level only 2 levels 0% and
-100%.
+The problem where solved in the CVS from 2006-03-01 but in the rc4 version
+the problem returns. 
 ======================================================================
 
 ----------------------------------------------------------------------
- KamMing - 03-24-06 02:25 
+ flujan - 03-25-06 23:27 
 ----------------------------------------------------------------------
-It is fixed by 1.0.11rc4.
+tiwaii, here goes the output of the lspci -nv commad.
+
+00:1b.0 Class 0403: 8086:2668 (rev 04)
+        Subsystem: 1025:008f
+        Flags: bus master, fast devsel, latency 0
+        Memory at d000c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] #10 [0091]
+
+Thanks in advance.
 
 ----------------------------------------------------------------------
- tiwai - 03-26-06 01:33 
+ tiwai - 03-26-06 01:35 
 ----------------------------------------------------------------------
-OK, closing.
+The errors are because of snd-page-alloc module that isn't unloaded  by
+alsasound init script.  It's no bug.
+
+Unload it manually after alsasound stop (or reboot should work too, of
+course).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-05-05 06:33 KamMing        New Issue                                    
-09-05-05 06:33 KamMing        Kernel Version            => 2.6.13          
-03-22-06 03:25 rlrevell       Note Added: 0008818                          
-03-23-06 16:12 tiwai          Note Added: 0008886                          
-03-24-06 02:25 KamMing        Note Added: 0008908                          
-03-26-06 01:33 tiwai          Status                   assigned => resolved
-03-26-06 01:33 tiwai          Resolution               open => fixed       
-03-26-06 01:33 tiwai          Note Added: 0008957                          
+03-23-06 21:30 flujan         New Issue                                    
+03-23-06 21:30 flujan         Distribution              => Slackware       
+03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
+03-24-06 11:57 tiwai          Note Added: 0008914                          
+03-24-06 12:52 er-ku          Note Added: 0008915                          
+03-24-06 13:01 tiwai          Note Added: 0008916                          
+03-25-06 04:33 flujan         Note Added: 0008941                          
+03-25-06 23:27 flujan         Note Added: 0008954                          
+03-26-06 01:35 tiwai          Note Added: 0008958                          
 ======================================================================
 
 
