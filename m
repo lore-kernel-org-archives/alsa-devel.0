@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001847]: hda-intel on acer laptop (travelmate 3002) - no recording
-Date: Sun, 26 Mar 2006 01:50:30 +0100
-Message-ID: <cbd4286e8a9eddecd661052a67ad917a@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0001965]: Error in "Writing an ALSA driver" document
+Date: Sun, 26 Mar 2006 01:54:18 +0100
+Message-ID: <9472358ee9d8710847a6ca0552c2d1ac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E03B1CC
-	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:50:31 +0100 (MET)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B024A1CC
+	for <alsa-devel@alsa-project.org>; Sun, 26 Mar 2006 01:54:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,75 +22,40 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1847> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1965> 
 ======================================================================
-Reported By:                lrupn
-Assigned To:                tiwai
+Reported By:                zx80user
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1847
-Category:                   PCI - hda-intel
+Project:                    ALSA - WWW server
+Issue ID:                   1965
+Category:                   a typo
 Reproducibility:            always
-Severity:                   major
+Severity:                   text
 Priority:                   normal
-Status:                     resolved
-Distribution:               Slackware 10.1
-Kernel Version:             2.6.12
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             02-15-2006 14:18 CET
-Last Modified:              03-26-2006 01:50 CET
+Date Submitted:             03-26-2006 01:54 CET
+Last Modified:              03-26-2006 01:54 CET
 ======================================================================
-Summary:                    hda-intel on acer laptop (travelmate 3002) - no
-recording
+Summary:                    Error in "Writing an ALSA driver" document
 Description: 
-I have an Acer laptop with sound card that claim to be Intel Corporation
-82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio Controller (rev
-04)
-that is recognized as a SigmaTel STAC9200. 
-With 1.0.11rc2 there is some noise when I unmute line-in (external
-microphone) and try to record something. The amplitude response is ok and
-actualy i am able to hear my voice but there is a lot of noise. I thing
-that the problem is the mixer... The internal micorphone is not working at
-all.\
-With 1.0.11rc3 some new controls apear in the alsamixer but neither
-speakers nor microphone is working....
-I have found a similr bug report:
-http://sourceforge.net/tracker/index.php?func=detail&aid=1389026&group_id=27464&atid=390601
+In the section on writing control code
 
+This: struct snd_ctl_elem_info
 
+and similar types referred to in the documentation (the how to write a
+driver docs) doesn't actually exist...
+
+snd_ctl_elem_info_t does exist as does sndrv_ctl_elem_info 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001643 Microphone is muted and no mic option a...
-======================================================================
-
-----------------------------------------------------------------------
- MACHINE - 03-24-06 23:57 
-----------------------------------------------------------------------
-microphone problem on HDA/ALC260 might be solved by 1.0.11RC4, but HDA w/
-SigmaTel has not yet been solved the problem.
-
-----------------------------------------------------------------------
- tiwai - 03-26-06 01:50 
-----------------------------------------------------------------------
-Fixed on CVS now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-15-06 14:18 lrupn          New Issue                                    
-02-15-06 14:18 lrupn          Distribution              => Slackware 10.1  
-02-15-06 14:18 lrupn          Kernel Version            => 2.6.12          
-02-16-06 12:13 MACHINE        Note Added: 0008095                          
-02-18-06 01:32 rlrevell       Relationship added       duplicate of 0001643
-03-24-06 23:57 MACHINE        Note Added: 0008939                          
-03-26-06 01:50 tiwai          Status                   assigned => resolved
-03-26-06 01:50 tiwai          Resolution               open => fixed       
-03-26-06 01:50 tiwai          Note Added: 0008960                          
+03-26-06 01:54 zx80user       New Issue                                    
 ======================================================================
 
 
