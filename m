@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001955]: No control for autocd volume on DELL Inspiron 9400
-Date: Mon, 27 Mar 2006 04:06:36 +0200
-Message-ID: <3ab0e3f0500d7efbe18d243ab81ad489@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Q: Compiling ALSA for 2.6.16
+Date: Sun, 26 Mar 2006 21:15:22 -0500
+Message-ID: <1143425723.1792.162.camel@mindpipe>
+References: <20060323102614.GA19835@stud.ntnu.no>
+	 <s5h64m5jv9y.wl%tiwai@suse.de> <20060323132847.GA27484@stud.ntnu.no>
+	 <s5h1wwtjn42.wl%tiwai@suse.de> <20060324083712.GD22993@stud.ntnu.no>
+	 <s5h4q1nzvgf.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B10401AB
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 04:06:36 +0200 (MEST)
+In-Reply-To: <s5h4q1nzvgf.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,56 +20,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: =?ISO-8859-1?Q?Asbj=F8rn_S=E6b=F8?= <asbjs@stud.ntnu.no>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2006-03-24 at 16:57 +0100, Takashi Iwai wrote:
+> Of course, CONFIG_FW_LOADER should be enabled in the kernel config to
+> get it working so, as described in ALSA-Configuration.txt.=20
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1955> 
-======================================================================
-Reported By:                crissi
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1955
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             03-23-2006 18:18 CET
-Last Modified:              03-27-2006 04:06 CEST
-======================================================================
-Summary:                    No control for autocd volume on DELL Inspiron 9400
-Description: 
-There is no control for audio cd volume
-======================================================================
+Asbj=F8rn,
 
-----------------------------------------------------------------------
- rlrevell - 03-27-06 04:06 
-----------------------------------------------------------------------
-Many laptop vendors these days do not provide an analog CD volume control,
-because it's cheaper and modern players like iTunes always play CDs in
-digital mode.
+Were you able to get this working?
 
-PCM should control the CD playback volume.
+Shouldn't these drivers that need firmware depend on CONFIG_FW_LOADER?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-23-06 18:18 crissi         New Issue                                    
-03-27-06 04:06 rlrevell       Note Added: 0008983                          
-======================================================================
-
+Lee
 
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by xPML, a groundbreaking scripting language
-that extends applications into web and mobile media. Attend the live webcast
-and join the prime developer group breaking into this new coding territory!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
+This SF.Net email is sponsored by xPML, a groundbreaking scripting langua=
+ge
+that extends applications into web and mobile media. Attend the live webc=
+ast
+and join the prime developer group breaking into this new coding territor=
+y!
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D110944&bid=3D241720&dat=3D=
+121642
