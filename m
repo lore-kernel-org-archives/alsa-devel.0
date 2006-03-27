@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0001965]: Error in "Writing an ALSA driver" document
-Date: Mon, 27 Mar 2006 04:35:27 +0200
-Message-ID: <882f886eaf636eb97244c48b86dc646c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001823]: surround40 memory leak
+Date: Mon, 27 Mar 2006 04:42:39 +0200
+Message-ID: <54e655f8f0dd2a7e309c229b1b403720@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C9001E3
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 04:35:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EF3431E3
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 04:42:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1965> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1823> 
 ======================================================================
-Reported By:                zx80user
-Assigned To:                tiwai
+Reported By:                darkbrain
+Assigned To:                
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   1965
-Category:                   a typo
+Project:                    ALSA - driver
+Issue ID:                   1823
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   text
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Resolution:                 reopened
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-26-2006 01:54 CET
-Last Modified:              03-27-2006 04:35 CEST
+Date Submitted:             02-05-2006 22:59 CET
+Last Modified:              03-27-2006 04:42 CEST
 ======================================================================
-Summary:                    Error in "Writing an ALSA driver" document
+Summary:                    surround40 memory leak
 Description: 
-In the section on writing control code
-
-This: struct snd_ctl_elem_info
-
-and similar types referred to in the documentation (the how to write a
-driver docs) doesn't actually exist...
-
-snd_ctl_elem_info_t does exist as does sndrv_ctl_elem_info 
+It seems that surround40 has a memory leak or somthing similar, playing a
+game in surround40 mode the game result unplayable after some minutes. 
+And there is a problem in CS46xx.conf file, i need to remove the hook on
+the rear pcm to permit multiple surround40 subdevices to be opened.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-26-06 14:50 
+ Raymond - 02-21-06 07:56 
 ----------------------------------------------------------------------
-you need to put your aica driver inside the alsa-driver tree.
+What is the rate_max value return by snd_pcm_hw_params_get_rate_max() for
+"surround40" pcm of your cs46xx ?
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1862
 
 ----------------------------------------------------------------------
- rlrevell - 03-27-06 04:35 
+ Raymond - 03-27-06 04:42 
 ----------------------------------------------------------------------
-The "Writing an ALSA driver" document is shipped with ALSA and the kernel
-and updated when the code changes.  The version that comes with your
-sources is always authoritative.
+For those sound cards which support hardware mixing, some resources (e.g.
+pcm_channel allocated by cs46xx_dsp_create_pcm_channel() in cs46x) are
+usually dynamically allocated by at snd_pcm_xxx_hw_params() 
+
+no error in snd_pcm_open(pcm,"surround40",,) does not guarantee enough
+resources when calling snd_pcm_hw_params() 
+
+31 playback subdevices in front and rear device will allow the application
+to open 16 surround40 pcm but the last one will fail in
+snd_pcm_hw_params().
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-26-06 01:54 zx80user       New Issue                                    
-03-26-06 13:49 tiwai          Status                   new => resolved     
-03-26-06 13:49 tiwai          Resolution               open => not an issue
-03-26-06 13:49 tiwai          Assigned To               => tiwai           
-03-26-06 13:49 tiwai          Note Added: 0008970                          
-03-26-06 14:23 zx80user       Status                   resolved => feedback
-03-26-06 14:23 zx80user       Resolution               not an issue => reopened
-03-26-06 14:23 zx80user       Note Added: 0008971                          
-03-26-06 14:23 zx80user       Note Edited: 0008971                         
-03-26-06 14:30 Raymond        Note Added: 0008972                          
-03-26-06 14:32 zx80user       Note Added: 0008973                          
-03-26-06 14:50 Raymond        Note Added: 0008974                          
-03-27-06 04:35 rlrevell       Status                   feedback => closed  
-03-27-06 04:35 rlrevell       Note Added: 0008986                          
+02-05-06 22:59 darkbrain      New Issue                                    
+02-06-06 06:32 Raymond        Note Added: 0007943                          
+02-06-06 07:10 Raymond        Note Edited: 0007943                         
+02-06-06 07:31 Raymond        Note Edited: 0007943                         
+02-06-06 07:32 Raymond        Note Edited: 0007943                         
+02-06-06 10:46 darkbrain      Note Added: 0007945                          
+02-06-06 10:46 darkbrain      Note Added: 0007946                          
+02-06-06 10:47 darkbrain      Note Deleted: 0007946                        
+02-06-06 18:37 darkbrain      Note Added: 0007950                          
+02-11-06 15:01 darkbrain      Note Added: 0008018                          
+02-12-06 05:09 Raymond        Note Added: 0008025                          
+02-15-06 06:21 Raymond        Note Added: 0008076                          
+02-21-06 07:56 Raymond        Note Added: 0008152                          
+03-27-06 04:42 Raymond        Note Added: 0008987                          
 ======================================================================
 
 
