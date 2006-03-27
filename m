@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001850]: source available
-Date: Mon, 27 Mar 2006 05:04:06 +0200
-Message-ID: <da467c70effb992ad39efed587966615@bugtrack.alsa-project.org>
+Date: Mon, 27 Mar 2006 05:16:44 +0200
+Message-ID: <63caa2395239be15f2458ec0f4094865@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B27471D5
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 05:04:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 95C041E6
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 05:16:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,26 +40,12 @@ Distribution:               ubuntu/breezy/Debian
 Kernel Version:             2.6.12.10.386
 ======================================================================
 Date Submitted:             02-16-2006 13:05 CET
-Last Modified:              03-27-2006 05:04 CEST
+Last Modified:              03-27-2006 05:16 CEST
 ======================================================================
 Summary:                    source available
 Description: 
 can't start layla24
 ======================================================================
-
-----------------------------------------------------------------------
- pochini - 03-25-06 12:04 
-----------------------------------------------------------------------
-You can also try to enable debugging in alsa-driver by passing the
-"--with-debug=full" option to configure. It make the driver print a lot of
-stuff in the system logs. Maybe when you load the module it prints
-something useful.
-Also, make sure the modules are installed (dir
-/lib/modules/2.6.14.2/kernel/sound/pci/echoaudio/ (you kernel version may
-differ)) and the firmware binaries are installed (dir /lib/firmware/ea/).
-Type "modprobe snd-<yourcard>" and then "dmesg" to see the debug messages.
-You may need to unload the modules if they're already loaded. Use "lsmod"
-to the the list and "modprobe -r <name>" to onload a module.
 
 ----------------------------------------------------------------------
  coz - 03-27-06 05:04 
@@ -600,6 +586,15 @@ snd_pcm_period_elapsed
 snd_pcm_hw_constraint_step
 [4344578.169000] snd_layla24: Unknown symbol snd_pcm_hw_constraint_step
 
+----------------------------------------------------------------------
+ rlrevell - 03-27-06 05:16 
+----------------------------------------------------------------------
+The "Unknown symbol" errors mean your build or install is incorrect.  Most
+commonly it means you did not remove all the old ALSA modules before
+installing new ones (none of the automated tools do this for you, you have
+to remove all snd-* modules manually, then modprobe the new ones, or just
+reboot)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -621,6 +616,7 @@ Date Modified  Username       Field                    Change
 03-22-06 02:48 rlrevell       Note Added: 0008787                          
 03-25-06 12:04 pochini        Note Added: 0008945                          
 03-27-06 05:04 coz            Note Added: 0008988                          
+03-27-06 05:16 rlrevell       Note Added: 0008989                          
 ======================================================================
 
 
