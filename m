@@ -1,17 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [ALSA] AdLib FM card driver
-Date: Mon, 27 Mar 2006 10:31:13 +0200
-Message-ID: <20060327083113.GB2521@turing.informatik.uni-halle.de>
-References: <442710A1.5030207@keyaccess.nl>
+From: "ÆÀ¡¹¥Þ¥¬¥¸¥ó" <mailer_fr@mweb2.mailyes.net>
+Subject: =?ISO-2022-JP?B?GyRCSSw4KyEqISobKEI=?=
+Date: Mon, 27 Mar 2006 08:59:16 +0000 (UTC)
+Message-ID: <20060327085700.31884.qmail@m08.mailyes.net>
+Reply-To: delivery_rt <mailer_rt@mweb2.mailyes.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset= ISO-2022-JP
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.Uni-Halle.DE [141.48.3.8])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 540F4143
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 10:31:45 +0200 (MEST)
-In-reply-to: <442710A1.5030207@keyaccess.nl>
-Content-disposition: inline
+Received: from m08.mailyes.net (m08.mailyes.net [125.187.32.162])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25F0816B
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 10:58:05 +0200 (MEST)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,31 +22,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Adrian Bunk <bunk@stusta.de>, Linux Kernel <linux-kernel@vger.kernel.org>
+Date: 2006-03-27 17:54:18
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Rene Herman wrote:
-> [...]
-> I also stuck a very tiny HOWTO in ALSA-Configuration.txt, assuming quite 
-> a few people would have no idea how to operate the thing, even if they 
-> do happen across a card. Is it okay there?
+$B6[5^9pCN!*!*(B $B:#$9$02T$2$k!"40A4L5NA!"B(F|9b<}F~(B $B#1F|#1#0K|1_0J>eEvF|J'$$2DG=(B $B$d$k5$<!Bh$GM_$7$$<V!"%^%s%7%g%s9XF~$bL4$8$c$J$$!*!*(B 
 
-It should probably go into a seperate file below Documentation/.
+http://www.jws777.com 
 
-> + This module supports multiple cards. It does not support autoprobe, so
-> + the port must be specified. For actual AdLib FM cards it will be 0x388.
+$B?M$h$j$b2T$.$?$$J}!"?M$h$j$bNI$$@83h$r$7$?$$J}$O(B 
+$B?M$h$j3Z$7$FBg6b%2%C%H!*!*(B 
+$BIaCJ$HF1$8$h$&$K%[!<%k$K9T$/$@$1(B 
 
-Does it make sense to support more than one card or a non-default port
-address?  I.e., is there any card using an OPL2/3 that we do not have a
-driver for (except the AdLib FM)?
+http://www.jws777.com 
 
-I think at least the port address for the first card should be defaulted
-to 0x388.
+$B$?$@$$$^%-%c%s%Z!<%sCf$K$D$-!"$*?=$79~$_D:$-$^$7$?Cf$+$i(B 
+$BCjA*$G#2#0L>MM$K73;q6b#1#0K|1_Ds6!$5$;$FD:$-$^$9!#(B 
 
+http://www.jws777.com 
 
-Regards,
-Clemens
+$B=i$a$^$7$F!#(BJAPAN WORK SYSTEM$B$H!"?=$7$^$9$,!"(B $BD94|$KEO$j!">pJs$NN.=P$r62$l$FI=$K=P$k;v$,$"$j$^$;$s$G$7$?$,(B 
+$B%Q%A%s%3!&%Q%A%9%m6H3&$NEZBf$K$"$?$k!"%a!<%+!<!&%[!<%k4X78<T(B 
+$B$N6(NO$r85$K6H3&=i$N%I%kH"%/%j%(!<%?!<$H$7$F!"(B 
+$B?M:`$r6[5^Jg=8$5$;$FD:$$$F$*$j$^$9!#(B 
+$B"#"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#(B 
+
+$B!V%I%kH"%/%j%(!<%?!<!W$H$O!"$_$J$5$s$NM>$C$?;~4V$rEv<R$K>/$7(B 
+$BD:$-!"%[!<%k$KB-$r1?$s$G$$$?$@$-!"%Q%A%s%3!&%Q%A%9%m$J$I$G!"(B 
+$B%I%kH"$N;3$r:n$j>e$2$FD:$/!"$?$@$=$l$@$1$G$9!#(B 
+$B3'$5$s$N6u$$$F$$$k;~4V$rEv<R$K>/$7$@$1J,$1$F2<$5$$(B 
+
+http://www.jws777.com 
+
+$B"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#"""#""!!(B 
+
+$B%Q%A%s%3!&%Q%A%9%m$r$d$i$J$$J}$G$bI{6H$H$7$F<};Y$r>e$2$k0Y$K(B 
+$BA4NO$G%5%]!<%H$5$;$FD:$-$^$9!#(B 
+$B3'$5$s$NL4$X$N$*<jEA$$$r$5$;$FD:$-$^$9!D(B 
+
+http://www.jws777.com 
+_________________________________________________________________ 
+
 
 
 -------------------------------------------------------
