@@ -1,13 +1,17 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: [PATCH] HDA/Realtek: multiple input mux definitions and pin mode additions
-Date: Tue, 28 Mar 2006 09:24:33 +0930 (CST)
-Message-ID: <200603272354.k2RNsXiT009308@auster.physics.adelaide.edu.au>
-References: <s5hveu03xza.wl%tiwai@suse.de>
+From: "Raspier J. Navigation" <maniek@gkconline.com>
+Subject: Cum like a porn actor
+Date: Mon, 27 Mar 2006 17:50:38 -0600
+Message-ID: <8697457730.20060327175038@gkconline.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="----------77F514FF4605215"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hveu03xza.wl%tiwai@suse.de> from "Takashi Iwai" at Mar 27, 2006 01:53:29 PM
+Received: from -1209917096 (68-113-209-4.dhcp.ftwo.tx.charter.com [68.113.209.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 00C251B1
+	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2006 01:57:56 +0200 (MEST)
+Received: from gkconline.com (-1209476216 [-1209475000])
+	by 68-113-209-4.dhcp.ftwo.tx.charter.com (Qmailv1) with ESMTP id E3AD8687BC
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 17:50:38 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,431 +21,134 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, Rimas Kudelis <rq@akl.lt>, Lee Revell <rlrevell@joe-job.com>, ALSA devel <alsa-devel@lists.sourceforge.net>
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi
+This is a multi-part message in MIME format.
 
-> > The following patch relative to CVS from 20060324 adds the following
-> > features to the Realtek HDA codec.
-> > 
-> > 1) Define two new pin modes: ALC_PIN_DIR_IN_NOMICBIAS and
-> >    ALC_PIN_DIR_INOUT_NOMICBIAS.  These can be used with jack mode switch
-> >    definitions in mixers to prevent the user being offered the mic bias
-> >    options if the hardware doesn't support it.
-> > 
-> > 2) Add the ability to have different input mux definitions for different
-> >    ADCs.  This is needed because the ALC260 chip uses different mux layouts
-> >    for the two onboard ADCs.  A new field (num_mux_defs) was added to the
-> >    alc_spec and alc_config_preset structures to support this.
-> 
-> I'd use num_mux_defs = 0 as if = 1 if input_mux is defined.
-> Then we don't have to patch all over places (and avoid carelessness).
-> 
-> Otherwise the patch looks OK.  Could you fix the above and repost?
-> I'd like to put this into 1.0.11-final, too.
+------------77F514FF4605215
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----------4F37825CD243ABE"
 
-The original patch would do the right thing with num_mux_defs = 0.  The
-attached revised patch simply removes the unnecessary initialisation of
-num_mux_defs in the presets.  This is untested since I don't have the laptop
-with me at present, but given the trivial nature of the change I don't
-foresee a problem.
+------------4F37825CD243ABE
+Content-Type: multipart/alternative;
+	boundary="----------736687A77ED74F8"
 
-I've left the initialisations in the alc*_parse_auto_config() functions for
-the moment since it's not clear to me that it will otherwise be initialised
-to something sensible in this context.
+------------736687A77ED74F8
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Regards
-  jonathan
+According to the National Institute of Environmental Health Sciences (NIEHS), human health and human disease result from three interactive elements: 
+environmental factors individual susceptibility age
+Environmental medicine is the healthcare specialty concerned with human illnesses or dysfunctions that result from environmental factors.
+Environmental medicine specialists participate in a wide range of activities in their quest for answers regarding how the environment affects our health. 
+For example, among many other topics, the NIEHS is currently studying:
+cancers, breast and testicular 
+lead poisoning 
+birth and developmental defects 
+agricultural pollution 
+neurologic disorders 
+sterility 
+ways to replace animals as subjects in research
+Environmental medicine departments or programs are found in large medical centers throughout the United States.
+Some of the many services they offer include:
+local, state, or national disease-prevention programs
+epidemiological studies and research
+distribution of standards, guidelines, and recommendations
+partnering with other organizations, such as health departments and environmental agencies, to help prevent environmental disease 
 
---- patch_realtek.c-orig	2006-03-24 16:49:31.000000000 +1030
-+++ patch_realtek.c	2006-03-28 09:03:39.000000000 +0930
-@@ -132,6 +132,7 @@
- 	hda_nid_t dig_in_nid;		/* digital-in NID; optional */
- 
- 	/* capture source */
-+	unsigned int num_mux_defs;
- 	const struct hda_input_mux *input_mux;
- 	unsigned int cur_mux[3];
- 
-@@ -173,6 +174,7 @@
- 	hda_nid_t dig_in_nid;
- 	unsigned int num_channel_mode;
- 	const struct hda_channel_mode *channel_mode;
-+	unsigned int num_mux_defs;
- 	const struct hda_input_mux *input_mux;
- 	void (*unsol_event)(struct hda_codec *, unsigned int);
- 	void (*init_hook)(struct hda_codec *);
-@@ -186,7 +188,10 @@
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
- 	struct alc_spec *spec = codec->spec;
--	return snd_hda_input_mux_info(spec->input_mux, uinfo);
-+	unsigned int mux_idx = snd_ctl_get_ioffidx(kcontrol, &uinfo->id);
-+	if (mux_idx >= spec->num_mux_defs)
-+		mux_idx = 0;
-+	return snd_hda_input_mux_info(&spec->input_mux[mux_idx], uinfo);
- }
- 
- static int alc_mux_enum_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
-@@ -204,7 +209,8 @@
- 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
- 	struct alc_spec *spec = codec->spec;
- 	unsigned int adc_idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
--	return snd_hda_input_mux_put(codec, spec->input_mux, ucontrol,
-+	unsigned int mux_idx = (adc_idx>=spec->num_mux_defs?0:adc_idx);
-+	return snd_hda_input_mux_put(codec, &spec->input_mux[mux_idx], ucontrol,
- 				     spec->adc_nids[adc_idx], &spec->cur_mux[adc_idx]);
- }
- 
-@@ -246,7 +252,8 @@
-  * states other than HiZ (eg: PIN_VREFxx) and revert to HiZ if any of these
-  * are requested.  Therefore order this list so that this behaviour will not
-  * cause problems when mixer clients move through the enum sequentially.
-- * NIDs 0x0f and 0x10 have been observed to have this behaviour.
-+ * NIDs 0x0f and 0x10 have been observed to have this behaviour as of
-+ * March 2006.
-  */
- static char *alc_pin_mode_names[] = {
- 	"Mic 50pc bias", "Mic 80pc bias",
-@@ -256,19 +263,27 @@
- 	PIN_VREF50, PIN_VREF80, PIN_IN, PIN_OUT, PIN_HP,
- };
- /* The control can present all 5 options, or it can limit the options based
-- * in the pin being assumed to be exclusively an input or an output pin.
-- */
--#define ALC_PIN_DIR_IN    0x00
--#define ALC_PIN_DIR_OUT   0x01
--#define ALC_PIN_DIR_INOUT 0x02
-+ * in the pin being assumed to be exclusively an input or an output pin.  In
-+ * addition, "input" pins may or may not process the mic bias option
-+ * depending on actual widget capability (NIDs 0x0f and 0x10 don't seem to
-+ * accept requests for bias as of chip versions up to March 2006) and/or
-+ * wiring in the computer.
-+ */
-+#define ALC_PIN_DIR_IN              0x00
-+#define ALC_PIN_DIR_OUT             0x01
-+#define ALC_PIN_DIR_INOUT           0x02
-+#define ALC_PIN_DIR_IN_NOMICBIAS    0x03
-+#define ALC_PIN_DIR_INOUT_NOMICBIAS 0x04
- 
--/* Info about the pin modes supported by the three different pin directions. 
-+/* Info about the pin modes supported by the different pin direction modes. 
-  * For each direction the minimum and maximum values are given.
-  */
--static signed char alc_pin_mode_dir_info[3][2] = {
-+static signed char alc_pin_mode_dir_info[5][2] = {
- 	{ 0, 2 },    /* ALC_PIN_DIR_IN */
- 	{ 3, 4 },    /* ALC_PIN_DIR_OUT */
- 	{ 0, 4 },    /* ALC_PIN_DIR_INOUT */
-+	{ 2, 2 },    /* ALC_PIN_DIR_IN_NOMICBIAS */
-+	{ 2, 4 },    /* ALC_PIN_DIR_INOUT_NOMICBIAS */
- };
- #define alc_pin_mode_min(_dir) (alc_pin_mode_dir_info[_dir][0])
- #define alc_pin_mode_max(_dir) (alc_pin_mode_dir_info[_dir][1])
-@@ -330,9 +345,10 @@
- 		 * input modes.
- 		 *
- 		 * Dynamically switching the input/output buffers probably
--		 * reduces noise slightly, particularly on input.  However,
--		 * havingboth input and output buffers enabled
--		 * simultaneously doesn't seem to be problematic.
-+		 * reduces noise slightly (particularly on input) so we'll
-+		 * do it.  However, having both input and output buffers
-+		 * enabled simultaneously doesn't seem to be problematic if
-+		 * this turns out to be necessary in the future.
- 		 */
- 		if (val <= 2) {
- 			snd_hda_codec_write(codec,nid,0,AC_VERB_SET_AMP_GAIN_MUTE,
-@@ -484,6 +500,7 @@
- 	spec->multiout.dig_out_nid = preset->dig_out_nid;
- 	spec->multiout.hp_nid = preset->hp_nid;
- 	
-+	spec->num_mux_defs = preset->num_mux_defs;
- 	spec->input_mux = preset->input_mux;
- 
- 	spec->num_adc_nids = preset->num_adc_nids;
-@@ -2686,6 +2703,7 @@
- 
- 	spec->init_verbs[spec->num_init_verbs++] = alc880_volume_init_verbs;
- 
-+	spec->num_mux_defs = 1;
- 	spec->input_mux = &spec->private_imux;
- 
- 	return 1;
-@@ -2815,30 +2833,56 @@
- };
- 
- /* On Fujitsu S702x laptops capture only makes sense from Mic/LineIn jack,
-- * headphone jack and the internal CD lines.
-+ * headphone jack and the internal CD lines since these are the only pins at
-+ * which audio can appear.  For flexibility, also allow the option of
-+ * recording the mixer output on the second ADC (ADC0 doesn't have a
-+ * connection to the mixer output).
-  */
--static struct hda_input_mux alc260_fujitsu_capture_source = {
--	.num_items = 3,
--	.items = {
--		{ "Mic/Line", 0x0 },
--		{ "CD", 0x4 },
--		{ "Headphone", 0x2 },
-+static struct hda_input_mux alc260_fujitsu_capture_sources[2] = {
-+	{
-+		.num_items = 3,
-+		.items = {
-+			{ "Mic/Line", 0x0 },
-+			{ "CD", 0x4 },
-+			{ "Headphone", 0x2 },
-+		},
-+	},
-+	{
-+		.num_items = 4,
-+		.items = {
-+			{ "Mic/Line", 0x0 },
-+			{ "CD", 0x4 },
-+			{ "Headphone", 0x2 },
-+			{ "Mixer", 0x5 },
-+		},
- 	},
-+
- };
- 
--/* Acer TravelMate(/Extensa/Aspire) notebooks have similar configutation to
-- * the Fujitsu S702x, but jacks are marked differently. We won't allow
-- * retasking the Headphone jack, so it won't be available here.
-+/* Acer TravelMate(/Extensa/Aspire) notebooks have similar configuration to
-+ * the Fujitsu S702x, but jacks are marked differently.
-  */
--static struct hda_input_mux alc260_acer_capture_source = {
--	.num_items = 3,
--	.items = {
--		{ "Mic", 0x0 },
--		{ "Line", 0x2 },
--		{ "CD", 0x4 },
-+static struct hda_input_mux alc260_acer_capture_sources[2] = {
-+	{
-+		.num_items = 4,
-+		.items = {
-+			{ "Mic", 0x0 },
-+			{ "Line", 0x2 },
-+			{ "CD", 0x4 },
-+			{ "Headphone", 0x5 },
-+		},
-+	},
-+	{
-+		.num_items = 5,
-+		.items = {
-+			{ "Mic", 0x0 },
-+			{ "Line", 0x2 },
-+			{ "CD", 0x4 },
-+			{ "Headphone", 0x6 },
-+			{ "Mixer", 0x5 },
-+		},
- 	},
- };
--
- /*
-  * This is just place-holder, so there's something for alc_build_pcms to look
-  * at when it calculates the maximum number of channels. ALC260 has no mixer
-@@ -2899,6 +2943,9 @@
- 	{ } /* end */
- };
- 
-+/* Fujitsu S702x series laptops.  ALC260 pin usage: Mic/Line jack = 0x12, 
-+ * HP jack = 0x14, CD audio =  0x16, internal speaker = 0x10.
-+ */
- static struct snd_kcontrol_new alc260_fujitsu_mixer[] = {
- 	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x08, 0x0, HDA_OUTPUT),
- 	HDA_BIND_MUTE("Headphone Playback Switch", 0x08, 2, HDA_INPUT),
-@@ -2915,9 +2962,28 @@
- 	{ } /* end */
- };
- 
-+/* Mixer for Acer TravelMate(/Extensa/Aspire) notebooks.  Note that current
-+ * versions of the ALC260 don't act on requests to enable mic bias from NID
-+ * 0x0f (used to drive the headphone jack in these laptops).  The ALC260
-+ * datasheet doesn't mention this restriction.  At this stage it's not clear
-+ * whether this behaviour is intentional or is a hardware bug in chip
-+ * revisions available in early 2006.  Therefore for now allow the
-+ * "Headphone Jack Mode" control to span all choices, but if it turns out
-+ * that the lack of mic bias for this NID is intentional we could change the
-+ * mode from ALC_PIN_DIR_INOUT to ALC_PIN_DIR_INOUT_NOMICBIAS.
-+ *
-+ * In addition, Acer TravelMate(/Extensa/Aspire) notebooks in early 2006
-+ * don't appear to make the mic bias available from the "line" jack, even
-+ * though the NID used for this jack (0x14) can supply it.  The theory is
-+ * that perhaps Acer have included blocking capacitors between the ALC260
-+ * and the output jack.  If this turns out to be the case for all such
-+ * models the "Line Jack Mode" mode could be changed from ALC_PIN_DIR_INOUT
-+ * to ALC_PIN_DIR_INOUT_NOMICBIAS.
-+ */
- static struct snd_kcontrol_new alc260_acer_mixer[] = {
- 	HDA_CODEC_VOLUME("Master Playback Volume", 0x08, 0x0, HDA_OUTPUT),
- 	HDA_BIND_MUTE("Master Playback Switch", 0x08, 2, HDA_INPUT),
-+	ALC_PIN_MODE("Headphone Jack Mode", 0x0f, ALC_PIN_DIR_INOUT),
- 	HDA_CODEC_VOLUME("CD Playback Volume", 0x07, 0x04, HDA_INPUT),
- 	HDA_CODEC_MUTE("CD Playback Switch", 0x07, 0x04, HDA_INPUT),
- 	HDA_CODEC_VOLUME("Mic Playback Volume", 0x07, 0x0, HDA_INPUT),
-@@ -3131,7 +3197,8 @@
- };
- 
- /* Initialisation sequence for ALC260 as configured in Fujitsu S702x
-- * laptops.
-+ * laptops.  ALC260 pin usage: Mic/Line jack = 0x12, HP jack = 0x14, CD
-+ * audio = 0x16, internal speaker = 0x10.
-  */
- static struct hda_verb alc260_fujitsu_init_verbs[] = {
- 	/* Disable all GPIOs */
-@@ -3278,10 +3345,10 @@
- 	{0x04, AC_VERB_SET_CONNECT_SEL, 0x00},
- 
- 	/* Do similar with the second ADC: mute capture input amp and
--	 * set ADC connection to line (on line1 pin)
-+	 * set ADC connection to mic to match ALSA's default state.
- 	 */
- 	{0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
--	{0x05, AC_VERB_SET_CONNECT_SEL, 0x02},
-+	{0x05, AC_VERB_SET_CONNECT_SEL, 0x00},
- 
- 	/* Mute all inputs to mixer widget (even unconnected ones) */
- 	{0x07, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)}, /* mic1 pin */
-@@ -3306,26 +3373,35 @@
- static hda_nid_t alc260_test_adc_nids[2] = {
- 	0x04, 0x05,
- };
--/* This is a bit messy since the two input muxes in the ALC260 have slight
-- * variations in their signal assignments.  The ideal way to deal with this
-- * is to extend alc_spec.input_mux to allow a different input MUX for each
-- * ADC.  For the purposes of the test model it's sufficient to just list
-- * both options for affected signal indices.  The separate input mux
-- * functionality only needs to be considered if a model comes along which
-- * actually uses signals 0x5, 0x6 and 0x7 for something which makes sense to
-- * record.
-+/* For testing the ALC260, each input MUX needs its own definition since
-+ * the signal assignments are different.  This assumes that the first ADC 
-+ * is NID 0x04.
-  */
--static struct hda_input_mux alc260_test_capture_source = {
--	.num_items = 8,
--	.items = {
--		{ "MIC1 pin", 0x0 },
--		{ "MIC2 pin", 0x1 },
--		{ "LINE1 pin", 0x2 },
--		{ "LINE2 pin", 0x3 },
--		{ "CD pin", 0x4 },
--		{ "LINE-OUT pin (cap1), Mixer (cap2)", 0x5 },
--		{ "HP-OUT pin (cap1), LINE-OUT pin (cap2)", 0x6 },
--		{ "HP-OUT pin (cap2 only)", 0x7 },
-+static struct hda_input_mux alc260_test_capture_sources[2] = {
-+	{
-+		.num_items = 7,
-+		.items = {
-+			{ "MIC1 pin", 0x0 },
-+			{ "MIC2 pin", 0x1 },
-+			{ "LINE1 pin", 0x2 },
-+			{ "LINE2 pin", 0x3 },
-+			{ "CD pin", 0x4 },
-+			{ "LINE-OUT pin", 0x5 },
-+			{ "HP-OUT pin", 0x6 },
-+		},
-+        },
-+	{
-+		.num_items = 8,
-+		.items = {
-+			{ "MIC1 pin", 0x0 },
-+			{ "MIC2 pin", 0x1 },
-+			{ "LINE1 pin", 0x2 },
-+			{ "LINE2 pin", 0x3 },
-+			{ "CD pin", 0x4 },
-+			{ "Mixer", 0x5 },
-+			{ "LINE-OUT pin", 0x6 },
-+			{ "HP-OUT pin", 0x7 },
-+		},
-         },
- };
- static struct snd_kcontrol_new alc260_test_mixer[] = {
-@@ -3337,7 +3413,17 @@
- 	HDA_CODEC_VOLUME("LOUT1 Playback Volume", 0x08, 0x0, HDA_OUTPUT),
- 	HDA_BIND_MUTE("LOUT1 Playback Switch", 0x08, 2, HDA_INPUT),
- 
--	/* Modes for retasking pin widgets */
-+	/* Modes for retasking pin widgets
-+	 * Note: the ALC260 doesn't seem to act on requests to enable mic
-+         * bias from NIDs 0x0f and 0x10.  The ALC260 datasheet doesn't
-+         * mention this restriction.  At this stage it's not clear whether
-+         * this behaviour is intentional or is a hardware bug in chip
-+         * revisions available at least up until early 2006.  Therefore for
-+         * now allow the "HP-OUT" and "LINE-OUT" Mode controls to span all
-+         * choices, but if it turns out that the lack of mic bias for these
-+         * NIDs is intentional we could change their modes from
-+         * ALC_PIN_DIR_INOUT to ALC_PIN_DIR_INOUT_NOMICBIAS.
-+	 */
- 	ALC_PIN_MODE("HP-OUT pin mode", 0x10, ALC_PIN_DIR_INOUT),
- 	ALC_PIN_MODE("LINE-OUT pin mode", 0x0f, ALC_PIN_DIR_INOUT),
- 	ALC_PIN_MODE("LINE2 pin mode", 0x15, ALC_PIN_DIR_INOUT),
-@@ -3699,6 +3785,7 @@
- 
- 	spec->init_verbs[spec->num_init_verbs++] = alc260_volume_init_verbs;
- 
-+	spec->num_mux_defs = 1;
- 	spec->input_mux = &spec->private_imux;
- 
- 	/* check whether NID 0x04 is valid */
-@@ -3804,7 +3891,8 @@
- 		.adc_nids = alc260_dual_adc_nids,
- 		.num_channel_mode = ARRAY_SIZE(alc260_modes),
- 		.channel_mode = alc260_modes,
--		.input_mux = &alc260_fujitsu_capture_source,
-+		.num_mux_defs = ARRAY_SIZE(alc260_fujitsu_capture_sources),
-+		.input_mux = alc260_fujitsu_capture_sources,
- 	},
- 	[ALC260_ACER] = {
- 		.mixers = { alc260_acer_mixer,
-@@ -3816,7 +3904,8 @@
- 		.adc_nids = alc260_dual_adc_nids,
- 		.num_channel_mode = ARRAY_SIZE(alc260_modes),
- 		.channel_mode = alc260_modes,
--		.input_mux = &alc260_acer_capture_source,
-+		.num_mux_defs = ARRAY_SIZE(alc260_acer_capture_sources),
-+		.input_mux = alc260_acer_capture_sources,
- 	},
- #ifdef CONFIG_SND_DEBUG
- 	[ALC260_TEST] = {
-@@ -3829,7 +3918,8 @@
- 		.adc_nids = alc260_test_adc_nids,
- 		.num_channel_mode = ARRAY_SIZE(alc260_modes),
- 		.channel_mode = alc260_modes,
--		.input_mux = &alc260_test_capture_source,
-+		.num_mux_defs = ARRAY_SIZE(alc260_test_capture_sources),
-+		.input_mux = alc260_test_capture_sources,
- 	},
- #endif
- };
-@@ -3921,7 +4011,6 @@
- 		{ "CD", 0x4 },
- 	},
- };
--
- #define alc882_mux_enum_info alc_mux_enum_info
- #define alc882_mux_enum_get alc_mux_enum_get
- 
-@@ -4823,6 +4912,7 @@
- 		spec->mixers[spec->num_mixers++] = spec->kctl_alloc;
- 
- 	spec->init_verbs[spec->num_init_verbs++] = alc262_volume_init_verbs;
-+	spec->num_mux_defs = 1;
- 	spec->input_mux = &spec->private_imux;
- 
- 	return 1;
-@@ -5499,6 +5589,7 @@
- 
- 	spec->init_verbs[spec->num_init_verbs++] = alc861_auto_init_verbs;
- 
-+	spec->num_mux_defs = 1;
- 	spec->input_mux = &spec->private_imux;
- 
- 	spec->adc_nids = alc861_adc_nids;
+------------736687A77ED74F8
+Content-Type: text/html
+Content-Transfer-Encoding: 7bit
+
+<html>
+<body>
+<p><img src="cid:1.gif"><br>
+    <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://iafklce.pinktable.net/?bdghjmcexwnosyizsmafkl">VISIT THE  SITE</a></b></p>
+<p>&nbsp;</p>
+<p><font size="1">According to the National Institute of Environmental Health Sciences (NIEHS), human health and human disease result from three interactive elements: <br>
+  environmental factors individual susceptibility age<br>
+  Environmental medicine is the healthcare specialty concerned with human illnesses or dysfunctions that result from environmental factors.<br>
+  Environmental medicine specialists participate in a wide range of activities in their quest for answers regarding how the environment affects our health. <br>
+  For example, among many other topics, the NIEHS is currently studying:<br>
+  cancers, breast and testicular <br>
+  lead poisoning <br>
+  birth and developmental defects <br>
+  agricultural pollution <br>
+  neurologic disorders <br>
+  sterility <br>
+  ways to replace animals as subjects in research<br>
+  Environmental medicine departments or programs are found in large medical centers throughout the United States.<br> 
+  Some of the many services they offer include:<br>
+  local, state, or national disease-prevention programs<br>
+  epidemiological studies and research<br>
+  distribution of standards, guidelines, and recommendations<br>
+  partnering with other organizations, such as health departments and environmental agencies, to help prevent environmental disease
+</font></p>
+</body>
+</html>
+
+------------736687A77ED74F8--
+
+------------4F37825CD243ABE
+Content-Type: image/gif; name="1.gif"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="1.gif"
+Content-ID: <1.gif>
+
+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
+
+------------4F37825CD243ABE--
+
+------------77F514FF4605215--
+
+
 
 
 -------------------------------------------------------
