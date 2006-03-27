@@ -1,16 +1,16 @@
 From: Rene Herman <rene.herman@keyaccess.nl>
 Subject: Re: [ALSA] AdLib FM card driver
-Date: Mon, 27 Mar 2006 18:23:48 +0200
-Message-ID: <44281194.50800@keyaccess.nl>
-References: <442710A1.5030207@keyaccess.nl> <s5hmzfc3stk.wl%tiwai@suse.de>
+Date: Mon, 27 Mar 2006 18:29:24 +0200
+Message-ID: <442812E4.5060803__38880.9137316004$1143477026$gmane$org@keyaccess.nl>
+References: <442710A1.5030207@keyaccess.nl> <s5hmzfc3stk.wl%tiwai@suse.de> <44281194.50800@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------010206030008070107010007"
+ boundary="------------050602040902090108010905"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq3.tilbu1.nb.home.nl (smtpq3.tilbu1.nb.home.nl [213.51.146.202])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 974D018A
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 18:23:44 +0200 (MEST)
-In-Reply-To: <s5hmzfc3stk.wl%tiwai@suse.de>
+Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl [213.51.146.201])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D46A1E6
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 18:29:21 +0200 (MEST)
+In-Reply-To: <44281194.50800@keyaccess.nl>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,89 +25,37 @@ Cc: ALSA devel <alsa-devel@alsa-project.org>, Adrian Bunk <bunk@stusta.de>, Linu
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------010206030008070107010007
+--------------050602040902090108010905
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Takashi Iwai wrote:
+Rene Herman wrote:
 
->> then the ID is used as is and everything seems fine. I assume that 
->> either the space check could go or that a passed in ID should be 
->> subjected to it as well? (that function also deletes all !isalnum's from 
->> the shortname such as <underscore> which, again, is fine when passed in 
->> manually).
-> 
-> The space check is there to retrieve the second word from the
-> shortname, because the length of id string is much shorter.  In most
-> cases, you likely have names like "Vendor DeviceXXXX".  Then only
-> DeviceXXX is extracted.  If it matters, pass a string without space in
-> the shortname field.
+> Attached is a version that simply jumps to a return -EINVAL, which
+> would also be the easiest way to fixup the others, at least for
+> -stable. If you disagree though, in the next message I'll sent a
+> version that does register the error, but for now just turns them
+> into -EINVAL before returning.
 
-Okay I guess. No, "FM" is fine by me...
+As promised. As said, I prefer the previous one. With this one, it would 
+only be a matter of deleting the "error = -EINVAL;" lines again to have 
+it propagate the error up after a resolution of that -ENODEV | -ENXIO 
+thing, but since the value isn't used anyway...
 
->> +static int __devinit snd_adlib_probe(struct platform_device *device)
-> (snip)
->> +	card->private_data = request_region(port[i], 4, CRD_NAME);
->> +	if (!card->private_data) {
->> +		snd_printk(KERN_ERR DRV_NAME ": could not grab ports\n");
->> +		snd_card_free(card);
->> +		return -EINVAL;
->> +	}
-> 
-> -EBUSY would be more suitable (although it's ignored later).
+Rene.
 
-Yes.
-
->> +	card->private_free = snd_adlib_free;
->> +
->> +	if (snd_opl3_create(card, port[i], port[i] + 2, OPL3_HW_AUTO, 1, &opl3) < 0) {
->> +		snd_printk(KERN_ERR DRV_NAME ": could not create OPL\n");
->> +		snd_card_free(card);
->> +		return -EINVAL;
->> +	}
-> 
-> Better to keep the original error value?
-
-This is a problem unfortunately. I haven't yet regenerated the patch to 
-continue on IS_ERR that I sent a few days ago against -mm as you asked 
-due to the issue of driver_probe_device() specifically ignoring -ENODEV 
-and -ENXIO. I've looked, and both of these are values ALSA internals can 
-and do return so if we just propagate the value up, we might propagate 
-an -ENODEV or -ENXIO; platform_driver_register_simple() would then 
-return success and let the driver load.
-
- From the perspective of these ISA drivers, deleting the -ENODEV | 
--ENXIO check from driver_probe_device() would be best. And I guess 
-making it dependent on hotpluggability of a bus is best all around, but 
-this is waiting for comment from greg.
-
-> Ditto.  Maybe better to have a single error exit with snd_card_free()?
-
-Attached is a version that simply jumps to a return -EINVAL, which would 
-also be the easiest way to fixup the others, at least for -stable. If 
-you disagree though, in the next message I'll sent a version that does 
-register the error, but for now just turns them into -EINVAL before 
-returning.
-
-Given that the specific error is ignored anyway I prefer this first one 
-myself but both are fine by me. I'll use the method you prefer with the 
-others as well.
-
-Rene
-
-
---------------010206030008070107010007
+--------------050602040902090108010905
 Content-Type: text/plain;
- name="adlib-2.diff"
+ name="adlib-3.diff"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="adlib-2.diff"
+ filename="adlib-3.diff"
 
 Index: local/sound/isa/adlib.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ local/sound/isa/adlib.c	2006-03-27 17:03:08.000000000 +0200
-@@ -0,0 +1,153 @@
++++ local/sound/isa/adlib.c	2006-03-27 16:47:21.000000000 +0200
+@@ -0,0 +1,163 @@
 +/*
 + * AdLib FM card driver.
 + */
@@ -153,33 +101,41 @@ Index: local/sound/isa/adlib.c
 +	struct snd_card *card;
 +	struct snd_opl3 *opl3;
 +
++	int error;
 +	int i = device->id;
 +
 +	if (port[i] == SNDRV_AUTO_PORT) {
 +		snd_printk(KERN_ERR DRV_NAME ": please specify port\n");
++		error = -EINVAL;
 +		goto out0;
 +	}
 +
 +	card = snd_card_new(index[i], id[i], THIS_MODULE, 0);
 +	if (!card) {
 +		snd_printk(KERN_ERR DRV_NAME ": could not create card\n");
++		error = -EINVAL;
 +		goto out0;
 +	}
 +
 +	card->private_data = request_region(port[i], 4, CRD_NAME);
 +	if (!card->private_data) {
 +		snd_printk(KERN_ERR DRV_NAME ": could not grab ports\n");
++		error = -EBUSY;
 +		goto out1;
 +	}
 +	card->private_free = snd_adlib_free;
 +
-+	if (snd_opl3_create(card, port[i], port[i] + 2, OPL3_HW_AUTO, 1, &opl3) < 0) {
++	error = snd_opl3_create(card, port[i], port[i] + 2, OPL3_HW_AUTO, 1, &opl3);
++	if (error < 0) {
 +		snd_printk(KERN_ERR DRV_NAME ": could not create OPL\n");
++		error = -EINVAL;
 +		goto out1;
 +	}
 +
-+	if (snd_opl3_hwdep_new(opl3, 0, 0, NULL) < 0) {
++	error = snd_opl3_hwdep_new(opl3, 0, 0, NULL);
++	if (error < 0) {
 +		snd_printk(KERN_ERR DRV_NAME ": could not create FM\n");
++		error = -EINVAL;
 +		goto out1;
 +	}
 +
@@ -189,8 +145,10 @@ Index: local/sound/isa/adlib.c
 +
 +	snd_card_set_dev(card, &device->dev);
 +
-+	if (snd_card_register(card) < 0) {
++	error = snd_card_register(card);
++	if (error < 0) {
 +		snd_printk(KERN_ERR DRV_NAME ": could not register card\n");
++		error = -EINVAL;
 +		goto out1;
 +	}
 +
@@ -198,7 +156,7 @@ Index: local/sound/isa/adlib.c
 +	return 0;
 +
 +out1:	snd_card_free(card);
-+out0:	return -EINVAL;
++out0:	return error;
 +}
 +
 +static int __devexit snd_adlib_remove(struct platform_device *device)
@@ -263,8 +221,8 @@ Index: local/sound/isa/adlib.c
 +module_exit(alsa_card_adlib_exit);
 Index: local/sound/isa/Kconfig
 ===================================================================
---- local.orig/sound/isa/Kconfig	2006-03-27 16:53:56.000000000 +0200
-+++ local/sound/isa/Kconfig	2006-03-27 16:54:25.000000000 +0200
+--- local.orig/sound/isa/Kconfig	2006-03-26 14:58:00.000000000 +0200
++++ local/sound/isa/Kconfig	2006-03-26 14:58:24.000000000 +0200
 @@ -11,6 +11,15 @@ config SND_CS4231_LIB
          tristate
          select SND_PCM
@@ -283,8 +241,8 @@ Index: local/sound/isa/Kconfig
  	depends on SND && PNP && ISA
 Index: local/sound/isa/Makefile
 ===================================================================
---- local.orig/sound/isa/Makefile	2006-03-27 16:53:56.000000000 +0200
-+++ local/sound/isa/Makefile	2006-03-27 16:54:25.000000000 +0200
+--- local.orig/sound/isa/Makefile	2006-03-26 14:58:00.000000000 +0200
++++ local/sound/isa/Makefile	2006-03-26 14:58:24.000000000 +0200
 @@ -3,6 +3,7 @@
  # Copyright (c) 2001 by Jaroslav Kysela <perex@suse.cz>
  #
@@ -303,8 +261,8 @@ Index: local/sound/isa/Makefile
  obj-$(CONFIG_SND_CMI8330) += snd-cmi8330.o
 Index: local/Documentation/sound/alsa/ALSA-Configuration.txt
 ===================================================================
---- local.orig/Documentation/sound/alsa/ALSA-Configuration.txt	2006-03-27 16:53:56.000000000 +0200
-+++ local/Documentation/sound/alsa/ALSA-Configuration.txt	2006-03-27 16:54:25.000000000 +0200
+--- local.orig/Documentation/sound/alsa/ALSA-Configuration.txt	2006-02-27 19:22:00.000000000 +0100
++++ local/Documentation/sound/alsa/ALSA-Configuration.txt	2006-03-26 23:14:06.000000000 +0200
 @@ -120,6 +120,34 @@ Prior to version 0.9.0rc4 options had a 
      enable  	- enable card
  		- Default: enabled, for PCI and ISA PnP cards
@@ -341,7 +299,7 @@ Index: local/Documentation/sound/alsa/ALSA-Configuration.txt
    ------------------
  
 
---------------010206030008070107010007--
+--------------050602040902090108010905--
 
 
 -------------------------------------------------------
