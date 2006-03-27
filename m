@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001962]: /usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error
-Date: Mon, 27 Mar 2006 04:19:44 +0200
-Message-ID: <fe8dce40c6941ebdd4605e963d4d0a16@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: nm256: register strangeness related to lockups
+Date: Sun, 26 Mar 2006 21:26:31 -0500
+Message-ID: <1143426392.1792.167.camel@mindpipe>
+References: <20060326182607.GB11408@hermes.uziel.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 550B81A9
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 04:19:44 +0200 (MEST)
+In-Reply-To: <20060326182607.GB11408@hermes.uziel.local>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,86 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Christian Trefzer <ctrefzer@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net, lkml <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2006-03-26 at 20:26 +0200, Christian Trefzer wrote:
+> Hi folks,
+> 
+> in the process of analyzing the frequent crashes during the snd-nm256
+> module insertion I stumbled across the following register values
+> (reading 32bit words at a time in a loop with pcitweak):
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1962> 
-======================================================================
-Reported By:                lnthai2002
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1962
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     assigned
-Distribution:               centos
-Kernel Version:             2.6.9-34
-======================================================================
-Date Submitted:             03-24-2006 22:52 CET
-Last Modified:              03-27-2006 04:19 CEST
-======================================================================
-Summary:                   
-/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error
-Description: 
-compiling alsa-driver on centos 4.2(RH EL) for Sound Blaster Live! 24bit
-with the command:
-./configure --with-cards=ca0106 --with-sequencer=yes;make
-give error:
+Just to make sure, you are testing with 1.0.11-rc4 or CVS?  The nm256
+lockup problems were thought to be fixed.  Or is this a different bug?
 
-make[1]: Entering directory
-`/usr/src/kernels/2.6.9-34.106.unsupported-i686'
-  CC [M]  /usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.o
-/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error: syntax
-error before "snd_pcm_link_rwlock"
-/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: warning: type
-defaults to `int' in declaration of `snd_pcm_link_rwlock'
-/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error:
-conflicting types for 'snd_pcm_link_rwlock'
-/usr/src/alsa/alsa-driver-1.0.9rc4a/include/sound/pcm.h:484: error:
-previous declaration of 'snd_pcm_link_rwlock' was here
-/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error:
-conflicting types for 'snd_pcm_link_rwlock'
-/usr/src/alsa/alsa-driver-1.0.9rc4a/include/sound/pcm.h:484: error:
-previous declaration of 'snd_pcm_link_rwlock' was here
-/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error:
-incompatible types in initialization
-/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: error:
-initializer element is not constant
-/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.c:69: warning: data
-definition has no type or storage class
-make[4]: *** [/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/pcm_native.o]
-Error 1
-make[3]: *** [/usr/src/alsa/alsa-driver-1.0.9rc4a/acore] Error 2
-make[2]: *** [_module_/usr/src/alsa/alsa-driver-1.0.9rc4a] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory
-`/usr/src/kernels/2.6.9-34.106.unsupported-i686'
-make: *** [compile] Error 2
-
-How can i fix this problem?
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 03-27-06 04:19 
-----------------------------------------------------------------------
-Try a newer ALSA, 1.0.9rc4a is way too old to debug
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-24-06 22:52 lnthai2002     New Issue                                    
-03-24-06 22:52 lnthai2002     Distribution              => centos          
-03-24-06 22:52 lnthai2002     Kernel Version            => 2.6.9-34        
-03-27-06 04:19 rlrevell       Note Added: 0008984                          
-======================================================================
-
+Lee
 
 
 
