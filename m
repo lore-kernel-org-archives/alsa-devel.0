@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001954]: Patch from bug 0001895 hasn't been put in CVS yet
-Date: Mon, 27 Mar 2006 06:44:28 +0200
-Message-ID: <b1280f0c015738fb05b0dd0dbcde446c@bugtrack.alsa-project.org>
+Date: Mon, 27 Mar 2006 06:49:18 +0200
+Message-ID: <2ca14ccab72d8ff246702a5a5e1deb6a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1879B1D2
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 06:44:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9159D1D2
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 06:49:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora 5 x86_64
 Kernel Version:             2.6.15-1.2054_FC5
 ======================================================================
 Date Submitted:             03-23-2006 07:17 CET
-Last Modified:              03-27-2006 06:44 CEST
+Last Modified:              03-27-2006 06:49 CEST
 ======================================================================
 Summary:                    Patch from bug 0001895 hasn't been put in CVS yet
 Description: 
@@ -54,19 +54,22 @@ be working fine now. My mobo is an Asus A8N-VM, same chip discussed in bug
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-26-06 01:54 
-----------------------------------------------------------------------
-Thanks.
-
-Also, try the patch in #1596, and choose model "3stack".
-Basically it's more suitable for a mobo.  If it works, I'll patch it in.
-
-----------------------------------------------------------------------
  johnfivealive - 03-27-06 06:44 
 ----------------------------------------------------------------------
 tiwai, I recompiled/reinstalled the module with the patch from 1596 and
 changed to model=3stack, rebooted and sound is still working just fine.
 Thanks! I tested with some MP3s and the sound is quite good too.
+
+----------------------------------------------------------------------
+ johnfivealive - 03-27-06 06:49 
+----------------------------------------------------------------------
+There seems to be one small problem now, the GNOME Volume Control mixer
+seems to now be selecting the Headphone channel as the main volume control
+instead of the Front channel, which appears to be the one which controls
+the main volume. The Volume Control program seems to be selecting the
+correct main channel (Front) with model=laptop, not sure what the
+discrepancy here is and how I would go about correcting it. Maybe a
+setting in the driver could correct this?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -81,6 +84,7 @@ Date Modified  Username       Field                    Change
 03-24-06 06:18 johnfivealive  Note Added: 0008913                          
 03-26-06 01:54 tiwai          Note Added: 0008962                          
 03-27-06 06:44 johnfivealive  Note Added: 0008990                          
+03-27-06 06:49 johnfivealive  Note Added: 0008991                          
 ======================================================================
 
 
