@@ -1,13 +1,11 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Changes over dmix: 1.0.11rc4 and future
-Date: Wed, 29 Mar 2006 00:00:42 +0100
-Message-ID: <4429C01A.7040608@superbug.co.uk>
-References: <s5h64lzalr0.wl%tiwai@suse.de>
+Subject: ALSA sample rate conversion and general performance improvements.
+Date: Wed, 29 Mar 2006 00:24:20 +0100
+Message-ID: <4429C5A4.7@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h64lzalr0.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,75 +15,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Hi,
-> 
-> it looks like the 1.0.11rc4 announcement isn't sent out, so here I'd
-> like to explain what has been changed over dmix recently.
-> 
-> As of 1.0.11rc4, dmix accepts more flexible buffer sizes than the
-> earlier versions did.  The buffer size is basically arbitrary.  The
-> only restriction is that it's aligned to the period size, and the
-> minimal periods are two.
-> 
-> With this change, some applications have positive influences, and some
-> have negative.  The regression, for example with speaker-test, happens
-> because there was no upper limit of buffer size.  It's already fixed
-> in the CVS version (by setting max periods = 1024).
-> 
-> If you have a problem with dmix what didn't happen ago, try to define
-> 
-> 	defaults.pcm.dmix_variable_buffer false
-> 
-> in ~/.asoundrc.
-> 
-> Also, you can try ALSA CVS version.  It includes more fixes about the
-> dmix.  Or wait for ALSA 1.0.11-final, which (hopefully) will be
-> released soon.
-> 
-> 
-> So far so good.  Now, about the future changes.
-> 
-> Currently, dmix forks a resource server to share the opened file
-> descriptor.  (Don't misunderstand, it's not a mixing server but just
-> manages the file descriptor.)  This behavior seems causing troubles in
-> some applications.  I've been trying to reduce this mess.
-> 
-> The below (first one) is a patch to add O_APPEND support to PCM.  If a
-> PCM is opened with O_APPEND, it shares the alreay opened stream.
-> And the second patch is to alsa-lib to use this new O_APPEND feature.
-> Since the resource can be shared via O_APPEND, we don't need dmix
-> server.
-> 
-> I'm not sure whether it's a 2.6.17 material or a post-2.6.17.  Maybe
-> we need a bit discussion whether this O_APPEND hack is right or not.
-> 
-> Beware that the patch is against the very latest CVS version.  The
-> anon tree doesn't have it yet right now.
-> 
-> Any comments or test reports are appreciated.
-> 
-> 
-> For further implementation, we could get rid of shared memory by a
-> small addition to the kernel, too.  At least, two different things
-> would be needed:
-> 
-> - Missing GET_HW_PARAMS and GET_SW_PARAMS ioctls
->   (Why don't we have them?)
-> - Anonymous mmap for the shared sum area of dmix
-> 
-> This requires more detailed discussion, I think.
-> 
-> 
-> Takashi
+Hi,
 
-This all sounds good. I will test the dmix buffer size improvement.
-I remember asking for this some time ago.
-This might fix problems people are having with Doom3 and the like.
+I have had some conversations with various people regarding some general
+problems some audio developers have with the current ALSA sound model.
+One of the biggest problems with the current ALSA model is the sample
+rate converters. When discussing them here some time ago, the problem
+centered around the need for a timer interrupt being needed for the
+application period boundaries, where the hardware might be running at
+48000Hz, and the application is trying to play a 44100Hz PCM stream.
+This is essentially needed so that the poll() calls work in the
+application correctly.
+
+Here is an idea on how to fix it and also slightly improve performance.
+Some general aims:
+1) any ioport access to the sound card is slow and should be avoided
+whenever possible.
+2) where to get the 44100Hz timer from if the hardware is doing 48000Hz.
+
+What about doing the following?:
+We implement a general timer in the alsa core based on something like
+gettimeofday(). I.e A high resolution timer.
+Each time a period interrupt happens, the current hw pointer is read,
+and recorded along with the current value of the timer.
+This could be used a bit like NTP to correct the generally timer rate.
+This gives us a general high resolution timer corrected to mirror the
+PCM clock on the sound card.
+Then, from this high resolution timer, we could derive any rate
+interrupt we need for really excellent sample rate conversion, and sub
+sample accurate DAC/ADC positioning.
+One could then read the DAC/ADC positioning really quickly by just
+reading the high resolution timer, instead of accessing IO Ports on the
+sound card hardware.
+This would also be a fairly minor change, as none of the current kernel
+sound card hw drivers would need changing. We would just have to
+slightly modify the period_elapsed callback to do a gettimeofday() call
+as well as it's current hw_pointer read.
+
+If we then made the correction factor for the high resolution timer
+available to user space, user space would then not even need to read the
+current hw position, as it could perfectly predict it itself using the
+gettimeofday() and correction factor.
+
+This would reduce the amount of calls to the read_hw_pointer function in
+the low level sound card hardware driver, and therefore improve performance.
+
+Any comments?
 
 James
 
