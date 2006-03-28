@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [Alsa-user] Mantis: APPLICATION ERROR #401
-Date: Mon, 27 Mar 2006 20:42:27 -0500
-Message-ID: <1143510150.1792.344.camel@mindpipe>
-References: <20060327232446.4435e280.pochini@shiny.it>
-	 <1143496562.1792.289.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001970]: Applied dff from 1596 fixed high pitched whine out of left chael but on shutdown crashes computer
+Date: Tue, 28 Mar 2006 04:16:20 +0200
+Message-ID: <ee6c48abaf1c062466bdac6dc33e4ebf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1143496562.1792.289.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAE651A9
+	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2006 04:16:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,45 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-03-27 at 16:56 -0500, Lee Revell wrote:
-> On Mon, 2006-03-27 at 23:24 +0200, Giuliano Pochini wrote:
-> > I tried to add a note to the bug #1850. It seems lRevell wrote another note
-> > while I was writing mine. When I clicked "add note" Mantis replied:
-> > 
-> > 
-> > APPLICATION ERROR #401
-> > 
-> > Database query failed. Error received from database was #1062: Duplicate
-> > entry '8994' for key 1 for the query: INSERT INTO mantis_bugnote_text_table
-> > [...]
-> > 
-> > 
-> > Revell's note has been added. I tried to log out and in a few times, but
-> > I can't add a note the #1850 anymore.
-> 
-> Nice, you found a Mantis bug!  Looks like a missing LOCK TABLE ;-)
-> 
-> Redirecting to -devel list.
-> 
 
-Argh - it's now impossible to add notes to ANY bug.  I got this trying
-to close #1969:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1970> 
+======================================================================
+Reported By:                dlm1065
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1970
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             03-28-2006 04:16 CEST
+Last Modified:              03-28-2006 04:16 CEST
+======================================================================
+Summary:                    Applied dff from 1596 fixed high pitched whine out
+of left chael but on shutdown crashes computer
+Description: 
+I made an ebuild adding the diff from
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1596 to get d of the
+whine.
 
-Database query failed. Error received from database was #1062: Duplicate
-entry '8994' for key 1 for the query: INSERT INTO
-mantis_bugnote_text_table
-( note )
-VALUES
-( 'Kernel 2.6.16 already comes with ALSA 1.0.11-rc2, compiling an older
-ALSA against a newer kernel has never been supported. If there\'s some
-bug in 1.0.11-rc2 that is not present in 1.0.10, you should file a bug
-report on it.' )
+Ebuild fixes whine but shutdown does NOT release a lock on some resource
+and comp locks up
+======================================================================
 
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-28-06 04:16 dlm1065        New Issue                                    
+03-28-06 04:16 dlm1065        File Added: alsa-driver.tar.gz                    
+03-28-06 04:16 dlm1065        Distribution              => Gentoo          
+03-28-06 04:16 dlm1065        Kernel Version            => 2.6.16          
+======================================================================
+
 
 
 
