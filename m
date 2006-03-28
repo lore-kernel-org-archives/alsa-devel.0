@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001971]: Some elements incorrectly have capture flags
-Date: Tue, 28 Mar 2006 12:16:54 +0200
-Message-ID: <35445fa6dc1590de263d66aafa27fefc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001972]: can not be maked
+Date: Tue, 28 Mar 2006 12:40:03 +0200
+Message-ID: <dc3aac1deda3f7469d6e1a8a884d007a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE4D119F
-	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2006 12:16:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2300C1A0
+	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2006 12:40:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1972> 
 ======================================================================
-Reported By:                pzad
-Assigned To:                
+Reported By:                shadowfox
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1971
-Category:                   simple mixer
+Project:                    ALSA - driver
+Issue ID:                   1972
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Mandriva 2006
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             03-28-2006 12:16 CEST
-Last Modified:              03-28-2006 12:16 CEST
+Date Submitted:             03-28-2006 12:40 CEST
+Last Modified:              03-28-2006 12:40 CEST
 ======================================================================
-Summary:                    Some elements incorrectly have capture flags
+Summary:                    can not be maked
 Description: 
-Some elemnts have capture flags even they have nothing to do with capture.
-This will duplicate control in alsamixer - view ALL.
-
-On VIA8233A + ALC650:
-
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 1 [7%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
-
-On Audigy 1:
-Simple mixer control 'Bass',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 23 [58%]
-  Front Right: 23 [58%]
-Simple mixer control 'Treble',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 27 [68%]
-  Front Right: 27 [68%]
-
+make -C /lib/modules/2.6.16/source
+SUBDIRS=/usr/local/src/alsa/alsa-driver-1.0.10 O=/lib/modules/2.6.16/build
+modules
+make[1]: Entering directory `/usr/src/kernel-custom/linux-2.6.16'
+  CC [M]  /usr/local/src/alsa/alsa-driver-1.0.10/acore/hwdep.o
+In file included from
+/usr/local/src/alsa/alsa-driver-1.0.10/include/adriver.h:770,
+                 from
+/usr/local/src/alsa/alsa-driver-1.0.10/include/sound/driver.h:42,
+                 from
+/usr/local/src/alsa/alsa-driver-1.0.10/acore/hwdep.c:22:
+include/linux/pci.h:460: error: syntax error before numeric constant
+make[4]: *** [/usr/local/src/alsa/alsa-driver-1.0.10/acore/hwdep.o] Error
+1
+make[3]: *** [/usr/local/src/alsa/alsa-driver-1.0.10/acore] Error 2
+make[2]: *** [_module_/usr/local/src/alsa/alsa-driver-1.0.10] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/kernel-custom/linux-2.6.16'
+make: *** [compile] Error 2
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-28-06 12:16 pzad           New Issue                                    
+03-28-06 12:40 shadowfox      New Issue                                    
+03-28-06 12:40 shadowfox      File Added: error.log                        
+03-28-06 12:40 shadowfox      Distribution              => Mandriva 2006   
+03-28-06 12:40 shadowfox      Kernel Version            => 2.6.16          
 ======================================================================
 
 
