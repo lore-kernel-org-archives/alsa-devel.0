@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001969]: /acore/hwdep.o Error 1
-Date: Tue, 28 Mar 2006 03:10:24 +0200
-Message-ID: <ef70c14e9989a48112b685c0598e1b32@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: [Alsa-user] Mantis: APPLICATION ERROR #401
+Date: Mon, 27 Mar 2006 20:42:27 -0500
+Message-ID: <1143510150.1792.344.camel@mindpipe>
+References: <20060327232446.4435e280.pochini@shiny.it>
+	 <1143496562.1792.289.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DD1F1A1
-	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2006 03:10:24 +0200 (MEST)
+In-Reply-To: <1143496562.1792.289.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-03-27 at 16:56 -0500, Lee Revell wrote:
+> On Mon, 2006-03-27 at 23:24 +0200, Giuliano Pochini wrote:
+> > I tried to add a note to the bug #1850. It seems lRevell wrote another note
+> > while I was writing mine. When I clicked "add note" Mantis replied:
+> > 
+> > 
+> > APPLICATION ERROR #401
+> > 
+> > Database query failed. Error received from database was #1062: Duplicate
+> > entry '8994' for key 1 for the query: INSERT INTO mantis_bugnote_text_table
+> > [...]
+> > 
+> > 
+> > Revell's note has been added. I tried to log out and in a few times, but
+> > I can't add a note the #1850 anymore.
+> 
+> Nice, you found a Mantis bug!  Looks like a missing LOCK TABLE ;-)
+> 
+> Redirecting to -devel list.
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1969> 
-======================================================================
-Reported By:                shadowfox
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1969
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva 2006
-Kernel Version:             2.6.16
-======================================================================
-Date Submitted:             03-28-2006 03:10 CEST
-Last Modified:              03-28-2006 03:10 CEST
-======================================================================
-Summary:                    /acore/hwdep.o Error 1
-Description: 
-make[4]: *** [/usr/local/src/alsa/alsa-driver-1.0.10/acore/hwdep.o] Error
-1
-make[3]: *** [/usr/local/src/alsa/alsa-driver-1.0.10/acore] Error 2
-make[2]: *** [_module_/usr/local/src/alsa/alsa-driver-1.0.10] Error 2
-make[1]: *** [modules] Error 2
-make: *** [compile] Error 2
+Argh - it's now impossible to add notes to ANY bug.  I got this trying
+to close #1969:
 
-======================================================================
+Database query failed. Error received from database was #1062: Duplicate
+entry '8994' for key 1 for the query: INSERT INTO
+mantis_bugnote_text_table
+( note )
+VALUES
+( 'Kernel 2.6.16 already comes with ALSA 1.0.11-rc2, compiling an older
+ALSA against a newer kernel has never been supported. If there\'s some
+bug in 1.0.11-rc2 that is not present in 1.0.10, you should file a bug
+report on it.' )
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-28-06 03:10 shadowfox      New Issue                                    
-03-28-06 03:10 shadowfox      File Added: error.log                        
-03-28-06 03:10 shadowfox      Distribution              => Mandriva 2006   
-03-28-06 03:10 shadowfox      Kernel Version            => 2.6.16          
-======================================================================
-
+Lee
 
 
 
