@@ -1,17 +1,12 @@
-From: "Copulating T. Votary" <qobi@godiamond.net>
-Subject: Cum like a porn actor
-Date: Mon, 27 Mar 2006 21:33:38 -0600
-Message-ID: <7579248894.20060327213338@godiamond.net>
+From: Andreas Mohr <andim2@users.sourceforge.net>
+Subject: [PATCH] maestro3.c: fix BUG, optimization
+Date: Tue, 28 Mar 2006 09:58:33 +0200
+Message-ID: <20060328075833.GA28413@rhlx01.fht-esslingen.de>
+Reply-To: andi@lisas.de
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----------9CAA03F352BB8E0"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from -1213627888 (c-68-48-183-28.hsd1.md.comcast.net [68.48.183.28])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E37291ED
-	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2006 05:41:06 +0200 (MEST)
-Received: from godiamond.net (-1213798528 [-1213797648])
-	by c-68-48-183-28.hsd1.md.comcast.net (Qmailv1) with ESMTP id 5E0F78E46B
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2006 21:33:38 -0600
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,134 +16,202 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hi,
 
-------------9CAA03F352BB8E0
-Content-Type: multipart/related;
-	type="multipart/alternative";
-	boundary="----------E350565364BF2F5"
+- fix brown-paper-bag locking bug (lock() / return / unlock())
+- improve central function snd_m3_update_ptr()
+  (avoid expensive integer divisions)
+- add cpu_relax() to busy-wait I/O loop as recommended
+  (does this require special macro support in ALSA for older kernels??)
+- constify several structs
+- spelling updates
 
-------------E350565364BF2F5
-Content-Type: multipart/alternative;
-	boundary="----------E81821B15030BBE"
+Patch done and hardware-tested on 2.6.16-ck1, rediffed to ALSA CVS.
 
-------------E81821B15030BBE
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Signed-off-by: Andreas Mohr <andi@lisas.de>
 
-According to the National Institute of Environmental Health Sciences (NIEHS), human health and human disease result from three interactive elements: 
-environmental factors individual susceptibility age
-Environmental medicine is the healthcare specialty concerned with human illnesses or dysfunctions that result from environmental factors.
-Environmental medicine specialists participate in a wide range of activities in their quest for answers regarding how the environment affects our health. 
-For example, among many other topics, the NIEHS is currently studying:
-cancers, breast and testicular 
-lead poisoning 
-birth and developmental defects 
-agricultural pollution 
-neurologic disorders 
-sterility 
-ways to replace animals as subjects in research
-Environmental medicine departments or programs are found in large medical centers throughout the United States.
-Some of the many services they offer include:
-local, state, or national disease-prevention programs
-epidemiological studies and research
-distribution of standards, guidelines, and recommendations
-partnering with other organizations, such as health departments and environmental agencies, to help prevent environmental disease 
-
-------------E81821B15030BBE
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
-
-<html>
-<body>
-<p><img src="cid:1.gif"><br>
-    <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://bkmcfijl.petsmonsters.com/?adeghfijlxwnosybkmzsmc">VISIT THE  SITE</a></b></p>
-<p>&nbsp;</p>
-<p><font size="1">According to the National Institute of Environmental Health Sciences (NIEHS), human health and human disease result from three interactive elements: <br>
-  environmental factors individual susceptibility age<br>
-  Environmental medicine is the healthcare specialty concerned with human illnesses or dysfunctions that result from environmental factors.<br>
-  Environmental medicine specialists participate in a wide range of activities in their quest for answers regarding how the environment affects our health. <br>
-  For example, among many other topics, the NIEHS is currently studying:<br>
-  cancers, breast and testicular <br>
-  lead poisoning <br>
-  birth and developmental defects <br>
-  agricultural pollution <br>
-  neurologic disorders <br>
-  sterility <br>
-  ways to replace animals as subjects in research<br>
-  Environmental medicine departments or programs are found in large medical centers throughout the United States.<br> 
-  Some of the many services they offer include:<br>
-  local, state, or national disease-prevention programs<br>
-  epidemiological studies and research<br>
-  distribution of standards, guidelines, and recommendations<br>
-  partnering with other organizations, such as health departments and environmental agencies, to help prevent environmental disease
-</font></p>
-</body>
-</html>
-
-------------E81821B15030BBE--
-
-------------E350565364BF2F5
-Content-Type: image/gif; name="1.gif"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="1.gif"
-Content-ID: <1.gif>
-
-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
-
-------------E350565364BF2F5--
-
-------------9CAA03F352BB8E0--
-
-
+Index: alsa-kernel/pci/maestro3.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/maestro3.c,v
+retrieving revision 1.88
+diff -u -r1.88 maestro3.c
+--- alsa-kernel/pci/maestro3.c	24 Mar 2006 14:35:01 -0000	1.88
++++ alsa-kernel/pci/maestro3.c	28 Mar 2006 07:47:44 -0000
+@@ -830,8 +830,8 @@
+ 	struct snd_pcm *pcm;
+ 
+ 	struct pci_dev *pci;
+-	struct m3_quirk *quirk;
+-	struct m3_hv_quirk *hv_quirk;
++	const struct m3_quirk *quirk;
++	const struct m3_hv_quirk *hv_quirk;
+ 
+ 	int dacs_active;
+ 	int timer_users;
+@@ -891,7 +891,7 @@
+ 
+ MODULE_DEVICE_TABLE(pci, snd_m3_ids);
+ 
+-static struct m3_quirk m3_quirk_list[] = {
++static const struct m3_quirk m3_quirk_list[] = {
+ 	/* panasonic CF-28 "toughbook" */
+ 	{
+ 		.name = "Panasonic CF-28",
+@@ -949,7 +949,7 @@
+ };
+ 
+ /* These values came from the Windows driver. */
+-static struct m3_hv_quirk m3_hv_quirk_list[] = {
++static const struct m3_hv_quirk m3_hv_quirk_list[] = {
+ 	/* Allegro chips */
+ 	{ 0x125D, 0x1988, 0x0E11, 0x002E, HV_CTRL_ENABLE | HV_BUTTON_FROM_GD, 0 },
+ 	{ 0x125D, 0x1988, 0x0E11, 0x0094, HV_CTRL_ENABLE | HV_BUTTON_FROM_GD, 0 },
+@@ -1360,7 +1360,7 @@
+ }
+ 
+ 
+-static struct play_vals {
++static const struct play_vals {
+ 	u16 addr, val;
+ } pv[] = {
+ 	{CDATA_LEFT_VOLUME, ARB_VOLUME},
+@@ -1427,7 +1427,7 @@
+ /*
+  *    Native record driver 
+  */
+-static struct rec_vals {
++static const struct rec_vals {
+ 	u16 addr, val;
+ } rv[] = {
+ 	{CDATA_LEFT_VOLUME, ARB_VOLUME},
+@@ -1597,12 +1597,26 @@
+ 	if (! s->running)
+ 		return;
+ 
+-	hwptr = snd_m3_get_pointer(chip, s, subs) % s->dma_size;
+-	diff = (s->dma_size + hwptr - s->hwptr) % s->dma_size;
++	hwptr = snd_m3_get_pointer(chip, s, subs);
++
++	/* try to avoid expensive modulo divisions */
++	if (hwptr >= s->dma_size)
++		hwptr %= s->dma_size;
++
++	diff = s->dma_size + hwptr - s->hwptr;
++	if (diff >= s->dma_size)
++		diff %= s->dma_size;
++
+ 	s->hwptr = hwptr;
+ 	s->count += diff;
++
+ 	if (s->count >= (signed)s->period_size) {
+-		s->count %= s->period_size;
++
++		if (s->count < 2 * (signed)s->period_size)
++			s->count -= (signed)s->period_size;
++		else
++			s->count %= s->period_size;
++
+ 		spin_unlock(&chip->reg_lock);
+ 		snd_pcm_period_elapsed(subs);
+ 		spin_lock(&chip->reg_lock);
+@@ -1941,6 +1955,7 @@
+ 	do {
+ 		if (! (snd_m3_inb(chip, 0x30) & 1))
+ 			return 0;
++		cpu_relax();
+ 	} while (i-- > 0);
+ 
+ 	snd_printk(KERN_ERR "ac97 serial bus busy\n");
+@@ -1952,16 +1967,18 @@
+ {
+ 	struct snd_m3 *chip = ac97->private_data;
+ 	unsigned long flags;
+-	unsigned short data;
++	unsigned short data = 0xffff;
+ 
+ 	if (snd_m3_ac97_wait(chip))
+-		return 0xffff;
++		goto fail;
+ 	spin_lock_irqsave(&chip->ac97_lock, flags);
+ 	snd_m3_outb(chip, 0x80 | (reg & 0x7f), CODEC_COMMAND);
+ 	if (snd_m3_ac97_wait(chip))
+-		return 0xffff;
++		goto fail_unlock;
+ 	data = snd_m3_inw(chip, CODEC_DATA);
++fail_unlock:
+ 	spin_unlock_irqrestore(&chip->ac97_lock, flags);
++fail:
+ 	return data;
+ }
+ 
+@@ -2120,7 +2137,7 @@
+  * DSP Code images
+  */
+ 
+-static u16 assp_kernel_image[] __devinitdata = {
++static const u16 assp_kernel_image[] __devinitdata = {
+     0x7980, 0x0030, 0x7980, 0x03B4, 0x7980, 0x03B4, 0x7980, 0x00FB, 0x7980, 0x00DD, 0x7980, 0x03B4, 
+     0x7980, 0x0332, 0x7980, 0x0287, 0x7980, 0x03B4, 0x7980, 0x03B4, 0x7980, 0x03B4, 0x7980, 0x03B4, 
+     0x7980, 0x031A, 0x7980, 0x03B4, 0x7980, 0x022F, 0x7980, 0x03B4, 0x7980, 0x03B4, 0x7980, 0x03B4, 
+@@ -2207,7 +2224,7 @@
+  * Mini sample rate converter code image
+  * that is to be loaded at 0x400 on the DSP.
+  */
+-static u16 assp_minisrc_image[] __devinitdata = {
++static const u16 assp_minisrc_image[] __devinitdata = {
+ 
+     0xBF80, 0x101E, 0x906E, 0x006E, 0x8B88, 0x6980, 0xEF88, 0x906F, 0x0D6F, 0x6900, 0xEB08, 0x0412, 
+     0xBC20, 0x696E, 0xB801, 0x906E, 0x7980, 0x0403, 0xB90E, 0x8807, 0xBE43, 0xBF01, 0xBE47, 0xBE41, 
+@@ -2250,7 +2267,7 @@
+  */
+ 
+ #define MINISRC_LPF_LEN 10
+-static u16 minisrc_lpf[MINISRC_LPF_LEN] __devinitdata = {
++static const u16 minisrc_lpf[MINISRC_LPF_LEN] __devinitdata = {
+ 	0X0743, 0X1104, 0X0A4C, 0XF88D, 0X242C,
+ 	0X1023, 0X1AA9, 0X0B60, 0XEFDD, 0X186F
+ };
+@@ -2357,7 +2374,7 @@
+ 	 */
+ 
+ 	/*
+-	 * align instance address to 256 bytes so that it's
++	 * align instance address to 256 bytes so that its
+ 	 * shifted list address is aligned.
+ 	 * list address = (mem address >> 1) >> 7;
+ 	 */
+@@ -2646,8 +2663,8 @@
+ {
+ 	struct snd_m3 *chip;
+ 	int i, err;
+-	struct m3_quirk *quirk;
+-	struct m3_hv_quirk *hv_quirk;
++	const struct m3_quirk *quirk;
++	const struct m3_hv_quirk *hv_quirk;
+ 	static struct snd_device_ops ops = {
+ 		.dev_free =	snd_m3_dev_free,
+ 	};
+@@ -2842,12 +2859,12 @@
+ 	}
+ 
+ #if 0 /* TODO: not supported yet */
+-	/* TODO enable midi irq and i/o */
++	/* TODO enable MIDI IRQ and I/O */
+ 	err = snd_mpu401_uart_new(chip->card, 0, MPU401_HW_MPU401,
+ 				  chip->iobase + MPU401_DATA_PORT, 1,
+ 				  chip->irq, 0, &chip->rmidi);
+ 	if (err < 0)
+-		printk(KERN_WARNING "maestro3: no midi support.\n");
++		printk(KERN_WARNING "maestro3: no MIDI support.\n");
+ #endif
+ 
+ 	pci_set_drvdata(pci, card);
+-- 
+GNU/Linux. It's not the software that's free, it's you.
 
 
 -------------------------------------------------------
