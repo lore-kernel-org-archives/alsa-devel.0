@@ -1,19 +1,14 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: pcm hw parameters?
-Date: Tue, 28 Mar 2006 14:11:49 +0200
-Message-ID: <1143547909.13615.26.camel@localhost>
-References: <1143206387.28247.22.camel@localhost>
-	 <s5hodzrew57.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001973]: No sound after userspace doing something
+Date: Tue, 28 Mar 2006 14:19:54 +0200
+Message-ID: <d0a84e8e35ab55cd9e47797633a3ca32@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-qvMbaSx+5/H76ODcfFhm"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 719DE1AF
-	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2006 14:11:57 +0200 (MEST)
-Received: from sipsolutions.net (unknown [213.151.39.204])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 45625957F2
-	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2006 14:11:57 +0200 (MEST)
-In-Reply-To: <s5hodzrew57.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB9801AF
+	for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2006 14:19:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,49 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-qvMbaSx+5/H76ODcfFhm
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1973> 
+======================================================================
+Reported By:                alonbl
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1973
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             03-28-2006 14:19 CEST
+Last Modified:              03-28-2006 14:19 CEST
+======================================================================
+Summary:                    No sound after userspace doing something
+Description: 
+I upgraded 2.6.15 to 2.6.16.
+All worked OK in 2.6.15.
 
-On Mon, 2006-03-27 at 17:37 +0200, Takashi Iwai wrote:
+After boot there is no sound and no errors.
+As root aplay do not work.
+Stop start alsa/unload load modules does not help.
 
-> It's hard to restrict parameters on demands (although theoretically
-> it's possible).  We usually provide two different devices, one for
-> the normal i/o and another for the digital i/o, to avoid such
-> conflicts.
+BUT!!! After executing alsaconf sound turned on (Until next reboot...)
 
-I'm doing something like that now... Mind taking a look at i2sbus-pcm.c
-in my git repo http://johannes.sipsolutions.net/snd-aoa.git/ ?
+Now... The strange thing...
+After login into KDE with REGULAR user, sound stops working.
+Doing alsaconf magic (WHILE in KDE session) and restart sound in KDE turns
+sound on again...
 
-johannes
+Logut from KDE, relogin... No sound... alsaconf again works...
 
---=-qvMbaSx+5/H76ODcfFhm
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+I've tried the in kernel ASLA and the same...
+I've tried the user mode 1.0.10 and the same...
 
------BEGIN PGP SIGNATURE-----
+Can anyone confirm?
+I use intel8x0 on IBM T42.
 
-iQIVAwUARCkoA6Vg1VMiehFYAQKrVBAAuM7vxWfLOqzNps3P1aU+rtlK4Q8z1GFP
-ekbluLqOmVW5GwBfJ/kL6N2muEZ2hJNNClLgKz5G8YNtsfnG/pzF4XP4ThJDHWGl
-7taL74MkSidd/3f7KI8cv8WuujpLyg4ofOS0D5prkX2HjEgZF3QUX5P9XeFRTkZa
-XVfUK9SPePccT7Ld+za7sFbSoAOGCy4IIQvI1gdFZchilRmx01sh4wGMsh2K2GJa
-9kY4/XXRM90Vzu0hue5hCvdle+O1LNUh6sGx78LK04nr/K9Oc2U5FPVKP5Pbqcu2
-RvQfwN25OMatd10EeupFytqIxakTAeig9BeeVPj6zWx5vX92tsHpXInYjbkBpWLR
-SIyGdBLwq/ebKvF4M+k/kU42rbxk84d93ugKVXDU7FLF5HhU0UCJ1ZflNpQOj/qy
-ALpN7IgJEEc0Gy6RW4pFluJ3wXYtaGzDEwpPYJteBQXAUrED8w4BYTc+sTXPGx4Q
-omibqNStY4quULrwgu6zrD4k6nxOSIruTm00dPZirZ8Xqb2Gx563NBv0XlCfVKY/
-EdQ01IuSB8nzroeMOCEbzX55cIsoDAAfk6TWBp9e+aUSG3SGLAnQHh6wIJTIweV+
-2JJskc8cGtzSYLd4XVPH185VsHTGIqbiaICyhhPIqOePDMcoA/nlMMmOgrlRpIdc
-C/UhQ8ZzHM8=
-=hgpx
------END PGP SIGNATURE-----
+I am not sure which component this problem relate to... But it seems like
+the kernel is the difference.
+======================================================================
 
---=-qvMbaSx+5/H76ODcfFhm--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-28-06 14:19 alonbl         New Issue                                    
+03-28-06 14:19 alonbl         Distribution              => gentoo          
+03-28-06 14:19 alonbl         Kernel Version            => 2.6.16          
+======================================================================
+
 
 
 
