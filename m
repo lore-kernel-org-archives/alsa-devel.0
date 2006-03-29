@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001545]: Flash player hangs in Firefox when using aoss
-Date: Wed, 29 Mar 2006 19:20:14 +0200
-Message-ID: <7f8758606aadaabac8f97d21c2bd86a7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001940]: enemy territory has no sound on ICE1724
+Date: Wed, 29 Mar 2006 19:24:21 +0200
+Message-ID: <30bc1a74be72734d8deda6d4af165d88@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7CAF18B
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:20:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC5B718B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:24:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1545> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1940> 
 ======================================================================
-Reported By:                smagoun
+Reported By:                oscar
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1545
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1940
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Resolution:                 fixed
+Distribution:               Debian
+Kernel Version:             2.6.15 (Debian')
+Resolution:                 duplicate
+Duplicate:                  1634
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-11-2005 21:30 CET
-Last Modified:              03-29-2006 19:20 CEST
+Date Submitted:             03-18-2006 00:28 CET
+Last Modified:              03-29-2006 19:24 CEST
 ======================================================================
-Summary:                    Flash player hangs in Firefox when using aoss
+Summary:                    enemy territory has no sound on ICE1724
 Description: 
-I'm trying to get aoss to work with Firefox 1.5b2 and the Flash 7 plugin on
-an XScale (PXA 270) running Linux 2.6.13.4. Problem is, the browser hangs
-when navigating off a page that has Flash w/ sounds. The problem only
-happens when using aoss. GDB reports that the browser's hung up in
-snd_pcm_wait_nocheck, called from snd_pcm_dmix_drain.
 
-This sounds a bit like
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306, which was
-reportedly fixed in ALSA
-1.0.9a. I'm using the 1.0.9b drivers from 2.6.13.4 (plus patches for the
-AC97 that were subsequently rolled into 2.6.14). Upgrading alsa-oss and
-alsa-libs to 1.0.10rc3 didn't fix the problem.
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+
+Enemy territory starts without sound.
+Reports this error:
+------- sound initialization -------
+/dev/dsp: Invalid argument
+Could not set /dev/dsp to stereo=2------------------------------------
+
+Strace:
+open("/dev/dsp", O_RDWR)                = 327
+getuid32()                              = 1000
+setresuid32(-1, 1000, -1)               = 0
+ioctl(327, SNDCTL_DSP_GETCAPS, 0xbfb7eddc) = 0
+ioctl(327, SNDCTL_DSP_STEREO, 0xbfb7edd4) = -1 EINVAL (Invalid argument)
+write(2, "/dev/dsp: Invalid argument\n", 27) = 27
+write(2, "Could not set /dev/dsp to stereo"..., 34) = 34
+close(327)                              = 0
+write(2, "--------------------------------"..., 37) = 37
+
+
+SNDCTL_DSP_STEREO fails on /dev/dsp.
+
+Unfortunately all wrappers misbehave with this damned game...
+I run this to get this far: "et.x86 0 0 direct" >
+/proc/asound/card0/pcm0p/oss
+without that the game exits with and MMAP error (it's a known issue with
+q3 engine, I am only writing it here so noone will suggest it as a
+workaround).
+
+I appreciate any help/advice.
+Willing to compile and test code.
+
+
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0001559 hang in snd_pcm_drain()
+duplicate of        0001634 lack of mmap support with ice1724
 ======================================================================
 
 ----------------------------------------------------------------------
- smagoun - 03-23-06 23:30 
+ oscar - 03-18-06 00:31 
 ----------------------------------------------------------------------
-I can no longer reproduce this after upgrading to alsa-lib 1.0.11rc4,
-alsa-utils 1.0.11rc4, and alsa-oss 1.0.11rc3.
+I forgot the exact hw specs:
 
-----------------------------------------------------------------------
- tiwai - 03-29-06 19:20 
-----------------------------------------------------------------------
-OK, then let's close.
+0 [SN25P          ]: ICE1724 - Shuttle SN25P
+                     Shuttle SN25P at 0xa000, irq 20
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-11-05 21:30 smagoun        New Issue                                    
-12-22-05 11:43 ikonst         Issue Monitored: ikonst                      
-12-22-05 11:43 ikonst         Note Added: 0007122                          
-03-04-06 16:32 gvy            Note Added: 0008349                          
-03-04-06 16:33 gvy            Issue Monitored: gvy                         
-03-04-06 19:07 rlrevell       Relationship added       related to 0001559  
-03-04-06 19:15 gvy            Note Added: 0008353                          
-03-07-06 15:25 tiwai          Note Added: 0008366                          
-03-07-06 15:30 gvy            Note Added: 0008368                          
-03-23-06 23:30 smagoun        Note Added: 0008905                          
-03-29-06 19:20 tiwai          Status                   new => resolved     
-03-29-06 19:20 tiwai          Resolution               open => fixed       
-03-29-06 19:20 tiwai          Assigned To               => tiwai           
-03-29-06 19:20 tiwai          Note Added: 0009014                          
+03-18-06 00:28 oscar          New Issue                                    
+03-18-06 00:28 oscar          Distribution              => Debian          
+03-18-06 00:28 oscar          Kernel Version            => 2.6.15 (Debian')
+03-18-06 00:28 oscar          Issue Monitored: oscar                       
+03-18-06 00:31 oscar          Note Added: 0008666                          
+03-29-06 19:24 tiwai          Relationship added       duplicate of 0001634
+03-29-06 19:24 tiwai          Duplicate ID             0 => 1634           
+03-29-06 19:24 tiwai          Status                   new => resolved     
+03-29-06 19:24 tiwai          Resolution               open => duplicate   
+03-29-06 19:24 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
