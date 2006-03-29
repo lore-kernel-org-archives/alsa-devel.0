@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
-Date: Wed, 29 Mar 2006 18:02:27 +0200
-Message-ID: <6085455f047f03c0cfc464e83f300d99@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
+Date: Wed, 29 Mar 2006 18:43:28 +0200
+Message-ID: <1adf2415f9a3c8177ec5083e0df0985b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B70DA1AE
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 18:02:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CFCF132
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 18:43:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,109 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
 ======================================================================
-Reported By:                robertdavid
-Assigned To:                
+Reported By:                flujan
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1744
-Category:                   PCI - ice1724
-Reproducibility:            sometimes
-Severity:                   tweak
+Issue ID:                   1956
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo linux
-Kernel Version:             2.6.14-archck-r7
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             01-13-2006 22:16 CET
-Last Modified:              03-29-2006 18:02 CEST
+Date Submitted:             03-23-2006 21:30 CET
+Last Modified:              03-29-2006 18:43 CEST
 ======================================================================
-Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
-chanel work and sound is quick...
+Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
 Description: 
-Im very glad that was added support for Prodigy, but there is still only
-two channel working (7,8), the others are silent (tryed all volume
-settings).
-The sound from 7,8 chanel is good in case of quality, but is faster than
-it should be (turn off Multi Track Rate Locking didnt do anything).
-I've tryed mpalyer and XMMS, both the same.
-I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
-Prodigy 7.1LT) 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001090 Support for new Prodigy 7.1 LT
+The problem where solved in the CVS from 2006-03-01 but in the rc4 version
+the problem returns. 
 ======================================================================
 
 ----------------------------------------------------------------------
- robertdavid - 03-08-06 20:50 
+ tiwai - 03-26-06 01:35 
 ----------------------------------------------------------------------
-I found out that if I set sampling freq to 24k the sound speed is as long
-as it should be.. (dont heat any sound quality demage?!?! in less than 22k
-the demage can be heard)
+The errors are because of snd-page-alloc module that isn't unloaded  by
+alsasound init script.  It's no bug.
 
-It looks like there will be never any good driver for this card, HW
-commpanies that doesnt support linux should think of themselves...
-
-
+Unload it manually after alsasound stop (or reboot should work too, of
+course).
 
 ----------------------------------------------------------------------
- Demosthenes - 03-29-06 18:02 
+ flujan - 03-29-06 18:43 
 ----------------------------------------------------------------------
-Hi, I haven't had much time to play with this card recently and have been
-making do with the support added in #1090. However I have just applied the
-patch from here and I am very pleased with the result. Sound can now be
-played out of the front channel with good volume and much better quality
-than was previously possible for me (out of the front channel).
+I have this error with the snd-page-alloc even after a reboot. :( I tried
+to add another note but the site presents a error message. :(
 
-Before I was getting all my sound from the headphone channel and although
-it is possible that the sound now produced sounds slightly different to
-before (I think I would struggle to think there was any difference if I
-wasn't looking for it) I would not say the sound is of worse quality.
+How can diagnose this more precisely?
 
-The way the external amplifier switch is used to control the headphone
-channel is perfect for my use which would be connecting either stereo
-speakers or headphones to the card.
-
-I think this is a definite step up from before and should be added to alsa
-CVS.
-
-With regards to the quality issues people are having, can you elaborate on
-how it sounds worse. If we could get some more people to test this for the
-perceived quality issues (there were plenty in the other thread) that
-would also be helpful.
+Thanks in advance.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-13-06 22:16 robertdavid    New Issue                                    
-01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
-01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
-01-14-06 00:13 drfindley      File Added: asound.state                     
-01-14-06 00:15 drfindley      Note Added: 0007650                          
-01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
-01-14-06 00:28 robertdavid    Note Added: 0007651                          
-01-14-06 00:29 robertdavid    Note Edited: 0007651                         
-01-14-06 18:09 robertdavid    Note Added: 0007654                          
-01-15-06 19:18 Anho Ki        Note Added: 0007667                          
-01-17-06 01:21 Anho Ki        Note Added: 0007694                          
-01-17-06 01:48 rlrevell       Relationship added       related to 0001090  
-01-17-06 09:24 Anho Ki        File Added: prodigy71.patch                    
-01-17-06 09:24 Anho Ki        Issue Monitored: Anho Ki                     
-01-17-06 09:38 Anho Ki        Note Added: 0007695                          
-01-17-06 11:13 robertdavid    Note Added: 0007696                          
-01-17-06 16:39 tinez          Issue Monitored: tinez                       
-01-18-06 23:42 Anho Ki        Note Added: 0007717                          
-01-22-06 00:20 msmigiel       Issue Monitored: msmigiel                    
-01-23-06 18:23 Demosthenes    Issue Monitored: Demosthenes                    
-01-24-06 06:38 mccart         Issue Monitored: mccart                      
-01-25-06 12:17 Anho Ki        Note Added: 0007780                          
-01-26-06 23:40 robertdavid    Note Added: 0007794                          
-03-08-06 20:45 robertdavid    Note Added: 0008385                          
-03-08-06 20:50 robertdavid    Note Edited: 0008385                         
-03-24-06 23:21 jimgleason     Issue Monitored: jimgleason                    
-03-29-06 18:02 Demosthenes    Note Added: 0008997                          
+03-23-06 21:30 flujan         New Issue                                    
+03-23-06 21:30 flujan         Distribution              => Slackware       
+03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
+03-24-06 11:57 tiwai          Note Added: 0008914                          
+03-24-06 12:52 er-ku          Note Added: 0008915                          
+03-24-06 13:01 tiwai          Note Added: 0008916                          
+03-25-06 04:33 flujan         Note Added: 0008941                          
+03-25-06 23:27 flujan         Note Added: 0008954                          
+03-26-06 01:35 tiwai          Note Added: 0008958                          
+03-27-06 17:20 flujan         Note Edited: 0008954                         
+03-29-06 18:43 flujan         Note Added: 0008998                          
 ======================================================================
 
 
