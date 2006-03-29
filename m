@@ -1,10 +1,10 @@
-From: Robert Hardy <rhardy@webcon.ca>
-Subject: Re: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound
- when seeking in 6 channel sound file
-Date: Wed, 29 Mar 2006 17:18:59 -0500 (EST)
-Message-ID: <Pine.LNX.4.64.0603291645290.6977@thor.webcon.net>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Midi name string in mpu401_uart not unique
+Date: Wed, 29 Mar 2006 23:20:54 +0100
+Message-ID: <200603292313.21160.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_GhwKED6htib24RV"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,78 +15,192 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-For some reason I can't comment on an existing bug which I didn't author. 
-Perhaps this requires a higher level of access?
 
-I'm user rhardy on Mantis...
+--Boundary-00=_GhwKED6htib24RV
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Basically I was trying to point out I am also affected by this bug:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938
+For a card with ->shortname, snd_mpu401_uart_new creates the same string for 
+all ports on all cards of same type.  Muse, eg, is unable to distinguish 
+them, and cannot use the second port.  As a result, I thought wavetable midi 
+on DMX6fire was broken, but some patching solved this. :-)
 
-Two possibilities exist:
-1. I missed some of the changes tiwai made. Please point out what if this is
-the case.
+That set me thinking that really the card driver should be able to pass this 
+string to mpu401_uart_new to describe the ports actual use.  It also seems to 
+me that however created the string should be unique, and also that the early 
+characters are the most useful in a sequencer window; I don't need the 
+manufacturer at all -just the model will do.
 
-2. It really isn't fixed in alsa-lib CVS (or isn't visible in viewcvs.)
+I have patched one solution, adding a parameter to mpu401_uart_new.  Then 
+ice1712 (in my case) generates this string either explicitly from 
+snd_ice1712_card_info or from model string, adding card & device numbers.  
+Diff is attached.
 
-Testing out the recent changes made by tiwai here:
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/pcm/?sortby=date#dirlist
+What do you think?  There must be other ways to achieve this also.  This diff 
+is just a starting point;  I've included the 'NULL' parameter just in au88x0 
+as it is my other card.
 
-I took alsa-lib-1.0.11rc4 and applied patches extracted from view cvs above
-to update the follow files to the listed versions below:
+With these changes Muse shows 'MIDI-Front DMX6fire 0-0' and 'Wavetable 
+DMX6fire 0-1' which (of course) suits me just fine!  Wavetable daughter card 
+now runs great!
 
-pcm_dmix.c: 1.102
-pcm_plugin.h: 1.41
-pcm.c: 1.328
-pcm_hw.c: 1.149
-pcm_rate.c: 1.113
-pcm_direct.c: 1.60
-pcm_plugin.c: 1.101
-pcm_softvol.c: 1.18
+Regards   Alan
 
-This is the resulting patch:
-http://webcon.ca/~rhardy/patches/alsa-lib-1.0.11rc4-pcm_fixes.patch.gz
 
-This unfortunately made no difference here. I'm running 2.6.16-rh3 which is 2.6.16.1 with
-custom patches including the recent git commit for [ALSA] version 1.0.11rc4 from here:
-http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=1c2e02750b992703a8a18634e08b04353face243
 
-My sound card:
-02:07.0 Multimedia audio controller: Creative Labs SB0400 Audigy2 Value
-         Subsystem: Creative Labs: Unknown device 1001
-         Flags: bus master, medium devsel, latency 32, IRQ 201
-         I/O ports at a000 [size=64]
-         Capabilities: [dc] Power Management version 2
 
-This card once worked fine unfortunately I'm not sure with what
-mplayer/alsa-lib/alsa-driver/kernel....
 
-I'm running a i686/32bit mplayer in a 64 bit environment.
+--Boundary-00=_GhwKED6htib24RV
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="mpu-names.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="mpu-names.diff"
 
-After applying the patch above and upgrading alsa-lib, I still get the same
-errors from mplayer when I try to seek 6 channel audio using surround51:
+diff -ru ../alsa-driver-orig-1.0.11rc3/alsa-kernel/drivers/mpu401/mpu401_uart.c ../alsa-driver-1.0.11rc3/alsa-kernel/drivers/mpu401/mpu401_uart.c
+--- ../alsa-driver-orig-1.0.11rc3/alsa-kernel/drivers/mpu401/mpu401_uart.c	2005-11-18 18:52:14.000000000 +0000
++++ ../alsa-driver-1.0.11rc3/alsa-kernel/drivers/mpu401/mpu401_uart.c	2006-03-29 21:36:42.000000000 +0100
+@@ -451,7 +451,8 @@
+ 			unsigned short hardware,
+ 			unsigned long port, int integrated,
+ 			int irq, int irq_flags,
+-			struct snd_rawmidi ** rrawmidi)
++			struct snd_rawmidi ** rrawmidi,
++			char *midiportname)
+ {
+ 	struct snd_mpu401 *mpu;
+ 	struct snd_rawmidi *rmidi;
+@@ -505,10 +506,16 @@
+ 	}
+ 	mpu->irq = irq;
+ 	mpu->irq_flags = irq_flags;
+-	if (card->shortname[0])
+-		snprintf(rmidi->name, sizeof(rmidi->name), "%s MIDI", card->shortname);
+-	else
+-		sprintf(rmidi->name, "MPU-401 MIDI %d-%d", card->number, device);
++
++	if (midiportname != NULL) {
++		snprintf(rmidi->name, sizeof(rmidi->name), "%s", midiportname);
++	} else {
++		if (card->shortname[0]) {
++			snprintf(rmidi->name, sizeof(rmidi->name), "MIDI %d-%d %s", card->number, device , card->shortname);
++		} else {
++			sprintf(rmidi->name, "MPU-401 MIDI %d-%d", card->number, device);
++		}
++	}
+ 	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT, &snd_mpu401_uart_output);
+ 	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT, &snd_mpu401_uart_input);
+ 	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT |
+diff -ru ../alsa-driver-orig-1.0.11rc3/alsa-kernel/include/mpu401.h ../alsa-driver-1.0.11rc3/alsa-kernel/include/mpu401.h
+--- ../alsa-driver-orig-1.0.11rc3/alsa-kernel/include/mpu401.h	2005-11-17 14:12:45.000000000 +0000
++++ ../alsa-driver-1.0.11rc3/alsa-kernel/include/mpu401.h	2006-03-26 22:38:39.000000000 +0100
+@@ -108,6 +108,7 @@
+ 			int integrated,
+ 			int irq,
+ 			int irq_flags,
+-			struct snd_rawmidi ** rrawmidi);
++			struct snd_rawmidi ** rrawmidi,
++			char *midiportname);
 
-alsa-lib: pcm.c:6300:(snd_pcm_mmap_commit) commit offset (0) doesn't match \
-with appl_ptr (216531) % buf_size (16384)
-alsa-play: write error: Broken pipe
-alsa-play: trying to reset soundcard
-alsa-lib: pcm.c:6300:(snd_pcm_mmap_commit) commit offset (0) doesn't match \
-with appl_ptr (216531) % buf_size (16384)
-alsa-play: write error: Broken pipe
-alsa-play: trying to reset soundcard
+ #endif /* __SOUND_MPU401_H */
+diff -ru ../alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c ../alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c
+--- ../alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-01-13 17:16:29.000000000 +0000
++++ ../alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-03-26 22:41:52.000000000 +0100
+@@ -98,7 +98,7 @@
+ 	port = (unsigned long)(vortex->mmio + VORTEX_MIDI_DATA);
+ 	if ((temp =
+ 	     snd_mpu401_uart_new(vortex->card, 0, MPU401_HW_AUREAL, port,
+-				 1, 0, 0, &rmidi)) != 0) {
++				 1, 0, 0, &rmidi, NULL)) != 0) {
+ 		hwwrite(vortex->mmio, VORTEX_CTRL,
+ 			(hwread(vortex->mmio, VORTEX_CTRL) &
+ 			 ~CTRL_MIDI_PORT) & ~CTRL_MIDI_EN);
+diff -ru ../alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/ice1712/ews.c ../alsa-driver-1.0.11rc3/alsa-kernel/pci/ice1712/ews.c
+--- ../alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/ice1712/ews.c	2005-11-22 14:33:27.000000000 +0000
++++ ../alsa-driver-1.0.11rc3/alsa-kernel/pci/ice1712/ews.c	2006-03-29 14:09:23.000000000 +0100
+@@ -1031,6 +1031,8 @@
+ 		.model = "dmx6fire",
+ 		.chip_init = snd_ice1712_ews_init,
+ 		.build_controls = snd_ice1712_ews_add_controls,
++		.mpu401_1_name = "MIDI-Front DMX6fire",
++		.mpu401_2_name = "Wavetable DMX6fire",
+ 	},
+ 	{ } /* terminator */
+ };
+diff -ru ../alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/ice1712/ice1712.c ../alsa-driver-1.0.11rc3/alsa-kernel/pci/ice1712/ice1712.c
+--- ../alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/ice1712/ice1712.c	2006-01-16 16:34:25.000000000 +0000
++++ ../alsa-driver-1.0.11rc3/alsa-kernel/pci/ice1712/ice1712.c	2006-03-29 22:26:10.000000000 +0100
+@@ -2643,6 +2660,8 @@
+ 	struct snd_ice1712 *ice;
+ 	int pcm_dev = 0, err;
+ 	struct snd_ice1712_card_info **tbl, *c;
++	char port_name[24];
++	int midevice;
 
-[same 3 lines repeat forever at 100% cpu usage until I kill mplayer]
+ 	if (dev >= SNDRV_CARDS)
+ 		return -ENODEV;
+@@ -2718,21 +2738,34 @@
+ 		}
 
-Regards,
-Rob
+ 	if (! c->no_mpu401) {
+-		if ((err = snd_mpu401_uart_new(card, 0, MPU401_HW_ICE1712,
++		midevice = 0;
++		if (c->mpu401_1_name != NULL)
++			snprintf(port_name, sizeof(port_name), "%s %d-%d", c->mpu401_1_name, card->number, midevice);
++		else
++			snprintf(port_name, sizeof(port_name), "MIDI 1 %s %d-%d", c->model, card->number, midevice);
++
++		if ((err = snd_mpu401_uart_new(card, midevice, MPU401_HW_ICE1712,
+ 					       ICEREG(ice, MPU1_CTRL), 1,
+ 					       ice->irq, 0,
+-					       &ice->rmidi[0])) < 0) {
++					       &ice->rmidi[0], port_name)) < 0) {
+ 			snd_card_free(card);
+ 			return err;
+ 		}
 
--- 
----------------------"Happiness is understanding."----------------------
-Robert Hardy, B.Eng Computer Systems                  C.E.O. Webcon Inc.
-rhardy <at> webcon <dot> ca    GPG Key available          (613) 276-7327
+-		if (ice->eeprom.data[ICE_EEP1_CODEC] & ICE1712_CFG_2xMPU401)
+-			if ((err = snd_mpu401_uart_new(card, 1, MPU401_HW_ICE1712,
++		if (ice->eeprom.data[ICE_EEP1_CODEC] & ICE1712_CFG_2xMPU401) {
++			midevice = 1;
++			if (c->mpu401_2_name != NULL)
++				snprintf(port_name, sizeof(port_name), "%s %d-%d", c->mpu401_2_name, card->number, midevice);
++			else
++				snprintf(port_name, sizeof(port_name), "MIDI 2 %s %d-%d", c->model, card->number, midevice);
++			if ((err = snd_mpu401_uart_new(card, midevice, MPU401_HW_ICE1712,
+ 						       ICEREG(ice, MPU2_CTRL), 1,
+ 						       ice->irq, 0,
+-						       &ice->rmidi[1])) < 0) {
++						       &ice->rmidi[1], port_name)) < 0) {
+ 				snd_card_free(card);
+ 				return err;
+ 			}
++		}
+ 	}
+
+	snd_ice1712_set_input_clock_source(ice, 0);
+diff -ru ../alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/ice1712/ice1712.h ../alsa-driver-1.0.11rc3/alsa-kernel/pci/ice1712/ice1712.h
+--- ../alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/ice1712/ice1712.h	2006-01-16 16:34:25.000000000 +0000
++++ ../alsa-driver-1.0.11rc3/alsa-kernel/pci/ice1712/ice1712.h	2006-03-29 11:23:12.000000000 +0100
+@@ -493,6 +494,8 @@
+ 	int (*chip_init)(struct snd_ice1712 *);
+ 	int (*build_controls)(struct snd_ice1712 *);
+ 	unsigned int no_mpu401: 1;
++	char *mpu401_1_name;
++	char *mpu401_2_name;
+ 	unsigned int eeprom_size;
+ 	unsigned char *eeprom_data;
+ };
+
+--Boundary-00=_GhwKED6htib24RV--
+
 
 
 -------------------------------------------------------
