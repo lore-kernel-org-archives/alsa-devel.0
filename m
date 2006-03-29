@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001976]: System timer frequency 1000Hz
-Date: Wed, 29 Mar 2006 18:49:41 +0200
-Message-ID: <e978d166bad923d11c7f69b03e5ab9e8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001974]: Error to add a note in a issue.
+Date: Wed, 29 Mar 2006 18:50:45 +0200
+Message-ID: <dd699f751c58e2de52f338c485e2c98b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40B42132
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 18:49:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7393132
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 18:50:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1976> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1974> 
 ======================================================================
-Reported By:                ISBear
+Reported By:                flujan
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1976
-Category:                   PCI - cs4281
+Issue ID:                   1974
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               LFS 6.1 modified
-Kernel Version:             2.6.16
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-29-2006 11:30 CEST
-Last Modified:              03-29-2006 18:49 CEST
+Date Submitted:             03-28-2006 16:14 CEST
+Last Modified:              03-29-2006 18:50 CEST
 ======================================================================
-Summary:                    System timer frequency 1000Hz
+Summary:                    Error to add a note in a issue.
 Description: 
-When I set in kernel config timer frequency 1024Hz,
-sound card not detects during boot.
-"never read ISV3 and ISV4 from AC'97"
-This is because of hard-coded in cs4281.c timeout length 100.
-In stable 1.0.10 release there are HZ variable.
-With this card successfully detects.
+APPLICATION ERROR #401
+
+Database query failed. Error received from database was #1062: Duplicate
+entry '8994' for key 1 for the query: INSERT INTO
+mantis_bugnote_text_table
+( note )
+VALUES
+( 'I have this error with the snd-page-alloc even after a reboot. :( I
+tried to add another note but the site presents a error message.
+:(\r\n\r\nHow can diagnose this more precisely?\r\n\r\nThanks in advance.'
+)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-06 18:49 
+ tiwai - 03-29-06 18:50 
 ----------------------------------------------------------------------
-Fixed on CVS.
+Fixed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-06 11:30 ISBear         New Issue                                    
-03-29-06 11:30 ISBear         Distribution              => LFS 6.1 modified
-03-29-06 11:30 ISBear         Kernel Version            => 2.6.16          
-03-29-06 18:49 tiwai          Status                   new => resolved     
-03-29-06 18:49 tiwai          Resolution               open => fixed       
-03-29-06 18:49 tiwai          Assigned To               => tiwai           
-03-29-06 18:49 tiwai          Note Added: 0009000                          
+03-28-06 16:14 flujan         New Issue                                    
+03-29-06 18:50 tiwai          Status                   new => resolved     
+03-29-06 18:50 tiwai          Resolution               open => fixed       
+03-29-06 18:50 tiwai          Assigned To               => tiwai           
+03-29-06 18:50 tiwai          Note Added: 0009001                          
 ======================================================================
 
 
