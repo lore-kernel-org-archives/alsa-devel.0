@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001958]: /proc/asound/card0/codec#0 missing
-Date: Wed, 29 Mar 2006 19:08:56 +0200
-Message-ID: <a4566a8cfb169c15ef4d7241e725cf9d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
+Date: Wed, 29 Mar 2006 19:10:24 +0200
+Message-ID: <becf7b36f708a0b860cdba388c980ad1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CE71173
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:08:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6314A173
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:10:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1958> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
 ======================================================================
-Reported By:                chibo
-Assigned To:                
+Reported By:                fmoraes
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1958
-Category:                   1_OTHERS
+Issue ID:                   371
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu (Breezy)
-Kernel Version:             2.6.12-10-386
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.6.6-1.435.2.3
+Resolution:                 won't fix
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-24-2006 13:28 CET
-Last Modified:              03-29-2006 19:08 CEST
+Date Submitted:             07-09-2004 15:59 CEST
+Last Modified:              03-29-2006 19:10 CEST
 ======================================================================
-Summary:                    /proc/asound/card0/codec#0 missing
+Summary:                    dmix does not work with snd-cs46xx driver
 Description: 
-The file /proc/asound/card0/codec#0 doesn't exist and /proc/asound/cards
-has only a single line: --- no soundcards ---
-
-lsmod | grep snd
-snd_hda_intel          18196  0
-snd_hda_codec         139056  1 snd_hda_intel
-snd_pcm_oss            45984  0
-snd_mixer_oss          16640  1 snd_pcm_oss
-snd_pcm                85768  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
-snd_timer              23044  1 snd_pcm
-snd                    56904  7
-snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               9184  1 snd
-snd_page_alloc         10632  2 snd_hda_intel,snd_pcm
-
-lspci | grep Audio
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 04)
-
+When trying to use dmix with the snd-cs46xx driver, no output is produced.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-06 19:08 
+ Raymond - 03-26-06 15:09 
 ----------------------------------------------------------------------
-There must be related kernel error messages.
+CS46XX.conf assume hardware mixing for playback and dsnoop for capture
+
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/conf/cards/CS46xx.conf?r1=1.4&r2=1.5
+
+But CS46XX_NEW_DSP is not enabled by default 
+
+remove your .asoundrc and change CS46XX.conf to use dmix similar to
+ICH.conf
+
+The best way is to build the driver with CS46XX_NEW_DSP option
+
+What is the exact model of your sound card ?
+
+
+
+----------------------------------------------------------------------
+ tiwai - 03-29-06 19:10 
+----------------------------------------------------------------------
+dmix doesn't work with the hardware like CS46xx due to its design.  The
+cs46xx has no real mmappable DMA unlike others.
+
+The NEW_DSP option is enabled as default now, so dmix will be really
+unnecessary unless you explicitly choose to disable that option.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-06 13:28 chibo          New Issue                                    
-03-24-06 13:28 chibo          Distribution              => Ubuntu (Breezy) 
-03-24-06 13:28 chibo          Kernel Version            => 2.6.12-10-386   
-03-24-06 14:22 chibo          Issue Monitored: chibo                       
-03-29-06 19:08 tiwai          Note Added: 0009009                          
+07-09-04 15:59 fmoraes        New Issue                                    
+07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
+07-15-04 14:10 perex          Status                   new => assigned     
+07-15-04 14:10 perex          Assigned To               => perex           
+03-09-05 03:09 fmoraes        Note Added: 0003823                          
+03-09-05 18:37 tiwai          Note Added: 0003830                          
+03-10-05 15:03 jdthood        Note Added: 0003857                          
+03-11-05 22:14 fmoraes        File Added: .asoundrc                        
+03-11-05 22:15 fmoraes        Note Added: 0003894                          
+03-22-06 03:42 rlrevell       Note Added: 0008832                          
+03-22-06 18:50 tiwai          Note Added: 0008866                          
+03-24-06 02:16 fmoraes        Note Added: 0008907                          
+03-24-06 02:54 Raymond        Note Added: 0008909                          
+03-25-06 02:17 fmoraes        Note Added: 0008940                          
+03-26-06 03:06 Raymond        Note Added: 0008964                          
+03-26-06 03:10 Raymond        Note Edited: 0008964                         
+03-26-06 03:11 Raymond        Note Edited: 0008964                         
+03-26-06 15:09 Raymond        Note Edited: 0008964                         
+03-29-06 19:10 tiwai          Status                   assigned => resolved
+03-29-06 19:10 tiwai          Resolution               open => won't fix   
+03-29-06 19:10 tiwai          Note Added: 0009010                          
 ======================================================================
 
 
