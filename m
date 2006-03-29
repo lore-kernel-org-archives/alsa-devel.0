@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
-Date: Wed, 29 Mar 2006 21:46:56 +0200
-Message-ID: <c7c2f9c7b95184062e2e193520873795@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001979]: Missing symbols in oss mixer code
+Date: Wed, 29 Mar 2006 23:03:11 +0200
+Message-ID: <a665e6195a5d7e6fe94a95edf1576fab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B44F2172
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 21:46:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C7231AC
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 23:03:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,36 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1979> 
 ======================================================================
-Reported By:                Jeff250
-Assigned To:                tiwai
+Reported By:                zx80user
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1963
-Category:                   PCI - hda-intel
+Project:                    ALSA - liboss
+Issue ID:                   1979
+Category:                   
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15-19-686
+Status:                     new
 ======================================================================
-Date Submitted:             03-25-2006 03:35 CET
-Last Modified:              03-29-2006 21:46 CEST
+Date Submitted:             03-29-2006 23:03 CEST
+Last Modified:              03-29-2006 23:03 CEST
 ======================================================================
-Summary:                    Returning from suspend-to-ram "mutes" sounds
+Summary:                    Missing symbols in oss mixer code
 Description: 
-I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
-STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
-the sound is "muted" in that alsamixer does not actually show any tracks
-to be muted, but changing the master volume up or down restores sound
-output.  As a workaround, I've added to my resume script an amixer command
-to slightly modify the volume automatically on resume from suspend.  I'm
-using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
-1.0.10.  Thanks for your time.
+Attempting to load the snd-pcm-oss module and the snd-pcm-mixer modules
+fails due to missing symbols.
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-29-06 19:17 
-----------------------------------------------------------------------
-This should be now fixed on CVS.
-
-----------------------------------------------------------------------
- Jeff250 - 03-29-06 21:46 
-----------------------------------------------------------------------
-I'd like to reopen this issue, because the latest CVS seems to not have any
-effect on the issue.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-06 03:35 Jeff250        New Issue                                    
-03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
-03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
-03-26-06 01:28 tiwai          Note Added: 0008956                          
-03-26-06 04:26 Jeff250        Note Added: 0008965                          
-03-29-06 19:17 tiwai          Status                   assigned => resolved
-03-29-06 19:17 tiwai          Resolution               open => fixed       
-03-29-06 19:17 tiwai          Note Added: 0009013                          
-03-29-06 21:46 Jeff250        Status                   resolved => feedback
-03-29-06 21:46 Jeff250        Resolution               fixed => reopened   
-03-29-06 21:46 Jeff250        Note Added: 0009018                          
+03-29-06 23:03 zx80user       New Issue                                    
 ======================================================================
 
 
