@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001954]: Patch from bug 0001895 hasn't been put in CVS yet
-Date: Wed, 29 Mar 2006 18:55:16 +0200
-Message-ID: <72076a8e7ea369f945744b21224e2faf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
+Date: Wed, 29 Mar 2006 18:56:47 +0200
+Message-ID: <f96260cb463f123af75658eda4f9dcf0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 341B6132
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 18:55:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21F2C132
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 18:56:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,100 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1954> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
 ======================================================================
-Reported By:                johnfivealive
+Reported By:                bambam
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1954
-Category:                   PCI - hda-intel
+Issue ID:                   1938
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Fedora 5 x86_64
-Kernel Version:             2.6.15-1.2054_FC5
+Distribution:               Debian sid with custom x86-64 kernel
+Kernel Version:             2.6.16-rc6
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-23-2006 07:17 CET
-Last Modified:              03-29-2006 18:55 CEST
+Date Submitted:             03-17-2006 20:31 CET
+Last Modified:              03-29-2006 18:56 CEST
 ======================================================================
-Summary:                    Patch from bug 0001895 hasn't been put in CVS yet
+Summary:                    EPIPE on Audigy with surround sound when seeking in
+6 channel sound file
 Description: 
-Hello, the patch created in bug 0001895 as far as I can see hasn't been
-applied to CVS yet. The last note from tiwai says he put it in CVS, but
-I'm assuming he meant to but perhaps forgot. This is just a reminder if
-that is the case. I tried the patch myself and my onboard sound seems to
-be working fine now. My mobo is an Asus A8N-VM, same chip discussed in bug
-0001895. Thanks.
+Seeking in a 6 channel sound or video file using a surround device gives
+EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
+is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
+userspace. I've tried libs and modules from CVS two days ago with no
+success.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- johnfivealive - 03-27-06 06:49 
+ bambam - 03-27-06 02:05 
 ----------------------------------------------------------------------
-There seems to be one small problem now, the GNOME Volume Control mixer
-seems to now be selecting the Headphone channel as the main volume control
-instead of the Front channel, which appears to be the one which controls
-the main volume. The Volume Control program seems to be selecting the
-correct main channel (Front) with model=laptop, not sure what the
-discrepancy here is and how I would go about correcting it. Maybe a
-setting in the driver could correct this?
+There's a new mplayer debian package available, which has some debug output
+enabled. I get the following additional message when seeking in a file:
+
+alsa-lib: pcm.c:6300:(snd_pcm_mmap_commit) commit offset (0) doesn't match
+with appl_ptr (181300) % buf_size (16384)
+
+Hope this helps to solve the problem.
 
 ----------------------------------------------------------------------
- tiwai - 03-29-06 18:55 
+ tiwai - 03-29-06 18:56 
 ----------------------------------------------------------------------
-It's basically an issue of mixer apps, which don't let you access the
-"Front" control.
+Hopefully fixed with alsa-lib CVS today.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-06 07:17 johnfivealive  New Issue                                    
-03-23-06 07:17 johnfivealive  Distribution              => Fedora 5 x86_64 
-03-23-06 07:17 johnfivealive  Kernel Version            => 2.6.15-1.2054_FC5
-03-23-06 07:19 johnfivealive  Issue Monitored: johnfivealive                    
-03-23-06 11:08 tiwai          Note Added: 0008880                          
-03-23-06 21:01 johnfivealive  Note Added: 0008902                          
-03-23-06 21:08 tiwai          Note Added: 0008903                          
-03-24-06 06:18 johnfivealive  Note Added: 0008913                          
-03-26-06 01:54 tiwai          Note Added: 0008962                          
-03-27-06 06:44 johnfivealive  Note Added: 0008990                          
-03-27-06 06:49 johnfivealive  Note Added: 0008991                          
-03-29-06 18:55 tiwai          Status                   assigned => resolved
-03-29-06 18:55 tiwai          Resolution               open => fixed       
-03-29-06 18:55 tiwai          Note Added: 0009003                          
+03-17-06 20:31 bambam         New Issue                                    
+03-17-06 20:31 bambam         Distribution              => Debian sid with
+custom x86-64 kernel
+03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
+03-17-06 20:36 bambam         Note Added: 0008656                          
+03-17-06 21:07 bambam         Note Added: 0008659                          
+03-17-06 21:53 bambam         Note Added: 0008662                          
+03-18-06 01:07 rlrevell       Note Added: 0008667                          
+03-18-06 01:11 bambam         Note Added: 0008668                          
+03-18-06 14:44 bambam         Note Added: 0008671                          
+03-20-06 12:25 tiwai          Note Added: 0008715                          
+03-21-06 00:29 bambam         Note Added: 0008733                          
+03-21-06 17:30 tiwai          Status                   new => resolved     
+03-21-06 17:30 tiwai          Resolution               open => fixed       
+03-21-06 17:30 tiwai          Assigned To               => tiwai           
+03-21-06 17:30 tiwai          Note Added: 0008747                          
+03-21-06 20:09 bambam         Status                   resolved => feedback
+03-21-06 20:09 bambam         Resolution               fixed => reopened   
+03-21-06 20:09 bambam         Note Added: 0008759                          
+03-21-06 20:10 tiwai          Status                   feedback => resolved
+03-21-06 20:10 tiwai          Resolution               reopened => fixed   
+03-21-06 20:10 tiwai          Note Added: 0008760                          
+03-24-06 16:55 bambam         Status                   resolved => feedback
+03-24-06 16:55 bambam         Resolution               fixed => reopened   
+03-24-06 16:55 bambam         Note Added: 0008921                          
+03-24-06 17:06 tiwai          Note Added: 0008922                          
+03-24-06 17:29 bambam         Note Added: 0008923                          
+03-24-06 17:34 tiwai          Note Added: 0008925                          
+03-24-06 17:36 tiwai          Status                   feedback => resolved
+03-24-06 17:36 tiwai          Resolution               reopened => fixed   
+03-24-06 17:36 tiwai          Note Added: 0008926                          
+03-24-06 17:38 tiwai          Note Added: 0008927                          
+03-24-06 17:39 tiwai          Status                   resolved => feedback
+03-24-06 17:39 tiwai          Resolution               fixed => reopened   
+03-24-06 17:39 tiwai          Note Added: 0008928                          
+03-24-06 18:07 bambam         Note Added: 0008931                          
+03-24-06 20:11 bambam         File Added: strace.tar.bz2                    
+03-24-06 20:12 bambam         Note Added: 0008935                          
+03-24-06 20:47 bambam         Note Added: 0008936                          
+03-25-06 13:16 bambam         Note Added: 0008946                          
+03-27-06 02:05 bambam         Note Added: 0008981                          
+03-29-06 18:56 tiwai          Status                   feedback => resolved
+03-29-06 18:56 tiwai          Resolution               reopened => fixed   
+03-29-06 18:56 tiwai          Note Added: 0009004                          
 ======================================================================
 
 
