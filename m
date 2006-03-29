@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001978]: rate_min 8000 - return by snd_pcm_hw_params_get_rate_min ()
-Date: Wed, 29 Mar 2006 15:53:09 +0200
-Message-ID: <746a7f7fe963e5989b7160080513e589@bugtrack.alsa-project.org>
+From: Christian Trefzer <ctrefzer@gmx.de>
+Subject: Re: snd-nm256: hard lockup on every second module load after powerup
+Date: Wed, 29 Mar 2006 16:43:03 +0200
+Message-ID: <20060329144303.GA24146@hermes.uziel.local>
+References: <20060326054542.GA11961@hermes.uziel.local> <s5hveu0chvy.wl%tiwai@suse.de> <1143500400.1792.314.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0405A1AE
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 15:53:09 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <1143500400.1792.314.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,55 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>, Takashi Iwai <tiwai@suse.de>
+Cc: lkml <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1978> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1978
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             03-29-2006 15:53 CEST
-Last Modified:              03-29-2006 15:53 CEST
-======================================================================
-Summary:                    rate_min 8000 - return by
-snd_pcm_hw_params_get_rate_min ()
-Description: 
-rate 8000 is returned by snd_pcm_hw_params_get_rate_min() for "hw" device
-of intel8x0.
+--1yeeQ81UyVL57Vl7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-static struct snd_pcm_hardware snd_intel8x0_stream =
-{
-	.info =			(SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
-				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
-				 SNDRV_PCM_INFO_MMAP_VALID |
-				 SNDRV_PCM_INFO_PAUSE |
-				 SNDRV_PCM_INFO_RESUME),
-	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
-	.rates =		SNDRV_PCM_RATE_48000,
-	.rate_min =		48000,
-	.rate_max =		48000,
-======================================================================
+Hi Takashi, Lee,
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-29-06 15:53 Raymond        New Issue                                    
-======================================================================
 
+On Mon, Mar 27, 2006 at 05:59:59PM -0500, Lee Revell wrote:
+> On Mon, 2006-03-27 at 12:16 +0200, Takashi Iwai wrote:
+> >=20
+> > Try 2.6.16-git tree.  Some patches for this problem are there.=20
+>=20
+> If this does not fix the problem then alsa-devel (cc'ed) is the best
+> list to discuss the issue.
+
+Actually, the changes in Linus' current git have fixed the hang for me.
+Good job - thanks a lot, guys!
+
+
+Kind regards,
+Chris
+
+--1yeeQ81UyVL57Vl7
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iQIVAwUBRCqc9l2m8MprmeOlAQKU1BAAkYibdE03Fukjl2F344jnsQAY6t3cPeym
+gsWIMkKbVwy9iXl3qdS+0IEKRmwo26dUUNDZfvbww1hQhmAhFFB3d4sG4jHUV2cR
+lI+scSarVECUtZ9B42oPbJOLTkm3jy7YtHgk7QnVlxujJtacGDbbMZ6RmGCOegsc
+5vJ7nmoCdf7Kd0HI/1purtpDUbp7cjOTwK+hCt65qH6LaSxs3e++551uVks00ZuD
+Dn7z8pBwLRuCwuQYbgM+/h9zgmdnGeEbZ/HhcP6DMTTU+9bSC3+L/c/dB9EPcZPB
+zWxhwojIJLym9OSZf+pVaKDaaV0+IPFg7U4KmKa3GiAumhQxZoZ7CyF9WXw0mJYl
+WlGYRjyAHvYHe9BzJEAyBshUps9vX2T+dTTI0W3P6aMjKfRNKFLTn3rBU+CG+T4X
+XAOIKnHgFappDBVjJ4eDDQAZ7ixi4YR1XOCRFTThX6h62AcHGGXf9Fp23sr7EUzq
+ev+BAvFlHb+Cwcc7sn3MqTVHXmlCEONFVkZtD5clrg43po/g0RqQgw+odkIUcdtb
+NzUF+HuTEG/xBr4zgUzxr6poUWJMwd5csH/6UD4X4jBaxloPQ9xEclWVyZYP22Hg
+3+oTKciehU895x03GSwAwStblLb4mNUgyBuP3DNhCVU0Le2nXj9WkwCTsfz9T5YB
+7PTUR2aV9h8=
+=ok0H
+-----END PGP SIGNATURE-----
+
+--1yeeQ81UyVL57Vl7--
 
 
 
