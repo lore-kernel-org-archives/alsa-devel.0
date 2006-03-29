@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001593]: au88x0 wt synth
-Date: Wed, 29 Mar 2006 17:55:48 +0200
-Message-ID: <8d14ea63e87922dd3d3e5d6c37e6e612@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
+Date: Wed, 29 Mar 2006 18:02:27 +0200
+Message-ID: <6085455f047f03c0cfc464e83f300d99@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7707E1AE
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 17:55:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B70DA1AE
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 18:02:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,109 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1593> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                robertdavid
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1593
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   block
+Issue ID:                   1744
+Category:                   PCI - ice1724
+Reproducibility:            sometimes
+Severity:                   tweak
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Status:                     new
+Distribution:               Gentoo linux
+Kernel Version:             2.6.14-archck-r7
 ======================================================================
-Date Submitted:             11-23-2005 17:16 CET
-Last Modified:              03-29-2006 17:55 CEST
+Date Submitted:             01-13-2006 22:16 CET
+Last Modified:              03-29-2006 18:02 CEST
 ======================================================================
-Summary:                    au88x0 wt synth
+Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
+chanel work and sound is quick...
 Description: 
-After applied the patch as described in 
-
-http://article.gmane.org/gmane.linux.alsa.devel/27095
-
-Sound (like a monster roaring) is heard when using aplay through device 3
-of au8830 with the mono files from alsa-utils-1.0.10/speaker-test/samples
-
-The sound repeat 7 times and stop.
-
-Refer to the strace, 
-
-Do the DMA transfer occur when using hw:0,3 ?
-
-
-
+Im very glad that was added support for Prodigy, but there is still only
+two channel working (7,8), the others are silent (tryed all volume
+settings).
+The sound from 7,8 chanel is good in case of quality, but is faster than
+it should be (turn off Multi Track Rate Locking didnt do anything).
+I've tryed mpalyer and XMMS, both the same.
+I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
+Prodigy 7.1LT) 
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001090 Support for new Prodigy 7.1 LT
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 12-21-05 10:10 
+ robertdavid - 03-08-06 20:50 
 ----------------------------------------------------------------------
-Can anyone explain the usage of the function precise_resolution in
-snd_timer_hardware ?
+I found out that if I set sampling freq to 24k the sound speed is as long
+as it should be.. (dont heat any sound quality demage?!?! in less than 22k
+the demage can be heard)
 
-The hardware timer (VORTEX_SMP_TIMER) in au88x0 chips seem to have 48000Hz
-resolution and it also has a high-resolution clock ( VORTEX_SMP_TIME )
-which is 256x48000 Hz.
+It looks like there will be never any good driver for this card, HW
+commpanies that doesnt support linux should think of themselves...
+
+
 
 ----------------------------------------------------------------------
- Raymond - 03-29-06 17:55 
+ Demosthenes - 03-29-06 18:02 
 ----------------------------------------------------------------------
-I upload the spectrum of the sound generated when playing mono through
-device 3.
+Hi, I haven't had much time to play with this card recently and have been
+making do with the support added in #1090. However I have just applied the
+patch from here and I am very pleased with the result. Sound can now be
+played out of the front channel with good volume and much better quality
+than was previously possible for me (out of the front channel).
+
+Before I was getting all my sound from the headphone channel and although
+it is possible that the sound now produced sounds slightly different to
+before (I think I would struggle to think there was any difference if I
+wasn't looking for it) I would not say the sound is of worse quality.
+
+The way the external amplifier switch is used to control the headphone
+channel is perfect for my use which would be connecting either stereo
+speakers or headphones to the card.
+
+I think this is a definite step up from before and should be added to alsa
+CVS.
+
+With regards to the quality issues people are having, can you elaborate on
+how it sounds worse. If we could get some more people to test this for the
+perceived quality issues (there were plenty in the other thread) that
+would also be helpful.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-05 17:16 Raymond        New Issue                                    
-11-23-05 17:16 Raymond        Distribution              => Fedora Core 1   
-11-23-05 17:16 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-11-23-05 20:54 mjander        Note Added: 0006832                          
-11-25-05 07:57 Raymond        Note Added: 0006847                          
-11-30-05 08:48 Raymond        Note Added: 0006875                          
-12-11-05 13:21 Raymond        Note Added: 0006976                          
-12-21-05 10:10 Raymond        Note Added: 0007108                          
-01-02-06 09:06 Raymond        Note Deleted: 0006976                        
-01-02-06 09:54 Raymond        Note Added: 0007369                          
-02-26-06 18:08 Raymond        Note Deleted: 0007369                        
-02-26-06 18:09 Raymond        Note Deleted: 0006875                        
-02-26-06 18:10 Raymond        Note Deleted: 0006847                        
-03-24-06 04:53 Raymond        File Added: spectrum.png                     
-03-29-06 17:55 Raymond        Note Added: 0008996                          
+01-13-06 22:16 robertdavid    New Issue                                    
+01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
+01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
+01-14-06 00:13 drfindley      File Added: asound.state                     
+01-14-06 00:15 drfindley      Note Added: 0007650                          
+01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
+01-14-06 00:28 robertdavid    Note Added: 0007651                          
+01-14-06 00:29 robertdavid    Note Edited: 0007651                         
+01-14-06 18:09 robertdavid    Note Added: 0007654                          
+01-15-06 19:18 Anho Ki        Note Added: 0007667                          
+01-17-06 01:21 Anho Ki        Note Added: 0007694                          
+01-17-06 01:48 rlrevell       Relationship added       related to 0001090  
+01-17-06 09:24 Anho Ki        File Added: prodigy71.patch                    
+01-17-06 09:24 Anho Ki        Issue Monitored: Anho Ki                     
+01-17-06 09:38 Anho Ki        Note Added: 0007695                          
+01-17-06 11:13 robertdavid    Note Added: 0007696                          
+01-17-06 16:39 tinez          Issue Monitored: tinez                       
+01-18-06 23:42 Anho Ki        Note Added: 0007717                          
+01-22-06 00:20 msmigiel       Issue Monitored: msmigiel                    
+01-23-06 18:23 Demosthenes    Issue Monitored: Demosthenes                    
+01-24-06 06:38 mccart         Issue Monitored: mccart                      
+01-25-06 12:17 Anho Ki        Note Added: 0007780                          
+01-26-06 23:40 robertdavid    Note Added: 0007794                          
+03-08-06 20:45 robertdavid    Note Added: 0008385                          
+03-08-06 20:50 robertdavid    Note Edited: 0008385                         
+03-24-06 23:21 jimgleason     Issue Monitored: jimgleason                    
+03-29-06 18:02 Demosthenes    Note Added: 0008997                          
 ======================================================================
 
 
