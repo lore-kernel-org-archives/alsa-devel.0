@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001596]: No sound or High pitched noise, dissapears if change made on mixer
-Date: Wed, 29 Mar 2006 19:08:05 +0200
-Message-ID: <93d519b89c2cca3cb9c58f3bb7830f4c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001958]: /proc/asound/card0/codec#0 missing
+Date: Wed, 29 Mar 2006 19:08:56 +0200
+Message-ID: <a4566a8cfb169c15ef4d7241e725cf9d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CBC06173
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:08:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CE71173
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:08:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,362 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1596> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1958> 
 ======================================================================
-Reported By:                jrgns
-Assigned To:                tiwai
+Reported By:                chibo
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1596
-Category:                   PCI - hda-intel
+Issue ID:                   1958
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.14-rc2
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Ubuntu (Breezy)
+Kernel Version:             2.6.12-10-386
 ======================================================================
-Date Submitted:             11-24-2005 11:26 CET
+Date Submitted:             03-24-2006 13:28 CET
 Last Modified:              03-29-2006 19:08 CEST
 ======================================================================
-Summary:                    No sound or High pitched noise, dissapears if change
-made on mixer
+Summary:                    /proc/asound/card0/codec#0 missing
 Description: 
-With the driver compiled as a standalone (1.0.10rc3), there's is sound, but
-accompanied with a very high pitched noise. All sound dissappears the
-moment I change something on the mixer.
+The file /proc/asound/card0/codec#0 doesn't exist and /proc/asound/cards
+has only a single line: --- no soundcards ---
 
-There is no sound at all if the driver is compiled into the kernel or as a
-kernel module (1.0.10rc1 and 2.6.14-rc2).
+lsmod | grep snd
+snd_hda_intel          18196  0
+snd_hda_codec         139056  1 snd_hda_intel
+snd_pcm_oss            45984  0
+snd_mixer_oss          16640  1 snd_pcm_oss
+snd_pcm                85768  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd_timer              23044  1 snd_pcm
+snd                    56904  7
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore               9184  1 snd
+snd_page_alloc         10632  2 snd_hda_intel,snd_pcm
 
-I tried loading the module with various model= and fix_position=
-combinations as well.
-
-Hardware:
-lspci
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
-
-lspci -n -v -v
-0000:00:1b.0 Class 0403: 8086:2668 (rev 04)
-        Subsystem: 17c0:2017
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, cache line size 08
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at b0000000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] #10 [0091]
-
-lspci -v
-0000:00:02.0 VGA compatible controller: Intel Corporation Mobile
-915GM/GMS/910GML Express Graphics Controller (rev 04) (prog-if 00 [VGA])
-        Subsystem: Wistron Corp.: Unknown device 2071
-        Flags: bus master, fast devsel, latency 0, IRQ 10
-        Memory at b0080000 (32-bit, non-prefetchable) [size=512K]
-        I/O ports at 1800 [size=8]
-        Memory at c0000000 (32-bit, prefetchable) [size=256M]
-        Memory at b0040000 (32-bit, non-prefetchable) [size=256K]
-        Capabilities: [d0] Power Management version 2
-
-cat /proc/asound/card0/codec#0
-Codec: Analog Devices AD1986A
-Address: 0
-Vendor Id: 0x11d41986
-Subsystem Id: 0x0
-Revision Id: 0x100400
-Default PCM: rates 0x07f, bits 0x0e, types 0x1
-Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Default Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-Node 0x02 [Audio Output] wcaps 0x30311: Stereo Digital
-  PCM: rates 0x060, bits 0x02, types 0x5
-  Connection: 2
-     0x01* 0x06
-Node 0x03 [Audio Output] wcaps 0x445: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-Node 0x06 [Audio Input] wcaps 0x100511: Stereo
-  PCM: rates 0x07f, bits 0x06, types 0x1
-  Connection: 1
-     0x12
-Node 0x07 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 8
-     0x03 0x09 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x08 [Audio Mixer] wcaps 0x200108: Mono
-  Connection: 1
-     0x07
-Node 0x09 [Audio Mixer] wcaps 0x200106: Mono Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80] [0x80]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Connection: 2
-     0x04 0x05
-Node 0x0a [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x07* 0x04 0x05
-Node 0x0b [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x07* 0x04
-Node 0x0c [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x04* 0x07
-Node 0x0d [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 2
-     0x05* 0x08
-Node 0x0e [Audio Selector] wcaps 0x300100: Mono
-  Connection: 2
-     0x08* 0x11
-Node 0x0f [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 8
-     0x1f* 0x20 0x1d 0x1d 0x27 0x28 0x29 0x2a
-Node 0x10 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x20* 0x1c 0x1f
-Node 0x11 [Audio Selector] wcaps 0x300941: Stereo
-  Connection: 2
-     0x0f* 0x2b
-Node 0x12 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 6
-     0x11* 0x22 0x10 0x07 0x08 0x23
-Node 0x13 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x11
-Node 0x14 [Audio Selector] wcaps 0x300104: Mono Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97]
-  Connection: 1
-     0x23
-Node 0x15 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x22
-Node 0x16 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x21
-Node 0x17 [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x97 0x97]
-  Connection: 1
-     0x10
-Node 0x18 [Audio Selector] wcaps 0x30010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals:  [0x8f]
-  Connection: 2
-     0x19* 0x24
-Node 0x19 [Beep Generator Widget] wcaps 0x700200: Mono Digital
-Node 0x1a [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081f: OUT HP
-  Pin Default 0x01813030: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x0a
-Node 0x1b [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081001f: OUT HP
-  Pin Default 0x01014011: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0b
-Node 0x1c [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x0837: IN OUT
-  Pin Default 0x9933f170: [Fixed] CD at Int ATAPI
-    Conn = ATAPI, Color = Other
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0c
-Node 0x1d [Pin Complex] wcaps 0x40098d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x9f 0x9f]
-  Pincap 0x081737: IN OUT
-  Pin Default 0x99f3f115: [Fixed] Other at Int ATAPI
-    Conn = ATAPI, Color = Other
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0d
-Node 0x1e [Pin Complex] wcaps 0x40018c: Mono Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x00]
-  Pincap 0x0810: OUT
-  Pin Default 0x901700f0: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x1f [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN
-  Pin Default 0x02a190f0: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-Node 0x20 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x081727: IN
-  Pin Default 0x018130f0: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0x20: IN
-Node 0x21 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0827: IN
-  Pin Default 0x409700f0: [N/A] Aux at Ext N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x22 [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x903300f0: [Fixed] CD at Int N/A
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x23 [Pin Complex] wcaps 0x400080: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x40b700f0: [N/A] Telephony at Ext N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x24 [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x0820: IN
-  Pin Default 0x50f700f0: [N/A] Other at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x25 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x014500f0: [Jack] SPDIF Out at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x02
-Node 0x26 [Power Widget] wcaps 0x500500: Mono
-  Connection: 8
-     0x07* 0x08 0x13 0x14 0x15 0x16 0x17 0x18
-Node 0x27 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x1d
-Node 0x28 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1f 0x20
-Node 0x29 [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 2
-     0x1d 0x20
-Node 0x2a [Audio Mixer] wcaps 0x200101: Stereo
-  Connection: 3
-     0x1f 0x1d 0x20
-Node 0x2b [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x0f
+lspci | grep Audio
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 04)
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001842 high frequency whisteling in one channel
-has duplicate       0001458 hda - High frequency noise in backgroun...
-has duplicate       0001678 nForce (10de:026c) left channel squeals...
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-24-06 16:39 
-----------------------------------------------------------------------
-In case it doesn't work, try to specify model=3stack to be sure.
 
 ----------------------------------------------------------------------
  tiwai - 03-29-06 19:08 
 ----------------------------------------------------------------------
-The fix is on CVS.
+There must be related kernel error messages.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-05 11:26 jrgns          New Issue                                    
-11-24-05 11:26 jrgns          Distribution              => Gentoo          
-11-24-05 11:26 jrgns          Kernel Version            => 2.6.14-rc2      
-11-24-05 12:14 jrgns          Note Added: 0006840                          
-11-24-05 12:14 jrgns          Note Added: 0006841                          
-02-04-06 23:15 eIf            Note Added: 0007927                          
-02-04-06 23:15 eIf            Issue Monitored: eIf                         
-02-05-06 06:31 gerick         Issue Monitored: gerick                      
-02-08-06 13:11 simonckenyon   Issue Monitored: simonckenyon                    
-02-18-06 19:16 fluor          Note Added: 0008122                          
-02-18-06 19:48 chalvorson     Issue Monitored: chalvorson                    
-02-19-06 21:49 jrgns          Note Added: 0008137                          
-02-19-06 21:57 eIf            Note Added: 0008138                          
-03-04-06 18:23 merin          Note Added: 0008350                          
-03-04-06 18:24 merin          Note Edited: 0008350                         
-03-04-06 19:11 rlrevell       Note Added: 0008352                          
-03-04-06 22:02 merin          Note Added: 0008354                          
-03-05-06 11:29 merin          Issue Monitored: merin                       
-03-06-06 05:48 stevenellis    Issue Monitored: stevenellis                    
-03-14-06 17:09 tiwai          Note Added: 0008493                          
-03-14-06 17:16 fluor          Note Added: 0008494                          
-03-14-06 17:29 rlrevell       Note Added: 0008497                          
-03-14-06 17:33 tiwai          Note Added: 0008498                          
-03-14-06 17:36 merin          Note Added: 0008499                          
-03-14-06 17:44 tiwai          Note Added: 0008500                          
-03-14-06 17:55 fluor          Note Added: 0008503                          
-03-14-06 21:41 merin          Note Added: 0008514                          
-03-14-06 21:50 rlrevell       Note Added: 0008516                          
-03-14-06 22:06 merin          Note Added: 0008519                          
-03-14-06 22:15 rlrevell       Note Added: 0008520                          
-03-14-06 22:28 merin          Note Added: 0008521                          
-03-14-06 22:51 merin          Note Edited: 0008521                         
-03-14-06 22:53 merin          Note Added: 0008522                          
-03-14-06 22:54 merin          Note Edited: 0008521                         
-03-14-06 23:28 rlrevell       Note Added: 0008523                          
-03-15-06 11:14 merin          Note Added: 0008529                          
-03-15-06 11:47 tiwai          Note Added: 0008533                          
-03-15-06 12:00 fchevalier     Issue Monitored: fchevalier                    
-03-15-06 12:13 merin          Note Added: 0008537                          
-03-15-06 12:17 tiwai          Note Added: 0008539                          
-03-15-06 12:47 merin          Note Added: 0008542                          
-03-15-06 12:53 tiwai          Note Added: 0008543                          
-03-15-06 13:01 merin          Note Added: 0008544                          
-03-15-06 13:11 tiwai          Note Added: 0008546                          
-03-15-06 15:27 tiwai          Relationship added       has duplicate 0001842
-03-15-06 15:28 tiwai          Relationship added       has duplicate 0001458
-03-15-06 15:47 tiwai          Relationship added       has duplicate 0001678
-03-15-06 20:43 Ka-Ka          Issue Monitored: Ka-Ka                       
-03-16-06 04:44 trekjunky      Note Added: 0008583                          
-03-20-06 02:04 trekjunky      Note Edited: 0008583                         
-03-20-06 03:34 trekjunky      Note Added: 0008707                          
-03-20-06 03:56 trekjunky      Note Edited: 0008707                         
-03-20-06 20:56 trekjunky      Note Added: 0008724                          
-03-24-06 03:30 trekjunky      Note Added: 0008910                          
-03-24-06 16:38 tiwai          Note Added: 0008919                          
-03-24-06 16:38 tiwai          File Added: ad1986a-3stack-fix.diff               
-    
-03-24-06 16:39 tiwai          Note Added: 0008920                          
-03-26-06 08:06 Dr Hotdog      Issue Monitored: Dr Hotdog                    
-03-29-06 19:08 tiwai          Status                   assigned => resolved
-03-29-06 19:08 tiwai          Resolution               open => fixed       
-03-29-06 19:08 tiwai          Note Added: 0009008                          
+03-24-06 13:28 chibo          New Issue                                    
+03-24-06 13:28 chibo          Distribution              => Ubuntu (Breezy) 
+03-24-06 13:28 chibo          Kernel Version            => 2.6.12-10-386   
+03-24-06 14:22 chibo          Issue Monitored: chibo                       
+03-29-06 19:08 tiwai          Note Added: 0009009                          
 ======================================================================
 
 
