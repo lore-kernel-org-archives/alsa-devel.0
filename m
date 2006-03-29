@@ -1,13 +1,14 @@
-From: Christian Henz <chrhenz@gmx.de>
-Subject: Re: ALSA sample rate conversion and general	performance improvements.
-Date: Wed, 29 Mar 2006 19:31:29 +0200
-Message-ID: <20060329173129.GA27846@homer>
-References: <4429C5A4.7@superbug.co.uk> <s5hirpx6256.wl%tiwai@suse.de> <442A5B80.3010706@superbug.co.uk> <1143643959.3402.47.camel@localhost.localdomain>
+From: =?iso-8859-1?B?QXNiavhybiBT5mL4?= <asbjs@stud.ntnu.no>
+Subject: Re: Q: Compiling ALSA for 2.6.16
+Date: Wed, 29 Mar 2006 21:34:03 +0200
+Message-ID: <20060329193403.GA16810@stud.ntnu.no>
+References: <20060323102614.GA19835@stud.ntnu.no> <s5h64m5jv9y.wl%tiwai@suse.de> <20060323132847.GA27484@stud.ntnu.no> <s5h1wwtjn42.wl%tiwai@suse.de> <20060324083712.GD22993@stud.ntnu.no> <s5h4q1nzvgf.wl%tiwai@suse.de> <20060327094537.GA8655@stud.ntnu.no> <1143492843.1792.279.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <1143643959.3402.47.camel@localhost.localdomain>
+In-Reply-To: <1143492843.1792.279.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,61 +18,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 29, 2006 at 09:52:39AM -0500, Paul Davis wrote:
-> On Wed, 2006-03-29 at 11:03 +0100, James Courtier-Dutton wrote:
-> > Takashi Iwai wrote:
-> > > At Wed, 29 Mar 2006 00:24:20 +0100,
-> > > James Courtier-Dutton wrote:
-> > >   
-> > >> Hi,
-> > >>
-> > >> I have had some conversations with various people regarding some general
-> > >> problems some audio developers have with the current ALSA sound model.
-> 
-> Hi James. Not me by any chance? :)
-> 
-> > >> What about doing the following?:
-> > >> We implement a general timer in the alsa core based on something like
-> > >> gettimeofday(). I.e A high resolution timer.
-> > >> Each time a period interrupt happens, the current hw pointer is read,
-> > >> and recorded along with the current value of the timer.
-> > >> This could be used a bit like NTP to correct the generally timer rate.
-> > >> This gives us a general high resolution timer corrected to mirror the
-> > >> PCM clock on the sound card.
-> 
-> to correct something said later, this should be done using a DLL, not a
-> PLL. subtle but significant difference.
-> 
-> > >> Then, from this high resolution timer, we could derive any rate
-> > >> interrupt we need for really excellent sample rate conversion, and sub
-> > >> sample accurate DAC/ADC positioning.
-> > >> One could then read the DAC/ADC positioning really quickly by just
-> > >> reading the high resolution timer, instead of accessing IO Ports on the
-> > >> sound card hardware.
-> > >> This would also be a fairly minor change, as none of the current kernel
-> > >> sound card hw drivers would need changing. We would just have to
-> > >> slightly modify the period_elapsed callback to do a gettimeofday() call
-> > >> as well as it's current hw_pointer read.
-> 
-> i think its more than a minor change. the real benefit of this model
-> (which in my eyes correctly emulates the CoreAudio HAL) is that *if* you
-> have a schedulable high res timer (which linux, appallingly, still does
-> not have; we'll accept HZ=1000 for now, i guess), you don't need the
->
+On Mon, Mar 27, 2006 at 03:54:03PM -0500, Lee Revell wrote:
+> On Mon, 2006-03-27 at 11:45 +0200, Asbj=F8rn S=E6b=F8 wrote:
+> > Actually, ALSA-Configuration.txt does not says this for the VXpocket,=
+=20
+> > only for the snd_hdsp module. =20
+> > But yes, it is enabled (as a module, though):
+> > ------------------------
+> > dhcp91  ~ $ zcat /proc/config.gz |grep FW_LOADER
+> > CONFIG_FW_LOADER=3Dm
+> > -------------------------
+> >=20
+> >=20
+>=20
+> Is the firmware-class module loaded?
 
-Hmm, I though that we DO have schedulable high res timers
-now with the recent hrtimers merge? At least thats what I 
-got from watching the video of the talk on RT patches at 
-FOSDEM (http://free-electrons.com/community/videos/conferences).
-I might have to watch it again to see if that only applied to
-the -rt patch...
+No.  But loading manually does not seem to make any difference.
 
+Asbj=F8rn
 
-cheers,
-Christian
 
 
 -------------------------------------------------------
