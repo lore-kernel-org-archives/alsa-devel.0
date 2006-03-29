@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001979]: Missing symbols in oss mixer code
-Date: Wed, 29 Mar 2006 23:03:11 +0200
-Message-ID: <a665e6195a5d7e6fe94a95edf1576fab@bugtrack.alsa-project.org>
+Date: Wed, 29 Mar 2006 23:05:50 +0200
+Message-ID: <dfabd2822000008b7d845ae0363b4134@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4C7231AC
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 23:03:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2DECE1AC
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 23:05:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1979> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             03-29-2006 23:03 CEST
-Last Modified:              03-29-2006 23:03 CEST
+Last Modified:              03-29-2006 23:05 CEST
 ======================================================================
 Summary:                    Missing symbols in oss mixer code
 Description: 
@@ -48,10 +48,30 @@ fails due to missing symbols.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ zx80user - 03-29-06 23:05 
+----------------------------------------------------------------------
+/ # modprobe snd-pcm-oss
+snd_mixer_oss: Unknown symbol snd_mixer_oss_notify_callback
+WARNING: Error inserting snd_mixer_oss
+(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-mixer-oss.ko): Unknown
+symbol in module, or unknown parameter (see )snd_pcm_oss: Unknown symbol
+snd_mixer_oss_ioctl_card
+FATAL: Error inserting snd_pcm_oss
+(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-pcm-oss.ko): Unknown
+symbol in module, or unknown parameter (see dmesg)
+/ # modprobe snd-mixer-oss
+snd_mixer_oss: Unknown symbol snd_mixer_oss_notify_callback
+FATAL: Error inserting snd_mixer_oss
+(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-mixer-oss.ko): Unknown
+symbol in module, or unknown parameter (see dm)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-29-06 23:03 zx80user       New Issue                                    
+03-29-06 23:04 zx80user       Issue Monitored: zx80user                    
+03-29-06 23:05 zx80user       Note Added: 0009019                          
 ======================================================================
 
 
