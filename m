@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
-Date: Wed, 29 Mar 2006 19:10:24 +0200
-Message-ID: <becf7b36f708a0b860cdba388c980ad1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
+Date: Wed, 29 Mar 2006 19:13:22 +0200
+Message-ID: <1379d0813a7ff8b8acee13223ac7995c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6314A173
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:10:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD236173
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:13:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
 ======================================================================
-Reported By:                fmoraes
-Assigned To:                perex
+Reported By:                flujan
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   371
-Category:                   PCI - cs46xx
+Issue ID:                   1956
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.6-1.435.2.3
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             07-09-2004 15:59 CEST
-Last Modified:              03-29-2006 19:10 CEST
+Date Submitted:             03-23-2006 21:30 CET
+Last Modified:              03-29-2006 19:13 CEST
 ======================================================================
-Summary:                    dmix does not work with snd-cs46xx driver
+Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
 Description: 
-When trying to use dmix with the snd-cs46xx driver, no output is produced.
+The problem where solved in the CVS from 2006-03-01 but in the rc4 version
+the problem returns. 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-26-06 15:09 
+ flujan - 03-29-06 18:43 
 ----------------------------------------------------------------------
-CS46XX.conf assume hardware mixing for playback and dsnoop for capture
+I have this error with the snd-page-alloc even after a reboot. :( I tried
+to add another note but the site presents a error message. :(
 
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/conf/cards/CS46xx.conf?r1=1.4&r2=1.5
+How can diagnose this more precisely?
 
-But CS46XX_NEW_DSP is not enabled by default 
-
-remove your .asoundrc and change CS46XX.conf to use dmix similar to
-ICH.conf
-
-The best way is to build the driver with CS46XX_NEW_DSP option
-
-What is the exact model of your sound card ?
-
-
+Thanks in advance.
 
 ----------------------------------------------------------------------
- tiwai - 03-29-06 19:10 
+ tiwai - 03-29-06 19:13 
 ----------------------------------------------------------------------
-dmix doesn't work with the hardware like CS46xx due to its design.  The
-cs46xx has no real mmappable DMA unlike others.
+Dunno.  Try to reinstall again.  Check the permissions and owners of the
+installed module files.
 
-The NEW_DSP option is enabled as default now, so dmix will be really
-unnecessary unless you explicitly choose to disable that option.
+Then check the kernel messages after modprobe.  It might be missing
+symbols.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-04 15:59 fmoraes        New Issue                                    
-07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
-07-15-04 14:10 perex          Status                   new => assigned     
-07-15-04 14:10 perex          Assigned To               => perex           
-03-09-05 03:09 fmoraes        Note Added: 0003823                          
-03-09-05 18:37 tiwai          Note Added: 0003830                          
-03-10-05 15:03 jdthood        Note Added: 0003857                          
-03-11-05 22:14 fmoraes        File Added: .asoundrc                        
-03-11-05 22:15 fmoraes        Note Added: 0003894                          
-03-22-06 03:42 rlrevell       Note Added: 0008832                          
-03-22-06 18:50 tiwai          Note Added: 0008866                          
-03-24-06 02:16 fmoraes        Note Added: 0008907                          
-03-24-06 02:54 Raymond        Note Added: 0008909                          
-03-25-06 02:17 fmoraes        Note Added: 0008940                          
-03-26-06 03:06 Raymond        Note Added: 0008964                          
-03-26-06 03:10 Raymond        Note Edited: 0008964                         
-03-26-06 03:11 Raymond        Note Edited: 0008964                         
-03-26-06 15:09 Raymond        Note Edited: 0008964                         
-03-29-06 19:10 tiwai          Status                   assigned => resolved
-03-29-06 19:10 tiwai          Resolution               open => won't fix   
-03-29-06 19:10 tiwai          Note Added: 0009010                          
+03-23-06 21:30 flujan         New Issue                                    
+03-23-06 21:30 flujan         Distribution              => Slackware       
+03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
+03-24-06 11:57 tiwai          Note Added: 0008914                          
+03-24-06 12:52 er-ku          Note Added: 0008915                          
+03-24-06 13:01 tiwai          Note Added: 0008916                          
+03-25-06 04:33 flujan         Note Added: 0008941                          
+03-25-06 23:27 flujan         Note Added: 0008954                          
+03-26-06 01:35 tiwai          Note Added: 0008958                          
+03-27-06 17:20 flujan         Note Edited: 0008954                         
+03-29-06 18:43 flujan         Note Added: 0008998                          
+03-29-06 19:13 tiwai          Note Added: 0009011                          
 ======================================================================
 
 
