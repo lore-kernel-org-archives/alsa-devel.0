@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001979]: Missing symbols in oss mixer code
-Date: Wed, 29 Mar 2006 23:05:50 +0200
-Message-ID: <dfabd2822000008b7d845ae0363b4134@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: PROBLEM: about module intel8x0.ko
+Date: Wed, 29 Mar 2006 16:06:16 -0500
+Message-ID: <1143666377.13933.17.camel@mindpipe>
+References: <200603291651.10540.fred@lea-linux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2DECE1AC
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 23:05:51 +0200 (MEST)
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 1D0801AC
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 23:06:26 +0200 (MEST)
+In-Reply-To: <200603291651.10540.fred@lea-linux.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +20,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: fred@lea-linux.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2006-03-29 at 16:51 +0200, Fr=E9d=E9ric Bonnaud wrote:
+> 1. with kernel 2.6.16.1 (vanilla on gentoo) (it starts with 2.6.16) mod=
+ule=20
+> intel8x0.ko load but doesn't found my NFORCE - NVidia CK804
+>=20
+> 2. with kernel 2.6.15.*, patched or not by gentoo staff, my device work=
+s very=20
+> well, started with 2.6.16, the module loads, but doesn't found any card=
+=20
+> (cat /proc/asound/cards says : --- no soundcards ---)
+> not any message un /var/log/message, not any message at boot, all seems=
+ good=20
+> except that alsa doesn't know about my card,
+>=20
+> strangely mplayer can play sound (may be using oss interface, because i=
+t says=20
+> that there's no alsa device, and seems to fall back to oss driver)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1979> 
-======================================================================
-Reported By:                zx80user
-Assigned To:                
-======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1979
-Category:                   
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-29-2006 23:03 CEST
-Last Modified:              03-29-2006 23:05 CEST
-======================================================================
-Summary:                    Missing symbols in oss mixer code
-Description: 
-Attempting to load the snd-pcm-oss module and the snd-pcm-mixer modules
-fails due to missing symbols.
+If mplayer can play sounds but /proc/asound/cards says no soundcards
+then you must have compiled the OSS driver into the kernel.  Recompile
+the kernel with all OSS drivers disabled.
 
-
-======================================================================
-
-----------------------------------------------------------------------
- zx80user - 03-29-06 23:05 
-----------------------------------------------------------------------
-/ # modprobe snd-pcm-oss
-snd_mixer_oss: Unknown symbol snd_mixer_oss_notify_callback
-WARNING: Error inserting snd_mixer_oss
-(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-mixer-oss.ko): Unknown
-symbol in module, or unknown parameter (see )snd_pcm_oss: Unknown symbol
-snd_mixer_oss_ioctl_card
-FATAL: Error inserting snd_pcm_oss
-(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-pcm-oss.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
-/ # modprobe snd-mixer-oss
-snd_mixer_oss: Unknown symbol snd_mixer_oss_notify_callback
-FATAL: Error inserting snd_mixer_oss
-(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-mixer-oss.ko): Unknown
-symbol in module, or unknown parameter (see dm)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-29-06 23:03 zx80user       New Issue                                    
-03-29-06 23:04 zx80user       Issue Monitored: zx80user                    
-03-29-06 23:05 zx80user       Note Added: 0009019                          
-======================================================================
-
+Lee
 
 
 
