@@ -1,14 +1,16 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: ALSA sample rate conversion and general performance
- improvements.
-Date: Wed, 29 Mar 2006 11:03:44 +0100
-Message-ID: <442A5B80.3010706@superbug.co.uk>
-References: <4429C5A4.7@superbug.co.uk> <s5hirpx6256.wl%tiwai@suse.de>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: pcm parameters, digital output ...
+Date: Wed, 29 Mar 2006 13:34:41 +0200
+Message-ID: <1143632082.9481.6.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-Q2M5c4rxvpEeV1WLXm6P"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hirpx6256.wl%tiwai@suse.de>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3903E1C2
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 14:37:00 +0200 (MEST)
+Received: from sipsolutions.net (unknown [213.151.39.204])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id DF7E49923E
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 14:36:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,99 +20,105 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 29 Mar 2006 00:24:20 +0100,
-> James Courtier-Dutton wrote:
->   
->> Hi,
->>
->> I have had some conversations with various people regarding some general
->> problems some audio developers have with the current ALSA sound model.
->> One of the biggest problems with the current ALSA model is the sample
->> rate converters. When discussing them here some time ago, the problem
->> centered around the need for a timer interrupt being needed for the
->> application period boundaries, where the hardware might be running at
->> 48000Hz, and the application is trying to play a 44100Hz PCM stream.
->> This is essentially needed so that the poll() calls work in the
->> application correctly.
->>
->> Here is an idea on how to fix it and also slightly improve performance.
->> Some general aims:
->> 1) any ioport access to the sound card is slow and should be avoided
->> whenever possible.
->> 2) where to get the 44100Hz timer from if the hardware is doing 48000Hz.
->>
->> What about doing the following?:
->> We implement a general timer in the alsa core based on something like
->> gettimeofday(). I.e A high resolution timer.
->> Each time a period interrupt happens, the current hw pointer is read,
->> and recorded along with the current value of the timer.
->> This could be used a bit like NTP to correct the generally timer rate.
->> This gives us a general high resolution timer corrected to mirror the
->> PCM clock on the sound card.
->> Then, from this high resolution timer, we could derive any rate
->> interrupt we need for really excellent sample rate conversion, and sub
->> sample accurate DAC/ADC positioning.
->> One could then read the DAC/ADC positioning really quickly by just
->> reading the high resolution timer, instead of accessing IO Ports on the
->> sound card hardware.
->> This would also be a fairly minor change, as none of the current kernel
->> sound card hw drivers would need changing. We would just have to
->> slightly modify the period_elapsed callback to do a gettimeofday() call
->> as well as it's current hw_pointer read.
->>
->> If we then made the correction factor for the high resolution timer
->> available to user space, user space would then not even need to read the
->> current hw position, as it could perfectly predict it itself using the
->> gettimeofday() and correction factor.
->>
->> This would reduce the amount of calls to the read_hw_pointer function in
->> the low level sound card hardware driver, and therefore improve performance.
->>
->> Any comments?
->>     
->
-> I've had the very same idea about using the timer for the update
-> source, especially for sample rate conversion although my point isn't
-> the performance gain by avoiding IO read.
->
-> My idea is to make the system choose arbitrary irq sources, e.g. the
-> period irq, timer irq, etc.  The default is the period irq, or
-> whatever the driver provides.  But, the app or alsa-lib can switch to
-> a suitable one.
->
-> In the case of timer irq, it's not necessarily a constant period.  You
-> can tweak the period appropriately by adjusting the pace using a
-> software PLL.  This would require read of hwptr as well as the normal
-> update, but it's necessary to get the stream sync with the soundcard
-> time.  If you don't refer to the hw ptrs, you'll get a significant
-> drift in a long run.
->
->
-> Takashi
->
->   
 
-I agree, the irq source itself does not actually matter. just access the 
-hw_ptr on each irq is all we need.
-I think that accessing the hw_ptr once per period is perfectly Ok from a 
-performance perspective, but any more than that is unnecessary. One 
-could even do it once per buffer period without any serious loss of 
-accuracy.
-This approach would also reduce the amount of task switching because we 
-could then have a userspace timer triggering events by simply using 
-nanosleep().
-The timer irqs would simply be for calculating the correction factor to 
-gettimeofday() (get it in sync with the audio hardware clock), and could 
-work asynchronously from the userspace timer triggering events.
+--=-Q2M5c4rxvpEeV1WLXm6P
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-James
+On Mon, 2006-03-27 at 17:37 +0200, Takashi Iwai wrote:
 
- 
+> It's hard to restrict parameters on demands (although theoretically
+> it's possible).  We usually provide two different devices, one for
+> the normal i/o and another for the digital i/o, to avoid such
+> conflicts.
+>=20
+> The apps that send to the digital data would choose "spdif" or
+> whatever appropriate PCM name, and the system will reroute it.
+
+I thought about this a bit more now...
+
+Just FYI, the codec chip I'm working against is capable of generating
+digital out and analog out at the same time, so I'd rather not create
+two PCMs because then you'd have the problem that for one, only one of
+the two can be active at the same time, and secondly, when the analog
+output is active, the same data can also go out of the spdif port. Which
+is a bit icky, and definitely hard to understand. Hence, I'd rather not
+create extra streams for this.
+
+I've been browsing the source for this and have a few questions:
+
+What is the point in having "Con Mask", "Pro Mask" and just "Mask"?
+Doesn't "Mask" subsume the other two, and in the "Pro Mask" the consumer
+mode bit cannot be set (which ac97 seems to still allow...)? Just has me
+puzzled.
+Anyway, that isn't really the point.
+
+Looking at the ac97 api, it specifies the SPDIF controls as part of the
+mixer. Shouldn't those rather be tied to a specific PCM?
+
+I think that there isn't much we can do without breaking everything. I
+think it'd probably be best to add a new "pcm" format for the compressed
+data. The current ac3play is using 16bit signed little endian pcm data
+(SND_PCM_FORMAT_S16_LE), which is not really what it is sending, it
+isn't sending PCM data at all.
+Something like SND_PCM_FORMAT_SPDIF_NONPCM would be fine. Then
+applications would use that to announce that they're sending non-pcm
+data down the 'pcm' device...
+
+Now note that there's a problem with old applications: using
+SND_PCM_FORMAT_S16_LE they would, after adding
+SND_PCM_FORMAT_SPDIF_NONPCM, assert that they are indeed sending PCM
+data, which my driver would actually allow the user o play on the analog
+output then, if it relies on he application telling the truth using
+SND_PCM_FORMAT_SPDIF_NONPCM. But I don't think there's any better
+choice.
+
+If I were to rewrite this (as you hinted an another mail), I'd rename
+the 'pcm' devices to 'datapump' devices and make the format parameter
+actually two related parameters: data type (pcm/non-pcm), and data
+format (word size etc.), where the data format is a sub-type of the data
+type so to speak.
+Note that currently, the only non-pcm data types would be U16_LE and
+U16_BE (if the hardware does byteswaps), so it might be sufficient to
+define SND_DATA_FORMAT_NONPCM_16_LE and SND_DATA_FORMAT_NONPCM_16_BE
+(signedness isn't relevant in this case), and keep the current
+SND_PCM_FORMAT_S16_LE as SND_DATA_FORMAT_PCM_S16_LE in the same format
+parameter.
+
+However, then the space in the 64 bits of 'format' would be nearing
+being used up once some more non-pcm formats are defined, though that
+should only be relevant for future hardware since the spdif bitstream is
+defined via the spdif mask controls.
+
+johannes
+
+--=-Q2M5c4rxvpEeV1WLXm6P
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIUAwUARCpw0KVg1VMiehFYAQKiRA/3W/MSXdyuMlNN5Qi+QSn07OQVuH2yXMLJ
+6OaWmYz8qcQaedNzZf1twG5LDL2j5B8ujoCmCx4O3klhC6s+o/IWafKfPZ16dT8l
+iBsui7oQ2X6FU6U4U3jQOYU274hZP4EAkFfoTnDXsGt4aTByTEnMCxaD6jfuDyhv
+7YoiP746m/yJsEuvXl7EEBv1/iauQmNNUAuSztHPWhOaxrfjmdRJczEhHq1LOwZr
+IMBd+X7d3pCYEhjRHi75BgLrEkP/CTuocWLfMvw63KHCxjzQvJXorLAwX4mKABKQ
+PH7TfKpkMFQchI60fKlPiAN72ShkoT6dlMe543cTMG0K+sGwMPCm+yuCN4HEeDB0
+xgzHgTblic3ig6V8GQVTUhXZX8cKlRKtXRrpQPrBihMFypWoRGm7LRXSEw49FHrZ
+jgDy/95Un5CvOdQvo9IiKH1KEd1bfFU3Uca5udePGE4GZi/E26PZ7icaxvKGvWFk
+2hMpFGZdOkulZ/a8nr6RGvaNXqoBeTNE2jOFpVKYD7NnWtebPaAtKj4hlAEPhJRr
+sdJ94yNe84lHPubthkr5FqKJfo9uzqEB6lSxa9QlYmK7bqIj5d4dkJIiYVYSgQ2A
+k9yEYafJFwbVkLAQTbuqF2MY7vmn+udd5+fN/3Z6yb1vhYxLWSg3WoiCNZJx9IRI
+qcS2AMBKiQ==
+=YFaf
+-----END PGP SIGNATURE-----
+
+--=-Q2M5c4rxvpEeV1WLXm6P--
+
 
 
 -------------------------------------------------------
