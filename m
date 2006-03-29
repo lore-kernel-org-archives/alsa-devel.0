@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001970]: Applied dff from 1596 fixed high pitched whine out of left chael but on shutdown crashes computer
-Date: Wed, 29 Mar 2006 19:16:10 +0200
-Message-ID: <b68b5028bfd0ef436b7896f102ab3c31@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
+Date: Wed, 29 Mar 2006 19:17:30 +0200
+Message-ID: <94921cdb517dda02e747990f4579198b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D43F163
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:16:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D146718B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:17:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1970> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
 ======================================================================
-Reported By:                dlm1065
-Assigned To:                perex
+Reported By:                Jeff250
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1970
-Category:                   0_compilation problem_!!!
+Issue ID:                   1963
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16
+Status:                     resolved
+Distribution:               Ubuntu Dapper
+Kernel Version:             2.6.15-19-686
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-28-2006 04:16 CEST
-Last Modified:              03-29-2006 19:16 CEST
+Date Submitted:             03-25-2006 03:35 CET
+Last Modified:              03-29-2006 19:17 CEST
 ======================================================================
-Summary:                    Applied dff from 1596 fixed high pitched whine out
-of left chael but on shutdown crashes computer
+Summary:                    Returning from suspend-to-ram "mutes" sounds
 Description: 
-I made an ebuild adding the diff from
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1596 to get d of the
-whine.
-
-Ebuild fixes whine but shutdown does NOT release a lock on some resource
-and comp locks up
+I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
+STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
+the sound is "muted" in that alsamixer does not actually show any tracks
+to be muted, but changing the master volume up or down restores sound
+output.  As a workaround, I've added to my resume script an amixer command
+to slightly modify the volume automatically on resume from suspend.  I'm
+using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
+1.0.10.  Thanks for your time.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-06 19:16 
+ Jeff250 - 03-26-06 04:26 
 ----------------------------------------------------------------------
-Why it shows version 1.0.11rc3 even if you installed rc4?
+I just tested it, and it suffers from the same problem.
+
+----------------------------------------------------------------------
+ tiwai - 03-29-06 19:17 
+----------------------------------------------------------------------
+This should be now fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-28-06 04:16 dlm1065        New Issue                                    
-03-28-06 04:16 dlm1065        File Added: alsa-driver.tar.gz                    
-03-28-06 04:16 dlm1065        Distribution              => Gentoo          
-03-28-06 04:16 dlm1065        Kernel Version            => 2.6.16          
-03-29-06 19:16 tiwai          Note Added: 0009012                          
+03-25-06 03:35 Jeff250        New Issue                                    
+03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
+03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
+03-26-06 01:28 tiwai          Note Added: 0008956                          
+03-26-06 04:26 Jeff250        Note Added: 0008965                          
+03-29-06 19:17 tiwai          Status                   assigned => resolved
+03-29-06 19:17 tiwai          Resolution               open => fixed       
+03-29-06 19:17 tiwai          Note Added: 0009013                          
 ======================================================================
 
 
