@@ -1,11 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: ALSA sample rate conversion and general performance improvements.
-Date: Wed, 29 Mar 2006 00:24:20 +0100
-Message-ID: <4429C5A4.7@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001975]: Volume setting fix
+Date: Wed, 29 Mar 2006 11:16:25 +0200
+Message-ID: <2fbb5ccd7be72b6c4f67840376aac133@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1E9216B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 11:16:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,57 +18,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I have had some conversations with various people regarding some general
-problems some audio developers have with the current ALSA sound model.
-One of the biggest problems with the current ALSA model is the sample
-rate converters. When discussing them here some time ago, the problem
-centered around the need for a timer interrupt being needed for the
-application period boundaries, where the hardware might be running at
-48000Hz, and the application is trying to play a 44100Hz PCM stream.
-This is essentially needed so that the poll() calls work in the
-application correctly.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1975> 
+======================================================================
+Reported By:                ISBear
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1975
+Category:                   PCI - cs4281
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               LFS 6.1 modified
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             03-29-2006 11:16 CEST
+Last Modified:              03-29-2006 11:16 CEST
+======================================================================
+Summary:                    Volume setting fix
+Description: 
+alsa-kernel/pci/cs4281.c: 1044:
+	if (ucontrol->value.integer.value[0] != volL) {
+		volL = CS_VOL_MASK - (ucontrol->value.integer.value[0] & CS_VOL_MASK);
+		snd_cs4281_pokeBA0(chip, regL, volL);
+		change = 1;
+	}
+-	if (ucontrol->value.integer.value[0] != volL) {
++	if (ucontrol->value.integer.value[1] != volR) {
+		volR = CS_VOL_MASK - (ucontrol->value.integer.value[1] & CS_VOL_MASK);
+		snd_cs4281_pokeBA0(chip, regR, volR);
+		change = 1;
+	}
 
-Here is an idea on how to fix it and also slightly improve performance.
-Some general aims:
-1) any ioport access to the sound card is slow and should be avoided
-whenever possible.
-2) where to get the 44100Hz timer from if the hardware is doing 48000Hz.
+======================================================================
 
-What about doing the following?:
-We implement a general timer in the alsa core based on something like
-gettimeofday(). I.e A high resolution timer.
-Each time a period interrupt happens, the current hw pointer is read,
-and recorded along with the current value of the timer.
-This could be used a bit like NTP to correct the generally timer rate.
-This gives us a general high resolution timer corrected to mirror the
-PCM clock on the sound card.
-Then, from this high resolution timer, we could derive any rate
-interrupt we need for really excellent sample rate conversion, and sub
-sample accurate DAC/ADC positioning.
-One could then read the DAC/ADC positioning really quickly by just
-reading the high resolution timer, instead of accessing IO Ports on the
-sound card hardware.
-This would also be a fairly minor change, as none of the current kernel
-sound card hw drivers would need changing. We would just have to
-slightly modify the period_elapsed callback to do a gettimeofday() call
-as well as it's current hw_pointer read.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-29-06 11:16 ISBear         New Issue                                    
+03-29-06 11:16 ISBear         Distribution              => LFS 6.1 modified
+03-29-06 11:16 ISBear         Kernel Version            => 2.6.16          
+======================================================================
 
-If we then made the correction factor for the high resolution timer
-available to user space, user space would then not even need to read the
-current hw position, as it could perfectly predict it itself using the
-gettimeofday() and correction factor.
 
-This would reduce the amount of calls to the read_hw_pointer function in
-the low level sound card hardware driver, and therefore improve performance.
-
-Any comments?
-
-James
 
 
 -------------------------------------------------------
