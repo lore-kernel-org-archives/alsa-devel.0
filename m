@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001940]: enemy territory has no sound on ICE1724
-Date: Wed, 29 Mar 2006 19:24:21 +0200
-Message-ID: <30bc1a74be72734d8deda6d4af165d88@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001532]: Mute controls are gone, therefore unmuting impossible and no sound: NM256,AC97
+Date: Wed, 29 Mar 2006 19:25:19 +0200
+Message-ID: <1af320148f8d69c115024d0040825fe8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC5B718B
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:24:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD184193
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:25:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,92 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1940> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1532> 
 ======================================================================
-Reported By:                oscar
+Reported By:                sstefan
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1940
-Category:                   PCI - ice1724
+Issue ID:                   1532
+Category:                   PCI - nm256
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
 Distribution:               Debian
-Kernel Version:             2.6.15 (Debian')
-Resolution:                 duplicate
-Duplicate:                  1634
+Kernel Version:             2.6.13
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-18-2006 00:28 CET
-Last Modified:              03-29-2006 19:24 CEST
+Date Submitted:             11-06-2005 19:32 CET
+Last Modified:              03-29-2006 19:25 CEST
 ======================================================================
-Summary:                    enemy territory has no sound on ICE1724
+Summary:                    Mute controls are gone, therefore unmuting
+impossible and no sound: NM256,AC97
 Description: 
-
-Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
-13:30:21 2005 UTC).
-
-Enemy territory starts without sound.
-Reports this error:
-------- sound initialization -------
-/dev/dsp: Invalid argument
-Could not set /dev/dsp to stereo=2------------------------------------
-
-Strace:
-open("/dev/dsp", O_RDWR)                = 327
-getuid32()                              = 1000
-setresuid32(-1, 1000, -1)               = 0
-ioctl(327, SNDCTL_DSP_GETCAPS, 0xbfb7eddc) = 0
-ioctl(327, SNDCTL_DSP_STEREO, 0xbfb7edd4) = -1 EINVAL (Invalid argument)
-write(2, "/dev/dsp: Invalid argument\n", 27) = 27
-write(2, "Could not set /dev/dsp to stereo"..., 34) = 34
-close(327)                              = 0
-write(2, "--------------------------------"..., 37) = 37
-
-
-SNDCTL_DSP_STEREO fails on /dev/dsp.
-
-Unfortunately all wrappers misbehave with this damned game...
-I run this to get this far: "et.x86 0 0 direct" >
-/proc/asound/card0/pcm0p/oss
-without that the game exits with and MMAP error (it's a known issue with
-q3 engine, I am only writing it here so noone will suggest it as a
-workaround).
-
-I appreciate any help/advice.
-Willing to compile and test code.
-
-
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001634 lack of mmap support with ice1724
+Upgrading from Linux 2.6.10 to 2.6.13, I was no longer able to use the alsa
+nm256 driver, because the mute controls (e.g. for Master and PCM output)
+disappeared from alsamixer or kmix. The chip is muted by default, so upon
+playing nothing is output to the speakers, and there's no way to unmute
+the channels.
 ======================================================================
 
 ----------------------------------------------------------------------
- oscar - 03-18-06 00:31 
+ rlrevell - 03-16-06 08:03 
 ----------------------------------------------------------------------
-I forgot the exact hw specs:
+Was this ever resolved?
 
-0 [SN25P          ]: ICE1724 - Shuttle SN25P
-                     Shuttle SN25P at 0xa000, irq 20
+----------------------------------------------------------------------
+ tiwai - 03-29-06 19:25 
+----------------------------------------------------------------------
+This issue should have been fixed in 1.0.11rc4.  It has a static resolution
+table.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-18-06 00:28 oscar          New Issue                                    
-03-18-06 00:28 oscar          Distribution              => Debian          
-03-18-06 00:28 oscar          Kernel Version            => 2.6.15 (Debian')
-03-18-06 00:28 oscar          Issue Monitored: oscar                       
-03-18-06 00:31 oscar          Note Added: 0008666                          
-03-29-06 19:24 tiwai          Relationship added       duplicate of 0001634
-03-29-06 19:24 tiwai          Duplicate ID             0 => 1634           
-03-29-06 19:24 tiwai          Status                   new => resolved     
-03-29-06 19:24 tiwai          Resolution               open => duplicate   
-03-29-06 19:24 tiwai          Assigned To               => tiwai           
+11-06-05 19:32 sstefan        New Issue                                    
+11-06-05 19:32 sstefan        Distribution              => Debian          
+11-06-05 19:32 sstefan        Kernel Version            => 2.6.13          
+11-08-05 18:29 tiwai          Note Added: 0006632                          
+11-10-05 00:23 sstefan        Note Added: 0006658                          
+11-10-05 22:31 sstefan        Note Added: 0006674                          
+03-16-06 08:03 rlrevell       Note Added: 0008589                          
+03-29-06 19:25 tiwai          Status                   assigned => resolved
+03-29-06 19:25 tiwai          Resolution               open => fixed       
+03-29-06 19:25 tiwai          Note Added: 0009015                          
 ======================================================================
 
 
