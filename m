@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001977]: Compilation fails due to bad configuration step
-Date: Wed, 29 Mar 2006 18:52:57 +0200
-Message-ID: <1f00a5b344e41aa4a084897bc72172da@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001954]: Patch from bug 0001895 hasn't been put in CVS yet
+Date: Wed, 29 Mar 2006 18:55:16 +0200
+Message-ID: <72076a8e7ea369f945744b21224e2faf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59AC4132
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 18:52:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 341B6132
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 18:55:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1977> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1954> 
 ======================================================================
-Reported By:                Faber
-Assigned To:                perex
+Reported By:                johnfivealive
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1977
-Category:                   0_compilation problem_!!!
+Issue ID:                   1954
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora 5 x86_64
+Kernel Version:             2.6.15-1.2054_FC5
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-29-2006 15:43 CEST
-Last Modified:              03-29-2006 18:52 CEST
+Date Submitted:             03-23-2006 07:17 CET
+Last Modified:              03-29-2006 18:55 CEST
 ======================================================================
-Summary:                    Compilation fails due to bad configuration step
+Summary:                    Patch from bug 0001895 hasn't been put in CVS yet
 Description: 
-Configure detects Via C3-2 system as "unknown", causing incorrect detection
-of vmalloc_to_page, pci_saved_config, new_pci_save_state. This causes
-compilation to fail.
+Hello, the patch created in bug 0001895 as far as I can see hasn't been
+applied to CVS yet. The last note from tiwai says he put it in CVS, but
+I'm assuming he meant to but perhaps forgot. This is just a reminder if
+that is the case. I tried the patch myself and my onboard sound seems to
+be working fine now. My mobo is an Asus A8N-VM, same chip discussed in bug
+0001895. Thanks.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-06 18:52 
+ johnfivealive - 03-27-06 06:49 
 ----------------------------------------------------------------------
-The pactch is applied to CVS.  Thanks.
+There seems to be one small problem now, the GNOME Volume Control mixer
+seems to now be selecting the Headphone channel as the main volume control
+instead of the Front channel, which appears to be the one which controls
+the main volume. The Volume Control program seems to be selecting the
+correct main channel (Front) with model=laptop, not sure what the
+discrepancy here is and how I would go about correcting it. Maybe a
+setting in the driver could correct this?
+
+----------------------------------------------------------------------
+ tiwai - 03-29-06 18:55 
+----------------------------------------------------------------------
+It's basically an issue of mixer apps, which don't let you access the
+"Front" control.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-06 15:43 Faber          New Issue                                    
-03-29-06 15:43 Faber          File Added: c3_2_configure.patch                  
- 
-03-29-06 15:53 Faber          Issue Monitored: Faber                       
-03-29-06 18:52 tiwai          Status                   assigned => resolved
-03-29-06 18:52 tiwai          Resolution               open => fixed       
-03-29-06 18:52 tiwai          Note Added: 0009002                          
+03-23-06 07:17 johnfivealive  New Issue                                    
+03-23-06 07:17 johnfivealive  Distribution              => Fedora 5 x86_64 
+03-23-06 07:17 johnfivealive  Kernel Version            => 2.6.15-1.2054_FC5
+03-23-06 07:19 johnfivealive  Issue Monitored: johnfivealive                    
+03-23-06 11:08 tiwai          Note Added: 0008880                          
+03-23-06 21:01 johnfivealive  Note Added: 0008902                          
+03-23-06 21:08 tiwai          Note Added: 0008903                          
+03-24-06 06:18 johnfivealive  Note Added: 0008913                          
+03-26-06 01:54 tiwai          Note Added: 0008962                          
+03-27-06 06:44 johnfivealive  Note Added: 0008990                          
+03-27-06 06:49 johnfivealive  Note Added: 0008991                          
+03-29-06 18:55 tiwai          Status                   assigned => resolved
+03-29-06 18:55 tiwai          Resolution               open => fixed       
+03-29-06 18:55 tiwai          Note Added: 0009003                          
 ======================================================================
 
 
