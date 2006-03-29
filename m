@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
-Date: Wed, 29 Mar 2006 19:17:30 +0200
-Message-ID: <94921cdb517dda02e747990f4579198b@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001545]: Flash player hangs in Firefox when using aoss
+Date: Wed, 29 Mar 2006 19:20:14 +0200
+Message-ID: <7f8758606aadaabac8f97d21c2bd86a7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D146718B
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:17:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7CAF18B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:20:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1545> 
 ======================================================================
-Reported By:                Jeff250
+Reported By:                smagoun
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1963
-Category:                   PCI - hda-intel
+Project:                    ALSA - liboss
+Issue ID:                   1545
+Category:                   
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Ubuntu Dapper
-Kernel Version:             2.6.15-19-686
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-25-2006 03:35 CET
-Last Modified:              03-29-2006 19:17 CEST
+Date Submitted:             11-11-2005 21:30 CET
+Last Modified:              03-29-2006 19:20 CEST
 ======================================================================
-Summary:                    Returning from suspend-to-ram "mutes" sounds
+Summary:                    Flash player hangs in Firefox when using aoss
 Description: 
-I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
-STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
-the sound is "muted" in that alsamixer does not actually show any tracks
-to be muted, but changing the master volume up or down restores sound
-output.  As a workaround, I've added to my resume script an amixer command
-to slightly modify the volume automatically on resume from suspend.  I'm
-using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
-1.0.10.  Thanks for your time.
+I'm trying to get aoss to work with Firefox 1.5b2 and the Flash 7 plugin on
+an XScale (PXA 270) running Linux 2.6.13.4. Problem is, the browser hangs
+when navigating off a page that has Flash w/ sounds. The problem only
+happens when using aoss. GDB reports that the browser's hung up in
+snd_pcm_wait_nocheck, called from snd_pcm_dmix_drain.
+
+This sounds a bit like
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1306, which was
+reportedly fixed in ALSA
+1.0.9a. I'm using the 1.0.9b drivers from 2.6.13.4 (plus patches for the
+AC97 that were subsequently rolled into 2.6.14). Upgrading alsa-oss and
+alsa-libs to 1.0.10rc3 didn't fix the problem.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001559 hang in snd_pcm_drain()
 ======================================================================
 
 ----------------------------------------------------------------------
- Jeff250 - 03-26-06 04:26 
+ smagoun - 03-23-06 23:30 
 ----------------------------------------------------------------------
-I just tested it, and it suffers from the same problem.
+I can no longer reproduce this after upgrading to alsa-lib 1.0.11rc4,
+alsa-utils 1.0.11rc4, and alsa-oss 1.0.11rc3.
 
 ----------------------------------------------------------------------
- tiwai - 03-29-06 19:17 
+ tiwai - 03-29-06 19:20 
 ----------------------------------------------------------------------
-This should be now fixed on CVS.
+OK, then let's close.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-06 03:35 Jeff250        New Issue                                    
-03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
-03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
-03-26-06 01:28 tiwai          Note Added: 0008956                          
-03-26-06 04:26 Jeff250        Note Added: 0008965                          
-03-29-06 19:17 tiwai          Status                   assigned => resolved
-03-29-06 19:17 tiwai          Resolution               open => fixed       
-03-29-06 19:17 tiwai          Note Added: 0009013                          
+11-11-05 21:30 smagoun        New Issue                                    
+12-22-05 11:43 ikonst         Issue Monitored: ikonst                      
+12-22-05 11:43 ikonst         Note Added: 0007122                          
+03-04-06 16:32 gvy            Note Added: 0008349                          
+03-04-06 16:33 gvy            Issue Monitored: gvy                         
+03-04-06 19:07 rlrevell       Relationship added       related to 0001559  
+03-04-06 19:15 gvy            Note Added: 0008353                          
+03-07-06 15:25 tiwai          Note Added: 0008366                          
+03-07-06 15:30 gvy            Note Added: 0008368                          
+03-23-06 23:30 smagoun        Note Added: 0008905                          
+03-29-06 19:20 tiwai          Status                   new => resolved     
+03-29-06 19:20 tiwai          Resolution               open => fixed       
+03-29-06 19:20 tiwai          Assigned To               => tiwai           
+03-29-06 19:20 tiwai          Note Added: 0009014                          
 ======================================================================
 
 
