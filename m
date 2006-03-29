@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
-Date: Wed, 29 Mar 2006 19:13:22 +0200
-Message-ID: <1379d0813a7ff8b8acee13223ac7995c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001970]: Applied dff from 1596 fixed high pitched whine out of left chael but on shutdown crashes computer
+Date: Wed, 29 Mar 2006 19:16:10 +0200
+Message-ID: <b68b5028bfd0ef436b7896f102ab3c31@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD236173
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:13:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D43F163
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 19:16:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1970> 
 ======================================================================
-Reported By:                flujan
-Assigned To:                tiwai
+Reported By:                dlm1065
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1956
-Category:                   PCI - hda-intel
+Issue ID:                   1970
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.13
+Distribution:               Gentoo
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             03-23-2006 21:30 CET
-Last Modified:              03-29-2006 19:13 CEST
+Date Submitted:             03-28-2006 04:16 CEST
+Last Modified:              03-29-2006 19:16 CEST
 ======================================================================
-Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
+Summary:                    Applied dff from 1596 fixed high pitched whine out
+of left chael but on shutdown crashes computer
 Description: 
-The problem where solved in the CVS from 2006-03-01 but in the rc4 version
-the problem returns. 
+I made an ebuild adding the diff from
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1596 to get d of the
+whine.
+
+Ebuild fixes whine but shutdown does NOT release a lock on some resource
+and comp locks up
 ======================================================================
 
 ----------------------------------------------------------------------
- flujan - 03-29-06 18:43 
+ tiwai - 03-29-06 19:16 
 ----------------------------------------------------------------------
-I have this error with the snd-page-alloc even after a reboot. :( I tried
-to add another note but the site presents a error message. :(
-
-How can diagnose this more precisely?
-
-Thanks in advance.
-
-----------------------------------------------------------------------
- tiwai - 03-29-06 19:13 
-----------------------------------------------------------------------
-Dunno.  Try to reinstall again.  Check the permissions and owners of the
-installed module files.
-
-Then check the kernel messages after modprobe.  It might be missing
-symbols.
+Why it shows version 1.0.11rc3 even if you installed rc4?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-06 21:30 flujan         New Issue                                    
-03-23-06 21:30 flujan         Distribution              => Slackware       
-03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
-03-24-06 11:57 tiwai          Note Added: 0008914                          
-03-24-06 12:52 er-ku          Note Added: 0008915                          
-03-24-06 13:01 tiwai          Note Added: 0008916                          
-03-25-06 04:33 flujan         Note Added: 0008941                          
-03-25-06 23:27 flujan         Note Added: 0008954                          
-03-26-06 01:35 tiwai          Note Added: 0008958                          
-03-27-06 17:20 flujan         Note Edited: 0008954                         
-03-29-06 18:43 flujan         Note Added: 0008998                          
-03-29-06 19:13 tiwai          Note Added: 0009011                          
+03-28-06 04:16 dlm1065        New Issue                                    
+03-28-06 04:16 dlm1065        File Added: alsa-driver.tar.gz                    
+03-28-06 04:16 dlm1065        Distribution              => Gentoo          
+03-28-06 04:16 dlm1065        Kernel Version            => 2.6.16          
+03-29-06 19:16 tiwai          Note Added: 0009012                          
 ======================================================================
 
 
