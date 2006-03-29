@@ -1,18 +1,14 @@
-From: "Ritika Canez" <ritikucan@gemsa.med.ge.com>
-Subject: Re: news ok
-Date: Wed, 29 Mar 2006 08:18:09 -0500
-Message-ID: <000001c65333$396f22a0$a483a8c0@kjc2>
-Reply-To: "Ritika Canez" <ritikucan@gemsa.med.ge.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001977]: Compilation fails due to bad configuration step
+Date: Wed, 29 Mar 2006 15:43:41 +0200
+Message-ID: <f6e920e4186c42ade58670e971215fa9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C65309.509B6490"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFCD01AE
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 15:18:30 +0200 (MEST)
-Received: from gemsa.med.ge.com (unknown [64.141.73.14])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 4637999212
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 15:18:29 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E88DA1AE
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 15:43:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,188 +21,41 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C65309.509B6490
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1977> 
+======================================================================
+Reported By:                Faber
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1977
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             03-29-2006 15:43 CEST
+Last Modified:              03-29-2006 15:43 CEST
+======================================================================
+Summary:                    Compilation fails due to bad configuration step
+Description: 
+Configure detects Via C3-2 system as "unknown", causing incorrect detection
+of vmalloc_to_page, pci_saved_config, new_pci_save_state. This causes
+compilation to fail.
+======================================================================
 
-Hi,
-http://www.showattee.com
-=20
-VwAnLolxUbMx o$s1t,s2f1l
-VjIbAnGwReAn c$l3f,k7x5f
-CbIoAhLtIfSj p$k3p,q3t3q
-
-
-------=_NextPart_000_0001_01C65309.509B6490
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,</DIV>
-<DIV><A =
-href=3D"http://www.showattee.com">http://www.showattee.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>V<span=20
-style=3D"
-float:=20
-right"
->w</span>A<span=20
-style=3D"
-float:=20
-right"
->n</span>L<span=20
-style=3D"
-float:=20
-right"
->o</span>l<span=20
-style=3D"
-float:=20
-right"
->x</span>U<span=20
-style=3D"
-float:=20
-right"
->b</span>M<span=20
-style=3D"
-float:=20
-right"
->x</span>&nbsp;<span=20
-style=3D"
-float:=20
-right"
->o</span>$<span=20
-style=3D"
-float:=20
-right"
->s</span>1<span=20
-style=3D"
-float:=20
-right"
->t</span>,<span=20
-style=3D"
-float:=20
-right"
->s</span>2<span=20
-style=3D"
-float:=20
-right"
->f</span>1<span=20
-style=3D"
-float:=20
-right"
->l</span><BR>
-V<span=20
-style=3D"
-float:=20
-right"
->j</span>I<span=20
-style=3D"
-float:=20
-right"
->b</span>A<span=20
-style=3D"
-float:=20
-right"
->n</span>G<span=20
-style=3D"
-float:=20
-right"
->w</span>R<span=20
-style=3D"
-float:=20
-right"
->e</span>A<span=20
-style=3D"
-float:=20
-right"
->n</span>&nbsp;<span=20
-style=3D"
-float:=20
-right"
->c</span>$<span=20
-style=3D"
-float:=20
-right"
->l</span>3<span=20
-style=3D"
-float:=20
-right"
->f</span>,<span=20
-style=3D"
-float:=20
-right"
->k</span>7<span=20
-style=3D"
-float:=20
-right"
->x</span>5<span=20
-style=3D"
-float:=20
-right"
->f</span><BR>
-C<span=20
-style=3D"
-float:=20
-right"
->b</span>I<span=20
-style=3D"
-float:=20
-right"
->o</span>A<span=20
-style=3D"
-float:=20
-right"
->h</span>L<span=20
-style=3D"
-float:=20
-right"
->t</span>I<span=20
-style=3D"
-float:=20
-right"
->f</span>S<span=20
-style=3D"
-float:=20
-right"
->j</span>&nbsp;<span=20
-style=3D"
-float:=20
-right"
->p</span>$<span=20
-style=3D"
-float:=20
-right"
->k</span>3<span=20
-style=3D"
-float:=20
-right"
->p</span>,<span=20
-style=3D"
-float:=20
-right"
->q</span>3<span=20
-style=3D"
-float:=20
-right"
->t</span>3<span=20
-style=3D"
-float:=20
-right"
->q</span><BR>
-</DIV></BODY></HTML>
-------=_NextPart_000_0001_01C65309.509B6490--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-29-06 15:43 Faber          New Issue                                    
+03-29-06 15:43 Faber          File Added: c3_2_configure.patch                  
+ 
+======================================================================
 
 
 
