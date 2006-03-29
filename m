@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001977]: Compilation fails due to bad configuration step
-Date: Wed, 29 Mar 2006 15:43:41 +0200
-Message-ID: <f6e920e4186c42ade58670e971215fa9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001978]: rate_min 8000 - return by snd_pcm_hw_params_get_rate_min ()
+Date: Wed, 29 Mar 2006 15:53:09 +0200
+Message-ID: <746a7f7fe963e5989b7160080513e589@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E88DA1AE
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 15:43:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0405A1AE
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 15:53:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,37 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1977> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1978> 
 ======================================================================
-Reported By:                Faber
-Assigned To:                perex
+Reported By:                Raymond
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1977
-Category:                   0_compilation problem_!!!
+Issue ID:                   1978
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             03-29-2006 15:43 CEST
-Last Modified:              03-29-2006 15:43 CEST
+Date Submitted:             03-29-2006 15:53 CEST
+Last Modified:              03-29-2006 15:53 CEST
 ======================================================================
-Summary:                    Compilation fails due to bad configuration step
+Summary:                    rate_min 8000 - return by
+snd_pcm_hw_params_get_rate_min ()
 Description: 
-Configure detects Via C3-2 system as "unknown", causing incorrect detection
-of vmalloc_to_page, pci_saved_config, new_pci_save_state. This causes
-compilation to fail.
+rate 8000 is returned by snd_pcm_hw_params_get_rate_min() for "hw" device
+of intel8x0.
+
+static struct snd_pcm_hardware snd_intel8x0_stream =
+{
+	.info =			(SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
+				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+				 SNDRV_PCM_INFO_MMAP_VALID |
+				 SNDRV_PCM_INFO_PAUSE |
+				 SNDRV_PCM_INFO_RESUME),
+	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
+	.rates =		SNDRV_PCM_RATE_48000,
+	.rate_min =		48000,
+	.rate_max =		48000,
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-06 15:43 Faber          New Issue                                    
-03-29-06 15:43 Faber          File Added: c3_2_configure.patch                  
- 
+03-29-06 15:53 Raymond        New Issue                                    
 ======================================================================
 
 
