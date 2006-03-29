@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
-Date: Wed, 29 Mar 2006 18:43:28 +0200
-Message-ID: <1adf2415f9a3c8177ec5083e0df0985b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001978]: rate_min 8000 - return by snd_pcm_hw_params_get_rate_min ()
+Date: Wed, 29 Mar 2006 18:49:02 +0200
+Message-ID: <b147c4703cc07f48f96a416badff38d7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CFCF132
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 18:43:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8EDC0132
+	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2006 18:49:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1978> 
 ======================================================================
-Reported By:                flujan
+Reported By:                Raymond
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1956
-Category:                   PCI - hda-intel
+Issue ID:                   1978
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.13
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-23-2006 21:30 CET
-Last Modified:              03-29-2006 18:43 CEST
+Date Submitted:             03-29-2006 15:53 CEST
+Last Modified:              03-29-2006 18:49 CEST
 ======================================================================
-Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
+Summary:                    rate_min 8000 - return by
+snd_pcm_hw_params_get_rate_min ()
 Description: 
-The problem where solved in the CVS from 2006-03-01 but in the rc4 version
-the problem returns. 
+rate 8000 is returned by snd_pcm_hw_params_get_rate_min() for "hw" device
+of intel8x0.
+
+static struct snd_pcm_hardware snd_intel8x0_stream =
+{
+	.info =			(SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
+				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+				 SNDRV_PCM_INFO_MMAP_VALID |
+				 SNDRV_PCM_INFO_PAUSE |
+				 SNDRV_PCM_INFO_RESUME),
+	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
+	.rates =		SNDRV_PCM_RATE_48000,
+	.rate_min =		48000,
+	.rate_max =		48000,
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-26-06 01:35 
+ tiwai - 03-29-06 18:49 
 ----------------------------------------------------------------------
-The errors are because of snd-page-alloc module that isn't unloaded  by
-alsasound init script.  It's no bug.
-
-Unload it manually after alsasound stop (or reboot should work too, of
-course).
-
-----------------------------------------------------------------------
- flujan - 03-29-06 18:43 
-----------------------------------------------------------------------
-I have this error with the snd-page-alloc even after a reboot. :( I tried
-to add another note but the site presents a error message. :(
-
-How can diagnose this more precisely?
-
-Thanks in advance.
+The behavior is correct.  The values are overwritten at open.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-06 21:30 flujan         New Issue                                    
-03-23-06 21:30 flujan         Distribution              => Slackware       
-03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
-03-24-06 11:57 tiwai          Note Added: 0008914                          
-03-24-06 12:52 er-ku          Note Added: 0008915                          
-03-24-06 13:01 tiwai          Note Added: 0008916                          
-03-25-06 04:33 flujan         Note Added: 0008941                          
-03-25-06 23:27 flujan         Note Added: 0008954                          
-03-26-06 01:35 tiwai          Note Added: 0008958                          
-03-27-06 17:20 flujan         Note Edited: 0008954                         
-03-29-06 18:43 flujan         Note Added: 0008998                          
+03-29-06 15:53 Raymond        New Issue                                    
+03-29-06 18:49 tiwai          Status                   new => resolved     
+03-29-06 18:49 tiwai          Resolution               open => not an issue
+03-29-06 18:49 tiwai          Assigned To               => tiwai           
+03-29-06 18:49 tiwai          Note Added: 0008999                          
 ======================================================================
 
 
