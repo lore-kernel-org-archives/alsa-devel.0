@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001946]: cs46xx in Thinkapad A21m after suspend/resume doesn't play
-Date: Thu, 30 Mar 2006 20:43:14 +0200
-Message-ID: <5e2207eaae67867d5fe3ed574fe63d85@bugtrack.alsa-project.org>
+From: Carlos Munoz <carlos@kenati.com>
+Subject: What is /dev/snd/hwC0D0 used for ?
+Date: Thu, 30 Mar 2006 11:09:02 -0800
+Message-ID: <442C2CCE.5070207@kenati.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8E2D144
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 20:43:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +15,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1946> 
-======================================================================
-Reported By:                marvin
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1946
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.16-RC6
-======================================================================
-Date Submitted:             03-20-2006 20:15 CET
-Last Modified:              03-30-2006 20:43 CEST
-======================================================================
-Summary:                    cs46xx in Thinkapad A21m after suspend/resume
-doesn't play
-Description: 
-When I suspend to Ram and resume cs46xx stop working. If I rmmod modprobe
-snd_cs46xx sound start working, but If I do this often comp sometime
-freeze when I try suspend to RAM.
+Does any anyone know what /dev/snd/hwCxDx and /dev/snd/timer are used for?
+
+Is there a document explaining what all the devices are used for ? I 
+searched but didn't find anything.
+
+Thanks,
 
 
-
-
-======================================================================
-
-----------------------------------------------------------------------
- marvin - 03-22-06 00:42 
-----------------------------------------------------------------------
-If I add to resume function  snd_cs46xx_start_dsp sound start working.
-
-----------------------------------------------------------------------
- philstopford - 03-30-06 20:43 
-----------------------------------------------------------------------
-Same here for a T21. Running /usr/sbin/rcalsasound restart under SUSE 10.0
-fixes it, but kills all sound apps.
-
-Marvin - could you provide a patch for that? I would be interested in
-giving that a go to see if it helps.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-20-06 20:15 marvin         New Issue                                    
-03-20-06 20:15 marvin         Distribution              => Debian Sarge    
-03-20-06 20:15 marvin         Kernel Version            => 2.6.16-RC6      
-03-22-06 00:42 marvin         Note Added: 0008765                          
-03-25-06 21:03 marvin         Issue Monitored: marvin                      
-03-30-06 20:43 philstopford   Note Added: 0009037                          
-======================================================================
-
-
+Carlos Munoz
 
 
 -------------------------------------------------------
