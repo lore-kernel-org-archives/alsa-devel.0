@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001946]: cs46xx in Thinkapad A21m after suspend/resume doesn't play
-Date: Thu, 30 Mar 2006 21:24:47 +0200
-Message-ID: <bc9f93082fe1d5836e03753f9f3245fd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
+Date: Thu, 30 Mar 2006 21:42:41 +0200
+Message-ID: <5e917250f3c3f9a1e50c4eff0fb1b623@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E24EA177
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 21:24:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38DC0177
+	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 21:42:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1946> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
 ======================================================================
-Reported By:                marvin
+Reported By:                kiwi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1946
-Category:                   PCI - cs46xx
+Issue ID:                   1898
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.16-RC6
+Distribution:               Fedora Core 5 test3
+Kernel Version:             2.6.15-1.2009.4.2_FC5
 ======================================================================
-Date Submitted:             03-20-2006 20:15 CET
-Last Modified:              03-30-2006 21:24 CEST
+Date Submitted:             03-09-2006 00:30 CET
+Last Modified:              03-30-2006 21:42 CEST
 ======================================================================
-Summary:                    cs46xx in Thinkapad A21m after suspend/resume
-doesn't play
+Summary:                    no sound from headphones or speakers on asus a6km
+laptop
 Description: 
-When I suspend to Ram and resume cs46xx stop working. If I rmmod modprobe
-snd_cs46xx sound start working, but If I do this often comp sometime
-freeze when I try suspend to RAM.
+The headphone port and the speakers just don't work. Seems like there is
+some control hidden in the mixer which is muted. 
+By setting the master and pcm volume at 100% I can hear just some static
+on song beats only on headphones. Speakers always stay mute.
+I can only get sound by attaching the headphones to line-in and enabling
+"shared" surround mode.
 
-
-
+Same issues with a knoppix 4.0.2.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- philstopford - 03-30-06 20:43 
+ hongqn - 03-27-06 07:16 
 ----------------------------------------------------------------------
-Same here for a T21. Running /usr/sbin/rcalsasound restart under SUSE 10.0
-fixes it, but kills all sound apps.
+# echo "7a 57c1" >  /proc/asound/card0/codec97#0/ac97#0-0+regs
+bash: /proc/asound/card0/codec97#0/ac97#0-0+regs: No such device
 
-Marvin - could you provide a patch for that? I would be interested in
-giving that a go to see if it helps.
+# ls /proc/asound/card0/codec97#0/ac97#0-0+regs
+/proc/asound/card0/codec97#0/ac97#0-0+regs
+
+???
 
 ----------------------------------------------------------------------
- marvin - 03-30-06 21:24 
+ kiwi - 03-30-06 21:42 
 ----------------------------------------------------------------------
-If I will have little time I post a patch, but my patch is ugly solve
-problem but kernel says some about double registred symbols etc. I am not
-kernel guru .... Uf :-(.
+you need to recompile alsa with --debug
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-20-06 20:15 marvin         New Issue                                    
-03-20-06 20:15 marvin         Distribution              => Debian Sarge    
-03-20-06 20:15 marvin         Kernel Version            => 2.6.16-RC6      
-03-22-06 00:42 marvin         Note Added: 0008765                          
-03-25-06 21:03 marvin         Issue Monitored: marvin                      
-03-30-06 20:43 philstopford   Note Added: 0009037                          
-03-30-06 21:24 marvin         Note Added: 0009039                          
+03-09-06 00:30 kiwi           New Issue                                    
+03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
+03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
+03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
+03-09-06 16:41 kiwi           Note Added: 0008391                          
+03-09-06 20:09 michele26x1    Note Added: 0008396                          
+03-09-06 21:02 kiwi           Note Added: 0008397                          
+03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
+03-12-06 15:49 kiwi           Note Added: 0008432                          
+03-12-06 16:40 Rollsappletree Note Added: 0008433                          
+03-13-06 10:10 u238           Note Added: 0008439                          
+03-13-06 10:11 u238           Note Edited: 0008439                         
+03-13-06 10:12 u238           Note Edited: 0008439                         
+03-13-06 23:59 lbenini        Note Added: 0008469                          
+03-23-06 13:56 lbenini        Note Added: 0008881                          
+03-23-06 13:59 lbenini        Note Edited: 0008881                         
+03-24-06 19:22 kiwi           Note Added: 0008934                          
+03-26-06 21:56 kiwi           Note Added: 0008975                          
+03-26-06 22:35 kiwi           Note Added: 0008977                          
+03-26-06 22:54 lbenini        Note Added: 0008978                          
+03-26-06 23:11 kiwi           Note Edited: 0008975                         
+03-26-06 23:13 kiwi           Note Added: 0008979                          
+03-27-06 01:06 michele26x1    Note Added: 0008980                          
+03-27-06 01:38 michele26x1    Note Edited: 0008980                         
+03-27-06 07:16 hongqn         Note Added: 0008992                          
+03-30-06 21:42 kiwi           Note Added: 0009040                          
 ======================================================================
 
 
