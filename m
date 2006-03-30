@@ -1,14 +1,13 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: OSS emulation question
-Date: Thu, 30 Mar 2006 21:43:42 +0100
-Message-ID: <1143751422.9265.1.camel@localhost.localdomain>
-References: <1143673730.15278.7.camel@localhost.localdomain>
-	 <20060330125559.GC12081@turing.informatik.uni-halle.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: What is /dev/snd/hwC0D0 used for ?
+Date: Thu, 30 Mar 2006 16:37:41 -0500
+Message-ID: <1143754662.22530.9.camel@mindpipe>
+References: <442C2CCE.5070207@kenati.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060330125559.GC12081@turing.informatik.uni-halle.de>
+In-Reply-To: <442C2CCE.5070207@kenati.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,33 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Carlos Munoz <carlos@kenati.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-03-30 at 14:55 +0200, Clemens Ladisch wrote:
-> Adrian McMenamin wrote:
-> > My mixer code is currently not working because my device does not report
-> > the availability of SOUND_MASK_VOLUME to the oss emulation code.
+On Thu, 2006-03-30 at 11:09 -0800, Carlos Munoz wrote:
+> Hi all,
 > 
-> ALSA's OSS emulation automatically computed the mask value.
+> Does any anyone know what /dev/snd/hwCxDx and /dev/snd/timer are used for?
 > 
-> > In the olden days I'd just write the ioctl - presumably I don't have to
-> > do that with ALSA? How do I get round it?
-> 
-> See snd_mixer_oss_build() in core/oss/mixer_oss.c for a list of mixer
-> control names that get mapped to OSS controls (e.g., "Master Playback
-> Volume"/"...Switch" would be mapped to SOUND_MIXER_VOLUME).
-> 
-> 
-I have implemented master volume and master switch but all I get is:
 
-audio/gain: setable Volume/PCM-Level not supported by your audio device:
-0000
+Yes, these provide the ioctl() interface (specifically the hwdep and
+timer ioctls, respectively) that alsa-lib uses to communicate with the
+kernel.  They are only intended for use by alsa-lib.
+
+> Is there a document explaining what all the devices are used for ? I 
+> searched but didn't find anything.
+> 
+
+No because these interfaces are intended to be private to alsa-lib.  The
+source code is authoritative.
+
+Lee
 
 
-what is the minimum set of controls I need to have settable volume
-in /dev/mixer (ie oss emulation)?
 
 
 
