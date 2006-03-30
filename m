@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001971]: Some elements incorrectly have capture flags
-Date: Thu, 30 Mar 2006 13:22:58 +0200
-Message-ID: <27966dd504ea9510af75c1eb42863bb0@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Midi name string in mpu401_uart not unique
+Date: Thu, 30 Mar 2006 14:43:17 +0200
+Message-ID: <20060330124317.GB12081@turing.informatik.uni-halle.de>
+References: <200603292313.21160.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1483C191
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 13:22:58 +0200 (MEST)
+In-reply-to: <200603292313.21160.gineera@aspect135.co.uk>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,89 +18,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Alan Horstmann wrote:
+> For a card with ->shortname, snd_mpu401_uart_new creates the same string for 
+> all ports on all cards of same type.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971> 
-======================================================================
-Reported By:                pzad
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1971
-Category:                   simple mixer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-28-2006 12:16 CEST
-Last Modified:              03-30-2006 13:22 CEST
-======================================================================
-Summary:                    Some elements incorrectly have capture flags
-Description: 
-Some elemnts have capture flags even they have nothing to do with capture.
-This will duplicate control in alsamixer - view ALL.
+These names should be overridden by the card driver, but it's perfectly
+valid behaviour.  ALSA sequencer port names are not guaranteed to be
+unique.
 
-On VIA8233A + ALC650:
+> Muse, eg, is unable to distinguish them, and cannot use the second port.
 
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 1 [7%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
-
-On Audigy 1:
-Simple mixer control 'Bass',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 23 [58%]
-  Front Right: 23 [58%]
-Simple mixer control 'Treble',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 27 [68%]
-  Front Right: 27 [68%]
+This is a bug in Muse.
 
 
-======================================================================
-
-----------------------------------------------------------------------
- pzad - 03-30-06 13:13 
-----------------------------------------------------------------------
-Anyway there is still bug, because this "Captrure" mixer element in
-alsamixer doesn't work at all.
-
-----------------------------------------------------------------------
- Raymond - 03-30-06 13:22 
-----------------------------------------------------------------------
-In theory, Bass and Treble is just a 2-band equalizer
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-28-06 12:16 pzad           New Issue                                    
-03-30-06 11:01 Raymond        Note Added: 0009028                          
-03-30-06 12:50 pzad           Note Added: 0009031                          
-03-30-06 13:13 pzad           Note Added: 0009032                          
-03-30-06 13:22 Raymond        Note Added: 0009033                          
-======================================================================
-
-
+Regards,
+Clemens
 
 
 -------------------------------------------------------
