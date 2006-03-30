@@ -1,10 +1,14 @@
-From: list@phasorlab.de (Matthias =?utf-8?Q?K=C3=B6nig?=)
-Subject: Ego Sys, Miditerminal 4140 Driver
-Date: Thu, 30 Mar 2006 18:48:47 +0200
-Message-ID: <87psk3ubdc.fsf@zebra.localdomain>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Ego Sys, Miditerminal 4140 Driver
+Date: Thu, 30 Mar 2006 19:01:58 +0200
+Message-ID: <20060330170158.GG12081@turing.informatik.uni-halle.de>
+References: <87psk3ubdc.fsf@zebra.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <87psk3ubdc.fsf@zebra.localdomain>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,31 +18,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Matthias K??nig <list@phasorlab.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello alsa-devel,
+Matthias K??nig wrote:
+> There is still some work to do, the SMPTE timecode generation will
+> need some kind of control for start/stop of timecode generation and
+> setting the time (timecode generation is done by hardware). I'm not
+> yet sure how to do this; can this be done by ALSA control elements
+> or do I have to create a hwdep device, which would use ioctl?
 
-I own a Miditerminal 4140 by ESI, which is a 4 In 4 Out Midi interface
-with SMPTE timecode generation for the parallel port. Since I want
-this device to work under Linux, I've been working on a driver for
-ALSA.
-It seems that I have some success now. At least I can receive and
-transmit Midi bytes on all 4 In/Out ports. Maybe someone with more
-experience in driver development could take a look at the driver?
-A preliminary version is available from 
-www.phasorlab.de/alsa/mts64.tar.bz2
-Any comments and critics would be highly appreciated.
+Most devices implement this as a separate control MIDI port for vendor-
+specific SysEx messages, where "implements" means that the hardware does
+it this way.
 
-There is still some work to do, the SMPTE timecode generation will
-need some kind of control for start/stop of timecode generation and
-setting the time (timecode generation is done by hardware). I'm not
-yet sure how to do this; can this be done by ALSA control elements
-or do I have to create a hwdep device, which would use ioctl?
-Again, suggestions would be welcome.
 
-Regards,
-Matthias
+HTH
+Clemens
 
 
 -------------------------------------------------------
