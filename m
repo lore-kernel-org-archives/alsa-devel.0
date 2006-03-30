@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
-Date: Thu, 30 Mar 2006 11:41:17 +0200
-Message-ID: <1739395d839a05a7a519bdee25ec8aee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
+Date: Thu, 30 Mar 2006 11:42:38 +0200
+Message-ID: <d04f3a23630cddee6b4b2ea23cc4145e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66A7A15A
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 11:41:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C60518B
+	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 11:42:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,103 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
 ======================================================================
-Reported By:                bambam
+Reported By:                Jeff250
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1938
-Category:                   PCI - emu10k1
+Issue ID:                   1963
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian sid with custom x86-64 kernel
-Kernel Version:             2.6.16-rc6
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     feedback
+Distribution:               Ubuntu Dapper
+Kernel Version:             2.6.15-19-686
 ======================================================================
-Date Submitted:             03-17-2006 20:31 CET
-Last Modified:              03-30-2006 11:41 CEST
+Date Submitted:             03-25-2006 03:35 CET
+Last Modified:              03-30-2006 11:42 CEST
 ======================================================================
-Summary:                    EPIPE on Audigy with surround sound when seeking in
-6 channel sound file
+Summary:                    Returning from suspend-to-ram "mutes" sounds
 Description: 
-Seeking in a 6 channel sound or video file using a surround device gives
-EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
-is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
-userspace. I've tried libs and modules from CVS two days ago with no
-success.
-
+I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
+STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
+the sound is "muted" in that alsamixer does not actually show any tracks
+to be muted, but changing the master volume up or down restores sound
+output.  As a workaround, I've added to my resume script an amixer command
+to slightly modify the volume automatically on resume from suspend.  I'm
+using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
+1.0.10.  Thanks for your time.
 ======================================================================
 
 ----------------------------------------------------------------------
- bambam - 03-30-06 10:30 
+ Jeff250 - 03-29-06 21:46 
 ----------------------------------------------------------------------
-Unfortunately, the problem still exists.
+I'd like to reopen this issue, because the latest CVS seems to not have any
+effect on the issue.
 
 ----------------------------------------------------------------------
- tiwai - 03-30-06 11:41 
+ tiwai - 03-30-06 11:42 
 ----------------------------------------------------------------------
-Be patient until the anon cvs tree is sync'ed.
+I guess you got an old tree before anon cvs tree is synced with the
+developers' tree.  Try to update later again.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 20:31 bambam         New Issue                                    
-03-17-06 20:31 bambam         Distribution              => Debian sid with
-custom x86-64 kernel
-03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
-03-17-06 20:36 bambam         Note Added: 0008656                          
-03-17-06 21:07 bambam         Note Added: 0008659                          
-03-17-06 21:53 bambam         Note Added: 0008662                          
-03-18-06 01:07 rlrevell       Note Added: 0008667                          
-03-18-06 01:11 bambam         Note Added: 0008668                          
-03-18-06 14:44 bambam         Note Added: 0008671                          
-03-20-06 12:25 tiwai          Note Added: 0008715                          
-03-21-06 00:29 bambam         Note Added: 0008733                          
-03-21-06 17:30 tiwai          Status                   new => resolved     
-03-21-06 17:30 tiwai          Resolution               open => fixed       
-03-21-06 17:30 tiwai          Assigned To               => tiwai           
-03-21-06 17:30 tiwai          Note Added: 0008747                          
-03-21-06 20:09 bambam         Status                   resolved => feedback
-03-21-06 20:09 bambam         Resolution               fixed => reopened   
-03-21-06 20:09 bambam         Note Added: 0008759                          
-03-21-06 20:10 tiwai          Status                   feedback => resolved
-03-21-06 20:10 tiwai          Resolution               reopened => fixed   
-03-21-06 20:10 tiwai          Note Added: 0008760                          
-03-24-06 16:55 bambam         Status                   resolved => feedback
-03-24-06 16:55 bambam         Resolution               fixed => reopened   
-03-24-06 16:55 bambam         Note Added: 0008921                          
-03-24-06 17:06 tiwai          Note Added: 0008922                          
-03-24-06 17:29 bambam         Note Added: 0008923                          
-03-24-06 17:34 tiwai          Note Added: 0008925                          
-03-24-06 17:36 tiwai          Status                   feedback => resolved
-03-24-06 17:36 tiwai          Resolution               reopened => fixed   
-03-24-06 17:36 tiwai          Note Added: 0008926                          
-03-24-06 17:38 tiwai          Note Added: 0008927                          
-03-24-06 17:39 tiwai          Status                   resolved => feedback
-03-24-06 17:39 tiwai          Resolution               fixed => reopened   
-03-24-06 17:39 tiwai          Note Added: 0008928                          
-03-24-06 18:07 bambam         Note Added: 0008931                          
-03-24-06 20:11 bambam         File Added: strace.tar.bz2                    
-03-24-06 20:12 bambam         Note Added: 0008935                          
-03-24-06 20:47 bambam         Note Added: 0008936                          
-03-25-06 13:16 bambam         Note Added: 0008946                          
-03-27-06 02:05 bambam         Note Added: 0008981                          
-03-29-06 18:56 tiwai          Status                   feedback => resolved
-03-29-06 18:56 tiwai          Resolution               reopened => fixed   
-03-29-06 18:56 tiwai          Note Added: 0009004                          
-03-29-06 23:30 rhardy         Issue Monitored: rhardy                      
-03-30-06 10:30 bambam         Status                   resolved => feedback
-03-30-06 10:30 bambam         Resolution               fixed => reopened   
-03-30-06 10:30 bambam         Note Added: 0009026                          
-03-30-06 11:41 tiwai          Status                   feedback => resolved
-03-30-06 11:41 tiwai          Resolution               reopened => fixed   
-03-30-06 11:41 tiwai          Note Added: 0009029                          
+03-25-06 03:35 Jeff250        New Issue                                    
+03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
+03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
+03-26-06 01:28 tiwai          Note Added: 0008956                          
+03-26-06 04:26 Jeff250        Note Added: 0008965                          
+03-29-06 19:17 tiwai          Status                   assigned => resolved
+03-29-06 19:17 tiwai          Resolution               open => fixed       
+03-29-06 19:17 tiwai          Note Added: 0009013                          
+03-29-06 21:46 Jeff250        Status                   resolved => feedback
+03-29-06 21:46 Jeff250        Resolution               fixed => reopened   
+03-29-06 21:46 Jeff250        Note Added: 0009018                          
+03-30-06 11:42 tiwai          Note Added: 0009030                          
 ======================================================================
 
 
