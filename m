@@ -1,19 +1,14 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: pcm parameters, digital output ...
-Date: Thu, 30 Mar 2006 17:06:05 +0200
-Message-ID: <1143731165.4617.0.camel@localhost>
-References: <1143632082.9481.6.camel@localhost>
-	 <Pine.LNX.4.61.0603301642170.11712@tm8103.perex-int.cz>
+From: Robert Hardy <rhardy@webcon.ca>
+Subject: Re: Re: [ALSA - driver 0001938]: EPIPE on Audigy with
+ surround sound when seeking in 6 channel sound file
+Date: Thu, 30 Mar 2006 11:25:08 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0603301053330.11382@thor.webcon.net>
+References: <Pine.LNX.4.64.0603291645290.6977@thor.webcon.net>
+ <s5h3bh0l10a.wl%tiwai@suse.de> <s5hzmj8jlpx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-0cQu5W9IEzyCGAU1ftti"
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 170C315A
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 17:06:18 +0200 (MEST)
-Received: from sipsolutions.net (unknown [213.151.39.204])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id AE90A98DDF
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 17:06:17 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.61.0603301642170.11712@tm8103.perex-int.cz>
+In-Reply-To: <s5hzmj8jlpx.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,87 +18,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 30 Mar 2006, Takashi Iwai wrote:
+> At Thu, 30 Mar 2006 11:45:09 +0200,
+>> At Wed, 29 Mar 2006 17:18:59 -0500 (EST),
+>> Robert Hardy wrote:
+>>> Basically I was trying to point out I am also affected by this bug:
+>>> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938
+>>>
+>>> This unfortunately made no difference here. I'm running 2.6.16-rh3 which is 2.6.16.1 with
+>>> custom patches including the recent git commit for [ALSA] version 1.0.11rc4 from here:
+>>> http://www.kernel.org/git/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=1c2e02750b992703a8a18634e08b04353face243
+>>>
+>>> My sound card:
+>>> 02:07.0 Multimedia audio controller: Creative Labs SB0400 Audigy2 Value
+>>>          Subsystem: Creative Labs: Unknown device 1001
+>>>
+>>> This card once worked fine unfortunately I'm not sure with what
+>>> mplayer/alsa-lib/alsa-driver/kernel....
+>>>
+>>> I'm running a i686/32bit mplayer in a 64 bit environment.
 
---=-0cQu5W9IEzyCGAU1ftti
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+>> Strange.  It works fine on my test syetm now with 32bit mplayer on
+>> 64bit kernel.
+>
+> Maybe a dumb question: Did you properly install 32bit library?
+>
+> I often compile/install 64bit lib for debugging 32bit problems, and
+> throw precious hours aways...
 
-On Thu, 2006-03-30 at 16:51 +0200, Jaroslav Kysela wrote:
+I rolled those patches into my alsa-lib rpm before I tested them. Both my
+i686 and x86_64 rpms have the patches. My currrent system has:
 
-> The mask is R/O variable and the bit definitions are different for=20
-> consumer and pro modes, so the driver can describe exactly which bits are=
-=20
-> supported for these two different modes.
+> rpm -qa --qf='%{name}-%{version}-%{release}-%{arch}\n' | grep alsa
+alsa-lib-devel-1.0.11-3.rc4.2.el4-x86_64
+alsa-utils-1.0.11-2.rc4.1.el4-x86_64
+alsa-lib-1.0.11-3.rc4.2.el4-i686
+alsa-lib-devel-1.0.11-3.rc4.2.el4-i686
+alsa-lib-1.0.11-3.rc4.2.el4-x86_64
 
-Yes, I know, I just don't see why there are different modes. If the chip
-has different modes, shouldn't the driver be able to switch between them
-based on the consumer bit in the actual iec958 values it gets from
-userspace?
+Wanting to make sure it wasn't some how getting confused by the x86_64
+libraries, I just now tested only the i686 rpms in my chrooted el4 i386
+environment and the same problem happened.
 
-> AC97 code is probably not a good example. The "shift" to specific PCM=20
-> device is not implemented there. Look to snd_ice1712_spdif_build_controls
-> in ice1712.c . This code is good.
+In Chroot> rpm -qa --qf='%{name}-%{version}-%{release}-%{arch}\n' | grep alsa
+alsa-utils-1.0.11-2.rc4.1.el4-i686
+alsa-lib-devel-1.0.11-3.rc4.2.el4-i686
+alsa-lib-1.0.11-3.rc4.2.el4-i686
 
-Hmm, ok. Did you read my earlier discussion about why I do *not* want a
-shift to a specific pcm device?
+Regards,
+Rob
 
-> I'm not sure, if we need a new format when we have information from the=20
-> control elements, that the stream is not PCM encoded. But on other hand,=20
-> these formats can be used with some conversion layers in alsa-lib=20
-> for handling of these streams and prevent extra things like resampling,=20
-> volume processing etc.
-
-Aha, good point, I could use the iec958 bits to determine the mode. But
-that's out-of-band information, so it is not too nice to rely on it
-imho.
-And exactly like you say, resampling etc. cannot be done on compressed
-information.
-
-> Also, there is a possibility to use subformat value (which is not used=20
-> so far for S16_LE/BE formats) for the non-pcm stream specification.
-
-I'm not too familiar with these internals :)
-
-What I'm currently doing is defining for each codec what kind of
-transfer formats it supports, see=20
-http://johannes.sipsolutions.net/gitweb.cgi?p=3Dsnd-aoa.git;a=3Dblob;h=3De3=
-ca7a269906ceb41b411afcad14c54f4a181588;hb=3D4e1bc0b35020b3b1cac87f60cb67671=
-e2c9a801e;f=3Daoa/codecs/onyx/snd-aoa-codec-onyx.c#l430
-
-Then the generic framework cuts that down to whatever is usable() at the
-moment depending on the selection of the iec958 and analog mute mixer
-elements. Hence there you can see what I'd like to do with a new format
-(which I called SNDRV_PCM_FMTBIT_COMPRESSED_16BE for now).
-
-johannes
-
---=-0cQu5W9IEzyCGAU1ftti
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIVAwUARCvz2qVg1VMiehFYAQINBQ//adP/GPkjOfHGoEW4f3NYqY6uBSUhsg7I
-oO2NQpwCaEEzNKIxs1bDezNX3zTxKLYrGs8+PzzGmtboIb+g4f688GI5x3foROCn
-f+ZnZi9NYrHnSwTWcxwV+YIz82abFpvxT3v5NcCjnYtKtagSXj72rfMhjJdIVfag
-utLY490DprbblaOE8C/xO0f25RAq8fKr1LPTZfztUdZM8OfRmMo6nt+ZgHvdaIXm
-Y9Oh/FnPba8EXcDUVZD2u1nGoHlrrH+N+60rAU4N8QIVuGjJdxDbaL9UhzQKkuhZ
-3Q3jD4cu3q4f/bINCxCXWluNGbnOnZ23x5UxUD3mHCZrAUgcdgVBYwiG/oNcdH9y
-5TOzdQNlYTa1QZR7vHEV13bvpJPjBnMjFORWjyr2qsQ28zBLXg1aCdgaQR/P9zLp
-IaTeGGh+EQEuQoje9IZ+PMc2UUbv0tCq9y5mOI7ZQRBU0zTU524xr9hHjTZoEkvx
-OoCWZhoS+p8lhZzMkANcEvc+GgM9R9835B+V11ni+3ARdgk2Uw82XP7E4GZftfNZ
-ojmoAAQYoA57Hn1w5EvVbBZs2rt5qi7xch5PF4yewj7HbRUJKY0frOkvJTyI61J7
-6Id2+uqJ3hlVGVCdV485q5IA5HwjBjbYVzUSMBj+NW8R8oqJVSwA3aJC2joQ/OGU
-P4zdIfhQbJ4=
-=fM9S
------END PGP SIGNATURE-----
-
---=-0cQu5W9IEzyCGAU1ftti--
-
+-- 
+---------------------"Happiness is understanding."----------------------
+Robert Hardy, B.Eng Computer Systems                  C.E.O. Webcon Inc.
+rhardy <at> webcon <dot> ca    GPG Key available          (613) 276-7327
 
 
 -------------------------------------------------------
