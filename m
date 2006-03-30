@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
-Date: Thu, 30 Mar 2006 10:31:00 +0200
-Message-ID: <8809f4c44290448302dddec6394585f5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000059]: On au8820 left and right channels are swapped
+Date: Thu, 30 Mar 2006 10:31:32 +0200
+Message-ID: <4c9d461a0cddee62203e9dbf97d189db@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55F3C194
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 10:31:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F408194
+	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 10:31:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,98 +22,111 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
 ======================================================================
-Reported By:                bambam
-Assigned To:                tiwai
+Reported By:                kernel_bug
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1938
-Category:                   PCI - emu10k1
-Reproducibility:            always
+Issue ID:                   59
+Category:                   PCI - au88x0
+Reproducibility:            random
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Debian sid with custom x86-64 kernel
-Kernel Version:             2.6.16-rc6
+Status:                     confirmed
+Distribution:               
+Kernel Version:             2.6.2
 ======================================================================
-Date Submitted:             03-17-2006 20:31 CET
-Last Modified:              03-30-2006 10:30 CEST
+Date Submitted:             02-13-2004 11:40 CET
+Last Modified:              03-30-2006 10:31 CEST
 ======================================================================
-Summary:                    EPIPE on Audigy with surround sound when seeking in
-6 channel sound file
+Summary:                    On au8820 left and right channels are swapped
 Description: 
-Seeking in a 6 channel sound or video file using a surround device gives
-EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
-is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
-userspace. I've tried libs and modules from CVS two days ago with no
-success.
-
+In most cases, left and right channels are swapped. But in approx. 5% cases
+all OK. Looks like the matter is somewhere in byte alignment...
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000949 Randomly, left and right tracks are swaped
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-06 18:56 
+ Raymond - 02-17-06 09:21 
 ----------------------------------------------------------------------
-Hopefully fixed with alsa-lib CVS today.
+Using outls.wav and outrs.wav from Vortex driver CD
+
+aplay -D hw:0,0 outls.wav
+aplay -D hw:0,0 outrs.wav
+
+Can you try alsa-1.0.11rc3 with/without au88x0_surround40.patch from
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726 ?
 
 ----------------------------------------------------------------------
- bambam - 03-30-06 10:30 
+ Raymond - 03-30-06 10:31 
 ----------------------------------------------------------------------
-Unfortunately, the problem still exists.
+Try the following patch to see if there is a SDAC bit detect problem on
+those stereo AC97 codec manufactured before AC97 2.1 spec , since we can
+assume all au8820 have stereo codec.
+
+Index: alsa-driver/alsa-kernel/pci/au88x0/au88x0_mixer.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_mixer.c,v
+retrieving revision 1.6
+diff -u -r1.6 au88x0_mixer.c
+--- alsa-driver/alsa-kernel/pci/au88x0/au88x0_mixer.c	17 Nov 2005
+14:55:19
+-0000	1.6
++++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_mixer.c	30 Mar 2006
+08:25:42
+-0000
+ <at>  <at>  -28,6 +28,10  <at>  <at> 
+ 	ac97.private_data = vortex;
+ 	ac97.scaps = AC97_SCAP_NO_SPDIF;
+ 	err = snd_ac97_mixer(pbus, &ac97, &vortex->codec);
+-	vortex->isquad = ((vortex->codec == NULL) ?  0 :
+(vortex->codec->ext_id&0x80));
++#ifdef CHIP_AU8820
++	vortex->isquad = 0;
++#else
++	vortex->isquad = ((vortex->codec == NULL) ?  0 : (vortex->codec->ext_id
+& AC97_EI_SDAC));
++#endif
+ 	return err;
+ }
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 20:31 bambam         New Issue                                    
-03-17-06 20:31 bambam         Distribution              => Debian sid with
-custom x86-64 kernel
-03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
-03-17-06 20:36 bambam         Note Added: 0008656                          
-03-17-06 21:07 bambam         Note Added: 0008659                          
-03-17-06 21:53 bambam         Note Added: 0008662                          
-03-18-06 01:07 rlrevell       Note Added: 0008667                          
-03-18-06 01:11 bambam         Note Added: 0008668                          
-03-18-06 14:44 bambam         Note Added: 0008671                          
-03-20-06 12:25 tiwai          Note Added: 0008715                          
-03-21-06 00:29 bambam         Note Added: 0008733                          
-03-21-06 17:30 tiwai          Status                   new => resolved     
-03-21-06 17:30 tiwai          Resolution               open => fixed       
-03-21-06 17:30 tiwai          Assigned To               => tiwai           
-03-21-06 17:30 tiwai          Note Added: 0008747                          
-03-21-06 20:09 bambam         Status                   resolved => feedback
-03-21-06 20:09 bambam         Resolution               fixed => reopened   
-03-21-06 20:09 bambam         Note Added: 0008759                          
-03-21-06 20:10 tiwai          Status                   feedback => resolved
-03-21-06 20:10 tiwai          Resolution               reopened => fixed   
-03-21-06 20:10 tiwai          Note Added: 0008760                          
-03-24-06 16:55 bambam         Status                   resolved => feedback
-03-24-06 16:55 bambam         Resolution               fixed => reopened   
-03-24-06 16:55 bambam         Note Added: 0008921                          
-03-24-06 17:06 tiwai          Note Added: 0008922                          
-03-24-06 17:29 bambam         Note Added: 0008923                          
-03-24-06 17:34 tiwai          Note Added: 0008925                          
-03-24-06 17:36 tiwai          Status                   feedback => resolved
-03-24-06 17:36 tiwai          Resolution               reopened => fixed   
-03-24-06 17:36 tiwai          Note Added: 0008926                          
-03-24-06 17:38 tiwai          Note Added: 0008927                          
-03-24-06 17:39 tiwai          Status                   resolved => feedback
-03-24-06 17:39 tiwai          Resolution               fixed => reopened   
-03-24-06 17:39 tiwai          Note Added: 0008928                          
-03-24-06 18:07 bambam         Note Added: 0008931                          
-03-24-06 20:11 bambam         File Added: strace.tar.bz2                    
-03-24-06 20:12 bambam         Note Added: 0008935                          
-03-24-06 20:47 bambam         Note Added: 0008936                          
-03-25-06 13:16 bambam         Note Added: 0008946                          
-03-27-06 02:05 bambam         Note Added: 0008981                          
-03-29-06 18:56 tiwai          Status                   feedback => resolved
-03-29-06 18:56 tiwai          Resolution               reopened => fixed   
-03-29-06 18:56 tiwai          Note Added: 0009004                          
-03-29-06 23:30 rhardy         Issue Monitored: rhardy                      
-03-30-06 10:30 bambam         Status                   resolved => feedback
-03-30-06 10:30 bambam         Resolution               fixed => reopened   
-03-30-06 10:30 bambam         Note Added: 0009026                          
+02-13-04 11:40 kernel_bug     New Issue                                    
+02-21-04 15:40 kernel_bug     Note Added: 0000280                          
+03-02-04 02:56 Tim            Note Added: 0000429                          
+04-09-04 11:54 kernel_bug     Note Added: 0000774                          
+04-09-04 18:35 mjander        Note Added: 0000777                          
+04-17-04 18:59 mjander        Status                   assigned => closed  
+04-17-04 18:59 mjander        Note Added: 0000849                          
+04-26-04 17:04 kernel_bug     Status                   closed => feedback  
+04-26-04 17:04 kernel_bug     Resolution               open => reopened    
+04-26-04 17:04 kernel_bug     Note Added: 0000953                          
+04-26-04 23:27 mjander        Note Added: 0000956                          
+03-10-05 15:31 jdthood        Note Added: 0003866                          
+03-10-05 16:44 mjander        Note Added: 0003867                          
+03-10-05 21:25 kernel_bug     Note Added: 0003873                          
+03-22-05 22:33 jdthood        Relationship added       related to 0000949  
+03-28-05 04:27 jdthood        Note Added: 0004235                          
+03-28-05 04:27 jdthood        Status                   feedback => assigned
+03-28-05 04:29 jdthood        Status                   assigned => confirmed
+08-26-05 14:50 Raymond        Note Added: 0005951                          
+08-26-05 15:12 kernel_bug     Note Added: 0005955                          
+08-26-05 16:07 Raymond        Note Added: 0005956                          
+08-26-05 17:38 kernel_bug     File Added: asound.state                     
+08-26-05 17:41 kernel_bug     Note Added: 0005957                          
+08-27-05 04:43 Raymond        Note Added: 0005959                          
+01-06-06 18:15 Raymond        Note Added: 0007491                          
+01-09-06 17:02 Raymond        Note Edited: 0007491                         
+02-17-06 09:21 Raymond        Note Added: 0008106                          
+03-30-06 10:31 Raymond        Note Added: 0009027                          
 ======================================================================
 
 
