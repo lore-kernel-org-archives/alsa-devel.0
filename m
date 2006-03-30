@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Thu, 30 Mar 2006 21:42:41 +0200
-Message-ID: <5e917250f3c3f9a1e50c4eff0fb1b623@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "Robac" <info@infax-mailer.com>
+Subject: Le bac aux mille usages
+Date: Thu, 30 Mar 2006 13:56:27 -0600
+Message-ID: <20060330195630.4D29899011@mail.perex.cz>
+Reply-To: info@infax-mailer.com
+Content-Type: text/html;
+	charset="us-ascii"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38DC0177
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 21:42:42 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B262177
+	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 21:56:31 +0200 (MEST)
+Received: from infax-mailer.com (infax-mailer.com [4.79.67.226])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 4D29899011
+	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 21:56:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,87 +24,214 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<html>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
-======================================================================
-Reported By:                kiwi
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1898
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 5 test3
-Kernel Version:             2.6.15-1.2009.4.2_FC5
-======================================================================
-Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              03-30-2006 21:42 CEST
-======================================================================
-Summary:                    no sound from headphones or speakers on asus a6km
-laptop
-Description: 
-The headphone port and the speakers just don't work. Seems like there is
-some control hidden in the mixer which is muted. 
-By setting the master and pcm volume at 100% I can hear just some static
-on song beats only on headphones. Speakers always stay mute.
-I can only get sound by attaching the headphones to line-in and enabling
-"shared" surround mode.
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Le bac</title>
+</head>
 
-Same issues with a knoppix 4.0.2.
+<body>
 
-======================================================================
+<h1><!--[if gte vml 1]><v:shapetype id="_x0000_t75" coordsize="21600,21600"
+ o:spt="75" o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe" filled="f"
+ stroked="f">
+ <v:stroke joinstyle="miter"/>
+ <v:formulas>
+  <v:f eqn="if lineDrawn pixelLineWidth 0"/>
+  <v:f eqn="sum @0 1 0"/>
+  <v:f eqn="sum 0 0 @1"/>
+  <v:f eqn="prod @2 1 2"/>
+  <v:f eqn="prod @3 21600 pixelWidth"/>
+  <v:f eqn="prod @3 21600 pixelHeight"/>
+  <v:f eqn="sum @0 0 1"/>
+  <v:f eqn="prod @6 1 2"/>
+  <v:f eqn="prod @7 21600 pixelWidth"/>
+  <v:f eqn="sum @8 21600 0"/>
+  <v:f eqn="prod @7 21600 pixelHeight"/>
+  <v:f eqn="sum @10 21600 0"/>
+ </v:formulas>
+ <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
+ <o:lock v:ext="edit" aspectratio="t"/>
+</v:shapetype><v:shape id="_x0000_s1026" type="#_x0000_t75" style='position:absolute;
+ margin-left:279pt;margin-top:0;width:207pt;height:151.35pt;z-index:1'>
+ <v:imagedata src="file:///C:/DOCUME&#126;1/client/LOCALS&#126;1/Temp/msoclip1/01/clip_image001.png"
+  o:title="NewLogo1"/>
+ <w:wrap type="square"/>
+</v:shape><![endif]-->
+<a href='http://infax-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4340444347470E43424A0E400E41464A414140450E08.aspx'><img src="http://72.10.140.174/Images/Canada/Quebec/AilleursQc/Robac/robac2.jpg" align="right" hspace="12" v:shapes="_x0000_s1026" width="219" height="238"></a></h1>
+<h1 align="center" style="text-align:center"><span style="font-size: 36.0pt; mso-bidi-font-size: 12.0pt; text-decoration: none; text-underline: none"><font face="Lucida Console">Le
+bac <o:p>
+</o:p>
+</font></span></h1>
+<h1 align="center" style="text-align:center"><span style="font-size: 36.0pt; mso-bidi-font-size: 12.0pt; text-decoration: none; text-underline: none"><font face="Lucida Console">aux
+mille usages</font></span></h1>
+<h1 align="center" style="text-align:center">&nbsp;<o:p>
+</o:p>
+</h1>
+<p class="MsoNormal"><font face="Times New Roman">&#192; tous ceux et celles qui
+veulent &#233;conomiser <b>espace, temps et argent</b>.</font><font face="Times New Roman"><o:p>
+</o:p>
+</font></p>
+<p class="MsoNormal"><font face="Times New Roman">Le bac roulant est devenu
+indispensable pour la cueillette des ordures, des mati&#232;res recyclables et
+compostables. Il est de plus en plus utilis&#233; pour une multitude d&#146;autres
+fonctions. Sa capacit&#233; pour remiser, entreposer, transporter, emmagasiner,
+relocaliser, manutentionner, disposer et<span style="mso-spacerun: yes">&nbsp; </span>acheminer
+n&#146;est plus &#224; prouver.</font><font face="Times New Roman"><o:p>
+</o:p>
+</font></p>
+<p class="MsoNormal"><font face="Times New Roman">Chaque bac est muni d&#146;un
+essieu galvanis&#233; de 22 centim&#232;tres et de roues recouvertes de caoutchouc
+procurant au bac un <b>roulement doux</b> sur la plupart des surfaces, m&#234;me
+avec un chargement pouvant aller jusqu&#146;&#224; <b>300 livres</b>. Le corps du bac
+est fabriqu&#233; d&#146;une seule pi&#232;ce par proc&#233;d&#233; d&#146;injection de poly&#233;thyl&#232;ne
+Haute Densit&#233;. Chaque composante est con&#231;ue pour r&#233;sister &#224; la rouille, aux
+rayons ultra violet, aux intemp&#233;ries et aux temp&#233;ratures de &#150; 40<span style="mso-spacerun: yes">&nbsp;
+</span>&#224; + 60 degr&#233;s celsius. Ils peuvent donc &#234;tre utilis&#233;s presque <b>n&#146;importe
+o&#249;</b> pour toutes les t&#226;ches que vous pouvez imaginer.</font><font face="Times New Roman"><o:p>
+</o:p>
+</font></p>
+<p class="MsoNormal"><font face="Times New Roman">Nos bacs sont garantis par le
+manufacturier Z.T.P.C. contre tout vice de fabrication pour 5 ans. Nous assumons
+les frais de main-d&#146;&#156;uvre. Des frais de d&#233;placement de 15,00 $ s&#146;applique
+pour les r&#233;parations faites chez vous.<span style="mso-spacerun: yes">
+&nbsp;&nbsp;</span></font></p>
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp; Disponible en gris fonc&#233;, vert ou bleu<span style="mso-spacerun: yes"></span><font face="Times New Roman"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></font></p>
+<p class="MsoNormal" align="center"><!--[if gte vml 1]><v:shape id="_x0000_s1028" type="#_x0000_t75"
+ style='position:absolute;margin-left:315pt;margin-top:7.35pt;width:119.9pt;
+ height:2in;z-index:3'>
+ <v:imagedata src="file:///C:/DOCUME&#126;1/client/LOCALS&#126;1/Temp/msoclip1/01/clip_image003.wmz"
+  o:title=""/>
+ <w:wrap type="square"/>
+</v:shape><![if gte mso 9]><o:OLEObject Type="Embed" ProgID="Word.Picture.8"
+ ShapeID="_x0000_s1028" DrawAspect="Content" ObjectID="_1205232395">
+</o:OLEObject>
+<![endif]><![endif]-->
+<img src="http://72.10.140.174/Images/Canada/Quebec/AilleursQc/Robac/bac2.jpg" align="left" hspace="12" v:shapes="_x0000_s1028" width="120" height="147"><!--[if gte vml 1]><v:shape
+ id="_x0000_s1027" type="#_x0000_t75" style='position:absolute;margin-left:63pt;
+ margin-top:16.35pt;width:92.4pt;height:126pt;z-index:2'>
+ <v:imagedata src="file:///C:/DOCUME&#126;1/client/LOCALS&#126;1/Temp/msoclip1/01/clip_image005.wmz"
+  o:title=""/>
+ <w:wrap type="square"/>
+</v:shape><![if gte mso 9]><o:OLEObject Type="Embed" ProgID="Word.Picture.8"
+ ShapeID="_x0000_s1027" DrawAspect="Content" ObjectID="_1205232396">
+</o:OLEObject>
+<![endif]><![endif]-->
+<img src="http://72.10.140.174/Images/Canada/Quebec/AilleursQc/Robac/bac2.jpg" align="left" hspace="12" v:shapes="_x0000_s1027" width="138" height="181"><img src="http://72.10.140.174/Images/Canada/Quebec/AilleursQc/Robac/bac2.jpg" align="left" hspace="12" v:shapes="_x0000_s1029" width="170" height="188"></p>
+<p class="MsoNormal" align="center"><!--[if gte vml 1]><v:shape id="_x0000_s1029" type="#_x0000_t75"
+ style='position:absolute;margin-left:180pt;margin-top:2.55pt;width:104.4pt;
+ height:126pt;z-index:4'>
+ <v:imagedata src="file:///C:/DOCUME&#126;1/client/LOCALS&#126;1/Temp/msoclip1/01/clip_image007.wmz"
+  o:title=""/>
+ <v:textbox style='mso-next-textbox:#_x0000_s1029'/>
+ <w:wrap type="square"/>
+</v:shape><![if gte mso 9]><o:OLEObject Type="Embed" ProgID="Word.Picture.8"
+ ShapeID="_x0000_s1029" DrawAspect="Content" ObjectID="_1205232398">
+</o:OLEObject>
+<![endif]><![endif]-->
+</p>
+<p class="MsoNormal">&nbsp;<o:p>
+</o:p>
+</p>
+<p class="MsoNormal">&nbsp;<o:p>
+</o:p>
+</p>
+<p class="MsoNormal">&nbsp;<o:p>
+</o:p>
+</p>
+<p class="MsoNormal">&nbsp;<o:p>
+&nbsp;
+</p>
+<p class="MsoNormal">&nbsp;
+</p>
+<p class="MsoNormal">
+</o:p>
+</p>
+<p class="MsoNormal"><span style="mso-spacerun: yes">&nbsp;&nbsp;</span></p>
+<p class="MsoNormal"><span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; </span>120 litres<span style="mso-tab-count:
+2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>240 litres<span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>360 litres<span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="MsoNormal">L x P x H<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>470 x 540 x 930 cm<span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="mso-spacerun: yes">&nbsp;&nbsp; </span>595 x 738 x 1000 cm<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>700 x 850 x 1100 cm</p>
+<p class="MsoNormal"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Roue de 20 cm<span style="mso-tab-count:1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Roue de 20 cm<span style="mso-tab-count:
+1">&nbsp;&nbsp;&nbsp; </span><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Roue de 25 cm</p>
+<p class="MsoNormal"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>56, 51 $ un.<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>66,94 $ un.<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>86,93 $ un.</p>
+<p class="MsoNormal">&nbsp;<o:p>
+</o:p>
+</p>
+<p class="MsoNormal"><span style="font-size:11.0pt;mso-bidi-font-size:12.0pt">*Livraison
+15,00 $ du bac &#224; l&#146;int&#233;rieur de 10 jours ouvrables.<o:p>
+</o:p>
+</span></p>
+<p class="MsoNormal"><span style="font-size:11.0pt;mso-bidi-font-size:12.0pt">*Plus
+de 4 bacs, pas de frais de livraison.<o:p>
+</o:p>
+</span></p>
+<p class="MsoNormal"><span style="font-size:11.0pt;mso-bidi-font-size:12.0pt">*12
+bacs et plus, prix fourni sur demande.<o:p>
+</o:p>
+</span></p>
+<p class="MsoNormal"><span style="font-size:11.0pt;mso-bidi-font-size:12.0pt">*Prix
+sujet &#224; changement sans pr&#233;avis<o:p>
+</o:p>
+</span></p>
+<p class="MsoNormal"><span style="font-size:11.0pt;mso-bidi-font-size:12.0pt">*Ces
+prix <span style="mso-spacerun: yes">&nbsp;</span>ont priorit&#233; de ceux affich&#233;s
+sur <a href='http://infax-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4340444347470E43424A0E400E41464A414140450E08.aspx'>notre site web</a> &#224; condition de sp&#233;cifier
+*#1* lors de votre commande<o:p>
+</o:p>
+</span></p>
+<p class="MsoNormal"><span style="font-size:11.0pt;mso-bidi-font-size:12.0pt">*Nous
+vous posterons la facture apr&#232;s la livraison <o:p>
+</o:p>
+</span></p>
+<h2><span style="font-size:18.0pt;mso-bidi-font-size:12.0pt">&nbsp;<o:p>
+</o:p>
+</span></h2>
+<h2><font face="Lucida Sans Unicode"><span style="font-size: 18.0pt; mso-bidi-font-size: 12.0pt">&#192;</span></font><span style="font-size:18.0pt;mso-bidi-font-size:12.0pt"><font face="Lucida Sans Unicode"><span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>LA<span style="mso-spacerun:
+yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>GRANDEUR<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>DU<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>QU&#201;BEC</font><o:p>
+&nbsp;
+</span></h2>
 
-----------------------------------------------------------------------
- hongqn - 03-27-06 07:16 
-----------------------------------------------------------------------
-# echo "7a 57c1" >  /proc/asound/card0/codec97#0/ac97#0-0+regs
-bash: /proc/asound/card0/codec97#0/ac97#0-0+regs: No such device
+<p><font size="1" face="Arial">Nous supportons les pratiques responsables de
+marketing par e-mail. Veuillez noter que nous respectons votre droit d'&#234;tre
+retir&#233; de cette campagne de marketing. Le retrait de cette liste de diffusion
+e-mail est automatiquement effectu&#233; par notre syst&#232;me de distribution.
+Veuillez cliquer sur le lien ci-bas afin d'&#234;tre supprim&#233; de nos listes
+d'envois.</font></p>
+<p><font size="1" face="Arial">Ce message peut &#234;tre un newsletter, un
+communiqu&#233; de presse, une sollicitation ou une publicit&#233;.</font></p>
+<p><font size="1" face="Arial"><i>Nous encourageons et supportons les meilleures
+pratiques en marketing responsable.</i></font></p>
 
-# ls /proc/asound/card0/codec97#0/ac97#0-0+regs
-/proc/asound/card0/codec97#0/ac97#0-0+regs
+<h2><span style="font-size:18.0pt;mso-bidi-font-size:12.0pt">
+</o:p>
+</span></h2>
 
-???
+<br><br><table width='500' border='0' align='center' cellpadding='2' cellspacing='3'><tr><td align='center'> <p align='center'>
+<div align='center'><a href='http://infax-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4340444347470E43424A0E08.aspx'><img src='http://infax-mailer.com/img.gif' width='531' height='80' border='0'></a>
+<br><img src='http://infax-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4340444347470E43424A0E430E420E08.aspx'>
+<font color="#999999" face="arial, verdana" size="2">Direct Mail &#183; 1260 Cresent Suite 201 &#183; Montreal, Quebec H3G 2A9</font></p></td></tr></table></body>
 
-----------------------------------------------------------------------
- kiwi - 03-30-06 21:42 
-----------------------------------------------------------------------
-you need to recompile alsa with --debug
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-09-06 00:30 kiwi           New Issue                                    
-03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
-03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
-03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
-03-09-06 16:41 kiwi           Note Added: 0008391                          
-03-09-06 20:09 michele26x1    Note Added: 0008396                          
-03-09-06 21:02 kiwi           Note Added: 0008397                          
-03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
-03-12-06 15:49 kiwi           Note Added: 0008432                          
-03-12-06 16:40 Rollsappletree Note Added: 0008433                          
-03-13-06 10:10 u238           Note Added: 0008439                          
-03-13-06 10:11 u238           Note Edited: 0008439                         
-03-13-06 10:12 u238           Note Edited: 0008439                         
-03-13-06 23:59 lbenini        Note Added: 0008469                          
-03-23-06 13:56 lbenini        Note Added: 0008881                          
-03-23-06 13:59 lbenini        Note Edited: 0008881                         
-03-24-06 19:22 kiwi           Note Added: 0008934                          
-03-26-06 21:56 kiwi           Note Added: 0008975                          
-03-26-06 22:35 kiwi           Note Added: 0008977                          
-03-26-06 22:54 lbenini        Note Added: 0008978                          
-03-26-06 23:11 kiwi           Note Edited: 0008975                         
-03-26-06 23:13 kiwi           Note Added: 0008979                          
-03-27-06 01:06 michele26x1    Note Added: 0008980                          
-03-27-06 01:38 michele26x1    Note Edited: 0008980                         
-03-27-06 07:16 hongqn         Note Added: 0008992                          
-03-30-06 21:42 kiwi           Note Added: 0009040                          
-======================================================================
+</html>
 
 
 
