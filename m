@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001634]: lack of mmap support with ice1724
-Date: Thu, 30 Mar 2006 09:40:42 +0200
-Message-ID: <d81cd0baa6fd3fc0e2b7f9167b815493@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001979]: Missing symbols in oss mixer code
+Date: Thu, 30 Mar 2006 10:00:50 +0200
+Message-ID: <a2a9317ed4902afdd107636c99d83356@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A541194
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 09:40:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 881D3141
+	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 10:00:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1634> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1979> 
 ======================================================================
-Reported By:                joecool
+Reported By:                zx80user
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1634
-Category:                   PCI - ice1724
+Project:                    ALSA - liboss
+Issue ID:                   1979
+Category:                   
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.14-mm2
 ======================================================================
-Date Submitted:             12-10-2005 09:02 CET
-Last Modified:              03-30-2006 09:40 CEST
+Date Submitted:             03-29-2006 23:03 CEST
+Last Modified:              03-30-2006 10:00 CEST
 ======================================================================
-Summary:                    lack of mmap support with ice1724
+Summary:                    Missing symbols in oss mixer code
 Description: 
-I've dug around for awhile now as to why my m-audio revolution 7.1 doesn't
-work on enemy-territory because of an mmap error, and came to the
-conclusion it must be because there is no working mmap support.  So
-everything needs to run through arts, which is a poor, high-latency
-workaround to a major problem.
+Attempting to load the snd-pcm-oss module and the snd-pcm-mixer modules
+fails due to missing symbols.
 
-This is a confirmable bug that 2 seconds of googling will pull up results.
- I do not want to hear of using a sound server (artsd, esd, jackd, etc.)
-as a workaround.  However, if the mmap support can be emulated driver
-level, then that would be fine.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001940 enemy territory has no sound on ICE1724
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-20-06 11:47 
+ zx80user - 03-29-06 23:05 
 ----------------------------------------------------------------------
-It's not supported.  See OSS-Emulation.txt.
+/ # modprobe snd-pcm-oss
+snd_mixer_oss: Unknown symbol snd_mixer_oss_notify_callback
+WARNING: Error inserting snd_mixer_oss
+(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-mixer-oss.ko): Unknown
+symbol in module, or unknown parameter (see )snd_pcm_oss: Unknown symbol
+snd_mixer_oss_ioctl_card
+FATAL: Error inserting snd_pcm_oss
+(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-pcm-oss.ko): Unknown
+symbol in module, or unknown parameter (see dmesg)
+/ # modprobe snd-mixer-oss
+snd_mixer_oss: Unknown symbol snd_mixer_oss_notify_callback
+FATAL: Error inserting snd_mixer_oss
+(/lib/modules/2.6.15-sh/kernel/sound/core/oss/snd-mixer-oss.ko): Unknown
+symbol in module, or unknown parameter (see dm)
 
 ----------------------------------------------------------------------
- oscar - 03-30-06 09:40 
+ Raymond - 03-30-06 10:00 
 ----------------------------------------------------------------------
-Does it mean, "it's not supported and never will be"?
-
-Should I be looking for another sound solution?
-
-btw, the recommended documentation says 1712 doesn't do it. I doesn't
-mention ice1724.
+What is the output of ruuning "amixer" ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-10-05 09:02 joecool        New Issue                                    
-12-10-05 09:02 joecool        Distribution              => Gentoo Linux    
-12-10-05 09:02 joecool        Kernel Version            => 2.6.14-mm2      
-01-15-06 02:02 joecool        Issue Monitored: joecool                     
-03-18-06 00:21 oscar          Note Added: 0008665                          
-03-20-06 06:03 joecool        Note Added: 0008708                          
-03-20-06 11:47 tiwai          Note Added: 0008713                          
-03-29-06 19:24 tiwai          Relationship added       has duplicate 0001940
-03-30-06 09:40 oscar          Note Added: 0009023                          
+03-29-06 23:03 zx80user       New Issue                                    
+03-29-06 23:04 zx80user       Issue Monitored: zx80user                    
+03-29-06 23:05 zx80user       Note Added: 0009019                          
+03-30-06 10:00 Raymond        Note Added: 0009024                          
 ======================================================================
 
 
