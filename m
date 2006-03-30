@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001971]: Some elements incorrectly have capture flags
-Date: Thu, 30 Mar 2006 13:13:35 +0200
-Message-ID: <8c85452a9831f8b6dacea612a454bded@bugtrack.alsa-project.org>
+Date: Thu, 30 Mar 2006 13:22:58 +0200
+Message-ID: <27966dd504ea9510af75c1eb42863bb0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDCC518B
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 13:13:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1483C191
+	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 13:22:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             03-28-2006 12:16 CEST
-Last Modified:              03-30-2006 13:13 CEST
+Last Modified:              03-30-2006 13:22 CEST
 ======================================================================
 Summary:                    Some elements incorrectly have capture flags
 Description: 
@@ -80,28 +80,15 @@ Simple mixer control 'Treble',0
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 03-30-06 12:50 
-----------------------------------------------------------------------
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-lib/src/mixer/simple_none.c?r1=1.3&r2=1.4
-
-Alsa-lib uses 1 or more kernel control and groups them to 1 mixer element.
-Kernel controls have various suffixes ("Playback Volume", "Playback
-Switch", "Capture Volume", ...). These suffixes decides if mixer elemnts
-have or don't have capture flag. If there is no definition of dirrection
-("Playback" or "Capture suffix) alsa-lib assumes global volume (has
-playback and capture).
-
-For me, best solution will be to add "Playback Volume" or "Playback
-Switch" suffix to kernel controls names. ("Tone Control - Bass" -> "Tone
-Control - Bass Playback Volume")
-
-Or all controls without suffix behave like playback only.
-
-----------------------------------------------------------------------
  pzad - 03-30-06 13:13 
 ----------------------------------------------------------------------
 Anyway there is still bug, because this "Captrure" mixer element in
 alsamixer doesn't work at all.
+
+----------------------------------------------------------------------
+ Raymond - 03-30-06 13:22 
+----------------------------------------------------------------------
+In theory, Bass and Treble is just a 2-band equalizer
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -110,6 +97,7 @@ Date Modified  Username       Field                    Change
 03-30-06 11:01 Raymond        Note Added: 0009028                          
 03-30-06 12:50 pzad           Note Added: 0009031                          
 03-30-06 13:13 pzad           Note Added: 0009032                          
+03-30-06 13:22 Raymond        Note Added: 0009033                          
 ======================================================================
 
 
