@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000343]: au8820 hangs the system at some occasions
-Date: Thu, 30 Mar 2006 10:29:28 +0200
-Message-ID: <bcdd555da267ad3c37161c3eff3fd6a7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
+Date: Thu, 30 Mar 2006 10:31:00 +0200
+Message-ID: <8809f4c44290448302dddec6394585f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D74A194
-	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 10:29:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55F3C194
+	for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2006 10:31:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,110 +22,98 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=343> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
 ======================================================================
-Reported By:                sandman
-Assigned To:                mjander
+Reported By:                bambam
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   343
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
-Severity:                   crash
+Issue ID:                   1938
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               RedHat 9
-Kernel Version:             2.6.7
+Status:                     feedback
+Distribution:               Debian sid with custom x86-64 kernel
+Kernel Version:             2.6.16-rc6
 ======================================================================
-Date Submitted:             06-23-2004 07:20 CEST
-Last Modified:              03-30-2006 10:29 CEST
+Date Submitted:             03-17-2006 20:31 CET
+Last Modified:              03-30-2006 10:30 CEST
 ======================================================================
-Summary:                    au8820 hangs the system at some occasions
+Summary:                    EPIPE on Audigy with surround sound when seeking in
+6 channel sound file
 Description: 
-At some occasions the system hangs without any means
-to recover other than reset button. No mouse, no pings and
-even the alt-SysRq feature doesn't help.
-As a result I reboot the system a few times a day (sometimes).
-The problem is present in 2.6.5, 2.6.6 and 2.6.7 kernels at
-least. 
+Seeking in a 6 channel sound or video file using a surround device gives
+EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
+is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
+userspace. I've tried libs and modules from CVS two days ago with no
+success.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-23-06 11:00 
+ tiwai - 03-29-06 18:56 
 ----------------------------------------------------------------------
-ponchick report oops with au8830 mpu401 on his SMP
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833
-
-Why aplaymidi do not report any error if no mpu401 is connected ?
-
-aplaymidi -p 16:0 test.mid
-
-
-
-dmesg
-
-ALSA ../../alsa-kernel/drivers/mpu401/mpu401_uart.c:222: cmd: 0xff failed
-at 0xe1daa800 (status = 0x80, data = 0xd1)
-
-http://www.alsa-project.org/
-
-3. SMP and thread-safe design.
-
-
+Hopefully fixed with alsa-lib CVS today.
 
 ----------------------------------------------------------------------
- Raymond - 03-30-06 10:29 
+ bambam - 03-30-06 10:30 
 ----------------------------------------------------------------------
-Try the following patch to see if there is a SDAC bit detect problem on
-those stereo AC97 codec manufactured before AC97 2.1 spec , since we can
-assume all au8820 have stereo codec.
-
-
-Index: alsa-driver/alsa-kernel/pci/au88x0/au88x0_mixer.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0_mixer.c,v
-retrieving revision 1.6
-diff -u -r1.6 au88x0_mixer.c
---- alsa-driver/alsa-kernel/pci/au88x0/au88x0_mixer.c	17 Nov 2005 14:55:19
--0000	1.6
-+++ alsa-driver/alsa-kernel/pci/au88x0/au88x0_mixer.c	30 Mar 2006 08:25:42
--0000
-@@ -28,6 +28,10 @@
- 	ac97.private_data = vortex;
- 	ac97.scaps = AC97_SCAP_NO_SPDIF;
- 	err = snd_ac97_mixer(pbus, &ac97, &vortex->codec);
--	vortex->isquad = ((vortex->codec == NULL) ?  0 :
-(vortex->codec->ext_id&0x80));
-+#ifdef CHIP_AU8820
-+	vortex->isquad = 0;
-+#else
-+	vortex->isquad = ((vortex->codec == NULL) ?  0 : (vortex->codec->ext_id
-& AC97_EI_SDAC));
-+#endif
- 	return err;
- }
+Unfortunately, the problem still exists.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-23-04 07:20 sandman        New Issue                                    
-06-23-04 07:20 sandman        Distribution              => RedHat 9        
-06-23-04 07:20 sandman        Kernel Version            => 2.6.7           
-04-07-05 21:04 jdthood        Note Added: 0004370                          
-04-12-05 20:26 alien999999999 Issue Monitored: alien999999999                   
-
-04-19-05 09:47 sandman        Note Added: 0004519                          
-04-19-05 10:03 jdthood        Status                   assigned => acknowledged
-08-25-05 18:51 Raymond        Note Added: 0005942                          
-03-22-06 03:01 rlrevell       Note Added: 0008789                          
-03-22-06 18:05 sandman        Note Added: 0008864                          
-03-23-06 08:59 Raymond        Note Added: 0008879                          
-03-23-06 09:05 Raymond        Note Edited: 0008879                         
-03-23-06 09:21 Raymond        Note Edited: 0008879                         
-03-23-06 11:00 Raymond        Note Edited: 0008879                         
-03-30-06 10:29 Raymond        Note Added: 0009025                          
+03-17-06 20:31 bambam         New Issue                                    
+03-17-06 20:31 bambam         Distribution              => Debian sid with
+custom x86-64 kernel
+03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
+03-17-06 20:36 bambam         Note Added: 0008656                          
+03-17-06 21:07 bambam         Note Added: 0008659                          
+03-17-06 21:53 bambam         Note Added: 0008662                          
+03-18-06 01:07 rlrevell       Note Added: 0008667                          
+03-18-06 01:11 bambam         Note Added: 0008668                          
+03-18-06 14:44 bambam         Note Added: 0008671                          
+03-20-06 12:25 tiwai          Note Added: 0008715                          
+03-21-06 00:29 bambam         Note Added: 0008733                          
+03-21-06 17:30 tiwai          Status                   new => resolved     
+03-21-06 17:30 tiwai          Resolution               open => fixed       
+03-21-06 17:30 tiwai          Assigned To               => tiwai           
+03-21-06 17:30 tiwai          Note Added: 0008747                          
+03-21-06 20:09 bambam         Status                   resolved => feedback
+03-21-06 20:09 bambam         Resolution               fixed => reopened   
+03-21-06 20:09 bambam         Note Added: 0008759                          
+03-21-06 20:10 tiwai          Status                   feedback => resolved
+03-21-06 20:10 tiwai          Resolution               reopened => fixed   
+03-21-06 20:10 tiwai          Note Added: 0008760                          
+03-24-06 16:55 bambam         Status                   resolved => feedback
+03-24-06 16:55 bambam         Resolution               fixed => reopened   
+03-24-06 16:55 bambam         Note Added: 0008921                          
+03-24-06 17:06 tiwai          Note Added: 0008922                          
+03-24-06 17:29 bambam         Note Added: 0008923                          
+03-24-06 17:34 tiwai          Note Added: 0008925                          
+03-24-06 17:36 tiwai          Status                   feedback => resolved
+03-24-06 17:36 tiwai          Resolution               reopened => fixed   
+03-24-06 17:36 tiwai          Note Added: 0008926                          
+03-24-06 17:38 tiwai          Note Added: 0008927                          
+03-24-06 17:39 tiwai          Status                   resolved => feedback
+03-24-06 17:39 tiwai          Resolution               fixed => reopened   
+03-24-06 17:39 tiwai          Note Added: 0008928                          
+03-24-06 18:07 bambam         Note Added: 0008931                          
+03-24-06 20:11 bambam         File Added: strace.tar.bz2                    
+03-24-06 20:12 bambam         Note Added: 0008935                          
+03-24-06 20:47 bambam         Note Added: 0008936                          
+03-25-06 13:16 bambam         Note Added: 0008946                          
+03-27-06 02:05 bambam         Note Added: 0008981                          
+03-29-06 18:56 tiwai          Status                   feedback => resolved
+03-29-06 18:56 tiwai          Resolution               reopened => fixed   
+03-29-06 18:56 tiwai          Note Added: 0009004                          
+03-29-06 23:30 rhardy         Issue Monitored: rhardy                      
+03-30-06 10:30 bambam         Status                   resolved => feedback
+03-30-06 10:30 bambam         Resolution               fixed => reopened   
+03-30-06 10:30 bambam         Note Added: 0009026                          
 ======================================================================
 
 
