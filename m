@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
-Date: Fri, 31 Mar 2006 10:22:52 +0200
-Message-ID: <eb03fb2f3531d3af4be7bc26312c00b0@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: OSS emulation question
+Date: Fri, 31 Mar 2006 11:37:31 +0200
+Message-ID: <20060331093731.GB21761@turing.informatik.uni-halle.de>
+References: <1143673730.15278.7.camel@localhost.localdomain>
+ <20060330125559.GC12081@turing.informatik.uni-halle.de>
+ <1143751422.9265.1.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 017F7173
-	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 10:22:52 +0200 (MEST)
+In-reply-to: <1143751422.9265.1.camel@localhost.localdomain>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,161 +20,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Adrian McMenamin wrote:
+> On Thu, 2006-03-30 at 14:55 +0200, Clemens Ladisch wrote:
+> > See snd_mixer_oss_build() in core/oss/mixer_oss.c for a list of mixer
+> > control names that get mapped to OSS controls (e.g., "Master Playback
+> > Volume"/"...Switch" would be mapped to SOUND_MIXER_VOLUME).
+> 
+> I have implemented master volume and master switch but all I get is:
+> 
+> audio/gain: setable Volume/PCM-Level not supported by your audio device:
+> 0000
+> 
+> what is the minimum set of controls I need to have settable volume
+> in /dev/mixer (ie oss emulation)?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1726
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
-======================================================================
-Date Submitted:             01-08-2006 17:41 CET
-Last Modified:              03-31-2006 10:22 CEST
-======================================================================
-Summary:                    Front and Rear channels swap after first play when
-playing Surround40 on au8830
-Description: 
-The front and rear channels are correct for playing Surround40 only at the
-first time after the driver is loaded. 
+One control should be enough.
 
-The front and rear channels (Surround40) always swapped afterward using
-speaker-test or xine. 
-
-Playing stereo sound is OK.
+What are the contents of /proc/asound/cardX/oss_mixer?
+(You can change mappings, see Documentation/OSS-Emulation.txt)
 
 
- speaker-test -c4 -D hw:0,0
- 
-speaker-test 1.0.11rc2
- 
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-Time per period = 11.856821
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 03-24-06 15:04 
-----------------------------------------------------------------------
-I upload the au8830.conf which allow xine and cvs version of mplayer to
-play surround51
-
-----------------------------------------------------------------------
- Raymond - 03-31-06 10:22 
-----------------------------------------------------------------------
-ponchick,
-
-I have uploaded a diff(alsa-driver-1.0.11rc4) which implement the
-"subdevice playback volume" in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835 , this allow a true
-"front" and
-"rear" device for au8830 with 4-channels codec.
-
-The following "front" device can only be used by au8830 with 4-channels
-codec.
-
-<confdir:pcm/front.conf>
-
-AU8830.pcm.front.0 {
-    @args [ CARD ]
-    @args.CARD {
-        type string
-    }
-    type hooks
-    slave.pcm {
-        type hw
-        card $CARD
-        device 0
-    }
-    hooks.0 {
-        type ctl_elems
-        hook_args [
-            {
-                interface PCM
-                device 0
-                name "Subdevice Playback Volume"
-                index { @func private_pcm_subdevice }
-                value [ 0 0 -64 -64 ]
-            }
-        ]
-    }
-} 
-
-Please note that the modified "front" and "rear" device cannot be used
-with your another au8830 with stereo codec
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-08-06 17:41 Raymond        New Issue                                    
-01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
-01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
-    
-02-04-06 06:26 Raymond        Note Added: 0007912                          
-02-10-06 05:36 ponchick       Note Added: 0007987                          
-02-10-06 06:32 Raymond        Note Added: 0007991                          
-02-10-06 10:50 ponchick       Note Added: 0007998                          
-02-10-06 11:25 Raymond        Note Added: 0008000                          
-02-10-06 13:49 Raymond        Note Added: 0008003                          
-02-10-06 13:56 Raymond        Note Edited: 0008003                         
-02-12-06 07:48 Raymond        Note Edited: 0008003                         
-02-12-06 10:12 Raymond        Note Edited: 0008000                         
-02-16-06 05:37 ponchick       Note Added: 0008085                          
-02-16-06 08:12 Raymond        Note Added: 0008088                          
-02-16-06 10:12 Raymond        Note Added: 0008090                          
-02-16-06 10:28 Raymond        Note Edited: 0008090                         
-02-16-06 16:07 Raymond        Note Added: 0008097                          
-02-17-06 03:35 ponchick       Note Added: 0008104                          
-02-17-06 04:28 Raymond        Note Added: 0008105                          
-02-17-06 04:35 Raymond        Note Edited: 0008105                         
-02-17-06 05:56 Raymond        Note Edited: 0008105                         
-02-17-06 06:09 Raymond        Note Edited: 0008105                         
-02-26-06 07:22 ponchick       Note Added: 0008198                          
-02-26-06 13:28 Raymond        Note Added: 0008200                          
-02-26-06 14:08 Raymond        Note Edited: 0008200                         
-02-27-06 06:57 ponchick       Note Added: 0008216                          
-02-27-06 14:09 Raymond        Note Added: 0008222                          
-02-28-06 04:42 Raymond        Note Added: 0008239                          
-03-03-06 07:18 Raymond        Note Added: 0008334                          
-03-03-06 09:19 Raymond        Note Edited: 0008334                         
-03-24-06 14:57 Raymond        File Added: AU8830.conf                      
-03-24-06 15:04 Raymond        Note Added: 0008918                          
-03-31-06 10:22 Raymond        Note Added: 0009043                          
-======================================================================
-
-
+Regards,
+Clemens
 
 
 -------------------------------------------------------
