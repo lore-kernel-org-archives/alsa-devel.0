@@ -1,13 +1,14 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: driver-1.0.11rc4 breaks midi port 2
-Date: Fri, 31 Mar 2006 18:28:17 +0100
-Message-ID: <200603311828.17972.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001973]: No sound after userspace doing something
+Date: Fri, 31 Mar 2006 19:40:20 +0200
+Message-ID: <110390ba421152486f8801f3e504cdc1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 74948175
+	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 19:40:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,21 +18,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The ice1712 midi port 2 I have been working on with -rc3 seems not to work in 
--rc4.  With my patch (pending) the correct names appear in sequencer window 
-etc, and port 1 operates as before, but though midi activity is visible in 
-the sequencer, no sounds are heard from the wavetable card.
 
-I've studied the detailled changelog but have not been successful in 
-identifying the change responsible. Patched files from rc4 work in rc3, and 
-lib-rc4 is OK with driver-rc3 (but not the reverse).  Any quick ideas of what 
-to look at??
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1973> 
+======================================================================
+Reported By:                alonbl
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1973
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             03-28-2006 14:19 CEST
+Last Modified:              03-31-2006 19:40 CEST
+======================================================================
+Summary:                    No sound after userspace doing something
+Description: 
+I upgraded 2.6.15 to 2.6.16.
+All worked OK in 2.6.15.
 
-Thanks  Alan
+After boot there is no sound and no errors.
+As root aplay do not work.
+Stop start alsa/unload load modules does not help.
+
+BUT!!! After executing alsaconf sound turned on (Until next reboot...)
+
+Now... The strange thing...
+After login into KDE with REGULAR user, sound stops working.
+Doing alsaconf magic (WHILE in KDE session) and restart sound in KDE turns
+sound on again...
+
+Logut from KDE, relogin... No sound... alsaconf again works...
+
+I've tried the in kernel ASLA and the same...
+I've tried the user mode 1.0.10 and the same...
+
+Can anyone confirm?
+I use intel8x0 on IBM T42.
+
+I am not sure which component this problem relate to... But it seems like
+the kernel is the difference.
+======================================================================
+
+----------------------------------------------------------------------
+ alonbl - 03-31-06 19:40 
+----------------------------------------------------------------------
+This issue was solved by recompilation and removing all the KDE ALSA
+related stuff... I guess thaere were some leftovers of old alsa.
+
+How do I close this issue?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-28-06 14:19 alonbl         New Issue                                    
+03-28-06 14:19 alonbl         Distribution              => gentoo          
+03-28-06 14:19 alonbl         Kernel Version            => 2.6.16          
+03-28-06 20:56 alonbl         Issue Monitored: alonbl                      
+03-31-06 19:40 alonbl         Note Added: 0009046                          
+======================================================================
+
 
 
 
