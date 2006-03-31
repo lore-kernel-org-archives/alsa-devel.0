@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001984]: Line in record level impossible with OSS compatibility
-Date: Fri, 31 Mar 2006 16:16:02 +0200
-Message-ID: <78ddb993747a60a70745a4cb65170068@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001985]: Sound not working for A7V8X-X
+Date: Fri, 31 Mar 2006 16:22:59 +0200
+Message-ID: <a5075dfada5c79016cb910951057c7d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A76F516B
-	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 16:16:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4F4416B
+	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 16:22:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,40 +24,34 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1984> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1985> 
 ======================================================================
-Reported By:                croiset
-Assigned To:                tiwai
+Reported By:                ramonklown
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1984
-Category:                   PCI - cmipci
+Issue ID:                   1985
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             03-31-2006 16:16 CEST
-Last Modified:              03-31-2006 16:16 CEST
+Date Submitted:             03-31-2006 16:22 CEST
+Last Modified:              03-31-2006 16:22 CEST
 ======================================================================
-Summary:                    Line in record level impossible with OSS
-compatibility
+Summary:                    Sound not working for A7V8X-X
 Description: 
-it's impossible to adjust the analog input level by alsamixer except if you
-use the "Line" fader. So when you record you always have the input on the
-output.
-
-It will be better if it's possible to use IGAIN.
-
-
+I have tried alsaconf and all other configuration options provided by
+gentoo and my problem seems to not be resolved.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-06 16:16 croiset        New Issue                                    
+03-31-06 16:22 ramonklown     New Issue                                    
 ======================================================================
 
 
