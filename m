@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001989]: cannot record on ALC880
-Date: Fri, 31 Mar 2006 23:56:09 +0200
-Message-ID: <e5e5d7d9f9ef39bc988b47cdeebddcc4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001980]: No Sound with module snd-hda-intel and no error output
+Date: Sat, 1 Apr 2006 00:28:21 +0200
+Message-ID: <869207ab9b46550e58499c138e826e79@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36A4E184
-	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 23:56:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4486B128
+	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2006 00:28:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,40 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1989> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1980> 
 ======================================================================
-Reported By:                pomense
+Reported By:                zyfhie
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1989
+Issue ID:                   1980
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core release 3
-Kernel Version:             2.6.11.8
+Distribution:               ubuntu
+Kernel Version:             2.6.15-19-386
 ======================================================================
-Date Submitted:             03-31-2006 23:56 CEST
-Last Modified:              03-31-2006 23:56 CEST
+Date Submitted:             03-30-2006 14:43 CEST
+Last Modified:              04-01-2006 00:28 CEST
 ======================================================================
-Summary:                    cannot record on ALC880
+Summary:                    No Sound with module snd-hda-intel and no error
+output
 Description: 
-the snd_hda_intel module loads and recognize tha ALC880 sound card on my
-Acer TM 8104WLMi, but I cannot record anything, neither via Front Mic or
-using Mic as recording source. I can play sound very well.
+I just have ubuntu installed in my laptop,and there is no sound at all.
+In dmesg|grep hda-intel there is no message,but I could see 
+[4296289.511000] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+[4296330.997000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
+low) -> IRQ 201
+[4296330.997000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ 
+after rmmod snd-hda-intel &modprobe snd-hda-intel
+
+I had tried many parm in my alsa-base such as model,position_fix.
+Hope somebody could help!!! 
+
 ======================================================================
+
+----------------------------------------------------------------------
+ error10 - 04-01-06 00:28 
+----------------------------------------------------------------------
+Looks just like bug 1843. Try the fix there and see what happens.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-06 23:56 pomense        New Issue                                    
-03-31-06 23:56 pomense        File Added: lspc-nv                          
-03-31-06 23:56 pomense        Distribution              => Fedora Core release 3
-03-31-06 23:56 pomense        Kernel Version            => 2.6.11.8        
+03-30-06 14:43 zyfhie         New Issue                                    
+03-30-06 14:43 zyfhie         Distribution              => ubuntu          
+03-30-06 14:43 zyfhie         Kernel Version            => 2.6.15-19-386   
+04-01-06 00:28 error10        Note Added: 0009051                          
 ======================================================================
 
 
