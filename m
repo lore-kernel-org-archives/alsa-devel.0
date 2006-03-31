@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: What is /dev/snd/hwC0D0 used for ?
-Date: Thu, 30 Mar 2006 16:37:41 -0500
-Message-ID: <1143754662.22530.9.camel@mindpipe>
-References: <442C2CCE.5070207@kenati.com>
+Date: Thu, 30 Mar 2006 20:45:24 -0500
+Message-ID: <1143769524.7539.54.camel@localhost.localdomain>
+References: <442C2CCE.5070207@kenati.com>	<1143754662.22530.9.camel@mindpipe>
+Reply-To: paul@linuxaudiosystems.com
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <442C2CCE.5070207@kenati.com>
+In-reply-to: <1143754662.22530.9.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +18,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlos Munoz <carlos@kenati.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Carlos Munoz <carlos@kenati.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-03-30 at 11:09 -0800, Carlos Munoz wrote:
-> Hi all,
+On Thu, 2006-03-30 at 16:37 -0500, Lee Revell wrote:
+> On Thu, 2006-03-30 at 11:09 -0800, Carlos Munoz wrote:
+> > Hi all,
+> > 
+> > Does any anyone know what /dev/snd/hwCxDx and /dev/snd/timer are used for?
+> > 
 > 
-> Does any anyone know what /dev/snd/hwCxDx and /dev/snd/timer are used for?
+> Yes, these provide the ioctl() interface (specifically the hwdep and
+> timer ioctls, respectively) that alsa-lib uses to communicate with the
+> kernel.  They are only intended for use by alsa-lib.
 > 
-
-Yes, these provide the ioctl() interface (specifically the hwdep and
-timer ioctls, respectively) that alsa-lib uses to communicate with the
-kernel.  They are only intended for use by alsa-lib.
-
-> Is there a document explaining what all the devices are used for ? I 
-> searched but didn't find anything.
+> > Is there a document explaining what all the devices are used for ? I 
+> > searched but didn't find anything.
+> > 
 > 
+> No because these interfaces are intended to be private to alsa-lib.  The
+> source code is authoritative.
 
-No because these interfaces are intended to be private to alsa-lib.  The
-source code is authoritative.
+is this confirmed policy?
 
-Lee
+what happens about support for devices that have classes of control that
+do not fit into the existing ALSA schema and have traditionally been
+handled via device-specific ioctl's on /dev/snd/hwFOO ?
 
+--p
 
 
 
