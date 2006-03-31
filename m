@@ -1,17 +1,14 @@
-From: Robert Hardy <rhardy@webcon.ca>
-Subject: Re: Re: [ALSA - driver 0001938]: EPIPE on Audigy with
- surround sound when seeking in 6 channel sound file
-Date: Fri, 31 Mar 2006 12:47:16 -0500 (EST)
-Message-ID: <Pine.LNX.4.64.0603311238530.12817@thor.webcon.net>
-References: <Pine.LNX.4.64.0603291645290.6977@thor.webcon.net>
- <s5h3bh0l10a.wl%tiwai@suse.de> <s5hzmj8jlpx.wl%tiwai@suse.de>
- <Pine.LNX.4.64.0603301053330.11382@thor.webcon.net> <s5hirpv289o.wl%tiwai@suse.de>
- <Pine.LNX.4.64.0603301149200.15984@thor.webcon.net> <s5hvetvn8ff.wl%tiwai@suse.de>
- <Pine.LNX.4.64.0603301317280.20572@thor.webcon.net> <s5hr74ivs1t.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001987]: Upmix Feature Request
+Date: Fri, 31 Mar 2006 20:38:25 +0200
+Message-ID: <4446e39556f16ed35f499bbedfdf8e9d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hr74ivs1t.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63752169
+	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 20:38:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,61 +18,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 31 Mar 2006, Takashi Iwai wrote:
-> At Thu, 30 Mar 2006 18:53:23 -0500 (EST), Robert Hardy wrote:
->> No it only happens when I seek 6 channel audio. I can play something with
->> mplayer -ao alsa -channels 6  and it will play fine _UNTIL_ I seek. Then it
->> blows up.
->>
->> So something like this will immediately fail:
->> mplayer -ao alsa -channels 6 -ss 00:01:00 An_AC3_movie.avi
->>
->> With this stuff:
->> alsa-lib: pcm.c:6300:(snd_pcm_mmap_commit) commit offset (0) doesn't match with appl_ptr (291840) % buf_size (16384)
->> alsa-play: write error: Broken pipe
->> alsa-play: trying to reset soundcard
->>
->> If I switch to a 64 bit chrooted environment with a 64 bit mplayer the audio
->> works properly. But then I can't use any of the 32 bit codecs.
->>
->>>> Is there some way I can comment directly on bug 1938 in Mantis?
->>>
->>> I don't know.  I heard it should be fixed now.
->>
->> The author of the bug seems to think it's still broken and seems to have
->> beat me to posting a backtrace. It's been a busy day here. If you still want
->> me to do this let me know.
->
-> I think I got it.  It looks like the old applptr that are not updated
-> by the prepare call due to pcm links.
->
-> Try the patch below.
 
-*smiles happily*
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1987> 
+======================================================================
+Reported By:                the-me
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1987
+Category:                   CORE - control
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.16.1
+======================================================================
+Date Submitted:             03-31-2006 20:38 CEST
+Last Modified:              03-31-2006 20:38 CEST
+======================================================================
+Summary:                    Upmix Feature Request
+Description: 
+Hi,
 
-Your two most recently patches creating the files below fixed my seeking
-problems and likely closes bug 1938 on Mantis too.
+I, and many users more, want a feature at the alsamixer, called Upmix.
+I've got an Terratec Aureon 5.1 Fun and I tried many things, but it's not
+able, that I can hear an mp3 with upmixed 5.1 sound. Here is my actual
+.asoundrc:
 
-Thanks a lot for your help!
+pcm.ch51upmix {
+        type route
+        slave.pcm surround51
+        slave.channels 6
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+        ttable.0.4 0.5
+        ttable.1.4 0.5
+        ttable.0.5 0.5
+        ttable.1.5 0.5
+}
+pcm.!default
+{
+        type plug
+        slave.pcm ch51upmix
+}
+pcm.lowpass {
+type ladspa
+path "/usr/lib/ladspa"
+plugins [ {
+label lpf
+input {
+controls [ 50 ]
+}
+} ]
+}
 
-RCS file: /home/iwai/cvs/alsa/alsa-lib/src/pcm/pcm_hw.c,v
-retrieving revision 1.114
 
-RCS file: /home/iwai/cvs/alsa/alsa-lib/src/pcm/pcm_multi.c,v
-retrieving revision 1.72
+With this .asoundrc, all speakers work, but my subwoofer doesn't play only
+low frequen...
+
+Can you please add such a feature?
 
 
-Regards,
-Rob
+Greetz, Patrick
+======================================================================
 
--- 
----------------------"Happiness is understanding."----------------------
-Robert Hardy, B.Eng Computer Systems                  C.E.O. Webcon Inc.
-rhardy <at> webcon <dot> ca    GPG Key available          (613) 276-7327
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-31-06 20:38 the-me         New Issue                                    
+03-31-06 20:38 the-me         Distribution              => Debian          
+03-31-06 20:38 the-me         Kernel Version            => 2.6.16.1        
+======================================================================
+
+
 
 
 -------------------------------------------------------
