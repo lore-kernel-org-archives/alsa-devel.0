@@ -1,45 +1,37 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: snd-nm256: hard lockup on every second module load after powerup
-Date: Fri, 31 Mar 2006 23:12:40 +0200
-Message-ID: <20060331211240.GD22677@stusta.de>
-References: <20060326054542.GA11961@hermes.uziel.local> <s5hveu0chvy.wl%tiwai@suse.de> <1143500400.1792.314.camel@mindpipe> <20060329144303.GA24146@hermes.uziel.local>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: driver-1.0.11rc4 breaks midi port 2
+Date: Fri, 31 Mar 2006 22:53:03 +0100
+Message-ID: <200603312253.03260.gineera@aspect135.co.uk>
+References: <200603311828.17972.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932359AbWCaVMo@vger.kernel.org>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200603311828.17972.gineera@aspect135.co.uk>
 Content-Disposition: inline
-In-Reply-To: <20060329144303.GA24146@hermes.uziel.local>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Christian Trefzer <ctrefzer@gmx.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, Takashi Iwai <tiwai@suse.de>, lkml <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 29, 2006 at 04:43:03PM +0200, Christian Trefzer wrote:
-> Hi Takashi, Lee,
-> 
-> 
-> On Mon, Mar 27, 2006 at 05:59:59PM -0500, Lee Revell wrote:
-> > On Mon, 2006-03-27 at 12:16 +0200, Takashi Iwai wrote:
-> > > 
-> > > Try 2.6.16-git tree.  Some patches for this problem are there. 
-> > 
-> > If this does not fix the problem then alsa-devel (cc'ed) is the best
-> > list to discuss the issue.
-> 
-> Actually, the changes in Linus' current git have fixed the hang for me.
-> Good job - thanks a lot, guys!
-> 
-> Kind regards,
-> Chris
+On Friday 31 March 2006 18:28, Alan Horstmann wrote:
+> Any quick ideas of what to look at?
 
-Takashi, would it be possible getting the fixes for this hard lookup 
-into 2.6.16.2?
+Please ignore that message altogether!   Alan
 
-cu
-Adrian
 
--- 
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+-------------------------------------------------------
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
