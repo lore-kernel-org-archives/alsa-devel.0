@@ -1,37 +1,35 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: driver-1.0.11rc4 breaks midi port 2
-Date: Fri, 31 Mar 2006 22:53:03 +0100
-Message-ID: <200603312253.03260.gineera@aspect135.co.uk>
-References: <200603311828.17972.gineera@aspect135.co.uk>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: snd-nm256: hard lockup on every second module load after
+	powerup
+Date: Fri, 31 Mar 2006 16:53:13 -0500
+Message-ID: <1143841995.27146.25.camel@mindpipe>
+References: <20060326054542.GA11961@hermes.uziel.local>
+	 <s5hveu0chvy.wl%tiwai@suse.de> <1143500400.1792.314.camel@mindpipe>
+	 <20060329144303.GA24146@hermes.uziel.local>
+	 <20060331211240.GD22677@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200603311828.17972.gineera@aspect135.co.uk>
-Content-Disposition: inline
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751336AbWCaVxS@vger.kernel.org>
+In-Reply-To: <20060331211240.GD22677@stusta.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Adrian Bunk <bunk@stusta.de>
+Cc: Christian Trefzer <ctrefzer@gmx.de>, Takashi Iwai <tiwai@suse.de>, lkml <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 31 March 2006 18:28, Alan Horstmann wrote:
-> Any quick ideas of what to look at?
+On Fri, 2006-03-31 at 23:12 +0200, Adrian Bunk wrote:
+> > Actually, the changes in Linus' current git have fixed the hang for
+> me.
+> > Good job - thanks a lot, guys!
+> > 
+> > Kind regards,
+> > Chris
+> 
+> Takashi, would it be possible getting the fixes for this hard lookup 
+> into 2.6.16.2?
+> 
 
-Please ignore that message altogether!   Alan
+Is a 225 line patch to fix a driver that's never worked appropriate for
+-stable?
 
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by xPML, a groundbreaking scripting language
-that extends applications into web and mobile media. Attend the live webcast
-and join the prime developer group breaking into this new coding territory!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
+Lee
