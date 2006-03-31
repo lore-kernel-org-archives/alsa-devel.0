@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001987]: Upmix Feature Request
-Date: Fri, 31 Mar 2006 20:40:21 +0200
-Message-ID: <06ed9158f5efc166b81ee49cb8beb2c6@bugtrack.alsa-project.org>
+From: Matthias Koenig <list@phasorlab.de>
+Subject: Re: Ego Sys, Miditerminal 4140 Driver
+Date: Fri, 31 Mar 2006 20:53:05 +0200
+Message-ID: <87sloyfnu6.fsf@zebra.localdomain>
+References: <87psk3ubdc.fsf@zebra.localdomain>
+	<20060330170158.GG12081@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3925F169
-	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 20:40:22 +0200 (MEST)
+In-Reply-To: <20060330170158.GG12081@turing.informatik.uni-halle.de> (Clemens
+	Ladisch's message of "Thu, 30 Mar 2006 19:01:58 +0200")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,93 +18,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Clemens,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1987> 
-======================================================================
-Reported By:                the-me
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1987
-Category:                   CORE - control
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.16.1
-======================================================================
-Date Submitted:             03-31-2006 20:38 CEST
-Last Modified:              03-31-2006 20:40 CEST
-======================================================================
-Summary:                    Upmix Feature Request
-Description: 
-Hi,
+Clemens Ladisch <clemens@ladisch.de> writes:
+> Matthias K??nig wrote:
+>> There is still some work to do, the SMPTE timecode generation will
+>> need some kind of control for start/stop of timecode generation and
+>> setting the time (timecode generation is done by hardware). I'm not
+>> yet sure how to do this; can this be done by ALSA control elements
+>> or do I have to create a hwdep device, which would use ioctl?
+>
+> Most devices implement this as a separate control MIDI port for vendor-
+> specific SysEx messages, where "implements" means that the hardware does
+> it this way.
 
-I, and many users more, want a feature at the alsamixer, called Upmix.
-I've got an Terratec Aureon 5.1 Fun and I tried many things, but it's not
-able, that I can hear an mp3 with upmixed 5.1 sound. Here is my actual
-.asoundrc:
+Thanks for this hint. The Windows driver of my device uses a dispatch control
+routine (the analogon to ioctl) for this purpose. So I thought this should
+be done evtl. by a hwdep device.
+The separate Midiport will be more flexible, however in this case the driver 
+will have to parse the Midi message, because the hardware is controlled by 
+other means.
 
-pcm.ch51upmix {
-        type route
-        slave.pcm surround51
-        slave.channels 6
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.0.2 1
-        ttable.1.3 1
-        ttable.0.4 0.5
-        ttable.1.4 0.5
-        ttable.0.5 0.5
-        ttable.1.5 0.5
-}
-pcm.!default
-{
-        type plug
-        slave.pcm ch51upmix
-}
-pcm.lowpass {
-type ladspa
-path "/usr/lib/ladspa"
-plugins [ {
-label lpf
-input {
-controls [ 50 ]
-}
-} ]
-}
-
-
-With this .asoundrc, all speakers work, but my subwoofer doesn't play only
-low frequen...
-
-Can you please add such a feature?
-
-
-Greetz, Patrick
-======================================================================
-
-----------------------------------------------------------------------
- the-me - 03-31-06 20:40 
-----------------------------------------------------------------------
-Ohh sorry, wrong section, can you please move to the right? Thanks.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-31-06 20:38 the-me         New Issue                                    
-03-31-06 20:38 the-me         Distribution              => Debian          
-03-31-06 20:38 the-me         Kernel Version            => 2.6.16.1        
-03-31-06 20:40 the-me         Note Added: 0009048                          
-======================================================================
-
-
+Regards,
+Matthias
 
 
 -------------------------------------------------------
