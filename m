@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001980]: No Sound with module snd-hda-intel and no error output
-Date: Sat, 1 Apr 2006 00:28:21 +0200
-Message-ID: <869207ab9b46550e58499c138e826e79@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001987]: Upmix Feature Request
+Date: Sat, 1 Apr 2006 01:03:16 +0200
+Message-ID: <6d16465e0158edcff57d125c8d179bc9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4486B128
-	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2006 00:28:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16BBA173
+	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2006 01:03:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1980> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1987> 
 ======================================================================
-Reported By:                zyfhie
-Assigned To:                tiwai
+Reported By:                the-me
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1980
-Category:                   PCI - hda-intel
+Issue ID:                   1987
+Category:                   CORE - control
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               ubuntu
-Kernel Version:             2.6.15-19-386
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.16.1
 ======================================================================
-Date Submitted:             03-30-2006 14:43 CEST
-Last Modified:              04-01-2006 00:28 CEST
+Date Submitted:             03-31-2006 20:38 CEST
+Last Modified:              04-01-2006 01:03 CEST
 ======================================================================
-Summary:                    No Sound with module snd-hda-intel and no error
-output
+Summary:                    Upmix Feature Request
 Description: 
-I just have ubuntu installed in my laptop,and there is no sound at all.
-In dmesg|grep hda-intel there is no message,but I could see 
-[4296289.511000] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-[4296330.997000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
-low) -> IRQ 201
-[4296330.997000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
- 
-after rmmod snd-hda-intel &modprobe snd-hda-intel
+Hi,
 
-I had tried many parm in my alsa-base such as model,position_fix.
-Hope somebody could help!!! 
+I, and many users more, want a feature at the alsamixer, called Upmix.
+I've got an Terratec Aureon 5.1 Fun and I tried many things, but it's not
+able, that I can hear an mp3 with upmixed 5.1 sound. Here is my actual
+.asoundrc:
 
+pcm.ch51upmix {
+        type route
+        slave.pcm surround51
+        slave.channels 6
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+        ttable.0.4 0.5
+        ttable.1.4 0.5
+        ttable.0.5 0.5
+        ttable.1.5 0.5
+}
+pcm.!default
+{
+        type plug
+        slave.pcm ch51upmix
+}
+pcm.lowpass {
+type ladspa
+path "/usr/lib/ladspa"
+plugins [ {
+label lpf
+input {
+controls [ 50 ]
+}
+} ]
+}
+
+
+With this .asoundrc, all speakers work, but my subwoofer doesn't play only
+low frequen...
+
+Can you please add such a feature?
+
+
+Greetz, Patrick
 ======================================================================
 
 ----------------------------------------------------------------------
- error10 - 04-01-06 00:28 
+ the-me - 03-31-06 21:15 
 ----------------------------------------------------------------------
-Looks just like bug 1843. Try the fix there and see what happens.
+But I need upmixing, no real Surroundsound.
+
+And I dont know, how to use this lists :/
+
+----------------------------------------------------------------------
+ Raymond - 04-01-06 01:03 
+----------------------------------------------------------------------
+Have you try the alsa-plugin ?
+
+http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-plugins/doc/upmix.txt?rev=1.1
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-06 14:43 zyfhie         New Issue                                    
-03-30-06 14:43 zyfhie         Distribution              => ubuntu          
-03-30-06 14:43 zyfhie         Kernel Version            => 2.6.15-19-386   
-04-01-06 00:28 error10        Note Added: 0009051                          
+03-31-06 20:38 the-me         New Issue                                    
+03-31-06 20:38 the-me         Distribution              => Debian          
+03-31-06 20:38 the-me         Kernel Version            => 2.6.16.1        
+03-31-06 20:40 the-me         Note Added: 0009048                          
+03-31-06 21:02 rlrevell       Status                   new => closed       
+03-31-06 21:02 rlrevell       Note Added: 0009049                          
+03-31-06 21:15 the-me         Status                   closed => feedback  
+03-31-06 21:15 the-me         Resolution               open => reopened    
+03-31-06 21:15 the-me         Note Added: 0009050                          
+04-01-06 01:03 Raymond        Note Added: 0009052                          
 ======================================================================
 
 
