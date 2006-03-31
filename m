@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001973]: No sound after userspace doing something
-Date: Fri, 31 Mar 2006 20:38:37 +0200
-Message-ID: <eccd27b8d57e5d82522327a1d10121bf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001987]: Upmix Feature Request
+Date: Fri, 31 Mar 2006 20:40:21 +0200
+Message-ID: <06ed9158f5efc166b81ee49cb8beb2c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3CA10169
-	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 20:38:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3925F169
+	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 20:40:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1973> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1987> 
 ======================================================================
-Reported By:                alonbl
+Reported By:                the-me
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1973
-Category:                   1_OTHERS
+Issue ID:                   1987
+Category:                   CORE - control
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Distribution:               gentoo
-Kernel Version:             2.6.16
-Resolution:                 open
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.16.1
 ======================================================================
-Date Submitted:             03-28-2006 14:19 CEST
-Last Modified:              03-31-2006 20:38 CEST
+Date Submitted:             03-31-2006 20:38 CEST
+Last Modified:              03-31-2006 20:40 CEST
 ======================================================================
-Summary:                    No sound after userspace doing something
+Summary:                    Upmix Feature Request
 Description: 
-I upgraded 2.6.15 to 2.6.16.
-All worked OK in 2.6.15.
+Hi,
 
-After boot there is no sound and no errors.
-As root aplay do not work.
-Stop start alsa/unload load modules does not help.
+I, and many users more, want a feature at the alsamixer, called Upmix.
+I've got an Terratec Aureon 5.1 Fun and I tried many things, but it's not
+able, that I can hear an mp3 with upmixed 5.1 sound. Here is my actual
+.asoundrc:
 
-BUT!!! After executing alsaconf sound turned on (Until next reboot...)
+pcm.ch51upmix {
+        type route
+        slave.pcm surround51
+        slave.channels 6
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+        ttable.0.4 0.5
+        ttable.1.4 0.5
+        ttable.0.5 0.5
+        ttable.1.5 0.5
+}
+pcm.!default
+{
+        type plug
+        slave.pcm ch51upmix
+}
+pcm.lowpass {
+type ladspa
+path "/usr/lib/ladspa"
+plugins [ {
+label lpf
+input {
+controls [ 50 ]
+}
+} ]
+}
 
-Now... The strange thing...
-After login into KDE with REGULAR user, sound stops working.
-Doing alsaconf magic (WHILE in KDE session) and restart sound in KDE turns
-sound on again...
 
-Logut from KDE, relogin... No sound... alsaconf again works...
+With this .asoundrc, all speakers work, but my subwoofer doesn't play only
+low frequen...
 
-I've tried the in kernel ASLA and the same...
-I've tried the user mode 1.0.10 and the same...
+Can you please add such a feature?
 
-Can anyone confirm?
-I use intel8x0 on IBM T42.
 
-I am not sure which component this problem relate to... But it seems like
-the kernel is the difference.
+Greetz, Patrick
 ======================================================================
 
 ----------------------------------------------------------------------
- alonbl - 03-31-06 19:40 
+ the-me - 03-31-06 20:40 
 ----------------------------------------------------------------------
-This issue was solved by recompilation and removing all the KDE ALSA
-related stuff... I guess thaere were some leftovers of old alsa.
-
-How do I close this issue?
-
-----------------------------------------------------------------------
- rlrevell - 03-31-06 20:38 
-----------------------------------------------------------------------
-KDE or distro bug (mixer settings not being loaded or incorrect settings
-loaded)
+Ohh sorry, wrong section, can you please move to the right? Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-28-06 14:19 alonbl         New Issue                                    
-03-28-06 14:19 alonbl         Distribution              => gentoo          
-03-28-06 14:19 alonbl         Kernel Version            => 2.6.16          
-03-28-06 20:56 alonbl         Issue Monitored: alonbl                      
-03-31-06 19:40 alonbl         Note Added: 0009046                          
-03-31-06 20:38 rlrevell       Status                   new => closed       
-03-31-06 20:38 rlrevell       Note Added: 0009047                          
+03-31-06 20:38 the-me         New Issue                                    
+03-31-06 20:38 the-me         Distribution              => Debian          
+03-31-06 20:38 the-me         Kernel Version            => 2.6.16.1        
+03-31-06 20:40 the-me         Note Added: 0009048                          
 ======================================================================
 
 
