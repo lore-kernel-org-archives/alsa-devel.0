@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001981]: Compilation problem in pcm/pcm.c
-Date: Fri, 31 Mar 2006 13:49:53 +0200
-Message-ID: <30c141c0db9e43aaae8e1e4079c12888@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001982]: Compilation problem in misc_driver.c
+Date: Fri, 31 Mar 2006 14:17:50 +0200
+Message-ID: <81102a63f1589414ebf0e5ff01e08be5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8495CC1
-	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 13:49:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09D8D15E
+	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 14:17:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1981> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1982> 
 ======================================================================
 Reported By:                croiset
-Assigned To:                
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1981
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   1982
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Linux Redhat 7.2
+Kernel Version:             2.4.7-10
 ======================================================================
-Date Submitted:             03-31-2006 13:49 CEST
-Last Modified:              03-31-2006 13:49 CEST
+Date Submitted:             03-31-2006 14:17 CEST
+Last Modified:              03-31-2006 14:17 CEST
 ======================================================================
-Summary:                    Compilation problem in pcm/pcm.c
+Summary:                    Compilation problem in misc_driver.c
 Description: 
-In the function snd_pcm_get_params, you must declare everything before
-making any code. If it's not the case, it will create a compilation error
-on C.
+ -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.7-10/build/includ
+e/linux/modversions.h  -DKBUILD_BASENAME=misc_driver   -c -o misc_driver.o
+misc
+_driver.c
+misc_driver.c:451: field `thread_exited' has incomplete type
+misc_driver.c: In function `snd_compat_destroy_workqueue':
+misc_driver.c:502: warning: implicit declaration of function
+`wait_for_completi
+on_R02032293'
+misc_driver.c: In function `snd_compat_create_workqueue':
+misc_driver.c:550: warning: implicit declaration of function
+`init_completion'
+make[1]: *** [misc_driver.o] Erreur 1
+make[1]: Quitte le répertoire
+`/home/redhat/BUILD/alsa-driver-1.0.11rc4/acore'
+make: *** [compile] Erreur 1
 
-Before in line 7266 :
-int snd_pcm_get_params(snd_pcm_t *pcm,
-                       snd_pcm_uframes_t *buffer_size,
-                       snd_pcm_uframes_t *period_size)
-{
-   assert(pcm);
-   snd_pcm_hw_params_t *hw;
-   int err;
 
-   snd_pcm_hw_params_alloca(&hw);
+To solve this problem we must modify the file acore/misc_driver.c
 
-After correction :
-int snd_pcm_get_params(snd_pcm_t *pcm,
-                       snd_pcm_uframes_t *buffer_size,
-                       snd_pcm_uframes_t *period_size)
-{
-   snd_pcm_hw_params_t *hw;
-   int err;
+by adding this include in the list :
+#include <linux/completion.h>
 
-   assert(pcm);
 
-   snd_pcm_hw_params_alloca(&hw);
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-06 13:49 croiset        New Issue                                    
+03-31-06 14:17 croiset        New Issue                                    
+03-31-06 14:17 croiset        Distribution              => Linux Redhat 7.2
+03-31-06 14:17 croiset        Kernel Version            => 2.4.7-10        
 ======================================================================
 
 
