@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001973]: No sound after userspace doing something
-Date: Fri, 31 Mar 2006 19:40:20 +0200
-Message-ID: <110390ba421152486f8801f3e504cdc1@bugtrack.alsa-project.org>
+From: Robert Hardy <rhardy@webcon.ca>
+Subject: Re: Re: [ALSA - driver 0001938]: EPIPE on Audigy with
+ surround sound when seeking in 6 channel sound file
+Date: Fri, 31 Mar 2006 12:47:16 -0500 (EST)
+Message-ID: <Pine.LNX.4.64.0603311238530.12817@thor.webcon.net>
+References: <Pine.LNX.4.64.0603291645290.6977@thor.webcon.net>
+ <s5h3bh0l10a.wl%tiwai@suse.de> <s5hzmj8jlpx.wl%tiwai@suse.de>
+ <Pine.LNX.4.64.0603301053330.11382@thor.webcon.net> <s5hirpv289o.wl%tiwai@suse.de>
+ <Pine.LNX.4.64.0603301149200.15984@thor.webcon.net> <s5hvetvn8ff.wl%tiwai@suse.de>
+ <Pine.LNX.4.64.0603301317280.20572@thor.webcon.net> <s5hr74ivs1t.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 74948175
-	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 19:40:20 +0200 (MEST)
+In-Reply-To: <s5hr74ivs1t.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,77 +21,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 31 Mar 2006, Takashi Iwai wrote:
+> At Thu, 30 Mar 2006 18:53:23 -0500 (EST), Robert Hardy wrote:
+>> No it only happens when I seek 6 channel audio. I can play something with
+>> mplayer -ao alsa -channels 6  and it will play fine _UNTIL_ I seek. Then it
+>> blows up.
+>>
+>> So something like this will immediately fail:
+>> mplayer -ao alsa -channels 6 -ss 00:01:00 An_AC3_movie.avi
+>>
+>> With this stuff:
+>> alsa-lib: pcm.c:6300:(snd_pcm_mmap_commit) commit offset (0) doesn't match with appl_ptr (291840) % buf_size (16384)
+>> alsa-play: write error: Broken pipe
+>> alsa-play: trying to reset soundcard
+>>
+>> If I switch to a 64 bit chrooted environment with a 64 bit mplayer the audio
+>> works properly. But then I can't use any of the 32 bit codecs.
+>>
+>>>> Is there some way I can comment directly on bug 1938 in Mantis?
+>>>
+>>> I don't know.  I heard it should be fixed now.
+>>
+>> The author of the bug seems to think it's still broken and seems to have
+>> beat me to posting a backtrace. It's been a busy day here. If you still want
+>> me to do this let me know.
+>
+> I think I got it.  It looks like the old applptr that are not updated
+> by the prepare call due to pcm links.
+>
+> Try the patch below.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1973> 
-======================================================================
-Reported By:                alonbl
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1973
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.16
-======================================================================
-Date Submitted:             03-28-2006 14:19 CEST
-Last Modified:              03-31-2006 19:40 CEST
-======================================================================
-Summary:                    No sound after userspace doing something
-Description: 
-I upgraded 2.6.15 to 2.6.16.
-All worked OK in 2.6.15.
+*smiles happily*
 
-After boot there is no sound and no errors.
-As root aplay do not work.
-Stop start alsa/unload load modules does not help.
+Your two most recently patches creating the files below fixed my seeking
+problems and likely closes bug 1938 on Mantis too.
 
-BUT!!! After executing alsaconf sound turned on (Until next reboot...)
+Thanks a lot for your help!
 
-Now... The strange thing...
-After login into KDE with REGULAR user, sound stops working.
-Doing alsaconf magic (WHILE in KDE session) and restart sound in KDE turns
-sound on again...
+RCS file: /home/iwai/cvs/alsa/alsa-lib/src/pcm/pcm_hw.c,v
+retrieving revision 1.114
 
-Logut from KDE, relogin... No sound... alsaconf again works...
-
-I've tried the in kernel ASLA and the same...
-I've tried the user mode 1.0.10 and the same...
-
-Can anyone confirm?
-I use intel8x0 on IBM T42.
-
-I am not sure which component this problem relate to... But it seems like
-the kernel is the difference.
-======================================================================
-
-----------------------------------------------------------------------
- alonbl - 03-31-06 19:40 
-----------------------------------------------------------------------
-This issue was solved by recompilation and removing all the KDE ALSA
-related stuff... I guess thaere were some leftovers of old alsa.
-
-How do I close this issue?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-28-06 14:19 alonbl         New Issue                                    
-03-28-06 14:19 alonbl         Distribution              => gentoo          
-03-28-06 14:19 alonbl         Kernel Version            => 2.6.16          
-03-28-06 20:56 alonbl         Issue Monitored: alonbl                      
-03-31-06 19:40 alonbl         Note Added: 0009046                          
-======================================================================
+RCS file: /home/iwai/cvs/alsa/alsa-lib/src/pcm/pcm_multi.c,v
+retrieving revision 1.72
 
 
+Regards,
+Rob
+
+-- 
+---------------------"Happiness is understanding."----------------------
+Robert Hardy, B.Eng Computer Systems                  C.E.O. Webcon Inc.
+rhardy <at> webcon <dot> ca    GPG Key available          (613) 276-7327
 
 
 -------------------------------------------------------
