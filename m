@@ -1,15 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: What is /dev/snd/hwC0D0 used for ?
-Date: Thu, 30 Mar 2006 21:47:10 -0500
-Message-ID: <1143773231.22771.15.camel@mindpipe>
-References: <442C2CCE.5070207@kenati.com>
-	 <1143754662.22530.9.camel@mindpipe>
-	 <1143769524.7539.54.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
+Date: Fri, 31 Mar 2006 09:46:44 +0200
+Message-ID: <f090fd80421dac3390dee892118584af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1143769524.7539.54.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07058179
+	for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2006 09:46:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,33 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: paul@linuxaudiosystems.com
-Cc: Carlos Munoz <carlos@kenati.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-03-30 at 20:45 -0500, Paul Davis wrote:
-> On Thu, 2006-03-30 at 16:37 -0500, Lee Revell wrote:
-> > > Is there a document explaining what all the devices are used for ? I 
-> > > searched but didn't find anything.
-> > > 
-> > 
-> > No because these interfaces are intended to be private to alsa-lib.  The
-> > source code is authoritative.
-> 
-> is this confirmed policy?
-> 
 
-Nope, just my understanding of the situation.  Corrections are welcome.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
+======================================================================
+Reported By:                Jeff250
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1963
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     feedback
+Distribution:               Ubuntu Dapper
+Kernel Version:             2.6.15-19-686
+======================================================================
+Date Submitted:             03-25-2006 03:35 CET
+Last Modified:              03-31-2006 09:46 CEST
+======================================================================
+Summary:                    Returning from suspend-to-ram "mutes" sounds
+Description: 
+I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
+STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
+the sound is "muted" in that alsamixer does not actually show any tracks
+to be muted, but changing the master volume up or down restores sound
+output.  As a workaround, I've added to my resume script an amixer command
+to slightly modify the volume automatically on resume from suspend.  I'm
+using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
+1.0.10.  Thanks for your time.
+======================================================================
 
-> what happens about support for devices that have classes of control
-> that do not fit into the existing ALSA schema and have traditionally
-> been handled via device-specific ioctl's on /dev/snd/hwFOO ?
-> 
+----------------------------------------------------------------------
+ tiwai - 03-30-06 11:42 
+----------------------------------------------------------------------
+I guess you got an old tree before anon cvs tree is synced with the
+developers' tree.  Try to update later again.
 
-Good question.  I know the upstream kernel policy is "no new ioctls,
-period"...
+----------------------------------------------------------------------
+ Jeff250 - 03-31-06 09:46 
+----------------------------------------------------------------------
+I've just deleted the old source directories, updated from CVS,
+re-compiled, and re-installed.  Unfortunately, the problem still exists.
 
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-25-06 03:35 Jeff250        New Issue                                    
+03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
+03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
+03-26-06 01:28 tiwai          Note Added: 0008956                          
+03-26-06 04:26 Jeff250        Note Added: 0008965                          
+03-29-06 19:17 tiwai          Status                   assigned => resolved
+03-29-06 19:17 tiwai          Resolution               open => fixed       
+03-29-06 19:17 tiwai          Note Added: 0009013                          
+03-29-06 21:46 Jeff250        Status                   resolved => feedback
+03-29-06 21:46 Jeff250        Resolution               fixed => reopened   
+03-29-06 21:46 Jeff250        Note Added: 0009018                          
+03-30-06 11:42 tiwai          Note Added: 0009030                          
+03-31-06 09:46 Jeff250        Note Added: 0009042                          
+======================================================================
+
 
 
 
