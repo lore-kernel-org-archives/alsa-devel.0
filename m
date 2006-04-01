@@ -1,45 +1,84 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: Re: snd-nm256: hard lockup on every second module load after powerup
-Date: Sat, 1 Apr 2006 11:21:36 +0200
-Message-ID: <20060401092136.GD28310@stusta.de>
-References: <20060326054542.GA11961@hermes.uziel.local> <s5hveu0chvy.wl%tiwai@suse.de> <1143500400.1792.314.camel@mindpipe> <20060329144303.GA24146@hermes.uziel.local> <20060331211240.GD22677@stusta.de> <1143841995.27146.25.camel@mindpipe>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: OSS emulation question
+Date: Sat, 01 Apr 2006 10:25:44 +0100
+Message-ID: <1143883544.9228.0.camel@localhost.localdomain>
+References: <1143673730.15278.7.camel@localhost.localdomain>
+	 <20060330125559.GC12081@turing.informatik.uni-halle.de>
+	 <1143751422.9265.1.camel@localhost.localdomain>
+	 <20060331093731.GB21761@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1750755AbWDAJVi@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1143841995.27146.25.camel@mindpipe>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Christian Trefzer <ctrefzer@gmx.de>, Takashi Iwai <tiwai@suse.de>, lkml <linux-kernel@vger.kernel.org>, alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20060331093731.GB21761@turing.informatik.uni-halle.de>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 31, 2006 at 04:53:13PM -0500, Lee Revell wrote:
-> On Fri, 2006-03-31 at 23:12 +0200, Adrian Bunk wrote:
-> > > Actually, the changes in Linus' current git have fixed the hang for
-> > me.
-> > > Good job - thanks a lot, guys!
-> > > 
-> > > Kind regards,
-> > > Chris
+On Fri, 2006-03-31 at 11:37 +0200, Clemens Ladisch wrote:
+> Adrian McMenamin wrote:
+> > On Thu, 2006-03-30 at 14:55 +0200, Clemens Ladisch wrote:
+> > > See snd_mixer_oss_build() in core/oss/mixer_oss.c for a list of mixer
+> > > control names that get mapped to OSS controls (e.g., "Master Playback
+> > > Volume"/"...Switch" would be mapped to SOUND_MIXER_VOLUME).
 > > 
-> > Takashi, would it be possible getting the fixes for this hard lookup 
-> > into 2.6.16.2?
+> > I have implemented master volume and master switch but all I get is:
 > > 
+> > audio/gain: setable Volume/PCM-Level not supported by your audio device:
+> > 0000
+> > 
+> > what is the minimum set of controls I need to have settable volume
+> > in /dev/mixer (ie oss emulation)?
 > 
-> Is a 225 line patch to fix a driver that's never worked appropriate for
-> -stable?
+> One control should be enough.
+> 
+> What are the contents of /proc/asound/cardX/oss_mixer?
 
-If it was only "not working" it wasn't that bad, but "hard lockup" is 
-really bad.
+Doesn't look good....
 
-> Lee
 
-cu
-Adrian
+/proc/asound/card0 # cat oss_mixer
+VOLUME "" 0
+BASS "" 0
+TREBLE "" 0
+SYNTH "" 0
+PCM "" 0
+SPEAKER "" 0
+LINE "" 0
+MIC "" 0
+CD "" 0
+IMIX "" 0
+ALTPCM "" 0
+RECLEV "" 0
+IGAIN "" 0
+OGAIN "" 0
+LINE1 "" 0
+LINE2 "" 0
+LINE3 "" 0
+DIGITAL1 "" 0
+DIGITAL2 "" 0
+DIGITAL3 "" 0
+PHONEIN "" 0
+PHONEOUT "" 0
+VIDEO "" 0
+RADIO "" 0
+MONITOR "" 0
 
--- 
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
