@@ -1,17 +1,14 @@
-From: Brian Cooper <46gary@accesstoledo.com>
-Subject: Windows XP - very low price
-Date: Sat, 01 Apr 2006 07:44:20 +0300
-Message-ID: <084301c65546$a5b0b454$6e12cb5b@accesstoledo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001987]: Upmix Feature Request
+Date: Sat, 1 Apr 2006 10:39:12 +0200
+Message-ID: <095f7ce82ca78c362af17767858850fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_000_0000_08002FE8.A264F2FB"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7C00E144
-	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2006 07:58:27 +0200 (MEST)
-Received: from c-66-229-19-55.hsd1.ca.comcast.net (c-66-229-19-55.hsd1.ca.comcast.net [66.229.19.55])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 4C7D399213
-	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2006 07:58:19 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 113E5167
+	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2006 10:39:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,81 +21,111 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_08002FE8.A264F2FB
-Content-Type: text/plain;
-    charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1987> 
+======================================================================
+Reported By:                the-me
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1987
+Category:                   CORE - control
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.16.1
+======================================================================
+Date Submitted:             03-31-2006 20:38 CEST
+Last Modified:              04-01-2006 10:39 CEST
+======================================================================
+Summary:                    Upmix Feature Request
+Description: 
+Hi,
 
-       75% Off for All New Software. Microsoft, Adobe, Macromedia, Corel!
+I, and many users more, want a feature at the alsamixer, called Upmix.
+I've got an Terratec Aureon 5.1 Fun and I tried many things, but it's not
+able, that I can hear an mp3 with upmixed 5.1 sound. Here is my actual
+.asoundrc:
 
-
-A few examples:
-$79.95 Windows XP Professional (Including: Service Pack 2)
-$89.95 Microsoft Office 2003 Professional / $79.95 Office XP Professional
-
-$69.95 Dreamweaver MX 2004 / Flash MX 2004 / Fireworks MX
-$149.95 Adobe Creative Suite Premium (5 CD)
-$69.95 Quark Xpress 6 Passport Multilanguage 
-
-For full list of products go:
-http://www.soft-for-us.com 
-
-Special offers:
-$89.95 Windows XP Pro + Office XP Pro
-$95.95 Adobe Photoshop 8.0 + Adobe Acrobat 6.0 Professional
-$109.95 Dreamweaver MX 2004 + Flash MX 2004 
-
-
-__________________
-To change, go here 
-
- 
-------=_NextPart_000_0000_08002FE8.A264F2FB
-Content-Type: text/html;
-    charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2900.2802" name=3DGENERATOR></HEAD>
-<BODY>
-<CENTER>
-<TABLE cellSpacing=3D0 cellPadding=3D0 width=3D800 align=3Dcenter =
-border=3D0>
-  <TBODY></TBODY></TABLE>
-<TABLE id=3D616C73612D646576656C40616C73612D70726F6A6563742E6F7267>
-  <TBODY>
-  <TR>
-    <TD>75% Off for All New Software. Microsoft, Adobe, Macromedia, =
-Corel!=20
-      <BR><BR>A few examples:<BR>$79.95 Windows XP Professional =
-(Including: Service Pack=20
-      2)<BR>$89.95 Microsoft Office 2003 Professional / $79.95 Office XP=
-=20
-      Professional <BR>$69.95 Dreamweaver MX 2004 / Flash MX 2004 / =
-Fireworks=20
-      MX<BR>$149.95 Adobe Creative Suite Premium (5 CD)<BR>$69.95 Quark =
-Xpress 6 Passport Multilanguage
-
-<br><br>
-For full list of products go:<BR><A=20
-      =
-href=3D"http://www.soft-for-us.com">http://www.soft-for-us.com</A>
+pcm.ch51upmix {
+        type route
+        slave.pcm surround51
+        slave.channels 6
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+        ttable.0.4 0.5
+        ttable.1.4 0.5
+        ttable.0.5 0.5
+        ttable.1.5 0.5
+}
+pcm.!default
+{
+        type plug
+        slave.pcm ch51upmix
+}
+pcm.lowpass {
+type ladspa
+path "/usr/lib/ladspa"
+plugins [ {
+label lpf
+input {
+controls [ 50 ]
+}
+} ]
+}
 
 
-<BR><BR>Special offers:<BR>$89.95 Windows XP=20
-      Pro + Office XP Pro<BR>$95.95 Adobe Photoshop 8.0 + Adobe Acrobat =
-6.0=20
-      Professional<BR>$109.95 Dreamweaver MX 2004 + Flash MX 2004
+With this .asoundrc, all speakers work, but my subwoofer doesn't play only
+low frequen...
 
-<BR><BR><BR>__________________<BR>To=20
-      change, go <A=20
-      href=3D"http://www.soft-for-us.com/uns.htm">here</A>
-      <P></P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
+Can you please add such a feature?
 
 
-------=_NextPart_000_0000_08002FE8.A264F2FB--
+Greetz, Patrick
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 04-01-06 01:03 
+----------------------------------------------------------------------
+Have you try the alsa-plugin ?
+
+http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-plugins/doc/upmix.txt?rev=1.1
+
+----------------------------------------------------------------------
+ the-me - 04-01-06 10:39 
+----------------------------------------------------------------------
+Thanks, but there is one problem. I need a lowpass filter for my
+subwoofer.
+Like here but only on my subwoofer channel =>
+http://alsa.opensrc.org/SurroundSound ( ~ in the middle of the document ).
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-31-06 20:38 the-me         New Issue                                    
+03-31-06 20:38 the-me         Distribution              => Debian          
+03-31-06 20:38 the-me         Kernel Version            => 2.6.16.1        
+03-31-06 20:40 the-me         Note Added: 0009048                          
+03-31-06 21:02 rlrevell       Status                   new => closed       
+03-31-06 21:02 rlrevell       Note Added: 0009049                          
+03-31-06 21:15 the-me         Status                   closed => feedback  
+03-31-06 21:15 the-me         Resolution               open => reopened    
+03-31-06 21:15 the-me         Note Added: 0009050                          
+04-01-06 01:03 Raymond        Note Added: 0009052                          
+04-01-06 10:39 the-me         Note Added: 0009053                          
+======================================================================
+
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
