@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001987]: Upmix Feature Request
-Date: Sat, 1 Apr 2006 10:39:12 +0200
-Message-ID: <095f7ce82ca78c362af17767858850fc@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001228]: Skype Does not work with aoss
+Date: Sat, 1 Apr 2006 10:55:39 +0200
+Message-ID: <76573fea2d9bcb2d68a61c5d648289be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 113E5167
-	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2006 10:39:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 74813167
+	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2006 10:55:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,101 +24,128 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1987> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1228> 
 ======================================================================
-Reported By:                the-me
+Reported By:                hil
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1987
-Category:                   CORE - control
+Project:                    ALSA - liboss
+Issue ID:                   1228
+Category:                   
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Debian
-Kernel Version:             2.6.16.1
+Status:                     new
 ======================================================================
-Date Submitted:             03-31-2006 20:38 CEST
-Last Modified:              04-01-2006 10:39 CEST
+Date Submitted:             07-03-2005 09:09 CEST
+Last Modified:              04-01-2006 10:55 CEST
 ======================================================================
-Summary:                    Upmix Feature Request
+Summary:                    Skype Does not work with aoss
 Description: 
-Hi,
-
-I, and many users more, want a feature at the alsamixer, called Upmix.
-I've got an Terratec Aureon 5.1 Fun and I tried many things, but it's not
-able, that I can hear an mp3 with upmixed 5.1 sound. Here is my actual
-.asoundrc:
-
-pcm.ch51upmix {
-        type route
-        slave.pcm surround51
-        slave.channels 6
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.0.2 1
-        ttable.1.3 1
-        ttable.0.4 0.5
-        ttable.1.4 0.5
-        ttable.0.5 0.5
-        ttable.1.5 0.5
-}
-pcm.!default
-{
-        type plug
-        slave.pcm ch51upmix
-}
-pcm.lowpass {
-type ladspa
-path "/usr/lib/ladspa"
-plugins [ {
-label lpf
-input {
-controls [ 50 ]
-}
-} ]
-}
-
-
-With this .asoundrc, all speakers work, but my subwoofer doesn't play only
-low frequen...
-
-Can you please add such a feature?
-
-
-Greetz, Patrick
+I downloaded alsa-oss-1.0.9rc2 and install by
+# ./configure --with-aoss=yes && make && make install
+as root. Virtually every program works except skype
+(http://www.skype.com/) version 1.1.0.13_API. I downloaded the Fedora
+version of skype from the skype official website. Skype only uses
+/dev/dsp. I guess skype uses /dev/dsp as microphone input as well. I could
+not hear anything and the microphone did not work as well if I run  skype
+like aoss /usr/bin/skype. If I run skype without aoss, then skype works
+just fine.
+======================================================================
+Relazioni           ID      Riassunto
+----------------------------------------------------------------------
+in relazione con    0001224 artsd-like style
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-01-06 01:03 
+ Hetfield - 03-22-06 10:02 
 ----------------------------------------------------------------------
-Have you try the alsa-plugin ?
+oki, but kiax still has the same problem and kiax is open, you may try to
+fix that, hoping it's a similar bug
 
-http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-plugins/doc/upmix.txt?rev=1.1
+----------------------------------------------------------------------
+ Hetfield - 04-01-06 10:55 
+----------------------------------------------------------------------
+ok i have now skype working with aoss and dmix. solution found somewhere in
+the web, not only mine...
 
-----------------------------------------------------------------------
- the-me - 04-01-06 10:39 
-----------------------------------------------------------------------
-Thanks, but there is one problem. I need a lowpass filter for my
-subwoofer.
-Like here but only on my subwoofer channel =>
-http://alsa.opensrc.org/SurroundSound ( ~ in the middle of the document ).
+1) i have whole .11rc4
+2) i have .asoundrc pasted below (yes i know i should use no more it)
+3) start skype this way:
+
+export ALSA_OSS_PCM_DEVICE="skype"
+aoss /opt/skype/skype.bin --resources-path /opt/skype/
+
+it works with dmix, i can listen mplayer and use skype audio
+
+only a notice: whould be so nice if next alsa could implement such things
+by default settings
+
+cat .asoundrc
+pcm.skype {
+    type asym
+    playback.pcm "skypeout"
+    capture.pcm "skypein"
+ }
+
+ pcm.skypein {
+    type route
+    slave {
+       pcm "skypedsnoop"
+       format S16_LE
+    }
+    ttable {
+       0 {0 0.5}
+       1 {0 0.5}
+    }
+ }
+
+ pcm.skypeout {
+    type plug
+    slave {
+       pcm "dmix"
+    }
+ }
+
+ pcm.skypedsnoop {
+    type dsnoop
+    ipc_key 1133
+    slave {
+       pcm "hw:0,0"
+       period_size 256
+       periods 16
+       buffer_size 16384
+    }
+    bindings {
+       0 0
+    }
+ }
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-06 20:38 the-me         New Issue                                    
-03-31-06 20:38 the-me         Distribution              => Debian          
-03-31-06 20:38 the-me         Kernel Version            => 2.6.16.1        
-03-31-06 20:40 the-me         Note Added: 0009048                          
-03-31-06 21:02 rlrevell       Status                   new => closed       
-03-31-06 21:02 rlrevell       Note Added: 0009049                          
-03-31-06 21:15 the-me         Status                   closed => feedback  
-03-31-06 21:15 the-me         Resolution               open => reopened    
-03-31-06 21:15 the-me         Note Added: 0009050                          
-04-01-06 01:03 Raymond        Note Added: 0009052                          
-04-01-06 10:39 the-me         Note Added: 0009053                          
+07-03-05 09:09 hil            New Issue                                    
+08-09-05 15:33 rapand         Note Added: 0005732                          
+08-10-05 00:49 rlrevell       Relationship added       duplicate of 0001224
+08-10-05 00:50 rlrevell       Note Added: 0005740                          
+12-31-05 00:19 rlrevell       Note Added: 0007315                          
+01-02-06 18:54 rlrevell       Relationship deleted     duplicate of 0001224
+01-02-06 18:55 rlrevell       Relationship added       related to 0001224  
+01-02-06 18:56 rlrevell       Note Added: 0007375                          
+01-05-06 21:36 Hetfield       Note Added: 0007479                          
+01-05-06 21:40 rlrevell       Note Added: 0007480                          
+01-05-06 21:42 rlrevell       Note Added: 0007481                          
+01-05-06 22:01 Hetfield       Note Added: 0007482                          
+01-28-06 05:34 nono31         Note Added: 0007824                          
+01-28-06 05:35 nono31         Issue Monitored: nono31                      
+01-28-06 05:38 rlrevell       Note Added: 0007825                          
+01-28-06 06:11 nono31         Note Added: 0007826                          
+01-28-06 06:12 nono31         File Added: strace_aoss_kiax.bz2                  
+ 
+01-28-06 06:13 nono31         Note Added: 0007827                          
+03-22-06 00:28 rlrevell       Note Added: 0008761                          
+03-22-06 10:02 Hetfield       Note Added: 0008849                          
+04-01-06 10:55 Hetfield       Note Added: 0009054                          
 ======================================================================
 
 
