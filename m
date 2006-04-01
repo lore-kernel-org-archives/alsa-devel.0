@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
-Date: Sat, 1 Apr 2006 04:26:38 +0200
-Message-ID: <1b495c8bc9ac11b04d1a4bfbc1bb3775@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: snd_pcm_hw_params_get_period_size() returning 0
+Date: Fri, 31 Mar 2006 20:57:57 -0500
+Message-ID: <1143856678.2885.2.camel@mindpipe>
+References: <442DD097.40901@kenati.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B6B0172
-	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2006 04:26:38 +0200 (MEST)
+In-Reply-To: <442DD097.40901@kenati.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Carlos Munoz <carlos@kenati.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2006-03-31 at 17:00 -0800, Carlos Munoz wrote:
+> Does 
+> any one know why
+> snd_pcm_hw_params_get_period_size() would be returning 0 ? Is it 
+> something the driver did/didn't do ?
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1990
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             04-01-2006 04:26 CEST
-Last Modified:              04-01-2006 04:26 CEST
-======================================================================
-Summary:                    aplay/arecord cannot play/capture A_LAW
-Description: 
-aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
+Your hw_params callback should have set this to a correct value, try
+adding printks.
 
-arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
-
-aplay -D hw:0,0 test.au
-
-
-Try to use -t raw but the quality of A_LAW is very bad when compare with
-MU_LAW
-
-arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
-
-aplay -D hw:0,0 test.raw
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-01-06 04:26 Raymond        New Issue                                    
-======================================================================
-
+Lee
 
 
 
