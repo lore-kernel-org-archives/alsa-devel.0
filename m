@@ -1,17 +1,13 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: amixer issues
-Date: Sat, 01 Apr 2006 17:07:46 +0100
-Message-ID: <1143907666.9228.31.camel@localhost.localdomain>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Changes over dmix: 1.0.11rc4 and future
+Date: Sat, 01 Apr 2006 14:19:13 -0500
+Message-ID: <1143919154.30769.16.camel@mindpipe>
+References: <s5h64lzalr0.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 80D53191
-	for <alsa-devel@alsa-project.org>; Sat,  1 Apr 2006 18:07:52 +0200 (MEST)
-Received: from bossclass ([192.168.62.105])
-	by localhost.localdomain (8.13.4/8.13.4/Debian-3) with ESMTP id k31G7lUq022037
-	for <alsa-devel@alsa-project.org>; Sat, 1 Apr 2006 17:07:49 +0100
+In-Reply-To: <s5h64lzalr0.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,25 +17,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have a working sound card with a working (if basic) PCM mixer:
+On Mon, 2006-03-27 at 18:35 +0200, Takashi Iwai wrote:
+> Hi,
+> 
+> it looks like the 1.0.11rc4 announcement isn't sent out, so here I'd
+> like to explain what has been changed over dmix recently.
+> 
+> As of 1.0.11rc4, dmix accepts more flexible buffer sizes than the
+> earlier versions did.  The buffer size is basically arbitrary.  The
+> only restriction is that it's aligned to the period size, and the
+> minimal periods are two.
+> 
+> With this change, some applications have positive influences, and some
+> have negative.  The regression, for example with speaker-test, happens
+> because there was no upper limit of buffer size.  It's already fixed
+> in the CVS version (by setting max periods = 1024).
+> 
+> If you have a problem with dmix what didn't happen ago, try to define
+> 
+> 	defaults.pcm.dmix_variable_buffer false
+> 
+> in ~/.asoundrc.
+> 
 
-/proc/asound # cat cards
-0 [AICA           ]: snd_card_aica - AICA
-                     Yamaha AICA Super Intelligent Sound Processor for
-SEGA Dreamcast
+Does not work (alsa-lib and utils from today's CVS):
 
+$ aplay -Dplug:dmix51 /usr/share/sounds/error.wav 
+ALSA lib pcm.c:6650:(snd_pcm_slave_conf) Unknown field
+variable_buffer_size
+aplay: main:547: audio open error: Invalid argument
 
-but when I try to use amixer nothing seems to work:
+.asoundrc:
 
-/ # amixer -c 0
-Invalid card number.
-Usage: amixer <options> command
+defaults.pcm.dmix_variable_buffer false
+pcm.dmix51 {
+        type upmix
+        slave.pcm {
+                type dmix
+                ipc_key {
+                        @func refer
+                        name defaults.pcm.ipc_key
+                }
+                ipc_gid {
+                        @func refer
+                        name defaults.pcm.ipc_gid
+                }
+                slave {
+                        pcm "hw:0,0"
+                        period_size 512
+                        periods 10
+                        channels 6
+                        variable_buffer_size true
+                }
+        }
+}
 
-
-any clues?
+Lee
 
 
 
