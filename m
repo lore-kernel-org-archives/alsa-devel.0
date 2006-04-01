@@ -1,11 +1,13 @@
-From: Carlos Munoz <carlos@kenati.com>
-Subject: snd_pcm_hw_params_get_period_size() returning 0
-Date: Fri, 31 Mar 2006 17:00:07 -0800
-Message-ID: <442DD097.40901@kenati.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: snd_pcm_hw_params_get_period_size() returning 0
+Date: Fri, 31 Mar 2006 20:59:55 -0500
+Message-ID: <1143856796.2885.4.camel@mindpipe>
+References: <442DD097.40901@kenati.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <442DD097.40901@kenati.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,25 +17,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Carlos Munoz <carlos@kenati.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Fri, 2006-03-31 at 17:00 -0800, Carlos Munoz wrote:
+> Does 
+> any one know why
+> snd_pcm_hw_params_get_period_size() would be returning 0 ? Is it 
+> something the driver did/didn't do ?
+> 
 
-I tested my new driver with a simple application I wrote. I can play and 
-record pcm files with no problem. However, I'm unable to get aplay to 
-work. aplay just hangs. I was able to trace it to aplay.c:playback_go(). 
-aplay is stuck in the while loop. After closer examination it turns out 
-that the reason is because previously 
-snd_pcm_hw_params_get_period_size() had set the period size to 0. Does 
-any one know why
-snd_pcm_hw_params_get_period_size() would be returning 0 ? Is it 
-something the driver did/didn't do ?
+Argh, please disregard last message, that's not how the hw_params
+callback works :-(
 
-Thanks,
+Lee
 
-
-Carlos
 
 
 -------------------------------------------------------
