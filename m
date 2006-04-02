@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001993]: duplex problems - other side cant hear my voice
-Date: Sun, 2 Apr 2006 19:59:45 +0200
-Message-ID: <f7e076e4f04f52d81b4af162e67811d3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001994]: alsa-oss dont use dmix
+Date: Sun, 2 Apr 2006 19:58:28 +0200
+Message-ID: <7e3e99833e0ef90df96ccd869a7c3807@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7460819D
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 19:59:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1580719D
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 19:58:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1993> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1994> 
 ======================================================================
 Reported By:                crissi
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1993
-Category:                   PCI - hda-intel
+Issue ID:                   1994
+Category:                   CORE OSS - pcm
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.15.6
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-02-2006 19:15 CEST
-Last Modified:              04-02-2006 19:59 CEST
+Date Submitted:             04-02-2006 19:45 CEST
+Last Modified:              04-02-2006 19:58 CEST
 ======================================================================
-Summary:                    duplex problems - other side cant hear my voice
+Summary:                    alsa-oss dont use dmix
 Description: 
-By using Skype with artsd via artsdsp and full duplex is enabled it works
-with cvs from 23.03.06.
-Now I try current cvs (02.04.06) and the other side cant hear me.
+The alsa-oss module doesnt use the dmix module but it should.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 04-02-06 19:45 
+ rlrevell - 04-02-06 19:58 
 ----------------------------------------------------------------------
-Can you try to narrow it down by testing some versions in between?
+Works for me:
 
-Also, that /etc/asound.conf is completely unnecessary since ALSA 1.0.9 -
-it's best to remove it.
+$ ALSA_OSS_DEBUG=1 aoss /usr/bin/play /usr/share/sounds/error.wav 
+Opened PCM dsp0 for stream 0 (result = -2)
+Opened PCM default for stream 0 (result = 0)
+           ^^^^^^^
 
-----------------------------------------------------------------------
- crissi - 04-02-06 19:59 
-----------------------------------------------------------------------
-I only have 2 trees with alsa cvs. How I can find out which version has the
-working tree?
+'default' should be defined to use dmix with no need for .asoundrc.
 
-
-Yes, seems to work without that asound.conf.
+The in-kernel OSS emulation can't be made to use dmix - you must use aoss.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-02-06 19:15 crissi         New Issue                                    
-04-02-06 19:15 crissi         Distribution              => Debian          
-04-02-06 19:15 crissi         Kernel Version            => 2.6.15.6        
-04-02-06 19:45 rlrevell       Note Added: 0009067                          
-04-02-06 19:59 crissi         Note Added: 0009070                          
+04-02-06 19:45 crissi         New Issue                                    
+04-02-06 19:58 rlrevell       Note Added: 0009069                          
 ======================================================================
 
 
