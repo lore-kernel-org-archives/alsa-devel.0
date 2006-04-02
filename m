@@ -1,18 +1,14 @@
-From: "ruczffqpma" <ruczffqpma@unipac.com>
-Subject: Fw: alsa-devel
-Date: Sun, 2 Apr 2006 16:47:28 -0000
-Message-ID: <001301c6565b$fb6f5cf0$bc6a02c3@home964e320668>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001987]: Upmix Feature Request
+Date: Sun, 2 Apr 2006 16:26:14 +0200
+Message-ID: <a97356d1d8b561233257df038e284bfc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-	type="multipart/alternative";
-	boundary="----=_NextPart_000_000F_01C65675.20BC94F0"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 084FA19A
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 15:47:35 +0200 (MEST)
-Received: from [195.2.106.188] (unknown [195.2.106.188])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 0BBB2993DC
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 15:47:30 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E420419A
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 16:26:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,214 +21,235 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_NextPart_000_000F_01C65675.20BC94F0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0010_01C65675.20BC94F0"
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1987> 
+======================================================================
+Reported By:                the-me
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1987
+Category:                   CORE - control
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.16.1
+======================================================================
+Date Submitted:             03-31-2006 20:38 CEST
+Last Modified:              04-02-2006 16:26 CEST
+======================================================================
+Summary:                    Upmix Feature Request
+Description: 
+Hi,
+
+I, and many users more, want a feature at the alsamixer, called Upmix.
+I've got an Terratec Aureon 5.1 Fun and I tried many things, but it's not
+able, that I can hear an mp3 with upmixed 5.1 sound. Here is my actual
+.asoundrc:
+
+pcm.ch51upmix {
+        type route
+        slave.pcm surround51
+        slave.channels 6
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+        ttable.0.4 0.5
+        ttable.1.4 0.5
+        ttable.0.5 0.5
+        ttable.1.5 0.5
+}
+pcm.!default
+{
+        type plug
+        slave.pcm ch51upmix
+}
+pcm.lowpass {
+type ladspa
+path "/usr/lib/ladspa"
+plugins [ {
+label lpf
+input {
+controls [ 50 ]
+}
+} ]
+}
 
 
-------=_NextPart_001_0010_01C65675.20BC94F0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+With this .asoundrc, all speakers work, but my subwoofer doesn't play only
+low frequen...
+
+Can you please add such a feature?
 
 
------ Original Message -----=20
-From: Coulter Maritza=20
-To: egfnabmej@larbhigh.biblio.net=20
-Sent: Saturday, April 01, 2006 11:22 PM
-Subject: alsa-devel
+Greetz, Patrick
+======================================================================
+
+----------------------------------------------------------------------
+ the-me - 04-02-06 14:57 
+----------------------------------------------------------------------
+it's working, but I haven't got an USB audio card, its an pci card.
+
+----------------------------------------------------------------------
+ Raymond - 04-02-06 16:26 
+----------------------------------------------------------------------
+the lowpass filter with 50Hz cutoff seem unable to filter the human voice,
+I still see peaks above 125Hz on the 10-bands graphic equalizer of
+au8830.
 
 
 
-------=_NextPart_001_0010_01C65675.20BC94F0
-Content-Type: text/html;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+aplay -v -Dplug:lowpass test.wav
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+Plug PCM: Linear Integer <-> Linear Float conversion PCM (FLOAT_LE)
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 23219
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: LADSPA PCM
+  Playback:
+    Policy: duplicate
+    Filename: /usr/local/lib/ladspa/filter.so
+    Plugin Name: Simple Low Pass Filter
+    Plugin Label: lpf
+    Plugin Unique ID: 1041
+    Instances:
+      Depth: 0
+         InChannels: 0
+         InPorts: 1 "Input"
+         OutChannels: 0
+         OutPorts: 2 "Output"
+      Depth: 0
+         InChannels: 1
+         InPorts: 1 "Input"
+         OutChannels: 1
+         OutPorts: 2 "Output"
+    Control input port initial values:
+      0 "Cutoff Frequency (Hz)" = 50.00000000
+  Capture:
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_NONINTERLEAVED
+  format       : FLOAT_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 32
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 23219
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: Plug PCM: Linear Integer <-> Linear Float conversion PCM (S16_LE)
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_NONINTERLEAVED
+  format       : FLOAT_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 32
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 23219
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: Hardware PCM card 0 'au8830' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 23219
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3DWindows-1252">
-<META content=3D"MSHTML 6.00.2900.2769" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV style=3D"FONT: 10pt arial">----- Original Message -----=20
-<DIV style=3D"BACKGROUND: #e4e4e4; font-color: black"><B>From:</B> <A=20
-title=3DCoulter Maritza =
-href=3D"mailto:panrapqkdp@optiroc.scancem.com ">Coulter Maritza</A>=20
-</DIV>
-<DIV><B>To:</B> <A title=3Degfnabmej@larbhigh.biblio.net=20
-href=3D"mailto:egfnabmej@larbhigh.biblio.net">egfnabmej@larbhigh.biblio.net</A> </DIV>
-<DIV><B>Sent:</B> Saturday, April 01, 2006 11:22 PM</DIV>
-<DIV><B>Subject:</B> alsa-devel</DIV></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT><BR></DIV>
-<DIV align=3Dcenter><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV align=3Dcenter><IMG =
-alt=3D"" hspace=3D0=20
-src=3D"cid:000e01c6565b$fb6f5cf0$bc6a02c3@home964e320668" =
-align=3Dbaseline=20
-border=3D0></DIV></BODY></HTML>
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-31-06 20:38 the-me         New Issue                                    
+03-31-06 20:38 the-me         Distribution              => Debian          
+03-31-06 20:38 the-me         Kernel Version            => 2.6.16.1        
+03-31-06 20:40 the-me         Note Added: 0009048                          
+03-31-06 21:02 rlrevell       Status                   new => closed       
+03-31-06 21:02 rlrevell       Note Added: 0009049                          
+03-31-06 21:15 the-me         Status                   closed => feedback  
+03-31-06 21:15 the-me         Resolution               open => reopened    
+03-31-06 21:15 the-me         Note Added: 0009050                          
+04-01-06 01:03 Raymond        Note Added: 0009052                          
+04-01-06 10:39 the-me         Note Added: 0009053                          
+04-02-06 10:42 Raymond        Note Added: 0009059                          
+04-02-06 11:44 the-me         Note Added: 0009060                          
+04-02-06 14:36 Raymond        Note Added: 0009061                          
+04-02-06 14:57 the-me         Note Added: 0009062                          
+04-02-06 16:26 Raymond        Note Added: 0009063                          
+======================================================================
 
-------=_NextPart_001_0010_01C65675.20BC94F0--
 
-------=_NextPart_000_000F_01C65675.20BC94F0
-Content-Type: image/gif;
-	name="alsa-devel.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <000e01c6565b$fb6f5cf0$bc6a02c3@home964e320668>
 
-R0lGODdhnAGfAYcAAP///2Zmmf8AADOZZggAAP+AAAAA/1CwcIdPz/7u7v7d3f4iIv5ERCJK
-hv5mZv4REf7MzP5VVf4zM/6IiP53d/6qqmMlRaBSqXR70uHxLv67u2jYhez175wTqYmCm6yN
-1v6ZmTWdbqXhPAVJYCxgC4SJcLvMu3eZd0RyRABAAIiliBFMERZejiYriZn48Kq/qlV/VSJZ
-ImaMZszYzJ/ZOu7y7nH/fd3l3bjyyZmymajiCH9EETLqvZ6DLJtIh7TXf7hEbteNmauJtX0K
-pwx/08GGYlaZdgM4hdrJQlOujGLdvxN8XGidF3Y7SDN2hN6WjJImULTFMSp1N8FR7qAqC7tj
-SXIAbwBzAG8AZgB0ACAAUwBhAG4AcwAgAFMAZQByAGkAZgAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAA5PqpAcwAAAAAAAAAjQEAAOT6qQEFAAAABQAAALT6qQF28NR3rxAB9TAAAACN
-AQAApPqpAQAAAADIBZF8KDPfAHD7qQFRBZF86AkHAG0FkXz+////QQAAAAAAAAAAAAAAYPup
-AQvw1HevEAH1AAAAAAUAAAD+////QQAAAAAAAAAFAAAAjQEAACADAABYAgAAMAAAAAEAAAAB
-AAAADwAAABsDAAByAQAAAAAAAJAAAAAAAAAAAAAAAMwAAAAAAAAAjQEAACADAABYAgAAIAAA
-AAAAAAAAAAcAAAAAAAAAAACyM98AQQAAAAAAAAABAAEAEgAAALT6qQGyM98AZHYACAAAAABw
-BZF8/////20FkXykx9Z3AAAHAAAAAAAwM98AXA8mAXb8qQGU/KkB4wQAADAz3wDM+6kBCMfW
-d68QAfVcDyYBzYoAAPz7qQHvsvN3vPupAfiy83f0////AAAAAAAAAAAAAAAAhAMAAAAAAMwA
-AAABTWljcm9zb2Z0IFNhbnMgU2VyaWYAiCEByIghAXb8qQHNigAAuLXxd4a18XevEAH1NgAA
-AKwAAABo2IUAdvypAQwAAAAAAAAAaNiFACwAAAAAnAGfAQcI/gABCBxIsKDBgwgTKlzIsKHD
-hxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJkyhTqlzJsqXLlzBjypxJs6bNmzhz6tzJs6fP
-n0CDCh1KtKjRo0iTKl3KtKnTp1CjSp1KtarVq1izav0ooKvXrgsUoPTqkCwAsx7RuoSRAoXA
-FHDjwo1xg2DchHcRxs1RMC8AFClgbB2c8KthAWJNqlVodvFGxypfwK3xVq7lupVT4IW7mbNd
-zwBqwH1BuDRBtAkWdHVwEvJB1x1hn4QrOPPAGjHgyhjo12DvvnFPfNY8kC1x06XVJuj6oHXX
-ss9Jyi6pAu4M3qBDw12B/bjv7MDj/mIG0HsGXBXIk0cfuDjC1wgG3XuFz565VwkJ6gsgKL8r
-fYGNReeVA19NUFB/Avz32noDFlgQBYZpcNEKKcQwXHjdddYZXG7ZRlBu3KU3mHLMnXbYfvoZ
-luJXzQHI4In6uYjiiV2BsCJsaNEogI0CqXZYBRWZoNuFt22XoV7gDQdYCqSRB54McJkg4lZo
-KTDgQAQKwEACVnZFgUBZCgABBFee5RUEy3VloJkoZrlllwJ8yaaMMgowQQLySQBmV296JadB
-OXp1Z557dgUBABOAVdEJoxEJwA1x7ebhQb8NJ1oKIf4mWQrCAcDDlFfpKEB+Li4wUJp6sgkk
-ABUEOKpA/xp0lWqApgqEKp1zsplYroraKitCgSIWI5ukZrTkdd1ZNtmRlCaZYXUpoPebeW2B
-mhWNWw5Epo4AbIuijIeq5Wq3ouI6bozewrjgt+I+t22qGv2mLIeUMfuddxgCQGEKl+LrpL/W
-SiVbuoeRux6b4R48LsEq8iqgwu6Wu+6wdG7LAEfyOuvovRoCsOmS/lYacFQD/3qQtyaKmau5
-EQsAL6APzwjxfu8+FGzKBr+MUcYAb5xvs8eBnKTIIz81nVfFFuTVqq3GPFDTs8acNM4Of1v1
-1IW9aLWrWFfE80JE/9vxo5ZxXDRV04V5aKIC1Kq2t6yxGZa3cpqlNqK9nttum/5n4t02sFpT
-fTfbtU50rM9mAz02AIxOy+HZaB+MkI+Grcpmw5djjhblX62q98wDcb404OyC3uOJQE5nUONN
-TorkvJzBfhfP+G7aKeQkS45QmAI8cCh/76X8Vba4Fsrc71UXvzIAvPuedelbHwzhVxIu35CQ
-KUjqOtCw/9v9bzn8BmUKUuJu/kKqF02hhTqBeP77z8NfELTI3kQtevLnr3z+tOVknP4ATF/R
-NlWvmlyqdQCEnwCLxpYO1QQwtUkgT6ogwQoO5QgWzKAGN8jBDnrwgyAMoQhHSMISmvCEKEyh
-ClfIwha68IUwjKEMZ0jDGtrwKFO44U1woMMe+vCHQP4MohCHSMQiGvGISEyiEpfIxCY68YlQ
-tIgSokjFKiaRBVbMohYrkoQtevGLYAyjGMdIxjKa8YxoTKMa18jGNuJEB26MoxznSMc62vGO
-eIxJAPbIxz0CwI8DASQg/9hHhPQxAAI5JB8DuciCFDKRiISkQQZ5yIMoEpGDhOQlMalIRlaS
-kJOM5CUlSZBMZhKUjCQlKTvpyUeOEpWqNGUkSzlLVL6SlSCUJS1XOctTwlKXu4SlLUVJTEsW
-U5WpDGUykQlMXwqTl8Z0ZC1P2UxKHvOXtVwmKIEpTF9WM5rI7CA3hxnLbGIzmMy85jY5achr
-etOckqTmNOcZTk3SUp3ahP+mNIPpSnUKEp7fxKY1lZlMZ46Tg+P8Zz332U50kjOUztRnQiJK
-SHMmFJ+aJKZCCSpNg9KzoscMKEP1ac2BjvShJ6VoBWXJypJG9JPaFOk94VnORnbUpvZMKS53
-2sh+PvKZ+YxpMf24UV7+9JUP3eg7+QnTgyInChm56EJV2s2PSnSXLwWoRWlaUY6ec6qcJCpG
-gbrQqhrVn2M1aUYLilGZCjWXVk1qL7f61rrqsqhMDWpWnylVsopVrGBtKDhJ2tOPehSdR/3k
-Utk6WLJmsK9FXaxZ88rYr1IWqIdNp0PxWlnOlpWikZ2rO+faWG7eVavlHCxVJQhZ0WYVp5iF
-LUj+67pMmM50kfKk7TAVS1eQFrapXJ2tXW17y7iqdZ3AZalPZZvH5jr3udCNrnSnS93qWve6
-2M2udrfL3e56lSGSHUk1KynPTep0pq38aUYLi97UOta7C1mtQ1ViU89a1rGmxedeU2lSpZIW
-vhBRb3yDS5J+fpad8x3uZml6Ws0CNqgAVkhicWrbmrazvxrNpoHfK9v9XtWpDk4rbOUbYbki
-2LMKXax/c4rVE1e4wwwu7oIvvGGP5rbE4A2pjut5XMqumKAbNmZvvYpXEPtVxJPFsYR5S1gi
-o1augRXuXm/sZM1C+Mghdq+SBRvPHce2y0Aeqn1LGuUkn/eq+H0ylMv+uuXzhhbGnqTxbcu8
-20JS2cNVDW+C8/xfMLf5zwrpAaAHTehCR7gFhk60ohfN6EY7+tGQjrSkJ03pSlv60pjOtKY3
-zelOe/rToA61qEdN6lKb+tSoTrWqV83qiBCg1SshgKxfzZJZ2/ogsu7IrAmya4P0WiC/hnVD
-cg0AYovE2ANBNrId4gFXF/vZ0I42sJM97WqbMAg9VDatQ7LsYm/b2yR59be3/e2C0Jrcwh52
-uYF97nbn+tbeNrat3V1ubcdb3OT+NbzBjRBx85ra/bb2utPt64ET++AIbze72Y3vhZt73u52
-OML53e1+yxvgD8f4wAnOa4MrnN8gh7jEP97/cVzn2+HJnvdD/B3tjUMb3RxPiL0nHvKTZ5zi
-6664vEmOcoiwHOa4FnjMFULzd9O85iNP+s2XXvSGg5zozz43xoXe8qETPdgqR3rKd47yZevc
-5vfeOthNPu6LM7zjLrc6ctKu9ra7/e1wj7vc5073uttdjmwvdNafbhGIV/wifjc5Rfye92N7
-3eJlL/xzuc53h/z97xmxt0cgjxHKU/vnOgc40LHLeMtb/PMgkbyuFT8Rz0fd1wuRurU573Gs
-6zvwBX/4zo2+62CnvOS3nn2+Ie/11ydc9wx3etBznnqqa3fvtf94wnte8tvjPOLJL3jWe910
-nIM+9vFWevXVXW+Z/gOd9NHd/vYb33ORa/3ozmc6z+/9+HrDu/P0Rn/xx138qh/f5uInefub
-z//xp7//6+d5knd0/sd8UEd/UGd/2QV/2qd/GzeADqh0/AeASSd//zd++WeAwydtBqd5U8d6
-r9d1Ifh/JLhvDNh4X5d+Jmh7E8h+5beCM5d2toeA2bd1dwcUpud4N+gUJCB7ObiDQBiEQjiE
-RFiERniESHhDBrCEBiASTLiEEvGEUOgTTbgQVVhqVwgAVZiFGpGFXMgQXPiFOCGGAkGGouaF
-ZegRaAgRYUiFCWGGofaFTKiFdKiFU0iHd2iHeViHaciHTXiFazgQgJiHc1iGd/iHWwiI/3Zo
-iARRiHjohY5YiHM4iIq4h5b2hILIiH6oiVuYiY2IiX2Ih55oiKC4iZuoiIuYionIiaG4inWI
-io3Yh50oi7PIabMIi7WYiwWxhqj4h7sYi6Q4hW0oi6Ooi7QoiZ6Ii8j4isk4ipcIjMbIjMQY
-itRojL4IjM34i9gYjdxIja34jaZ4i9nIh8+YjbgIjrBYjbTojN5ojZl4hSEAjtIYjuPojtNo
-j+R4iY4oioJ4iMW4j3pIiNeYj/lIiZ9okPLYjaRYjP14iJHoh/7ojVYHhwpBkTiGBDRUimxo
-kUnYkR75kSAZkiI5kiRZFRtQkjKhNcESPboDM1aTFvvRkishk/8u0hA0aT5FYEIFozsPU5Nm
-whgxKTMcwZMvGRE3CTjQYZNFqZQwA2Av0pQ/GZUQYyI/eZQSQZQWYZVQyRBaqZVbWR/w9RV1
-Ujo+2ZNgiTM0qTmuIjPP0ZaLgTmXUydyOZZyqZJnqTQqyZLQA5diGZd1KZYLlEZmOZhCmTlF
-eZOEWZiE6ZNUKZWK+Zh0sph4yZhg6TSSGSBQmZiR6ZbQdZmFSZmV2ZKS6Zhl+Zln6ZljCZmk
-SZdROZmnqZpP6ZoF05qj2Vyo2Zq4WZOcKZufeZtYuZq1WZrCCZxLSZuw2ZuHaZqMGZx05JvK
-mZlBCZ3LeZygSZzD6ZzX+Zy7iZ3VeZv/1plEUOAcM6OXRimafYmb52mWucmX7TKXq1mVe/mc
-K6Oe6Rk90Bmb32lpXlkR+4mSM1mcjwGg/jmgBFqg6XYABpqgCrqgDNqgDvqgEJoQGRChFFqh
-FnqhGJqhGrqhHNqhHvqhIBqiIjqiJOoTA3CiKDoQKJqiKnqiLbqiAjEABSGjK8qiMTqjBGGj
-NeqiKoqjALCjP5oQMvqjNuoQQ/oRR3qjBjGkSRqkMcqiO5qkQPqkMNqjL8qjB9GkRMqkU6qk
-VkqlX7qkANSkTIoQR1qmSyqlOZqlPuqkbuqlOaqmbwqnOCqnRhoSZMqmc4qmcKqle0qnaxqm
-fvqnfZqldnqm/4AapvCTp3NKpzTKpoiqqI46qZIapJHqp5HqpHbaEIOaEWT6qZS6qZjqo4P6
-qJS6ppnqpaN6qaT6pZ2KO4w6qmIqpqkqq1bKqIlqqpqqp27Kp5AKpqqKpVsap3EqpUVqqT3q
-q7tqpryqpKXaq22arJWqpEOAqrfaqqqaQF1ao5XKrc5aqGnqrbjaqMvKpTrqqleaptm6rI2K
-pnz6rnUqrYS6peN6pVjqrdA6r+vaqbLqrtiar/pzqM3arfKaq/8Krm1qqs/6qM8aqPTqrlVK
-r4Japam6q/7qsBhrqwDrsMqKq8qKsejasdKqqwF7sIo6ABZgqySrseyKsBzbstaqq/+burHf
-mrAva7OBqrChmrED+7EPe6pUyqMey6s6+7IMK0Gxyqw1G63CyrKZWq996rPr6rIAe7HserGs
-eqpPi66C2rOAmqczm7RUG7VcW7ZjSqr4OqxBK7RM67UvOqvRqqlpW7ERO7FP27Q6aqx6C7Vv
-eqx1S66xyq1g+7fz6rduC6w3W6IR4QNHFKWO+7iQG7mSO7mUW7mWe7mYm7mau7mc27mem7mK
-a0RSELqkW7qme7oJ2n2rR4MwuHksd3nvt2/Sl3jEp7qra4KaF7tYJ3Mv17qqJ3bg92+oB37B
-+2/TZ27I+4Gop7wrlxPBW7zSpoAht7ocSL3dR3zMa380+HL/yUu9Hii9whu+w+u9HTh10Fu+
-Pjd41tu9XZd6mycR0FsS2xtwpadxLQdz2FttCIi/y7t64fu7y8t4p0e+1Rt0/cu/BYy+Bexs
-/du89Vu9ttu+V5e9OngT82vA8Gu/6KZ6+cu93+vB4vuAHxzAYPe6+xvB4mu/+kvADXzCuxd8
-+ntwpzd7ySt8LLjCl8e+A8x2P2eDHqx/sjdtMkzDVWfDRBx2zud7EQfCB0x1PRy9CSy8+KvE
-Loe79OtvT9y7Iyh2Omx8HNy6Ifx+OSzEObzBUSd1ritx4BvD1KfDWRxwHDzGaIzDw4vGc0zG
-QnzHA7zH+zvG0fvG4+vEeNzBAGzG//67wN0LwDU8w4LsgRd8yGRswiyMvO82u5JsxiqHxbC7
-u0Vcfx38x3h8gYOce4yMyGFnyHzcyaEcfJL8wa1MylBsvMArcIocxRqsvI+svbz7w6zMwu+b
-vZqMwHQcwg2syqVcxn68yKtswJ9su5aHf5Scyt6byqh8yckMypNszYNcf6AMzclcyMTMviI8
-zH3MvdcrxSOcwv+Lzuk8zbccypocycZcztKszCnszDycxK6Mw6w7z6pcyfDsz/tczRqYyNGs
-cUqMdhF8vCoMw1zMztf8ukyMb5yMwfSsxWYHyb7n0Escz1pszx1tz7Ocyeoszj6sgBkNwwRd
-g+D2ykcsu/8fzdFt3BTxC8lJUdM23RI4XWtTsdNP4dM24dNArWs4KBU/OBQdgLqVJgRK3dRO
-7RMuoGkMzRA7TbyAh8Ge7IIPfNCOd8NY3XderYO1nIDy28Xq+9Ml7cDDttaVJ9IJKNHn+9Vs
-HcvcRsFUPdHcfMVtndYOPNRBzddzfdeCfdUQndW5nNd2Tb90HXqJfYDuLNduvdU5XcF+XRP0
-d8SRrHDLp9K5q9lnd8bS94Kg/dmKHdM1KManPcMvvM7aO8cvPXat/dlGzHtL/NCn7XTU5367
-R2/Pp4LuN9osTRRlF9Cwu83+TNB6jNvrrLpDTMFTrc3HHMzJrdDvjMXTfce0i8v/FLfG+/zO
-Oyx0VXzc4G3cMUzcwr3csqvNvwvdEm3OftzPzL3JvGfJ4k3Sl5ze3Y3cqH3IwgzL9RzA5ivf
-T0zSPijeWn3B663V5+3dXD3g723MK7zS4w3R7V3a/ovc3QzhrP19Aa3AzkzH7L3LabzMcXzP
-D27IHg7Six0U8B3gKD7hO6zeAg3jIM7d/H3iyCzPEq7LLS3PHU7ePI7hOZ3g3u3gJI7j5N3D
-4DzjQ9HPwS3NJgx8Pc7SmEfkPly7nU3WaHflM93GLq3bw618rV3CYI7QAI3Rb917L83G/J3b
-v3e/ZB7Ipl0UCDBClf3UkYfner7nqvYDfP7nozbOdR1r/+mrElbddyuu5Rlc1Wod2O8j6Izt
-vC5BekKd6Lt81idx59ZS4ZZO2Dih6YXu6PUbvzgN6oruQXBde1kO3Bvt0Cft5r0tw5nN5rJd
-5XlcgjW32kjcbbl9c9En2388xLu95a9dyRtsdNhH0bXN0bk766QtwFtM0wP9gcot5Ass499N
-zecmAq0sx0WM3c0X4i/O4O7NxMdMydP9veL+zwR82QH+46oN70ru7U7R3/Cs6iTu3/M77g6O
-4TmH7yEOxceefPgOACVw48sc5Jxd5jsexwQe3bzM2hjd4jU+8LJOyzP90/sN7vBO7e9e3ca9
-7h9+3Q1N49gMvqjMziRP8f/t8P8Gje3Ya+Uvr8LQHc4KvBTn7MVITs0fD/O87Nk+zvNCn+0w
-vu7Xjs39nuNFL70u/+NAv+QezfRyPO9CPu9ArhTMrW/UPcW6DtOt3vRfLPQJHeNEfni0TuW9
-HsQCX+K83d767uoRn9CeXeL6rLsFvnBizvW+/epjDeh+//eAH/iCP/iEX/iGL6JAcPiKv/hQ
-sQOM//iQH/mSP/mUX/mWf/mYn/mav/mc3/me//mgH/qiP/qkX/qmf/qon/qqr/kzWxFdShH8
-mqh3OqVaWvvxqnatf6cg+6oMEfsWIbK2P6NyyvuqJrOwH7fErxC+7/qTGvzWurQcJ7NFeq43
-Ov1oq7f/6RqsWUuj2I+zBSupxg/9rJa1V7uvwk+x17q0Vou165+w4gq36V+xsEb+8JqvfPv+
-6u+s6F/+P5u4INuuAAFA4AAABAcKRJhQ4UKGAGw0hBhR4kSKFS1exJhR40aOHT0OHBDSoMGC
-B02SHKmQZMKVJku+fJlS5UmEMhmivLmwJUyCOD/+BBpUaEIiQ40eRbqxZc+aLmWGdBm1KU2q
-MZ1S9elzKkyWOr3W1JpU7FiyZc2e9bi0oEiWUMHy7HrTLUiUbJ3OfbrV7kyuYEX2/Ms0bli0
-hQ0fRpxYcdCdYhsDfbxY8mTKlSEHxpxZ82bOnT1/Bh1adGfLpU2fRp1a9WrW/q1dv4YdW/Zs
-2rVt38adW/du3r19/wYe3PQI4cWNH0eeXPlyigScO99IgKF06amrI6S+8PrE7dsbdocu8Dn2
-8Bq9VzwPNP13ANe9p6/+vLz49vKni7fPvHnC9RLhV17vPfbQs2g8+uhzrz3s+CvQPKT6007B
-AxeMUMIJFYRQwu70447BjP6jLECFRCTwogQRXPDEC/1z8KgMGdxwRQpjRDGi+DzkEKIYDawv
-PgN9vDG78ng88MYeydNuSB/xAzJI/BB0T8n5hATRwuxqtLA+JpMM78cZu9yyx/O8lPK9KJ2k
-0EowszxxzDVpzHG6/BKkM0UrMdQSzwuNFNDICa+8/hJGOwHNM1BDYfQzTTGZBHLEP3E8tE4U
-Jc0SUSx3vDPQOzNldEcva5TvRQ7dHI9SKkvVE8P8JtXwU/7mTNO+Ov2kU1ZFD3W0Qjv3fDRW
-MdEMNVVcyYPO1Fx/TfXSXasUENQ4S2SwAV9ndTRS9oTctFIQaeW0zV19/XbM+wTlNVtOq13R
-2nKFNbdIdMk9l9ljCX22w3nPxZNaYyF9NFFJ6WUX24DDhVfcfgme8VaEsxWY3WkX1rBbXeOd
-uFk9RX0WPikZLRJMXInsddE8X43yy2LJfHJTHld1GMcjw3zZQ5BFJhI8Pruc2daO5xsZ5WPD
-THRdYt2t1yiMiw7uaKSX/p6YaeWUdjpqqaemumqrr8Y6a6235noxqD36uumyvp7ZXvRY3s/l
-xKrkbuVxuzbbRvUUgzpos8NuUNEPJ8M0baJ/hltHv8GmGyO7WRxbbcP5lhlaxSudes5GOW4T
-55RJhpJYM4fW8t+NL085Z8upOxN0jZf0vHSXSQd62R8tH5lznLllnWMka49Zxlab5Bzpfwk2
-ls9r0WRTWdrxBTjidQElXlOYf2dVWc2FNx555UU8PvOWW5V+5+q7rxf6gbEMmWR1tZ2eYjNd
-TXh55VVFdcBgf19/ygq9bR5ZFc1///xh+0eWwsYHP57FSXz+Q5/egqe39x0sWZBL4P4OmMBx
-/lmMUBYDHAAvhi+hUex728texT64BAiGb1nAexL0aITAhFHKeuLToAMXyC8OzrB4uVKRDem1
-QgCiDmIhXGH+9lU0WD3vdbv7Epc+BrLP8TBmKzOY6PbFPpi9zIlQxOCf7LezyZVsRPF7YsN4
-V7AqbulmY8ydQJqQI7wFzo1vREsb4ThHOtbRjnfEYx6vZgQ99tGPUXtCiNCWt3c5jiNHg9OA
-OpIhOWqqSRgTlRwJ98cW6S5uDLxkdAiJSU6aSG6DE+ENLRnJ2UgSIkzI2OMyWcJPThKUrISl
-ITOoyLc1MJGdVOVqTBk5mTXxU2TCAO6Y2LpJqU6YZbJU7GjWxZ4x/xF2oYOdz/7GJmZakUzG
-LFS6jKkuLCLpVWV0Y7BeOChyekyAwBOiEBVGPQcm838u7GGEHNkpHJLTeOl0VgtPGL3x9S2W
-WSNVsVA4v4CxjHc27JfOire/dir0nd/ioqFQ5c/72YqgH+TmvBwasfrZjVtzNNjD+MlP56Hw
-g+0s3zz5BURzwTNox6NoPeHV0HFC7qUnzGK6yncYJ+QmpAi0Fgu/J1CMWm+fPGSpBCEaT4m1
-r4L2HCALeaZOkfazcZZEGhVkGcYxMnOJzZKcw1w1OZERbapjBSMaiRmrIVHuhhCq5uvWhESV
-yUl2NOwm6LxHScHxFTWm3KVfzRJYwQ6lkf6ELWxiFbtYxjbWsY+FbGLDhthc2m6RrfzO59JI
-2chGbbKHueXiNFlUvXYWj581DGJ3KdQCmtaOZM3rFbepVyrN8pq9k1yflElG/Lm2j0IlH/2O
-6s7K1k63Ok3R4Vj6QN/W8XyaEyWtNlrI0E7XujVrF8M82Nw7PreG4MLgcUVZVaCuU4ErTW7Z
-uBvOmibLh1Zd6Dmj2t4NKRW9HVwvHGGLzM0taa1Tbdeqrjs7tb4zt73Dan4VvGAGN9jBD4Zw
-hCU8YQpX2MIQ5sCFNbxhDnfYwx8GcYhFPGISl9jEJ0ZxilW8Yha32MUvhnGMZTxjGtfYxjdW
-7AVwvGMe99jHP/4GcpCFPGQiF7k0BUBykgsgECQvpMkKeTKTl6yQD8RGyUmWspOnnJAoA6DL
-R77ylL/s5S0jpMtjLvGZlzxmNkcZzVYuc5PbrOUtv3kyaiazluls5jKfGM9zhjKW83ybP/d5
-0FwWtJ0lU2g9B/rJig4xowNNZzEbWjaSRjSls4waTPNZ04dGcZgr3ehMy9nScL7ypjM9aVOn
-RtSq9jSr13zqP4ra1rfGda5BHetVr1rJZM51sIU9bGJjGc2A9rWxi71sZiubIciO9a+bPW1q
-V1vYyjm2oQH9a0JbmgbaBreUIa2YbJM62oJOcbknvW5g40bdveY1uk3zbl7He9wfzil2ql+N
-524/O8zAlnacab1oS+/73/w2csIVvnCGN9zhD4d4xCU+caEEBAA7
-------=_NextPart_000_000F_01C65675.20BC94F0--
+
+-------------------------------------------------------
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
