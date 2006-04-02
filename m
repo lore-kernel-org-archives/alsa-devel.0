@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001994]: alsa-oss dont use dmix
-Date: Sun, 2 Apr 2006 19:45:03 +0200
-Message-ID: <52b8ce17c70a970f04ede3b41fea9b36@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001993]: duplex problems - other side cant hear my voice
+Date: Sun, 2 Apr 2006 19:45:16 +0200
+Message-ID: <494941d9b1b9ad43bf9a672e40bc700b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 813AE19D
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 19:45:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1245B19D
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 19:45:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,35 +22,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1994> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1993> 
 ======================================================================
 Reported By:                crissi
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1994
-Category:                   CORE OSS - pcm
+Issue ID:                   1993
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.15.6
 ======================================================================
-Date Submitted:             04-02-2006 19:45 CEST
+Date Submitted:             04-02-2006 19:15 CEST
 Last Modified:              04-02-2006 19:45 CEST
 ======================================================================
-Summary:                    alsa-oss dont use dmix
+Summary:                    duplex problems - other side cant hear my voice
 Description: 
-The alsa-oss module doesnt use the dmix module but it should.
+By using Skype with artsd via artsdsp and full duplex is enabled it works
+with cvs from 23.03.06.
+Now I try current cvs (02.04.06) and the other side cant hear me.
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 04-02-06 19:45 
+----------------------------------------------------------------------
+Can you try to narrow it down by testing some versions in between?
+
+Also, that /etc/asound.conf is completely unnecessary since ALSA 1.0.9 -
+it's best to remove it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-02-06 19:45 crissi         New Issue                                    
+04-02-06 19:15 crissi         New Issue                                    
+04-02-06 19:15 crissi         Distribution              => Debian          
+04-02-06 19:15 crissi         Kernel Version            => 2.6.15.6        
+04-02-06 19:45 rlrevell       Note Added: 0009067                          
 ======================================================================
 
 
