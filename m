@@ -1,17 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: More mixer questions
-Date: Sun, 02 Apr 2006 10:39:28 +0100
-Message-ID: <1143970769.9564.2.camel@localhost.localdomain>
-References: <1143933507.9228.60.camel@localhost.localdomain>
-	 <1143947370.6601.17.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001987]: Upmix Feature Request
+Date: Sun, 2 Apr 2006 10:42:42 +0200
+Message-ID: <d03a32b6a509be09b6efb7ba8ee17266@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B81F318C
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 11:39:33 +0200 (MEST)
-In-Reply-To: <1143947370.6601.17.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 015C3159
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 10:42:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,74 +18,110 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-04-01 at 22:09 -0500, Lee Revell wrote:
-> On Sun, 2006-04-02 at 00:18 +0100, Adrian McMenamin wrote:
-> > Sorry to hit the list with another question about the mixer/control
-> > stuff, but I'm pretty puzzled as to what I am getting wrong.
-> > 
-> > I am using mpg123 compiled to only hack oss, so I am reliant on oss
-> > emulation.
-> > 
-> > I have the control code attached below, which defines both master and
-> > pcm functions (mapped together as the device only plays PCM).
-> 
-> Where's your __devinit snd_aica_mixer() routine that actually creates
-> the mixer controls, with snd_ctl_new1()?
 
-The controls do work though, and they are being created - the code
-fragment is below (with lots of printks for debugging)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1987> 
+======================================================================
+Reported By:                the-me
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1987
+Category:                   CORE - control
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.16.1
+======================================================================
+Date Submitted:             03-31-2006 20:38 CEST
+Last Modified:              04-02-2006 10:42 CEST
+======================================================================
+Summary:                    Upmix Feature Request
+Description: 
+Hi,
 
-static int __devinit add_aicamixer_controls()
+I, and many users more, want a feature at the alsamixer, called Upmix.
+I've got an Terratec Aureon 5.1 Fun and I tried many things, but it's not
+able, that I can hear an mp3 with upmixed 5.1 sound. Here is my actual
+.asoundrc:
+
+pcm.ch51upmix {
+        type route
+        slave.pcm surround51
+        slave.channels 6
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+        ttable.0.4 0.5
+        ttable.1.4 0.5
+        ttable.0.5 0.5
+        ttable.1.5 0.5
+}
+pcm.!default
 {
-	int err;
-	err = snd_ctl_add
-	     (dreamcastcard->card,
-	      snd_ctl_new1(&snd_aica_pcmvolume_control,
-			   dreamcastcard));
-	     if (err < 0){
-		snd_printk("pcmvolume failed\n");
-		return err;
-	     }
-	    
-	    err= snd_ctl_add
-	     (dreamcastcard->card,
-	      snd_ctl_new1(&snd_aica_pcmswitch_control,
-			   dreamcastcard));
-	     if (err < 0){
-		snd_printk("pcmswitch failed\n");
-		return err;
-	     }
-
-	    
-	    err = snd_ctl_add
-	     (dreamcastcard->card,
-	      snd_ctl_new1(&snd_aica_mastervolume_control,
-			   dreamcastcard));
-	     if (err < 0){
-		snd_printk("mastervolume failed\n");
-		return err;
-	     }
-
-	    
-	    err = snd_ctl_add
-	     (dreamcastcard->card,
-	      snd_ctl_new1(&snd_aica_masterswitch_control,
-			   dreamcastcard));
-	     if (err < 0){
-		snd_printk("masterswitch failed\n");
-		return err;
-	     }
-
-	    
-	  
-	/* succeeded */
-	return 0;
+        type plug
+        slave.pcm ch51upmix
+}
+pcm.lowpass {
+type ladspa
+path "/usr/lib/ladspa"
+plugins [ {
+label lpf
+input {
+controls [ 50 ]
+}
+} ]
 }
 
+
+With this .asoundrc, all speakers work, but my subwoofer doesn't play only
+low frequen...
+
+Can you please add such a feature?
+
+
+Greetz, Patrick
+======================================================================
+
+----------------------------------------------------------------------
+ the-me - 04-01-06 10:39 
+----------------------------------------------------------------------
+Thanks, but there is one problem. I need a lowpass filter for my
+subwoofer.
+Like here but only on my subwoofer channel =>
+http://alsa.opensrc.org/SurroundSound ( ~ in the middle of the document ).
+
+----------------------------------------------------------------------
+ Raymond - 04-02-06 10:42 
+----------------------------------------------------------------------
+According to
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins_ladpsa
+
+The input and output format is always SND_PCM_FORMAT_FLOAT
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-31-06 20:38 the-me         New Issue                                    
+03-31-06 20:38 the-me         Distribution              => Debian          
+03-31-06 20:38 the-me         Kernel Version            => 2.6.16.1        
+03-31-06 20:40 the-me         Note Added: 0009048                          
+03-31-06 21:02 rlrevell       Status                   new => closed       
+03-31-06 21:02 rlrevell       Note Added: 0009049                          
+03-31-06 21:15 the-me         Status                   closed => feedback  
+03-31-06 21:15 the-me         Resolution               open => reopened    
+03-31-06 21:15 the-me         Note Added: 0009050                          
+04-01-06 01:03 Raymond        Note Added: 0009052                          
+04-01-06 10:39 the-me         Note Added: 0009053                          
+04-02-06 10:42 Raymond        Note Added: 0009059                          
+======================================================================
 
 
 
