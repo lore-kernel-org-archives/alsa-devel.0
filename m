@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001987]: Upmix Feature Request
-Date: Sun, 2 Apr 2006 14:36:32 +0200
-Message-ID: <195da6614a8fbfff4213eb888c9ca48b@bugtrack.alsa-project.org>
+Date: Sun, 2 Apr 2006 14:57:55 +0200
+Message-ID: <5a3482b7204ab5ae3a71dd6b8ebbf6cf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 574C1197
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 14:36:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 61C4519C
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 14:57:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.16.1
 ======================================================================
 Date Submitted:             03-31-2006 20:38 CEST
-Last Modified:              04-02-2006 14:36 CEST
+Last Modified:              04-02-2006 14:57 CEST
 ======================================================================
 Summary:                    Upmix Feature Request
 Description: 
@@ -91,16 +91,16 @@ Greetz, Patrick
 ======================================================================
 
 ----------------------------------------------------------------------
- the-me - 04-02-06 11:44 
-----------------------------------------------------------------------
-thanks, this link seems good, but for me it's a little bit complicated.
-
-----------------------------------------------------------------------
  Raymond - 04-02-06 14:36 
 ----------------------------------------------------------------------
 At first, you have to make sure surround51 work on your usb audio
 
 speaker-test -c 6 -t wav -D surround51
+
+----------------------------------------------------------------------
+ the-me - 04-02-06 14:57 
+----------------------------------------------------------------------
+it's working, but I haven't got an USB audio card, its an pci card.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -119,6 +119,7 @@ Date Modified  Username       Field                    Change
 04-02-06 10:42 Raymond        Note Added: 0009059                          
 04-02-06 11:44 the-me         Note Added: 0009060                          
 04-02-06 14:36 Raymond        Note Added: 0009061                          
+04-02-06 14:57 the-me         Note Added: 0009062                          
 ======================================================================
 
 
