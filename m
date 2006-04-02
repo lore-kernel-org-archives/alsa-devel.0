@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001992]: Line2 LiveDrive has no capture settings / unable to record from 'AUX 2 IN'
-Date: Sun, 2 Apr 2006 19:01:22 +0200
-Message-ID: <f1a4961e3e46f1092a8e844f49921b32@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001993]: duplex problems - other side cant hear my voice
+Date: Sun, 2 Apr 2006 19:15:37 +0200
+Message-ID: <c7b60dbe945ce09627e3627a3d6d30c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A6397178
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 19:01:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B909D19C
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 19:15:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,39 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1992> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1993> 
 ======================================================================
-Reported By:                metaron
-Assigned To:                
+Reported By:                crissi
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1992
-Category:                   PCI - emu10k1
+Issue ID:                   1993
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo, gcc 3.3.5-20050130,
-Kernel Version:             2.6.15.1
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.15.6
 ======================================================================
-Date Submitted:             04-02-2006 17:59 CEST
-Last Modified:              04-02-2006 19:01 CEST
+Date Submitted:             04-02-2006 19:15 CEST
+Last Modified:              04-02-2006 19:15 CEST
 ======================================================================
-Summary:                    Line2 LiveDrive has no capture settings / unable to
-record from 'AUX 2 IN'
+Summary:                    duplex problems - other side cant hear my voice
 Description: 
-I have been trying to use the front RCA inputs (Labled 'AUX IN 2') on my
-LiveDrive to record sound, but have not been able to do so.
-
-If I change the Line2 LiveDrive slider in kmix, I can change the monitor
-volume, but running arecord results in 10 seconds of silence :-(.
-
-I'm happy to re-compile with patches, or even try fixing it myself if
-anyone can point me in the right direction in the code although I have no
-alsa codeing experience...
+By using Skype with artsd via artsdsp and full duplex is enabled it works
+with cvs from 23.03.06.
+Now I try current cvs (02.04.06) and the other side cant hear me.
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 04-02-06 18:54 
-----------------------------------------------------------------------
-alsamixer also cannot distinguish a control is playback/capture since
-alsa-utils-1.0.10rc1
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1366
-
-
-
-----------------------------------------------------------------------
- rlrevell - 04-02-06 19:01 
-----------------------------------------------------------------------
-That's a driver issue, not a problem with alsamixer
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-02-06 17:59 metaron        New Issue                                    
-04-02-06 17:59 metaron        Distribution              => Gentoo, gcc
-3.3.5-20050130,
-04-02-06 17:59 metaron        Kernel Version            => 2.6.15.1        
-04-02-06 18:13 rlrevell       Note Added: 0009064                          
-04-02-06 18:51 Raymond        Note Added: 0009065                          
-04-02-06 18:54 Raymond        Note Edited: 0009065                         
-04-02-06 19:01 rlrevell       Note Added: 0009066                          
+04-02-06 19:15 crissi         New Issue                                    
+04-02-06 19:15 crissi         Distribution              => Debian          
+04-02-06 19:15 crissi         Kernel Version            => 2.6.15.6        
 ======================================================================
 
 
