@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001495]: nForce2 IEC958 output is working when IEC958 control is muted.
-Date: Mon, 3 Apr 2006 00:48:44 +0200
-Message-ID: <75bd44365d20b98fb700228423e93b9d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001424]: crash on snd-powermac initilize
+Date: Mon, 3 Apr 2006 01:31:41 +0200
+Message-ID: <afd5d190d12320e8f2782e327ab3d9ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E302C178
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 00:48:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19BB61AA
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 01:31:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,172 +24,140 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1495> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1424> 
 ======================================================================
-Reported By:                damscot
-Assigned To:                
+Reported By:                amir
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1495
-Category:                   PCI - intel8x0
+Issue ID:                   1424
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.12-gentoo-r1
+Status:                     assigned
+Distribution:               GeeXboX
+Kernel Version:             2.6.13.1
 ======================================================================
-Date Submitted:             10-24-2005 00:16 CEST
-Last Modified:              04-03-2006 00:48 CEST
+Date Submitted:             09-15-2005 20:38 CEST
+Last Modified:              04-03-2006 01:31 CEST
 ======================================================================
-Summary:                    nForce2 IEC958 output is working when IEC958 control
-is muted.
+Summary:                    crash on snd-powermac initilize
 Description: 
-Good evening,
+I have users reporting a reproducable, on init, crash of our powerpc
+distro,
+but this happens to only some of the ppc users.
 
-I'am using my MSI MEGA 180 under linux.
-I'am using ALSA 1.0.9 Embedded inside the Linux ALSA kernel system.
+the distro is geexbox, www.geexbox.org
 
-***************************
-*** USEFULL INFORMATION ***
-***************************
+this crash happens also when snd-powermac is compiled as module,
+and crashes when module is loaded.
 
-<< lspci
-0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce2 AC97
-Audio Controler (MCP) (rev a1)
-        Subsystem: Micro-Star International Co., Ltd.: Unknown device
-7960
-        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 22
-        I/O ports at d400 [size=256]
-        I/O ports at d800 [size=128]
-        Memory at e1087000 (32-bit, non-prefetchable) [size=4K]
-        Capabilities: [44] Power Management version 2
+I can't reproduce the bug myself, but I have users who do the tests,
+and those users report that debian and ubuntu works great for them.
 
-
-<< cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.9rc2  (Thu Mar 24
-10:33:39 2005 UTC).
-
-<< cat /proc/asound/cards
-0 [nForce2        ]: NFORCE - NVidia nForce2
-                     NVidia nForce2 with ALC650F at 0xe1087000, irq 22
-1 [Modem          ]: ICH-MODEM - NVidia nForce2 Modem
-                     NVidia nForce2 Modem at 0xe1080000, irq 22
-
-<< cat /proc/asound/devices
- 18: [0- 2]: digital audio playback
- 25: [0- 1]: digital audio capture
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  0: [0- 0]: ctl
-  1:       : sequencer
- 33:       : timer
- 48: [1- 0]: digital audio playback
- 56: [1- 0]: digital audio capture
- 32: [1- 0]: ctl
-
-<< cat /proc/asound/pcm
-00-00: Intel ICH : NVidia nForce2 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : NVidia nForce2 - MIC ADC : capture 1
-00-02: Intel ICH - IEC958 : NVidia nForce2 - IEC958 : playback 1
-01-00: Intel ICH - Modem : NVidia nForce2 Modem - Modem : playback 1 :
-capture 1
-
-<< cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: Realtek ALC650F
-
-Capabilities     :
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Realtek 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : on
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Double rate slots: 10/11
-Extended ID      : codec=0 rev=1 LDAC SDAC CDAC DSA=0 SPDIF DRA VRA
-Extended status  : SPCV LDAC SDAC CDAC SPDIF=10/11 VRA
-PCM front DAC    : 44100Hz
-PCM Surr DAC     : 44100Hz
-PCM LFE DAC      : 44100Hz
-PCM ADC          : 44100Hz
-SPDIF Control    : Consumer PCM Copyright Category=0x2 Generation=1
-Rate=48kHz
-SPDIF In Status  : Not Locked
-
-<< amixer | grep -A 5 IEC958
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Mono: Playback [on] Capture [off]
-Simple mixer control 'IEC958 Playback AC97-SPSA',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 3
-  Mono: 3 [100%]
-Simple mixer control 'Analog to IEC958 Output',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-
-***************************
-
-My SPDIF output is referenced as hw:0,2, the chipset is a nForce2 (then i
-use the snd-intel8x0 driver), the AC97 device seems to be a Realtek
-ALC650F.
-
-while using a basic application to send samples to the spdif output ex:
-
-<< aplay -f dat -c 2 -D hw:0,2 anybigfile.gz
-
-I need to mute the IEC958 control in order to ear something from my
-DTS/Digital decoder/amplifier.
-
-It seems that the control function is inverted. The problem is that all
-application, xmms (for each playing file), mplayer, xine try to unmute the
-IEC958 control before starting to play. Then, I have to manually mute the
-IEC958 control after lauching the media application to ear the sound.
-
+this bug also happened with linux 2.6.12
 ======================================================================
 
 ----------------------------------------------------------------------
- fearofcarpet - 01-16-06 17:11 
+ netstar - 03-01-06 07:20 
 ----------------------------------------------------------------------
-On the RealTek ALC950 the IEC958 settings correspond to "0: PCM, 1: Rear,
-2: Center/LFE, 3: PCM/Modem" where 0 is 0 volume, 1 is 33% volume, etc.
-Perhaps this is the case with the ALC650F also?
+I can also confirm this behaviour.  Using 2.6.15 kernel and any
+distribution.  I think it's an issue with older iMacs.  My model is:
+
+processor       : 0
+cpu             : PPC970FX, altivec supported
+clock           : 1800.000000MHz
+revision        : 3.0 (pvr 003c 0300)
+
+timebase        : 33333333
+machine         : PowerMac8,1
+motherboard     : PowerMac8,1 MacRISC4 Power Macintosh
+detected as     : 338 (iMac G5)
+pmac flags      : 00000000
+L2 cache        : 512K unified
+pmac-generation : NewWorld
+
+This crashing is definitely not distribution specific, but rather model
+specific.
 
 ----------------------------------------------------------------------
- damscot - 04-03-06 00:48 
+ bugmenot - 04-03-06 01:31 
 ----------------------------------------------------------------------
-I develop a patch of the ac97_codec.c file in order to invert the bit
-AC97_EA_SPDIF of the AC97_EXTENDED_STATUS register just in case of ALC650F
-device. It is probably not the best place to set-up such patch, but i'am
-not an expert in alsa development. I hope that an expert will be able to
-integrate it in next version of alsa / linux kernel.
+I get the same crash with linux 2.6.16 and gentoo
+(gentoo-sources-2.6.16-r1) on an iBook G3
 
-Currently the patch as been validated on alsa integrated with linux
-2.6.14-gentoo kernel version.
+The oops I get:
 
-to respond to "fearofcarpet", it seems that IEC958 volume is used to
-control which ac97 slots are used to transmit SPDIF data.
+Unable to handle kernel paging request for data at address 0x00000002
+Faulting instruction address: 0xc0163bac
+Oops: Kernel access of bad area, sig: 11 [#1]
+Modules linked in: snd_powermac snd_pcm snd_page_alloc airport orinoco
+hermes af_packet sungem sungem_phy usbhid snd_seq snd_timer snd_seq_device
+snd soundcore evdev ohci_hcd usbcore unix
+NIP: C0163BAC LR: EA106248 CTR: C0163B8C
+REGS: dd601cc0 TRAP: 0300   Not tainted  (2.6.16-gentoo-r1)
+MSR: 00009032 <EE,ME,IR,DR>  CR: 22028484  XER: 20000000
+DAR: 00000002, DSISR: 40000000
+TASK = c18a6bd0[6967] 'modprobe' THREAD: dd600000
+GPR00: EA106248 DD601D70 C18A6BD0 00000000 00000001 00000060 00000000
+00000001
+GPR08: 00000002 00000000 00000070 C0163B8C 22028482 1001E7A0 00000000
+10001144
+GPR16: 00002000 00000000 00000003 1002AF18 10000000 10000000 10000000
+100170F8
+GPR24: 00000000 100170B4 100170A8 DE800800 E6D6C7A0 0000000A EA10E14C
+00000000
+NIP [C0163BAC] i2c_smbus_write_byte_data+0x20/0x44
+LR [EA106248] send_init_client+0x40/0xd8 [snd_powermac]
+Call Trace:
+[DD601D70] [C00465B0] setup_irq+0x100/0x144 (unreliable)
+[DD601DB0] [EA106248] send_init_client+0x40/0xd8 [snd_powermac]
+[DD601DD0] [E906DF00] snd_pmac_tumbler_post_init+0x28/0x78 [snd_powermac]
+[DD601DE0] [E906C31C] snd_pmac_probe+0x31c/0x334 [snd_powermac]
+[DD601E10] [C0143214] platform_drv_probe+0x20/0x30
+[DD601E20] [C0140E0C] driver_probe_device+0xc8/0x118
+[DD601E40] [C0140488] bus_for_each_drv+0x5c/0xa4
+[DD601E70] [C0140EF8] device_attach+0x98/0xb0
+[DD601E90] [C014050C] bus_add_device+0x3c/0x148
+[DD601EB0] [C013EF68] device_add+0x10c/0x174
+[DD601ED0] [C0142F88] platform_device_add+0x158/0x1c8
+[DD601EF0] [C01431A8] platform_device_register_simple+0x40/0x8c
+[DD601F10] [E906C374] alsa_card_pmac_init+0x40/0x9c [snd_powermac]
+[DD601F20] [C004328C] sys_init_module+0x1cc/0x2ec
+[DD601F40] [C000CFD4] ret_from_syscall+0x0/0x38
+--- Exception: c01 at 0xff3f948
+    LR = 0x10002494
+Instruction dump:
+80010044 38210040 7c0803a6 4e800020 7c0802a6 9421ffc0 98a10010 7c691b78
+7c872378 38c00000 90010044 39000002 <a0a30002> a0890004 39210010 80630008
+
+
+The content of /proc/cpuinfo:
+
+processor       : 0
+cpu             : 750FX
+temperature     : 38 C (uncalibrated)
+clock           : 700.000000MHz
+revision        : 2.2 (pvr 7000 0202)
+bogomips        : 49.53
+timebase        : 24835245
+machine         : PowerBook4,3
+motherboard     : PowerBook4,3 MacRISC2 MacRISC Power Macintosh
+detected as     : 257 (iBook 2 rev. 2)
+pmac flags      : 0000001b
+L2 cache        : 512K unified
+pmac-generation : NewWorld
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-24-05 00:16 damscot        New Issue                                    
-10-24-05 00:16 damscot        Distribution              => Gentoo          
-10-24-05 00:16 damscot        Kernel Version            => 2.6.12-gentoo-r1
-01-16-06 17:11 fearofcarpet   Note Added: 0007689                          
-04-03-06 00:39 damscot        File Added: ac97_codec.c                     
-04-03-06 00:48 damscot        Note Added: 0009074                          
+09-15-05 20:38 amir           New Issue                                    
+09-15-05 20:38 amir           File Added: .config                          
+09-15-05 20:38 amir           Distribution              => GeeXboX         
+09-15-05 20:38 amir           Kernel Version            => 2.6.13.1        
+03-01-06 07:20 netstar        Note Added: 0008272                          
+04-03-06 01:31 bugmenot       Note Added: 0009075                          
 ======================================================================
 
 
