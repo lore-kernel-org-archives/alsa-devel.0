@@ -1,17 +1,18 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: More mixer questions
-Date: Sun, 02 Apr 2006 00:18:27 +0100
-Message-ID: <1143933507.9228.60.camel@localhost.localdomain>
+From: "Drusilla Scalise" <drusilla@bellys-immo.com>
+Subject: good info
+Date: Sat, 1 Apr 2006 19:29:52 -0500
+Message-ID: <000001c655ec$8eb6df30$d884a8c0@rtp77>
+Reply-To: "Drusilla Scalise" <drusilla@bellys-immo.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C655C2.A5E0D730"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 266A318F
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 01:18:36 +0200 (MEST)
-Received: from bossclass ([192.168.62.105])
-	by localhost.localdomain (8.13.4/8.13.4/Debian-3) with ESMTP id k31NIXSo024460
-	for <alsa-devel@alsa-project.org>; Sun, 2 Apr 2006 00:18:35 +0100
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45C96188
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 02:30:11 +0200 (MEST)
+Received: from kjgems.com (137.Red-83-54-108.dynamicIP.rima-tde.net [83.54.108.137])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 8A4AE993F6
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 02:30:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,161 +25,33 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry to hit the list with another question about the mixer/control
-stuff, but I'm pretty puzzled as to what I am getting wrong.
+This is a multi-part message in MIME format.
 
-I am using mpg123 compiled to only hack oss, so I am reliant on oss
-emulation.
+------=_NextPart_000_0001_01C655C2.A5E0D730
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I have the control code attached below, which defines both master and
-pcm functions (mapped together as the device only plays PCM).
+Very useful information about your M E D S , go to the site
+<http://buxe12.pounirom.com>=20
 
-By default I get this:
+------=_NextPart_000_0001_01C655C2.A5E0D730
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-/ # cat /proc/asound/card0/oss_mixer
-VOLUME "" 0
-BASS "" 0
-TREBLE "" 0
-SYNTH "" 0
-PCM "" 0
-SPEAKER "" 0
-LINE "" 0
-MIC "" 0
-CD "" 0
-IMIX "" 0
-ALTPCM "" 0
-RECLEV "" 0
-IGAIN "" 0
-OGAIN "" 0
-LINE1 "" 0
-LINE2 "" 0
-LINE3 "" 0
-DIGITAL1 "" 0
-DIGITAL2 "" 0
-DIGITAL3 "" 0
-PHONEIN "" 0
-PHONEOUT "" 0
-VIDEO "" 0
-RADIO "" 0
-MONITOR "" 0
-
-ie nothing mapped against oss. But if I do this:
-echo 'VOLUME "PCM" 0' > /proc/asound/card0/oss_mixer
-or
-echo 'VOLUME "Master" 0' > /proc/asound/card0/oss_mixer
-
-Then I get control of gain... so why doesn't the mapping work by
-default?
-
-
-/* Mixer controls */
-static int aica_pcmswitch_info(snd_kcontrol_t * kcontrol,
-			       snd_ctl_elem_info_t * uinfo)
-{
-	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-	uinfo->count = 1;
-	uinfo->value.integer.min = 0;
-	uinfo->value.integer.max = 1;
-	return 0;
-}
-
-static int aica_pcmswitch_get(snd_kcontrol_t * kcontrol,
-			      snd_ctl_elem_value_t * ucontrol)
-{
-	ucontrol->value.integer.value[0] = 1;	/* TO DO: Fix me */
-	return 0;
-}
-
-static int aica_pcmswitch_put(snd_kcontrol_t * kcontrol,
-			      snd_ctl_elem_value_t * ucontrol)
-{
-	if (ucontrol->value.integer.value[0] == 1)
-		return 0;	/* TO DO: Fix me */
-	else
-		aica_chn_halt();
-	return 0;
-}
-
-static snd_kcontrol_new_t snd_aica_masterswitch_control __devinitdata =
-{
-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name = "Master Playback Switch",
-	.info = aica_pcmswitch_info,
-	.get = aica_pcmswitch_get,
-	.put = aica_pcmswitch_put
-};
-
-static snd_kcontrol_new_t snd_aica_pcmswitch_control __devinitdata = {
-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name = "PCM Playback Switch",
-	.index = 0,
-	.info = aica_pcmswitch_info,
-	.get = aica_pcmswitch_get,
-	.put = aica_pcmswitch_put
-};
-
-
-
-
-static int aica_pcmvolume_info(snd_kcontrol_t * kcontrol,
-			       snd_ctl_elem_info_t * uinfo)
-{
-
-	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-	uinfo->count = 1;
-	uinfo->value.integer.min = 0;
-	uinfo->value.integer.max = 0xFF;
-
-	return 0;
-}
-
-static int aica_pcmvolume_get(snd_kcontrol_t * kcontrol,
-			      snd_ctl_elem_value_t * ucontrol)
-{
-	if (!channel)
-		return -ETXTBSY;	/* we've not yet been set up */
-	ucontrol->value.integer.value[0] = channel->vol;
-	return 0;
-}
-
-static int aica_pcmvolume_put(snd_kcontrol_t * kcontrol,
-			      snd_ctl_elem_value_t * ucontrol)
-{
-	if (!channel) {
-		snd_printk("No channel yet\n");
-		return -ETXTBSY;	/* too soon */
-	}
-
-	else if (channel->vol == ucontrol->value.integer.value[0])
-		return 0;
-
-	else {
-		channel->vol = ucontrol->value.integer.value[0];
-		dreamcastcard->master_volume = ucontrol->value.integer.value[0];
-		spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
-			    (uint8_t *) channel, sizeof(aica_channel_t));
-	}
-	return 1;
-}
-
-static snd_kcontrol_new_t snd_aica_mastervolume_control __devinitdata =
-{
-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name = "Master Playback Volume",
-	.info = aica_pcmvolume_info,
-	.get = aica_pcmvolume_get,
-	.put = aica_pcmvolume_put
-};
-
-static snd_kcontrol_new_t snd_aica_pcmvolume_control __devinitdata = {
-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name = "PCM Playback Volume",
-	.index = 0,
-	.info = aica_pcmvolume_info,
-	.get = aica_pcmvolume_get,
-	.put = aica_pcmvolume_put
-};
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Very useful information about your M E =
+D S , <A href=3D"http://buxe12.pounirom.com">go to the =
+site</A></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C655C2.A5E0D730--
 
 
 
