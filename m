@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001992]: Line2 LiveDrive has no capture settings / unable to record from 'AUX 2 IN'
-Date: Sun, 2 Apr 2006 18:13:53 +0200
-Message-ID: <8cf2b22384eb996d0ae7494183403167@bugtrack.alsa-project.org>
+Date: Sun, 2 Apr 2006 18:51:31 +0200
+Message-ID: <20afba3723e3a136f832c3c21c8eb957@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3EB3219A
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 18:13:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58E9519A
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 18:51:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo, gcc 3.3.5-20050130,
 Kernel Version:             2.6.15.1
 ======================================================================
 Date Submitted:             04-02-2006 17:59 CEST
-Last Modified:              04-02-2006 18:13 CEST
+Last Modified:              04-02-2006 18:51 CEST
 ======================================================================
 Summary:                    Line2 LiveDrive has no capture settings / unable to
 record from 'AUX 2 IN'
@@ -65,6 +65,14 @@ playback control.
 What happens if you use alsamixer, press F4 for the capture screen and
 raise the Line2 slider?
 
+----------------------------------------------------------------------
+ Raymond - 04-02-06 18:51 
+----------------------------------------------------------------------
+alsamixer also cannot distinguish a control is playback/capture 
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1366
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -73,6 +81,7 @@ Date Modified  Username       Field                    Change
 3.3.5-20050130,
 04-02-06 17:59 metaron        Kernel Version            => 2.6.15.1        
 04-02-06 18:13 rlrevell       Note Added: 0009064                          
+04-02-06 18:51 Raymond        Note Added: 0009065                          
 ======================================================================
 
 
