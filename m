@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001993]: duplex problems - other side cant hear my voice
-Date: Sun, 2 Apr 2006 21:00:48 +0200
-Message-ID: <ed05d0a8d4332cadbfdd2e24e3c2964c@bugtrack.alsa-project.org>
+Date: Sun, 2 Apr 2006 21:28:35 +0200
+Message-ID: <f82265524f555c57b3be4aaffb014c0d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2E9819D
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 21:00:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89A9C16E
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 21:28:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.15.6
 ======================================================================
 Date Submitted:             04-02-2006 19:15 CEST
-Last Modified:              04-02-2006 21:00 CEST
+Last Modified:              04-02-2006 21:28 CEST
 ======================================================================
 Summary:                    duplex problems - other side cant hear my voice
 Description: 
@@ -48,14 +48,6 @@ By using Skype with artsd via artsdsp and full duplex is enabled it works
 with cvs from 23.03.06.
 Now I try current cvs (02.04.06) and the other side cant hear me.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 04-02-06 20:51 
-----------------------------------------------------------------------
-Are you sure it's not just a change in the mixer?  Did you double check all
-settings after the upgrade?
-
-You can use "cvs update -A -D 2006-03-30" for example to search by date
 
 ----------------------------------------------------------------------
  crissi - 04-02-06 21:00 
@@ -68,6 +60,21 @@ force reload -> works again
 I still have a tree with the date. I can tar it and send to you both trees
 of nessary.
 
+----------------------------------------------------------------------
+ rlrevell - 04-02-06 21:28 
+----------------------------------------------------------------------
+You should still check the mixer settings after force-reload, some might
+have changed.
+
+I think you misunderstand "search by date" - I suggest you try to identify
+the last working version, by:
+
+cvs update -A -D 2006-03-23
+cvs update -A -D 2006-03-27
+cvs update -A -D 2006-03-31
+
+etc
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -78,6 +85,7 @@ Date Modified  Username       Field                    Change
 04-02-06 19:59 crissi         Note Added: 0009070                          
 04-02-06 20:51 rlrevell       Note Added: 0009071                          
 04-02-06 21:00 crissi         Note Added: 0009072                          
+04-02-06 21:28 rlrevell       Note Added: 0009073                          
 ======================================================================
 
 
