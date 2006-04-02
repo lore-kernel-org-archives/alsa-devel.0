@@ -1,16 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: More mixer questions
-Date: Sat, 01 Apr 2006 22:09:29 -0500
-Message-ID: <1143947370.6601.17.camel@mindpipe>
-References: <1143933507.9228.60.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - liboss 0001979]: Missing symbols in oss mixer code
+Date: Sun, 2 Apr 2006 05:16:50 +0200
+Message-ID: <b9b7b28a9ed6ba582a3b25a0a52eb7ef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 42250188
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 05:09:39 +0200 (MEST)
-In-Reply-To: <1143933507.9228.60.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D895E189
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 05:16:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,27 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-04-02 at 00:18 +0100, Adrian McMenamin wrote:
-> Sorry to hit the list with another question about the mixer/control
-> stuff, but I'm pretty puzzled as to what I am getting wrong.
-> 
-> I am using mpg123 compiled to only hack oss, so I am reliant on oss
-> emulation.
-> 
-> I have the control code attached below, which defines both master and
-> pcm functions (mapped together as the device only plays PCM).
 
-Where's your __devinit snd_aica_mixer() routine that actually creates
-the mixer controls, with snd_ctl_new1()?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1979> 
+======================================================================
+Reported By:                zx80user
+Assigned To:                
+======================================================================
+Project:                    ALSA - liboss
+Issue ID:                   1979
+Category:                   
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             03-29-2006 23:03 CEST
+Last Modified:              04-02-2006 05:16 CEST
+======================================================================
+Summary:                    Missing symbols in oss mixer code
+Description: 
+Attempting to load the snd-pcm-oss module and the snd-pcm-mixer modules
+fails due to missing symbols.
 
-Look at snd_emu10k1_mixer in alsa-kernel/pci/emu10k1/emumixer.c for
-example...
 
-Lee
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 04-01-06 17:20 
+----------------------------------------------------------------------
+create the volume controls before snd_card_register()
+
+----------------------------------------------------------------------
+ Raymond - 04-02-06 05:16 
+----------------------------------------------------------------------
+static int aica_pcmvolume_get(snd_kcontrol_t * kcontrol,
+			      snd_ctl_elem_value_t * ucontrol)
+{	
+     struct snd_acia *chip = snd_kcontrol_chip(kcontrol);
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-29-06 23:03 zx80user       New Issue                                    
+03-29-06 23:04 zx80user       Issue Monitored: zx80user                    
+03-29-06 23:05 zx80user       Note Added: 0009019                          
+03-30-06 10:00 Raymond        Note Added: 0009024                          
+04-01-06 17:20 Raymond        Note Added: 0009056                          
+04-02-06 05:16 Raymond        Note Added: 0009057                          
+======================================================================
+
 
 
 
