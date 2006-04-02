@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001987]: Upmix Feature Request
-Date: Sun, 2 Apr 2006 10:42:42 +0200
-Message-ID: <d03a32b6a509be09b6efb7ba8ee17266@bugtrack.alsa-project.org>
+Date: Sun, 2 Apr 2006 11:44:51 +0200
+Message-ID: <03cd66752d84dd179604b0065f124f07@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 015C3159
-	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 10:42:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C7BC15A
+	for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2006 11:44:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.16.1
 ======================================================================
 Date Submitted:             03-31-2006 20:38 CEST
-Last Modified:              04-02-2006 10:42 CEST
+Last Modified:              04-02-2006 11:44 CEST
 ======================================================================
 Summary:                    Upmix Feature Request
 Description: 
@@ -91,20 +91,17 @@ Greetz, Patrick
 ======================================================================
 
 ----------------------------------------------------------------------
- the-me - 04-01-06 10:39 
-----------------------------------------------------------------------
-Thanks, but there is one problem. I need a lowpass filter for my
-subwoofer.
-Like here but only on my subwoofer channel =>
-http://alsa.opensrc.org/SurroundSound ( ~ in the middle of the document ).
-
-----------------------------------------------------------------------
  Raymond - 04-02-06 10:42 
 ----------------------------------------------------------------------
 According to
 http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins_ladpsa
 
 The input and output format is always SND_PCM_FORMAT_FLOAT
+
+----------------------------------------------------------------------
+ the-me - 04-02-06 11:44 
+----------------------------------------------------------------------
+thanks, this link seems good, but for me it's a little bit complicated.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -121,6 +118,7 @@ Date Modified  Username       Field                    Change
 04-01-06 01:03 Raymond        Note Added: 0009052                          
 04-01-06 10:39 the-me         Note Added: 0009053                          
 04-02-06 10:42 Raymond        Note Added: 0009059                          
+04-02-06 11:44 the-me         Note Added: 0009060                          
 ======================================================================
 
 
