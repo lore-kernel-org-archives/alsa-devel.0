@@ -1,62 +1,42 @@
-From: walt <wa1ter@myrealbox.com>
-Subject: kernel/alsa oops
-Date: Mon, 03 Apr 2006 13:32:12 -0700
-Message-ID: <e0s0oc$gi9$1@sea.gmane.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: [Alsa-devel] Re: Patch for AICA sound support on SEGA Dreamcast
+Date: Mon, 03 Apr 2006 23:36:02 +0100
+Message-ID: <1144103762.11511.55.camel@localhost.localdomain>
+References: <1144075522.11511.20.camel@localhost.localdomain>
+	 <s5hvetqac7i.wl%tiwai@suse.de>
+	 <1144086510.11511.46.camel@localhost.localdomain>
+	 <s5h1wwea4wq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Return-path: <linuxsh-dev-admin@lists.sourceforge.net>
+In-Reply-To: <s5h1wwea4wq.wl%tiwai@suse.de>
+Sender: linuxsh-dev-admin@lists.sourceforge.net
+Errors-To: linuxsh-dev-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
+List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
+To: Takashi Iwai <tiwai@suse.de>, Paul Mundt <lethal@linux-sh.org>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I update from Linus every day, so I'm running his latest alsa
-updates as of 03April.
+On Mon, 2006-04-03 at 20:29 +0200, Takashi Iwai wrote:
 
-I just got this kernel oops, which is reproducible:
- Oops: 0000 [#1]
- PREEMPT
- CPU:    0
- EIP is at snd_pcm_oss_get_space+0x33/0x140 [snd_pcm_oss]
- eax: d9d13ce0   ebx: 00000000   ecx: 00000001   edx: ffffffea
- esi: 00000000   edi: c15e94c0   ebp: bf87a540   esp: d82abf28
- ds: 007b   es: 007b   ss: 0068
- Process realplay.bin (pid: 18441, threadinfo=d82aa000 task=c74c9ab0)
- Stack: <0>c02aed06 ffffffbf c0265c17 c8c0ce80 0000541b ffffffe7
-dd8c8c60 bf87a540
-        8010500c c015383c d9d13ce0 00000000 bf87a540 bf87a540 00000000
-dd8c8c60
-        00000014 c0153aeb dd8c8c60 8010500c bf87a540 fffffff7 fffffff7
-dd8c8c60
- Call Trace:
-  <c02aed06> unix_ioctl+0xb1/0xbe   <c0265c17> sock_ioctl+0x195/0x1b2
-  <c015383c> do_ioctl+0x28/0x66   <c0153aeb> vfs_ioctl+0x17e/0x18c
-  <c0153b24> sys_ioctl+0x2b/0x47   <c0102547> sysenter_past_esp+0x54/0x75
- Code: 53 83 ec 14 8b 6c 24 30 8b 74 24 2c 85 ed 0f 84 1a 01 00 00 8b 44
-24 28 ba ea ff ff ff 8b 3c b0 85 ff 0f 84 06 01 00 00 8b 5f 5c <f6> 83
-20 02 00 00 01 74 11 57 e8 57 e6 ff ff 89 c2 85 d2 58 0f
+> 
+> Anyway, you should use dma_wait_for_completion() instead of your
+> home-made one.
+> 
+The dma_wait_for_completion is broken for g2 dma afaics. Paul - would
+you concur?
 
-This is what I did to reproduce this oops:
-
-I was playing a video with mplayer, which I put on 'pause'.
-I started listening to BBC Radio with RealPlayer-10.0.7.
-I then took mplayer off of pause, which instantly produced
-this kernel oops.
-
-Judging from the behavior of all the apps I was running at
-the time, it seems that RealPlay was the one which actually
-crashed.  Everything else seems okay.
-
-Any ideas?  Need any further info?
-
+(Unfortunately the dma_residue register in g2 does not stick at 0 when
+there is no residue but returns to the size of the completed dma
+transfer. Therefore I can really see no alternative but to writing my
+own unless Paul has a better idea.)
 
 
 
