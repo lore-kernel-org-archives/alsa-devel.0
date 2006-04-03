@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001598]: TeamSpeak works with kernel mode OSS emulation but not with AOSS wrapper
-Date: Mon, 3 Apr 2006 03:04:19 +0200
-Message-ID: <8f05f5f5f83056967745c35ae133a9d3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001980]: No Sound with module snd-hda-intel and no error output
+Date: Mon, 3 Apr 2006 03:22:55 +0200
+Message-ID: <f177fffb648df0c6856079d49ced6128@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E5121AA
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 03:04:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D6BF5149
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 03:22:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1598> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1980> 
 ======================================================================
-Reported By:                kyromaster
-Assigned To:                
+Reported By:                zyfhie
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1598
-Category:                   CORE OSS - pcm
+Issue ID:                   1980
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               ubuntu
+Kernel Version:             2.6.15-19-386
 ======================================================================
-Date Submitted:             11-25-2005 14:10 CET
-Last Modified:              04-03-2006 03:04 CEST
+Date Submitted:             03-30-2006 14:43 CEST
+Last Modified:              04-03-2006 03:22 CEST
 ======================================================================
-Summary:                    TeamSpeak works with kernel mode OSS emulation but
-not with AOSS wrapper
+Summary:                    No Sound with module snd-hda-intel and no error
+output
 Description: 
-At first this is a device independant issue. I looked at some forums and
-tested it on several sound devices.
-TeamSpeak works fine with the kernel OSS emulation on my system. But when
-I use the AOSS wrapper to run it beside games which use ALSA (which is the
-most common use of TeamSpeak) sound recording/output doesn´t work any
-more. There´s a "test mode" in TS where you can hear yourself, when I
-enable it I can´t hear anything.
-Please fix this as it´s very important for all Linux gamers.
+I just have ubuntu installed in my laptop,and there is no sound at all.
+In dmesg|grep hda-intel there is no message,but I could see 
+[4296289.511000] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+[4296330.997000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
+low) -> IRQ 201
+[4296330.997000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ 
+after rmmod snd-hda-intel &modprobe snd-hda-intel
+
+I had tried many parm in my alsa-base such as model,position_fix.
+Hope somebody could help!!! 
+
 ======================================================================
 
 ----------------------------------------------------------------------
- divinehawk - 04-03-06 03:04 
+ zyfhie - 04-03-06 02:46 
 ----------------------------------------------------------------------
-The current DEBUG output I get with alsa-oss 1.0.11_rc3 and TeamSpeak is"
+I have compiled and installed the new alsa-driver 1.11rc4,but it still
+doesn't work  now :<......
 
-Opened PCM dsp0 for stream 0 (result = -2)
-Opened PCM default for stream 0 (result = 0)
-Opened PCM default for stream 1 (result = 0)
-open("/dev/dsp", 2, -1210431528) -> 19
-ioctl(19, SNDCTL_DSP_RESET)
-ioctl(19, SNDCTL_DSP_SETDUPLEX)
-ioctl(19, SNDCTL_DSP_GETCAPS, 0xb4aff158) -> [13056]
-ioctl(19, SNDCTL_DSP_SETFRAGMENT, 0xb4aff15c[3000c])
-dsp ioctl error = -22
-close(19) -> 0
+----------------------------------------------------------------------
+ zyfhie - 04-03-06 03:22 
+----------------------------------------------------------------------
+Maybe this is the problem
+lspci -nv
+0000:00:1b.0 0403: 8086:2668 (rev 04)
+        Subsystem: 1043:1153
+        Flags: bus master, fast devsel, latency 0, IRQ 201
+        Memory at feb3c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] #10 [0091]
 
-To fix/workaround this, I applied the following patch:
-
---- pcm.c       2005-09-01 13:32:52.000000000 -0400
-+++ /root/alsa-oss-1.0.11rc3/alsa/pcm.c 2006-04-02 20:57:29.233826670
--0400
-@@ -262,7 +262,7 @@
-                        err = snd_pcm_hw_params_set_access(pcm, hw,
-SND_PCM_ACCESS_RW_INTERLEAVED);
-                        if (err < 0)
-                                return err;
--                       periods_min = 2;
-+                       periods_min = 16;
-                        err = snd_pcm_hw_params_set_periods_min(pcm, hw,
-&periods_min, 0);
-                        if (err < 0)
-                                return err;
-
-I am not sure why it works... but hopefully it may lead to a real fix,
-rather than a workaround.
+but in alsa-drivers/alsa-kernel/pci/hda/patch_realtek.c
+I can't find 0x1043:0x1153  in part modelname = "asus"
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-25-05 14:10 kyromaster     New Issue                                    
-04-03-06 03:04 divinehawk     Note Added: 0009080                          
+03-30-06 14:43 zyfhie         New Issue                                    
+03-30-06 14:43 zyfhie         Distribution              => ubuntu          
+03-30-06 14:43 zyfhie         Kernel Version            => 2.6.15-19-386   
+04-01-06 00:28 error10        Note Added: 0009051                          
+04-03-06 01:57 anarki         Note Added: 0009076                          
+04-03-06 02:12 zyfhie         Note Added: 0009078                          
+04-03-06 02:46 zyfhie         Note Added: 0009079                          
+04-03-06 03:22 zyfhie         Note Added: 0009082                          
 ======================================================================
 
 
