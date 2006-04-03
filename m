@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001998]: Audigy 2 ZS Platinum's hardware AC3/DD decoder isn't supported?
-Date: Mon, 3 Apr 2006 18:45:52 +0200
-Message-ID: <ca72487ff3dab39d029bc211ac04e6bb@bugtrack.alsa-project.org>
+Date: Mon, 3 Apr 2006 18:59:38 +0200
+Message-ID: <67ec160d6a071fa6d7e5a8868cffdb75@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA7C5175
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 18:45:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E6BC175
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 18:59:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1998> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     closed
 Distribution:               Gentoo
 Kernel Version:             2.6.16
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-03-2006 13:34 CEST
-Last Modified:              04-03-2006 18:45 CEST
+Last Modified:              04-03-2006 18:59 CEST
 ======================================================================
 Summary:                    Audigy 2 ZS Platinum's hardware AC3/DD decoder isn't
 supported?
@@ -60,17 +62,16 @@ decoder to work?
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 04-03-06 17:18 
-----------------------------------------------------------------------
-Are you sure Audigy 2 ZS has hardware ac3 decoder (AFAIK there is none) ?
-
-AFAIK ac3 spdif input is not suported for now.
-
-----------------------------------------------------------------------
  rlrevell - 04-03-06 18:45 
 ----------------------------------------------------------------------
 These devices have no hardware AC3 decoder - Creative is lying.  It's
 implemented in software in the Windows driver.
+
+----------------------------------------------------------------------
+ rlrevell - 04-03-06 18:59 
+----------------------------------------------------------------------
+Hardware has no AC3 decoder.  You can do it in software by piping the input
+to ac3dec.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -80,6 +81,8 @@ Date Modified  Username       Field                    Change
 04-03-06 13:34 pmn            Kernel Version            => 2.6.16          
 04-03-06 17:18 pzad           Note Added: 0009100                          
 04-03-06 18:45 rlrevell       Note Added: 0009101                          
+04-03-06 18:59 rlrevell       Status                   new => closed       
+04-03-06 18:59 rlrevell       Note Added: 0009102                          
 ======================================================================
 
 
