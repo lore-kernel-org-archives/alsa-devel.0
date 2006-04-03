@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001999]: Latest cvs won't compile
-Date: Mon, 3 Apr 2006 21:05:41 +0200
-Message-ID: <68c184a3bdd9435888fbd7df43aea2ac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001992]: Line2 LiveDrive has no capture settings / unable to record from 'AUX 2 IN'
+Date: Mon, 3 Apr 2006 21:32:01 +0200
+Message-ID: <994bd86809db16eef48e170c8fd5220b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C0A2D15A
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 21:05:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D77AD175
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 21:32:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,75 +22,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1999> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1992> 
 ======================================================================
-Reported By:                kotau
-Assigned To:                perex
+Reported By:                metaron
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1999
-Category:                   0_compilation problem_!!!
+Issue ID:                   1992
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             -2.6.13.2
+Status:                     new
+Distribution:               Gentoo, gcc 3.3.5-20050130,
+Kernel Version:             2.6.15.1
 ======================================================================
-Date Submitted:             04-03-2006 21:05 CEST
-Last Modified:              04-03-2006 21:05 CEST
+Date Submitted:             04-02-2006 17:59 CEST
+Last Modified:              04-03-2006 21:32 CEST
 ======================================================================
-Summary:                    Latest cvs won't compile
+Summary:                    Line2 LiveDrive has no capture settings / unable to
+record from 'AUX 2 IN'
 Description: 
-Here's the error message.
+I have been trying to use the front RCA inputs (Labled 'AUX IN 2') on my
+LiveDrive to record sound, but have not been able to do so.
 
+If I change the Line2 LiveDrive slider in kmix, I can change the monitor
+volume, but running arecord results in 10 seconds of silence :-(.
 
-==============
-make[1]: Entering directory `/usr/src/linux-2.6.13.2'
-  CC [M]  /usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
-`snd_ac97_proc_read_main':
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
-`snd_ac97_stereo_enhancements' undeclared (first use in this function)
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
-(Each undeclared identifier is reported only once
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
-for each function it appears in.)
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
-`snd_ac97_proc_read':
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: warning:
-implicit declaration of function `snd_magic_cast'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: error:
-parse error before "ac97_t"
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:296: error:
-structure has no member named `semaphore'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:322: error:
-structure has no member named `semaphore'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
-`snd_ac97_proc_regs_read':
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:359: error:
-parse error before "ac97_t"
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:361: error:
-structure has no member named `semaphore'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:377: error:
-structure has no member named `semaphore'
-make[5]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o]
-Error 1
-make[4]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97] Error 2
-make[3]: *** [/usr/local/src/1music/alsa/alsa-driver/pci] Error 2
-make[2]: *** [_module_/usr/local/src/1music/alsa/alsa-driver] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.13.2'
-
+I'm happy to re-compile with patches, or even try fixing it myself if
+anyone can point me in the right direction in the code although I have no
+alsa codeing experience...
 ======================================================================
+
+----------------------------------------------------------------------
+ pzad - 04-02-06 19:51 
+----------------------------------------------------------------------
+" alsamixer also cannot distinguish a control is playback/capture since
+alsa-utils-1.0.10rc1"
+
+No. This is diffrent problem and has nothing to do with this. This is not
+bug in alsa but in kmix (rlrevell is right).
+
+----------------------------------------------------------------------
+ metaron - 04-03-06 21:32 
+----------------------------------------------------------------------
+Oops. Sorry to waste your time. I've got it working now (using alsamixer
+:-) - I'll raise a bug report on kmix. Thanks for your help!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-06 21:05 kotau          New Issue                                    
-04-03-06 21:05 kotau          Kernel Version            => -2.6.13.2       
+04-02-06 17:59 metaron        New Issue                                    
+04-02-06 17:59 metaron        Distribution              => Gentoo, gcc
+3.3.5-20050130,
+04-02-06 17:59 metaron        Kernel Version            => 2.6.15.1        
+04-02-06 18:13 rlrevell       Note Added: 0009064                          
+04-02-06 18:51 Raymond        Note Added: 0009065                          
+04-02-06 18:54 Raymond        Note Edited: 0009065                         
+04-02-06 19:01 rlrevell       Note Added: 0009066                          
+04-02-06 19:51 pzad           Note Added: 0009068                          
+04-03-06 21:32 metaron        Note Added: 0009106                          
 ======================================================================
 
 
