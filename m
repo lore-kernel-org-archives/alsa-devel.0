@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001988]: No microphone input on Dell Inspiron 6400
-Date: Mon, 3 Apr 2006 08:03:43 +0200
-Message-ID: <d2a84c2281ee0d1be1f157b66fa93488@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001979]: Missing symbols in oss mixer code
+Date: Mon, 3 Apr 2006 08:46:04 +0200
+Message-ID: <6689d2638e88ad463114877d9c741c51@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D04641AA
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 08:03:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D95B5192
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 08:46:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1988> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1979> 
 ======================================================================
-Reported By:                tbecker37
-Assigned To:                tiwai
+Reported By:                zx80user
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1988
-Category:                   PCI - hda-intel
+Project:                    ALSA - liboss
+Issue ID:                   1979
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
+Status:                     new
 ======================================================================
-Date Submitted:             03-31-2006 21:28 CEST
-Last Modified:              04-03-2006 08:03 CEST
+Date Submitted:             03-29-2006 23:03 CEST
+Last Modified:              04-03-2006 08:46 CEST
 ======================================================================
-Summary:                    No microphone input on Dell Inspiron 6400
+Summary:                    Missing symbols in oss mixer code
 Description: 
-Installing the 1.0.11rc4 driver enabled sound output both for extenal and
-headphone jack. However microphone input does not work.  Mic input is
-displayed in alsamixer but is not adjustable.
+Attempting to load the snd-pcm-oss module and the snd-pcm-mixer modules
+fails due to missing symbols.
 
-I have also compiled and tried the driver from CVS on 3-31 with no
-success.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- anarki - 04-03-06 08:03 
+ Raymond - 04-02-06 05:26 
 ----------------------------------------------------------------------
-I can reproduce this on a Dell Inspiron 630m laptop (sigmatel chip, using
-intel-hda driver), with ubuntu dapper, kernel 2.6.15-19 (latest) and
-latest alsa-driver cvs
+static int aica_pcmvolume_get(snd_kcontrol_t * kcontrol,
+			      snd_ctl_elem_value_t * ucontrol)
+{	
+     struct snd_acia *chip = snd_kcontrol_chip(kcontrol);
+
+Look at ymfpci to study how to implement 64 channels
+
+
+
+----------------------------------------------------------------------
+ Raymond - 04-03-06 08:46 
+----------------------------------------------------------------------
+static int __devinit add_aicamixer_controls(struct snd_aica *chip)
+{
+        int err;
+        snd_kcontrol *kctl;
+        kctl = snd_ctl_new1(&snd_aica_pcmvolume_control,chip);
+        if (!kctl) {
+		snd_printk("snd_ctl_new1 failed\n");
+                return -ENOMEM;
+        };
+	err = snd_ctl_add (chip->card, kctl);
+        if (err < 0){
+		snd_printk("pcmvolume failed\n");
+		return err;
+	}
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-06 21:28 tbecker37      New Issue                                    
-03-31-06 21:28 tbecker37      Distribution              => Fedora Core 5   
-03-31-06 21:28 tbecker37      Kernel Version            => 2.6.16-1.2080_FC5smp
-03-31-06 23:39 tbecker37      Issue Monitored: tbecker37                    
-04-03-06 08:03 anarki         Note Added: 0009087                          
+03-29-06 23:03 zx80user       New Issue                                    
+03-29-06 23:04 zx80user       Issue Monitored: zx80user                    
+03-29-06 23:05 zx80user       Note Added: 0009019                          
+03-30-06 10:00 Raymond        Note Added: 0009024                          
+04-01-06 17:20 Raymond        Note Added: 0009056                          
+04-02-06 05:16 Raymond        Note Added: 0009057                          
+04-02-06 05:26 Raymond        Note Edited: 0009057                         
+04-03-06 08:46 Raymond        Note Added: 0009088                          
 ======================================================================
 
 
