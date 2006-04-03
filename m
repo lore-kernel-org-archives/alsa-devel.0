@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001598]: TeamSpeak works with kernel mode OSS emulation but not with AOSS wrapper
-Date: Mon, 3 Apr 2006 03:04:43 +0200
-Message-ID: <ebdcf1c6877d25e49c4563d499eb55b0@bugtrack.alsa-project.org>
+Date: Mon, 3 Apr 2006 03:04:19 +0200
+Message-ID: <8f05f5f5f83056967745c35ae133a9d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D0751AA
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 03:04:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E5121AA
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 03:04:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -91,48 +91,11 @@ SND_PCM_ACCESS_RW_INTERLEAVED);
 I am not sure why it works... but hopefully it may lead to a real fix,
 rather than a workaround.
 
-----------------------------------------------------------------------
- divinehawk - 04-03-06 03:04 
-----------------------------------------------------------------------
-The current DEBUG output I get with alsa-oss 1.0.11_rc3 and TeamSpeak is"
-
-Opened PCM dsp0 for stream 0 (result = -2)
-Opened PCM default for stream 0 (result = 0)
-Opened PCM default for stream 1 (result = 0)
-open("/dev/dsp", 2, -1210431528) -> 19
-ioctl(19, SNDCTL_DSP_RESET)
-ioctl(19, SNDCTL_DSP_SETDUPLEX)
-ioctl(19, SNDCTL_DSP_GETCAPS, 0xb4aff158) -> [13056]
-ioctl(19, SNDCTL_DSP_SETFRAGMENT, 0xb4aff15c[3000c])
-dsp ioctl error = -22
-close(19) -> 0
-
-To fix/workaround this, I applied the following patch:
-
---- pcm.c       2005-09-01 13:32:52.000000000 -0400
-+++ /root/alsa-oss-1.0.11rc3/alsa/pcm.c 2006-04-02 20:57:29.233826670
--0400
-@@ -262,7 +262,7 @@
-                        err = snd_pcm_hw_params_set_access(pcm, hw,
-SND_PCM_ACCESS_RW_INTERLEAVED);
-                        if (err < 0)
-                                return err;
--                       periods_min = 2;
-+                       periods_min = 16;
-                        err = snd_pcm_hw_params_set_periods_min(pcm, hw,
-&periods_min, 0);
-                        if (err < 0)
-                                return err;
-
-I am not sure why it works... but hopefully it may lead to a real fix,
-rather than a workaround.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-25-05 14:10 kyromaster     New Issue                                    
 04-03-06 03:04 divinehawk     Note Added: 0009080                          
-04-03-06 03:04 divinehawk     Note Added: 0009081                          
 ======================================================================
 
 
