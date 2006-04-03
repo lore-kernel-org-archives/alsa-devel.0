@@ -1,15 +1,11 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: ice1712 overwrite standard midi port names
-Date: Mon, 3 Apr 2006 22:45:58 +0100
-Message-ID: <200604032240.29121.gineera@aspect135.co.uk>
-References: <200604012206.27893.gineera@aspect135.co.uk> <s5hhd5aa9mp.wl%tiwai@suse.de>
+From: walt <wa1ter@myrealbox.com>
+Subject: kernel/alsa oops
+Date: Mon, 03 Apr 2006 13:32:12 -0700
+Message-ID: <e0s0oc$gi9$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhd5aa9mp.wl%tiwai@suse.de>
-Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,60 +15,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 03 April 2006 17:47, you wrote:
-> At Sat, 1 Apr 2006 22:06:27 +0100,
->
-> Alan Horstmann wrote:
-> > Following our discussions I had time to prepare this patch for ice1712
-> > driver. I figured you prefered the minimum changes to achieve the end
-> > result.  The replacement names in ews.c are left as I prefer, 'detail,
-> > card', but if you choose, just reverse the order, to comply instead with
-> > convention.  How does this proposal look?
->
-> I don't think -0 and -1 suffix are necessary.  You give the individual
-> name for each device, so they must be unique as they are.
+I update from Linus every day, so I'm running his latest alsa
+updates as of 03April.
 
-True, however I included them for the following reasons:-
-  a)  The default name in mpu401...new has the 2 numbers with a hyphen, so 
-there is consistency making it clearer what they refer to.
-  b)  If only a single number were used, there would need to be some extra 
-characters to say that it refered to the card number, not device, eg c-1 or 
-card-1.  Firstly this doesn't save space, and secondly trips over the problem 
-of whether (to an inexperienced user) the first card is card-1 or card-0.  
-Putting the number pair together seemed to be more likely to be understood as 
-a system-type code, starting at zero.
-  c)  It records somewhere to users (not reading the source-code) which device 
-is connected to each of the name strings.
-  d)  There seemed to be no overriding reason to leave them out.
+I just got this kernel oops, which is reproducible:
+ Oops: 0000 [#1]
+ PREEMPT
+ CPU:    0
+ EIP is at snd_pcm_oss_get_space+0x33/0x140 [snd_pcm_oss]
+ eax: d9d13ce0   ebx: 00000000   ecx: 00000001   edx: ffffffea
+ esi: 00000000   edi: c15e94c0   ebp: bf87a540   esp: d82abf28
+ ds: 007b   es: 007b   ss: 0068
+ Process realplay.bin (pid: 18441, threadinfo=d82aa000 task=c74c9ab0)
+ Stack: <0>c02aed06 ffffffbf c0265c17 c8c0ce80 0000541b ffffffe7
+dd8c8c60 bf87a540
+        8010500c c015383c d9d13ce0 00000000 bf87a540 bf87a540 00000000
+dd8c8c60
+        00000014 c0153aeb dd8c8c60 8010500c bf87a540 fffffff7 fffffff7
+dd8c8c60
+ Call Trace:
+  <c02aed06> unix_ioctl+0xb1/0xbe   <c0265c17> sock_ioctl+0x195/0x1b2
+  <c015383c> do_ioctl+0x28/0x66   <c0153aeb> vfs_ioctl+0x17e/0x18c
+  <c0153b24> sys_ioctl+0x2b/0x47   <c0102547> sysenter_past_esp+0x54/0x75
+ Code: 53 83 ec 14 8b 6c 24 30 8b 74 24 2c 85 ed 0f 84 1a 01 00 00 8b 44
+24 28 ba ea ff ff ff 8b 3c b0 85 ff 0f 84 06 01 00 00 8b 5f 5c <f6> 83
+20 02 00 00 01 74 11 57 e8 57 e6 ff ff 89 c2 85 d2 58 0f
 
-> Also, could fix the following?
->
-> - Use const char * for name strings
+This is what I did to reproduce this oops:
 
-Yes, will do.
+I was playing a video with mplayer, which I put on 'pause'.
+I started listening to BBC Radio with RealPlayer-10.0.7.
+I then took mplayer off of pause, which instantly produced
+this kernel oops.
 
-> - Fix spaces / indentation
+Judging from the behavior of all the apps I was running at
+the time, it seems that RealPlay was the one which actually
+crashed.  Everything else seems okay.
 
-Can you be more specific?  Do you mean second half of sprintf brackets?  I can 
-only see one unneccesary blank line.  From the patch lines it is probably not 
-obvious that the second port lines are indented further due to an extra 'if' 
-statement.
+Any ideas?  Need any further info?
 
-> > There are no name entries in _card_info for any card sub-vendors other
-> > than DMX6fire.  Perhaps others could add these as appropriate?
->
-> Yes.  But not mandatory.  Can be added later.
-
-Fine.
-
-Let me know what you think on these issues and I will fix the patch 
-accordingly.
-
-Alan
 
 
 
