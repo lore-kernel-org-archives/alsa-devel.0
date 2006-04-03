@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001980]: No Sound with module snd-hda-intel and no error output
-Date: Mon, 3 Apr 2006 02:12:37 +0200
-Message-ID: <d65028a801690f16b3cd8e4688588792@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001963]: Returning from suspend-to-ram "mutes" sounds
+Date: Mon, 3 Apr 2006 02:22:54 +0200
+Message-ID: <ef18f8ddc62c5710d9671d9322bec668@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 367E91AA
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 02:12:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E67BF1AA
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 02:22:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1980> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1963> 
 ======================================================================
-Reported By:                zyfhie
+Reported By:                Jeff250
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1980
+Issue ID:                   1963
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               ubuntu
-Kernel Version:             2.6.15-19-386
+Status:                     resolved
+Distribution:               Ubuntu Dapper
+Kernel Version:             2.6.15-19-686
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-30-2006 14:43 CEST
-Last Modified:              04-03-2006 02:12 CEST
+Date Submitted:             03-25-2006 03:35 CET
+Last Modified:              04-03-2006 02:22 CEST
 ======================================================================
-Summary:                    No Sound with module snd-hda-intel and no error
-output
+Summary:                    Returning from suspend-to-ram "mutes" sounds
 Description: 
-I just have ubuntu installed in my laptop,and there is no sound at all.
-In dmesg|grep hda-intel there is no message,but I could see 
-[4296289.511000] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-[4296330.997000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
-low) -> IRQ 201
-[4296330.997000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
- 
-after rmmod snd-hda-intel &modprobe snd-hda-intel
-
-I had tried many parm in my alsa-base such as model,position_fix.
-Hope somebody could help!!! 
-
+I have a Dell XPS m140 laptop using the hda-intel driver with the Sigmatel
+STAC 9200 chip.  When I suspend-to-ram the laptop and resume from suspend,
+the sound is "muted" in that alsamixer does not actually show any tracks
+to be muted, but changing the master volume up or down restores sound
+output.  As a workaround, I've added to my resume script an amixer command
+to slightly modify the volume automatically on resume from suspend.  I'm
+using v1.0.11rc4+ from CVS, and this problem is not present in Alsa
+1.0.10.  Thanks for your time.
 ======================================================================
 
 ----------------------------------------------------------------------
- anarki - 04-03-06 01:57 
+ Jeff250 - 03-31-06 09:46 
 ----------------------------------------------------------------------
-I solved this issue with the same distro and same kernel version compiling
-CVS alsa-driver.
+I've just deleted the old source directories, updated from CVS,
+re-compiled, and re-installed.  Unfortunately, the problem still exists.
 
 ----------------------------------------------------------------------
- zyfhie - 04-03-06 02:12 
+ anarki - 04-03-06 01:59 
 ----------------------------------------------------------------------
-I will try today.......
+I also had this problem, but with the latest CVS this doesn't happen
+anymore.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-06 14:43 zyfhie         New Issue                                    
-03-30-06 14:43 zyfhie         Distribution              => ubuntu          
-03-30-06 14:43 zyfhie         Kernel Version            => 2.6.15-19-386   
-04-01-06 00:28 error10        Note Added: 0009051                          
-04-03-06 01:57 anarki         Note Added: 0009076                          
-04-03-06 02:12 zyfhie         Note Added: 0009078                          
+03-25-06 03:35 Jeff250        New Issue                                    
+03-25-06 03:35 Jeff250        Distribution              => Ubuntu Dapper   
+03-25-06 03:35 Jeff250        Kernel Version            => 2.6.15-19-686   
+03-26-06 01:28 tiwai          Note Added: 0008956                          
+03-26-06 04:26 Jeff250        Note Added: 0008965                          
+03-29-06 19:17 tiwai          Status                   assigned => resolved
+03-29-06 19:17 tiwai          Resolution               open => fixed       
+03-29-06 19:17 tiwai          Note Added: 0009013                          
+03-29-06 21:46 Jeff250        Status                   resolved => feedback
+03-29-06 21:46 Jeff250        Resolution               fixed => reopened   
+03-29-06 21:46 Jeff250        Note Added: 0009018                          
+03-30-06 11:42 tiwai          Note Added: 0009030                          
+03-31-06 09:46 Jeff250        Note Added: 0009042                          
+04-03-06 01:59 anarki         Note Added: 0009077                          
+04-03-06 02:22 rlrevell       Status                   feedback => resolved
+04-03-06 02:22 rlrevell       Resolution               reopened => fixed   
 ======================================================================
 
 
