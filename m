@@ -1,11 +1,14 @@
-From: boku <boku0712@gmail.com>
-Subject: About the data word format of PCM
-Date: Mon, 3 Apr 2006 14:01:06 +0800
-Message-ID: <715d90900604022301k408a8a35ib89ea5dd7d58e706@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001988]: No microphone input on Dell Inspiron 6400
+Date: Mon, 3 Apr 2006 08:03:43 +0200
+Message-ID: <d2a84c2281ee0d1be1f157b66fa93488@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_6217_23484451.1144044066897"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D04641AA
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 08:03:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,38 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_6217_23484451.1144044066897
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Dear all,
-    How is the arrangement in one 32-bit word for either Stereo,
-SNDRV_PCM_FMTBIT_S16_LE or SNDRV_PCM_FMTBIT_S24_LE? And is there any way to
-change such as Left and right channel's bit position or the signed bit if
-necessary? Thanks a lot!~
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1988> 
+======================================================================
+Reported By:                tbecker37
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1988
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             03-31-2006 21:28 CEST
+Last Modified:              04-03-2006 08:03 CEST
+======================================================================
+Summary:                    No microphone input on Dell Inspiron 6400
+Description: 
+Installing the 1.0.11rc4 driver enabled sound output both for extenal and
+headphone jack. However microphone input does not work.  Mic input is
+displayed in alsamixer but is not adjustable.
 
-Best Regards,
+I have also compiled and tried the driver from CVS on 3-31 with no
+success.
+======================================================================
 
-------=_Part_6217_23484451.1144044066897
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+----------------------------------------------------------------------
+ anarki - 04-03-06 08:03 
+----------------------------------------------------------------------
+I can reproduce this on a Dell Inspiron 630m laptop (sigmatel chip, using
+intel-hda driver), with ubuntu dapper, kernel 2.6.15-19 (latest) and
+latest alsa-driver cvs
 
-<div>Dear all,</div>
-<div>&nbsp;&nbsp;&nbsp;&nbsp;How is the arrangement in one 32-bit word for =
-either&nbsp;Stereo, SNDRV_PCM_FMTBIT_S16_LE&nbsp;or SNDRV_PCM_FMTBIT_S24_LE=
-? And is there any way to change such as Left and right channel's bit posit=
-ion or the signed bit if necessary? Thanks a lot!~
-</div>
-<div>&nbsp;</div>
-<div>Best Regards,</div>
-<div>&nbsp;</div>
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-31-06 21:28 tbecker37      New Issue                                    
+03-31-06 21:28 tbecker37      Distribution              => Fedora Core 5   
+03-31-06 21:28 tbecker37      Kernel Version            => 2.6.16-1.2080_FC5smp
+03-31-06 23:39 tbecker37      Issue Monitored: tbecker37                    
+04-03-06 08:03 anarki         Note Added: 0009087                          
+======================================================================
 
-------=_Part_6217_23484451.1144044066897--
+
 
 
 -------------------------------------------------------
