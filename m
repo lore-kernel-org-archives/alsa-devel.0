@@ -1,15 +1,13 @@
 From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 Subject: Re: alsa cvs broken
-Date: Mon, 03 Apr 2006 13:46:49 +0100
-Message-ID: <1144068409.11511.6.camel@localhost.localdomain>
+Date: Mon, 03 Apr 2006 13:30:16 +0100
+Message-ID: <1144067416.11511.4.camel@localhost.localdomain>
 References: <44310468.6080303@superbug.co.uk> <s5hr74ec174.wl%tiwai@suse.de>
-	 <1144067416.11511.4.camel@localhost.localdomain>
-	 <s5hodzibzhr.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hodzibzhr.wl%tiwai@suse.de>
+In-Reply-To: <s5hr74ec174.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,12 +21,19 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-04-03 at 14:44 +0200, Takashi Iwai wrote:
+On Mon, 2006-04-03 at 14:07 +0200, Takashi Iwai wrote:
+> At Mon, 03 Apr 2006 12:18:00 +0100,
+> James Courtier-Dutton wrote:
+> > 
+> > Hi,
+> > 
+> > Is it just me, or is the ssh access to the cvs broken?
+> 
+> Yeah it's been broken since last week.
+> 
 
-> It's always good to submit patches as soon as possible.  We need to
-> review patches anwyay before merging.
-
-Indeed, but can I get a pristine set to patch is the issue?
+I was planning to submit my driver today (with a bit of luck) does this
+mean there is no point?
 
 
 
