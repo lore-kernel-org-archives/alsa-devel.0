@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001995]: Master and PCM control missing
-Date: Mon, 3 Apr 2006 06:17:49 +0200
-Message-ID: <14191b47b22c514f5fc43fe0402cea3e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
+Date: Mon, 3 Apr 2006 07:16:22 +0200
+Message-ID: <cd201149e3a3f1d8179987081c5ad321@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0F2C19A
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 06:17:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 757B51A7
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 07:16:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,115 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1995> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
 ======================================================================
-Reported By:                baja
+Reported By:                Raymond
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1995
-Category:                   CORE - control
+Project:                    ALSA - utils
+Issue ID:                   1990
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             04-03-2006 06:13 CEST
-Last Modified:              04-03-2006 06:17 CEST
+Date Submitted:             04-01-2006 04:26 CEST
+Last Modified:              04-03-2006 07:16 CEST
 ======================================================================
-Summary:                    Master and PCM control missing
+Summary:                    aplay/arecord cannot play/capture A_LAW
 Description: 
-1.0.11rc3 had the PCM control but the Master control was missing. rc4 now
-has both the PCM and the Master volume control missing. 
+aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
 
-Drivers loaded:
+arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
 
-$ lsmod | grep snd
-snd_seq_dummy           3396  0
-snd_seq_oss            34240  0
-snd_seq_midi_event      7232  1 snd_seq_oss
-snd_seq                54528  5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
-snd_seq_device          7952  3 snd_seq_dummy,snd_seq_oss,snd_seq
-snd_pcm_oss            42016  0
-snd_mixer_oss          16320  1 snd_pcm_oss
-snd_hda_intel          16028  1
-snd_hda_codec         166536  1 snd_hda_intel
-snd_pcm                88396  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              22600  2 snd_seq,snd_pcm
-snd                    59072  12
-snd_seq_dummy,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          9360  2 snd_hda_intel,snd_pcm
+aplay -D hw:0,0 test.au
 
-Controls reported by alsa
-$ amixer controls
-numid=11,iface=MIXER,name='Headphone Playback Switch'
-numid=4,iface=MIXER,name='Surround Playback Switch'
-numid=3,iface=MIXER,name='Surround Playback Volume'
-numid=7,iface=MIXER,name='Center Playback Switch'
-numid=5,iface=MIXER,name='Center Playback Volume'
-numid=8,iface=MIXER,name='LFE Playback Switch'
-numid=6,iface=MIXER,name='LFE Playback Volume'
-numid=17,iface=MIXER,name='Line Playback Switch'
-numid=16,iface=MIXER,name='Line Playback Volume'
-numid=19,iface=MIXER,name='CD Playback Switch'
-numid=18,iface=MIXER,name='CD Playback Volume'
-numid=13,iface=MIXER,name='Mic Playback Switch'
-numid=12,iface=MIXER,name='Mic Playback Volume'
-numid=21,iface=MIXER,name='Capture Switch'
-numid=23,iface=MIXER,name='Capture Switch',index=1
-numid=25,iface=MIXER,name='Capture Switch',index=2
-numid=20,iface=MIXER,name='Capture Volume'
-numid=22,iface=MIXER,name='Capture Volume',index=1
-numid=24,iface=MIXER,name='Capture Volume',index=2
-numid=29,iface=MIXER,name='IEC958 Playback Con Mask'
-numid=30,iface=MIXER,name='IEC958 Playback Pro Mask'
-numid=31,iface=MIXER,name='IEC958 Playback Default'
-numid=32,iface=MIXER,name='IEC958 Playback Switch'
-numid=34,iface=MIXER,name='IEC958 Capture Default'
-numid=33,iface=MIXER,name='IEC958 Capture Switch'
-numid=15,iface=MIXER,name='Front Mic Playback Switch'
-numid=14,iface=MIXER,name='Front Mic Playback Volume'
-numid=2,iface=MIXER,name='Front Playback Switch'
-numid=1,iface=MIXER,name='Front Playback Volume'
-numid=26,iface=MIXER,name='Input Source'
-numid=27,iface=MIXER,name='Input Source',index=1
-numid=28,iface=MIXER,name='Input Source',index=2
-numid=10,iface=MIXER,name='Side Playback Switch'
-numid=9,iface=MIXER,name='Side Playback Volume'
 
-Assuming that that this is an issue since applications look for this
-"generic" volume controls.
+Try to use -t raw but the quality of A_LAW is very bad when compare with
+MU_LAW
 
-Thanks
+arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
 
-Baja
-
+aplay -D hw:0,0 test.raw
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- baja - 04-03-06 06:17 
+ Raymond - 04-03-06 07:16 
 ----------------------------------------------------------------------
-By the way... I am using a MSi mother board:
+Refer to
 
-MSI K8NGM2-FID Socket 939 NVIDIA GeForce 6150
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins_alaw
 
-ls pci reports:
+Plugin: A-Law
+This plugin converts A-Law samples to linear or linear to A-Law samples
+from master A-Law conversion PCM to given slave PCM. The channel count,
+format and rate must match for both of them.
 
-00:10.1 Audio device: nVidia Corporation MCP51 High Definition Audio (rev
-a2)
-
-with snd_hda_intel...
+How can I write a 'pcm.convert' in .asoundrc to convert S16_LE to A_ALAW
+(linear to A-Law samples) ?  aplay -v -Dconvert s16_le.wav
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-06 06:13 baja           New Issue                                    
-04-03-06 06:17 baja           Note Added: 0009084                          
+04-01-06 04:26 Raymond        New Issue                                    
+04-03-06 07:16 Raymond        Note Added: 0009085                          
 ======================================================================
 
 
