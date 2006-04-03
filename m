@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001979]: Missing symbols in oss mixer code
-Date: Mon, 3 Apr 2006 08:46:04 +0200
-Message-ID: <6689d2638e88ad463114877d9c741c51@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001424]: crash on snd-powermac initilize
+Date: Mon, 3 Apr 2006 08:54:12 +0200
+Message-ID: <ba4c378634ccf1b5debf81e53480c6ef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D95B5192
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 08:46:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E3AF14F
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 08:54:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,126 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1979> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1424> 
 ======================================================================
-Reported By:                zx80user
-Assigned To:                
+Reported By:                amir
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1979
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   1424
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               GeeXboX
+Kernel Version:             2.6.13.1
 ======================================================================
-Date Submitted:             03-29-2006 23:03 CEST
-Last Modified:              04-03-2006 08:46 CEST
+Date Submitted:             09-15-2005 20:38 CEST
+Last Modified:              04-03-2006 08:54 CEST
 ======================================================================
-Summary:                    Missing symbols in oss mixer code
+Summary:                    crash on snd-powermac initilize
 Description: 
-Attempting to load the snd-pcm-oss module and the snd-pcm-mixer modules
-fails due to missing symbols.
+I have users reporting a reproducable, on init, crash of our powerpc
+distro,
+but this happens to only some of the ppc users.
 
+the distro is geexbox, www.geexbox.org
 
+this crash happens also when snd-powermac is compiled as module,
+and crashes when module is loaded.
+
+I can't reproduce the bug myself, but I have users who do the tests,
+and those users report that debian and ubuntu works great for them.
+
+this bug also happened with linux 2.6.12
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-02-06 05:26 
+ bugmenot - 04-03-06 01:31 
 ----------------------------------------------------------------------
-static int aica_pcmvolume_get(snd_kcontrol_t * kcontrol,
-			      snd_ctl_elem_value_t * ucontrol)
-{	
-     struct snd_acia *chip = snd_kcontrol_chip(kcontrol);
+I get the same crash with linux 2.6.16 and gentoo
+(gentoo-sources-2.6.16-r1) on an iBook G3
 
-Look at ymfpci to study how to implement 64 channels
+The oops I get:
+
+Unable to handle kernel paging request for data at address 0x00000002
+Faulting instruction address: 0xc0163bac
+Oops: Kernel access of bad area, sig: 11 [#1]
+Modules linked in: snd_powermac snd_pcm snd_page_alloc airport orinoco
+hermes af_packet sungem sungem_phy usbhid snd_seq snd_timer snd_seq_device
+snd soundcore evdev ohci_hcd usbcore unix
+NIP: C0163BAC LR: EA106248 CTR: C0163B8C
+REGS: dd601cc0 TRAP: 0300   Not tainted  (2.6.16-gentoo-r1)
+MSR: 00009032 <EE,ME,IR,DR>  CR: 22028484  XER: 20000000
+DAR: 00000002, DSISR: 40000000
+TASK = c18a6bd0[6967] 'modprobe' THREAD: dd600000
+GPR00: EA106248 DD601D70 C18A6BD0 00000000 00000001 00000060 00000000
+00000001
+GPR08: 00000002 00000000 00000070 C0163B8C 22028482 1001E7A0 00000000
+10001144
+GPR16: 00002000 00000000 00000003 1002AF18 10000000 10000000 10000000
+100170F8
+GPR24: 00000000 100170B4 100170A8 DE800800 E6D6C7A0 0000000A EA10E14C
+00000000
+NIP [C0163BAC] i2c_smbus_write_byte_data+0x20/0x44
+LR [EA106248] send_init_client+0x40/0xd8 [snd_powermac]
+Call Trace:
+[DD601D70] [C00465B0] setup_irq+0x100/0x144 (unreliable)
+[DD601DB0] [EA106248] send_init_client+0x40/0xd8 [snd_powermac]
+[DD601DD0] [E906DF00] snd_pmac_tumbler_post_init+0x28/0x78 [snd_powermac]
+[DD601DE0] [E906C31C] snd_pmac_probe+0x31c/0x334 [snd_powermac]
+[DD601E10] [C0143214] platform_drv_probe+0x20/0x30
+[DD601E20] [C0140E0C] driver_probe_device+0xc8/0x118
+[DD601E40] [C0140488] bus_for_each_drv+0x5c/0xa4
+[DD601E70] [C0140EF8] device_attach+0x98/0xb0
+[DD601E90] [C014050C] bus_add_device+0x3c/0x148
+[DD601EB0] [C013EF68] device_add+0x10c/0x174
+[DD601ED0] [C0142F88] platform_device_add+0x158/0x1c8
+[DD601EF0] [C01431A8] platform_device_register_simple+0x40/0x8c
+[DD601F10] [E906C374] alsa_card_pmac_init+0x40/0x9c [snd_powermac]
+[DD601F20] [C004328C] sys_init_module+0x1cc/0x2ec
+[DD601F40] [C000CFD4] ret_from_syscall+0x0/0x38
+--- Exception: c01 at 0xff3f948
+    LR = 0x10002494
+Instruction dump:
+80010044 38210040 7c0803a6 4e800020 7c0802a6 9421ffc0 98a10010 7c691b78
+7c872378 38c00000 90010044 39000002 <a0a30002> a0890004 39210010 80630008
 
 
+The content of /proc/cpuinfo:
+
+processor       : 0
+cpu             : 750FX
+temperature     : 38 C (uncalibrated)
+clock           : 700.000000MHz
+revision        : 2.2 (pvr 7000 0202)
+bogomips        : 49.53
+timebase        : 24835245
+machine         : PowerBook4,3
+motherboard     : PowerBook4,3 MacRISC2 MacRISC Power Macintosh
+detected as     : 257 (iBook 2 rev. 2)
+pmac flags      : 0000001b
+L2 cache        : 512K unified
+pmac-generation : NewWorld
 
 ----------------------------------------------------------------------
- Raymond - 04-03-06 08:46 
+ Johannes Berg - 04-03-06 08:54 
 ----------------------------------------------------------------------
-static int __devinit add_aicamixer_controls(struct snd_aica *chip)
-{
-        int err;
-        snd_kcontrol *kctl;
-        kctl = snd_ctl_new1(&snd_aica_pcmvolume_control,chip);
-        if (!kctl) {
-		snd_printk("snd_ctl_new1 failed\n");
-                return -ENOMEM;
-        };
-	err = snd_ctl_add (chip->card, kctl);
-        if (err < 0){
-		snd_printk("pcmvolume failed\n");
-		return err;
-	}
+You have to load i2c-powermac first.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-06 23:03 zx80user       New Issue                                    
-03-29-06 23:04 zx80user       Issue Monitored: zx80user                    
-03-29-06 23:05 zx80user       Note Added: 0009019                          
-03-30-06 10:00 Raymond        Note Added: 0009024                          
-04-01-06 17:20 Raymond        Note Added: 0009056                          
-04-02-06 05:16 Raymond        Note Added: 0009057                          
-04-02-06 05:26 Raymond        Note Edited: 0009057                         
-04-03-06 08:46 Raymond        Note Added: 0009088                          
+09-15-05 20:38 amir           New Issue                                    
+09-15-05 20:38 amir           File Added: .config                          
+09-15-05 20:38 amir           Distribution              => GeeXboX         
+09-15-05 20:38 amir           Kernel Version            => 2.6.13.1        
+03-01-06 07:20 netstar        Note Added: 0008272                          
+04-03-06 01:31 bugmenot       Note Added: 0009075                          
+04-03-06 01:32 bugmenot       File Added: linux-2.6.16-gentoo-r1.config         
+          
+04-03-06 08:54 Johannes Berg  Note Added: 0009089                          
 ======================================================================
 
 
