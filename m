@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001998]: Audigy 2 ZS Platinum's hardware AC3/DD decoder isn't supported?
-Date: Mon, 3 Apr 2006 17:18:08 +0200
-Message-ID: <2316d6212317dc3ef82dc692c0d74b5f@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: alsa cvs broken
+Date: Mon, 03 Apr 2006 14:47:51 +0100
+Message-ID: <44312787.20608@superbug.co.uk>
+References: <44310468.6080303@superbug.co.uk>	<s5hr74ec174.wl%tiwai@suse.de>	<44311356.1000108@superbug.co.uk>	<Pine.LNX.4.61.0604031438430.9509@tm8103.perex-int.cz>	<s5hlkumbz1t.wl%tiwai@suse.de>	<Pine.LNX.4.61.0604031458460.9509@tm8103.perex-int.cz> <s5hhd5aby4k.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B9701A6
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 17:18:08 +0200 (MEST)
+In-Reply-To: <s5hhd5aby4k.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+>> I must say that git looks too much "kernel" oriented and sometimes 
+>> hard-to-use. Mercurial has my sympatics, because it uses Python (on other 
+>> hand, it might imply some performance issues).
+>>     
+>
+> AFAIK, no performance hit on hg due to python-scripting.
+>
+>
+> Takashi
+>   
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1998> 
-======================================================================
-Reported By:                pmn
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1998
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.16
-======================================================================
-Date Submitted:             04-03-2006 13:34 CEST
-Last Modified:              04-03-2006 17:18 CEST
-======================================================================
-Summary:                    Audigy 2 ZS Platinum's hardware AC3/DD decoder isn't
-supported?
-Description: 
-If I have understood right this card should be able to decode AC3/DD by
-itself when sent into SPDIF/IN...
+hg seems pretty fast from what I have seen. We had a "battle" at the 
+kernel summit, Linus driving git, Matt driving hg. It was fun to watch, 
+as they each asked the other to try an operation, and compared speed and 
+ease of use.
+I would not say that is was particularly scientifically measured, but 
+the main impression I got from it, is that git is good for reviewing 
+code and deciding what get's included, hg is better for the source code 
+developer.
+I think both git and hg were as fast as CVS or SVN is now.
+For example, hg has all the performance critical stuff written in C 
+anyway! E.g. 3 way diff.
 
-Well Sending AC3/DD signal to card's SPDIF/IN results in crackling noise
-from my 7.1 analog speakers that are connected to card. Sending PCM into
-SPDIF/IN works fine, but it would be nice to get AC3 (and by that way DD
-sounds) alive and kicking.
-
-Am I doing something wrong or is it just that emu10k1 doesn't support
-Audigy2ZS's hardware AC3 decoder? If so please tell me what I am
-doing/have understood wrong or are there any plans to get hardware AC3
-decoder to work?
-======================================================================
-
-----------------------------------------------------------------------
- pzad - 04-03-06 17:18 
-----------------------------------------------------------------------
-Are you sure Audigy 2 ZS has hardware ac3 decoder (AFAIK there is none) ?
-
-AFAIK ac3 spdif input is not suported for now.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-03-06 13:34 pmn            New Issue                                    
-04-03-06 13:34 pmn            Distribution              => Gentoo          
-04-03-06 13:34 pmn            Kernel Version            => 2.6.16          
-04-03-06 17:18 pzad           Note Added: 0009100                          
-======================================================================
+James
 
 
 
