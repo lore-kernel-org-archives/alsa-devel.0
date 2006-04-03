@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
-Date: Mon, 3 Apr 2006 07:16:22 +0200
-Message-ID: <cd201149e3a3f1d8179987081c5ad321@bugtrack.alsa-project.org>
+Date: Mon, 3 Apr 2006 07:36:58 +0200
+Message-ID: <8dcc4a3a784670c92b12c68687e543e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 757B51A7
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 07:16:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1F92C1A7
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 07:36:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             04-01-2006 04:26 CEST
-Last Modified:              04-03-2006 07:16 CEST
+Last Modified:              04-03-2006 07:36 CEST
 ======================================================================
 Summary:                    aplay/arecord cannot play/capture A_LAW
 Description: 
@@ -74,11 +74,80 @@ format and rate must match for both of them.
 How can I write a 'pcm.convert' in .asoundrc to convert S16_LE to A_ALAW
 (linear to A-Law samples) ?  aplay -v -Dconvert s16_le.wav
 
+----------------------------------------------------------------------
+ Raymond - 04-03-06 07:36 
+----------------------------------------------------------------------
+pcm.convert {
+        type alaw  
+        slave {
+		pcm "hw:0"
+		format A_LAW
+	}
+}
+
+
+aplay -v -Dconvert test.wav
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
+A-Law conversion PCM (A_LAW)
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 16
+  buffer_size  : 4096
+  period_size  : 1024
+  period_time  : 128000
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 4096
+  stop_threshold   : 4096
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: Hardware PCM card 0 'au8830' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : A_LAW
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 8
+  buffer_size  : 4096
+  period_size  : 1024
+  period_time  : 128000
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 4096
+  stop_threshold   : 4096
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+
+It seem that the plugin alaw work , the sound play at expected quality
+
+This mean that aplay/arecord only need to implement read/write the A_LAW
+audio in a suitable file format
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-01-06 04:26 Raymond        New Issue                                    
 04-03-06 07:16 Raymond        Note Added: 0009085                          
+04-03-06 07:36 Raymond        Note Added: 0009086                          
 ======================================================================
 
 
