@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001424]: crash on snd-powermac initilize
-Date: Mon, 3 Apr 2006 10:47:24 +0200
-Message-ID: <5e57a598b38b57295466c63af2ad601a@bugtrack.alsa-project.org>
+Date: Mon, 3 Apr 2006 10:56:34 +0200
+Message-ID: <d5c96001e353f9eec48a865749a8efe1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C559C116
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 10:47:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECEE118D
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 10:56:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               GeeXboX
 Kernel Version:             2.6.13.1
 ======================================================================
 Date Submitted:             09-15-2005 20:38 CEST
-Last Modified:              04-03-2006 10:47 CEST
+Last Modified:              04-03-2006 10:56 CEST
 ======================================================================
 Summary:                    crash on snd-powermac initilize
 Description: 
@@ -60,11 +60,6 @@ this bug also happened with linux 2.6.12
 ======================================================================
 
 ----------------------------------------------------------------------
- Johannes Berg - 04-03-06 08:54 
-----------------------------------------------------------------------
-You have to load i2c-powermac first.
-
-----------------------------------------------------------------------
  bugmenot - 04-03-06 10:47 
 ----------------------------------------------------------------------
 Why the dependence on i2c-powermac is not explicit?
@@ -76,6 +71,20 @@ license:        GPL
 description:    PowerMac
 depends:        snd-pcm,snd
 ^^^^^^^
+
+----------------------------------------------------------------------
+ Johannes Berg - 04-03-06 10:56 
+----------------------------------------------------------------------
+Because it calls it implicitly via the i2c layer so the dependency cannot
+be determined at link time.
+
+The problem is just that snd-powermac detects a chip even if the i2c stuff
+isn't there -- it shouldn't, it should do a proper i2c driver instead.
+
+Note that there's some effort I am currently doing on writing a new sound
+driver called snd-aoa (google) that does this correctly and will likely
+deprecate snd-powermac in the future so I recommend not investing too much
+time and brainpower into fixing it.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -90,6 +99,7 @@ Date Modified  Username       Field                    Change
           
 04-03-06 08:54 Johannes Berg  Note Added: 0009089                          
 04-03-06 10:47 bugmenot       Note Added: 0009092                          
+04-03-06 10:56 Johannes Berg  Note Added: 0009093                          
 ======================================================================
 
 
