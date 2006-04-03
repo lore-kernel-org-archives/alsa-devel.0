@@ -1,31 +1,85 @@
-From: Carlos Munoz <carlos@kenati.com>
-Subject: Re: Patch for AICA sound support on SEGA Dreamcast
-Date: Mon, 03 Apr 2006 11:00:20 -0700
-Message-ID: <443162B4.60500@kenati.com>
-References: <1144075522.11511.20.camel@localhost.localdomain> <s5hvetqac7i.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001988]: No microphone input on Dell Inspiron 6400
+Date: Mon, 3 Apr 2006 19:31:09 +0200
+Message-ID: <41b3753fe44e78bc0114d3b1eda98683@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1750898AbWDCRw5@vger.kernel.org>
-In-Reply-To: <s5hvetqac7i.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adrian McMenamin <adrian@mcmen.demon.co.uk>, Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>, Paul Mundt <lethal@linux-sh.org>, LKML <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E538A17A
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 19:31:09 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
->Please avoid use of typedefs as much as possible.
->We (finally :-) got rid of whole typedefs recently from the ALSA core
->code.
->
->  
->
-Hi Takashi,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1988> 
+======================================================================
+Reported By:                tbecker37
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1988
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             03-31-2006 21:28 CEST
+Last Modified:              04-03-2006 19:31 CEST
+======================================================================
+Summary:                    No microphone input on Dell Inspiron 6400
+Description: 
+Installing the 1.0.11rc4 driver enabled sound output both for extenal and
+headphone jack. However microphone input does not work.  Mic input is
+displayed in alsamixer but is not adjustable.
 
-Just out of curiosity. What is the reason for no using typedefs ?
+I have also compiled and tried the driver from CVS on 3-31 with no
+success.
+======================================================================
 
-Thanks,
+----------------------------------------------------------------------
+ anarki - 04-03-06 08:03 
+----------------------------------------------------------------------
+I can reproduce this on a Dell Inspiron 630m laptop (sigmatel chip, using
+intel-hda driver), with ubuntu dapper, kernel 2.6.15-19 (latest) and
+latest alsa-driver cvs
+
+----------------------------------------------------------------------
+ rlrevell - 04-03-06 19:31 
+----------------------------------------------------------------------
+Did this ever work with a previous version?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-31-06 21:28 tbecker37      New Issue                                    
+03-31-06 21:28 tbecker37      Distribution              => Fedora Core 5   
+03-31-06 21:28 tbecker37      Kernel Version            => 2.6.16-1.2080_FC5smp
+03-31-06 23:39 tbecker37      Issue Monitored: tbecker37                    
+04-03-06 08:03 anarki         Note Added: 0009087                          
+04-03-06 19:31 rlrevell       Note Added: 0009104                          
+======================================================================
 
 
-Carlos Munoz
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
