@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001995]: Master and PCM control missing
-Date: Mon, 3 Apr 2006 06:13:33 +0200
-Message-ID: <f264de99c149862db0a80e07b2bf0079@bugtrack.alsa-project.org>
+Date: Mon, 3 Apr 2006 06:17:49 +0200
+Message-ID: <14191b47b22c514f5fc43fe0402cea3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BE1519A
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 06:13:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0F2C19A
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 06:17:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1995> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             04-03-2006 06:13 CEST
-Last Modified:              04-03-2006 06:13 CEST
+Last Modified:              04-03-2006 06:17 CEST
 ======================================================================
 Summary:                    Master and PCM control missing
 Description: 
@@ -114,10 +114,25 @@ Baja
 
 ======================================================================
 
+----------------------------------------------------------------------
+ baja - 04-03-06 06:17 
+----------------------------------------------------------------------
+By the way... I am using a MSi mother board:
+
+MSI K8NGM2-FID Socket 939 NVIDIA GeForce 6150
+
+ls pci reports:
+
+00:10.1 Audio device: nVidia Corporation MCP51 High Definition Audio (rev
+a2)
+
+with snd_hda_intel...
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-03-06 06:13 baja           New Issue                                    
+04-03-06 06:17 baja           Note Added: 0009084                          
 ======================================================================
 
 
