@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd_pcm_hw_params_get_period_size() returning 0
-Date: Mon, 3 Apr 2006 20:38:43 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0604032036240.9509@tm8103.perex-int.cz>
-References: <442DD097.40901@kenati.com> <1143856796.2885.4.camel@mindpipe>
- <442DE37A.9070405@kenati.com> <s5hwte7arhb.wl%tiwai@suse.de>
- <44315F7A.7060208@kenati.com> <s5hy7ym8q73.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001999]: Latest cvs won't compile
+Date: Mon, 3 Apr 2006 21:05:41 +0200
+Message-ID: <68c184a3bdd9435888fbd7df43aea2ac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hy7ym8q73.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C0A2D15A
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 21:05:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,117 +18,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Carlos Munoz <carlos@kenati.com>, Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 3 Apr 2006, Takashi Iwai wrote:
 
-> At Mon, 03 Apr 2006 10:46:34 -0700,
-> Carlos Munoz wrote:
-> > 
-> > Takashi Iwai wrote:
-> > 
-> > >At Fri, 31 Mar 2006 18:20:42 -0800,
-> > >Carlos Munoz wrote:
-> > >  
-> > >
-> > >>Lee Revell wrote:
-> > >>
-> > >>    
-> > >>
-> > >>>On Fri, 2006-03-31 at 17:00 -0800, Carlos Munoz wrote:
-> > >>> 
-> > >>>
-> > >>>      
-> > >>>
-> > >>>>Does 
-> > >>>>any one know why
-> > >>>>snd_pcm_hw_params_get_period_size() would be returning 0 ? Is it 
-> > >>>>something the driver did/didn't do ?
-> > >>>>
-> > >>>>   
-> > >>>>
-> > >>>>        
-> > >>>>
-> > >>>Argh, please disregard last message, that's not how the hw_params
-> > >>>callback works :-(
-> > >>>
-> > >>>Lee
-> > >>>
-> > >>> 
-> > >>>
-> > >>>      
-> > >>>
-> > >>Hi Lee,
-> > >>
-> > >>I digged further and this is what I found.
-> > >>
-> > >>snd_pcm_hw_params_get_period_size(...., int *val) does retrieve the 
-> > >>correct period size and updates val with it. However, val does not match 
-> > >>the address passed to it. I mean the caller of 
-> > >>snd_pcm_hw_params_get_period_size(.... 0x41becc) passes the address of 
-> > >>where the period size is to be stored as 0x41becc but 
-> > >>snd_pcm_hw_params_get_period_size() gets 0x7b83c0d8 and that's where it 
-> > >>puts the period size.
-> > >>
-> > >>This is on the Renesas SH7343 processor. alsa-lib is a dynamic library. 
-> > >>Should I expect the variable address be the same ?
-> > >>    
-> > >>
-> > >
-> > >No.  They must be different.  The value is stored to the original
-> > >address only when no error returns.  Unless that, a temporary variable
-> > >is used.  That's why you see two distinct addresses.
-> > >
-> > >
-> > >Takashi
-> > >
-> > >
-> > >  
-> > >
-> > Hi Takashi,
-> > 
-> > I understand what you are saying. However, this is not the case here. 
-> > The original address is wrong. I print the value of val (not _val) 
-> > passed to snd_pcm_hw_params_get_period_size() and it is wrong. See the code:
-> > 
-> > #ifndef DOXYGEN
-> > int INTERNAL(snd_pcm_hw_params_get_period_size)(const 
-> > snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val, int *dir)
-> > #else
-> > int snd_pcm_hw_params_get_period_size(const snd_pcm_hw_params_t *params, 
-> > snd_pcm_uframes_t *val, int *dir)
-> > #endif
-> > {
-> >     unsigned int _val;
-> >     printf("alsa-lib:snd_pcm_hw_params_get_period_size() - params=%p 
-> > val=%p dir=%p\n",
-> >            params, val, dir);
-> >     int err = snd_pcm_hw_param_get(params, SND_PCM_HW_PARAM_PERIOD_SIZE, 
-> > &_val, dir);
-> >     if (err >= 0)
-> >         *val = _val;
-> > 
-> >     return err;
-> > }
-> > 
-> > 
-> > This printf shows val has an incorrect value (dir is also incorrect). I 
-> > don't think it's related to the alsa-lib but maybe a problem with our 
-> > build tool chain.
-> 
-> OK, let me know if it turnes out to be a bug in alsa-lib :)
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1999> 
+======================================================================
+Reported By:                kotau
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1999
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             -2.6.13.2
+======================================================================
+Date Submitted:             04-03-2006 21:05 CEST
+Last Modified:              04-03-2006 21:05 CEST
+======================================================================
+Summary:                    Latest cvs won't compile
+Description: 
+Here's the error message.
 
-Or binutils. What does 'nm aplay | grep snd_pcm_hw_params_get_period_size' 
-show? Also, you might try to configure alsa-lib with --with-versioned=no .
 
-						Jaroslav
+==============
+make[1]: Entering directory `/usr/src/linux-2.6.13.2'
+  CC [M]  /usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_read_main':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+`snd_ac97_stereo_enhancements' undeclared (first use in this function)
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+(Each undeclared identifier is reported only once
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+for each function it appears in.)
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_read':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: warning:
+implicit declaration of function `snd_magic_cast'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: error:
+parse error before "ac97_t"
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:296: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:322: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_regs_read':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:359: error:
+parse error before "ac97_t"
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:361: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:377: error:
+structure has no member named `semaphore'
+make[5]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o]
+Error 1
+make[4]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97] Error 2
+make[3]: *** [/usr/local/src/1music/alsa/alsa-driver/pci] Error 2
+make[2]: *** [_module_/usr/local/src/1music/alsa/alsa-driver] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.13.2'
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-03-06 21:05 kotau          New Issue                                    
+04-03-06 21:05 kotau          Kernel Version            => -2.6.13.2       
+======================================================================
+
+
 
 
 -------------------------------------------------------
