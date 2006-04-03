@@ -1,11 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: alsa cvs broken
-Date: Mon, 03 Apr 2006 12:18:00 +0100
-Message-ID: <44310468.6080303@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001998]: Audigy 2 ZS Platinum's hardware AC3/DD decoder isn't supported?
+Date: Mon, 3 Apr 2006 13:34:08 +0200
+Message-ID: <6f56c467559f7375a3cec6d5251e9b28@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53EA4116
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 13:34:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,15 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Is it just me, or is the ssh access to the cvs broken?
-Would it be worth considering switching to using git or hg (mecurial)?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1998> 
+======================================================================
+Reported By:                pmn
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1998
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             04-03-2006 13:34 CEST
+Last Modified:              04-03-2006 13:34 CEST
+======================================================================
+Summary:                    Audigy 2 ZS Platinum's hardware AC3/DD decoder isn't
+supported?
+Description: 
+If I have understood right this card should be able to decode AC3/DD by
+itself when sent into SPDIF/IN...
 
-James
+Well Sending AC3/DD signal to card's SPDIF/IN results in crackling noise
+from my 7.1 analog speakers that are connected to card. Sending PCM into
+SPDIF/IN works fine, but it would be nice to get AC3 (and by that way DD
+sounds) alive and kicking.
+
+Am I doing something wrong or is it just that emu10k1 doesn't support
+Audigy2ZS's hardware AC3 decoder? If so please tell me what I am
+doing/have understood wrong or are there any plans to get hardware AC3
+decoder to work?
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-03-06 13:34 pmn            New Issue                                    
+04-03-06 13:34 pmn            Distribution              => Gentoo          
+04-03-06 13:34 pmn            Kernel Version            => 2.6.16          
+======================================================================
 
 
 
