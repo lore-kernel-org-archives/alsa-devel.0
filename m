@@ -1,13 +1,14 @@
-From: Carlos Munoz <carlos@kenati.com>
-Subject: Re: snd_pcm_hw_params_get_period_size() returning 0
-Date: Mon, 03 Apr 2006 10:46:34 -0700
-Message-ID: <44315F7A.7060208@kenati.com>
-References: <442DD097.40901@kenati.com>	<1143856796.2885.4.camel@mindpipe>	<442DE37A.9070405@kenati.com> <s5hwte7arhb.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001988]: No microphone input on Dell Inspiron 6400
+Date: Mon, 3 Apr 2006 19:43:31 +0200
+Message-ID: <bdb20f4c0dbda9af03986c19e0a9477c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hwte7arhb.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59D2E17C
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 19:43:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,105 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
->At Fri, 31 Mar 2006 18:20:42 -0800,
->Carlos Munoz wrote:
->  
->
->>Lee Revell wrote:
->>
->>    
->>
->>>On Fri, 2006-03-31 at 17:00 -0800, Carlos Munoz wrote:
->>> 
->>>
->>>      
->>>
->>>>Does 
->>>>any one know why
->>>>snd_pcm_hw_params_get_period_size() would be returning 0 ? Is it 
->>>>something the driver did/didn't do ?
->>>>
->>>>   
->>>>
->>>>        
->>>>
->>>Argh, please disregard last message, that's not how the hw_params
->>>callback works :-(
->>>
->>>Lee
->>>
->>> 
->>>
->>>      
->>>
->>Hi Lee,
->>
->>I digged further and this is what I found.
->>
->>snd_pcm_hw_params_get_period_size(...., int *val) does retrieve the 
->>correct period size and updates val with it. However, val does not match 
->>the address passed to it. I mean the caller of 
->>snd_pcm_hw_params_get_period_size(.... 0x41becc) passes the address of 
->>where the period size is to be stored as 0x41becc but 
->>snd_pcm_hw_params_get_period_size() gets 0x7b83c0d8 and that's where it 
->>puts the period size.
->>
->>This is on the Renesas SH7343 processor. alsa-lib is a dynamic library. 
->>Should I expect the variable address be the same ?
->>    
->>
->
->No.  They must be different.  The value is stored to the original
->address only when no error returns.  Unless that, a temporary variable
->is used.  That's why you see two distinct addresses.
->
->
->Takashi
->
->
->  
->
-Hi Takashi,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1988> 
+======================================================================
+Reported By:                tbecker37
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1988
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             03-31-2006 21:28 CEST
+Last Modified:              04-03-2006 19:43 CEST
+======================================================================
+Summary:                    No microphone input on Dell Inspiron 6400
+Description: 
+Installing the 1.0.11rc4 driver enabled sound output both for extenal and
+headphone jack. However microphone input does not work.  Mic input is
+displayed in alsamixer but is not adjustable.
 
-I understand what you are saying. However, this is not the case here. 
-The original address is wrong. I print the value of val (not _val) 
-passed to snd_pcm_hw_params_get_period_size() and it is wrong. See the code:
+I have also compiled and tried the driver from CVS on 3-31 with no
+success.
+======================================================================
 
-#ifndef DOXYGEN
-int INTERNAL(snd_pcm_hw_params_get_period_size)(const 
-snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val, int *dir)
-#else
-int snd_pcm_hw_params_get_period_size(const snd_pcm_hw_params_t *params, 
-snd_pcm_uframes_t *val, int *dir)
-#endif
-{
-    unsigned int _val;
-    printf("alsa-lib:snd_pcm_hw_params_get_period_size() - params=%p 
-val=%p dir=%p\n",
-           params, val, dir);
-    int err = snd_pcm_hw_param_get(params, SND_PCM_HW_PARAM_PERIOD_SIZE, 
-&_val, dir);
-    if (err >= 0)
-        *val = _val;
+----------------------------------------------------------------------
+ rlrevell - 04-03-06 19:31 
+----------------------------------------------------------------------
+Did this ever work with a previous version?
 
-    return err;
-}
+----------------------------------------------------------------------
+ anarki - 04-03-06 19:43 
+----------------------------------------------------------------------
+no, this never worked, regardless of kernel and alsa version i used...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-31-06 21:28 tbecker37      New Issue                                    
+03-31-06 21:28 tbecker37      Distribution              => Fedora Core 5   
+03-31-06 21:28 tbecker37      Kernel Version            => 2.6.16-1.2080_FC5smp
+03-31-06 23:39 tbecker37      Issue Monitored: tbecker37                    
+04-03-06 08:03 anarki         Note Added: 0009087                          
+04-03-06 19:31 rlrevell       Note Added: 0009104                          
+04-03-06 19:43 anarki         Note Added: 0009105                          
+======================================================================
 
 
-This printf shows val has an incorrect value (dir is also incorrect). I 
-don't think it's related to the alsa-lib but maybe a problem with our 
-build tool chain.
-
-Thanks,
-
-
-Carlos Munoz
 
 
 -------------------------------------------------------
