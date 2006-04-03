@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
-Date: Mon, 3 Apr 2006 07:36:58 +0200
-Message-ID: <8dcc4a3a784670c92b12c68687e543e4@bugtrack.alsa-project.org>
+From: boku <boku0712@gmail.com>
+Subject: About the data word format of PCM
+Date: Mon, 3 Apr 2006 14:01:06 +0800
+Message-ID: <715d90900604022301k408a8a35ib89ea5dd7d58e706@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_6217_23484451.1144044066897"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1F92C1A7
-	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 07:36:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,139 +15,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_6217_23484451.1144044066897
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1990
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             04-01-2006 04:26 CEST
-Last Modified:              04-03-2006 07:36 CEST
-======================================================================
-Summary:                    aplay/arecord cannot play/capture A_LAW
-Description: 
-aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
+Dear all,
+    How is the arrangement in one 32-bit word for either Stereo,
+SNDRV_PCM_FMTBIT_S16_LE or SNDRV_PCM_FMTBIT_S24_LE? And is there any way to
+change such as Left and right channel's bit position or the signed bit if
+necessary? Thanks a lot!~
 
-arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
+Best Regards,
 
-aplay -D hw:0,0 test.au
+------=_Part_6217_23484451.1144044066897
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
+<div>Dear all,</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;How is the arrangement in one 32-bit word for =
+either&nbsp;Stereo, SNDRV_PCM_FMTBIT_S16_LE&nbsp;or SNDRV_PCM_FMTBIT_S24_LE=
+? And is there any way to change such as Left and right channel's bit posit=
+ion or the signed bit if necessary? Thanks a lot!~
+</div>
+<div>&nbsp;</div>
+<div>Best Regards,</div>
+<div>&nbsp;</div>
 
-Try to use -t raw but the quality of A_LAW is very bad when compare with
-MU_LAW
-
-arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
-
-aplay -D hw:0,0 test.raw
-
-
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 04-03-06 07:16 
-----------------------------------------------------------------------
-Refer to
-
-http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins_alaw
-
-Plugin: A-Law
-This plugin converts A-Law samples to linear or linear to A-Law samples
-from master A-Law conversion PCM to given slave PCM. The channel count,
-format and rate must match for both of them.
-
-How can I write a 'pcm.convert' in .asoundrc to convert S16_LE to A_ALAW
-(linear to A-Law samples) ?  aplay -v -Dconvert s16_le.wav
-
-----------------------------------------------------------------------
- Raymond - 04-03-06 07:36 
-----------------------------------------------------------------------
-pcm.convert {
-        type alaw  
-        slave {
-		pcm "hw:0"
-		format A_LAW
-	}
-}
-
-
-aplay -v -Dconvert test.wav
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-A-Law conversion PCM (A_LAW)
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 16
-  buffer_size  : 4096
-  period_size  : 1024
-  period_time  : 128000
-  tick_time    : 10000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 4096
-  stop_threshold   : 4096
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Slave: Hardware PCM card 0 'au8830' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : A_LAW
-  subformat    : STD
-  channels     : 1
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 8
-  buffer_size  : 4096
-  period_size  : 1024
-  period_time  : 128000
-  tick_time    : 10000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 4096
-  stop_threshold   : 4096
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-
-It seem that the plugin alaw work , the sound play at expected quality
-
-This mean that aplay/arecord only need to implement read/write the A_LAW
-audio in a suitable file format
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-01-06 04:26 Raymond        New Issue                                    
-04-03-06 07:16 Raymond        Note Added: 0009085                          
-04-03-06 07:36 Raymond        Note Added: 0009086                          
-======================================================================
-
-
+------=_Part_6217_23484451.1144044066897--
 
 
 -------------------------------------------------------
