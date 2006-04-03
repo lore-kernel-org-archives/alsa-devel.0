@@ -1,15 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa cvs broken
-Date: Mon, 3 Apr 2006 15:22:05 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0604031514580.9509@tm8103.perex-int.cz>
-References: <44310468.6080303@superbug.co.uk> <s5hr74ec174.wl%tiwai@suse.de>
- <44311356.1000108@superbug.co.uk> <Pine.LNX.4.61.0604031438430.9509@tm8103.perex-int.cz>
- <s5hlkumbz1t.wl%tiwai@suse.de> <Pine.LNX.4.61.0604031458460.9509@tm8103.perex-int.cz>
- <s5hhd5aby4k.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001787]: Terratec Aureon Universe - No sound on first startup, sound after reboot
+Date: Mon, 3 Apr 2006 15:47:18 +0200
+Message-ID: <cef92c581f452e320999981866b3f602@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhd5aby4k.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69151FE
+	for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2006 15:47:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,42 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 3 Apr 2006, Takashi Iwai wrote:
 
-> At Mon, 3 Apr 2006 15:08:26 +0200 (CEST),
-> Jaroslav Kysela wrote:
-> > 
-> > On Mon, 3 Apr 2006, Takashi Iwai wrote:
-> > 
-> > > > Is hg stable enough?
-> > > 
-> > > Yes, it's pretty stable now.
-> > > But if we switch to another one, it'd be better to run both CVS and
-> > > hg/git parallel in a short term for checking the stability and
-> > > usability.
-> > > 
-> > > Another question is which host.  Suggestions?
-> > 
-> > I can create a hg/git repository on my machine. If we find some trouble 
-> > with it, we can look for another solution.
-> 
-> Hm, wasn't the trouble of CVS on alsa-projerct.org one of reasons we
-> moved to sf.net...?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1787> 
+======================================================================
+Reported By:                paskharen
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1787
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.12
+======================================================================
+Date Submitted:             01-27-2006 19:58 CET
+Last Modified:              04-03-2006 15:47 CEST
+======================================================================
+Summary:                    Terratec Aureon Universe - No sound on first
+startup, sound after reboot
+Description: 
+When I first start the computer, you can hear no sound. If I turn all
+volume to max and press my ear against the speaker I can hear the correct
+sounds/music very faintly. After a reboot sound is fine.
+======================================================================
 
-I mean another machine (which actually hosts ALSA BTS - mantisbt). We can 
-eventually mirror the repository to other servers (it will work much 
-better than for CVS).
+----------------------------------------------------------------------
+ paskharen - 02-08-06 23:48 
+----------------------------------------------------------------------
+It works if the module is unloaded and loaded again. Probably related to
+issue 0001797.
 
-						Jaroslav
+----------------------------------------------------------------------
+ ungod - 04-03-06 15:47 
+----------------------------------------------------------------------
+Have you tried with the aureon-mutex2.diff patch from BUG 1797?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-27-06 19:58 paskharen      New Issue                                    
+01-27-06 19:58 paskharen      Distribution              => Ubuntu          
+01-27-06 19:58 paskharen      Kernel Version            => 2.6.12          
+01-28-06 18:02 ungod          Note Added: 0007829                          
+01-30-06 19:38 paskharen      Note Added: 0007841                          
+02-08-06 23:48 paskharen      Note Added: 0007968                          
+04-03-06 15:47 ungod          Note Added: 0009099                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
