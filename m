@@ -1,16 +1,11 @@
-From: Greg KH <gregkh@suse.de>
-Subject: Re: patch bus_add_device-losing-an-error-return-from-the-probe-method.patch added to gregkh-2.6 tree
-Date: Tue, 4 Apr 2006 14:45:22 -0700
-Message-ID: <20060404214522.GA20390__45281.7917139784$1144189264$gmane$org@suse.de>
-References: <44238489.8090402@keyaccess.nl> <1FQquz-2CO-00@press.kroah.org> <d120d5000604041323h448c1ccfi7e9dcedd82c385ba@mail.gmail.com> <20060404210048.GA5694@suse.de> <d120d5000604041428h65931eb6qffe1af04d91e7f31@mail.gmail.com>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Cross compiling alsa-driver
+Date: Tue, 04 Apr 2006 22:56:59 +0100
+Message-ID: <1144187819.9472.25.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from aria.kroah.org (dsl093-040-174.pdx1.dsl.speakeasy.net [66.93.40.174])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C17FF163
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 23:46:06 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <d120d5000604041428h65931eb6qffe1af04d91e7f31@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,46 +15,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: dtor_core@ameritech.net
-Cc: rene.herman@keyaccess.nl, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 04, 2006 at 05:28:48PM -0400, Dmitry Torokhov wrote:
-> On 4/4/06, Greg KH <gregkh@suse.de> wrote:
-> >
-> > Hm, no, I unwound this mess, and found the following:
-> >
-> >  - bus_add_device() calls device_attach()
-> >  - device_attach() calls bus_for_each_drv() for every driver on the bus
-> >  - bus_for_each_drv() walks all drivers on the bus and calls
-> >   __device_attach() for every individual driver
-> >  - __device_attach() calls driver_probe_device() for that driver and device
-> >  - driver_probe_device() calls down to the probe() function for the
-> >   driver, passing it that driver, if match() for the bus matches this
-> >   device.
-> >  - if that probe() function returns -ENODEV or -ENXIO[1] then the error
-> >   is ignored and 0 is returned, causing the loop to continue to try
-> >   more drivers
-> >  - if the probe() function returns any other error code, it is
-> >   propagated up, all the way back to bus_add_device.
-> 
-> But why do we do that? probe() failing is driver's problem. The device
-> is still there and should still be presented in sysfs. I don't think
-> that we should stop if probe() fails - maybe next driver manages to
-> bind itself.
+Cannot get this to work.
 
-The device is still there.
+Doing it from cvs and from the package gives the same result...
 
-Ah, I see what you are saying now.  Yeah, we should still add the
-default attributes for the bus and create the bus link even if some
-random driver had problems.  But then, we should still propagate the
-error back up, right?
+./configure
+--with-cross=~/buildroot/build_sh4/staging_dir/bin/sh4-linux-
+--with-build=/home/adrian/linux-2.6.15.2
 
-If I changed the patch to do that, would it be acceptable to you?
+gives...
 
-thanks,
+make[3]: Entering directory
+`/home/adrian/alsa-driver-1.0.11rc4/pci/vx222'
+make[3]: Leaving directory
+`/home/adrian/alsa-driver-1.0.11rc4/pci/vx222'
+make[3]: Entering directory
+`/home/adrian/alsa-driver-1.0.11rc4/pci/ymfpci'
+make[3]: Leaving directory
+`/home/adrian/alsa-driver-1.0.11rc4/pci/ymfpci'
+make[2]: Leaving directory `/home/adrian/alsa-driver-1.0.11rc4/pci'
+make[1]: Leaving directory `/home/adrian/alsa-driver-1.0.11rc4'
+make -C /lib/modules/2.6.12-10-686/build
+SUBDIRS=/home/adrian/alsa-driver-1.0.11rc4 O=/home/adrian/linux-2.6.15.2
+modules
+make[1]: Entering directory `/usr/src/linux-headers-2.6.12-10-686'
+/usr/src/linux-headers-2.6.12-10-686/Makefile:530: /usr/src/linux-headers-2.6.12-10-686/arch//Makefile: No such file or directory
+/bin/sh: /home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-gcc-3.4: No such file or directory
+make[2]: *** No rule to make target
+`/usr/src/linux-headers-2.6.12-10-686/arch//Makefile'.  Stop.
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-headers-2.6.12-10-686'
+make: *** [compile] Error 2
 
-greg k-h
+ie it is still looking for headers on the building machine.
+
+Building from cvs gives a similar result.
+
+The configure script appears to be broken...as this segment of output
+suggests - as even though I specify a kernel directory it is still
+looking elsewhere
+
+checking for current directory... /home/adrian/alsa-driver-1.0.11rc4
+checking cross
+compile... /home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-
+checking for directory with kernel
+source... /lib/modules/2.6.12-10-686/build
+checking for directory with kernel build... /home/adrian/linux-2.6.15.2
+
+
+
+
+
 
 
 -------------------------------------------------------
