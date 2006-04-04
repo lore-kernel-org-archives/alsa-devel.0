@@ -1,15 +1,20 @@
-From: Axel Thimm <Axel.Thimm@ATrpms.net>
-Subject: Re: xenU/x86_64: error: incompatible type for argument 1 of 'pud_val'
-Date: Tue, 4 Apr 2006 22:10:12 +0200
-Message-ID: <20060404201012.GX24961@neu.nirvana>
-References: <20060404111557.GS24961@neu.nirvana> <s5hodzh72z4.wl%tiwai@suse.de>
-Reply-To: alsa-devel@lists.sourceforge.net
+From: "Dmitry Torokhov" <dmitry.torokhov@gmail.com>
+Subject: Re: patch bus_add_device-losing-an-error-return-from-the-probe-method.patch added to gregkh-2.6 tree
+Date: Tue, 4 Apr 2006 16:23:43 -0400
+Message-ID: <d120d5000604041323h448c1ccfi7e9dcedd82c385ba__45104.7110058882$1144183530$gmane$org@mail.gmail.com>
+References: <44238489.8090402@keyaccess.nl> <1FQquz-2CO-00@press.kroah.org>
+Reply-To: dtor_core@ameritech.net
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="ZcaUvQ23gCOmDTXi"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from wproxy.gmail.com (wproxy.gmail.com [64.233.184.235])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9907A222
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 22:23:44 +0200 (MEST)
+Received: by wproxy.gmail.com with SMTP id 37so11352wra
+        for <alsa-devel@alsa-project.org>; Tue, 04 Apr 2006 13:23:43 -0700 (PDT)
+In-Reply-To: <1FQquz-2CO-00@press.kroah.org>
 Content-Disposition: inline
-In-Reply-To: <s5hodzh72z4.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,95 +24,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: "gregkh@suse.de" <gregkh@suse.de>
+Cc: rene.herman@keyaccess.nl, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
+On 4/4/06, gregkh@suse.de <gregkh@suse.de> wrote:
+>
+> --- gregkh-2.6.orig/drivers/base/bus.c
+> +++ gregkh-2.6/drivers/base/bus.c
+> @@ -372,14 +372,17 @@ int bus_add_device(struct device * dev)
+>
+>        if (bus) {
+>                pr_debug("bus %s: add device %s\n", bus->name, dev->bus_id=
+);
+> -               device_attach(dev);
+> +               error =3D device_attach(dev);
+> +               if (error < 0)
+> +                       goto exit;
 
---ZcaUvQ23gCOmDTXi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I do not believe that this is correct. The fact that _some_ driver
+failed to attach to a device does not necessarily mean that device
+itself does not exist. While this assuption might work for platform
+devices it won't work for other busses.
 
-On Tue, Apr 04, 2006 at 05:52:15PM +0200, Takashi Iwai wrote:
-> At Tue, 4 Apr 2006 13:15:57 +0200,
-> Axel Thimm wrote:
-> >=20
-> > Hi,
-> >=20
-> > I'm trying to build rpms for alsa 1.0.11rc4 for several
-> > distributions/arch in the RHEL/Fedora Core world and came across the
-> > following issue:
-> >=20
-> >   CC [M]  /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.o
-> > /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.c: In function 'sn=
-d_compat_vmalloc_to_page':
-> > /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.c:40: warning: imp=
-licit declaration of function 'VMALLOC_VMADDR'
-> > /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.c:45: error: incom=
-patible type for argument 1 of 'pud_val'
-> > /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.c:46: warning: imp=
-licit declaration of function 'pte_offset'
-> > /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.c:46: warning: ass=
-ignment makes pointer from integer without a cast
-> >=20
-> > That's on FC5/x86_64 building for the kernel flavour xenU
-> > (guest). Building for FC5/i386 works.
->=20
-> vmalloc_to_page() should exist in linux/mm.h in the case of 2.6
-> kernel.  Check config.log whether configure properly detected the
-> function or not.
+As fasr as ALSA goes, if they want to abort loading module if device
+is not present they will have to separate device probing from final
+driver binding.
 
-The check failed due to
-
-configure:7067: checking for vmalloc_to_page
-configure:7098: /usr/bin/gcc -c -Wall -fno-strict-aliasing -O2 -g -pipe -Wa=
-ll -Wp,-D_FORTIFY_SOURCE=3D2 -fexceptions -fstack-protector --param=3Dssp-b=
-uffer-size=3D4 -m64 -mtune=3Dgeneric -I/kernel/include  -nostdinc -iwithpre=
-fix include -DKBUILD_BASENAME=3D"dummy"  conftest.c >&5
-In file included from /kernel/include/linux/smp.h:19,
-                 from /kernel/include/linux/sched.h:26,
-                 from /kernel/include/linux/mm.h:4,
-                 from conftest.c:26:
-/kernel/include/asm/smp.h: In function 'hard_smp_processor_id':
-/kernel/include/asm/smp.h:78: warning: implicit declaration of function 'GE=
-T_APIC_ID'
-/kernel/include/asm/smp.h:78: error: 'APIC_BASE' undeclared (first use in t=
-his function)
-/kernel/include/asm/smp.h:78: error: (Each undeclared identifier is reporte=
-d only once
-/kernel/include/asm/smp.h:78: error: for each function it appears in.)
-/kernel/include/asm/smp.h:78: error: 'APIC_ID' undeclared (first use in thi=
-s function)
-/kernel/include/asm/smp.h: In function 'cpu_present_to_apicid':
-/kernel/include/asm/smp.h:113: error: 'BAD_APICID' undeclared (first use in=
- this function)
-/kernel/include/asm/smp.h: In function 'logical_smp_processor_id':
-/kernel/include/asm/smp.h:136: warning: implicit declaration of function 'G=
-ET_APIC_LOGICAL_ID'
-/kernel/include/asm/smp.h:136: error: 'APIC_BASE' undeclared (first use in =
-this function)
-/kernel/include/asm/smp.h:136: error: 'APIC_LDR' undeclared (first use in t=
-his function)
-configure:7104: $? =3D 1
-
-
---=20
-Axel.Thimm at ATrpms.net
-
---ZcaUvQ23gCOmDTXi
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQFEMtKkQBVS1GOamfERAsIKAJ44NvPpW7QZQUQE9SZnI0Y8McjKFwCffch6
-olOrQY6PtfIZ1egKX2TR37w=
-=sK6t
------END PGP SIGNATURE-----
-
---ZcaUvQ23gCOmDTXi--
+--
+Dmitry
 
 
 -------------------------------------------------------
