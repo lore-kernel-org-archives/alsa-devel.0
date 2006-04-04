@@ -1,16 +1,15 @@
-From: Jan Niehusmann <jan@gondor.com>
-Subject: Re: Slab corruptions & Re: 2.6.17-rc1: Oops in sound applications
-Date: Tue, 4 Apr 2006 21:06:31 +0200
-Message-ID: <20060404190631.GA4895__12171.231050934$1144178781$gmane$org@knautsch.gondor.com>
-References: <Pine.LNX.4.63.0604032155220.17605@deepthought.mydomain> <20060404133814.GA11741@knautsch.gondor.com> <s5hlkul72rv.wl%tiwai@suse.de>
+From: Axel Thimm <Axel.Thimm@ATrpms.net>
+Subject: Re: xenU/x86_64: error: incompatible type for argument 1 of 'pud_val'
+Date: Tue, 4 Apr 2006 22:10:12 +0200
+Message-ID: <20060404201012.GX24961@neu.nirvana>
+References: <20060404111557.GS24961@neu.nirvana> <s5hodzh72z4.wl%tiwai@suse.de>
+Reply-To: alsa-devel@lists.sourceforge.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="ZcaUvQ23gCOmDTXi"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from moria.gondor.com (mail.gondor.com [212.117.64.182])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9E34183
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 21:06:34 +0200 (MEST)
 Content-Disposition: inline
-In-Reply-To: <s5hlkul72rv.wl%tiwai@suse.de>
+In-Reply-To: <s5hodzh72z4.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,60 +20,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Ken Moffat <zarniwhoop@ntlworld.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 04, 2006 at 05:56:36PM +0200, Takashi Iwai wrote:
-> Could you try the patch below by OGAWA Hirofumi
-> <hirofumi@mail.parknet.co.jp>?
 
-Sorry, no success with that patch applied:
+--ZcaUvQ23gCOmDTXi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Apr  4 20:18:00 knautsch kernel: [17179569.184000] Linux version 2.6.17-rc1-g231a1569-dirty (root@knautsch) (gcc version 4.0.3 (Debian 4.0.3-1)) #1 Tue Apr 4 19:37:29 CEST 2006 
+On Tue, Apr 04, 2006 at 05:52:15PM +0200, Takashi Iwai wrote:
+> At Tue, 4 Apr 2006 13:15:57 +0200,
+> Axel Thimm wrote:
+> >=20
+> > Hi,
+> >=20
+> > I'm trying to build rpms for alsa 1.0.11rc4 for several
+> > distributions/arch in the RHEL/Fedora Core world and came across the
+> > following issue:
+> >=20
+> >   CC [M]  /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.o
+> > /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.c: In function 'sn=
+d_compat_vmalloc_to_page':
+> > /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.c:40: warning: imp=
+licit declaration of function 'VMALLOC_VMADDR'
+> > /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.c:45: error: incom=
+patible type for argument 1 of 'pud_val'
+> > /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.c:46: warning: imp=
+licit declaration of function 'pte_offset'
+> > /builddir/alsa-driver-1.0.11rc4/acore/memory_wrapper.c:46: warning: ass=
+ignment makes pointer from integer without a cast
+> >=20
+> > That's on FC5/x86_64 building for the kernel flavour xenU
+> > (guest). Building for FC5/i386 works.
+>=20
+> vmalloc_to_page() should exist in linux/mm.h in the case of 2.6
+> kernel.  Check config.log whether configure properly detected the
+> function or not.
 
-(This is 2.6.17-rc1 with the patch you sent applied)
+The check failed due to
 
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] BUG: unable to handle kernel paging request at virtual address 6b6b6b6b
-Apr  4 20:25:51 knautsch kernel: [17180076.984000]  printing eip:
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] e04a2eb6
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] *pde = 00000000
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] Oops: 0000 [#1]
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] Modules linked in: tun ipv6 lp i915 drm rfcomm l2cap bluetooth thermal processor fan button battery asus_acpi ac usb_storage usbmouse sbp2 usbkbd autofs4 af_packet nls_iso8859_1 nls_cp437 usbhid cm4000_cs 8250_pci 8250 serial_core eth1394 pcmcia snd_intel8x0 snd_pcm_oss snd_mixer_oss snd_intel8x0m snd_ac97_codec snd_ac97_bus ipw2200 ieee80211 ieee80211_crypt 8139too mii nsc_ircc irda snd_pcm snd_timer ohci1394 ieee1394 evdev joydev crc_ccitt parport_pc parport pcspkr firmware_class yenta_socket rsrc_nonstatic pcmcia_core rtc snd soundcore snd_page_alloc ehci_hcd uhci_hcd usbcore intel_agp agpgart
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] CPU:    0
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] EIP:    0060:[pg0+537210550/1069212672]    Not tainted VLI
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] EFLAGS: 00210002   (2.6.17-rc1-g231a1569-dirty #1) 
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] EIP is at snd_pcm_lib_write1+0x196/0x4a0 [snd_pcm]
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] eax: 000009c4   ebx: cc785a84   ecx: de505e54   edx: 6b6b6b6b
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] esi: 0000062c   edi: 00000000   ebp: dede51a4   esp: de505e78
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] ds: 007b   es: 007b   ss: 0068
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] Process twinkle (pid: 4936, threadinfo=de505000 task=cae0f550)
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] Stack: <0>dede51a4 000015cd e07a5000 00000b42 0000003c 00000001 cc785b28 c84ef000 
-Apr  4 20:25:51 knautsch kernel: [17180076.984000]        e07a5000 00000b7e 00000b7e 00000000 00000000 0001c639 00000000 cae0f550 
-Apr  4 20:25:51 knautsch kernel: [17180076.984000]        c0114d60 cc785b28 cc785b28 c0000000 de505000 dede51a4 cc785a84 e0547727 
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] Call Trace:
-Apr  4 20:25:51 knautsch kernel: [17180076.984000]  <c0114d60> default_wake_function+0x0/0x20   <e0547727> snd_pcm_oss_write3+0x67/0xe0 [snd_pcm_oss]
-Apr  4 20:25:51 knautsch kernel: [17180076.984000]  <e04a0250> snd_pcm_lib_write_transfer+0x0/0xc0 [snd_pcm]   <e054949f> snd_pcm_plug_write_transfer+0x8f/0xe0 [snd_pcm_oss]
-Apr  4 20:25:51 knautsch kernel: [17180076.984000]  <e054781a> snd_pcm_oss_write2+0x7a/0x110 [snd_pcm_oss]   <e054892e> snd_pcm_oss_write+0x10e/0x1f0 [snd_pcm_oss]
-Apr  4 20:25:51 knautsch kernel: [17180076.984000]  <c0158f85> vfs_write+0xb5/0x190   <c0159a1b> sys_write+0x4b/0x80
-Apr  4 20:25:51 knautsch kernel: [17180076.984000]  <c0102e97> syscall_call+0x7/0xb  
-Apr  4 20:25:51 knautsch kernel: [17180076.984000] Code: b8 c4 09 00 00 e8 db fb e5 df fa 85 c0 0f 85 05 02 00 00 8b 93 98 00 00 00 8b 02 83 f8 02 74 0b 8b 02 83 f8 06 0f 85 da 02 00 00 <8b> 02 83 f8 05 0f 8f ed 01 00 00 83 f8 04 0f 8d 1e 02 00 00 48 
+configure:7067: checking for vmalloc_to_page
+configure:7098: /usr/bin/gcc -c -Wall -fno-strict-aliasing -O2 -g -pipe -Wa=
+ll -Wp,-D_FORTIFY_SOURCE=3D2 -fexceptions -fstack-protector --param=3Dssp-b=
+uffer-size=3D4 -m64 -mtune=3Dgeneric -I/kernel/include  -nostdinc -iwithpre=
+fix include -DKBUILD_BASENAME=3D"dummy"  conftest.c >&5
+In file included from /kernel/include/linux/smp.h:19,
+                 from /kernel/include/linux/sched.h:26,
+                 from /kernel/include/linux/mm.h:4,
+                 from conftest.c:26:
+/kernel/include/asm/smp.h: In function 'hard_smp_processor_id':
+/kernel/include/asm/smp.h:78: warning: implicit declaration of function 'GE=
+T_APIC_ID'
+/kernel/include/asm/smp.h:78: error: 'APIC_BASE' undeclared (first use in t=
+his function)
+/kernel/include/asm/smp.h:78: error: (Each undeclared identifier is reporte=
+d only once
+/kernel/include/asm/smp.h:78: error: for each function it appears in.)
+/kernel/include/asm/smp.h:78: error: 'APIC_ID' undeclared (first use in thi=
+s function)
+/kernel/include/asm/smp.h: In function 'cpu_present_to_apicid':
+/kernel/include/asm/smp.h:113: error: 'BAD_APICID' undeclared (first use in=
+ this function)
+/kernel/include/asm/smp.h: In function 'logical_smp_processor_id':
+/kernel/include/asm/smp.h:136: warning: implicit declaration of function 'G=
+ET_APIC_LOGICAL_ID'
+/kernel/include/asm/smp.h:136: error: 'APIC_BASE' undeclared (first use in =
+this function)
+/kernel/include/asm/smp.h:136: error: 'APIC_LDR' undeclared (first use in t=
+his function)
+configure:7104: $? =3D 1
 
-This oops is different from the others in that it contains the 6b6b6b6b
-magic from slab poisoning. But, again, this is clearly sound related:
-EIP points to snd_pcm_lib_write, and the trigger procedure was the
-following:
 
-1) Use twinke to make a VoIP-Call. Sound was a little bit choppy, so
-there is already something wrong here. No oops or other error message 
-yet, though.
+--=20
+Axel.Thimm at ATrpms.net
 
-2) From a second xterm, call "yes >/dev/dsp"
+--ZcaUvQ23gCOmDTXi
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-This lead to a beeping sound (as expected), so opening the device and
-sending sound was successful - and to the oops quoted above.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
 
-Jan
+iD8DBQFEMtKkQBVS1GOamfERAsIKAJ44NvPpW7QZQUQE9SZnI0Y8McjKFwCffch6
+olOrQY6PtfIZ1egKX2TR37w=
+=sK6t
+-----END PGP SIGNATURE-----
 
+--ZcaUvQ23gCOmDTXi--
 
 
 -------------------------------------------------------
