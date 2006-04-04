@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002000]: Sound continually cuts in and out
-Date: Tue, 4 Apr 2006 19:45:31 +0200
-Message-ID: <4028c8002ffb1009143ec47351436580@bugtrack.alsa-project.org>
+Date: Tue, 4 Apr 2006 19:22:03 +0200
+Message-ID: <e8fb0dea17b6351409c9f51d5de6fd8c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46B5821C
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 19:45:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9EC8621C
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 19:22:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2000> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.10 Breezy
 Kernel Version:             2.6.12-10-386
 ======================================================================
 Date Submitted:             04-04-2006 19:22 CEST
-Last Modified:              04-04-2006 19:45 CEST
+Last Modified:              04-04-2006 19:22 CEST
 ======================================================================
 Summary:                    Sound continually cuts in and out
 Description: 
@@ -54,19 +54,12 @@ longer in, but problem persists. I have redone "alsaconf" problem still
 persists...pulling my hair out here...
 ======================================================================
 
-----------------------------------------------------------------------
- rlrevell - 04-04-06 19:45 
-----------------------------------------------------------------------
-2.6.12 is too old to debug, please test with latest ALSA release
-(1.0.11-rc4 or CVS)
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-04-06 19:22 spm            New Issue                                    
 04-04-06 19:22 spm            Distribution              => Ubuntu 5.10 Breezy
 04-04-06 19:22 spm            Kernel Version            => 2.6.12-10-386   
-04-04-06 19:45 rlrevell       Note Added: 0009114                          
 ======================================================================
 
 
