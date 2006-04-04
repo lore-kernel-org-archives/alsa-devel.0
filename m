@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002000]: Sound continually cuts in and out
-Date: Tue, 4 Apr 2006 19:22:03 +0200
-Message-ID: <e8fb0dea17b6351409c9f51d5de6fd8c@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: amixer issues
+Date: Tue, 04 Apr 2006 19:07:39 +0100
+Message-ID: <1144174060.9472.10.camel@localhost.localdomain>
+References: <1143907666.9228.31.camel@localhost.localdomain>
+	 <20060404161719.GB18884@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9EC8621C
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 19:22:03 +0200 (MEST)
+Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 68A9221C
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 20:07:48 +0200 (MEST)
+In-Reply-To: <20060404161719.GB18884@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,49 +21,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-04-04 at 18:17 +0200, Clemens Ladisch wrote:
+> Adrian McMenamin wrote:
+> > I have a working sound card with a working (if basic) PCM mixer:
+> > 
+> > /proc/asound # cat cards
+> > 0 [AICA           ]: snd_card_aica - AICA
+> >                      Yamaha AICA Super Intelligent Sound Processor for SEGA Dreamcast
+> > 
+> > but when I try to use amixer nothing seems to work:
+> > 
+> > / # amixer -c 0
+> > Invalid card number.
+> > Usage: amixer <options> command
+> 
+> Does /dev/snd/controlC0 exist, and does it point to the control device
+> listed in /proc/asound/devices?
+> 
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2000> 
-======================================================================
-Reported By:                spm
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2000
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10 Breezy
-Kernel Version:             2.6.12-10-386
-======================================================================
-Date Submitted:             04-04-2006 19:22 CEST
-Last Modified:              04-04-2006 19:22 CEST
-======================================================================
-Summary:                    Sound continually cuts in and out
-Description: 
-And it makes a pop sound when cutting out.
 
-I thought it was an IRQ conflict, but it is not (I checked with "cat
-/proc/interrupts".
+/ # ls -l /dev/snd
+crw-rw-rw-    1 root     sys      116,   0 Apr  4 19:13 controlC0
+crw-rw-rw-    1 root     sys      116,  16 Apr  4 19:13 pcmC0D0p
+crw-rw-rw-    1 root     sys      116,  33 Apr  4 19:13 timer
 
-This actually started to occur after plugging in a USB mouse. Mouse is no
-longer in, but problem persists. I have redone "alsaconf" problem still
-persists...pulling my hair out here...
-======================================================================
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-04-06 19:22 spm            New Issue                                    
-04-04-06 19:22 spm            Distribution              => Ubuntu 5.10 Breezy
-04-04-06 19:22 spm            Kernel Version            => 2.6.12-10-386   
-======================================================================
+
+/ # cat /proc/asound/devices
+ 16: [0- 0]: digital audio playback
+  0: [0- 0]: ctl
+ 33:       : timer
+
+
+Does that mean they agree? Looks like it to me, but I'm not *absolutely*
+sure what I am looking for.
 
 
 
