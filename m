@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001980]: No Sound with module snd-hda-intel and no error output
-Date: Tue, 4 Apr 2006 09:23:05 +0200
-Message-ID: <8fb9f3a260ff019c6fbebd170741d7ef@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001999]: Latest cvs won't compile
+Date: Tue, 4 Apr 2006 09:58:16 +0200
+Message-ID: <66f14d38000c7bc4bf8b059697a6fad8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 221731A6
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 09:23:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85DA11AB
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 09:58:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1980> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1999> 
 ======================================================================
-Reported By:                zyfhie
-Assigned To:                tiwai
+Reported By:                kotau
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1980
-Category:                   PCI - hda-intel
+Issue ID:                   1999
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               ubuntu
-Kernel Version:             2.6.15-19-386
+Distribution:               
+Kernel Version:             -2.6.13.2
 ======================================================================
-Date Submitted:             03-30-2006 14:43 CEST
-Last Modified:              04-04-2006 09:23 CEST
+Date Submitted:             04-03-2006 21:05 CEST
+Last Modified:              04-04-2006 09:58 CEST
 ======================================================================
-Summary:                    No Sound with module snd-hda-intel and no error
-output
+Summary:                    Latest cvs won't compile
 Description: 
-I just have ubuntu installed in my laptop,and there is no sound at all.
-In dmesg|grep hda-intel there is no message,but I could see 
-[4296289.511000] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-[4296330.997000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
-low) -> IRQ 201
-[4296330.997000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
- 
-after rmmod snd-hda-intel &modprobe snd-hda-intel
+Here's the error message.
 
-I had tried many parm in my alsa-base such as model,position_fix.
-Hope somebody could help!!! 
+
+==============
+make[1]: Entering directory `/usr/src/linux-2.6.13.2'
+  CC [M]  /usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_read_main':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+`snd_ac97_stereo_enhancements' undeclared (first use in this function)
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+(Each undeclared identifier is reported only once
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+for each function it appears in.)
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_read':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: warning:
+implicit declaration of function `snd_magic_cast'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: error:
+parse error before "ac97_t"
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:296: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:322: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_regs_read':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:359: error:
+parse error before "ac97_t"
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:361: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:377: error:
+structure has no member named `semaphore'
+make[5]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o]
+Error 1
+make[4]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97] Error 2
+make[3]: *** [/usr/local/src/1music/alsa/alsa-driver/pci] Error 2
+make[2]: *** [_module_/usr/local/src/1music/alsa/alsa-driver] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.13.2'
 
 ======================================================================
 
 ----------------------------------------------------------------------
- zyfhie - 04-03-06 09:03 
+ Raymond - 04-04-06 09:58 
 ----------------------------------------------------------------------
-cat /sys/module/snd_hda_intel/parameters/model
-asus
+snd_ac97_stereo_enhancements still exist in rev 1.17
 
-----------------------------------------------------------------------
- zyfhie - 04-04-06 09:23 
-----------------------------------------------------------------------
-Finally I'm loading with "model=laptop-eapd" and it works:)
+http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-kernel/pci/ac97/ac97_proc.c?rev=1.17
+
+snd_magic_cast() had been removed
+
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/ac97/ac97_proc.c?r1=1.8&r2=1.9
+
+Make sure your cvs is up-to-date
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-06 14:43 zyfhie         New Issue                                    
-03-30-06 14:43 zyfhie         Distribution              => ubuntu          
-03-30-06 14:43 zyfhie         Kernel Version            => 2.6.15-19-386   
-04-01-06 00:28 error10        Note Added: 0009051                          
-04-03-06 01:57 anarki         Note Added: 0009076                          
-04-03-06 02:12 zyfhie         Note Added: 0009078                          
-04-03-06 02:46 zyfhie         Note Added: 0009079                          
-04-03-06 03:22 zyfhie         Note Added: 0009082                          
-04-03-06 05:52 rlrevell       Note Added: 0009083                          
-04-03-06 09:03 zyfhie         Note Added: 0009090                          
-04-04-06 09:23 zyfhie         Note Added: 0009110                          
+04-03-06 21:05 kotau          New Issue                                    
+04-03-06 21:05 kotau          Kernel Version            => -2.6.13.2       
+04-04-06 09:58 Raymond        Note Added: 0009112                          
 ======================================================================
 
 
