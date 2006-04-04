@@ -1,18 +1,16 @@
-From: "Tom Mccotter" <mccoty@carecentric.com>
-Subject: look new
-Date: Tue, 4 Apr 2006 12:50:45 -0400
-Message-ID: <000001c65807$ead598c0$44f4a8c0@vtj95>
-Reply-To: "Tom Mccotter" <mccoty@carecentric.com>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Re: Cutting down spam on this list
+Date: Tue, 04 Apr 2006 10:42:11 -0600
+Message-ID: <4432A1E3.7010100@redfish-solutions.com>
+References: <441F2AE4.1050601@redfish-solutions.com> <4421A5CF.8010204@redfish-solutions.com> <s5hslpajmsz.wl%tiwai@suse.de> <4421A76F.5000005@redfish-solutions.com> <s5hpskejlmv.wl%tiwai@suse.de> <Pine.LNX.4.61.0603281430100.8538@dhcp29.suse.cz>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C657E6.63C3F8C0"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E89AD193
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 18:51:13 +0200 (MEST)
-Received: from hecnycmc.com (adsl-152-242-160.mco.bellsouth.net [70.152.242.160])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 1527A99458
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 18:51:13 +0200 (MEST)
+Received: from mail.redfish-solutions.com (mail.redfish-solutions.com [71.36.29.88])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DAB1193
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 18:42:15 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.61.0603281430100.8538@dhcp29.suse.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +20,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Jaroslav Kysela wrote:
 
-------=_NextPart_000_0001_01C657E6.63C3F8C0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+>On Wed, 22 Mar 2006, Takashi Iwai wrote:
+>
+>  
+>
+>>>>These are mails from alsa-devel@alsa-project.org, the old ML address,
+>>>>which just redirects to SF.  I don't know why it's still needed, too,
+>>>>maybe just for convenience...
+>>>>        
+>>>>
+>>>What would break if it were turned off?
+>>>      
+>>>
+>>Many people won't reach to ML :)
+>>I found that the addresses are not updated in linux/MAINTAINERS.  Need
+>>to fix it.  Sigh.
+>>    
+>>
+>
+>I would prefer to use the alsa-devel@alsa-project.org rather than SF 
+>address to avoid problems when we move mailing lists to some other
+>server. The SF address should not be our public address.
+>
+>What's the problem? If the contents based spam detection is problematic, 
+>nothing help us.
+>
+>
+>						Jaroslav
+>
+>  
+>
 
-=20
-V t A G R A . $ 3,35=20
-V A L t U M . $ 1,20=20
-C t A L t S . $ 3,73
-=20
-And many , many other interesting information Go to the Site
-<http://gynul898.timevilabili.com>=20
+For what it's worth, I opened a case of sourceforge over a month ago,
+and was told the case would be addressed in 5 business days. I've yet
+to hear anything. Sigh.
 
-------=_NextPart_000_0001_01C657E6.63C3F8C0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Since most of the spam is being injected at alsa-project.org, though, it
+would make the most sense to install SA + MdF there.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>V t A G R A . $ 3,35 <br> V A L t U M . =
-$ 1,20 <br> C t A L t S . $ 3,73</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>And many , many other interesting =
-information <A href=3D"http://gynul898.timevilabili.com">Go to the =
-Site</A></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C657E6.63C3F8C0--
+I can do this. Jaroslav: what do you think? Contact me offline.
 
+Thanks,
+
+-Philip
 
 
 
