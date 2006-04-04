@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002001]: fast repeated calls to adjust volume incrementally fail for multi channel control of SB Extigy
-Date: Wed, 5 Apr 2006 00:06:21 +0200
-Message-ID: <a8c26febdbe58355e18f80605b9be580@bugtrack.alsa-project.org>
+From: Ken Moffat <zarniwhoop@ntlworld.com>
+Subject: Re: Slab corruptions & Re: 2.6.17-rc1: Oops in sound
+ applications
+Date: Tue, 4 Apr 2006 18:32:40 +0100 (BST)
+Message-ID: <Pine.LNX.4.63.0604041827290.8756__11083.2151644447$1144189754$gmane$org@deepthought.mydomain>
+References: <Pine.LNX.4.63.0604032155220.17605@deepthought.mydomain>
+ <20060404133814.GA11741@knautsch.gondor.com> <s5hlkul72rv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="-1463809536-1923691522-1144171960=:8756"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F4BF178
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 00:06:21 +0200 (MEST)
+Received: from queue01-winn.ispmail.ntl.com (queue01-winn.ispmail.ntl.com [81.103.221.55])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0330B18D
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 00:27:54 +0200 (MEST)
+In-Reply-To: <s5hlkul72rv.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +21,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jan Niehusmann <jan@gondor.com>, Ken Moffat <zarniwhoop@ntlworld.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2001> 
-======================================================================
-Reported By:                andersin
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2001
-Category:                   amixer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             04-05-2006 00:06 CEST
-Last Modified:              04-05-2006 00:06 CEST
-======================================================================
-Summary:                    fast repeated calls to adjust volume incrementally
-fail for multi channel control of SB Extigy
-Description: 
-The SB Extigy has multiple channels which amixer reports as:
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right - Rear Left - Rear Right -
-Front Center - Woofer
-  Limits: Playback 0 - 200
-  Mono:
-  Front Left: Playback 146 [73%] [on]
-  Front Right: Playback 146 [73%] [on]
-  Rear Left: Playback 146 [73%] [on]
-  Rear Right: Playback 146 [73%] [on]
-  Front Center: Playback 146 [73%] [on]
-  Woofer: Playback 146 [73%] [on]
+---1463809536-1923691522-1144171960=:8756
+Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
+Content-Transfer-Encoding: quoted-printable
 
-repeated calls to amixer to incrementally adjust the volume make the
-volume "wobble". The volume stays at about the same value but goes
-slightly up and down on different speakers (can't quite pin down which
-ones, but the effect is noticeable).
+On Tue, 4 Apr 2006, Takashi Iwai wrote:
 
-The effect can be easily reproduced:
-while ( true ); do amixer sset Master 2- & done;
+>=20
+> Could you try the patch below by OGAWA Hirofumi
+> <hirofumi@mail.parknet.co.jp>?
 
-Note the &. It is necessary, since
-while ( true ); do amixer sset Master 2-; done;
-will work just fine, however even here a small quirk can be observed.
-I let the above loop run and observe the volume through alsamixer. Now I
-issue in another shell amixer sset Master 150. 
+ I'm not sure if this is helping or not - a few hours ago, I took a=20
+couple of new things out of my .config (vga scrollback, new rtc) and the=20
+oops only happened when I opened a second tab in firefox (that is, start=20
+the sound app, then start firefox, then open another tab).  With this=20
+patch, it oopsed when I opened a _third_ tab.
 
-The volume does get set to the desired value on all controls associated
-with master (all 6 channels). However, sometimes (often for the last
-speakers) the volume gets reset to a lower value than it used to be before
-I use amixer.
-Example:
+ I guess something else is involved.
 
-channel                1   2   3   4   5   6
----------------------------------------------
-values before control 100 100 100 100 100 100
-values set by amixer  150 150 150 150 150 150
-values for next step  148 148 148  98  98  98
-
-How many channels are affected is up to chance, but the higher ones 5+6
-have a higher chance of being subject to this issue so I guess it could be
-some race between the various amixer processes.
-
-Note that this behavior is fine if I use a mono volume control.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-05-06 00:06 andersin       New Issue                                    
-======================================================================
-
-
+Ken
+--=20
+das eine Mal als Trag=C3=B6die, das andere Mal als Farce
+---1463809536-1923691522-1144171960=:8756--
 
 
 -------------------------------------------------------
