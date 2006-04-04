@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001999]: Latest cvs won't compile
-Date: Tue, 4 Apr 2006 09:58:16 +0200
-Message-ID: <66f14d38000c7bc4bf8b059697a6fad8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001873]: emu10k1 AC97 loopback on left channel only.
+Date: Tue, 4 Apr 2006 12:07:51 +0200
+Message-ID: <54f9f6a372b3b3f1c856792a9dbcdf7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85DA11AB
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 09:58:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B2B81A0
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 12:07:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,87 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1999> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1873> 
 ======================================================================
-Reported By:                kotau
-Assigned To:                perex
+Reported By:                kenm
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1999
-Category:                   0_compilation problem_!!!
+Issue ID:                   1873
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             -2.6.13.2
+Status:                     new
+Distribution:               Slackware current
+Kernel Version:             2.6.15.3
 ======================================================================
-Date Submitted:             04-03-2006 21:05 CEST
-Last Modified:              04-04-2006 09:58 CEST
+Date Submitted:             02-24-2006 00:28 CET
+Last Modified:              04-04-2006 12:07 CEST
 ======================================================================
-Summary:                    Latest cvs won't compile
+Summary:                    emu10k1 AC97 loopback on left channel only.
 Description: 
-Here's the error message.
-
-
-==============
-make[1]: Entering directory `/usr/src/linux-2.6.13.2'
-  CC [M]  /usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
-`snd_ac97_proc_read_main':
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
-`snd_ac97_stereo_enhancements' undeclared (first use in this function)
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
-(Each undeclared identifier is reported only once
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
-for each function it appears in.)
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
-`snd_ac97_proc_read':
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: warning:
-implicit declaration of function `snd_magic_cast'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: error:
-parse error before "ac97_t"
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:296: error:
-structure has no member named `semaphore'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:322: error:
-structure has no member named `semaphore'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
-`snd_ac97_proc_regs_read':
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:359: error:
-parse error before "ac97_t"
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:361: error:
-structure has no member named `semaphore'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:377: error:
-structure has no member named `semaphore'
-make[5]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o]
-Error 1
-make[4]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97] Error 2
-make[3]: *** [/usr/local/src/1music/alsa/alsa-driver/pci] Error 2
-make[2]: *** [_module_/usr/local/src/1music/alsa/alsa-driver] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.13.2'
-
+Creative Labs CT4832 SBLive Value
+With alsa-driver versions 1.0.9b and previously, it was possible to set
+both "AC97" and "AC97 Capture" to full volume in alsamixer, to set up
+digital loopback to monitor in real time the sound recorded through "line
+in" via "line out".  With version 1.0.10, the monitored sound appears on
+the left channel only.  The right channel is completely muted.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-04-06 09:58 
+ kenm - 04-04-06 12:07 
 ----------------------------------------------------------------------
-snd_ac97_stereo_enhancements still exist in rev 1.17
+After some investigation, I now think this is an issue with AlsaMixer
+v1.0.10, NOT with the emu10k1 driver.  It appears that alsamixer is only
+setting the capture source for the left-hand channel.  The mixer settings
+stored with alsactl include:
 
-http://cvs.sourceforge.net/viewcvs.py/*checkout*/alsa/alsa-kernel/pci/ac97/ac97_proc.c?rev=1.17
+	control.64 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 2
+		comment.item.0 Mic
+		comment.item.1 CD
+		comment.item.2 Video
+		comment.item.3 Aux
+		comment.item.4 Line
+		comment.item.5 Mix
+		comment.item.6 'Mix Mono'
+		comment.item.7 Phone
+		iface MIXER
+		name 'Capture Source'
+		value.0 Line
+		value.1 Mic
+	}
 
-snd_magic_cast() had been removed
-
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/ac97/ac97_proc.c?r1=1.8&r2=1.9
-
-Make sure your cvs is up-to-date
+Alsamixer only appears to be modifying the "value.0" entry.  Editing the
+file manually to set "value.1 Line" and then re-loading the configuration
+corrects the problem, giving expected output on both channels.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-06 21:05 kotau          New Issue                                    
-04-03-06 21:05 kotau          Kernel Version            => -2.6.13.2       
-04-04-06 09:58 Raymond        Note Added: 0009112                          
+02-24-06 00:28 kenm           New Issue                                    
+02-24-06 00:28 kenm           Distribution              => Slackware current
+02-24-06 00:28 kenm           Kernel Version            => 2.6.15.3        
+04-04-06 12:07 kenm           Note Added: 0009113                          
 ======================================================================
 
 
