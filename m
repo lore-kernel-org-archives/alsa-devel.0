@@ -1,11 +1,16 @@
-From: Mail Delivery Subsystem <MAILER-DAEMON@aol.com>
-Subject: Returned mail: User unknown
-Date: Tue, 4 Apr 2006 17:03:54 -0400 (EDT)
-Message-ID: <200604042103.RAE28979@rly-yh06.mx.aol.com>
+From: Greg KH <gregkh@suse.de>
+Subject: Re: patch bus_add_device-losing-an-error-return-from-the-probe-method.patch added to gregkh-2.6 tree
+Date: Tue, 4 Apr 2006 14:15:05 -0700
+Message-ID: <20060404211505.GA7760@suse.de>
+References: <44238489.8090402@keyaccess.nl> <1FQquz-2CO-00@press.kroah.org> <d120d5000604041323h448c1ccfi7e9dcedd82c385ba@mail.gmail.com> <20060404210048.GA5694@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="RAE28979.1144184634/rly-yh06.mx.aol.com"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from aria.kroah.org (dsl093-040-174.pdx1.dsl.speakeasy.net [66.93.40.174])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDAE0219
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 23:15:49 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20060404210048.GA5694@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,81 +20,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa.jcu.cz
+To: dtor_core@ameritech.net
+Cc: rene.herman@keyaccess.nl, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message
+On Tue, Apr 04, 2006 at 02:00:48PM -0700, Greg KH wrote:
+> On Tue, Apr 04, 2006 at 04:23:43PM -0400, Dmitry Torokhov wrote:
+> > On 4/4/06, gregkh@suse.de <gregkh@suse.de> wrote:
+> > >
+> > > --- gregkh-2.6.orig/drivers/base/bus.c
+> > > +++ gregkh-2.6/drivers/base/bus.c
+> > > @@ -372,14 +372,17 @@ int bus_add_device(struct device * dev)
+> > >
+> > >        if (bus) {
+> > >                pr_debug("bus %s: add device %s\n", bus->name, dev->bus_id);
+> > > -               device_attach(dev);
+> > > +               error = device_attach(dev);
+> > > +               if (error < 0)
+> > > +                       goto exit;
+> > 
+> > I do not believe that this is correct. The fact that _some_ driver
+> > failed to attach to a device does not necessarily mean that device
+> > itself does not exist. While this assuption might work for platform
+> > devices it won't work for other busses.
+> 
+> Hm, no, I unwound this mess, and found the following:
+> 
+>  - bus_add_device() calls device_attach()
+>  - device_attach() calls bus_for_each_drv() for every driver on the bus
+>  - bus_for_each_drv() walks all drivers on the bus and calls
+>    __device_attach() for every individual driver
+>  - __device_attach() calls driver_probe_device() for that driver and device
+>  - driver_probe_device() calls down to the probe() function for the
+>    driver, passing it that driver, if match() for the bus matches this
+>    device.
+>  - if that probe() function returns -ENODEV or -ENXIO[1] then the error
+>    is ignored and 0 is returned, causing the loop to continue to try
+>    more drivers
+>  - if the probe() function returns any other error code, it is
+>    propagated up, all the way back to bus_add_device.
+>  - if the probe() function returns 0, the device is bound to the driver,
+>    and it returns 0.  Hm, looks like we continue to loop here too, we
+>    could probably stop now that we have bound a driver to the device.
+> 
+> So, I'm pretty sure that this is safe and should work just fine.  To be
+> sure, let me go reboot my box with this change on it after I finish this
+> email :)
 
---RAE28979.1144184634/rly-yh06.mx.aol.com
+Yup, things still seem to work properly for me.  The patch will show up
+in the next -mm for others to beat on...
 
-The original message was received at Tue, 4 Apr 2006 17:03:19 -0400 (EDT)
-from adsl-146-100-126.mia.bellsouth.net [70.146.100.126]
+thanks,
 
-
-*** ATTENTION ***
-
-Your e-mail is being returned to you because there was a problem with its
-delivery.  The address which was undeliverable is listed in the section
-labeled: "----- The following addresses had permanent fatal errors -----".
-
-The reason your mail is being returned to you is listed in the section
-labeled: "----- Transcript of Session Follows -----".
-
-The line beginning with "<<<" describes the specific reason your e-mail could
-not be delivered.  The next line contains a second error message which is a
-general translation for other e-mail servers.
-
-Please direct further questions regarding this message to your e-mail
-administrator.
-
---AOL Postmaster
-
-
-
-   ----- The following addresses had permanent fatal errors -----
-<burning.machine@aol.com>
-
-   ----- Transcript of session follows -----
-... while talking to air-yh03.mail.aol.com.:
->>> RCPT To:<burning.machine@aol.com>
-<<< 550 MAILBOX NOT FOUND
-550 <burning.machine@aol.com>... User unknown
-
---RAE28979.1144184634/rly-yh06.mx.aol.com
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; rly-yh06.mx.aol.com
-Arrival-Date: Tue, 4 Apr 2006 17:03:19 -0400 (EDT)
-
-Final-Recipient: RFC822; burning.machine@aol.com
-Action: failed
-Status: 5.1.1
-Remote-MTA: DNS; air-yh03.mail.aol.com
-Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
-Last-Attempt-Date: Tue, 4 Apr 2006 17:03:54 -0400 (EDT)
-
---RAE28979.1144184634/rly-yh06.mx.aol.com
-Content-Type: text/rfc822-headers
-
-Received: from  alsa.jcu.cz (adsl-146-100-126.mia.bellsouth.net [70.146.100.126]) by rly-yh06.mx.aol.com (v108_r3.6) with ESMTP id MAILRELAYINYH64-7924432df1420b; Tue, 04 Apr 2006 17:03:17 -0400
-From: alsa-devel@alsa.jcu.cz
-To: burning.machine@aol.com
-Subject: Returned mail: Data format error
-Date: Tue, 4 Apr 2006 17:03:15 -0400
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0009_10DDD48F.A657A54A"
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-X-AOL-IP: 70.146.100.126
-X-AOL-SCOLL-SCORE: 0:2:467359889:12348031
-X-AOL-SCOLL-URL_COUNT: 0
-Message-ID: <200604041703.7924432df1420b@rly-yh06.mx.aol.com>
-
---RAE28979.1144184634/rly-yh06.mx.aol.com--
-
+greg k-h
 
 
 -------------------------------------------------------
