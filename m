@@ -1,17 +1,22 @@
-From: Ken Moffat <zarniwhoop@ntlworld.com>
-Subject: Re: Slab corruptions & Re: 2.6.17-rc1: Oops in sound
- applications
-Date: Tue, 4 Apr 2006 18:32:40 +0100 (BST)
-Message-ID: <Pine.LNX.4.63.0604041827290.8756__11083.2151644447$1144189754$gmane$org@deepthought.mydomain>
-References: <Pine.LNX.4.63.0604032155220.17605@deepthought.mydomain>
- <20060404133814.GA11741@knautsch.gondor.com> <s5hlkul72rv.wl%tiwai@suse.de>
+From: "Dmitry Torokhov" <dmitry.torokhov@gmail.com>
+Subject: Re: patch bus_add_device-losing-an-error-return-from-the-probe-method.patch added to gregkh-2.6 tree
+Date: Tue, 4 Apr 2006 17:28:48 -0400
+Message-ID: <d120d5000604041428h65931eb6qffe1af04d91e7f31__8803.08334385536$1144192532$gmane$org@mail.gmail.com>
+References: <44238489.8090402@keyaccess.nl> <1FQquz-2CO-00@press.kroah.org>
+	 <d120d5000604041323h448c1ccfi7e9dcedd82c385ba@mail.gmail.com>
+	 <20060404210048.GA5694@suse.de>
+Reply-To: dtor_core@ameritech.net
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-1463809536-1923691522-1144171960=:8756"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from queue01-winn.ispmail.ntl.com (queue01-winn.ispmail.ntl.com [81.103.221.55])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0330B18D
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 00:27:54 +0200 (MEST)
-In-Reply-To: <s5hlkul72rv.wl%tiwai@suse.de>
+Received: from wproxy.gmail.com (wproxy.gmail.com [64.233.184.229])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 024FA197
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 23:28:59 +0200 (MEST)
+Received: by wproxy.gmail.com with SMTP id 69so22813wri
+        for <alsa-devel@alsa-project.org>; Tue, 04 Apr 2006 14:28:58 -0700 (PDT)
+In-Reply-To: <20060404210048.GA5694@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,35 +26,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jan Niehusmann <jan@gondor.com>, Ken Moffat <zarniwhoop@ntlworld.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Greg KH <gregkh@suse.de>
+Cc: rene.herman@keyaccess.nl, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 4/4/06, Greg KH <gregkh@suse.de> wrote:
+>
+> Hm, no, I unwound this mess, and found the following:
+>
+>  - bus_add_device() calls device_attach()
+>  - device_attach() calls bus_for_each_drv() for every driver on the bus
+>  - bus_for_each_drv() walks all drivers on the bus and calls
+>   __device_attach() for every individual driver
+>  - __device_attach() calls driver_probe_device() for that driver and devi=
+ce
+>  - driver_probe_device() calls down to the probe() function for the
+>   driver, passing it that driver, if match() for the bus matches this
+>   device.
+>  - if that probe() function returns -ENODEV or -ENXIO[1] then the error
+>   is ignored and 0 is returned, causing the loop to continue to try
+>   more drivers
+>  - if the probe() function returns any other error code, it is
+>   propagated up, all the way back to bus_add_device.
 
----1463809536-1923691522-1144171960=:8756
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
-Content-Transfer-Encoding: quoted-printable
+But why do we do that? probe() failing is driver's problem. The device
+is still there and should still be presented in sysfs. I don't think
+that we should stop if probe() fails - maybe next driver manages to
+bind itself.
 
-On Tue, 4 Apr 2006, Takashi Iwai wrote:
+>  - if the probe() function returns 0, the device is bound to the driver,
+>   and it returns 0.  Hm, looks like we continue to loop here too, we
+>   could probably stop now that we have bound a driver to the device.
+>
 
->=20
-> Could you try the patch below by OGAWA Hirofumi
-> <hirofumi@mail.parknet.co.jp>?
+Could it be that logic is simply reversed?
 
- I'm not sure if this is helping or not - a few hours ago, I took a=20
-couple of new things out of my .config (vga scrollback, new rtc) and the=20
-oops only happened when I opened a second tab in firefox (that is, start=20
-the sound app, then start firefox, then open another tab).  With this=20
-patch, it oopsed when I opened a _third_ tab.
+> So, I'm pretty sure that this is safe and should work just fine.  To be
+> sure, let me go reboot my box with this change on it after I finish this
+> email :)
+>
+> Does that help?
+>
+> thanks,
+>
+> greg k-h
+>
+> [1] - stupid agp drivers (or some other video drivers) require this.  I
+>    need to go fix them up so they don't do this, if they haven't been
+>    fixed already...
+>
 
- I guess something else is involved.
 
-Ken
---=20
-das eine Mal als Trag=C3=B6die, das andere Mal als Farce
----1463809536-1923691522-1144171960=:8756--
+--
+Dmitry
 
 
 -------------------------------------------------------
