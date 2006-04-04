@@ -1,22 +1,14 @@
-From: Andrew Morton <akpm@osdl.org>
-Subject: Re: patch
- bus_add_device-losing-an-error-return-from-the-probe-method.patch added to
- gregkh-2.6 tree
-Date: Tue, 4 Apr 2006 14:22:41 -0700
-Message-ID: <20060404142241.66bfdb70.akpm__20019.5773890757$1144187294$gmane$org@osdl.org>
-References: <44238489.8090402@keyaccess.nl>
-	<1FQquz-2CO-00@press.kroah.org>
-	<d120d5000604041323h448c1ccfi7e9dcedd82c385ba@mail.gmail.com>
-	<20060404210048.GA5694@suse.de>
-	<20060404211505.GA7760@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000713]: AC'97 codec issue: "AC'97 0 does not respond - RESET"
+Date: Tue, 4 Apr 2006 23:54:31 +0200
+Message-ID: <5e075b1227860482d77212333a038e4a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 22377197
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 23:23:38 +0200 (MEST)
-In-Reply-To: <20060404211505.GA7760@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5332F178
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 23:54:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,20 +18,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Greg KH <gregkh@suse.de>
-Cc: dtor_core@ameritech.net, rene.herman@keyaccess.nl, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Greg KH <gregkh@suse.de> wrote:
->
-> > So, I'm pretty sure that this is safe and should work just fine.  To be
->  > sure, let me go reboot my box with this change on it after I finish this
->  > email :)
-> 
->  Yup, things still seem to work properly for me.  The patch will show up
->  in the next -mm for others to beat on...
 
-It was in 2.6.16-mm2 and 2.6.17-rc1-mm1.
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=713> 
+======================================================================
+Reported By:                jefke
+Assigned To:                rlrevell
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   713
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     resolved
+Distribution:               Debian sid
+Kernel Version:             2.6.9
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             12-07-2004 19:43 CET
+Last Modified:              04-04-2006 23:54 CEST
+======================================================================
+Summary:                    AC'97 codec issue: "AC'97 0 does not respond -
+RESET"
+Description: 
+Souncard is working fine with oss module i810_audio, but isn't using alsa
+modules. Several tests have been done under 2.6.8, 2.6.9 and 2.6.10rc3
+kernels, using alsa-drivers version 1.0.7, without success.
+
+Looks like the AC97 codec can't get initialized, and is unable to read PCI
+registries on the sound card (AC97_VENDOR_ID1, AC97_VENDOR_ID2).
+
+Cf uploaded file for configuration details.
+======================================================================
+
+----------------------------------------------------------------------
+ jefke - 04-04-06 23:37 
+----------------------------------------------------------------------
+FYI, issue finally fixed with latest development release, i.e. 10.0.11rc4.
+ALSA is now running fine on my machine.
+
+----------------------------------------------------------------------
+ rlrevell - 04-04-06 23:54 
+----------------------------------------------------------------------
+Great, it's always good to close old bugs.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-07-04 19:43 jefke          New Issue                                    
+12-07-04 19:43 jefke          File Added: alsa-bug                         
+12-07-04 19:43 jefke          Distribution              => Debian sid      
+12-07-04 19:43 jefke          Kernel Version            => 2.6.9           
+04-09-05 17:21 jdthood        Note Added: 0004420                          
+12-30-05 04:45 rlrevell       Note Added: 0007222                          
+03-01-06 01:02 rlrevell       Status                   new => closed       
+04-04-06 23:34 jefke          Issue Monitored: jefke                       
+04-04-06 23:34 jefke          Issue End Monitor: jefke                     
+04-04-06 23:37 jefke          Assigned To               => rlrevell        
+04-04-06 23:37 jefke          Status                   closed => feedback  
+04-04-06 23:37 jefke          Resolution               open => reopened    
+04-04-06 23:37 jefke          Note Added: 0009117                          
+04-04-06 23:54 rlrevell       Status                   feedback => resolved
+04-04-06 23:54 rlrevell       Resolution               reopened => fixed   
+04-04-06 23:54 rlrevell       Note Added: 0009118                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
