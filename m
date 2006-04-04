@@ -1,51 +1,50 @@
-From: "Nikhil Rao" <nikhil_p_rao@hotmail.com>
-Subject: Bug with PCM plug layer with mmap emulation=true ?
-Date: Mon, 3 Apr 2006 16:26:57 -0700
-Message-ID: <BAY111-DAV2D085846867FCF9E71A4EC2D50@phx.gbl>
-References: <20060403204202.9304C12C9C@sc8-sf-spam2.sourceforge.net>
+From: Alistair John Strachan <s0348365@sms.ed.ac.uk>
+Subject: Re: Patch for AICA sound support on SEGA Dreamcast
+Date: Tue, 4 Apr 2006 01:16:13 +0100
+Message-ID: <200604040116.13732.s0348365@sms.ed.ac.uk>
+References: <1144075522.11511.20.camel@localhost.localdomain> <443162B4.60500@kenati.com> <s5hzmj28q8k.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	format=flowed;
-	charset="iso-8859-1";
-	reply-type=original
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S964907AbWDDAQS@vger.kernel.org>
+In-Reply-To: <s5hzmj28q8k.wl%tiwai@suse.de>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Carlos Munoz <carlos@kenati.com>, Adrian McMenamin <adrian@mcmen.demon.co.uk>, Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>, Paul Mundt <lethal@linux-sh.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Monday 03 April 2006 19:32, Takashi Iwai wrote:
+> At Mon, 03 Apr 2006 11:00:20 -0700,
+>
+> Carlos Munoz wrote:
+> > Takashi Iwai wrote:
+> > >Please avoid use of typedefs as much as possible.
+> > >We (finally :-) got rid of whole typedefs recently from the ALSA core
+> > >code.
+> >
+> > Hi Takashi,
+> >
+> > Just out of curiosity. What is the reason for no using typedefs ?
+>
+> Just to follow the convention of coding style in kernel tree.
+>
+> There are some reasons that typedefs are evil, but I don't want to
+> start flames :)
 
-I have observed that the using pcm plug layer with mmap emulation=true in 
-alsa.conf, causes the first period of data to be sent twice to the driver. I 
-also verified this by dumping the PCM data to a file (using the copy 
-callback)
+I also do not wish to start a flame war, but I will direct Carlos to this URL:
 
-I have tried experiments using the ALSA driver (ver 1.0.10) written by me 
-for  my development system (an SoC)
-and also the intelx80 driver on a Suse 10.0 system (ALSA ver 1.0.9b). I 
-modified the intelx80 driver so that it only supports 48Khz and then used 
-the plughw device to playout a 44Khz sample. There is a distinct stutter 
-audible at the beginning of the clip caused by the first period being 
-presented twice to the hardware.
+http://www.linuxjournal.com/article/5780
 
-Is this a known problem ? if so, is a workaround available (my development 
-platform does not support mmap currently).
+I think this write-up provides justification. However, it is not part of 
+linux/Documentation/CodingStyle. Perhaps somebody should add these details to 
+this file, so that new code follows this currently 'unwritten' rule.
 
-Thanks,
-Nikhil 
+-- 
+Cheers,
+Alistair.
 
-
--------------------------------------------------------
-This SF.Net email is sponsored by xPML, a groundbreaking scripting language
-that extends applications into web and mobile media. Attend the live webcast
-and join the prime developer group breaking into this new coding territory!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
+'No sense being pessimistic, it probably wouldn't work anyway.'
+Third year Computer Science undergraduate.
+1F2 55 South Clerk Street, Edinburgh, UK.
