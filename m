@@ -1,17 +1,18 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: amixer issues
-Date: Tue, 04 Apr 2006 19:07:39 +0100
-Message-ID: <1144174060.9472.10.camel@localhost.localdomain>
-References: <1143907666.9228.31.camel@localhost.localdomain>
-	 <20060404161719.GB18884@turing.informatik.uni-halle.de>
+From: "Tom Mccotter" <mccoty@carecentric.com>
+Subject: look new
+Date: Tue, 4 Apr 2006 12:50:45 -0400
+Message-ID: <000001c65807$ead598c0$44f4a8c0@vtj95>
+Reply-To: "Tom Mccotter" <mccoty@carecentric.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C657E6.63C3F8C0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk [81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 68A9221C
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 20:07:48 +0200 (MEST)
-In-Reply-To: <20060404161719.GB18884@turing.informatik.uni-halle.de>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E89AD193
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 18:51:13 +0200 (MEST)
+Received: from hecnycmc.com (adsl-152-242-160.mco.bellsouth.net [70.152.242.160])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 1527A99458
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 18:51:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,45 +22,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-04-04 at 18:17 +0200, Clemens Ladisch wrote:
-> Adrian McMenamin wrote:
-> > I have a working sound card with a working (if basic) PCM mixer:
-> > 
-> > /proc/asound # cat cards
-> > 0 [AICA           ]: snd_card_aica - AICA
-> >                      Yamaha AICA Super Intelligent Sound Processor for SEGA Dreamcast
-> > 
-> > but when I try to use amixer nothing seems to work:
-> > 
-> > / # amixer -c 0
-> > Invalid card number.
-> > Usage: amixer <options> command
-> 
-> Does /dev/snd/controlC0 exist, and does it point to the control device
-> listed in /proc/asound/devices?
-> 
-> 
+This is a multi-part message in MIME format.
 
+------=_NextPart_000_0001_01C657E6.63C3F8C0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-/ # ls -l /dev/snd
-crw-rw-rw-    1 root     sys      116,   0 Apr  4 19:13 controlC0
-crw-rw-rw-    1 root     sys      116,  16 Apr  4 19:13 pcmC0D0p
-crw-rw-rw-    1 root     sys      116,  33 Apr  4 19:13 timer
+=20
+V t A G R A . $ 3,35=20
+V A L t U M . $ 1,20=20
+C t A L t S . $ 3,73
+=20
+And many , many other interesting information Go to the Site
+<http://gynul898.timevilabili.com>=20
 
+------=_NextPart_000_0001_01C657E6.63C3F8C0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>V t A G R A . $ 3,35 <br> V A L t U M . =
+$ 1,20 <br> C t A L t S . $ 3,73</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>And many , many other interesting =
+information <A href=3D"http://gynul898.timevilabili.com">Go to the =
+Site</A></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C657E6.63C3F8C0--
 
-/ # cat /proc/asound/devices
- 16: [0- 0]: digital audio playback
-  0: [0- 0]: ctl
- 33:       : timer
-
-
-Does that mean they agree? Looks like it to me, but I'm not *absolutely*
-sure what I am looking for.
 
 
 
