@@ -1,17 +1,16 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: patch bus_add_device-losing-an-error-return-from-the-probe-method.patch
- added to gregkh-2.6 tree
-Date: Wed, 05 Apr 2006 00:12:40 +0200
-Message-ID: <4432EF58.1060502__37294.4762850695$1144188798$gmane$org@keyaccess.nl>
-References: <44238489.8090402@keyaccess.nl> <1FQquz-2CO-00@press.kroah.org> <d120d5000604041323h448c1ccfi7e9dcedd82c385ba@mail.gmail.com> <20060404210048.GA5694@suse.de>
+From: Greg KH <gregkh@suse.de>
+Subject: Re: patch bus_add_device-losing-an-error-return-from-the-probe-method.patch added to gregkh-2.6 tree
+Date: Tue, 4 Apr 2006 14:45:22 -0700
+Message-ID: <20060404214522.GA20390__45281.7917139784$1144189264$gmane$org@suse.de>
+References: <44238489.8090402@keyaccess.nl> <1FQquz-2CO-00@press.kroah.org> <d120d5000604041323h448c1ccfi7e9dcedd82c385ba@mail.gmail.com> <20060404210048.GA5694@suse.de> <d120d5000604041428h65931eb6qffe1af04d91e7f31@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl [213.51.130.201])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDB66178
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 00:11:50 +0200 (MEST)
-In-Reply-To: <20060404210048.GA5694@suse.de>
+Received: from aria.kroah.org (dsl093-040-174.pdx1.dsl.speakeasy.net [66.93.40.174])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C17FF163
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 23:46:06 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <d120d5000604041428h65931eb6qffe1af04d91e7f31@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,53 +20,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Greg KH <gregkh@suse.de>
-Cc: dtor_core@ameritech.net, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, Andrew Morton <akpm@osdl.org>
+To: dtor_core@ameritech.net
+Cc: rene.herman@keyaccess.nl, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Greg KH wrote:
+On Tue, Apr 04, 2006 at 05:28:48PM -0400, Dmitry Torokhov wrote:
+> On 4/4/06, Greg KH <gregkh@suse.de> wrote:
+> >
+> > Hm, no, I unwound this mess, and found the following:
+> >
+> >  - bus_add_device() calls device_attach()
+> >  - device_attach() calls bus_for_each_drv() for every driver on the bus
+> >  - bus_for_each_drv() walks all drivers on the bus and calls
+> >   __device_attach() for every individual driver
+> >  - __device_attach() calls driver_probe_device() for that driver and device
+> >  - driver_probe_device() calls down to the probe() function for the
+> >   driver, passing it that driver, if match() for the bus matches this
+> >   device.
+> >  - if that probe() function returns -ENODEV or -ENXIO[1] then the error
+> >   is ignored and 0 is returned, causing the loop to continue to try
+> >   more drivers
+> >  - if the probe() function returns any other error code, it is
+> >   propagated up, all the way back to bus_add_device.
+> 
+> But why do we do that? probe() failing is driver's problem. The device
+> is still there and should still be presented in sysfs. I don't think
+> that we should stop if probe() fails - maybe next driver manages to
+> bind itself.
 
->  - if that probe() function returns -ENODEV or -ENXIO[1] then the error
->    is ignored and 0 is returned, causing the loop to continue to try
->    more drivers
+The device is still there.
 
-> [1] - stupid agp drivers (or some other video drivers) require this.  I
->     need to go fix them up so they don't do this, if they haven't been
->     fixed already...
+Ah, I see what you are saying now.  Yeah, we should still add the
+default attributes for the bus and create the bus link even if some
+random driver had problems.  But then, we should still propagate the
+error back up, right?
 
-Is the "this" in "require this" referring to (-ENODEV or -ENXIO) or to 
--ENXIO alone and do you consider the -ENODEV behaviour correct?
+If I changed the patch to do that, would it be acceptable to you?
 
-ALSA wants platform_device_register_simple() to return an IS_ERR() on 
-driver probe error and the submitted patch makes it do so for all the 
-other errors but ALSA likes to propagate errors up as far as possible, 
-and currently its probe() methods can return either...
+thanks,
 
-To Dmitry, I see you saying "probe() failing is driver's problem. The 
-device is still there and should still be presented in sysfs.". No, at 
-least in the case of these platform drivers (or at least these old ISA 
-cards using the platform driver interface), a -ENODEV return from the 
-probe() method would mean the device is _not_ present (or not found at 
-least). NODEV.
-
-As said before, if the behaviour makes sense for other busses, maybe 
-propagating errors up should be dependent on a flags value somewhere 
-that a platform-driver sets?
-
-If platform_device_register_simple() never returns an IS_ERR() when the 
-device is not found that means it's not a useful interface for hardware 
-that needs to be probed for at the very least. ALSA would need to do 
-something like, just before returning a succesfull return from the 
-probe() method, set a global flag that the platform_device that is about 
-to be registered is actually representing something, and freeing all 
-platform_devices for which the flag is _not_ set again after this.
-
-Which ofcourse means this is not at all useful. It's just working around 
-the driver model then...
-
-Rene.
-
-
+greg k-h
 
 
 -------------------------------------------------------
