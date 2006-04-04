@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000713]: AC'97 codec issue: "AC'97 0 does not respond - RESET"
-Date: Tue, 4 Apr 2006 23:54:31 +0200
-Message-ID: <5e075b1227860482d77212333a038e4a@bugtrack.alsa-project.org>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: patch bus_add_device-losing-an-error-return-from-the-probe-method.patch
+ added to gregkh-2.6 tree
+Date: Wed, 05 Apr 2006 00:12:40 +0200
+Message-ID: <4432EF58.1060502__37294.4762850695$1144188798$gmane$org@keyaccess.nl>
+References: <44238489.8090402@keyaccess.nl> <1FQquz-2CO-00@press.kroah.org> <d120d5000604041323h448c1ccfi7e9dcedd82c385ba@mail.gmail.com> <20060404210048.GA5694@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5332F178
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 23:54:31 +0200 (MEST)
+Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl [213.51.130.201])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDB66178
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 00:11:50 +0200 (MEST)
+In-Reply-To: <20060404210048.GA5694@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +21,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Greg KH <gregkh@suse.de>
+Cc: dtor_core@ameritech.net, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, Andrew Morton <akpm@osdl.org>
 List-Id: alsa-devel@alsa-project.org
 
+Greg KH wrote:
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=713> 
-======================================================================
-Reported By:                jefke
-Assigned To:                rlrevell
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   713
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               Debian sid
-Kernel Version:             2.6.9
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             12-07-2004 19:43 CET
-Last Modified:              04-04-2006 23:54 CEST
-======================================================================
-Summary:                    AC'97 codec issue: "AC'97 0 does not respond -
-RESET"
-Description: 
-Souncard is working fine with oss module i810_audio, but isn't using alsa
-modules. Several tests have been done under 2.6.8, 2.6.9 and 2.6.10rc3
-kernels, using alsa-drivers version 1.0.7, without success.
+>  - if that probe() function returns -ENODEV or -ENXIO[1] then the error
+>    is ignored and 0 is returned, causing the loop to continue to try
+>    more drivers
 
-Looks like the AC97 codec can't get initialized, and is unable to read PCI
-registries on the sound card (AC97_VENDOR_ID1, AC97_VENDOR_ID2).
+> [1] - stupid agp drivers (or some other video drivers) require this.  I
+>     need to go fix them up so they don't do this, if they haven't been
+>     fixed already...
 
-Cf uploaded file for configuration details.
-======================================================================
+Is the "this" in "require this" referring to (-ENODEV or -ENXIO) or to 
+-ENXIO alone and do you consider the -ENODEV behaviour correct?
 
-----------------------------------------------------------------------
- jefke - 04-04-06 23:37 
-----------------------------------------------------------------------
-FYI, issue finally fixed with latest development release, i.e. 10.0.11rc4.
-ALSA is now running fine on my machine.
+ALSA wants platform_device_register_simple() to return an IS_ERR() on 
+driver probe error and the submitted patch makes it do so for all the 
+other errors but ALSA likes to propagate errors up as far as possible, 
+and currently its probe() methods can return either...
 
-----------------------------------------------------------------------
- rlrevell - 04-04-06 23:54 
-----------------------------------------------------------------------
-Great, it's always good to close old bugs.
+To Dmitry, I see you saying "probe() failing is driver's problem. The 
+device is still there and should still be presented in sysfs.". No, at 
+least in the case of these platform drivers (or at least these old ISA 
+cards using the platform driver interface), a -ENODEV return from the 
+probe() method would mean the device is _not_ present (or not found at 
+least). NODEV.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-07-04 19:43 jefke          New Issue                                    
-12-07-04 19:43 jefke          File Added: alsa-bug                         
-12-07-04 19:43 jefke          Distribution              => Debian sid      
-12-07-04 19:43 jefke          Kernel Version            => 2.6.9           
-04-09-05 17:21 jdthood        Note Added: 0004420                          
-12-30-05 04:45 rlrevell       Note Added: 0007222                          
-03-01-06 01:02 rlrevell       Status                   new => closed       
-04-04-06 23:34 jefke          Issue Monitored: jefke                       
-04-04-06 23:34 jefke          Issue End Monitor: jefke                     
-04-04-06 23:37 jefke          Assigned To               => rlrevell        
-04-04-06 23:37 jefke          Status                   closed => feedback  
-04-04-06 23:37 jefke          Resolution               open => reopened    
-04-04-06 23:37 jefke          Note Added: 0009117                          
-04-04-06 23:54 rlrevell       Status                   feedback => resolved
-04-04-06 23:54 rlrevell       Resolution               reopened => fixed   
-04-04-06 23:54 rlrevell       Note Added: 0009118                          
-======================================================================
+As said before, if the behaviour makes sense for other busses, maybe 
+propagating errors up should be dependent on a flags value somewhere 
+that a platform-driver sets?
+
+If platform_device_register_simple() never returns an IS_ERR() when the 
+device is not found that means it's not a useful interface for hardware 
+that needs to be probed for at the very least. ALSA would need to do 
+something like, just before returning a succesfull return from the 
+probe() method, set a global flag that the platform_device that is about 
+to be registered is actually representing something, and freeing all 
+platform_devices for which the flag is _not_ set again after this.
+
+Which ofcourse means this is not at all useful. It's just working around 
+the driver model then...
+
+Rene.
 
 
 
