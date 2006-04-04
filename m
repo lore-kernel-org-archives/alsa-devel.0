@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001924]: snd_pcm_avail_update occasionally returns one billion frames
-Date: Tue, 4 Apr 2006 20:40:03 +0200
-Message-ID: <7fc8f45292495b123ba75875c59a85e2@bugtrack.alsa-project.org>
+Date: Tue, 4 Apr 2006 20:25:24 +0200
+Message-ID: <b6b12768345dff7dc3aea42b1c222ab5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9763221
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 20:40:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AFBBA21C
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 20:25:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1924> 
 ======================================================================
 Reported By:                jussi_kujala
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
 Issue ID:                   1924
@@ -35,12 +35,10 @@ Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
 ======================================================================
 Date Submitted:             03-15-2006 00:02 CET
-Last Modified:              04-04-2006 20:40 CEST
+Last Modified:              04-04-2006 20:25 CEST
 ======================================================================
 Summary:                    snd_pcm_avail_update occasionally returns one
 billion frames
@@ -71,25 +69,14 @@ guess so I make this bug report here.
 ======================================================================
 
 ----------------------------------------------------------------------
+ tiwai - 03-15-06 11:44 
+----------------------------------------------------------------------
+Does this happen with the latest ALSA version, too?
+
+----------------------------------------------------------------------
  jussi_kujala - 04-04-06 20:25 
 ----------------------------------------------------------------------
 yes, with rc3 too
-
-----------------------------------------------------------------------
- tiwai - 04-04-06 20:40 
-----------------------------------------------------------------------
-If I understand your description correctly, this must be a feature.
-snd_pcm_avail_update() returns the value between 0 and boundary.  If the
-DMA position overcomes the applptr (i.e. xrun), it result in a negative
-value, but snd_pcm_avail_update() corrects to a positive value by adding
-the boundary.
-
-So, if the return value of snd_pcm_avail_update() is bigger than the
-buffer size, it means that something is wrong, but the system continues
-because you disabled XRUN detection by setting stop_threshold to
-boundary.
-
-Yes, this should be better explained in the document...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -98,10 +85,6 @@ Date Modified  Username       Field                    Change
 03-15-06 00:02 jussi_kujala   File Added: sub0.tar                         
 03-15-06 11:44 tiwai          Note Added: 0008532                          
 04-04-06 20:25 jussi_kujala   Note Added: 0009115                          
-04-04-06 20:40 tiwai          Status                   new => resolved     
-04-04-06 20:40 tiwai          Resolution               open => not an issue
-04-04-06 20:40 tiwai          Assigned To               => tiwai           
-04-04-06 20:40 tiwai          Note Added: 0009116                          
 ======================================================================
 
 
