@@ -1,19 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: amixer issues
-Date: Tue, 04 Apr 2006 18:56:06 +0200
-Message-ID: <20060404165606.GC18884@turing.informatik.uni-halle.de>
-References: <1143907666.9228.31.camel@localhost.localdomain>
- <20060404161719.GB18884@turing.informatik.uni-halle.de>
- <1144168240.26668.6.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002000]: Sound continually cuts in and out
+Date: Tue, 4 Apr 2006 19:45:31 +0200
+Message-ID: <4028c8002ffb1009143ec47351436580@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3474B1A1
-	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 18:56:18 +0200 (MEST)
-In-reply-to: <1144168240.26668.6.camel@mindpipe>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46B5821C
+	for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2006 19:45:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,30 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Adrian McMenamin <adrian@mcmen.demon.co.uk>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Tue, 2006-04-04 at 18:17 +0200, Clemens Ladisch wrote:
-> > Does /dev/snd/controlC0 exist, and does it point to the control device
-> > listed in /proc/asound/devices?
-> 
-> $ ls -al /dev/snd/controlC0
-> crw-rw---- 1 root audio 116, 0 Apr  1 10:06 /dev/snd/controlC0
-> 
-> $ cat /proc/asound/devices 
->   0: [ 0]   : control
->   ...
-> 
-> Can you please clarify?  How does a device node "point to" something?
 
-The minor number of the device node (here: 0) must be the same as the
-minor number of the actual device.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2000> 
+======================================================================
+Reported By:                spm
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2000
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu 5.10 Breezy
+Kernel Version:             2.6.12-10-386
+======================================================================
+Date Submitted:             04-04-2006 19:22 CEST
+Last Modified:              04-04-2006 19:45 CEST
+======================================================================
+Summary:                    Sound continually cuts in and out
+Description: 
+And it makes a pop sound when cutting out.
+
+I thought it was an IRQ conflict, but it is not (I checked with "cat
+/proc/interrupts".
+
+This actually started to occur after plugging in a USB mouse. Mouse is no
+longer in, but problem persists. I have redone "alsaconf" problem still
+persists...pulling my hair out here...
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 04-04-06 19:45 
+----------------------------------------------------------------------
+2.6.12 is too old to debug, please test with latest ALSA release
+(1.0.11-rc4 or CVS)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-04-06 19:22 spm            New Issue                                    
+04-04-06 19:22 spm            Distribution              => Ubuntu 5.10 Breezy
+04-04-06 19:22 spm            Kernel Version            => 2.6.12-10-386   
+04-04-06 19:45 rlrevell       Note Added: 0009114                          
+======================================================================
 
 
-HTH
-Clemens
 
 
 -------------------------------------------------------
