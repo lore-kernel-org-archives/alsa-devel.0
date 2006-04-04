@@ -1,11 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Cross compiling alsa-driver
-Date: Tue, 04 Apr 2006 22:56:59 +0100
-Message-ID: <1144187819.9472.25.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0002001]: fast repeated calls to adjust volume incrementally fail for multi channel control of SB Extigy
+Date: Wed, 5 Apr 2006 00:06:21 +0200
+Message-ID: <a8c26febdbe58355e18f80605b9be580@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F4BF178
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 00:06:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,58 +18,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Cannot get this to work.
 
-Doing it from cvs and from the package gives the same result...
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2001> 
+======================================================================
+Reported By:                andersin
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   2001
+Category:                   amixer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             04-05-2006 00:06 CEST
+Last Modified:              04-05-2006 00:06 CEST
+======================================================================
+Summary:                    fast repeated calls to adjust volume incrementally
+fail for multi channel control of SB Extigy
+Description: 
+The SB Extigy has multiple channels which amixer reports as:
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right - Rear Left - Rear Right -
+Front Center - Woofer
+  Limits: Playback 0 - 200
+  Mono:
+  Front Left: Playback 146 [73%] [on]
+  Front Right: Playback 146 [73%] [on]
+  Rear Left: Playback 146 [73%] [on]
+  Rear Right: Playback 146 [73%] [on]
+  Front Center: Playback 146 [73%] [on]
+  Woofer: Playback 146 [73%] [on]
 
-./configure
---with-cross=~/buildroot/build_sh4/staging_dir/bin/sh4-linux-
---with-build=/home/adrian/linux-2.6.15.2
+repeated calls to amixer to incrementally adjust the volume make the
+volume "wobble". The volume stays at about the same value but goes
+slightly up and down on different speakers (can't quite pin down which
+ones, but the effect is noticeable).
 
-gives...
+The effect can be easily reproduced:
+while ( true ); do amixer sset Master 2- & done;
 
-make[3]: Entering directory
-`/home/adrian/alsa-driver-1.0.11rc4/pci/vx222'
-make[3]: Leaving directory
-`/home/adrian/alsa-driver-1.0.11rc4/pci/vx222'
-make[3]: Entering directory
-`/home/adrian/alsa-driver-1.0.11rc4/pci/ymfpci'
-make[3]: Leaving directory
-`/home/adrian/alsa-driver-1.0.11rc4/pci/ymfpci'
-make[2]: Leaving directory `/home/adrian/alsa-driver-1.0.11rc4/pci'
-make[1]: Leaving directory `/home/adrian/alsa-driver-1.0.11rc4'
-make -C /lib/modules/2.6.12-10-686/build
-SUBDIRS=/home/adrian/alsa-driver-1.0.11rc4 O=/home/adrian/linux-2.6.15.2
-modules
-make[1]: Entering directory `/usr/src/linux-headers-2.6.12-10-686'
-/usr/src/linux-headers-2.6.12-10-686/Makefile:530: /usr/src/linux-headers-2.6.12-10-686/arch//Makefile: No such file or directory
-/bin/sh: /home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-gcc-3.4: No such file or directory
-make[2]: *** No rule to make target
-`/usr/src/linux-headers-2.6.12-10-686/arch//Makefile'.  Stop.
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-headers-2.6.12-10-686'
-make: *** [compile] Error 2
+Note the &. It is necessary, since
+while ( true ); do amixer sset Master 2-; done;
+will work just fine, however even here a small quirk can be observed.
+I let the above loop run and observe the volume through alsamixer. Now I
+issue in another shell amixer sset Master 150. 
 
-ie it is still looking for headers on the building machine.
+The volume does get set to the desired value on all controls associated
+with master (all 6 channels). However, sometimes (often for the last
+speakers) the volume gets reset to a lower value than it used to be before
+I use amixer.
+Example:
 
-Building from cvs gives a similar result.
+channel                1   2   3   4   5   6
+---------------------------------------------
+values before control 100 100 100 100 100 100
+values set by amixer  150 150 150 150 150 150
+values for next step  148 148 148  98  98  98
 
-The configure script appears to be broken...as this segment of output
-suggests - as even though I specify a kernel directory it is still
-looking elsewhere
+How many channels are affected is up to chance, but the higher ones 5+6
+have a higher chance of being subject to this issue so I guess it could be
+some race between the various amixer processes.
 
-checking for current directory... /home/adrian/alsa-driver-1.0.11rc4
-checking cross
-compile... /home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-
-checking for directory with kernel
-source... /lib/modules/2.6.12-10-686/build
-checking for directory with kernel build... /home/adrian/linux-2.6.15.2
+Note that this behavior is fine if I use a mono volume control.
+======================================================================
 
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-05-06 00:06 andersin       New Issue                                    
+======================================================================
 
 
 
