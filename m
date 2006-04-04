@@ -1,12 +1,16 @@
-From: Mail Delivery Subsystem <MAILER-DAEMON@mailgw3.lmco.com>
-Subject: Returned mail: see transcript for details
-Date: Mon, 3 Apr 2006 23:41:05 -0400 (EDT)
-Message-ID: <200604040341.k343f5bt021450@mailgw3.lmco.com>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Re: Patch for AICA sound support on SEGA Dreamcast
+Date: Tue, 04 Apr 2006 08:12:02 +0100
+Message-ID: <1144134722.9270.4.camel@localhost.localdomain>
+References: <1144075522.11511.20.camel@localhost.localdomain>
+	 <443162B4.60500@kenati.com> <s5hzmj28q8k.wl%tiwai@suse.de>
+	 <200604040116.13732.s0348365@sms.ed.ac.uk>
+	 <1144110986.22082.4.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="k343f5bt021450.1144122065/mailgw3.lmco.com"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1144110986.22082.4.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,63 +20,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa.jcu.cz
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Alistair John Strachan <s0348365@sms.ed.ac.uk>, Takashi Iwai <tiwai@suse.de>, Carlos Munoz <carlos@kenati.com>, Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>, Paul Mundt <lethal@linux-sh.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message
+On Mon, 2006-04-03 at 20:36 -0400, Lee Revell wrote:
+> On Tue, 2006-04-04 at 01:16 +0100, Alistair John Strachan wrote:
+> > I think this write-up provides justification. However, it is not part
+> > of linux/Documentation/CodingStyle. Perhaps somebody should add these
+> > details to this file, so that new code follows this currently
+> > 'unwritten' rule. 
+> 
+> Well, if you look at the current ALSA code, the only typedefs provided
+> are for backwards compatibility.  They were all removed from the drivers
+> months ago.  The problem is that you were working against old code.  The
+> main coding style rule is to follow the conventions of the nearby code,
+> which would mean no typedefs in the ALSA driver case.
+> 
 
---k343f5bt021450.1144122065/mailgw3.lmco.com
 
-The original message was received at Mon, 3 Apr 2006 23:40:59 -0400 (EDT)
-from [216.218.113.230]
+Well, the typedefs are going - look in my personal CVS
+(http://newgolddream.dyndns.info/cgi-bin/cvsweb ) and you'll see that
+most are now gone.
 
-   ----- The following addresses had permanent fatal errors -----
-<cary.j.dell@lmco.com>
-    (reason: 550 5.1.1 unknown or illegal user: cary.j.dell@lmco.com)
+I wrote the code, however, against the 2.6.15 kernel, not an
+unreasonable proposition given that it was the current kernel until
+about 2 weeks ago.
 
-   ----- Transcript of session follows -----
-... while talking to emss04g01.ems.lmco.com.:
->>> DATA
-<<< 550 5.1.1 unknown or illegal user: cary.j.dell@lmco.com
-550 5.1.1 <cary.j.dell@lmco.com>... User unknown
-<<< 554 5.5.0 No recipients have been specified.
 
---k343f5bt021450.1144122065/mailgw3.lmco.com
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; mailgw3.lmco.com
-Received-From-MTA: DNS; [216.218.113.230]
-Arrival-Date: Mon, 3 Apr 2006 23:40:59 -0400 (EDT)
-
-Final-Recipient: RFC822; cary.j.dell@lmco.com
-Action: failed
-Status: 5.1.1
-Remote-MTA: DNS; emss04g01.ems.lmco.com
-Diagnostic-Code: SMTP; 550 5.1.1 unknown or illegal user: cary.j.dell@lmco.com
-Last-Attempt-Date: Mon, 3 Apr 2006 23:41:05 -0400 (EDT)
-
---k343f5bt021450.1144122065/mailgw3.lmco.com
-Content-Type: text/rfc822-headers
-Content-Transfer-Encoding: quoted-printable
-
-Return-Path: <alsa-devel@alsa.jcu.cz>
-Received: from alsa.jcu.cz ([216.218.113.230])
-	by mailgw3.lmco.com (8.12.10/8.12.10) with ESMTP id k343ewbt021399
-	for <cary.j.dell@lmco.com>; Mon, 3 Apr 2006 23:40:59 -0400 (EDT)
-Message-Id: <200604040340.k343ewbt021399@mailgw3.lmco.com>
-From: alsa-devel@alsa.jcu.cz
-To: cary.j.dell@lmco.com
-Subject: Returned mail: Data format error
-Date: Mon, 3 Apr 2006 23:40:50 -0400
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary=3D"----=3D_NextPart_000_0002_D0E98385.4F97EC10"
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-
---k343f5bt021450.1144122065/mailgw3.lmco.com--
 
 
 
