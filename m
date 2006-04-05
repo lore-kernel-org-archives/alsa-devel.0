@@ -1,16 +1,11 @@
-From: Matthias Koenig <list@phasorlab.de>
-Subject: Re: Ego Sys, Miditerminal 4140 Driver
-Date: Wed, 05 Apr 2006 13:36:50 +0200
-Message-ID: <87lkukuuct.fsf@zebra.localdomain>
-References: <87psk3ubdc.fsf@zebra.localdomain>
-	<20060330170158.GG12081@turing.informatik.uni-halle.de>
-	<87sloyfnu6.fsf@zebra.localdomain>
-	<20060404161059.GA18884@turing.informatik.uni-halle.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: amd64 bus error
+Date: Wed, 05 Apr 2006 12:36:50 +0100
+Message-ID: <4433ABD2.6030704@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060404161059.GA18884@turing.informatik.uni-halle.de> (Clemens
-	Ladisch's message of "Tue, 04 Apr 2006 18:10:59 +0200")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,51 +15,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch <clemens@ladisch.de> writes:
->> The separate Midiport will be more flexible, however in this case the driver 
->> will have to parse the Midi message, because the hardware is controlled by 
->> other means.
->
-> Then you probably shouldn't use a MIDI port for this.  Wrapping the
-> control commands into some invented MIDI SysEx doesn't make sense if
-> your driver just throws the wrapper away.
+Here is a backtrace of a alsa application that ran for about 1 hour 
+before giving this:
 
-Well, it would make sense if there would be some standard to control
-SMPTE via MIDI messages. 
-However, I don't want to invent some random MIDI messages for this
-purpose (also I'm not in the position to do that).  I did some tests 
-with a wrapper port in the driver and used a MIDI Start/Continue/Stop 
-and a MTC Full Frame SysEx message to set the time, which works but is 
-probably not the desired thing.
+[New Thread 1098918240 (LWP 23392)]
 
-> I think using control elements would work just fine.
+Program received signal SIGBUS, Bus error.
+[Switching to Thread 1098918240 (LWP 23392)]
+0x00002aaaac51bcc8 in ao_alsa_loop (iarg=<value optimized out>)
+    at start_alsa.c:494
+494                     if (poll (pfd, nfds, 200000) < 0) {
 
-Ok, I'll use control elements. Two questions:
 
-What will the assigned interface for the controls be?
-SNDRV_CTL_ELEM_IFACE_RAWMIDI ?
+Have we had any bus error type fixes to alsa-driver between the current 
+ubuntu alsa version and the latest?
+The poll() call above is with alsa file descriptors.
 
-I see, that there are some standards on the names of the control elements,
-however in this case this is not clear to me.
-I need the following controls (with my name suggestions):
+James
 
-1. SMPTE switch: toggles generation of timecode
-"SMPTE Playback Switch" Boolean
-2-5. Setting the time
-"SMPTE Time Hours"      Integer
-"SMPTE Time Minutes"    Integer
-"SMPTE Time Seconds"    Integer
-"SMPTE Time Frames"     Integer 
-6. Setting framerate
-"SMPTE Fps"             Enumerated
-
-Are these names Ok for ALSA?
-
-Regards,
-Matthias
 
 
 -------------------------------------------------------
