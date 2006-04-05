@@ -1,14 +1,23 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002005]: problems with make
-Date: Wed, 5 Apr 2006 19:59:59 +0200
-Message-ID: <65dc50e13383f098efea00d0f96a1af2@bugtrack.alsa-project.org>
+From: "Dmitry Torokhov" <dmitry.torokhov@gmail.com>
+Subject: Re: patch bus_add_device-losing-an-error-return-from-the-probe-method.patch added to gregkh-2.6 tree
+Date: Wed, 5 Apr 2006 14:44:13 -0400
+Message-ID: <d120d5000604051144r535e1b5k763269f1f5ef17ea__22567.7847084173$1144264443$gmane$org@mail.gmail.com>
+References: <44238489.8090402@keyaccess.nl> <4432EF58.1060502@keyaccess.nl>
+	 <44330DFA.4080106@keyaccess.nl>
+	 <200604042145.24685.dtor_core@ameritech.net>
+	 <44340E12.9000202@keyaccess.nl>
+Reply-To: dtor_core@ameritech.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 503C1178
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 19:59:59 +0200 (MEST)
+Received: from wproxy.gmail.com (wproxy.gmail.com [64.233.184.237])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5885F147
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 20:44:15 +0200 (MEST)
+Received: by wproxy.gmail.com with SMTP id i14so214387wra
+        for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2006 11:44:13 -0700 (PDT)
+In-Reply-To: <44340E12.9000202@keyaccess.nl>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,45 +27,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, Andrew Morton <akpm@osdl.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 4/5/06, Rene Herman <rene.herman@keyaccess.nl> wrote:
+> Dmitry Torokhov wrote:
+>
+> >> Well, we could in fact hang an unregister off device->private_data as
+> >> per attached example. Wouldn't be _excessively_ ugly. Still sucks
+> >> though.
+> >
+> > Plus it broke all the drivers that create platform devices before
+> > registering drivers or the ones simply not using private data.
+>
+> No, this was just a suggestion for an ALSA specific workaround. I was
+> suggesting ALSA drivers could do this.
+>
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2005> 
-======================================================================
-Reported By:                mramirez
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2005
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.15-1.2054_FC5smp
-======================================================================
-Date Submitted:             04-05-2006 19:59 CEST
-Last Modified:              04-05-2006 19:59 CEST
-======================================================================
-Summary:                    problems with make
-Description: 
-I've dowload the cvs version of alsa, and try install on my laptop, but the
-make process exit whit a bad status.
-======================================================================
+Yes, I am sorry - I misread the code snipped as if it was in driver
+core, not in ALSA itself.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-05-06 19:59 mramirez       New Issue                                    
-04-05-06 19:59 mramirez       Distribution              => Fedora Core 5   
-04-05-06 19:59 mramirez       Kernel Version            => 2.6.15-1.2054_FC5smp
-======================================================================
-
-
+--
+Dmitry
 
 
 -------------------------------------------------------
