@@ -1,19 +1,21 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: amixer issues
-Date: Wed, 05 Apr 2006 22:36:19 +0100
-Message-ID: <1144272979.9276.0.camel@localhost.localdomain>
-References: <1143907666.9228.31.camel@localhost.localdomain>
-	 <20060404161719.GB18884@turing.informatik.uni-halle.de>
-	 <1144174060.9472.10.camel@localhost.localdomain>
-	 <20060405083635.GB11178@turing.informatik.uni-halle.de>
+From: Ken Moffat <zarniwhoop@ntlworld.com>
+Subject: Re: Slab corruptions & Re: 2.6.17-rc1: Oops in sound
+ applications
+Date: Wed, 5 Apr 2006 22:19:55 +0100 (BST)
+Message-ID: <Pine.LNX.4.63.0604052218280.8850__43532.6141109273$1144277962$gmane$org@deepthought.mydomain>
+References: <Pine.LNX.4.63.0604032155220.17605@deepthought.mydomain>
+ <20060404133814.GA11741@knautsch.gondor.com> <s5hlkul72rv.wl%tiwai@suse.de>
+ <20060404190631.GA4895@knautsch.gondor.com> <s5h7j656tpp.wl%tiwai@suse.de>
+ <20060404231911.GA4862@knautsch.gondor.com> <20060405002846.GA5201@knautsch.gondor.com>
+ <20060405090117.GB4794@knautsch.gondor.com> <s5h1wwcp93l.wl%tiwai@suse.de>
+ <20060405121537.GA4807@knautsch.gondor.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="-1463809536-222924853-1144271995=:8850"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 1243A13E
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 23:36:23 +0200 (MEST)
-In-Reply-To: <20060405083635.GB11178@turing.informatik.uni-halle.de>
+Received: from queue03-winn.ispmail.ntl.com (queue03-winn.ispmail.ntl.com [81.103.221.57])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 107C716C
+	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2006 00:57:06 +0200 (MEST)
+In-Reply-To: <20060405121537.GA4807@knautsch.gondor.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,33 +25,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Jan Niehusmann <jan@gondor.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Ken Moffat <zarniwhoop@ntlworld.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-04-05 at 10:36 +0200, Clemens Ladisch wrote:
-> Adrian McMenamin wrote:
-> > On Tue, 2006-04-04 at 18:17 +0200, Clemens Ladisch wrote:
-> > > Adrian McMenamin wrote:
-> > > > / # amixer -c 0
-> > > > Invalid card number.
-> > > > Usage: amixer <options> command
-> > > 
-> > > Does /dev/snd/controlC0 exist, and does it point to the control device
-> > > listed in /proc/asound/devices?
-> > 
-> > / # ls -l /dev/snd
-> > crw-rw-rw-    1 root     sys      116,   0 Apr  4 19:13 controlC0
-> > 
-> > / # cat /proc/asound/devices
-> >   0: [0- 0]: ctl
-> 
-> Looks OK.
-> 
-> What is the output of "strace amixer -c0 controls"?
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I have no strace. This is uclibc on SH4 embedded
+---1463809536-222924853-1144271995=:8850
+Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, 5 Apr 2006, Jan Niehusmann wrote:
+
+> On Wed, Apr 05, 2006 at 01:14:54PM +0200, Takashi Iwai wrote:
+> > Try the patch below.  The change in pcm_native.c may be unnecessary,
+> > but it's better so.
+> > If it works, I'll submit the patches with a proper log.
+>=20
+> The patch (applied to 2.6.17-rc1) does fix the oops, but sound is still
+> garbled with twinkle using /dev/dsp.=20
+
+ As a simple user of (only) playback, it fixes it.  Thanks to you both.
+
+Ken
+--=20
+das eine Mal als Trag=C3=B6die, das andere Mal als Farce
+---1463809536-222924853-1144271995=:8850--
 
 
 -------------------------------------------------------
