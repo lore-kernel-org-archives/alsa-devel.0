@@ -1,13 +1,16 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: alsa cvs broken
-Date: Wed, 05 Apr 2006 12:54:32 +0100
-Message-ID: <4433AFF8.6090409@superbug.co.uk>
-References: <44310468.6080303@superbug.co.uk>	<s5hr74ec174.wl%tiwai@suse.de>	<44311356.1000108@superbug.co.uk>	<Pine.LNX.4.61.0604031438430.9509@tm8103.perex-int.cz>	<s5hlkumbz1t.wl%tiwai@suse.de>	<Pine.LNX.4.61.0604031458460.9509@tm8103.perex-int.cz>	<443147CC.40905@keyaccess.nl>	<s5hpsjyab57.wl%tiwai@suse.de>	<Pine.LNX.4.61.0604051257130.27263@tm8103.perex-int.cz> <s5hzmj0nu9q.wl%tiwai@suse.de>
+From: Jan Niehusmann <jan@gondor.com>
+Subject: Re: Slab corruptions & Re: 2.6.17-rc1: Oops in sound applications
+Date: Wed, 5 Apr 2006 14:15:38 +0200
+Message-ID: <20060405121537.GA4807__5056.30198536$1144239957$gmane$org@knautsch.gondor.com>
+References: <Pine.LNX.4.63.0604032155220.17605@deepthought.mydomain> <20060404133814.GA11741@knautsch.gondor.com> <s5hlkul72rv.wl%tiwai@suse.de> <20060404190631.GA4895@knautsch.gondor.com> <s5h7j656tpp.wl%tiwai@suse.de> <20060404231911.GA4862@knautsch.gondor.com> <20060405002846.GA5201@knautsch.gondor.com> <20060405090117.GB4794@knautsch.gondor.com> <s5h1wwcp93l.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hzmj0nu9q.wl%tiwai@suse.de>
+Received: from moria.gondor.com (mail.gondor.com [212.117.64.182])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 34921170
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 14:15:43 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5h1wwcp93l.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,14 +21,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, Rene Herman <rene.herman@keyaccess.nl>, alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: Ken Moffat <zarniwhoop@ntlworld.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The CVS seems to be working again.
+On Wed, Apr 05, 2006 at 01:14:54PM +0200, Takashi Iwai wrote:
+> Try the patch below.  The change in pcm_native.c may be unnecessary,
+> but it's better so.
+> If it works, I'll submit the patches with a proper log.
 
-Shall I check my next patch it via CVS or HG?
+The patch (applied to 2.6.17-rc1) does fix the oops, but sound is still
+garbled with twinkle using /dev/dsp. 
 
-James
+About this garbled sound: I call an echo service on my asterisk server,
+which just echoes back everything I say. Works well using /dev/dsp with
+2.6.16, but with 2.6.17-rc1, even with the patch applied, I hear no echo
+at all for ~1s. After that, I hear a strongly distorted echo.
+
+If I change the twinkle settings to use the ALSA native devices instead
+of /dev/dsp, everything is fine.
+
+Pure playback, eg. with xmms, is fine with 2.6.17-rc1 using /dev/dsp.
+
+Jan
 
 
 
