@@ -1,13 +1,14 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: alsa cvs broken
-Date: Wed, 05 Apr 2006 20:04:22 +0200
-Message-ID: <443406A6.9050004@keyaccess.nl>
-References: <44310468.6080303@superbug.co.uk>	<s5hr74ec174.wl%tiwai@suse.de>	<44311356.1000108@superbug.co.uk>	<Pine.LNX.4.61.0604031438430.9509@tm8103.perex-int.cz>	<s5hlkumbz1t.wl%tiwai@suse.de>	<Pine.LNX.4.61.0604031458460.9509@tm8103.perex-int.cz>	<443147CC.40905@keyaccess.nl>	<s5hpsjyab57.wl%tiwai@suse.de>	<Pine.LNX.4.61.0604051257130.27263@tm8103.perex-int.cz> <s5hzmj0nu9q.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002005]: problems with make
+Date: Wed, 5 Apr 2006 19:59:59 +0200
+Message-ID: <65dc50e13383f098efea00d0f96a1af2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hzmj0nu9q.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 503C1178
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 19:59:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,35 +18,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
-> Jaroslav Kysela wrote:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2005> 
+======================================================================
+Reported By:                mramirez
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2005
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.15-1.2054_FC5smp
+======================================================================
+Date Submitted:             04-05-2006 19:59 CEST
+Last Modified:              04-05-2006 19:59 CEST
+======================================================================
+Summary:                    problems with make
+Description: 
+I've dowload the cvs version of alsa, and try install on my laptop, but the
+make process exit whit a bad status.
+======================================================================
 
->> Note that most of other developers are sending us standard unified diffs 
->> (and this way will remain). If you use internally for development GIT
->> or HG is another thing. We will maintain the ALSA GIT tree as well for the 
->> kernel development, but our code is not only kernel code.
-> 
-> I think Rene's point is :
-> 
-> - git gets more popular than hg (not only for kernels like Keith's
->   case)
-> - developers are too lazy to install hg extra only for ALSA
-
-Well, not so much "lazy" though :-) All's fine and well if you do this 
-stuff for a living but if you're the peripheral type that just submits 
-the occasional bugfix, an unfamiliar development environment will not 
-help bring you _beyond_ that occasional unidiff point to more active 
-involvement.
-
-My vote for GIT was just that though, one vote...
-
-Rene.
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-05-06 19:59 mramirez       New Issue                                    
+04-05-06 19:59 mramirez       Distribution              => Fedora Core 5   
+04-05-06 19:59 mramirez       Kernel Version            => 2.6.15-1.2054_FC5smp
+======================================================================
 
 
 
