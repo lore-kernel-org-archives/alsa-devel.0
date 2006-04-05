@@ -1,17 +1,16 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: patch bus_add_device-losing-an-error-return-from-the-probe-method.patch
- added to gregkh-2.6 tree
-Date: Wed, 05 Apr 2006 02:23:22 +0200
-Message-ID: <44330DFA.4080106__21461.5914891057$1144196994$gmane$org@keyaccess.nl>
-References: <44238489.8090402@keyaccess.nl> <1FQquz-2CO-00@press.kroah.org> <d120d5000604041323h448c1ccfi7e9dcedd82c385ba@mail.gmail.com> <20060404210048.GA5694@suse.de> <4432EF58.1060502@keyaccess.nl>
+From: Jan Niehusmann <jan@gondor.com>
+Subject: Re: Slab corruptions & Re: 2.6.17-rc1: Oops in sound applications
+Date: Wed, 5 Apr 2006 02:28:47 +0200
+Message-ID: <20060405002846.GA5201__32793.0020088845$1144197382$gmane$org@knautsch.gondor.com>
+References: <Pine.LNX.4.63.0604032155220.17605@deepthought.mydomain> <20060404133814.GA11741@knautsch.gondor.com> <s5hlkul72rv.wl%tiwai@suse.de> <20060404190631.GA4895@knautsch.gondor.com> <s5h7j656tpp.wl%tiwai@suse.de> <20060404231911.GA4862@knautsch.gondor.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------040709020607090400030303"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq2.groni1.gr.home.nl (smtpq2.groni1.gr.home.nl [213.51.130.201])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C470313C
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 02:22:36 +0200 (MEST)
-In-Reply-To: <4432EF58.1060502@keyaccess.nl>
+Received: from moria.gondor.com (mail.gondor.com [212.117.64.182])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2678183
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 02:28:47 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20060404231911.GA4862@knautsch.gondor.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,90 +20,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Greg KH <gregkh@suse.de>
-Cc: dtor_core@ameritech.net, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, Andrew Morton <akpm@osdl.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Ken Moffat <zarniwhoop@ntlworld.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040709020607090400030303
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Wed, Apr 05, 2006 at 01:19:11AM +0200, Jan Niehusmann wrote:
+> ...which happens to be the commit which contains the bug you already
+> mentioned. I wonder if there is a second one hidden somewhere in that
+> commit, or if git-bisect led me to that bug while the second one is
+> hidden in a different commit...
 
-Rene Herman wrote:
+Well, I did some additional debugging on that, working on git version
+3bf75f9b90c981f18f27a0d35a44f488ab68c8ea:
 
-> As said before, if the behaviour makes sense for other busses, maybe 
-> propagating errors up should be dependent on a flags value somewhere 
-> that a platform-driver sets?
-> 
-> If platform_device_register_simple() never returns an IS_ERR() when the 
-> device is not found that means it's not a useful interface for hardware 
-> that needs to be probed for at the very least. ALSA would need to do 
-> something like, just before returning a succesfull return from the 
-> probe() method, set a global flag that the platform_device that is about 
-> to be registered is actually representing something, and freeing all 
-> platform_devices for which the flag is _not_ set again after this.
-> 
-> Which ofcourse means this is not at all useful. It's just working around 
-> the driver model then...
+In snd_pcm_oss_release() I added 
+snd_assert(substream != NULL, return -ENXIO); 
+in front of the first access to substream->pcm, which leads to
 
-Well, we could in fact hang an unregister off device->private_data as 
-per attached example. Wouldn't be _excessively_ ugly. Still sucks 
-though. Having a flag somewhere in struct device_driver that a 
-platform_driver would set and which would tell the driver model to 
-honour the driver probe() method return seems the cleanest approach for 
-all hardware where only the driver can now if the device is really 
-present or not.
+Apr  5 02:13:13 knautsch kernel: [17180638.784000] BUG? (substream != ((void *)0))
 
-Ofcourse, I'm also still fine with just propagating the error up always 
-(and if can be doing something about the ignore of -ENODEV / -ENOXIO)...
+when opening /dev/dsp for write.
 
-Rene.
+If I now add the patch you suggested, correcting the check in
+snd_pcm_oss_open_file(), accessing /dev/dsp instead leads to EINVAL.
 
---------------040709020607090400030303
-Content-Type: text/plain;
- name="adlib-unregister.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="adlib-unregister.diff"
+So I guess git bisect really lead me to this already known bug.
 
-Index: local/sound/isa/adlib.c
-===================================================================
---- local.orig/sound/isa/adlib.c	2006-04-05 02:00:55.000000000 +0200
-+++ local/sound/isa/adlib.c	2006-04-05 02:05:45.000000000 +0200
-@@ -43,8 +43,7 @@ static int __devinit snd_adlib_probe(str
- 	struct snd_card *card;
- 	struct snd_opl3 *opl3;
- 
--	int error;
--	int i = device->id;
-+	int error, i = device->id;
- 
- 	if (port[i] == SNDRV_AUTO_PORT) {
- 		snd_printk(KERN_ERR DRV_NAME ": please specify port\n");
-@@ -95,8 +94,7 @@ static int __devinit snd_adlib_probe(str
- 	return 0;
- 
- out1:	snd_card_free(card);
-- out0:	error = -EINVAL; /* FIXME: should be the original error code */
--	return error;
-+out0:	return error;
- }
- 
- static int __devexit snd_adlib_remove(struct platform_device *device)
-@@ -134,6 +132,11 @@ static int __init alsa_card_adlib_init(v
- 		if (IS_ERR(device))
- 			continue;
- 
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
-+
- 		devices[i] = device;
- 		cards++;
- 	}
+Jan
 
---------------040709020607090400030303--
 
 
 -------------------------------------------------------
