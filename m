@@ -1,17 +1,17 @@
 From: Dmitry Torokhov <dtor_core@ameritech.net>
 Subject: Re: patch bus_add_device-losing-an-error-return-from-the-probe-method.patch added to gregkh-2.6 tree
-Date: Tue, 4 Apr 2006 21:45:24 -0400
-Message-ID: <200604042145.24685.dtor_core@ameritech.net>
-References: <44238489.8090402@keyaccess.nl> <4432EF58.1060502@keyaccess.nl> <44330DFA.4080106@keyaccess.nl>
+Date: Tue, 4 Apr 2006 21:48:56 -0400
+Message-ID: <200604042148.57286.dtor_core__7901.89524782381$1144201850$gmane$org@ameritech.net>
+References: <44238489.8090402@keyaccess.nl> <20060404210048.GA5694@suse.de> <4432EF58.1060502@keyaccess.nl>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp110.sbc.mail.re2.yahoo.com (smtp110.sbc.mail.re2.yahoo.com [68.142.229.95])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id EE21B121
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 03:45:26 +0200 (MEST)
-In-Reply-To: <44330DFA.4080106@keyaccess.nl>
+Received: from smtp113.sbc.mail.re2.yahoo.com (smtp113.sbc.mail.re2.yahoo.com [68.142.229.92])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2F894144
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 03:48:59 +0200 (MEST)
+In-Reply-To: <4432EF58.1060502@keyaccess.nl>
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -26,32 +26,19 @@ To: Rene Herman <rene.herman@keyaccess.nl>
 Cc: Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, Andrew Morton <akpm@osdl.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 04 April 2006 20:23, Rene Herman wrote:
-> Rene Herman wrote:
-> 
-> > As said before, if the behaviour makes sense for other busses, maybe 
-> > propagating errors up should be dependent on a flags value somewhere 
-> > that a platform-driver sets?
-> > 
-> > If platform_device_register_simple() never returns an IS_ERR() when the 
-> > device is not found that means it's not a useful interface for hardware 
-> > that needs to be probed for at the very least. ALSA would need to do 
-> > something like, just before returning a succesfull return from the 
-> > probe() method, set a global flag that the platform_device that is about 
-> > to be registered is actually representing something, and freeing all 
-> > platform_devices for which the flag is _not_ set again after this.
-> > 
-> > Which ofcourse means this is not at all useful. It's just working around 
-> > the driver model then...
-> 
-> Well, we could in fact hang an unregister off device->private_data as 
-> per attached example. Wouldn't be _excessively_ ugly. Still sucks 
-> though.
+On Tuesday 04 April 2006 18:12, Rene Herman wrote:
+> To Dmitry, I see you saying "probe() failing is driver's problem. The 
+> device is still there and should still be presented in sysfs.". No, at 
+> least in the case of these platform drivers (or at least these old ISA 
+> cards using the platform driver interface), a -ENODEV return from the 
+> probe() method would mean the device is _not_ present (or not found at 
+> least). NODEV.
 
-Plus it broke all the drivers that create platform devices before
-registering drivers or the ones simply not using private data. Given
-that some arches have a means to separate device creation from driver
-probing (see pcspkr on PPC for exaple) I don;t think this is acceptable.
+Or you could separate device probing code from driver->probe(). BTW I think
+that ->probe() is not the best name for that method. It really is supposed
+to allocate resources and initialize the device so that it is ready to be
+used, not to verify that device is present. The code that created device
+shoudl've done that.
 
 -- 
 Dmitry
