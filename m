@@ -1,17 +1,20 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: Re: patch bus_add_device-losing-an-error-return-from-the-probe-method.patch
- added to gregkh-2.6 tree
-Date: Wed, 05 Apr 2006 20:36:02 +0200
-Message-ID: <44340E12.9000202__6226.65274790979$1144264593$gmane$org@keyaccess.nl>
-References: <44238489.8090402@keyaccess.nl> <4432EF58.1060502@keyaccess.nl> <44330DFA.4080106@keyaccess.nl> <200604042145.24685.dtor_core@ameritech.net>
+From: "Luca Tettamanti" <kronos.it@gmail.com>
+Subject: Re: [2.6.17-rc1] ALSA oops with multiple OSS clients
+Date: Wed, 5 Apr 2006 21:03:58 +0200
+Message-ID: <68676e00604051203v35ea53dt6096e83af4b660e0@mail.gmail.com>
+References: <20060405173002.GA5306@dreamland.darkstar.lan>
+	 <1144259073.10626.2.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq2.tilbu1.nb.home.nl (smtpq2.tilbu1.nb.home.nl [213.51.146.201])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38BE8147
-	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 20:35:49 +0200 (MEST)
-In-Reply-To: <200604042145.24685.dtor_core@ameritech.net>
+Received: from pproxy.gmail.com (pproxy.gmail.com [64.233.166.183])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 77B7514B
+	for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2006 21:04:00 +0200 (MEST)
+Received: by pproxy.gmail.com with SMTP id i49so2276626pyi
+        for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2006 12:03:59 -0700 (PDT)
+In-Reply-To: <1144259073.10626.2.camel@mindpipe>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,23 +24,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dmitry Torokhov <dtor_core@ameritech.net>
-Cc: Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, Andrew Morton <akpm@osdl.org>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: linux-kernel@vger.kernel.org, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dmitry Torokhov wrote:
-
->> Well, we could in fact hang an unregister off device->private_data as 
->> per attached example. Wouldn't be _excessively_ ugly. Still sucks 
->> though.
-> 
-> Plus it broke all the drivers that create platform devices before
-> registering drivers or the ones simply not using private data.
-
-No, this was just a suggestion for an ALSA specific workaround. I was 
-suggesting ALSA drivers could do this.
-
-Rene.
+T24gNC81LzA2LCBMZWUgUmV2ZWxsIDxybHJldmVsbEBqb2Utam9iLmNvbT4gd3JvdGU6Cj4gT24g
+V2VkLCAyMDA2LTA0LTA1IGF0IDE5OjMwICswMjAwLCBMdWNhIHdyb3RlOgo+ID4gSGVsbG8sCj4g
+PiBJJ3ZlIGEgcmVwcm9kdWNpYmxlIE9PUFMgd2hlbiBzdGFydGluZyBtdWx0aXBsZSBPU1MgY2xp
+ZW50cy4KPiA+IFRvIHJlcHJvZHVjZSBJIGRvIHRoaXM6Cj4gPiBtcGcxMjMgc29uZy5tcDMKPiA+
+IG1wZzEyMyBzb25nLm1wMyAoYW5vdGhlciB0aW1lKQo+ID4KPiA+IEF0IHRoaXMgcG9pbnQgdGhl
+IHNvbmcgcmVzdGFydCBmcm9tIHRoZSBiZWdpbm5pbmcgKGkuZS4gSSB0aGluayB0aGF0Cj4gPiB0
+aGUgc2Vjb25kIG1wZzEyMyB0YWtlcyBvdmVyIHRoZSBkZXZpY2UpLiBXaGVuIHRoZSBzZWNvbmQg
+aW5zdGFuY2UKPiA+IHRlcm1pbmF0ZXMgdGhlIHNvbmcgSSBnZXQgdGhlIGZvbGxvd2luZyBPT1BT
+Ogo+Cj4gS25vd24gYnVnLCBwbGVhc2UgdHJ5IHRoZSBwYXRjaDoKPgo+IGh0dHA6Ly9idWd6aWxs
+YS5rZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9pZD02MzI5CgpUaGUgcGF0Y2ggd29ya3MgZmluZS4K
+CnRoYW5rcywKTHVjYQo=
 
 
 -------------------------------------------------------
