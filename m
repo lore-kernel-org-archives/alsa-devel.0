@@ -1,11 +1,13 @@
-From: Riccardo Tempesta <info@riccardotempesta.com>
-Subject: More than 8 soundcards
-Date: Thu, 06 Apr 2006 21:31:25 +0200
-Message-ID: <44356C8D.1010402@riccardotempesta.com>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: More than 8 soundcards
+Date: Thu, 06 Apr 2006 15:40:50 -0400
+Message-ID: <1144352451.2866.102.camel@mindpipe>
+References: <44356C8D.1010402@riccardotempesta.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <44356C8D.1010402@riccardotempesta.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,24 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Riccardo Tempesta <info@riccardotempesta.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm trying to use more than 8 soundcards with ALSA.
+On Thu, 2006-04-06 at 21:31 +0200, Riccardo Tempesta wrote:
+> I'm trying to use more than 8 soundcards with ALSA.
+> 
+> I've seen the following line in "driver.h"
+> #define SNDRV_CARDS 8 /* number of supported soundcards - don't change - 
+> minor numbers */
+> 
+> What does "don't change - minor numbers" mean?
+> 
+> I tried to increase it to 16 and I can see new /proc/asound/cardX 
+> folders, but no /dev/dspX devices.
+> 
 
-I've seen the following line in "driver.h"
-#define SNDRV_CARDS 8 /* number of supported soundcards - don't change - 
-minor numbers */
+Hence the "don't change" comment.  If it was that easy, this would
+already be set to 16.
 
-What does "don't change - minor numbers" mean?
+> Any help will be appreciated.
+> Thank you in advantage.
 
-I tried to increase it to 16 and I can see new /proc/asound/cardX 
-folders, but no /dev/dspX devices.
+I belive you just need to enable CONFIG_SND_DYNAMIC_MINORS to eliminate
+the 8 device limit (check list archives to be sure)
 
-Any help will be appreciated.
-Thank you in advantage.
+Lee
 
-Riccardo.
+
 
 
 -------------------------------------------------------
