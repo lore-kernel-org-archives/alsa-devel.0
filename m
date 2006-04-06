@@ -1,17 +1,17 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Cross compiling alsa-driver
-Date: Thu, 06 Apr 2006 18:54:44 -0400
-Message-ID: <1144364085.12038.28.camel@mindpipe>
+Date: Thu, 06 Apr 2006 18:57:55 -0400
+Message-ID: <1144364276.12038.31.camel@mindpipe>
 References: <1144187819.9472.25.camel@localhost.localdomain>
 	 <s5hwte4ntxt.wl%tiwai@suse.de>
 	 <1144361810.9219.6.camel@localhost.localdomain>
 	 <1144362329.12038.22.camel@mindpipe>
-	 <1144363591.9219.16.camel@localhost.localdomain>
+	 <1144362544.9219.14.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1144363591.9219.16.camel@localhost.localdomain>
+In-Reply-To: <1144362544.9219.14.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,24 +25,13 @@ To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-04-06 at 23:46 +0100, Adrian McMenamin wrote:
-> On Thu, 2006-04-06 at 18:25 -0400, Lee Revell wrote:
-> > On Thu, 2006-04-06 at 23:16 +0100, Adrian McMenamin wrote:
-> > > checking for directory with kernel
-> > > source... /home/adrian/linux-2.6.15.2
-> > > checking for directory with kernel
-> > > build... /home/adrian/linux-2.6.15.2 
-> > 
-> > It's not ignoring them.  It sounds like you just need to add aica to the
-> > build scripts.
-> > 
-> > What is the output of "grep aica ./configure"?
-> > 
-> How do I add aica to it anyway? :)
-> 
+On Thu, 2006-04-06 at 23:29 +0100, Adrian McMenamin wrote:
+> I know that aica isn't in there - but the general build should still
+> work and it doesn't... 
 
-I'm not sure (is it in the driver guide?).  For starters I would just
-copy the "emu10k1" entry in ./configure and substitute "aica" etc
+Nope - I just tested it by removing the Makefile and running ./configure
+with a made up card and it does not generate a new Makefile.  So it must
+be using an old one with incorrect kernel source locations.
 
 Lee
 
