@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001971]: Some elements incorrectly have capture flags
-Date: Thu, 6 Apr 2006 09:44:24 +0200
-Message-ID: <f24d9e1814c24741300481e620ace868@bugtrack.alsa-project.org>
+From: Erik Mouw <erik@harddisk-recovery.com>
+Subject: [BUG ALSA 2.6.17-rc1] Oops when Gaim tries to play sound
+Date: Thu, 6 Apr 2006 15:20:42 +0200
+Message-ID: <20060406132042.GF20402__14752.5954679169$1144329733$gmane$org@harddisk-recovery.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9BFF1A0
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2006 09:44:24 +0200 (MEST)
+Received: from abra2.bitwizard.nl (dtp.xs4all.nl [80.126.206.180])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6BD8F15D
+	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2006 15:20:47 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,359 +18,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971> 
-======================================================================
-Reported By:                pzad
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1971
-Category:                   simple mixer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-28-2006 12:16 CEST
-Last Modified:              04-06-2006 09:44 CEST
-======================================================================
-Summary:                    Some elements incorrectly have capture flags
-Description: 
-Some elemnts have capture flags even they have nothing to do with capture.
-This will duplicate control in alsamixer - view ALL.
+I got this Oops when Gaim (instant messages) tried to play a sound:
 
-On VIA8233A + ALC650:
+BUG: unable to handle kernel NULL pointer dereference at virtual address 00000098
+ printing eip:
+e0a37dea
+*pde = 00000000
+Oops: 0000 [#1]
+Modules linked in: arc4 ieee80211_crypt_wep bcm43xx ieee80211softmac ieee80211 ieee80211_crypt lp binfmt_misc autofs4 ipv6 ide_cd cdrom 8250_pnp floppy eth1394 8139too mii ohci1394 ieee1394 snd_via82xx_modem snd_via82xx gameport snd_ac97_codec snd_ac97_bus snd_pcm_oss snd_mixer_oss snd_pcm snd_timer snd_page_alloc snd_mpu401_uart snd_rawmidi snd_seq_device snd soundcore via686a i2c_isa i2c_core usbhid uhci_hcd usbcore parport_pc parport tun cpufreq_conservative cpufreq_ondemand powernow_k7 freq_table 8250 serial_core psmouse pcspkr r128 drm via_agp agpgart
+CPU:    0
+EIP:    0060:[<e0a37dea>]    Not tainted VLI
+EFLAGS: 00210046   (2.6.17-rc1-dirty #2) 
+EIP is at snd_pcm_drain+0x248/0x2cb [snd_pcm]
+eax: 00000000   ebx: dfb025c8   ecx: 00000000   edx: c1750ca0
+esi: 00000000   edi: cd1c3c00   ebp: e0a49b00   esp: c3d64e80
+ds: 007b   es: 007b   ss: 0068
+Process gaim (pid: 8111, threadinfo=c3d64000 task=c2112af0)
+Stack: <0>c3d64e90 00000001 00000000 dfb02400 c1750ca0 00000000 c2112af0 c01138fa 
+       cd1c3ca4 cd1c3ca4 00008000 e0b9b000 00004144 00000000 00000010 c3d64f44 
+       e0a39699 c1750ca0 00004144 00000000 00200246 00000000 cd1c3c00 e0a4d58d 
+Call Trace:
+ <c01138fa> default_wake_function+0x0/0x12   <e0a39699> snd_pcm_playback_ioctl1+0x1f6/0x205 [snd_pcm]
+ <e0a4d58d> snd_pcm_oss_sync1+0xcf/0xd9 [snd_pcm_oss]   <c01138fa> default_wake_function+0x0/0x12
+ <e0a3992e> snd_pcm_kernel_ioctl+0x33/0x58 [snd_pcm]   <e0a4d783> snd_pcm_oss_sync+0x1ec/0x25d [snd_pcm_oss]
+ <e0a4e5f0> snd_pcm_oss_release+0x1c/0x83 [snd_pcm_oss]   <c01458d7> __fput+0x95/0x126
+ <c01445cf> filp_close+0x4c/0x55   <c014461e> sys_close+0x46/0x52
+ <c0102a07> syscall_call+0x7/0xb  
+Code: c3 c8 01 00 00 89 d8 e8 f9 14 81 df b8 c4 09 00 00 e8 8c 12 81 df 89 c6 89 d8 e8 d5 14 81 df fa 85 f6 75 87 8b 54 24 44 8b 42 5c <8b> 80 98 00 00 00 8b 00 c7 44 24 08 aa ff ff ff 83 f8 07 74 12 
+ BUG: gaim/8111, lock held at task exit time!
+ [dfb025c8] {snd_card_new}
+.. held by:              gaim: 8111 [c2112af0, 115]
+... acquired at:               snd_pcm_drain+0x23c/0x2cb [snd_pcm]
 
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 1 [7%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
+Kernel version: Linux version 2.6.17-rc1-dirty (root@arthur) (gcc
+version 3.3.5 (Debian 1:3.3.5-13)) #2 Mon Apr 3 16:18:21 CEST 2006
 
-On Audigy 1:
-Simple mixer control 'Bass',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 23 [58%]
-  Front Right: 23 [58%]
-Simple mixer control 'Treble',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 27 [68%]
-  Front Right: 27 [68%]
+This used to work with 2.6.16. CPU is a Mobile Athlon 1.2 GHz on a Sony
+Vaio PCG-FX505 laptop. Alsa userland utils from Debian alsa 1.0.8
+packages, but I guess Gaim uses /dev/dsp and friends.
 
+Output from lspci:
 
-======================================================================
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8363/8365 [KT133/KM133] (rev 03)
+0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8363/8365 [KT133/KM133 AGP]
+0000:00:07.0 ISA bridge: VIA Technologies, Inc. VT82C686 [Apollo Super South] (rev 40)
+0000:00:07.1 IDE interface: VIA Technologies, Inc. VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06)
+0000:00:07.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 Controller (rev 1a)
+0000:00:07.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 Controller (rev 1a)
+0000:00:07.4 ISA bridge: VIA Technologies, Inc. VT82C686 [Apollo Super ACPI] rev 40)
+0000:00:07.5 Multimedia audio controller: VIA Technologies, Inc. VT82C686 AC97 audio Controller (rev 50)
+0000:00:07.6 Communication controller: VIA Technologies, Inc. AC'97 Modem Controller (rev 30)
+0000:00:0a.0 CardBus bridge: Texas Instruments PCI1420
+0000:00:0a.1 CardBus bridge: Texas Instruments PCI1420
+0000:00:0e.0 FireWire (IEEE 1394): Texas Instruments TSB12LV26 IEEE-1394 Controller (Link)
+0000:00:10.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL-8139/8139C/8139C+ (rev 10)
+0000:01:00.0 VGA compatible controller: ATI Technologies Inc Rage Mobility P/M AGP 2x (rev 64)
+0000:02:00.0 Network controller: Broadcom Corporation BCM4318 [AirForce One 54g]802.11g Wireless LAN Controller (rev 02)
 
-----------------------------------------------------------------------
- Raymond - 04-05-06 18:50 
-----------------------------------------------------------------------
-I can group the lower 4 bands to implement the bass control and the upper 6
-bands to implement the treble control. 
-
-The new "Bass" and "Treble" will appear in kmix.
-
-how can I add the surround of STAC9708 into kmix ?
-
-cat /proc/asound/au8830/oss_mixer
-VOLUME "Master" 0
-BASS "Tone Control - Bass" 0
-TREBLE "Tone Control - Treble" 0
-SYNTH "" 0
-PCM "PCM" 0
-SPEAKER "PC Speaker" 0
-LINE "Line" 0
-MIC "Mic" 0
-CD "CD" 0
-IMIX "" 0
-ALTPCM "" 0
-RECLEV "" 0
-IGAIN "Capture" 0
-OGAIN "" 0
-LINE1 "Aux" 0
-LINE2 "" 0
-LINE3 "" 0
-DIGITAL1 "" 0
-DIGITAL2 "" 0
-DIGITAL3 "" 0
-PHONEIN "Phone" 0
-PHONEOUT "Master Mono" 0
-VIDEO "Video" 0
-RADIO "" 0
-MONITOR "" 0
+Could be a locking error or an ALSA error, so message posted to lkml
+and alsa-devel lists. Feel free to ask for more information.
 
 
-/*
-	Bass control - the lower 4 bands
-*/
-static int
-snd_vortex_bass_treble_info(struct snd_kcontrol *kcontrol, struct
-snd_ctl_elem_info *uinfo)
-{
-	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-	uinfo->count = 2;
-	uinfo->value.integer.min = 0x0000;
-	uinfo->value.integer.max = 0x7fff;
-	return 0;
-}
+Erik
 
-static int
-snd_vortex_bass_get(struct snd_kcontrol *kcontrol, struct
-snd_ctl_elem_value *ucontrol)
-{
-	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
-	ucontrol->value.integer.value[0] = vortex->bass[0];
-	ucontrol->value.integer.value[1] = vortex->bass[1];
-	return 0;
-}
-
-static int
-snd_vortex_bass_put(struct snd_kcontrol *kcontrol, struct
-snd_ctl_elem_value *ucontrol)
-{
-	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
-	int changed = 0, i;
-	if ( vortex->bass[0] != ucontrol->value.integer.value[0]) {
-		vortex->bass[0] = ucontrol->value.integer.value[0];
-		changed = 1;
-	};
-	if ( vortex->bass[1] != ucontrol->value.integer.value[1]) {
-		vortex->bass[1] = ucontrol->value.integer.value[1];
-		changed = 1;
-	};
-	for (i=0; i<4; i++)  {
-		vortex_Eqlzr_SetLeftGain(vortex, i, vortex->bass[0]);
-		vortex_Eqlzr_SetRightGain(vortex, i, vortex->bass[1]);
-	}
-	return changed;
-}
-
-static struct snd_kcontrol_new vortex_bass_kcontrol __devinitdata = {
-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name = "Tone Control - Bass",
-	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-	.info = snd_vortex_bass_treble_info,
-	.get = snd_vortex_bass_get,
-	.put = snd_vortex_bass_put
-};
-
-/*
-	Treble control - the upper 6 bands
-*/
-static int
-snd_vortex_treble_get(struct snd_kcontrol *kcontrol, struct
-snd_ctl_elem_value *ucontrol)
-{
-	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
-	ucontrol->value.integer.value[0] = vortex->treble[0];
-	ucontrol->value.integer.value[1] = vortex->treble[1];
-	return 0;
-}
-
-static int
-snd_vortex_treble_put(struct snd_kcontrol *kcontrol, struct
-snd_ctl_elem_value *ucontrol)
-{
-	vortex_t *vortex = snd_kcontrol_chip(kcontrol);
-	int changed = 0, i;
-	if ( vortex->treble[0] != ucontrol->value.integer.value[0]) {
-		vortex->treble[0] = ucontrol->value.integer.value[0];
-		changed = 1;
-	}
-	if ( vortex->treble[1] != ucontrol->value.integer.value[1]) {
-		vortex->treble[1] = ucontrol->value.integer.value[1];
-		changed = 1;
-	}
-	for (i=4; i<10; i++)  {
-		vortex_Eqlzr_SetLeftGain(vortex, i, vortex->treble[0]);
-		vortex_Eqlzr_SetRightGain(vortex, i, vortex->treble[1]);
-	};
-	return changed;
-}
-
-static struct snd_kcontrol_new vortex_treble_kcontrol __devinitdata = {
-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name = "Tone Control - Treble",
-	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-	.info = snd_vortex_bass_treble_info,
-	.get = snd_vortex_treble_get,
-	.put = snd_vortex_treble_put
-};
-
-
-
-
-
-
-
-
-
-	for (i=0; i<2; i++) {
-		vortex->bass[i] = 0x3e96;
-		vortex->treble[i] = 0x3e96;
-	};
-
-	if ((kcontrol =  snd_ctl_new1(&vortex_bass_kcontrol, vortex)) == NULL)
-		return -ENOMEM;
-	if ((err = snd_ctl_add(vortex->card, kcontrol)) < 0)
-		return err;
-	if ((kcontrol =  snd_ctl_new1(&vortex_treble_kcontrol, vortex)) == NULL)
-		return -ENOMEM;
-	if ((err = snd_ctl_add(vortex->card, kcontrol)) < 0)
-		return err;
-
-
-
-----------------------------------------------------------------------
- Raymond - 04-06-06 09:44 
-----------------------------------------------------------------------
-It's easy to implement a switch which route either one of the following 
-
-1) Front Playback Channels
-2) Capture Channels
-3) Rear Playback Channels (Only for au8810/au8830 with 4 channels codec)
-
-to the 10-bands stereo equalizer.
-
-
-static void
-vortex_connect_codecplay(vortex_t * vortex, int en, unsigned char
-mixers[])
-{
-#ifdef CHIP_AU8820
-	vortex_connection_mix_adb(vortex, en, 0x11, mixers[0], ADB_CODECOUT(0));
-	vortex_connection_mix_adb(vortex, en, 0x11, mixers[1], ADB_CODECOUT(1));
-#else
-	switch(vortex->eq_route){
-	case 0:
-		// Connect front channels through EQ.
-		vortex_connection_mix_adb(vortex, en, 0x11, mixers[0], ADB_EQIN(0));
-		vortex_connection_mix_adb(vortex, en, 0x11, mixers[1], ADB_EQIN(1));
-		/* Lower volume, since EQ has some gain. */
-		vortex_mix_setvolumebyte(vortex, mixers[0], 0);
-		vortex_mix_setvolumebyte(vortex, mixers[1], 0);
-		vortex_route(vortex, en, 0x11, ADB_EQOUT(0), ADB_CODECOUT(0));
-		vortex_route(vortex, en, 0x11, ADB_EQOUT(1), ADB_CODECOUT(1));
-		/* Check if reg 0x28 has SDAC bit set. */
-		if (VORTEX_IS_QUAD(vortex)) {
-			/* Rear channel. Note: ADB_CODECOUT(0+2) and (1+2) is for AC97 modem
-*/
-			vortex_connection_mix_adb(vortex, en, 0x11, mixers[2],
-ADB_CODECOUT(4));
-			vortex_connection_mix_adb(vortex, en, 0x11, mixers[3],
-ADB_CODECOUT(5));
-		}
-		break;
-	case 1:
-		vortex_connection_mix_adb(vortex, en, 0x11, mixers[0],
-ADB_CODECOUT(0));
-		vortex_connection_mix_adb(vortex, en, 0x11, mixers[1],
-ADB_CODECOUT(1));
-		if (VORTEX_IS_QUAD(vortex)) {
-			vortex_connection_mix_adb(vortex, en, 0x11, mixers[2],
-ADB_CODECOUT(4));
-			vortex_connection_mix_adb(vortex, en, 0x11, mixers[3],
-ADB_CODECOUT(5));
-		}
-		break;
-	case 2:
-		// Connect front channels
-		vortex_connection_mix_adb(vortex, en, 0x11, mixers[0],
-ADB_CODECOUT(0));
-		vortex_connection_mix_adb(vortex, en, 0x11, mixers[1],
-ADB_CODECOUT(1));
-		// Connect rear channels through EQ.
-		vortex_connection_mix_adb(vortex, en, 0x11, mixers[2], ADB_EQIN(0));
-		vortex_connection_mix_adb(vortex, en, 0x11, mixers[3], ADB_EQIN(1));
-		/* Lower volume, since EQ has some gain. */
-		vortex_mix_setvolumebyte(vortex, mixers[2], 0);
-		vortex_mix_setvolumebyte(vortex, mixers[3], 0);
-		vortex_route(vortex, en, 0x11, ADB_EQOUT(0), ADB_CODECOUT(4));
-		vortex_route(vortex, en, 0x11, ADB_EQOUT(1), ADB_CODECOUT(5));
-		break;
-	};
-#endif
-}
-
-static void
-vortex_connect_codecrec(vortex_t * vortex, int en, unsigned char mixin0,
-			unsigned char mixin1)
-{
-	/*
-	   Enable: 0x1, 0x1
-	   Channel: 0x11, 0x11
-	   ADB Source address: 0x48, 0x49
-	   Destination Asp4Topology_0x9c,0x98
-	 */
-	if ( vortex->eq_route == 1 ) {
-		// Connect rear channels through EQ.
-		vortex_connection_mix_adb(vortex, en, 0x11, ADB_CODECIN(0),
-ADB_EQIN(0));
-		vortex_connection_mix_adb(vortex, en, 0x11, ADB_CODECIN(1),
-ADB_EQIN(1));
-		/* Lower volume, since EQ has some gain. */
-		vortex_mix_setvolumebyte(vortex, mixin0, 0);
-		vortex_mix_setvolumebyte(vortex, mixin1, 0);
-		vortex_route(vortex, en, 0x11, ADB_EQOUT(0), mixin0);
-		vortex_route(vortex, en, 0x11, ADB_EQOUT(1), mixin1));
-	}
-	else {
-		vortex_connection_adb_mixin(vortex, en, 0x11, ADB_CODECIN(0), mixin0);
-		vortex_connection_adb_mixin(vortex, en, 0x11, ADB_CODECIN(1), mixin1);
-	};
-}
-
-
-It's OK to implement eq_route as a module switch since we can change the
-name of the kcontrol when the driver is loaded.
-
-Is it possible to implmenet eq_route as a kcontrol which allow the user to
-change the eq_route dynamically after the driver is loaded ?
-
-Will the alsamixer able to detect this change ?
-
-Please note the that above code is not complete, we still need to adjust
-the gain of the hardware mixers when a substream is open.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-28-06 12:16 pzad           New Issue                                    
-03-30-06 11:01 Raymond        Note Added: 0009028                          
-03-30-06 12:50 pzad           Note Added: 0009031                          
-03-30-06 13:13 pzad           Note Added: 0009032                          
-03-30-06 13:22 Raymond        Note Added: 0009033                          
-03-30-06 13:29 Raymond        Note Edited: 0009033                         
-03-30-06 13:41 Raymond        Note Edited: 0009033                         
-03-31-06 04:36 Raymond        Note Added: 0009041                          
-03-31-06 04:50 Raymond        Note Edited: 0009041                         
-04-01-06 01:13 Raymond        Note Edited: 0009033                         
-04-03-06 19:08 Raymond        Note Added: 0009103                          
-04-05-06 18:42 Raymond        Note Added: 0009121                          
-04-05-06 18:46 Raymond        Note Edited: 0009121                         
-04-05-06 18:50 Raymond        Note Edited: 0009121                         
-04-06-06 09:11 Raymond        Note Deleted: 0009103                        
-04-06-06 09:44 Raymond        Note Added: 0009124                          
-======================================================================
-
-
+-- 
++-- Erik Mouw -- www.harddisk-recovery.com -- +31 70 370 12 90 --
+| Lab address: Delftechpark 26, 2628 XH, Delft, The Netherlands
 
 
 -------------------------------------------------------
