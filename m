@@ -1,14 +1,14 @@
-From: Erik Mouw <erik@harddisk-recovery.com>
-Subject: [BUG ALSA 2.6.17-rc1] Oops when Gaim tries to play sound
-Date: Thu, 6 Apr 2006 15:20:42 +0200
-Message-ID: <20060406132042.GF20402__14752.5954679169$1144329733$gmane$org@harddisk-recovery.nl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
+Date: Thu, 6 Apr 2006 16:52:14 +0200
+Message-ID: <2412db635afd8d317b9994c2c356fdcb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from abra2.bitwizard.nl (dtp.xs4all.nl [80.126.206.180])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 6BD8F15D
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2006 15:20:47 +0200 (MEST)
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D13D171
+	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2006 16:52:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +18,168 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I got this Oops when Gaim (instant messages) tried to play a sound:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1726
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
+======================================================================
+Date Submitted:             01-08-2006 17:41 CET
+Last Modified:              04-06-2006 16:52 CEST
+======================================================================
+Summary:                    Front and Rear channels swap after first play when
+playing Surround40 on au8830
+Description: 
+The front and rear channels are correct for playing Surround40 only at the
+first time after the driver is loaded. 
 
-BUG: unable to handle kernel NULL pointer dereference at virtual address 00000098
- printing eip:
-e0a37dea
-*pde = 00000000
-Oops: 0000 [#1]
-Modules linked in: arc4 ieee80211_crypt_wep bcm43xx ieee80211softmac ieee80211 ieee80211_crypt lp binfmt_misc autofs4 ipv6 ide_cd cdrom 8250_pnp floppy eth1394 8139too mii ohci1394 ieee1394 snd_via82xx_modem snd_via82xx gameport snd_ac97_codec snd_ac97_bus snd_pcm_oss snd_mixer_oss snd_pcm snd_timer snd_page_alloc snd_mpu401_uart snd_rawmidi snd_seq_device snd soundcore via686a i2c_isa i2c_core usbhid uhci_hcd usbcore parport_pc parport tun cpufreq_conservative cpufreq_ondemand powernow_k7 freq_table 8250 serial_core psmouse pcspkr r128 drm via_agp agpgart
-CPU:    0
-EIP:    0060:[<e0a37dea>]    Not tainted VLI
-EFLAGS: 00210046   (2.6.17-rc1-dirty #2) 
-EIP is at snd_pcm_drain+0x248/0x2cb [snd_pcm]
-eax: 00000000   ebx: dfb025c8   ecx: 00000000   edx: c1750ca0
-esi: 00000000   edi: cd1c3c00   ebp: e0a49b00   esp: c3d64e80
-ds: 007b   es: 007b   ss: 0068
-Process gaim (pid: 8111, threadinfo=c3d64000 task=c2112af0)
-Stack: <0>c3d64e90 00000001 00000000 dfb02400 c1750ca0 00000000 c2112af0 c01138fa 
-       cd1c3ca4 cd1c3ca4 00008000 e0b9b000 00004144 00000000 00000010 c3d64f44 
-       e0a39699 c1750ca0 00004144 00000000 00200246 00000000 cd1c3c00 e0a4d58d 
-Call Trace:
- <c01138fa> default_wake_function+0x0/0x12   <e0a39699> snd_pcm_playback_ioctl1+0x1f6/0x205 [snd_pcm]
- <e0a4d58d> snd_pcm_oss_sync1+0xcf/0xd9 [snd_pcm_oss]   <c01138fa> default_wake_function+0x0/0x12
- <e0a3992e> snd_pcm_kernel_ioctl+0x33/0x58 [snd_pcm]   <e0a4d783> snd_pcm_oss_sync+0x1ec/0x25d [snd_pcm_oss]
- <e0a4e5f0> snd_pcm_oss_release+0x1c/0x83 [snd_pcm_oss]   <c01458d7> __fput+0x95/0x126
- <c01445cf> filp_close+0x4c/0x55   <c014461e> sys_close+0x46/0x52
- <c0102a07> syscall_call+0x7/0xb  
-Code: c3 c8 01 00 00 89 d8 e8 f9 14 81 df b8 c4 09 00 00 e8 8c 12 81 df 89 c6 89 d8 e8 d5 14 81 df fa 85 f6 75 87 8b 54 24 44 8b 42 5c <8b> 80 98 00 00 00 8b 00 c7 44 24 08 aa ff ff ff 83 f8 07 74 12 
- BUG: gaim/8111, lock held at task exit time!
- [dfb025c8] {snd_card_new}
-.. held by:              gaim: 8111 [c2112af0, 115]
-... acquired at:               snd_pcm_drain+0x23c/0x2cb [snd_pcm]
+The front and rear channels (Surround40) always swapped afterward using
+speaker-test or xine. 
 
-Kernel version: Linux version 2.6.17-rc1-dirty (root@arthur) (gcc
-version 3.3.5 (Debian 1:3.3.5-13)) #2 Mon Apr 3 16:18:21 CEST 2006
-
-This used to work with 2.6.16. CPU is a Mobile Athlon 1.2 GHz on a Sony
-Vaio PCG-FX505 laptop. Alsa userland utils from Debian alsa 1.0.8
-packages, but I guess Gaim uses /dev/dsp and friends.
-
-Output from lspci:
-
-0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8363/8365 [KT133/KM133] (rev 03)
-0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8363/8365 [KT133/KM133 AGP]
-0000:00:07.0 ISA bridge: VIA Technologies, Inc. VT82C686 [Apollo Super South] (rev 40)
-0000:00:07.1 IDE interface: VIA Technologies, Inc. VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06)
-0000:00:07.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 Controller (rev 1a)
-0000:00:07.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 Controller (rev 1a)
-0000:00:07.4 ISA bridge: VIA Technologies, Inc. VT82C686 [Apollo Super ACPI] rev 40)
-0000:00:07.5 Multimedia audio controller: VIA Technologies, Inc. VT82C686 AC97 audio Controller (rev 50)
-0000:00:07.6 Communication controller: VIA Technologies, Inc. AC'97 Modem Controller (rev 30)
-0000:00:0a.0 CardBus bridge: Texas Instruments PCI1420
-0000:00:0a.1 CardBus bridge: Texas Instruments PCI1420
-0000:00:0e.0 FireWire (IEEE 1394): Texas Instruments TSB12LV26 IEEE-1394 Controller (Link)
-0000:00:10.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL-8139/8139C/8139C+ (rev 10)
-0000:01:00.0 VGA compatible controller: ATI Technologies Inc Rage Mobility P/M AGP 2x (rev 64)
-0000:02:00.0 Network controller: Broadcom Corporation BCM4318 [AirForce One 54g]802.11g Wireless LAN Controller (rev 02)
-
-Could be a locking error or an ALSA error, so message posted to lkml
-and alsa-devel lists. Feel free to ask for more information.
+Playing stereo sound is OK.
 
 
-Erik
+ speaker-test -c4 -D hw:0,0
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+Time per period = 11.856821
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
 
--- 
-+-- Erik Mouw -- www.harddisk-recovery.com -- +31 70 370 12 90 --
-| Lab address: Delftechpark 26, 2628 XH, Delft, The Netherlands
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 04-03-06 14:24 
+----------------------------------------------------------------------
+With respect to the change in speaker-test.c , the number of fifo error in
+the system log seem to increase with the number of loops to test
+
+-l,--nloops     specify number of loops to test, 0 = infinite
+
+
+@@ -665,6 +664,7 @@
+   double phase = 0;
+   int    err, n;
+ 
++  snd_pcm_prepare(handle);
+   if (test_type == TEST_WAV) {
+     int bufsize = snd_pcm_frames_to_bytes(handle, period_size);
+     n = 0;
+@@ -674,6 +674,7 @@
+ 			      snd_pcm_bytes_to_frames(handle, err * channels))) < 0)
+ 	break;
+     }
++    snd_pcm_drain(handle);
+     return err;
+   }
+
+----------------------------------------------------------------------
+ Raymond - 04-06-06 16:52 
+----------------------------------------------------------------------
+Using the graphic equalizer and the following plugin which route 2 channels
+to 4-channels.
+
+pcm.test {
+    type plug
+    slave {
+        pcm "hw:0,0"
+        channels 4
+    }
+    ttable.0.0 0.5
+    ttable.0.1 1.0
+    ttable.1.2 0.75
+    ttable.1.3 0.25
+}
+
+The left peak is supposed to be always one half of the right peak.
+
+aplay -D test stereo.wav
+mplayer -ao alsa:device=test stereo.wav
+ 
+left peak is 3 times of right peak indicates swap of front/rear channels
+
+It's interesting that random swapping of channels can be reproduced by
+speaker-test 
+
+speaker-test -D test -c 2 -t sine
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-08-06 17:41 Raymond        New Issue                                    
+01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
+01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
+    
+02-04-06 06:26 Raymond        Note Added: 0007912                          
+02-10-06 05:36 ponchick       Note Added: 0007987                          
+02-10-06 06:32 Raymond        Note Added: 0007991                          
+02-10-06 10:50 ponchick       Note Added: 0007998                          
+02-10-06 11:25 Raymond        Note Added: 0008000                          
+02-10-06 13:49 Raymond        Note Added: 0008003                          
+02-10-06 13:56 Raymond        Note Edited: 0008003                         
+02-12-06 07:48 Raymond        Note Edited: 0008003                         
+02-12-06 10:12 Raymond        Note Edited: 0008000                         
+02-16-06 05:37 ponchick       Note Added: 0008085                          
+02-16-06 08:12 Raymond        Note Added: 0008088                          
+02-16-06 10:12 Raymond        Note Added: 0008090                          
+02-16-06 10:28 Raymond        Note Edited: 0008090                         
+02-16-06 16:07 Raymond        Note Added: 0008097                          
+02-17-06 03:35 ponchick       Note Added: 0008104                          
+02-17-06 04:28 Raymond        Note Added: 0008105                          
+02-17-06 04:35 Raymond        Note Edited: 0008105                         
+02-17-06 05:56 Raymond        Note Edited: 0008105                         
+02-17-06 06:09 Raymond        Note Edited: 0008105                         
+02-26-06 07:22 ponchick       Note Added: 0008198                          
+02-26-06 13:28 Raymond        Note Added: 0008200                          
+02-26-06 14:08 Raymond        Note Edited: 0008200                         
+02-27-06 06:57 ponchick       Note Added: 0008216                          
+02-27-06 14:09 Raymond        Note Added: 0008222                          
+02-28-06 04:42 Raymond        Note Added: 0008239                          
+03-03-06 07:18 Raymond        Note Added: 0008334                          
+03-03-06 09:19 Raymond        Note Edited: 0008334                         
+03-24-06 14:57 Raymond        File Added: AU8830.conf                      
+03-24-06 15:04 Raymond        Note Added: 0008918                          
+03-31-06 10:22 Raymond        Note Added: 0009043                          
+04-03-06 14:24 Raymond        Note Added: 0009096                          
+04-06-06 16:52 Raymond        Note Added: 0009125                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
