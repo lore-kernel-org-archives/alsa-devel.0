@@ -1,7 +1,7 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Cross compiling alsa-driver
-Date: Thu, 06 Apr 2006 23:23:26 +0100
-Message-ID: <1144362206.9219.9.camel@localhost.localdomain>
+Date: Thu, 06 Apr 2006 18:25:28 -0400
+Message-ID: <1144362329.12038.22.camel@mindpipe>
 References: <1144187819.9472.25.camel@localhost.localdomain>
 	 <s5hwte4ntxt.wl%tiwai@suse.de>
 	 <1144361810.9219.6.camel@localhost.localdomain>
@@ -19,44 +19,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Thu, 2006-04-06 at 23:16 +0100, Adrian McMenamin wrote:
-> On Wed, 2006-04-05 at 13:27 +0200, Takashi Iwai wrote:
-> > At Tue, 04 Apr 2006 22:56:59 +0100,
-> 
-> > 
-> > You didn't pass a proper --with-kernel option.
-> > See alsa-driver/INSTALL.
-> > 
-> 
-> Makes no difference. Still broken.
-> 
-> Long outputs follow - configure appears to ignore the specified
-> --with-build and --with-kernel options. I'll have a look at the script
-> 
-Appears to be broken
+> checking for directory with kernel
+> source... /home/adrian/linux-2.6.15.2
+> checking for directory with kernel
+> build... /home/adrian/linux-2.6.15.2 
 
-echo "$as_me:$LINENO: checking for directory with kernel source" >&5
-echo $ECHO_N "checking for directory with kernel source... $ECHO_C" >&6
-if test -d "/lib/modules/`uname -r`/source" -o -L "/lib/modules/`uname
--r`/source"; then
-  DEFAULT_KERNEL_DIR="/lib/modules/`uname -r`/source"
-  DEFAULT_KERNEL_BUILD="/lib/modules/`uname -r`/build"
-elif test -d "/lib/modules/`uname -r`/build" -o -L "/lib/modules/`uname
--r`/build"; then
-  DEFAULT_KERNEL_DIR="/lib/modules/`uname -r`/build"
-else
-  DEFAULT_KERNEL_DIR="/usr/src/linux"
-fi
+It's not ignoring them.  It sounds like you just need to add aica to the
+build scripts.
 
+What is the output of "grep aica ./configure"?
 
-
-I know nothing about configure scripts but this looks to me like it just
-assumes we're building for the current machine and ignores the cross
-options. Is that right?
+Lee
 
 
 
