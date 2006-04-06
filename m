@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Thu, 6 Apr 2006 19:13:34 +0200
-Message-ID: <9b0ae2e029b73f7e0506a3667ffbaa41@bugtrack.alsa-project.org>
+Date: Thu, 6 Apr 2006 19:23:58 +0200
+Message-ID: <e0cea60106447da70192216f28af2765@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9A24E168
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2006 19:13:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49B67168
+	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2006 19:23:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              04-06-2006 19:13 CEST
+Last Modified:              04-06-2006 19:23 CEST
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -114,80 +114,6 @@ gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 02-25-06 13:15 
-----------------------------------------------------------------------
-Patch to init card name before create components (e.g mpu401, ...)
-
-
-Index: alsa-driver/alsa-kernel/pci/au88x0/au88x0.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/au88x0/au88x0.c,v
-retrieving revision 1.26
-diff -u -r1.26 au88x0.c
---- alsa-driver/alsa-kernel/pci/au88x0/au88x0.c	13 Jan 2006 17:16:29
--0000	1.26
-+++ alsa-driver/alsa-kernel/pci/au88x0/au88x0.c	25 Feb 2006 12:10:42
--0000
-@@ -261,7 +261,28 @@
- 		return err;
- 	}
- 	snd_vortex_workaround(pci, pcifix[dev]);
--	// (4) Alloc components.
-+	// (4)
-+	strcpy(card->driver, CARD_NAME_SHORT);
-+	strcpy(card->shortname, CARD_NAME_SHORT);
-+	sprintf(card->longname, "%s at 0x%lx irq %i",
-+		card->shortname, chip->io, chip->irq);
-+
-+	if ((err = pci_read_config_word(pci, PCI_DEVICE_ID,
-+				  &(chip->device))) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}	
-+	if ((err = pci_read_config_word(pci, PCI_VENDOR_ID,
-+				  &(chip->vendor))) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
-+	if ((err = pci_read_config_byte(pci, PCI_REVISION_ID,
-+				  &(chip->rev))) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
-+	// (5) Alloc components.
- 	// ADB pcm.
- 	if ((err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_ADB)) < 0) {
- 		snd_card_free(card);
-@@ -322,27 +343,6 @@
- 	}
- #endif
- 
--	// (5)
--	strcpy(card->driver, CARD_NAME_SHORT);
--	strcpy(card->shortname, CARD_NAME_SHORT);
--	sprintf(card->longname, "%s at 0x%lx irq %i",
--		card->shortname, chip->io, chip->irq);
--
--	if ((err = pci_read_config_word(pci, PCI_DEVICE_ID,
--				  &(chip->device))) < 0) {
--		snd_card_free(card);
--		return err;
--	}	
--	if ((err = pci_read_config_word(pci, PCI_VENDOR_ID,
--				  &(chip->vendor))) < 0) {
--		snd_card_free(card);
--		return err;
--	}
--	if ((err = pci_read_config_byte(pci, PCI_REVISION_ID,
--				  &(chip->rev))) < 0) {
--		snd_card_free(card);
--		return err;
--	}
- #ifdef CHIP_AU8830
- 	if ((chip->rev) != 0xfe && (chip->rev) != 0xfa) {
- 		printk(KERN_ALERT
-
-----------------------------------------------------------------------
  Raymond - 04-06-06 19:13 
 ----------------------------------------------------------------------
 At that time, au88x0 was still in alsa-driver and has not migrated into
@@ -200,6 +126,12 @@ http://sourceforge.net/mailarchive/message.php?msg_id=7101988
    This moves the initialization of card->shortname before the
    component creation so that the name for the rawmidi port is
    "<shortname> MPU-401" instead of "MPU-401 (UART) x-0".
+
+----------------------------------------------------------------------
+ rlrevell - 04-06-06 19:23 
+----------------------------------------------------------------------
+Please submit patches to alsa-devel mailing list and not through this bug
+tracker
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -236,6 +168,7 @@ gentoo-sources-2.6.15-r4
 02-25-06 13:15 Raymond        Note Added: 0008189                          
 03-21-06 18:02 Raymond        Note Edited: 0008089                         
 04-06-06 19:13 Raymond        Note Added: 0009126                          
+04-06-06 19:23 rlrevell       Note Added: 0009127                          
 ======================================================================
 
 
