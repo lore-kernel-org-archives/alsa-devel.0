@@ -1,16 +1,17 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Cross compiling alsa-driver
-Date: Thu, 06 Apr 2006 23:46:31 +0100
-Message-ID: <1144363591.9219.16.camel@localhost.localdomain>
+Date: Thu, 06 Apr 2006 18:52:26 -0400
+Message-ID: <1144363947.12038.25.camel@mindpipe>
 References: <1144187819.9472.25.camel@localhost.localdomain>
 	 <s5hwte4ntxt.wl%tiwai@suse.de>
 	 <1144361810.9219.6.camel@localhost.localdomain>
 	 <1144362329.12038.22.camel@mindpipe>
+	 <1144362544.9219.14.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1144362329.12038.22.camel@mindpipe>
+In-Reply-To: <1144362544.9219.14.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,23 +21,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-04-06 at 18:25 -0400, Lee Revell wrote:
-> On Thu, 2006-04-06 at 23:16 +0100, Adrian McMenamin wrote:
-> > checking for directory with kernel
-> > source... /home/adrian/linux-2.6.15.2
-> > checking for directory with kernel
-> > build... /home/adrian/linux-2.6.15.2 
+On Thu, 2006-04-06 at 23:29 +0100, Adrian McMenamin wrote:
+> On Thu, 2006-04-06 at 18:25 -0400, Lee Revell wrote:
+> > On Thu, 2006-04-06 at 23:16 +0100, Adrian McMenamin wrote:
+> > > checking for directory with kernel
+> > > source... /home/adrian/linux-2.6.15.2
+> > > checking for directory with kernel
+> > > build... /home/adrian/linux-2.6.15.2 
+> > 
+> > It's not ignoring them.  It sounds like you just need to add aica to the
+> > build scripts.
+> > 
+> > What is the output of "grep aica ./configure"?
+> > 
 > 
-> It's not ignoring them.  It sounds like you just need to add aica to the
-> build scripts.
 > 
-> What is the output of "grep aica ./configure"?
+> I know that aica isn't in there - but the general build should still
+> work and it doesn't...
 > 
-How do I add aica to it anyway? :)
+> make[2]: Leaving directory `/home/adrian/alsa-driver-1.0.11rc4/pci'
+> make[1]: Leaving directory `/home/adrian/alsa-driver-1.0.11rc4'
+> make -C /lib/modules/2.6.12-10-686/build
+> SUBDIRS=/home/adrian/alsa-driver-1.0.11rc4 O=/home/adrian/linux-2.6.15.2
+> modules
+> make[1]: Entering directory `/usr/src/linux-headers-2.6.12-10-686'
+> /usr/src/linux-headers-2.6.12-10-686/Makefile:530: /usr/src/linux-headers-2.6.12-10-686/arch//Makefile: No such file or directory
+> /bin/sh: /home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-gcc-3.4: No such file or directory
+> make[2]: *** No rule to make target
+> `/usr/src/linux-headers-2.6.12-10-686/arch//Makefile'.  Stop.
+> make[1]: *** [modules] Error 2
+> make[1]: Leaving directory `/usr/src/linux-headers-2.6.12-10-686'
+> 
+
+If the configure script bombs out, then I would not expect running make
+afterwards to work.  It's probably an old Makefile.
+
+Try adding your device to ./configure
 
 
 
