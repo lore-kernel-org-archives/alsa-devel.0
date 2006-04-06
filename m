@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002006]: High frequency noise in output from SI7012 (intel8x0)
-Date: Thu, 6 Apr 2006 04:27:31 +0200
-Message-ID: <49e96ca1d33cd811a52b21ef7976facd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002005]: problems with make
+Date: Thu, 6 Apr 2006 08:59:28 +0200
+Message-ID: <b37c7cb835bc43d1abdd415138efb4e5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2440177
-	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2006 04:27:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2BB8188
+	for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2006 08:59:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2006> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2005> 
 ======================================================================
-Reported By:                jaime
-Assigned To:                
+Reported By:                mramirez
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2006
-Category:                   PCI - intel8x0
+Issue ID:                   2005
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Slax 5.1.0, Debian Etch, Ubuntu Dapper
-Kernel Version:             2.6.16 / 2.6.15
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.15-1.2054_FC5smp
 ======================================================================
-Date Submitted:             04-06-2006 04:27 CEST
-Last Modified:              04-06-2006 04:27 CEST
+Date Submitted:             04-05-2006 19:59 CEST
+Last Modified:              04-06-2006 08:59 CEST
 ======================================================================
-Summary:                    High frequency noise in output from SI7012
-(intel8x0)
+Summary:                    problems with make
 Description: 
-Sound chip is SI7012 built into Asrock K7S8X. To demonstrate the noise,
-I've played "orig.wav" throught the SI7012 and recorded the (analog)
-output on
-another computer. When I boot the PC into Windows 2000, the output is
-clean: the recording is "win2k.wav". Then I reboot into Linux and use
-"aplay -Dhw:0,0 orig.wav" and record the output again: the recording is
-"alsa.wav". Ignoring the  clicks in the last half of "win2k.wav" (the
-click are the hard-drive reads), I can hear a high frequency intermittent
-"buzz" in the last half of "alsa.wav" that isn't present in "win2k.wav".
-To hear this, I think you will need headphones, but the buzzing is
-definitely there.
-
-As the three wave files are too big to attach, I've put them on the web
-here:
-orig.wav:   http://www.carbon.eclipse.co.uk/orig.wav
-win2k.wav:  http://www.carbon.eclipse.co.uk/win2k.wav
-alsa.wav:   http://www.carbon.eclipse.co.uk/alsa.wav
-
-The version used is 1.0.11rc2, but the same problem occurs in the older
-1.0.10.
-
+I've dowload the cvs version of alsa, and try install on my laptop, but the
+make process exit whit a bad status.
 ======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 04-06-06 08:59 
+----------------------------------------------------------------------
+Please install the package with full kernel sources for your distribution
+or use --with-kernel=dir option to specify another directory with kernel
+sources (default is /lib/modules/2.6.15-1.2054_FC5smp/source).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-06-06 04:27 jaime          New Issue                                    
-04-06-06 04:27 jaime          Distribution              => Slax 5.1.0, Debian
-Etch, Ubuntu Dapper
-04-06-06 04:27 jaime          Kernel Version            => 2.6.16 / 2.6.15 
+04-05-06 19:59 mramirez       New Issue                                    
+04-05-06 19:59 mramirez       Distribution              => Fedora Core 5   
+04-05-06 19:59 mramirez       Kernel Version            => 2.6.15-1.2054_FC5smp
+04-06-06 08:59 Raymond        Note Added: 0009123                          
 ======================================================================
 
 
