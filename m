@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001826]: No line, mic, front-mic
-Date: Fri, 7 Apr 2006 00:54:05 +0200
-Message-ID: <7fe82fe393f5e8e84eaa15cdaab9ff5d@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Cross compiling alsa-driver
+Date: Thu, 06 Apr 2006 18:54:44 -0400
+Message-ID: <1144364085.12038.28.camel@mindpipe>
+References: <1144187819.9472.25.camel@localhost.localdomain>
+	 <s5hwte4ntxt.wl%tiwai@suse.de>
+	 <1144361810.9219.6.camel@localhost.localdomain>
+	 <1144362329.12038.22.camel@mindpipe>
+	 <1144363591.9219.16.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44E1D15E
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 00:54:05 +0200 (MEST)
+In-Reply-To: <1144363591.9219.16.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +21,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2006-04-06 at 23:46 +0100, Adrian McMenamin wrote:
+> On Thu, 2006-04-06 at 18:25 -0400, Lee Revell wrote:
+> > On Thu, 2006-04-06 at 23:16 +0100, Adrian McMenamin wrote:
+> > > checking for directory with kernel
+> > > source... /home/adrian/linux-2.6.15.2
+> > > checking for directory with kernel
+> > > build... /home/adrian/linux-2.6.15.2 
+> > 
+> > It's not ignoring them.  It sounds like you just need to add aica to the
+> > build scripts.
+> > 
+> > What is the output of "grep aica ./configure"?
+> > 
+> How do I add aica to it anyway? :)
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1826> 
-======================================================================
-Reported By:                andreid1303
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1826
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-06-2006 22:35 CET
-Last Modified:              04-07-2006 00:54 CEST
-======================================================================
-Summary:                    No line, mic, front-mic
-Description: 
-Line, mic, front-mic sound is dead on build-in Sigmatel 9221.
-First I was not able to get it in Windows as well but found there a switch
-assigning capture input then rised capture level and it is working now.
-I tried to do the same via alsamixer but with no result.
-======================================================================
+I'm not sure (is it in the driver guide?).  For starters I would just
+copy the "emu10k1" entry in ./configure and substitute "aica" etc
 
-----------------------------------------------------------------------
- mate - 04-06-06 03:42 
-----------------------------------------------------------------------
-I have same problem too (I tried the latest cvs version from 6. Apr.
-2006).
-Please fix this issue or if somebody have any idea please send me about
-it.
-Thanx.
-
-----------------------------------------------------------------------
- sharpen047 - 04-07-06 00:54 
-----------------------------------------------------------------------
-i have seen several threads about this i have one too... and i cant find
-ANY solution for me thus.. im on windows *bleh*
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-06-06 22:35 andreid1303    New Issue                                    
-02-07-06 09:23 hweigel        Issue Monitored: hweigel                     
-04-06-06 03:42 mate           Note Added: 0009122                          
-04-07-06 00:54 sharpen047     Note Added: 0009128                          
-======================================================================
-
+Lee
 
 
 
