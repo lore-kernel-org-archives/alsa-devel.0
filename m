@@ -1,16 +1,14 @@
-From: Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [2.6 patch] move EXPORT_SYMBOL's away from sound/pci/emu10k1/emu10k1_main.c
-Date: Fri, 7 Apr 2006 20:49:09 +0200
-Message-ID: <20060407184909.GB9097@mars.ravnborg.org>
-References: <20060407003105.GG7118@stusta.de> <s5hu095y367.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
+Date: Fri, 7 Apr 2006 22:45:26 +0200
+Message-ID: <79533d6b43ec850e959c67a25602fb02@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from pasmtp.tele.dk (pasmtp.tele.dk [193.162.159.95])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14C21150
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 20:49:30 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <s5hu095y367.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73B9C157
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 22:45:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,27 +18,119 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adrian Bunk <bunk@stusta.de>, perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 07, 2006 at 02:34:56PM +0200, Takashi Iwai wrote:
-> At Fri, 7 Apr 2006 02:31:05 +0200,
-> Adrian Bunk wrote:
-> > 
-> > This patch moves the EXPORT_SYMBOL's from 
-> > sound/pci/emu10k1/emu10k1_main.c to the files with the actual functions.
-> 
-> What is the merit of this movement?
 
-1) Documentation - it is obvious that the function/data is exported so
-be a bit mroe careful when introducing changes
-2) Style. In 2.6 the preferred style is to put the EXPORT_SYMBOL on the
-line following the closing } of the exported function.
-3) Keep changes local. If one removes a previously exported symbol less
-files needs to be touched.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2008> 
+======================================================================
+Reported By:                mborsick
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2008
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Redhat/Fedora
+Kernel Version:             2.6.16-1.2080 and with Xen
+======================================================================
+Date Submitted:             04-07-2006 00:43 CEST
+Last Modified:              04-07-2006 22:45 CEST
+======================================================================
+Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
+Description: 
+Kernel is up-to-date Xen kernel.
 
-	Sam
+Initial install did not recognize the sound on an ASUS P5VDC-MX
+motherboard.
+Motherboard has southbridge VIA VT8251. CODEC is Realtek ACL653 AC'97 6
+channel
+Audio. Tried the updated drivers in 002404, but was unsuccessful. Also
+tried
+drivers on VIA site and Realltek site. The last couple of tries show no
+errors
+in compiling, make, etc. However, as I am just above novice in
+understanding
+everything about Linux, this has thrown me for a loop.
+
+======================================================================
+
+----------------------------------------------------------------------
+ mborsick - 04-07-06 06:38 
+----------------------------------------------------------------------
+As I am a step above novice when it comes to Linux, where exactly do I find
+via82xx.c file? I am assuming the kernel, but at this point, you have
+me...
+
+<G>
+
+----------------------------------------------------------------------
+ buboleck - 04-07-06 22:45 
+----------------------------------------------------------------------
+I have the same board and this "VIA Technologies, Inc. VIA High Definition
+Audio Controller" is I think uncorrectly recognised and this makes the two
+PCI slots unusable (anything pluged in this slots wont work), couse kernel
+thinks there is this VIA HDA, but it's not. I compiled kernel with "PCI
+access mode"=BIOS and PCIx support turned off, and now they works. Here my
+lspci 
+
+buboleck linux # lspci
+00:00.0 Host bridge: VIA Technologies, Inc. P4M800CE Host Bridge
+00:00.1 Host bridge: VIA Technologies, Inc. P4M800CE Host Bridge
+00:00.2 Host bridge: VIA Technologies, Inc. P4M800CE Host Bridge
+00:00.3 Host bridge: VIA Technologies, Inc. PT890 Host Bridge
+00:00.4 Host bridge: VIA Technologies, Inc. P4M800CE Host Bridge
+00:00.7 Host bridge: VIA Technologies, Inc. P4M800CE Host Bridge
+00:01.0 PCI bridge: VIA Technologies, Inc. VT8237 PCI Bridge
+00:0f.0 IDE interface: VIA Technologies, Inc.
+VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 07)
+00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 90)
+00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 90)
+00:10.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 90)
+00:10.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 90)
+00:10.4 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 90)
+00:11.0 ISA bridge: VIA Technologies, Inc. VT8251 PCI to ISA Bridge
+00:11.7 Host bridge: VIA Technologies, Inc. VT8251 Ultra VLINK Controller
+00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II] (rev
+7c)
+00:13.0 PCI bridge: VIA Technologies, Inc. VT8251 PCI to PCIE Bridge
+00:13.1 PCI bridge: VIA Technologies, Inc. VT8251 PCI to PCI Bridge
+01:00.0 VGA compatible controller: ATI Technologies Inc RV410 [Radeon X700
+(PCIE)]
+01:00.1 Display controller: ATI Technologies Inc RV410 [Radeon X700
+(PCIE)] (Secondary)
+02:00.0 PCI bridge: VIA Technologies, Inc. VT8251 PCIE Root Port
+02:00.1 PCI bridge: VIA Technologies, Inc. VT8251 PCIE Root Port
+05:08.0 Multimedia audio controller: Ensoniq 5880 AudioPCI (rev 02)
+05:09.0 Multimedia video controller: Conexant CX23880/1/2/3 PCI Video and
+Audio Decoder (rev 05)
+
+This 05:08:0 and 05:09:0 was not seen.I hope this can help.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-07-06 00:43 mborsick       New Issue                                    
+04-07-06 00:43 mborsick       Distribution              => Redhat/Fedora   
+04-07-06 00:43 mborsick       Kernel Version            => 2.6.16-1.2080 and
+with Xen
+04-07-06 01:07 rlrevell       Note Added: 0009129                          
+04-07-06 02:13 mborsick       Note Added: 0009130                          
+04-07-06 02:35 rlrevell       Note Added: 0009131                          
+04-07-06 06:38 mborsick       Note Added: 0009135                          
+04-07-06 22:45 buboleck       Note Added: 0009156                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
