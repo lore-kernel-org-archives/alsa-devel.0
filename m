@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002002]: No SPDIF/OUT device on ICH2
-Date: Fri, 7 Apr 2006 19:24:41 +0200
-Message-ID: <c560049d8a9345ed212694dac21aa336@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001873]: emu10k1 AC97 loopback on left channel only.
+Date: Fri, 7 Apr 2006 19:25:48 +0200
+Message-ID: <5fa9e0556107974ff12e9622a8cd373a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D664015C
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:24:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5B3615C
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:25:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,100 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2002> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1873> 
 ======================================================================
-Reported By:                Raymond
+Reported By:                kenm
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2002
-Category:                   PCI - intel8x0
+Issue ID:                   1873
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               Fedore Core 1
-Kernel Version:             2.4.22-1.2199.nptl
-Resolution:                 not an issue
+Distribution:               Slackware current
+Kernel Version:             2.6.15.3
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-05-2006 04:00 CEST
-Last Modified:              04-07-2006 19:24 CEST
+Date Submitted:             02-24-2006 00:28 CET
+Last Modified:              04-07-2006 19:25 CEST
 ======================================================================
-Summary:                    No SPDIF/OUT device on ICH2
+Summary:                    emu10k1 AC97 loopback on left channel only.
 Description: 
-Do intel8x0 support SPDIF/OUT for ICH2 ?
-
-
-00:1f.5 Multimedia audio controller: Intel Corp. 82801BA/BAM AC'97 Audio
-(rev 12)
-        Subsystem: Asustek Computer, Inc.: Unknown device 8072
-        Flags: bus master, medium devsel, latency 0, IRQ 10
-        I/O ports at a800 [size=256]
-        I/O ports at a400 [size=64]
-
-
-cat /proc/asound/pcm
-
-01-01: Intel ICH - MIC ADC : Intel 82801BA-ICH2 - MIC ADC : capture 1
-01-00: Intel ICH : Intel 82801BA-ICH2 : playback 1 : capture 1
-
-
-
-cat /proc/asound/I82801BAICH2/codec97#0/ac97#0-0
-0-0/0: Realtek ALC200,200P rev 0
- 
-PCI Subsys Vendor: 0x1043
-PCI Subsys Device: 0x8072
- 
-Capabilities     : -headphone out-
-DAC resolution   : 18-bit
-ADC resolution   : 18-bit
-3D enhancement   : Realtek 3D Stereo Enhancement
- 
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=1 AMAP DSA=0 SPDIF VRA
-Extended status  : SPCV SPDIF=7/8 VRA
-PCM front DAC    : 48000Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
-
-
-amixer -c 1 controls
-
-numid=32,iface=MIXER,name='IEC958 Playback Con Mask'
-numid=33,iface=MIXER,name='IEC958 Playback Pro Mask'
-numid=36,iface=MIXER,name='IEC958 Playback AC97-SPSA'
-numid=34,iface=MIXER,name='IEC958 Playback Default'
-numid=35,iface=MIXER,name='IEC958 Playback Switch'
-
-
+Creative Labs CT4832 SBLive Value
+With alsa-driver versions 1.0.9b and previously, it was possible to set
+both "AC97" and "AC97 Capture" to full volume in alsamixer, to set up
+digital loopback to monitor in real time the sound recorded through "line
+in" via "line out".  With version 1.0.10, the monitored sound appears on
+the left channel only.  The right channel is completely muted.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-07-06 19:24 
+ kenm - 04-04-06 12:07 
 ----------------------------------------------------------------------
-There is no dedicated PCM for SPDIF on ICH2.
-Set up 'IEC958 AC97-SPSA' to 0 and turn on 'IEC958 Playback Switch'.
+After some investigation, I now think this is an issue with AlsaMixer
+v1.0.10, NOT with the emu10k1 driver.  It appears that alsamixer is only
+setting the capture source for the left-hand channel.  The mixer settings
+stored with alsactl include:
+
+	control.64 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 2
+		comment.item.0 Mic
+		comment.item.1 CD
+		comment.item.2 Video
+		comment.item.3 Aux
+		comment.item.4 Line
+		comment.item.5 Mix
+		comment.item.6 'Mix Mono'
+		comment.item.7 Phone
+		iface MIXER
+		name 'Capture Source'
+		value.0 Line
+		value.1 Mic
+	}
+
+Alsamixer only appears to be modifying the "value.0" entry.  Editing the
+file manually to set "value.1 Line" and then re-loading the configuration
+corrects the problem, giving expected output on both channels.
+
+----------------------------------------------------------------------
+ tiwai - 04-07-06 19:25 
+----------------------------------------------------------------------
+This bug is already fixed in the recent version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-05-06 04:00 Raymond        New Issue                                    
-04-05-06 04:00 Raymond        Distribution              => Fedore Core 1   
-04-05-06 04:00 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-04-07-06 19:24 tiwai          Status                   new => resolved     
-04-07-06 19:24 tiwai          Resolution               open => not an issue
-04-07-06 19:24 tiwai          Assigned To               => tiwai           
-04-07-06 19:24 tiwai          Note Added: 0009147                          
+02-24-06 00:28 kenm           New Issue                                    
+02-24-06 00:28 kenm           Distribution              => Slackware current
+02-24-06 00:28 kenm           Kernel Version            => 2.6.15.3        
+04-04-06 12:07 kenm           Note Added: 0009113                          
+04-07-06 19:25 tiwai          Status                   new => resolved     
+04-07-06 19:25 tiwai          Resolution               open => fixed       
+04-07-06 19:25 tiwai          Assigned To               => tiwai           
+04-07-06 19:25 tiwai          Note Added: 0009148                          
 ======================================================================
 
 
