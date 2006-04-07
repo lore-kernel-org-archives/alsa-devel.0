@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002011]: alsa-lib compiler warnings using gcc 4.0.2 (fix attached)
-Date: Fri, 7 Apr 2006 17:34:51 +0200
-Message-ID: <890ca504bb5f66053cf5f6d191cc88ef@bugtrack.alsa-project.org>
+Date: Fri, 7 Apr 2006 17:35:39 +0200
+Message-ID: <5f3c8cb6538e760cad4f6b4079edd605@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA152157
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 17:34:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A6805157
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 17:35:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2011> 
 ======================================================================
@@ -35,10 +35,12 @@ Category:                   0_general
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-07-2006 16:29 CEST
-Last Modified:              04-07-2006 17:34 CEST
+Last Modified:              04-07-2006 17:35 CEST
 ======================================================================
 Summary:                    alsa-lib compiler warnings using gcc 4.0.2 (fix
 attached)
@@ -55,6 +57,12 @@ to correct these problems.
 We can't fix an old release, please regenerate the patch against the latest
 CVS sources
 
+----------------------------------------------------------------------
+ rlrevell - 04-07-06 17:35 
+----------------------------------------------------------------------
+Please submit patches to alsa-devel at lists.sourceforge.net mailing list
+rather than through the bug tracker
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -62,6 +70,8 @@ Date Modified  Username       Field                    Change
 04-07-06 16:29 wille          File Added:
 alsa-lib-1.0.10-gcc4.0.2-compiler-warnings.patch                    
 04-07-06 17:34 rlrevell       Note Added: 0009140                          
+04-07-06 17:35 rlrevell       Status                   new => closed       
+04-07-06 17:35 rlrevell       Note Added: 0009141                          
 ======================================================================
 
 
