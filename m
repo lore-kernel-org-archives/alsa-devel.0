@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
-Date: Fri, 7 Apr 2006 06:38:04 +0200
-Message-ID: <e2ffb10dc1c57499a82dad190c2f51d7@bugtrack.alsa-project.org>
+From: Manuel Jander <manuel.jander@gmail.com>
+Subject: Re: Cross compiling alsa-driver
+Date: Fri, 07 Apr 2006 07:55:30 +0200
+Message-ID: <1144389330.17858.4.camel@localhost.localdomain>
+References: <1144187819.9472.25.camel@localhost.localdomain>
+	 <s5hwte4ntxt.wl%tiwai@suse.de>
+	 <1144361810.9219.6.camel@localhost.localdomain>
+	 <1144362329.12038.22.camel@mindpipe>
+	 <1144362544.9219.14.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6B74144
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 06:38:04 +0200 (MEST)
+In-Reply-To: <1144362544.9219.14.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +21,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2008> 
-======================================================================
-Reported By:                mborsick
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2008
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Redhat/Fedora
-Kernel Version:             2.6.16-1.2080 and with Xen
-======================================================================
-Date Submitted:             04-07-2006 00:43 CEST
-Last Modified:              04-07-2006 06:38 CEST
-======================================================================
-Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
-Description: 
-Kernel is up-to-date Xen kernel.
+On Thu, 2006-04-06 at 23:29 +0100, Adrian McMenamin wrote:
+> I know that aica isn't in there - but the general build should still
+> work and it doesn't...
+> 
+> make[2]: Leaving directory `/home/adrian/alsa-driver-1.0.11rc4/pci'
+> make[1]: Leaving directory `/home/adrian/alsa-driver-1.0.11rc4'
+> make -C /lib/modules/2.6.12-10-686/build
+> SUBDIRS=/home/adrian/alsa-driver-1.0.11rc4 O=/home/adrian/linux-2.6.15.2
+> modules
+> make[1]: Entering directory `/usr/src/linux-headers-2.6.12-10-686'
+> /usr/src/linux-headers-2.6.12-10-686/Makefile:530: /usr/src/linux-headers-2.6.12-10-686/arch//Makefile: No such file or directory
+> /bin/sh: /home/adrian/buildroot/build_sh4/staging_dir/bin/sh4-linux-gcc-3.4: No such file or directory
+> make[2]: *** No rule to make target
+> `/usr/src/linux-headers-2.6.12-10-686/arch//Makefile'.  Stop.
+> make[1]: *** [modules] Error 2
+> make[1]: Leaving directory `/usr/src/linux-headers-2.6.12-10-686'
+> 
 
-Initial install did not recognize the sound on an ASUS P5VDC-MX
-motherboard.
-Motherboard has southbridge VIA VT8251. CODEC is Realtek ACL653 AC'97 6
-channel
-Audio. Tried the updated drivers in 002404, but was unsuccessful. Also
-tried
-drivers on VIA site and Realltek site. The last couple of tries show no
-errors
-in compiling, make, etc. However, as I am just above novice in
-understanding
-everything about Linux, this has thrown me for a loop.
+I had this same problem while crosscompiling, and the only way to get
+around I found was specifying an appropriate ARCH environment variable
+(ARCH=arm).
 
-======================================================================
+The path:
+/usr/src/linux-headers-2.6.12-10-686/arch//Makefile
 
-----------------------------------------------------------------------
- rlrevell - 04-07-06 02:35 
-----------------------------------------------------------------------
-Try adding { .subvendor = 0x1043, .subdevice = 0x81b9, .action =
-VIA_DXS_SRC    } to the PCI ids in via82xx.c for the first device.
+would become:
 
-As for the "VIA high definition audio controller", I think that's a new
-device that isn't supported yet.  tiwai?
+/usr/src/linux-headers-2.6.12-10-686/arch/arm/Makefile
+or
+/usr/src/linux-headers-2.6.12-10-686/arch/sh4/Makefile
 
-----------------------------------------------------------------------
- mborsick - 04-07-06 06:38 
-----------------------------------------------------------------------
-As I am a step above novice when it comes to Linux, where exactly do I find
-via82xx.c file? I am assuming the kernel, but at this point, you have
-me...
-
-<G>
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-07-06 00:43 mborsick       New Issue                                    
-04-07-06 00:43 mborsick       Distribution              => Redhat/Fedora   
-04-07-06 00:43 mborsick       Kernel Version            => 2.6.16-1.2080 and
-with Xen
-04-07-06 01:07 rlrevell       Note Added: 0009129                          
-04-07-06 02:13 mborsick       Note Added: 0009130                          
-04-07-06 02:35 rlrevell       Note Added: 0009131                          
-04-07-06 06:38 mborsick       Note Added: 0009135                          
-======================================================================
+Best Regards,
+Manuel
 
 
 
