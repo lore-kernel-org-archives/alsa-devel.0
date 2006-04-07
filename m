@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001997]: No sound when using second pcm device
-Date: Fri, 7 Apr 2006 19:28:10 +0200
-Message-ID: <423a3a64bc29bd8fa3593b647761b291@bugtrack.alsa-project.org>
+Date: Fri, 7 Apr 2006 19:28:01 +0200
+Message-ID: <84e6125edb97c4b1ae3f9b5456f6b003@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36B2E15C
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:28:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C561F15C
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:28:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1997> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     resolved
 Distribution:               
 Kernel Version:             2.6.16-gentoo-r1
-Resolution:                 not an issue
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
 Date Submitted:             04-03-2006 11:59 CEST
@@ -283,47 +283,6 @@ crc_ccitt               2048  1 irda
 ======================================================================
 
 ----------------------------------------------------------------------
- prymitive - 04-03-06 12:21 
-----------------------------------------------------------------------
-when I start:
- alsaplayer --verbose -o oss -d /dev/dsp1 soundfile
-alsaplayer starts to play but there is no sound, and no device is open
-according to /proc/asound files.
-
-----------------------------------------------------------------------
- Raymond - 04-03-06 14:16 
-----------------------------------------------------------------------
-There is no ATIIXP.pcm.rear in /usr/share/alsa/cards/ATIIXP.conf, 
-
-hw:0,0 is 2/4 or 6 channels 
-
-and
-
-hw:0,1 is SPDIF
-
-so the driver will not have /dev/dsp1
-
-
-cat /proc/asound/pcm
-
-
-
-----------------------------------------------------------------------
- prymitive - 04-03-06 14:40 
-----------------------------------------------------------------------
-I just realized that /dev/dsp1 comes from atiixp-modem, but I have
-/dev/adsp, it doesn't work, I did 
-prymitive@acer ~ $ cat /proc/asound/devices
-  0: [ 0]   : control
- 16: [ 0- 0]: digital audio playback
- 17: [ 0- 1]: digital audio playback
- 24: [ 0- 0]: digital audio capture
- 33:        : timer
- and I thought that it have 2 playback devices, if it's SPDIF and wan't
-let me play 2 streams at a time (without dmix) then close this report and
-thanks for quick anwser.
-
-----------------------------------------------------------------------
  Raymond - 04-04-06 04:54 
 ----------------------------------------------------------------------
 It may be possible for you to play two stereo streams to front and rear
@@ -339,15 +298,6 @@ http://article.gmane.org/gmane.linux.alsa.user/23176
 hw:0,1 won't work unless you set up the IEC958 things correctly.
 This is automatically done if you use "spdif" or "iec958" PCM on ALSA, but
 not for OSS.  If you need to use OSS, try aoss instead.
-
-----------------------------------------------------------------------
- tiwai - 04-07-06 19:28 
-----------------------------------------------------------------------
-hw:0,1 won't work unless you set up the IEC958 things correctly.
-This is automatically done if you use "spdif" or "iec958" PCM on ALSA, but
-not for OSS.  If you need to use OSS, try aoss instead.
-
-
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -365,8 +315,6 @@ Date Modified  Username       Field                    Change
 04-07-06 19:28 tiwai          Status                   assigned => resolved
 04-07-06 19:28 tiwai          Resolution               open => fixed       
 04-07-06 19:28 tiwai          Note Added: 0009149                          
-04-07-06 19:28 tiwai          Note Added: 0009150                          
-04-07-06 19:28 tiwai          Resolution               fixed => not an issue
 ======================================================================
 
 
