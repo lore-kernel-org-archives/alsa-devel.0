@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001996]: Volume control missing (hda-intel, CMI9880)
-Date: Fri, 7 Apr 2006 19:29:19 +0200
-Message-ID: <76fa9bff24bb3a97cf21a65bb6172277@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
+Date: Fri, 7 Apr 2006 19:32:24 +0200
+Message-ID: <fef409965cbb3cd3f4dd292f1e54c707@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D3A115C
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:29:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B557115C
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:32:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,123 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1996> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
 ======================================================================
-Reported By:                babak
-Assigned To:                perex
+Reported By:                Raymond
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1996
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - utils
+Issue ID:                   1990
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core release 4
-Kernel Version:             2.6.15-1.1833_FC4
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             04-03-2006 10:20 CEST
-Last Modified:              04-07-2006 19:29 CEST
+Date Submitted:             04-01-2006 04:26 CEST
+Last Modified:              04-07-2006 19:32 CEST
 ======================================================================
-Summary:                    Volume control missing (hda-intel, CMI9880)
+Summary:                    aplay/arecord cannot play/capture A_LAW
 Description: 
-No volume controls found on my system, but playing music works properly
-(without volume control).
+aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
+
+arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
+
+aplay -D hw:0,0 test.au
+
+
+Try to use -t raw but the quality of A_LAW is very bad when compare with
+MU_LAW
+
+arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
+
+aplay -D hw:0,0 test.raw
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-07-06 19:29 
+ Raymond - 04-03-06 07:36 
 ----------------------------------------------------------------------
-CMI9880 codec has really no playback volume control.
+pcm.convert {
+        type alaw  
+        slave {
+		pcm "hw:0"
+		format A_LAW
+	}
+}
+
+
+aplay -v -Dconvert test.wav
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
+A-Law conversion PCM (A_LAW)
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 16
+  buffer_size  : 4096
+  period_size  : 1024
+  period_time  : 128000
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 4096
+  stop_threshold   : 4096
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: Hardware PCM card 0 'au8830' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : A_LAW
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 8
+  buffer_size  : 4096
+  period_size  : 1024
+  period_time  : 128000
+  tick_time    : 10000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 4096
+  stop_threshold   : 4096
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+
+It seem that the plugin alaw work , the sound play at expected quality
+
+This mean that aplay/arecord only need to implement read/write the A_LAW
+audio in a suitable file format
+
+----------------------------------------------------------------------
+ tiwai - 04-07-06 19:32 
+----------------------------------------------------------------------
+aplay doesn't support A-law in .au format.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-06 10:20 babak          New Issue                                    
-04-03-06 10:20 babak          Distribution              => Fedora Core release 4
-04-03-06 10:20 babak          Kernel Version            => 2.6.15-1.1833_FC4
-04-03-06 10:21 babak          Issue Monitored: babak                       
-04-07-06 19:29 tiwai          Status                   assigned => resolved
-04-07-06 19:29 tiwai          Resolution               open => not an issue
-04-07-06 19:29 tiwai          Note Added: 0009151                          
+04-01-06 04:26 Raymond        New Issue                                    
+04-03-06 07:16 Raymond        Note Added: 0009085                          
+04-03-06 07:36 Raymond        Note Added: 0009086                          
+04-07-06 19:32 tiwai          Note Added: 0009152                          
 ======================================================================
 
 
