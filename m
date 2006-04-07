@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002007]: Forgotten change of snd_power_wait()-dummy
-Date: Fri, 7 Apr 2006 19:19:40 +0200
-Message-ID: <11b1735534fa79b8943c4d3c6bf9f4d1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002004]: Via say unknown codec on FSC Amilo 1667G
+Date: Fri, 7 Apr 2006 19:21:23 +0200
+Message-ID: <72c360b12992ec09eb23044ca26fd269@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F25EA15C
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:19:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7BAB167
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:21:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2007> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2004> 
 ======================================================================
-Reported By:                Henne
-Assigned To:                perex
+Reported By:                deathlove23
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2007
-Category:                   0_compilation problem_!!!
+Issue ID:                   2004
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             04-06-2006 19:47 CEST
-Last Modified:              04-07-2006 19:19 CEST
+Date Submitted:             04-05-2006 18:40 CEST
+Last Modified:              04-07-2006 19:21 CEST
 ======================================================================
-Summary:                    Forgotten change of snd_power_wait()-dummy
+Summary:                    Via say unknown codec on FSC Amilo 1667G
 Description: 
-Linus applyed a patch to core.h before the release of linux-2.6.17-rc1 to
-fix a blocker if CONFIG_PM is disabled.
-
-
-
-
-
+Hello,
  
+I have a Notebook from FSC: Amilo 1667G
+and is get thes messages in boot bzw. on dmesg:
+
+---
+ALSA device list:
+#0: VIA 8237 with unknown codec at 0xc800, irq 50
+---
+
+my Alsa Kernel config is:
+
+---
+CONFIG_SND=y
+CONFIG_SND_TIMER=y
+CONFIG_SND_PCM=y
+CONFIG_SND_RAWMIDI=y
+CONFIG_SND_RTCTIMER=y
+CONFIG_SND_MPU401_UART=y
+CONFIG_SND_AC97_CODEC=y
+CONFIG_SND_AC97_BUS=y
+CONFIG_SND_VIA82XX=y
+---
+
+and my lspci -vv is:
+
+---
+00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+        Subsystem: Fujitsu Siemens Computer GmbH Unknown device 1093
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin C routed to IRQ 50
+        Region 0: I/O ports at c800 [size=256]
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+---
+
+can you my soundcard to the ID lists eg. another Amilio's?
+
+Thanks
+Alex - Deathlove23
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-07-06 19:19 
+ tiwai - 04-07-06 19:21 
 ----------------------------------------------------------------------
-Already fixed on CVS.
+Please upload the contents of /proc/asound/card0/codec97#0/* files.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-06-06 19:47 Henne          New Issue                                    
-04-07-06 19:19 tiwai          Status                   assigned => resolved
-04-07-06 19:19 tiwai          Resolution               open => fixed       
-04-07-06 19:19 tiwai          Note Added: 0009144                          
+04-05-06 18:40 deathlove23    New Issue                                    
+04-05-06 18:40 deathlove23    Distribution              => Gentoo          
+04-05-06 18:40 deathlove23    Kernel Version            => 2.6.16          
+04-07-06 19:21 tiwai          Note Added: 0009145                          
 ======================================================================
 
 
