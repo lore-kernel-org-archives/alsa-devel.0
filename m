@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002009]: No pcm when running mythtv, sox, aplay but /dev/pcm present, oss emulation modules loaded
-Date: Fri, 7 Apr 2006 04:15:16 +0200
-Message-ID: <bc8e8b2eba74b0718365d12d05eff9c0@bugtrack.alsa-project.org>
+Date: Fri, 7 Apr 2006 04:53:31 +0200
+Message-ID: <70e5ea7043536c1a0a354c3cdba786db@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 28C8D154
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 04:15:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 034ED142
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 04:53:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2009> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               SuSE
 Kernel Version:             Linux 2.6.17-rc1
 ======================================================================
 Date Submitted:             04-07-2006 04:15 CEST
-Last Modified:              04-07-2006 04:15 CEST
+Last Modified:              04-07-2006 04:53 CEST
 ======================================================================
 Summary:                    No pcm when running mythtv, sox, aplay but /dev/pcm
 present, oss emulation modules loaded
@@ -56,6 +56,15 @@ audio input device to 48000kHz/16bits/2channels NVR: Could not detect
 audio blocksize NVR: Cannot open DSP '/dev/dsp', exiting"
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 04-07-06 04:53 
+----------------------------------------------------------------------
+Known bug, try ALSA CVS or the patch from:
+
+http://bugzilla.kernel.org/show_bug.cgi?id=6329
+
+or wait for 2.6.17-rc2
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -63,6 +72,7 @@ Date Modified  Username       Field                    Change
 04-07-06 04:15 chadady        File Added: .config                          
 04-07-06 04:15 chadady        Distribution              => SuSE            
 04-07-06 04:15 chadady        Kernel Version            => Linux 2.6.17-rc1
+04-07-06 04:53 rlrevell       Note Added: 0009134                          
 ======================================================================
 
 
