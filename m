@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001995]: Master and PCM control missing
-Date: Fri, 7 Apr 2006 19:47:11 +0200
-Message-ID: <591bd306d325eea54cd5b64d7c7405ad@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Trying again with cross compile
+Date: Fri, 07 Apr 2006 19:07:01 +0100
+Message-ID: <1144433221.9653.51.camel@localhost.localdomain>
+References: <1144413234.9653.16.camel@localhost.localdomain>
+	 <s5hslopy2vx.wl%tiwai@suse.de>
+	 <1144419331.9653.22.camel@localhost.localdomain>
+	 <s5hpsjttq2w.wl%tiwai@suse.de>
+	 <1144420643.9653.25.camel@localhost.localdomain>
+	 <s5hmzextpl7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 123D912A
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:47:11 +0200 (MEST)
+In-Reply-To: <s5hmzextpl7.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,133 +22,184 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2006-04-07 at 16:41 +0200, Takashi Iwai wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1995> 
-======================================================================
-Reported By:                baja
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1995
-Category:                   CORE - control
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             04-03-2006 06:13 CEST
-Last Modified:              04-07-2006 19:47 CEST
-======================================================================
-Summary:                    Master and PCM control missing
-Description: 
-1.0.11rc3 had the PCM control but the Master control was missing. rc4 now
-has both the PCM and the Master volume control missing. 
+> Maybe not yet?  The fix is simple as below.
+> 
+> 
+> Takashi
+> 
+> 
+> diff -r fd751f7a6395 -r 6cddb34dad21 include/core.h
+> --- a/include/core.h	Thu Apr  6 15:23:55 2006 +0200
+> +++ b/include/core.h	Thu Apr  6 15:26:05 2006 +0200
+> @@ -176,7 +176,7 @@ int snd_power_wait(struct snd_card *card
+>  
+>  #define snd_power_lock(card)		do { (void)(card); } while (0)
+>  #define snd_power_unlock(card)		do { (void)(card); } while (0)
+> -static inline int snd_power_wait(struct snd_card *card, unsigned int state, struct file *file) { return 0; }
+> +static inline int snd_power_wait(struct snd_card *card, unsigned int state) { return 0; }
+>  #define snd_power_get_state(card)	SNDRV_CTL_POWER_D0
+>  #define snd_power_change_state(card, state)	do { (void)(card); } while (0)
+>  
+> 
 
-Drivers loaded:
+I've patched and everything seems to be fine expect that the build gets
+wedged on hpi6000
 
-$ lsmod | grep snd
-snd_seq_dummy           3396  0
-snd_seq_oss            34240  0
-snd_seq_midi_event      7232  1 snd_seq_oss
-snd_seq                54528  5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
-snd_seq_device          7952  3 snd_seq_dummy,snd_seq_oss,snd_seq
-snd_pcm_oss            42016  0
-snd_mixer_oss          16320  1 snd_pcm_oss
-snd_hda_intel          16028  1
-snd_hda_codec         166536  1 snd_hda_intel
-snd_pcm                88396  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
-snd_timer              22600  2 snd_seq,snd_pcm
-snd                    59072  12
-snd_seq_dummy,snd_seq_oss,snd_seq,snd_seq_device,snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
-snd_page_alloc          9360  2 snd_hda_intel,snd_pcm
+I've even tried leaving if for over an hour - to no avail
 
-Controls reported by alsa
-$ amixer controls
-numid=11,iface=MIXER,name='Headphone Playback Switch'
-numid=4,iface=MIXER,name='Surround Playback Switch'
-numid=3,iface=MIXER,name='Surround Playback Volume'
-numid=7,iface=MIXER,name='Center Playback Switch'
-numid=5,iface=MIXER,name='Center Playback Volume'
-numid=8,iface=MIXER,name='LFE Playback Switch'
-numid=6,iface=MIXER,name='LFE Playback Volume'
-numid=17,iface=MIXER,name='Line Playback Switch'
-numid=16,iface=MIXER,name='Line Playback Volume'
-numid=19,iface=MIXER,name='CD Playback Switch'
-numid=18,iface=MIXER,name='CD Playback Volume'
-numid=13,iface=MIXER,name='Mic Playback Switch'
-numid=12,iface=MIXER,name='Mic Playback Volume'
-numid=21,iface=MIXER,name='Capture Switch'
-numid=23,iface=MIXER,name='Capture Switch',index=1
-numid=25,iface=MIXER,name='Capture Switch',index=2
-numid=20,iface=MIXER,name='Capture Volume'
-numid=22,iface=MIXER,name='Capture Volume',index=1
-numid=24,iface=MIXER,name='Capture Volume',index=2
-numid=29,iface=MIXER,name='IEC958 Playback Con Mask'
-numid=30,iface=MIXER,name='IEC958 Playback Pro Mask'
-numid=31,iface=MIXER,name='IEC958 Playback Default'
-numid=32,iface=MIXER,name='IEC958 Playback Switch'
-numid=34,iface=MIXER,name='IEC958 Capture Default'
-numid=33,iface=MIXER,name='IEC958 Capture Switch'
-numid=15,iface=MIXER,name='Front Mic Playback Switch'
-numid=14,iface=MIXER,name='Front Mic Playback Volume'
-numid=2,iface=MIXER,name='Front Playback Switch'
-numid=1,iface=MIXER,name='Front Playback Volume'
-numid=26,iface=MIXER,name='Input Source'
-numid=27,iface=MIXER,name='Input Source',index=1
-numid=28,iface=MIXER,name='Input Source',index=2
-numid=10,iface=MIXER,name='Side Playback Switch'
-numid=9,iface=MIXER,name='Side Playback Volume'
+Here's what make reports with debugging on if that helps anyone...
 
-Assuming that that this is an issue since applications look for this
-"generic" volume controls.
+   Successfully remade target file
+`/home/adrian/alsa-driver/pci/asihpi/hpi4000.o'.
+    Considering target file
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.o'.
+     File `/home/adrian/alsa-driver/pci/asihpi/hpi6000.o' does not
+exist.
+     Looking for an implicit rule for
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.o'.
+     Trying pattern rule with stem `hpi6000.o'.
+     Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.o_shipped'.
+     Trying pattern rule with stem `hpi6000'.
+     Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.c'.
+     Trying rule prerequisite `FORCE'.
+     Found an implicit rule for
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.o'.
+      Considering target file
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.c'.
+       Looking for an implicit rule for
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.c'.
+       Trying pattern rule with stem `hpi6000.c'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.c_shipped'.
+       Trying pattern rule with stem `hpi6000'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.y'.
+       Trying pattern rule with stem `hpi6000'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.l'.
+       Trying pattern rule with stem `hpi6000'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.w'.
+       Trying pattern rule with stem `hpi6000'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.w'.
+       Trying pattern rule with stem `hpi6000.c'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.c,v'.
+       Trying pattern rule with stem `hpi6000.c'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/RCS/hpi6000.c,v'.
+       Trying pattern rule with stem `hpi6000.c'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/RCS/hpi6000.c'.
+       Trying pattern rule with stem `hpi6000.c'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/s.hpi6000.c'.
+       Trying pattern rule with stem `hpi6000.c'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/SCCS/s.hpi6000.c'.
+       Trying pattern rule with stem `hpi6000'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.y'.
+       Looking for a rule with intermediate file
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.y'.
+        Avoiding implicit rule recursion.
+        Trying pattern rule with stem `hpi6000.y'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.y_shipped'.
+        Trying pattern rule with stem `hpi6000.y'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.y,v'.
+        Trying pattern rule with stem `hpi6000.y'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/RCS/hpi6000.y,v'.
+        Trying pattern rule with stem `hpi6000.y'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/RCS/hpi6000.y'.
+        Trying pattern rule with stem `hpi6000.y'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/s.hpi6000.y'.
+        Trying pattern rule with stem `hpi6000.y'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/SCCS/s.hpi6000.y'.
+       Trying pattern rule with stem `hpi6000'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.l'.
+       Looking for a rule with intermediate file
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.l'.
+        Avoiding implicit rule recursion.
+        Trying pattern rule with stem `hpi6000.l'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.l_shipped'.
+        Trying pattern rule with stem `hpi6000.l'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.l,v'.
+        Trying pattern rule with stem `hpi6000.l'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/RCS/hpi6000.l,v'.
+        Trying pattern rule with stem `hpi6000.l'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/RCS/hpi6000.l'.
+        Trying pattern rule with stem `hpi6000.l'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/s.hpi6000.l'.
+        Trying pattern rule with stem `hpi6000.l'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/SCCS/s.hpi6000.l'.
+       Trying pattern rule with stem `hpi6000'.
+       Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.w'.
+       Looking for a rule with intermediate file
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.w'.
+        Avoiding implicit rule recursion.
+        Trying pattern rule with stem `hpi6000.w'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.w_shipped'.
+        Trying pattern rule with stem `hpi6000.w'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.w,v'.
+        Trying pattern rule with stem `hpi6000.w'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/RCS/hpi6000.w,v'.
+        Trying pattern rule with stem `hpi6000.w'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/RCS/hpi6000.w'.
+        Trying pattern rule with stem `hpi6000.w'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/s.hpi6000.w'.
+        Trying pattern rule with stem `hpi6000.w'.
+        Trying implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/SCCS/s.hpi6000.w'.
+       Trying pattern rule with stem `hpi6000'.
+       Rejecting impossible implicit prerequisite
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.w'.
+       No implicit rule found for
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.c'.
+       Finished prerequisites of target file
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.c'.
+      No need to remake target
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.c'.
+      Pruning file `FORCE'.
+     Finished prerequisites of target file
+`/home/adrian/alsa-driver/pci/asihpi/hpi6000.o'.
+    Must remake target `/home/adrian/alsa-driver/pci/asihpi/hpi6000.o'.
+Putting child 0x080e9bd8 (/home/adrian/alsa-driver/pci/asihpi/hpi6000.o)
+PID 19527 on the chain.
+Live child 0x080e9bd8 (/home/adrian/alsa-driver/pci/asihpi/hpi6000.o)
+PID 19527
+  CC [M]  /home/adrian/alsa-driver/pci/asihpi/hpi6000.o
 
-Thanks
-
-Baja
 
 
-
-======================================================================
-
-----------------------------------------------------------------------
- baja - 04-03-06 06:17 
-----------------------------------------------------------------------
-By the way... I am using a MSi mother board:
-
-MSI K8NGM2-FID Socket 939 NVIDIA GeForce 6150
-
-ls pci reports:
-
-00:10.1 Audio device: nVidia Corporation MCP51 High Definition Audio (rev
-a2)
-
-with snd_hda_intel...
-
-----------------------------------------------------------------------
- tiwai - 04-07-06 19:47 
-----------------------------------------------------------------------
-The most important information is missing:  Please upload
-/proc/asound/card0/codec#* files.
-
-Possibly there is no master volume or PCM control on your chip indeed, but
-only volume for each output jack, Front, Surround, CLFE.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-03-06 06:13 baja           New Issue                                    
-04-03-06 06:17 baja           Note Added: 0009084                          
-04-07-06 19:47 tiwai          Note Added: 0009154                          
-======================================================================
-
+It sticks here for ever - though top reports cc1 is still active
 
 
 
