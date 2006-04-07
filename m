@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
-Date: Fri, 7 Apr 2006 23:52:24 +0200
-Message-ID: <3a553d3122120c7a19bbd7d98edb8336@bugtrack.alsa-project.org>
+Date: Sat, 8 Apr 2006 00:02:53 +0200
+Message-ID: <ca14348b152e93b3401a48cd84f2f60c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AF670157
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 23:52:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1566157
+	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 00:02:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Redhat/Fedora
 Kernel Version:             2.6.16-1.2080 and with Xen
 ======================================================================
 Date Submitted:             04-07-2006 00:43 CEST
-Last Modified:              04-07-2006 23:52 CEST
+Last Modified:              04-08-2006 00:02 CEST
 ======================================================================
 Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
 Description: 
@@ -61,16 +61,16 @@ everything about Linux, this has thrown me for a loop.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 04-07-06 23:47 
-----------------------------------------------------------------------
-If you enable the onboard sound in the BIOS and load snd-via82xx manually
-does the onboard sound work?  It looks like it should.
-
-----------------------------------------------------------------------
  buboleck - 04-07-06 23:52 
 ----------------------------------------------------------------------
 No it's not working. It plays something just once for about one sec and
 stops. If I start again nothing comes out.
+
+----------------------------------------------------------------------
+ rlrevell - 04-08-06 00:02 
+----------------------------------------------------------------------
+Does the interrupt count for the soundcard increase in /proc/interrupts
+when playing sound?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +96,7 @@ with Xen
 04-07-06 23:46 buboleck       Note Edited: 0009160                         
 04-07-06 23:47 rlrevell       Note Added: 0009161                          
 04-07-06 23:52 buboleck       Note Added: 0009162                          
+04-08-06 00:02 rlrevell       Note Added: 0009163                          
 ======================================================================
 
 
