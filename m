@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002004]: Via say unknown codec on FSC Amilo 1667G
-Date: Fri, 7 Apr 2006 19:21:23 +0200
-Message-ID: <72c360b12992ec09eb23044ca26fd269@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002003]: i can not ear anything and all setting of the ALSAMIXER are not working
+Date: Fri, 7 Apr 2006 19:22:30 +0200
+Message-ID: <cff57e93607ce4b76584d71228187415@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7BAB167
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:21:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E1AB10C
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:22:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,86 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2004> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2003> 
 ======================================================================
-Reported By:                deathlove23
+Reported By:                pierre hubert
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2004
-Category:                   PCI - via82xx
+Issue ID:                   2003
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.16
+Distribution:               mandriva 10,2
+Kernel Version:             2,6,11-6mdk
 ======================================================================
-Date Submitted:             04-05-2006 18:40 CEST
-Last Modified:              04-07-2006 19:21 CEST
+Date Submitted:             04-05-2006 13:47 CEST
+Last Modified:              04-07-2006 19:22 CEST
 ======================================================================
-Summary:                    Via say unknown codec on FSC Amilo 1667G
+Summary:                    i can not ear anything and all setting of the
+ALSAMIXER are not working
 Description: 
-Hello,
- 
-I have a Notebook from FSC: Amilo 1667G
-and is get thes messages in boot bzw. on dmesg:
-
----
-ALSA device list:
-#0: VIA 8237 with unknown codec at 0xc800, irq 50
----
-
-my Alsa Kernel config is:
-
----
-CONFIG_SND=y
-CONFIG_SND_TIMER=y
-CONFIG_SND_PCM=y
-CONFIG_SND_RAWMIDI=y
-CONFIG_SND_RTCTIMER=y
-CONFIG_SND_MPU401_UART=y
-CONFIG_SND_AC97_CODEC=y
-CONFIG_SND_AC97_BUS=y
-CONFIG_SND_VIA82XX=y
----
-
-and my lspci -vv is:
-
----
-00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: Fujitsu Siemens Computer GmbH Unknown device 1093
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin C routed to IRQ 50
-        Region 0: I/O ports at c800 [size=256]
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
----
-
-can you my soundcard to the ID lists eg. another Amilio's?
-
-Thanks
-Alex - Deathlove23
+I have recently bought a sound card MAUDIO-Revolution 5.1
+the driver SND-ICE-1724 has installed itself without any problem
+But when i use it i can not ear anything and all settings of the Alsamixer
+are not working.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-07-06 19:21 
+ tiwai - 04-07-06 19:22 
 ----------------------------------------------------------------------
-Please upload the contents of /proc/asound/card0/codec97#0/* files.
+Too old version.  Update to the latest one, 1.0.11rc4.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-05-06 18:40 deathlove23    New Issue                                    
-04-05-06 18:40 deathlove23    Distribution              => Gentoo          
-04-05-06 18:40 deathlove23    Kernel Version            => 2.6.16          
-04-07-06 19:21 tiwai          Note Added: 0009145                          
+04-05-06 13:47 pierre hubert  New Issue                                    
+04-05-06 13:47 pierre hubert  Distribution              => mandriva 10,2   
+04-05-06 13:47 pierre hubert  Kernel Version            => 2,6,11-6mdk     
+04-07-06 19:22 tiwai          Note Added: 0009146                          
 ======================================================================
 
 
