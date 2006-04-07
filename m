@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Fri, 7 Apr 2006 13:05:22 +0200
-Message-ID: <1bad78e3f9b0ac5b5c5852f169bed284@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001857]: regression in snd-cs4281 in recent 2.6.16-rcX kernels
+Date: Fri, 7 Apr 2006 13:11:45 +0200
+Message-ID: <1333fbbd216b5181899f32a952cf3a8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDDDE154
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 13:05:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9EA05154
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 13:11:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,125 +24,114 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1857> 
 ======================================================================
-Reported By:                liangalei
+Reported By:                hoffmajs
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Issue ID:                   1857
+Category:                   PCI - cs4281
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Status:                     new
+Distribution:               Ubuntu (Dapper)
+Kernel Version:             2.6.16-rc4
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              04-07-2006 13:05 CEST
+Date Submitted:             02-19-2006 06:11 CET
+Last Modified:              04-07-2006 13:11 CEST
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    regression in snd-cs4281 in recent 2.6.16-rcX
+kernels
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+In the recent 2.6.16-rc kernels snd-cs4281 broke for me.
+(I think since 2.6.16-rc2, but Im not sure atm. In 2.6.15 the card works
+fine.)
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
+# > modprobe snd-cs4281
+ACPI: PCI Interrupt 0000:00:08.0[A] -> Link [LNKC] -> GSI 5 (level, low)
+-> IRQ 5
+never read ISV3 and ISV4 from AC'97
+ACPI: PCI interrupt for device 0000:00:08.0 disabled
+CS4281: probe of 0000:00:08.0 failed with error -5
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
+and no soundcard is found.
 
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+If you need more info or want me to test something, please say so.
 
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
 
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
+kind regards,
+Jens
 
-thanks
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- trava - 03-30-06 15:47 
+ julienbras - 04-05-06 10:33 
 ----------------------------------------------------------------------
-I've the same problem on benq s53y.01, the sound is mute. I tried also to
-use snd-hda-intel, but this module don't work at all.
-I don't know what to do... :(
+same problem on a debian sid, IBM Thinkpad X20.
+
+The switch from 2.6.15 to 2.6.16 broke the sound
+
+LSPCI output:
+julien@x20:~$ sudo lspci -vs 00:0b
+0000:00:0b.0 Multimedia audio controller: Cirrus Logic Crystal CS4281 PCI
+Audio (rev 01)
+        Subsystem: IBM: Unknown device 0183
+        Flags: medium devsel, IRQ 11
+        Memory at f4010000 (32-bit, non-prefetchable) [size=4K]
+        Memory at f4000000 (32-bit, non-prefetchable) [size=64K]
+        Capabilities: [40] Power Management version 2
+
+DMESG output:
+ACPI: PCI Interrupt 0000:00:0b.0[A] -> Link [LNKA] -> GSI 11 (level, low)
+-> IRQ 11
+never read ISV3 and ISV4 from AC'97
+ACPI: PCI interrupt for device 0000:00:0b.0 disabled
+CS4281: probe of 0000:00:0b.0 failed with error -5
 
 ----------------------------------------------------------------------
- kesiev - 04-07-06 13:05 
+ Mo6eB - 04-07-06 13:11 
 ----------------------------------------------------------------------
-I'm using a Kubuntu 6.06 (Dapper Drake) Flight and sound is still mute. But
-using earphones, i can hear sometime some noise (like a radio tuner) while
-changing volume from alsamixer.
+Also happens here.
+Debian unstable, custom-compiled kernel, as well as the precompiled kernel
+in the Debian repository don't work.
+Fujitsu/Siemens Lifebook C-4345
+
+lspci -vs 00:08
+0000:00:08.0 Multimedia audio controller: Cirrus Logic Crystal CS4281 PCI
+Audio (rev 01)
+        Subsystem: Fujitsu Limited. Crystal CS4281 PCI Audio
+        Flags: medium devsel, IRQ 5
+        Memory at fc010000 (32-bit, non-prefetchable) [size=4K]
+        Memory at fc000000 (32-bit, non-prefetchable) [size=64K]
+        Capabilities: [40] Power Management version 2
+
+dmesg on a kernel, compiled with support for ACPI:
+ACPI: PCI Interrupt 0000:00:08.0[A] -> Link [LNKC] -> GSI 5 (level, low)
+-> IRQ 5
+ALSA sound/pci/cs4281.c:1577: never read ISV3 and ISV4 from AC'97
+ACPI: PCI interrupt for device 0000:00:08.0 disabled
+CS4281: probe of 0000:00:08.0 failed with error -5
+
+dmesg on a kernel, compiled without support for ACPI:
+PCI: Found IRQ 5 for device 0000:00:08.0
+ALSA sound/pci/cs4281.c:1577: never read ISV3 and ISV4 from AC'97
+CS4281: probe of 0000:00:08.0 failed with error -5
+
+It doesn't seem like ACPI is the problem. The second kernel was compiled
+with no support whatsoever for power management. If you need me to try
+some specific configuration, do say so.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
-03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
-   
-03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
-03-17-06 04:10 Kooper         Note Added: 0008633                          
-03-17-06 12:07 tiwai          Note Added: 0008641                          
-03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
-      
-03-17-06 12:35 Kooper         Note Added: 0008644                          
-03-21-06 02:38 JProgrammer    Note Added: 0008736                          
-03-25-06 10:51 alessiodf      Note Added: 0008944                          
-03-26-06 20:12 alessiodf      Note Edited: 0008944                         
-03-26-06 20:15 alessiodf      Note Edited: 0008944                         
-03-30-06 15:47 trava          Note Added: 0009034                          
-04-07-06 13:05 kesiev         Note Added: 0009137                          
+02-19-06 06:11 hoffmajs       New Issue                                    
+02-19-06 06:11 hoffmajs       Distribution              => Ubuntu (Dapper) 
+02-19-06 06:11 hoffmajs       Kernel Version            => 2.6.16-rc4      
+03-02-06 16:05 tiwai          Note Added: 0008319                          
+04-05-06 10:33 julienbras     Note Added: 0009119                          
+04-07-06 13:11 Mo6eB          Note Added: 0009138                          
 ======================================================================
 
 
