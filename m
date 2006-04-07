@@ -1,14 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: More than 8 soundcards
-Date: Fri, 07 Apr 2006 09:51:54 +0200
-Message-ID: <20060407075154.GA4670@turing.informatik.uni-halle.de>
-References: <44356C8D.1010402@riccardotempesta.com>
+From: Erik Mouw <erik@harddisk-recovery.com>
+Subject: Re: [BUG ALSA 2.6.17-rc1] Oops when Gaim tries to play sound
+Date: Fri, 7 Apr 2006 10:15:46 +0200
+Message-ID: <20060407081546.GC3947__40134.9731059328$1144397944$gmane$org@harddisk-recovery.com>
+References: <20060406132042.GF20402@harddisk-recovery.nl> <1144338706.2866.62.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <44356C8D.1010402@riccardotempesta.com>
-Content-disposition: inline
+Received: from abra2.bitwizard.nl (dtp.xs4all.nl [80.126.206.180])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 83E9614B
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 10:15:49 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <1144338706.2866.62.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,36 +20,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Riccardo Tempesta <info@riccardotempesta.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Riccardo Tempesta wrote:
-> I'm trying to use more than 8 soundcards with ALSA.
+On Thu, Apr 06, 2006 at 11:51:45AM -0400, Lee Revell wrote:
+> On Thu, 2006-04-06 at 15:20 +0200, Erik Mouw wrote:
+> > Could be a locking error or an ALSA error, so message posted to lkml
+> > and alsa-devel lists. Feel free to ask for more information.
 > 
-> I've seen the following line in "driver.h"
-> #define SNDRV_CARDS 8 /* number of supported soundcards - don't change - minor numbers */
+> Already reported (several times) to both LKML and alsa-devel.
 > 
-> What does "don't change - minor numbers" mean?
+> See kernel bugzilla #6329
 
-That ALSA allocates 32 minor numbers per card, and due to the limit of
-256 minor numbers it is not possible to have more than 8 cards.
-
-Since 1.0.11rc1, driver.h has the following code:
-
-/* number of supported soundcards */
-#ifdef CONFIG_SND_DYNAMIC_MINORS
-#define SNDRV_CARDS 32
-#else
-#define SNDRV_CARDS 8		/* don't change - minor numbers */
-#endif
-
-If you don't use the in-kernel ALSA, add the --enable-dynamic-minors
-option to the configure call.
+Rene Herman pointed it out in private. I applied
+http://bugzilla.kernel.org/attachment.cgi?id=7779&action=view and
+everything seems to work again.
 
 
-HTH
-Clemens
+Erik
+
+-- 
++-- Erik Mouw -- www.harddisk-recovery.com -- +31 70 370 12 90 --
+| Lab address: Delftechpark 26, 2628 XH, Delft, The Netherlands
 
 
 -------------------------------------------------------
