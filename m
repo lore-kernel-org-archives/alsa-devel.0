@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001835]: Patch to add volume control per voice for au88x0
-Date: Fri, 7 Apr 2006 03:21:28 +0200
-Message-ID: <f636e084b57c821ea6c4f339d024292b@bugtrack.alsa-project.org>
+Date: Fri, 7 Apr 2006 03:57:06 +0200
+Message-ID: <531f2ca9db22b29ea23060da98a78d46@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57B06154
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 03:21:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 62349154
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 03:57:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-10-2006 03:28 CET
-Last Modified:              04-07-2006 03:21 CEST
+Last Modified:              04-07-2006 03:57 CEST
 ======================================================================
 Summary:                    Patch to add volume control per voice for au88x0
 Description: 
@@ -51,50 +51,25 @@ SNDRV_CTL_ELEM_IFACE_PCM
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 03-29-06 17:44 
-----------------------------------------------------------------------
-au88x0_pcm_vol_using_index_control.patch
-
-Using the new feature "Subdevice Playback Volume" with a hooked ctl in
-au88x0.conf to implement a "rear" device for au8830 with 4-channels codec
-to mute the front channels.
-
-
-<confdir:pcm/rear.conf>
-
-AU8830.pcm.rear.0 {
-	@args [ CARD ]
-	@args.CARD {
-		type string
-	}
-	type hooks
-	slave.pcm {
-		type hw
-		card $CARD
-		device 0
-	}
-	hooks.0 {
-		type ctl_elems
-		hook_args [
-			{
-				interface PCM
-				device 0
-				name "Subdevice Playback Volume"
-				index { @func private_pcm_subdevice }
-				value [ -64 -64 8 8 ]
-			}
-		]
-	}
-}	
-
-
-The outstanding issue is the fifo error when playing stereo/4 channels
-sound.
-
-----------------------------------------------------------------------
  ponchick - 04-07-06 03:21 
 ----------------------------------------------------------------------
 I tried this patch yaesterday. It works fine.
+
+----------------------------------------------------------------------
+ Raymond - 04-07-06 03:57 
+----------------------------------------------------------------------
+This is a simple way to implemente a rear device but that use 4 SRC
+(ttable) instead of 2 SRC (subdevice volume)
+
+pcm.rear {
+    type plug
+    slave {
+        pcm "hw:0,0"
+        channels 4
+    }
+    ttable.0.2 1
+    ttable.1.3 1
+}
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -110,6 +85,7 @@ vol_ctrl_per_voice_testing_using_aplay.patch
 au88x0_pcm_vol_using_index_control.patch                    
 03-29-06 17:44 Raymond        Note Added: 0008994                          
 04-07-06 03:21 ponchick       Note Added: 0009132                          
+04-07-06 03:57 Raymond        Note Added: 0009133                          
 ======================================================================
 
 
