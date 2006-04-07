@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
-Date: Fri, 7 Apr 2006 23:32:10 +0200
-Message-ID: <517e936791c8c2d5c657f0e62aa68b58@bugtrack.alsa-project.org>
+Date: Fri, 7 Apr 2006 23:39:50 +0200
+Message-ID: <f97aad993fcf4159f8df58f63cf33df4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 393F1C1
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 23:32:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F61B157
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 23:39:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Redhat/Fedora
 Kernel Version:             2.6.16-1.2080 and with Xen
 ======================================================================
 Date Submitted:             04-07-2006 00:43 CEST
-Last Modified:              04-07-2006 23:32 CEST
+Last Modified:              04-07-2006 23:39 CEST
 ======================================================================
 Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
 Description: 
@@ -61,12 +61,6 @@ everything about Linux, this has thrown me for a loop.
 ======================================================================
 
 ----------------------------------------------------------------------
- buboleck - 04-07-06 23:26 
-----------------------------------------------------------------------
-Despite this PCI/whatever issue, the fact is that the sound is not working.
-Maybe this is all related to the vt8251 chipset.
-
-----------------------------------------------------------------------
  rlrevell - 04-07-06 23:32 
 ----------------------------------------------------------------------
 "This 05:08:0 and 05:09:0 was not seen with the default "PCI access
@@ -81,6 +75,12 @@ card doesn't appear on the bus.
 
 What sound card is this thing supposed to have?  I can't believe you both
 have the same board but lspci is showing three different soundcards?
+
+----------------------------------------------------------------------
+ buboleck - 04-07-06 23:39 
+----------------------------------------------------------------------
+I have disabled my onboard via snd card and sata. Currently I use some
+external creative pci card. My board is exatctly the same.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,6 +100,7 @@ with Xen
 04-07-06 23:16 buboleck       Issue Monitored: buboleck                    
 04-07-06 23:26 buboleck       Note Added: 0009158                          
 04-07-06 23:32 rlrevell       Note Added: 0009159                          
+04-07-06 23:39 buboleck       Note Added: 0009160                          
 ======================================================================
 
 
