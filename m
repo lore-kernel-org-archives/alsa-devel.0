@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002010]: Terratec DMX Fire 1024 recording problem
-Date: Fri, 7 Apr 2006 19:18:55 +0200
-Message-ID: <36d8aba997080579d0d478ccfc6a34d4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002007]: Forgotten change of snd_power_wait()-dummy
+Date: Fri, 7 Apr 2006 19:19:40 +0200
+Message-ID: <11b1735534fa79b8943c4d3c6bf9f4d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5556015C
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:18:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F25EA15C
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:19:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2010> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2007> 
 ======================================================================
-Reported By:                rbielefeld
-Assigned To:                
+Reported By:                Henne
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2010
-Category:                   PCI - cs46xx
+Issue ID:                   2007
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux 10.0
+Status:                     resolved
+Distribution:               
 Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-07-2006 09:09 CEST
-Last Modified:              04-07-2006 19:18 CEST
+Date Submitted:             04-06-2006 19:47 CEST
+Last Modified:              04-07-2006 19:19 CEST
 ======================================================================
-Summary:                    Terratec DMX Fire 1024 recording problem
+Summary:                    Forgotten change of snd_power_wait()-dummy
 Description: 
-I want to record from LineIn port.
-Even with no signal on that port, one input channel is noisy.
-With a signal on that port, the noisy channel does not have the real audio
-signal.
+Linus applyed a patch to core.h before the release of linux-2.6.17-rc1 to
+fix a blocker if CONFIG_PM is disabled.
 
 
 
 
+
+ 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-07-06 19:18 
+ tiwai - 04-07-06 19:19 
 ----------------------------------------------------------------------
-Upload /etc/asound.state for checking.  I guess you didn't set up mixer
-properly.
-Possibly "ADC Volume" or "ADC Capture Switch" isn't set up.
+Already fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-07-06 09:09 rbielefeld     New Issue                                    
-04-07-06 09:09 rbielefeld     Distribution              => SuSE Linux 10.0 
-04-07-06 19:18 tiwai          Note Added: 0009143                          
+04-06-06 19:47 Henne          New Issue                                    
+04-07-06 19:19 tiwai          Status                   assigned => resolved
+04-07-06 19:19 tiwai          Resolution               open => fixed       
+04-07-06 19:19 tiwai          Note Added: 0009144                          
 ======================================================================
 
 
