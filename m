@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002010]: Terratec DMX Fire 1024 recording problem
-Date: Fri, 7 Apr 2006 09:09:53 +0200
-Message-ID: <f27f9046183a53b239b08321e3f8fa25@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: More than 8 soundcards
+Date: Fri, 07 Apr 2006 09:51:54 +0200
+Message-ID: <20060407075154.GA4670@turing.informatik.uni-halle.de>
+References: <44356C8D.1010402@riccardotempesta.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0016014B
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 09:09:53 +0200 (MEST)
+In-reply-to: <44356C8D.1010402@riccardotempesta.com>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +18,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Riccardo Tempesta <info@riccardotempesta.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Riccardo Tempesta wrote:
+> I'm trying to use more than 8 soundcards with ALSA.
+> 
+> I've seen the following line in "driver.h"
+> #define SNDRV_CARDS 8 /* number of supported soundcards - don't change - minor numbers */
+> 
+> What does "don't change - minor numbers" mean?
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2010> 
-======================================================================
-Reported By:                rbielefeld
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2010
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             
-======================================================================
-Date Submitted:             04-07-2006 09:09 CEST
-Last Modified:              04-07-2006 09:09 CEST
-======================================================================
-Summary:                    Terratec DMX Fire 1024 recording problem
-Description: 
-I want to record from LineIn port.
-Even with no signal on that port, one input channel is noisy.
-With a signal on that port, the noisy channel does not have the real audio
-signal.
+That ALSA allocates 32 minor numbers per card, and due to the limit of
+256 minor numbers it is not possible to have more than 8 cards.
+
+Since 1.0.11rc1, driver.h has the following code:
+
+/* number of supported soundcards */
+#ifdef CONFIG_SND_DYNAMIC_MINORS
+#define SNDRV_CARDS 32
+#else
+#define SNDRV_CARDS 8		/* don't change - minor numbers */
+#endif
+
+If you don't use the in-kernel ALSA, add the --enable-dynamic-minors
+option to the configure call.
 
 
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-07-06 09:09 rbielefeld     New Issue                                    
-04-07-06 09:09 rbielefeld     Distribution              => SuSE Linux 10.0 
-======================================================================
-
-
+HTH
+Clemens
 
 
 -------------------------------------------------------
