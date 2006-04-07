@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
-Date: Sat, 8 Apr 2006 00:19:05 +0200
-Message-ID: <fce2228ac653cdf769e542b3c4c8d1f1@bugtrack.alsa-project.org>
+Date: Sat, 8 Apr 2006 00:29:38 +0200
+Message-ID: <24d7997d9afdf9ae5299521826d4d636@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6737157
-	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 00:19:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B17AD157
+	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 00:29:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Redhat/Fedora
 Kernel Version:             2.6.16-1.2080 and with Xen
 ======================================================================
 Date Submitted:             04-07-2006 00:43 CEST
-Last Modified:              04-08-2006 00:19 CEST
+Last Modified:              04-08-2006 00:29 CEST
 ======================================================================
 Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
 Description: 
@@ -59,62 +59,6 @@ understanding
 everything about Linux, this has thrown me for a loop.
 
 ======================================================================
-
-----------------------------------------------------------------------
- buboleck - 04-08-06 00:16 
-----------------------------------------------------------------------
-YES :)
-
-BEFORE
-
-buboleck ~ # cat /proc/interrupts
-           CPU0       CPU1
-  0:     206694          0    IO-APIC-edge  timer
-  1:        412          0    IO-APIC-edge  i8042
-  7:          0          0    IO-APIC-edge  parport0
-  8:          2          0    IO-APIC-edge  rtc
-  9:          0          0   IO-APIC-level  acpi
- 12:       3341          0    IO-APIC-edge  i8042
- 14:      10171          0    IO-APIC-edge  ide0
- 15:        638          0    IO-APIC-edge  ide1
- 16:      14053          0   IO-APIC-level  fglrx
- 17:          0          0   IO-APIC-level  cx88[0]
- 18:        394          0   IO-APIC-level  eth0, uhci_hcd:usb4
- 19:          0          0   IO-APIC-level  uhci_hcd:usb1
- 20:          3          0   IO-APIC-level  uhci_hcd:usb2, ehci_hcd:usb5,
-VIA8237
- 21:          0          0   IO-APIC-level  uhci_hcd:usb3
-NMI:          0          0
-LOC:     206528     206629
-ERR:          0
-MIS:          0
-
-AFTER sound
-
-buboleck ~ # cat /proc/interrupts
-           CPU0       CPU1
-  0:     217168          0    IO-APIC-edge  timer
-  1:        418          0    IO-APIC-edge  i8042
-  7:          0          0    IO-APIC-edge  parport0
-  8:          2          0    IO-APIC-edge  rtc
-  9:          0          0   IO-APIC-level  acpi
- 12:       4581          0    IO-APIC-edge  i8042
- 14:      10842          0    IO-APIC-edge  ide0
- 15:        668          0    IO-APIC-edge  ide1
- 16:      14943          0   IO-APIC-level  fglrx
- 17:          0          0   IO-APIC-level  cx88[0]
- 18:        414          0   IO-APIC-level  eth0, uhci_hcd:usb4
- 19:          0          0   IO-APIC-level  uhci_hcd:usb1
- 20:         11          0   IO-APIC-level  uhci_hcd:usb2, ehci_hcd:usb5,
-VIA8237
- 21:          0          0   IO-APIC-level  uhci_hcd:usb3
-NMI:          0          0
-LOC:     217004     217105
-ERR:          0
-MIS:          0
-
-Plays for a sec stops and amarok dies. I kill amarok, start it again and
-same, one sec sound and dies.
 
 ----------------------------------------------------------------------
  buboleck - 04-08-06 00:19 
@@ -157,6 +101,11 @@ VT8233/A/8235/8237 AC97 Audio Controller (rev 70)
 05:09.0 Multimedia video controller: Conexant CX23880/1/2/3 PCI Video and
 Audio Decoder (rev 05
 
+----------------------------------------------------------------------
+ rlrevell - 04-08-06 00:29 
+----------------------------------------------------------------------
+What happens with "aplay file.wav"?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -184,6 +133,7 @@ with Xen
 04-08-06 00:02 rlrevell       Note Added: 0009163                          
 04-08-06 00:16 buboleck       Note Added: 0009164                          
 04-08-06 00:19 buboleck       Note Added: 0009165                          
+04-08-06 00:29 rlrevell       Note Added: 0009166                          
 ======================================================================
 
 
