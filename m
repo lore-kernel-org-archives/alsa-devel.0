@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
-Date: Sat, 8 Apr 2006 00:02:53 +0200
-Message-ID: <ca14348b152e93b3401a48cd84f2f60c@bugtrack.alsa-project.org>
+Date: Sat, 8 Apr 2006 00:16:20 +0200
+Message-ID: <48d1156e26f365fb72ca0320088a6aec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1566157
-	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 00:02:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4698A157
+	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 00:16:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Redhat/Fedora
 Kernel Version:             2.6.16-1.2080 and with Xen
 ======================================================================
 Date Submitted:             04-07-2006 00:43 CEST
-Last Modified:              04-08-2006 00:02 CEST
+Last Modified:              04-08-2006 00:16 CEST
 ======================================================================
 Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
 Description: 
@@ -61,16 +61,66 @@ everything about Linux, this has thrown me for a loop.
 ======================================================================
 
 ----------------------------------------------------------------------
- buboleck - 04-07-06 23:52 
-----------------------------------------------------------------------
-No it's not working. It plays something just once for about one sec and
-stops. If I start again nothing comes out.
-
-----------------------------------------------------------------------
  rlrevell - 04-08-06 00:02 
 ----------------------------------------------------------------------
 Does the interrupt count for the soundcard increase in /proc/interrupts
 when playing sound?
+
+----------------------------------------------------------------------
+ buboleck - 04-08-06 00:16 
+----------------------------------------------------------------------
+YES :)
+
+BEFORE
+
+buboleck ~ # cat /proc/interrupts
+           CPU0       CPU1
+  0:     206694          0    IO-APIC-edge  timer
+  1:        412          0    IO-APIC-edge  i8042
+  7:          0          0    IO-APIC-edge  parport0
+  8:          2          0    IO-APIC-edge  rtc
+  9:          0          0   IO-APIC-level  acpi
+ 12:       3341          0    IO-APIC-edge  i8042
+ 14:      10171          0    IO-APIC-edge  ide0
+ 15:        638          0    IO-APIC-edge  ide1
+ 16:      14053          0   IO-APIC-level  fglrx
+ 17:          0          0   IO-APIC-level  cx88[0]
+ 18:        394          0   IO-APIC-level  eth0, uhci_hcd:usb4
+ 19:          0          0   IO-APIC-level  uhci_hcd:usb1
+ 20:          3          0   IO-APIC-level  uhci_hcd:usb2, ehci_hcd:usb5,
+VIA8237
+ 21:          0          0   IO-APIC-level  uhci_hcd:usb3
+NMI:          0          0
+LOC:     206528     206629
+ERR:          0
+MIS:          0
+
+AFTER sound
+
+buboleck ~ # cat /proc/interrupts
+           CPU0       CPU1
+  0:     217168          0    IO-APIC-edge  timer
+  1:        418          0    IO-APIC-edge  i8042
+  7:          0          0    IO-APIC-edge  parport0
+  8:          2          0    IO-APIC-edge  rtc
+  9:          0          0   IO-APIC-level  acpi
+ 12:       4581          0    IO-APIC-edge  i8042
+ 14:      10842          0    IO-APIC-edge  ide0
+ 15:        668          0    IO-APIC-edge  ide1
+ 16:      14943          0   IO-APIC-level  fglrx
+ 17:          0          0   IO-APIC-level  cx88[0]
+ 18:        414          0   IO-APIC-level  eth0, uhci_hcd:usb4
+ 19:          0          0   IO-APIC-level  uhci_hcd:usb1
+ 20:         11          0   IO-APIC-level  uhci_hcd:usb2, ehci_hcd:usb5,
+VIA8237
+ 21:          0          0   IO-APIC-level  uhci_hcd:usb3
+NMI:          0          0
+LOC:     217004     217105
+ERR:          0
+MIS:          0
+
+Plays for a sec stops and amarok dies. I kill amarok, start it again and
+same, one sec sound and dies.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,6 +147,7 @@ with Xen
 04-07-06 23:47 rlrevell       Note Added: 0009161                          
 04-07-06 23:52 buboleck       Note Added: 0009162                          
 04-08-06 00:02 rlrevell       Note Added: 0009163                          
+04-08-06 00:16 buboleck       Note Added: 0009164                          
 ======================================================================
 
 
