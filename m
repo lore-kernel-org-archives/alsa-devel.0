@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
-Date: Fri, 7 Apr 2006 02:35:57 +0200
-Message-ID: <ac9fdad9c5c023b859c6fe6e96dccfb8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001835]: Patch to add volume control per voice for au88x0
+Date: Fri, 7 Apr 2006 03:21:28 +0200
+Message-ID: <f636e084b57c821ea6c4f339d024292b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F73C150
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 02:35:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57B06154
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 03:21:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,221 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2008> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835> 
 ======================================================================
-Reported By:                mborsick
-Assigned To:                tiwai
+Reported By:                Raymond
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2008
-Category:                   PCI - hda-intel
+Issue ID:                   1835
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Redhat/Fedora
-Kernel Version:             2.6.16-1.2080 and with Xen
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-07-2006 00:43 CEST
-Last Modified:              04-07-2006 02:35 CEST
+Date Submitted:             02-10-2006 03:28 CET
+Last Modified:              04-07-2006 03:21 CEST
 ======================================================================
-Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
+Summary:                    Patch to add volume control per voice for au88x0
 Description: 
-Kernel is up-to-date Xen kernel.
-
-Initial install did not recognize the sound on an ASUS P5VDC-MX
-motherboard.
-Motherboard has southbridge VIA VT8251. CODEC is Realtek ACL653 AC'97 6
-channel
-Audio. Tried the updated drivers in 002404, but was unsuccessful. Also
-tried
-drivers on VIA site and Realltek site. The last couple of tries show no
-errors
-in compiling, make, etc. However, as I am just above novice in
-understanding
-everything about Linux, this has thrown me for a loop.
-
+As the proposed API "PCM volume control per snd_pcm_open()" have not been
+finalised, I upload the program ( a workaround tool instead of demo ) to
+test the new feature "Volume control per voice" for au88x0 using
+SNDRV_CTL_ELEM_IFACE_PCM
 ======================================================================
 
 ----------------------------------------------------------------------
- mborsick - 04-07-06 02:13 
+ Raymond - 03-29-06 17:44 
 ----------------------------------------------------------------------
-lspci -vn output is as follows:
+au88x0_pcm_vol_using_index_control.patch
 
-00:00.0 0600: 1106:0314
-        Subsystem: 1106:0314
-        Flags: bus master, medium devsel, latency 8
-        Memory at f0000000 (32-bit, prefetchable) [size=128M]
-        Capabilities: [80] AGP version 3.5
-        Capabilities: [50] Power Management version 2
+Using the new feature "Subdevice Playback Volume" with a hooked ctl in
+au88x0.conf to implement a "rear" device for au8830 with 4-channels codec
+to mute the front channels.
 
-00:00.1 0600: 1106:1314
-        Subsystem: 1106:1314
-        Flags: bus master, medium devsel, latency 0
 
-00:00.2 0600: 1106:2314
-        Subsystem: 1106:2314
-        Flags: bus master, medium devsel, latency 0
+<confdir:pcm/rear.conf>
 
-00:00.3 0600: 1106:3208
-        Flags: bus master, medium devsel, latency 0
+AU8830.pcm.rear.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type hooks
+	slave.pcm {
+		type hw
+		card $CARD
+		device 0
+	}
+	hooks.0 {
+		type ctl_elems
+		hook_args [
+			{
+				interface PCM
+				device 0
+				name "Subdevice Playback Volume"
+				index { @func private_pcm_subdevice }
+				value [ -64 -64 8 8 ]
+			}
+		]
+	}
+}	
 
-00:00.4 0600: 1106:4314
-        Subsystem: 1106:4314
-        Flags: bus master, medium devsel, latency 0
 
-00:00.7 0600: 1106:7314
-        Flags: bus master, medium devsel, latency 0
-
-00:01.0 0604: 1106:b198
-        Flags: bus master, 66MHz, medium devsel, latency 0
-        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-        Memory behind bridge: fca00000-feafffff
-        Prefetchable memory behind bridge: cff00000-dfefffff
-        Capabilities: [70] Power Management version 2
-
-00:0f.0 0101: 1106:3349 (prog-if 8f)
-        Subsystem: 1106:3349
-        Flags: bus master, medium devsel, latency 64, IRQ 11
-        I/O ports at ec00 [size=8]
-        I/O ports at e880 [size=4]
-        I/O ports at e800 [size=8]
-        I/O ports at e480 [size=4]
-        I/O ports at e400 [size=16]
-        Memory at febffc00 (32-bit, non-prefetchable) [size=1K]
-        Capabilities: [c0] Power Management version 2
-        Capabilities: [e0] Message Signalled Interrupts: 64bit- Queue=0/0
-Enable-
-
-00:0f.1 0101: 1106:0571 (rev 07) (prog-if 8a)
-        Subsystem: 1106:0571
-        Flags: bus master, medium devsel, latency 32
-        I/O ports at fc00 [size=16]
-        Capabilities: [c0] Power Management version 2
-
-00:10.0 0c03: 1106:3038 (rev 90)
-        Subsystem: 1106:3038
-        Flags: bus master, medium devsel, latency 64, IRQ 18
-        I/O ports at e080 [size=32]
-        Capabilities: [80] Power Management version 2
-
-00:10.1 0c03: 1106:3038 (rev 90)
-        Subsystem: 1106:3038
-        Flags: bus master, medium devsel, latency 64, IRQ 19
-        I/O ports at e000 [size=32]
-        Capabilities: [80] Power Management version 2
-
-00:10.2 0c03: 1106:3038 (rev 90)
-        Subsystem: 1106:3038
-        Flags: bus master, medium devsel, latency 64, IRQ 20
-        I/O ports at dc00 [size=32]
-        Capabilities: [80] Power Management version 2
-
-00:10.3 0c03: 1106:3038 (rev 90)
-        Subsystem: 1106:3038
-        Flags: bus master, medium devsel, latency 64, IRQ 16
-        I/O ports at d880 [size=32]
-        Capabilities: [80] Power Management version 2
-
-00:10.4 0c03: 1106:3104 (rev 90) (prog-if 20)
-        Subsystem: 1106:3104
-        Flags: bus master, medium devsel, latency 64, IRQ 19
-        Memory at febff800 (32-bit, non-prefetchable) [size=256]
-        Capabilities: [80] Power Management version 2
-        Capabilities: [88] Debug port
-
-00:11.0 0601: 1106:3287
-        Subsystem: 1106:3287
-        Flags: medium devsel
-        Capabilities: [c0] Power Management version 2
-
-00:11.5 0401: 1106:3059 (rev 70)
-        Subsystem: 1043:81b9
-        Flags: bus master, medium devsel, latency 0, IRQ 5
-        I/O ports at d400 [size=256]
-        Capabilities: [c0] Power Management version 2
-
-00:11.7 0600: 1106:287e
-        Subsystem: 1106:287e
-        Flags: bus master, medium devsel, latency 128
-        Capabilities: [58] HyperTransport: Interrupt Discovery and
-Configuration
-00:12.0 0200: 1106:3065 (rev 7c)
-        Subsystem: 1043:80a7
-        Flags: bus master, medium devsel, latency 64, IRQ 16
-        I/O ports at d000 [size=256]
-        Memory at febff400 (32-bit, non-prefetchable) [size=256]
-        Capabilities: [40] Power Management version 2
-
-00:13.0 0604: 1106:287b
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=02, subordinate=04, sec-latency=0
-        Memory behind bridge: 20000000-200fffff
-
-00:13.1 0604: 1106:287a (prog-if 01)
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=05, subordinate=05, sec-latency=0
-
-01:00.0 0300: 10de:0185 (rev c1)
-        Flags: bus master, 66MHz, medium devsel, latency 64
-        Memory at fd000000 (32-bit, non-prefetchable) [size=16M]
-        Memory at d0000000 (32-bit, prefetchable) [size=128M]
-        Expansion ROM at feae0000 [disabled] [size=128K]
-        Capabilities: [60] Power Management version 2
-        Capabilities: [44] AGP version 3.0
-
-02:00.0 0604: 1106:287c
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=02, secondary=03, subordinate=03, sec-latency=0
-        Capabilities: [40] Express Root Port (Slot-) IRQ 0
-        Capabilities: [68] Power Management version 2
-        Capabilities: [70] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [100] Advanced Error Reporting
-        Capabilities: [140] Virtual Channel
-        Capabilities: [180] Unknown (5)
-
-02:00.1 0604: 1106:287d
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=02, secondary=04, subordinate=04, sec-latency=0
-        Capabilities: [40] Express Root Port (Slot-) IRQ 0
-        Capabilities: [68] Power Management version 2
-        Capabilities: [70] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [100] Advanced Error Reporting
-        Capabilities: [140] Virtual Channel
-        Capabilities: [180] Unknown (5)
-
-02:01.0 0403: 1106:3288
-        Subsystem: 1043:818f
-        Flags: fast devsel, IRQ 17
-        Memory at 20000000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit- Queue=0/0
-Enable-
-        Capabilities: [70] Express Legacy Endpoint IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+The outstanding issue is the fifo error when playing stereo/4 channels
+sound.
 
 ----------------------------------------------------------------------
- rlrevell - 04-07-06 02:35 
+ ponchick - 04-07-06 03:21 
 ----------------------------------------------------------------------
-Try adding { .subvendor = 0x1043, .subdevice = 0x81b9, .action =
-VIA_DXS_SRC    } to the PCI ids in via82xx.c for the first device.
-
-As for the "VIA high definition audio controller", I think that's a new
-device that isn't supported yet.  tiwai?
+I tried this patch yaesterday. It works fine.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-07-06 00:43 mborsick       New Issue                                    
-04-07-06 00:43 mborsick       Distribution              => Redhat/Fedora   
-04-07-06 00:43 mborsick       Kernel Version            => 2.6.16-1.2080 and
-with Xen
-04-07-06 01:07 rlrevell       Note Added: 0009129                          
-04-07-06 02:13 mborsick       Note Added: 0009130                          
-04-07-06 02:35 rlrevell       Note Added: 0009131                          
+02-10-06 03:28 Raymond        New Issue                                    
+02-10-06 03:30 Raymond        File Added: iface_pcm.c                      
+02-11-06 11:19 Raymond        Note Added: 0008014                          
+02-13-06 16:07 Raymond        Note Added: 0008053                          
+02-22-06 08:59 Raymond        File Added:
+vol_ctrl_per_voice_testing_using_aplay.patch                    
+02-22-06 09:57 Raymond        Note Added: 0008156                          
+03-29-06 16:15 Raymond        File Added:
+au88x0_pcm_vol_using_index_control.patch                    
+03-29-06 17:44 Raymond        Note Added: 0008994                          
+04-07-06 03:21 ponchick       Note Added: 0009132                          
 ======================================================================
 
 
