@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
-Date: Sat, 8 Apr 2006 00:41:58 +0200
-Message-ID: <61b24db7a5018d6b90d620640d273190@bugtrack.alsa-project.org>
+Date: Sat, 8 Apr 2006 00:42:54 +0200
+Message-ID: <46d0fc0a306e42c85c42c3ac2b9e6edf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 753E3149
-	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 00:41:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66765149
+	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 00:42:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Redhat/Fedora
 Kernel Version:             2.6.16-1.2080 and with Xen
 ======================================================================
 Date Submitted:             04-07-2006 00:43 CEST
-Last Modified:              04-08-2006 00:41 CEST
+Last Modified:              04-08-2006 00:42 CEST
 ======================================================================
 Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
 Description: 
@@ -61,19 +61,14 @@ everything about Linux, this has thrown me for a loop.
 ======================================================================
 
 ----------------------------------------------------------------------
- buboleck - 04-08-06 00:32 
-----------------------------------------------------------------------
-Plays just "Side" stops and after 2-3 sec this:
-
-buboleck ~ # aplay /usr/share/sounds/alsa/Side_Left.wav
-Playing WAVE '/usr/share/sounds/alsa/Side_Left.wav' : Signed 16 bit Little
-Endian, Rate 48000 Hz, Mono
-aplay: pcm_write:1222: write error: Input/output error
-
-----------------------------------------------------------------------
  rlrevell - 04-08-06 00:41 
 ----------------------------------------------------------------------
 I think it's an ACPI IRQ routing bug.  Please report to linux-kernel.
+
+----------------------------------------------------------------------
+ buboleck - 04-08-06 00:42 
+----------------------------------------------------------------------
+ok
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -105,6 +100,7 @@ with Xen
 04-08-06 00:29 rlrevell       Note Added: 0009166                          
 04-08-06 00:32 buboleck       Note Added: 0009167                          
 04-08-06 00:41 rlrevell       Note Added: 0009168                          
+04-08-06 00:42 buboleck       Note Added: 0009169                          
 ======================================================================
 
 
