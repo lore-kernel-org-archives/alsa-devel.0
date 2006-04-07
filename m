@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
-Date: Fri, 7 Apr 2006 19:32:24 +0200
-Message-ID: <fef409965cbb3cd3f4dd292f1e54c707@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001495]: nForce2 IEC958 output is working when IEC958 control is muted.
+Date: Fri, 7 Apr 2006 19:45:03 +0200
+Message-ID: <3c72dae2750e173383bfd4f9636d22a5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B557115C
-	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:32:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5A5212A
+	for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2006 19:45:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,121 +24,181 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1495> 
 ======================================================================
-Reported By:                Raymond
+Reported By:                damscot
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1990
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   1495
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.12-gentoo-r1
 ======================================================================
-Date Submitted:             04-01-2006 04:26 CEST
-Last Modified:              04-07-2006 19:32 CEST
+Date Submitted:             10-24-2005 00:16 CEST
+Last Modified:              04-07-2006 19:45 CEST
 ======================================================================
-Summary:                    aplay/arecord cannot play/capture A_LAW
+Summary:                    nForce2 IEC958 output is working when IEC958 control
+is muted.
 Description: 
-aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
+Good evening,
 
-arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
+I'am using my MSI MEGA 180 under linux.
+I'am using ALSA 1.0.9 Embedded inside the Linux ALSA kernel system.
 
-aplay -D hw:0,0 test.au
+***************************
+*** USEFULL INFORMATION ***
+***************************
+
+<< lspci
+0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce2 AC97
+Audio Controler (MCP) (rev a1)
+        Subsystem: Micro-Star International Co., Ltd.: Unknown device
+7960
+        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 22
+        I/O ports at d400 [size=256]
+        I/O ports at d800 [size=128]
+        Memory at e1087000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [44] Power Management version 2
 
 
-Try to use -t raw but the quality of A_LAW is very bad when compare with
-MU_LAW
+<< cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9rc2  (Thu Mar 24
+10:33:39 2005 UTC).
 
-arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
+<< cat /proc/asound/cards
+0 [nForce2        ]: NFORCE - NVidia nForce2
+                     NVidia nForce2 with ALC650F at 0xe1087000, irq 22
+1 [Modem          ]: ICH-MODEM - NVidia nForce2 Modem
+                     NVidia nForce2 Modem at 0xe1080000, irq 22
 
-aplay -D hw:0,0 test.raw
+<< cat /proc/asound/devices
+ 18: [0- 2]: digital audio playback
+ 25: [0- 1]: digital audio capture
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  0: [0- 0]: ctl
+  1:       : sequencer
+ 33:       : timer
+ 48: [1- 0]: digital audio playback
+ 56: [1- 0]: digital audio capture
+ 32: [1- 0]: ctl
 
+<< cat /proc/asound/pcm
+00-00: Intel ICH : NVidia nForce2 : playback 1 : capture 1
+00-01: Intel ICH - MIC ADC : NVidia nForce2 - MIC ADC : capture 1
+00-02: Intel ICH - IEC958 : NVidia nForce2 - IEC958 : playback 1
+01-00: Intel ICH - Modem : NVidia nForce2 Modem - Modem : playback 1 :
+capture 1
+
+<< cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: Realtek ALC650F
+
+Capabilities     :
+DAC resolution   : 20-bit
+ADC resolution   : 18-bit
+3D enhancement   : Realtek 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : on
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Double rate slots: 10/11
+Extended ID      : codec=0 rev=1 LDAC SDAC CDAC DSA=0 SPDIF DRA VRA
+Extended status  : SPCV LDAC SDAC CDAC SPDIF=10/11 VRA
+PCM front DAC    : 44100Hz
+PCM Surr DAC     : 44100Hz
+PCM LFE DAC      : 44100Hz
+PCM ADC          : 44100Hz
+SPDIF Control    : Consumer PCM Copyright Category=0x2 Generation=1
+Rate=48kHz
+SPDIF In Status  : Not Locked
+
+<< amixer | grep -A 5 IEC958
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Mono: Playback [on] Capture [off]
+Simple mixer control 'IEC958 Playback AC97-SPSA',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 3
+  Mono: 3 [100%]
+Simple mixer control 'Analog to IEC958 Output',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+
+***************************
+
+My SPDIF output is referenced as hw:0,2, the chipset is a nForce2 (then i
+use the snd-intel8x0 driver), the AC97 device seems to be a Realtek
+ALC650F.
+
+while using a basic application to send samples to the spdif output ex:
+
+<< aplay -f dat -c 2 -D hw:0,2 anybigfile.gz
+
+I need to mute the IEC958 control in order to ear something from my
+DTS/Digital decoder/amplifier.
+
+It seems that the control function is inverted. The problem is that all
+application, xmms (for each playing file), mplayer, xine try to unmute the
+IEC958 control before starting to play. Then, I have to manually mute the
+IEC958 control after lauching the media application to ear the sound.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-03-06 07:36 
+ damscot - 04-03-06 00:57 
 ----------------------------------------------------------------------
-pcm.convert {
-        type alaw  
-        slave {
-		pcm "hw:0"
-		format A_LAW
-	}
-}
+The problem is more on ALC650F (AC97 Audio Codec) support rather than a
+problem in intel8x0/nforce2 chipset (AC97 Controller). I develop a patch
+of the ac97_codec.c (contact: damscot@yahoo.com) file in order to invert
+the bit AC97_EA_SPDIF of the AC97_EXTENDED_STATUS register just in case of
+ALC650F device. It is probably not the best place to set-up such patch,
+but i'am not an expert in alsa development. I hope that an expert will be
+able to integrate it in next version of alsa / linux kernel.
+
+Currently the patch as been validated on alsa integrated with linux
+2.6.14-gentoo kernel version.
+
+to respond to "fearofcarpet", it seems that IEC958 volume is used to
+control which ac97 slots are used to transmit SPDIF data.
 
 
-aplay -v -Dconvert test.wav
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-A-Law conversion PCM (A_LAW)
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 16
-  buffer_size  : 4096
-  period_size  : 1024
-  period_time  : 128000
-  tick_time    : 10000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 4096
-  stop_threshold   : 4096
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Slave: Hardware PCM card 0 'au8830' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : A_LAW
-  subformat    : STD
-  channels     : 1
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 8
-  buffer_size  : 4096
-  period_size  : 1024
-  period_time  : 128000
-  tick_time    : 10000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 4096
-  stop_threshold   : 4096
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-
-It seem that the plugin alaw work , the sound play at expected quality
-
-This mean that aplay/arecord only need to implement read/write the A_LAW
-audio in a suitable file format
 
 ----------------------------------------------------------------------
- tiwai - 04-07-06 19:32 
+ tiwai - 04-07-06 19:45 
 ----------------------------------------------------------------------
-aplay doesn't support A-law in .au format.
+What a hell, is the bit inverted?
+I remember other ALC650 model works with the normal setting, so it's
+likely a problem only on ALC650F.
+
+Anyway, please post a patch instead of .c file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-01-06 04:26 Raymond        New Issue                                    
-04-03-06 07:16 Raymond        Note Added: 0009085                          
-04-03-06 07:36 Raymond        Note Added: 0009086                          
-04-07-06 19:32 tiwai          Note Added: 0009152                          
+10-24-05 00:16 damscot        New Issue                                    
+10-24-05 00:16 damscot        Distribution              => Gentoo          
+10-24-05 00:16 damscot        Kernel Version            => 2.6.12-gentoo-r1
+01-16-06 17:11 fearofcarpet   Note Added: 0007689                          
+04-03-06 00:39 damscot        File Added: ac97_codec.c                     
+04-03-06 00:48 damscot        Note Added: 0009074                          
+04-03-06 00:51 damscot        Note Edited: 0009074                         
+04-03-06 00:57 damscot        Note Edited: 0009074                         
+04-07-06 19:45 tiwai          Note Added: 0009153                          
 ======================================================================
 
 
