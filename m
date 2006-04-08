@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
-Date: Sat, 8 Apr 2006 00:42:54 +0200
-Message-ID: <46d0fc0a306e42c85c42c3ac2b9e6edf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002009]: No pcm when running mythtv, sox, aplay but /dev/pcm present, oss emulation modules loaded
+Date: Sat, 8 Apr 2006 02:05:52 +0200
+Message-ID: <1d6e473efd0b6a95be7ea908e07ecc2a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66765149
-	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 00:42:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA830149
+	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 02:05:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2008> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2009> 
 ======================================================================
-Reported By:                mborsick
-Assigned To:                tiwai
+Reported By:                chadady
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2008
-Category:                   PCI - hda-intel
+Issue ID:                   2009
+Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Redhat/Fedora
-Kernel Version:             2.6.16-1.2080 and with Xen
+Status:                     new
+Distribution:               SuSE
+Kernel Version:             Linux 2.6.17-rc1
 ======================================================================
-Date Submitted:             04-07-2006 00:43 CEST
-Last Modified:              04-08-2006 00:42 CEST
+Date Submitted:             04-07-2006 04:15 CEST
+Last Modified:              04-08-2006 02:05 CEST
 ======================================================================
-Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
+Summary:                    No pcm when running mythtv, sox, aplay but /dev/pcm
+present, oss emulation modules loaded
 Description: 
-Kernel is up-to-date Xen kernel.
-
-Initial install did not recognize the sound on an ASUS P5VDC-MX
-motherboard.
-Motherboard has southbridge VIA VT8251. CODEC is Realtek ACL653 AC'97 6
-channel
-Audio. Tried the updated drivers in 002404, but was unsuccessful. Also
-tried
-drivers on VIA site and Realltek site. The last couple of tries show no
-errors
-in compiling, make, etc. However, as I am just above novice in
-understanding
-everything about Linux, this has thrown me for a loop.
-
+I have a Sound Blaster PCI512, sound works great for TvTime and XINE.  Have
+been trying to get MythTV up and running and it has worked 'fine' up to
+1.0.11rc2 (stock kernel 2.6.16.1) in that pcm delivered mono sound, left
+speaker only.  On 2.6.16.1 the command 'sox -w -r 44000 -t ossdsp /dev/dsp
+-t ossdsp /dev/dsp' provided nice sound, both speakers.  For 1.0.11rc4 the
+same command gives "sox: Failed reading /dev/dsp: Unable to set the sample
+size to 16", and Myth gives "NVR: AudioInit(): /dev/dsp : error setting
+audio input device to 48000kHz/16bits/2channels NVR: Could not detect
+audio blocksize NVR: Cannot open DSP '/dev/dsp', exiting"
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 04-08-06 00:41 
+ rlrevell - 04-07-06 04:53 
 ----------------------------------------------------------------------
-I think it's an ACPI IRQ routing bug.  Please report to linux-kernel.
+Known bug, try ALSA CVS or the patch from:
+
+http://bugzilla.kernel.org/show_bug.cgi?id=6329
+
+or wait for 2.6.17-rc2
 
 ----------------------------------------------------------------------
- buboleck - 04-08-06 00:42 
+ chadady - 04-08-06 02:05 
 ----------------------------------------------------------------------
-ok
+The patch worked - thanks and please close.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-07-06 00:43 mborsick       New Issue                                    
-04-07-06 00:43 mborsick       Distribution              => Redhat/Fedora   
-04-07-06 00:43 mborsick       Kernel Version            => 2.6.16-1.2080 and
-with Xen
-04-07-06 01:07 rlrevell       Note Added: 0009129                          
-04-07-06 02:13 mborsick       Note Added: 0009130                          
-04-07-06 02:35 rlrevell       Note Added: 0009131                          
-04-07-06 06:38 mborsick       Note Added: 0009135                          
-04-07-06 22:45 buboleck       Note Added: 0009156                          
-04-07-06 22:47 buboleck       Note Edited: 0009156                         
-04-07-06 22:49 buboleck       Note Edited: 0009156                         
-04-07-06 23:06 rlrevell       Note Added: 0009157                          
-04-07-06 23:16 buboleck       Issue Monitored: buboleck                    
-04-07-06 23:26 buboleck       Note Added: 0009158                          
-04-07-06 23:32 rlrevell       Note Added: 0009159                          
-04-07-06 23:39 buboleck       Note Added: 0009160                          
-04-07-06 23:40 buboleck       Note Edited: 0009160                         
-04-07-06 23:43 buboleck       Note Edited: 0009160                         
-04-07-06 23:46 buboleck       Note Edited: 0009160                         
-04-07-06 23:47 rlrevell       Note Added: 0009161                          
-04-07-06 23:52 buboleck       Note Added: 0009162                          
-04-08-06 00:02 rlrevell       Note Added: 0009163                          
-04-08-06 00:16 buboleck       Note Added: 0009164                          
-04-08-06 00:19 buboleck       Note Added: 0009165                          
-04-08-06 00:29 rlrevell       Note Added: 0009166                          
-04-08-06 00:32 buboleck       Note Added: 0009167                          
-04-08-06 00:41 rlrevell       Note Added: 0009168                          
-04-08-06 00:42 buboleck       Note Added: 0009169                          
+04-07-06 04:15 chadady        New Issue                                    
+04-07-06 04:15 chadady        File Added: .config                          
+04-07-06 04:15 chadady        Distribution              => SuSE            
+04-07-06 04:15 chadady        Kernel Version            => Linux 2.6.17-rc1
+04-07-06 04:53 rlrevell       Note Added: 0009134                          
+04-08-06 02:05 chadady        Note Added: 0009170                          
 ======================================================================
 
 
