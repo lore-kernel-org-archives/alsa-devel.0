@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002009]: No pcm when running mythtv, sox, aplay but /dev/pcm present, oss emulation modules loaded
-Date: Sat, 8 Apr 2006 02:27:50 +0200
-Message-ID: <3bdfa1ab25fc96235e7dd9a8af951fa5@bugtrack.alsa-project.org>
+From: Carlos Munoz <carlos@kenati.com>
+Subject: Full duplex mode
+Date: Fri, 07 Apr 2006 19:32:52 -0700
+Message-ID: <443720D4.2000905@kenati.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 292B516B
-	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 02:27:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +15,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2009> 
-======================================================================
-Reported By:                chadady
-Assigned To:                rlrevell
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2009
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               SuSE
-Kernel Version:             Linux 2.6.17-rc1
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             04-07-2006 04:15 CEST
-Last Modified:              04-08-2006 02:27 CEST
-======================================================================
-Summary:                    No pcm when running mythtv, sox, aplay but /dev/pcm
-present, oss emulation modules loaded
-Description: 
-I have a Sound Blaster PCI512, sound works great for TvTime and XINE.  Have
-been trying to get MythTV up and running and it has worked 'fine' up to
-1.0.11rc2 (stock kernel 2.6.16.1) in that pcm delivered mono sound, left
-speaker only.  On 2.6.16.1 the command 'sox -w -r 44000 -t ossdsp /dev/dsp
--t ossdsp /dev/dsp' provided nice sound, both speakers.  For 1.0.11rc4 the
-same command gives "sox: Failed reading /dev/dsp: Unable to set the sample
-size to 16", and Myth gives "NVR: AudioInit(): /dev/dsp : error setting
-audio input device to 48000kHz/16bits/2channels NVR: Could not detect
-audio blocksize NVR: Cannot open DSP '/dev/dsp', exiting"
-======================================================================
+An alsa driver I've written supports full duplex mode (playback and 
+capture simultaneously). Do I need to anything special to support full 
+duplex mode ? I assume the playback_open(), etc and capture_open(), etc 
+will both get called and from the driver point of view I'm just handling 
+two streams, right ?
 
-----------------------------------------------------------------------
- rlrevell - 04-07-06 04:53 
-----------------------------------------------------------------------
-Known bug, try ALSA CVS or the patch from:
-
-http://bugzilla.kernel.org/show_bug.cgi?id=6329
-
-or wait for 2.6.17-rc2
-
-----------------------------------------------------------------------
- chadady - 04-08-06 02:05 
-----------------------------------------------------------------------
-The patch worked - thanks and please close.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-07-06 04:15 chadady        New Issue                                    
-04-07-06 04:15 chadady        File Added: .config                          
-04-07-06 04:15 chadady        Distribution              => SuSE            
-04-07-06 04:15 chadady        Kernel Version            => Linux 2.6.17-rc1
-04-07-06 04:53 rlrevell       Note Added: 0009134                          
-04-08-06 02:05 chadady        Note Added: 0009170                          
-04-08-06 02:27 rlrevell       Status                   new => resolved     
-04-08-06 02:27 rlrevell       Resolution               open => fixed       
-04-08-06 02:27 rlrevell       Assigned To               => rlrevell        
-======================================================================
+Thanks,
 
 
+Carlos
 
 
 -------------------------------------------------------
