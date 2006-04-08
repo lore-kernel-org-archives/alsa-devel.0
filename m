@@ -1,11 +1,14 @@
-From: Carlos Munoz <carlos@kenati.com>
-Subject: Full duplex mode
-Date: Fri, 07 Apr 2006 19:32:52 -0700
-Message-ID: <443720D4.2000905@kenati.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
+Date: Sat, 8 Apr 2006 07:47:20 +0200
+Message-ID: <fd5f7ae2b919d10bad2fc41d87901c05@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E148150
+	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 07:47:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,21 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-An alsa driver I've written supports full duplex mode (playback and 
-capture simultaneously). Do I need to anything special to support full 
-duplex mode ? I assume the playback_open(), etc and capture_open(), etc 
-will both get called and from the driver point of view I'm just handling 
-two streams, right ?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1990
+Category:                   aplay/arecord
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             04-01-2006 04:26 CEST
+Last Modified:              04-08-2006 07:47 CEST
+======================================================================
+Summary:                    aplay/arecord cannot play/capture A_LAW
+Description: 
+aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
 
-Thanks,
+arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
+
+aplay -D hw:0,0 test.au
 
 
-Carlos
+Try to use -t raw but the quality of A_LAW is very bad when compare with
+MU_LAW
+
+arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
+
+aplay -D hw:0,0 test.raw
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 04-07-06 19:32 
+----------------------------------------------------------------------
+aplay doesn't support A-law in .au format.
+
+----------------------------------------------------------------------
+ Raymond - 04-08-06 07:47 
+----------------------------------------------------------------------
+cat test.raw > /dev/dsp
+
+or 
+
+cat test.raw > /dev/audio
+
+
+
+Which of the above will play the sound correctly if test.raw is recorded
+by arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw ?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-01-06 04:26 Raymond        New Issue                                    
+04-03-06 07:16 Raymond        Note Added: 0009085                          
+04-03-06 07:36 Raymond        Note Added: 0009086                          
+04-07-06 19:32 tiwai          Note Added: 0009152                          
+04-08-06 07:47 Raymond        Note Added: 0009171                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
