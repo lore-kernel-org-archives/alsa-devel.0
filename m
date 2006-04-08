@@ -1,18 +1,14 @@
-From: "Gopal Prowell" <prow@amgs.net>
-Subject: today news
-Date: Sat, 8 Apr 2006 15:28:22 -0400
-Message-ID: <000001c65b42$99944cc0$5d30a8c0@rwc74>
-Reply-To: "Gopal Prowell" <prow@amgs.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
+Date: Sat, 8 Apr 2006 22:30:36 +0200
+Message-ID: <3191248bcfaf2c605e73cf59ab64ce5d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C65B21.1282ACC0"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF73DD8
-	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 21:28:43 +0200 (MEST)
-Received: from gotennis.com (87.69.33.205.cable.012.net.il [87.69.33.205])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 763D399212
-	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 21:28:42 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D30F6156
+	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 22:30:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,110 +21,93 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C65B21.1282ACC0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2008> 
+======================================================================
+Reported By:                mborsick
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2008
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Redhat/Fedora
+Kernel Version:             2.6.16-1.2080 and with Xen
+======================================================================
+Date Submitted:             04-07-2006 00:43 CEST
+Last Modified:              04-08-2006 22:30 CEST
+======================================================================
+Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
+Description: 
+Kernel is up-to-date Xen kernel.
 
-A=20
-V=20
-X=20
-C=20
-P=20
-V=20
-L=20
-m=20
-A=20
-a=20
-I=20
-r=20
-I=20
-e=20
-b=20
-L=20
-n=20
-A=20
-o=20
-A=20
-v=20
-i=20
-I=20
-a=20
-L=20
-z=20
-G=20
-i=20
-e=20
-U=20
-x=20
-I=20
-a=20
-R=20
-t=20
-n=20
-M=20
+Initial install did not recognize the sound on an ASUS P5VDC-MX
+motherboard.
+Motherboard has southbridge VIA VT8251. CODEC is Realtek ACL653 AC'97 6
+channel
+Audio. Tried the updated drivers in 002404, but was unsuccessful. Also
+tried
+drivers on VIA site and Realltek site. The last couple of tries show no
+errors
+in compiling, make, etc. However, as I am just above novice in
+understanding
+everything about Linux, this has thrown me for a loop.
 
-S=20
-c=20
-A=20
-r=20
+======================================================================
 
- =20
+----------------------------------------------------------------------
+ buboleck - 04-08-06 00:44 
+----------------------------------------------------------------------
+ok. can you direct me please how to describe it?
 
- =20
 
- =20
-a=20
-=20
-http://www.anitaroun.com <http://www.anitaroun.com>=20
 
-------=_NextPart_000_0001_01C65B21.1282ACC0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ mborsick - 04-08-06 22:30 
+----------------------------------------------------------------------
+Been following this, but have been unable to jump in because of other IT
+projects I am working on here. Do you want me to file this with the linnux
+kernel folks?
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>
-<TABLE>
-<TR>
-<TD> <DIV> A </DIV> <DIV> <STRONG> V </STRONG> </DIV> <DIV> X </DIV> =
-<DIV> <STRONG> C </STRONG> </DIV> <DIV> P </DIV> <DIV> <STRONG> V =
-</STRONG> </DIV> <DIV> L </DIV> </TD>
-<TD> <DIV> m </DIV> <DIV> <STRONG> A </STRONG> </DIV> <DIV> a </DIV> =
-<DIV> <STRONG> I </STRONG> </DIV> <DIV> r </DIV> <DIV> <STRONG> I =
-</STRONG> </DIV> <DIV> e </DIV> </TD>
-<TD> <DIV> b </DIV> <DIV> <STRONG> L </STRONG> </DIV> <DIV> n </DIV> =
-<DIV> <STRONG> A </STRONG> </DIV> <DIV> o </DIV> <DIV> <STRONG> A =
-</STRONG> </DIV> <DIV> v </DIV> </TD>
-<TD> <DIV> i </DIV> <DIV> <STRONG> I </STRONG> </DIV> <DIV> a </DIV> =
-<DIV> <STRONG> L </STRONG> </DIV> <DIV> z </DIV> <DIV> <STRONG> G =
-</STRONG> </DIV> <DIV> i </DIV> </TD>
-<TD> <DIV> e </DIV> <DIV> <STRONG> U </STRONG> </DIV> <DIV> x </DIV> =
-<DIV> <STRONG> I </STRONG> </DIV> <DIV> a </DIV> <DIV> <STRONG> R =
-</STRONG> </DIV> <DIV> t </DIV> </TD>
-<TD> <DIV> n </DIV> <DIV> <STRONG> M </STRONG> </DIV> <DIV> <BR> </DIV> =
-<DIV> <STRONG> S </STRONG> </DIV> <DIV> c </DIV> <DIV> <STRONG> A =
-</STRONG> </DIV> <DIV> r </DIV> </TD>
-<TD> <DIV> <BR> </DIV> <DIV> &nbsp; </DIV> <DIV> <BR> </DIV> <DIV> =
-&nbsp; </DIV> <DIV> <BR> </DIV> <DIV> &nbsp; </DIV> <DIV> a </DIV> </TD>
-</TR>
-</TABLE>
-</DIV>
-<DIV><FONT face=3DArial size=3D2>&nbsp;</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><A =
-href=3D"http://www.anitaroun.com"><FONT face=3DArial =
-size=3D2>http://www.anitaroun.com</FONT></A></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C65B21.1282ACC0--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-07-06 00:43 mborsick       New Issue                                    
+04-07-06 00:43 mborsick       Distribution              => Redhat/Fedora   
+04-07-06 00:43 mborsick       Kernel Version            => 2.6.16-1.2080 and
+with Xen
+04-07-06 01:07 rlrevell       Note Added: 0009129                          
+04-07-06 02:13 mborsick       Note Added: 0009130                          
+04-07-06 02:35 rlrevell       Note Added: 0009131                          
+04-07-06 06:38 mborsick       Note Added: 0009135                          
+04-07-06 22:45 buboleck       Note Added: 0009156                          
+04-07-06 22:47 buboleck       Note Edited: 0009156                         
+04-07-06 22:49 buboleck       Note Edited: 0009156                         
+04-07-06 23:06 rlrevell       Note Added: 0009157                          
+04-07-06 23:16 buboleck       Issue Monitored: buboleck                    
+04-07-06 23:26 buboleck       Note Added: 0009158                          
+04-07-06 23:32 rlrevell       Note Added: 0009159                          
+04-07-06 23:39 buboleck       Note Added: 0009160                          
+04-07-06 23:40 buboleck       Note Edited: 0009160                         
+04-07-06 23:43 buboleck       Note Edited: 0009160                         
+04-07-06 23:46 buboleck       Note Edited: 0009160                         
+04-07-06 23:47 rlrevell       Note Added: 0009161                          
+04-07-06 23:52 buboleck       Note Added: 0009162                          
+04-08-06 00:02 rlrevell       Note Added: 0009163                          
+04-08-06 00:16 buboleck       Note Added: 0009164                          
+04-08-06 00:19 buboleck       Note Added: 0009165                          
+04-08-06 00:29 rlrevell       Note Added: 0009166                          
+04-08-06 00:32 buboleck       Note Added: 0009167                          
+04-08-06 00:41 rlrevell       Note Added: 0009168                          
+04-08-06 00:42 buboleck       Note Added: 0009169                          
+04-08-06 00:44 buboleck       Note Edited: 0009169                         
+04-08-06 22:30 mborsick       Note Added: 0009173                          
+======================================================================
 
 
 
