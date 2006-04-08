@@ -1,11 +1,13 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Adding a new architecture to alsa-driver
-Date: Sat, 08 Apr 2006 16:35:32 +0100
-Message-ID: <1144510532.10642.1.camel@localhost.localdomain>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Adding a new architecture to alsa-driver
+Date: Sat, 08 Apr 2006 12:03:38 -0400
+Message-ID: <1144512218.22490.146.camel@mindpipe>
+References: <1144510532.10642.1.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1144510532.10642.1.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,13 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I've now wasted two days of my life trying to do this and I have had no
-luck, can someone explain the steps needed to added SH (ie
-CONFIG_SUPERH) to the alsa-driver build. I am sure somebody knows the
-steps needed to make this happen
+On Sat, 2006-04-08 at 16:35 +0100, Adrian McMenamin wrote:
+> I've now wasted two days of my life trying to do this and I have had no
+> luck, can someone explain the steps needed to added SH (ie
+> CONFIG_SUPERH) to the alsa-driver build. I am sure somebody knows the
+> steps needed to make this happen
+
+I already explained it.  What *exactly* does not work if you change the
+Makefiles as I explained?
+
+Lee
 
 
 
