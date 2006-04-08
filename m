@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001787]: Terratec Aureon Universe - No sound on first startup, sound after reboot
-Date: Sat, 8 Apr 2006 16:58:06 +0200
-Message-ID: <aa6fe8df60582bbfbb50003f6e36f531@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Full duplex mode
+Date: Sat, 8 Apr 2006 17:15:59 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0604081712510.22163@tm8103.perex-int.cz>
+References: <443720D4.2000905@kenati.com> <1144505771.5040.29.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E182F144
-	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 16:58:06 +0200 (MEST)
+In-Reply-To: <1144505771.5040.29.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +16,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: Carlos Munoz <carlos@kenati.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 8 Apr 2006, Paul Davis wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1787> 
-======================================================================
-Reported By:                paskharen
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1787
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             01-27-2006 19:58 CET
-Last Modified:              04-08-2006 16:58 CEST
-======================================================================
-Summary:                    Terratec Aureon Universe - No sound on first
-startup, sound after reboot
-Description: 
-When I first start the computer, you can hear no sound. If I turn all
-volume to max and press my ear against the speaker I can hear the correct
-sounds/music very faintly. After a reboot sound is fine.
-======================================================================
+> On Fri, 2006-04-07 at 19:32 -0700, Carlos Munoz wrote:
+> > Hi all,
+> > 
+> > An alsa driver I've written supports full duplex mode (playback and 
+> > capture simultaneously). Do I need to anything special to support full 
+> > duplex mode ? I assume the playback_open(), etc and capture_open(), etc 
+> > will both get called and from the driver point of view I'm just handling 
+> > two streams, right ?
+> 
+> more or less correct. it depends on how you intend to manage
+> synchronization between the two streams within your application.
 
-----------------------------------------------------------------------
- ungod - 04-03-06 15:47 
-----------------------------------------------------------------------
-Have you tried with the aureon-mutex2.diff patch from BUG 1797?
+Note that you can support sample accurate start for both streams (linked 
+streams). See pci/ice1712/ice1712.c - snd_ice1712_pro_trigger() for 
+example.
 
-----------------------------------------------------------------------
- paskharen - 04-08-06 16:58 
-----------------------------------------------------------------------
-I have now, it doesn't help. I tried with alsa 1.0.11-rc4 and not cvs but I
-didn't think that would matter.
+						Jaroslav
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-27-06 19:58 paskharen      New Issue                                    
-01-27-06 19:58 paskharen      Distribution              => Ubuntu          
-01-27-06 19:58 paskharen      Kernel Version            => 2.6.12          
-01-28-06 18:02 ungod          Note Added: 0007829                          
-01-30-06 19:38 paskharen      Note Added: 0007841                          
-02-08-06 23:48 paskharen      Note Added: 0007968                          
-04-03-06 15:47 ungod          Note Added: 0009099                          
-04-08-06 16:58 paskharen      Note Added: 0009172                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
