@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002009]: No pcm when running mythtv, sox, aplay but /dev/pcm present, oss emulation modules loaded
-Date: Sat, 8 Apr 2006 02:05:52 +0200
-Message-ID: <1d6e473efd0b6a95be7ea908e07ecc2a@bugtrack.alsa-project.org>
+Date: Sat, 8 Apr 2006 02:27:50 +0200
+Message-ID: <3bdfa1ab25fc96235e7dd9a8af951fa5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA830149
-	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 02:05:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 292B516B
+	for <alsa-devel@alsa-project.org>; Sat,  8 Apr 2006 02:27:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2009> 
 ======================================================================
 Reported By:                chadady
-Assigned To:                
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   2009
@@ -35,12 +35,14 @@ Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               SuSE
 Kernel Version:             Linux 2.6.17-rc1
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-07-2006 04:15 CEST
-Last Modified:              04-08-2006 02:05 CEST
+Last Modified:              04-08-2006 02:27 CEST
 ======================================================================
 Summary:                    No pcm when running mythtv, sox, aplay but /dev/pcm
 present, oss emulation modules loaded
@@ -79,6 +81,9 @@ Date Modified  Username       Field                    Change
 04-07-06 04:15 chadady        Kernel Version            => Linux 2.6.17-rc1
 04-07-06 04:53 rlrevell       Note Added: 0009134                          
 04-08-06 02:05 chadady        Note Added: 0009170                          
+04-08-06 02:27 rlrevell       Status                   new => resolved     
+04-08-06 02:27 rlrevell       Resolution               open => fixed       
+04-08-06 02:27 rlrevell       Assigned To               => rlrevell        
 ======================================================================
 
 
