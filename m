@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Adding a new architecture to alsa-driver
-Date: Sat, 08 Apr 2006 12:03:38 -0400
-Message-ID: <1144512218.22490.146.camel@mindpipe>
+Date: Sat, 08 Apr 2006 12:04:55 -0400
+Message-ID: <1144512296.22490.148.camel@mindpipe>
 References: <1144510532.10642.1.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -27,8 +27,7 @@ On Sat, 2006-04-08 at 16:35 +0100, Adrian McMenamin wrote:
 > CONFIG_SUPERH) to the alsa-driver build. I am sure somebody knows the
 > steps needed to make this happen
 
-I already explained it.  What *exactly* does not work if you change the
-Makefiles as I explained?
+You need to post your driver as a patch against ALSA CVS.
 
 Lee
 
