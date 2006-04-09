@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit, no sound from line-in
-Date: Sun, 9 Apr 2006 21:42:24 +0200
-Message-ID: <60b1f92bc0df135aeccbdb15f7fac0ae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001765]: Issue 001595 does not fix Audigy 4
+Date: Sun, 9 Apr 2006 21:57:15 +0200
+Message-ID: <75d2f03c6de2a018fb49d97d4fbb98a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2930159
-	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 21:42:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E695E144
+	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 21:57:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,99 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1765> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                alexholkner
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1331
-Category:                   PCI - ca0106
+Issue ID:                   1765
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398-x86_64
+Distribution:               
+Kernel Version:             
 Resolution:                 open
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-13-2005 01:27 CEST
-Last Modified:              04-09-2006 21:42 CEST
+Date Submitted:             01-21-2006 01:49 CET
+Last Modified:              04-09-2006 21:57 CEST
 ======================================================================
-Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
+Summary:                    Issue 001595 does not fix Audigy 4
 Description: 
-I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
-integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack like the pci version of the sb live 24
-bit.
+I have an Audigy 4 with the same device/subsystem as khampf from issue
+1595.  I applied his patch, but it does NOT work unless I change
+.ca0102_chip = 1 to .ca0108_chip = 1.
 
-With this card I cannot hear any sound that come from line-in.
-For Example I have a tv card, its output audio go into line-in: result is
-I cannot hear nothing from the tv, I can only see channels without audio.
-
-The "Capture feedback into playback" in the mixer change the mic's
-volume.
-There is nothing that change line-in's volume.
+I did experience the same confusion where loading one driver with ca0108
+will make any subsequent driver work (e.g., ca0102) until the next reboot.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001595 Audigy 4 (bulk, non-Pro) unsupported (p...
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 12-13-05 13:34 
+ jprk - 02-05-06 13:25 
 ----------------------------------------------------------------------
-Of course send to you a sample means that I have to pay for this and can't
-do this :)
-The only thing I can do is to give and ssh login to my pc to try via
-remote, it can help you?
+As 0001595 has been closed, I would just like to confirm, that Audigy 4
+_partially_ works with entry
+
+{.vendor = 0x1102, .device = 0x0008,
+ .driver = "Audigy2", .name = "Audigy 2 Value [Unknown]", 
+ .id = "Audigy2",
+ .emu10k2_chip = 1,
+ .ca0108_chip = 1,
+ .ac97_chip = 1}
+
+I have a 5.1 speaker set and I do not get sound from front left and front
+right speakers. I tried to set up reasonable levels on every output with
+alsamixer, but without success. I tried patching the Audigy 2 entry in
+emu10k1_main.c to specify .spk71 = 1 - it did not have any influence.
+Replugging front left/right minijack from its corresponding socket (L1)
+into the center/subwoofer socket (L3) as reported by 'kjes' in discussion
+for 0001595 is not a solution as then I loose subwoover and central
+speaker.  
+
+I am now running unpathced 2.6.15.2 on AMD-64 (64-bit kernel) with Audigy
+4 being the first of two soundcards (the second one is an integrated AC97
+clone on the motherboard). 
+
+-----
+cat /proc/asound/version:
+Advanced Linux Sound Architecture Driver Version 1.0.10rc3 (Mon Nov 07
+13:30:21 2005 UTC).
+
+(I had exactly the same experience with 1.0.11rc2 and kernel 2.6.12)
+
+-----
+cat /proc/asound/cards:
+0 [Audigy2        ]: Audigy2 - Audigy 2 Value [Unknown]
+                     Audigy 2 Value [Unknown] (rev.0, serial:0x10211102)
+at 0xdf00, irq 217
+1 [CK804          ]: NFORCE - NVidia CK804
+                     NVidia CK804 with ALC850 at 0xfebfd000, irq 233
 
 ----------------------------------------------------------------------
- jcdutton - 04-09-06 21:42 
+ jcdutton - 04-09-06 21:57 
 ----------------------------------------------------------------------
 Fixed in alsa cvs on 9-4-2006
-Fixed in alsa cvs 1.0.11rc5 or above.
+Fixed in alsa cvs version 1.0.11rc5 or above.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-05 01:27 Cimmo          New Issue                                    
-08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
-08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
-08-13-05 01:41 jcdutton       Note Added: 0005798                          
-08-13-05 01:42 jcdutton       Status                   assigned => feedback
-08-13-05 18:30 Cimmo          Note Added: 0005807                          
-08-31-05 15:14 Cimmo          Note Added: 0005989                          
-08-31-05 18:59 rlrevell       Note Added: 0005991                          
-09-10-05 10:31 jcdutton       Note Added: 0006107                          
-10-19-05 19:13 Cimmo          Note Added: 0006496                          
-11-07-05 00:02 jcdutton       Note Added: 0006610                          
-11-07-05 11:07 Cimmo          Note Added: 0006612                          
-11-11-05 19:33 Cimmo          Note Added: 0006678                          
-12-13-05 13:16 jcdutton       Note Added: 0007007                          
-12-13-05 13:34 Cimmo          Note Added: 0007015                          
-04-09-06 21:40 jcdutton       Status                   feedback => assigned
-04-09-06 21:42 jcdutton       Status                   assigned => closed  
-04-09-06 21:42 jcdutton       Note Added: 0009185                          
+01-21-06 01:49 alexholkner    New Issue                                    
+01-22-06 00:06 jcdutton       Status                   new => assigned     
+01-22-06 00:06 jcdutton       Assigned To               => jcdutton        
+01-22-06 00:06 jcdutton       Relationship added       related to 0001595  
+01-22-06 00:19 jcdutton       Note Added: 0007741                          
+01-22-06 00:19 jcdutton       Status                   assigned => feedback
+02-05-06 13:25 jprk           Note Added: 0007933                          
+04-09-06 21:57 jcdutton       Status                   feedback => closed  
+04-09-06 21:57 jcdutton       Note Added: 0009186                          
 ======================================================================
 
 
