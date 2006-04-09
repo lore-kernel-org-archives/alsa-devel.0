@@ -1,15 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Adding a new architecture to alsa-driver
-Date: Sat, 08 Apr 2006 20:56:43 -0400
-Message-ID: <1144544204.22490.177.camel@mindpipe>
-References: <1144510532.10642.1.camel@localhost.localdomain>
-	 <1144512218.22490.146.camel@mindpipe>
-	 <1144542208.10642.9.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
+Date: Sun, 9 Apr 2006 02:58:56 +0200
+Message-ID: <127cbc542335c05a2de85a3f0f1b9656@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1144542208.10642.9.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 92DEA134
+	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 02:58:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,26 +18,86 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-04-09 at 01:23 +0100, Adrian McMenamin wrote:
-> The changes you suggest simply are inadequate.
 
-I am not surprised.  It should be a start though.  Did you create the
-sh/Kconfig file?
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
+======================================================================
+Reported By:                flujan
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1956
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Distribution:               Slackware
+Kernel Version:             2.6.13
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             03-23-2006 21:30 CET
+Last Modified:              04-09-2006 02:58 CEST
+======================================================================
+Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
+Description: 
+The problem where solved in the CVS from 2006-03-01 but in the rc4 version
+the problem returns. 
+======================================================================
 
->  There is no makefile
-> without configure
+----------------------------------------------------------------------
+ flujan - 03-30-06 05:26 
+----------------------------------------------------------------------
+Tiwai,
 
-Yes, there is.  Try a fresh CVS checkout of alsa-driver then "find -name
-Makefile" - you'll see ./ppc/Makefile, ./sparc/Makefile, etc.
+The problem only occurs with kernel 2.6.13. I compiled and used rc4 with
+the 2.4.31 series without problems.
 
-I would have to see your driver in the form of a patch against ALSA CVS
-to comment further.
+I read a comment of Patrick about using 2.6.13 kernels-headers, and
+uninstall this  headers and install 2.4.31 series again... The problem
+persists.
 
-Lee
+http://mirror.switch.ch/ftp/mirror/slackware/slackware-10.2/testing/packages/linux-2.6.13/kernel-headers.WARNING
+
+I dunno if the kernel is the main issue, since as I said early versions
+work normally.
+
+Thanks for the patient.
+
+----------------------------------------------------------------------
+ flujan - 04-09-06 02:08 
+----------------------------------------------------------------------
+Solved in the CVS. I tried the CVS and now it works again. I dunno what is
+the problem, but for sure now it is fixed.
+
+Thanks tiwaii.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-23-06 21:30 flujan         New Issue                                    
+03-23-06 21:30 flujan         Distribution              => Slackware       
+03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
+03-24-06 11:57 tiwai          Note Added: 0008914                          
+03-24-06 12:52 er-ku          Note Added: 0008915                          
+03-24-06 13:01 tiwai          Note Added: 0008916                          
+03-25-06 04:33 flujan         Note Added: 0008941                          
+03-25-06 23:27 flujan         Note Added: 0008954                          
+03-26-06 01:35 tiwai          Note Added: 0008958                          
+03-27-06 17:20 flujan         Note Edited: 0008954                         
+03-29-06 18:43 flujan         Note Added: 0008998                          
+03-29-06 19:13 tiwai          Note Added: 0009011                          
+03-30-06 05:26 flujan         Note Added: 0009021                          
+04-09-06 02:08 flujan         Note Added: 0009175                          
+04-09-06 02:58 rlrevell       Status                   assigned => resolved
+04-09-06 02:58 rlrevell       Resolution               open => fixed       
+======================================================================
+
 
 
 
