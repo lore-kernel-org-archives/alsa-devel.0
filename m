@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001732]: Support for Intel D945Pvs Board
-Date: Sun, 9 Apr 2006 23:19:08 +0200
-Message-ID: <e16699c86efa55a93ddfd86550096f4d@bugtrack.alsa-project.org>
+Date: Sun, 9 Apr 2006 23:30:14 +0200
+Message-ID: <4f6c4326eb8d78ed4679ba3f5ad0fd5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4FF511E
-	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 23:19:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EBE5B160
+	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 23:30:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC4
 Kernel Version:             2.6.14-1656
 ======================================================================
 Date Submitted:             01-11-2006 04:53 CET
-Last Modified:              04-09-2006 23:19 CEST
+Last Modified:              04-09-2006 23:30 CEST
 ======================================================================
 Summary:                    Support for Intel D945Pvs Board
 Description: 
@@ -50,32 +50,6 @@ available that is currently not supported, but should be.
 ======================================================================
 
 ----------------------------------------------------------------------
- timtt - 01-20-06 22:47 
-----------------------------------------------------------------------
-So I finally got around to trying this. Sorry for the delay. I looked at
-the back of the chassis again and it's a 6-stack digital out. I had
-initially filed this bug from work, so I wasn't sure. There are 5 analog
-jacks and 1 SPDIF.
-
-After trying the model options, I still can't get sound out, so I have
-some basic questions:
-
-1) I assume if all is working correctly, I should be able to see a red
-light at the other end of the optical cable (the receiver side), right?
-2) Should I see a separate volume control in alsamixer for the digital
-out? I currently have PCM, Front and Input.
-3) I keep my FC4 system up to date with yum, but for some reason the
-alsamixer app still says 1.0.10rc3 at the top. Should I be worried about
-this?
-
-Here is the /proc/asound/cards output:
-0 [Intel          ]: HDA-Intel - HDA Intel
-                     HDA Intel at 0x59200000 irq 9
-
-Please let me know if you need anything else. I'll be quite available
-tonight and over the weekend.
-
-----------------------------------------------------------------------
  aclark - 04-09-06 23:19 
 ----------------------------------------------------------------------
 This patch adds the 5-stack pin-config for the STAC chip on the Intel
@@ -83,6 +57,13 @@ D945Pvs board with subdevice id 0x0707.
 
 With this patch against 1.0.11rc4, I'm able to successfully output over
 the optical port and analog ports.
+
+----------------------------------------------------------------------
+ rlrevell - 04-09-06 23:30 
+----------------------------------------------------------------------
+Can you please send the patch to alsa-devel at lists.sourceforge.net
+mailing list (you do not have to subscribe), and include a Signed-Off-By
+line?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,6 +76,9 @@ Date Modified  Username       Field                    Change
 01-11-06 18:36 rlrevell       Note Added: 0007564                          
 01-20-06 22:47 timtt          Note Added: 0007728                          
 04-09-06 23:19 aclark         Note Added: 0009187                          
+04-09-06 23:19 aclark         File Added: sigmatel.diff                    
+04-09-06 23:19 aclark         Issue Monitored: aclark                      
+04-09-06 23:30 rlrevell       Note Added: 0009188                          
 ======================================================================
 
 
