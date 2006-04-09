@@ -1,12 +1,14 @@
-From: Coywolf Qi Hunt <coywolf@sosdg.org>
-Subject: [patch] support HP Compaq Presario B2800 laptop with AD1986A codec
-Date: Sun, 9 Apr 2006 10:22:32 -0400
-Message-ID: <20060409142232.GA26779@everest.sosdg.org>
-Reply-To: qiyong@freeforge.net
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001934]: make problem
+Date: Sun, 9 Apr 2006 18:56:52 +0200
+Message-ID: <649e90e6ee9bf09b9ac3ac08d0a2fb57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C678D156
+	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 18:56:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,29 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net, akpm@osdl.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-This adds the support for HP Compaq Presario B2800 laptop with AD1986A codec.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
+======================================================================
+Reported By:                kvo
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1934
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               RHEL4 Update 3
+Kernel Version:             2.6.9-34.EL
+======================================================================
+Date Submitted:             03-17-2006 12:19 CET
+Last Modified:              04-09-2006 18:56 CEST
+======================================================================
+Summary:                    make problem
+Description: 
+./configure works OK. running make give error during compilation: module
+'include/asound.h' (line 210) has some 'typedef' that doesn't match with
+(probably) OS include. As a result, compilation stops and driver can not
+be produced.
+======================================================================
 
-Signed-off-by: Coywolf Qi Hunt <qiyong@freeforge.net>
----
+----------------------------------------------------------------------
+ kvo - 03-25-06 22:19 
+----------------------------------------------------------------------
+I sent config.log (I did´t see any strange things in it). Recently I
+compiled wireless driver for the same system and everything went smoothly,
+so, compression isn´t a reason, most probably.
 
-diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-index 2bfe37e..921118f 100644
---- a/sound/pci/hda/patch_analog.c
-+++ b/sound/pci/hda/patch_analog.c
-@@ -801,6 +801,8 @@ static struct hda_board_config ad1986a_c
- 	  .config = AD1986A_LAPTOP_EAPD }, /* Samsung R65-T2300 Charis */
- 	{ .pci_subvendor = 0x1043, .pci_subdevice = 0x1213,
- 	  .config = AD1986A_LAPTOP_EAPD }, /* ASUS A6J */
-+	{ .pci_subvendor = 0x103c, .pci_subdevice = 0x30af,
-+	  .config = AD1986A_LAPTOP_EAPD }, /* HP Compaq Presario B2800 */
- 	{}
- };
- 
+----------------------------------------------------------------------
+ kvo - 04-09-06 18:56 
+----------------------------------------------------------------------
+I sent an additional information (see attached info.zip). I used 1.0.11rc4
+tarball for these data.
+
+  1. File ´1´ is my ´configure´ results.
+  2. File ´2´ -- ´make´ results.
+  3. ´config.log'
+  4. File ´gfp.h´, has been taken from the kernel source tree.
+
+  I have found that ´typedef gfp_t´ differs between distributive version
+and inside of ALSA files. So, I think, it is the source of problem. Last
+time I recompiled ALSA with 2.6.9-22.0.2.EL kernel and it was OK, but now
+...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-17-06 12:19 kvo            New Issue                                    
+03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
+03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
+03-17-06 12:25 tiwai          Note Added: 0008643                          
+03-19-06 22:26 kvo            Note Added: 0008697                          
+03-21-06 17:33 tiwai          Note Added: 0008749                          
+03-25-06 20:47 kvo            File Added: config.log                       
+03-25-06 22:19 kvo            Note Added: 0008952                          
+04-09-06 18:47 kvo            File Added: info.zip                         
+04-09-06 18:56 kvo            Note Added: 0009181                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
