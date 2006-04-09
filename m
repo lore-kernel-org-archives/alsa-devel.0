@@ -1,18 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Adding a new architecture to alsa-driver
-Date: Sun, 09 Apr 2006 13:26:06 +0100
-Message-ID: <1144585566.9248.5.camel@localhost.localdomain>
-References: <1144510532.10642.1.camel@localhost.localdomain>
-	 <1144512218.22490.146.camel@mindpipe>
-	 <1144542208.10642.9.camel@localhost.localdomain>
-	 <1144544652.22490.181.camel@mindpipe>
-	 <1144579821.9248.0.camel@localhost.localdomain>
-	 <Pine.LNX.4.61.0604091315410.22163@tm8103.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001703]: NVidia CK804 - Realtek ALC850 rev 0 - passthrough not working
+Date: Sun, 9 Apr 2006 14:31:33 +0200
+Message-ID: <12ec49d2f03592689f7a48affb81f945@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0604091315410.22163@tm8103.perex-int.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1DA0D139
+	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 14:31:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,40 +18,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-04-09 at 13:24 +0200, Jaroslav Kysela wrote:
-> On Sun, 9 Apr 2006, Adrian McMenamin wrote:
-> 
-> > On Sat, 2006-04-08 at 21:04 -0400, Lee Revell wrote:
-> > > On Sun, 2006-04-09 at 01:23 +0100, Adrian McMenamin wrote:
-> > > > The changes you suggest simply are inadequate. There is no makefile
-> > > > without configure and even though I have managed to patch the
-> > > > configure
-> > > > file so it will create a Makefile, a make simply builds the alsa core
-> > > > and doesn't touch the sh sub directory despite having this in the
-> > > > makefile:
-> > > > 
-> > > 
-> > > Did you patch alsa-driver/configure.in?
-> > > 
-> > > $ grep CONFIG_PARISC configure.in 
-> > > #elif defined(CONFIG_PARISC)
-> > > AC_SUBST(CONFIG_PARISC)
-> > > 
-> > > I don't know autoconf well enough to know exactly what this is doing but
-> > > it seems like you could just copy/paste and s/PARISC/SUPERH/...
-> > > 
-> > 
-> > I had to patch it in about 6 or 7 places and that was one of them
-> 
-> Do you have a valid Kconfig file with your driver? The dependencies are 
-> parsed from Kconfig files.
-> 
-Yes, though I have put it in alsa-kernel for the build as Lee suggested
-(the writing a driver document doesn't say that though)
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1703> 
+======================================================================
+Reported By:                alsarealist
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1703
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               self burned
+Kernel Version:             
+======================================================================
+Date Submitted:             01-03-2006 18:42 CET
+Last Modified:              04-09-2006 14:31 CEST
+======================================================================
+Summary:                    NVidia CK804 - Realtek ALC850 rev 0 - passthrough
+not working
+Description: 
+Pass-through with xine is not working.
+PCM Stereo downmix works fine
+
+
+00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
+Controller (rev a2)
+
+gcc (GCC) 4.0.2
+alsa version 1.0.11rc2
+Linux 2.6.15
+
+======================================================================
+
+----------------------------------------------------------------------
+ alsarealist - 01-06-06 01:03 
+----------------------------------------------------------------------
+Using xine I got a funny effect with SPSA:
+Before starting xine I set SPSA to 3:
+
+cat   /proc/asound/card0/codec97#0/ac97#0-0+regs |grep 0:2a
+0:2a = 05f4
+
+After I started xine SPSA is set back to 0:
+cat   /proc/asound/card0/codec97#0/ac97#0-0+regs |grep 0:2a
+0:2a = 05c4
+
+What's going on here?
+
+I tried to play a wave file but I heared no sound.
+
+aplay -Dplug:spdif some-sound.wav
+Playing WAVE 'some-sound.wav' : Signed 16 bit Little Endian, Rate 48000
+Hz, Channels 6
+
+<silence>
+
+During this test I had the same funny effect of switching SPSA from 3 to 0
+and back to 3. Is that normal? What exactly are these "AC-LINK slots"?
+Channels on SPDIF?
+
+----------------------------------------------------------------------
+ alsarealist - 04-09-06 14:31 
+----------------------------------------------------------------------
+Giving up frustrated - DTS, Dolby 5.1 seems not to be possible. Stay an
+stereo.
+
+Closing case.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-03-06 18:42 alsarealist    New Issue                                    
+01-03-06 18:42 alsarealist    Distribution              => self burned     
+01-03-06 19:05 rlrevell       Note Added: 0007403                          
+01-04-06 01:45 alsarealist    Note Added: 0007409                          
+01-04-06 17:11 tiwai          Note Added: 0007436                          
+01-04-06 17:32 alsarealist    File Added: asound.state                     
+01-04-06 17:33 alsarealist    Note Added: 0007443                          
+01-04-06 17:38 alsarealist    File Added: proc-asound                      
+01-04-06 17:42 alsarealist    Note Added: 0007447                          
+01-04-06 23:11 alsarealist    Note Added: 0007459                          
+01-05-06 20:00 tiwai          Note Added: 0007477                          
+01-06-06 01:03 alsarealist    Note Added: 0007486                          
+04-09-06 14:31 alsarealist    Note Added: 0009179                          
+======================================================================
+
 
 
 
