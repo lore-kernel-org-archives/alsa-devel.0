@@ -1,14 +1,11 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Adding a new architecture to alsa-driver
-Date: Sun, 09 Apr 2006 01:23:28 +0100
-Message-ID: <1144542208.10642.9.camel@localhost.localdomain>
-References: <1144510532.10642.1.camel@localhost.localdomain>
-	 <1144512218.22490.146.camel@mindpipe>
+From: Dale Sedivec <dale-keyword-alsa.049f33@codefu.org>
+Subject: [PATCH] au88x0: clean up __devinit/__devexit
+Date: Sat, 8 Apr 2006 20:40:19 -0400
+Message-ID: <20060409004019.GA23548@morgase.caliginous.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1144512218.22490.146.camel@mindpipe>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,31 +15,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: openvortex-dev@nongnu.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-04-08 at 12:03 -0400, Lee Revell wrote:
-> On Sat, 2006-04-08 at 16:35 +0100, Adrian McMenamin wrote:
-> > I've now wasted two days of my life trying to do this and I have had no
-> > luck, can someone explain the steps needed to added SH (ie
-> > CONFIG_SUPERH) to the alsa-driver build. I am sure somebody knows the
-> > steps needed to make this happen
-> 
-> I already explained it.  What *exactly* does not work if you change the
-> Makefiles as I explained?
+Removed all use of __devinit/__devexit and init.h from headers.  Any
+attributes given in the prototype but not in the function definition have
+been moved to the definition.
 
-The changes you suggest simply are inadequate. There is no makefile
-without configure and even though I have managed to patch the configure
-file so it will create a Makefile, a make simply builds the alsa core
-and doesn't touch the sh sub directory despite having this in the
-makefile:
+An exception is vortex_eq_free: I removed the __devexit attribute because
+vortex_eq_free is called from vortex_core_shutdown, and
+vortex_core_shutdown may be called from __devinit snd_vortex_create.
 
-ifeq (y,$(CONFIG_SUPERH))
-SUBDIRS += sh
-endif
+Compile tested with allyesconfig and allmodconfig.
+
+Signed-off-by: Dale Sedivec <dale@codefu.org>
+
+---
+
+Patches against 2.6.16, applies (with fuzz) against ALSA CVS.
+
+These fixes originated as part of a Kernel Janitors task [1].  Patch
+originally sent to kernel-janitors mailing list, resent here after it
+was suggested that any patches against ALSA must be made through
+alsa-devel [2].
+
+  [1] http://www.kerneljanitors.org/TODO
+  [2] http://lists.osdl.org/pipermail/kernel-janitors/2006-April/006193.html
 
 
+ sound/pci/au88x0/au88x0.h      |   13 ++++++-------
+ sound/pci/au88x0/au88x0_core.c |    2 +-
+ sound/pci/au88x0/au88x0_eq.c   |    2 +-
+ 3 files changed, 8 insertions(+), 9 deletions(-)
+
+diff --git a/sound/pci/au88x0/au88x0.h b/sound/pci/au88x0/au88x0.h
+index c2ad267..b115dba 100644
+--- a/sound/pci/au88x0/au88x0.h
++++ b/sound/pci/au88x0/au88x0.h
+@@ -19,7 +19,6 @@
+ 
+ #ifdef __KERNEL__
+ #include <sound/driver.h>
+-#include <linux/init.h>
+ #include <linux/pci.h>
+ #include <asm/io.h>
+ #include <sound/core.h>
+@@ -277,14 +276,14 @@ static void vortex_Vort3D_InitializeSour
+ #endif
+ 
+ /* Driver stuff. */
+-static int __devinit vortex_gameport_register(vortex_t * card);
++static int vortex_gameport_register(vortex_t * card);
+ static void vortex_gameport_unregister(vortex_t * card);
+ #ifndef CHIP_AU8820
+-static int __devinit vortex_eq_init(vortex_t * vortex);
+-static int __devexit vortex_eq_free(vortex_t * vortex);
++static int vortex_eq_init(vortex_t * vortex);
++static int vortex_eq_free(vortex_t * vortex);
+ #endif
+ /* ALSA stuff. */
+-static int __devinit snd_vortex_new_pcm(vortex_t * vortex, int idx, int nr);
+-static int __devinit snd_vortex_mixer(vortex_t * vortex);
+-static int __devinit snd_vortex_midi(vortex_t * vortex);
++static int snd_vortex_new_pcm(vortex_t * vortex, int idx, int nr);
++static int snd_vortex_mixer(vortex_t * vortex);
++static int snd_vortex_midi(vortex_t * vortex);
+ #endif
+diff --git a/sound/pci/au88x0/au88x0_core.c b/sound/pci/au88x0/au88x0_core.c
+index e3394fe..5958945 100644
+--- a/sound/pci/au88x0/au88x0_core.c
++++ b/sound/pci/au88x0/au88x0_core.c
+@@ -2658,7 +2658,7 @@ static void vortex_spdif_init(vortex_t *
+ 
+ /* Initialization */
+ 
+-static int vortex_core_init(vortex_t * vortex)
++static int __devinit vortex_core_init(vortex_t * vortex)
+ {
+ 
+ 	printk(KERN_INFO "Vortex: init.... ");
+diff --git a/sound/pci/au88x0/au88x0_eq.c b/sound/pci/au88x0/au88x0_eq.c
+index c8280f8..6c3f636 100644
+--- a/sound/pci/au88x0/au88x0_eq.c
++++ b/sound/pci/au88x0/au88x0_eq.c
+@@ -886,7 +886,7 @@ static char *EqBandLabels[10] __devinitd
+ };
+ 
+ /* ALSA driver entry points. Init and exit. */
+-static int vortex_eq_init(vortex_t * vortex)
++static int __devinit vortex_eq_init(vortex_t * vortex)
+ {
+ 	struct snd_kcontrol *kcontrol;
+ 	int err, i;
 
 
 -------------------------------------------------------
