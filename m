@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001934]: make problem
-Date: Sun, 9 Apr 2006 18:56:52 +0200
-Message-ID: <649e90e6ee9bf09b9ac3ac08d0a2fb57@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001968]: ews88mt does not work with the terratec mic8/2 module
+Date: Sun, 9 Apr 2006 19:29:17 +0200
+Message-ID: <7f79a423ceee56251cfd752a78592287@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C678D156
-	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 18:56:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51A43156
+	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 19:29:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1968> 
 ======================================================================
-Reported By:                kvo
-Assigned To:                perex
+Reported By:                jewi
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1934
-Category:                   0_compilation problem_!!!
+Issue ID:                   1968
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               RHEL4 Update 3
-Kernel Version:             2.6.9-34.EL
+Status:                     new
+Distribution:               debian unstable
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             03-17-2006 12:19 CET
-Last Modified:              04-09-2006 18:56 CEST
+Date Submitted:             03-27-2006 11:42 CEST
+Last Modified:              04-09-2006 19:29 CEST
 ======================================================================
-Summary:                    make problem
+Summary:                    ews88mt does not work with the terratec mic8/2
+module
 Description: 
-./configure works OK. running make give error during compilation: module
-'include/asound.h' (line 210) has some 'typedef' that doesn't match with
-(probably) OS include. As a result, compilation stops and driver can not
-be produced.
+Is it possible to get the ews88mt pci card working with the mic8/2 module
+(http://audioen.terratec.net/modules.php?op=modload&name=News&file=article&sid=2)?
+
+When I load the ice1712 driver I get the following error message:
+AK4524 chip select failed, check cable to the front module.
+
+I have this setup at home and hope I can post all the required
+information.
+Thanks for help.
 ======================================================================
 
 ----------------------------------------------------------------------
- kvo - 03-25-06 22:19 
+ jewi - 04-09-06 19:29 
 ----------------------------------------------------------------------
-I sent config.log (I did´t see any strange things in it). Recently I
-compiled wireless driver for the same system and everything went smoothly,
-so, compression isn´t a reason, most probably.
+I have some additional information that might be helpful:
 
-----------------------------------------------------------------------
- kvo - 04-09-06 18:56 
-----------------------------------------------------------------------
-I sent an additional information (see attached info.zip). I used 1.0.11rc4
-tarball for these data.
+The mic8 module is shipped together with the ews88mt pci card. I found an
+old win98 hd and check that my setup works with Win. So there is no
+problem with not connected cables or broken hardware.
 
-  1. File ´1´ is my ´configure´ results.
-  2. File ´2´ -- ´make´ results.
-  3. ´config.log'
-  4. File ´gfp.h´, has been taken from the kernel source tree.
+The kernel messages are a bit more comprehensive than mentioned above.
+When I load the snd-ice1712 module I get the following:
 
-  I have found that ´typedef gfp_t´ differs between distributive version
-and inside of ALSA files. So, I think, it is the source of problem. Last
-time I recompiled ALSA with 2.6.9-22.0.2.EL kernel and it was OK, but now
-...
+kernel: ACPI: PCI Interrupt 0000:00:09.0[A] -> Link [LNKD] -> GSI 11
+(level, ow) -> IRQ 11
+kernel: AK4524 chip select failed, check cable to the front module
+kernel: ACPI: PCI interrupt for device 0000:00:09.0 disabled
+kernel: ICE1712: probe of 0000:00:09.0 failed with error -5
+
+The module is loaded but there is no soundcard in /proc/asound/cards
+
+I found out that forcing the module to take a ews88d card I can see a
+soundcard in /proc/asound/cards and the 3.5mm jack works on the ews88mt
+works. But I don't get usefull input from the 8 analog inputs.
+
+Is there anyone who has an idea what I can do to get things working?
+
+Thanks for help
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 12:19 kvo            New Issue                                    
-03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
-03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
-03-17-06 12:25 tiwai          Note Added: 0008643                          
-03-19-06 22:26 kvo            Note Added: 0008697                          
-03-21-06 17:33 tiwai          Note Added: 0008749                          
-03-25-06 20:47 kvo            File Added: config.log                       
-03-25-06 22:19 kvo            Note Added: 0008952                          
-04-09-06 18:47 kvo            File Added: info.zip                         
-04-09-06 18:56 kvo            Note Added: 0009181                          
+03-27-06 11:42 jewi           New Issue                                    
+03-27-06 11:42 jewi           Distribution              => debian unstable 
+03-27-06 11:42 jewi           Kernel Version            => 2.6.15          
+04-09-06 19:29 jewi           Note Added: 0009183                          
 ======================================================================
 
 
