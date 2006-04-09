@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002012]: aplay.c has incorrect syntax in error message
-Date: Sun, 9 Apr 2006 10:14:04 +0200
-Message-ID: <70db772a6a44cdb58662752a4781b35f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002013]: no digital output
+Date: Sun, 9 Apr 2006 11:43:56 +0200
+Message-ID: <744e9faea96d47b46e6ac12c9457ba78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5809A13E
-	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 10:14:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2488E13A
+	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 11:43:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,49 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2012> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2013> 
 ======================================================================
-Reported By:                jaime
+Reported By:                SamiH
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2012
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   2013
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               BLFS
+Kernel Version:             2.6.15.4
 ======================================================================
-Date Submitted:             04-09-2006 10:14 CEST
-Last Modified:              04-09-2006 10:14 CEST
+Date Submitted:             04-09-2006 11:43 CEST
+Last Modified:              04-09-2006 11:43 CEST
 ======================================================================
-Summary:                    aplay.c has incorrect syntax in error message
+Summary:                    no digital output
 Description: 
-aplay.c line 920:
-fprintf(stderr, _("         please, try the plug plugin (-Dplug:%s)\n"),
-snd_pcm_name(handle));
+Shortly: Digital output doesn't work at all, or I don't know how to use
+it.
 
-This outputs:
-"please, try the plug plugin (-Dplug:hw:0,0)"
+This has been my problem quite long time now. I have upgraded my kernel
+from  2.6.8 to 2.6.15.4 with some steps bitween those versions, and the
+problem is still here. I have tried some live-cds with same results as my
+stable system.
 
-Using the recommended syntax returns:
+Analog stereo output works with no problems. If someone did tell me what I
+should test on my system so that I could give the results to you.
 
-ALSA lib conf.c:3824:(parse_args) Unknown parameter 1
-ALSA lib conf.c:3946:(snd_config_expand) Parse arguments error: No such
-file or directory
-ALSA lib pcm.c:2099:(snd_pcm_open_noupdate) Unknown PCM plug:hw:0,0
-aplay: main:544: audio open error: No such file or directory
+These aren't broken:
+ * my external amplifier
+ * the digital coaxial cable
+ * speakers etc.
 
-The syntax should be:
--Dplughw:0,0
-(without the colon after the word "plug")
-
+Please tell me at least what to do, what to search for, or something...
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-09-06 10:14 jaime          New Issue                                    
+04-09-06 11:43 SamiH          New Issue                                    
+04-09-06 11:43 SamiH          Distribution              => BLFS            
+04-09-06 11:43 SamiH          Kernel Version            => 2.6.15.4        
 ======================================================================
 
 
