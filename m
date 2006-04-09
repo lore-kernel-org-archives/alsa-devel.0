@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
-Date: Sun, 9 Apr 2006 01:21:54 +0200
-Message-ID: <64c0786ebe0a38f5f11b63fc17649d47@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001956]: regression BUG:0001517 No sound on Acer TravelMate.
+Date: Sun, 9 Apr 2006 02:08:46 +0200
+Message-ID: <58b776af413e6241c0adeb030511797f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6EF1362
-	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 01:21:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BD3F155
+	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 02:08:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,88 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2008> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1956> 
 ======================================================================
-Reported By:                mborsick
+Reported By:                flujan
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2008
+Issue ID:                   1956
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Redhat/Fedora
-Kernel Version:             2.6.16-1.2080 and with Xen
+Distribution:               Slackware
+Kernel Version:             2.6.13
 ======================================================================
-Date Submitted:             04-07-2006 00:43 CEST
-Last Modified:              04-09-2006 01:21 CEST
+Date Submitted:             03-23-2006 21:30 CET
+Last Modified:              04-09-2006 02:08 CEST
 ======================================================================
-Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
+Summary:                    regression BUG:0001517 No sound on Acer TravelMate.
 Description: 
-Kernel is up-to-date Xen kernel.
-
-Initial install did not recognize the sound on an ASUS P5VDC-MX
-motherboard.
-Motherboard has southbridge VIA VT8251. CODEC is Realtek ACL653 AC'97 6
-channel
-Audio. Tried the updated drivers in 002404, but was unsuccessful. Also
-tried
-drivers on VIA site and Realltek site. The last couple of tries show no
-errors
-in compiling, make, etc. However, as I am just above novice in
-understanding
-everything about Linux, this has thrown me for a loop.
-
+The problem where solved in the CVS from 2006-03-01 but in the rc4 version
+the problem returns. 
 ======================================================================
 
 ----------------------------------------------------------------------
- mborsick - 04-08-06 22:30 
+ flujan - 03-30-06 05:26 
 ----------------------------------------------------------------------
-Been following this, but have been unable to jump in because of other IT
-projects I am working on here. Do you want me to file this with the linnux
-kernel folks?
+Tiwai,
+
+The problem only occurs with kernel 2.6.13. I compiled and used rc4 with
+the 2.4.31 series without problems.
+
+I read a comment of Patrick about using 2.6.13 kernels-headers, and
+uninstall this  headers and install 2.4.31 series again... The problem
+persists.
+
+http://mirror.switch.ch/ftp/mirror/slackware/slackware-10.2/testing/packages/linux-2.6.13/kernel-headers.WARNING
+
+I dunno if the kernel is the main issue, since as I said early versions
+work normally.
+
+Thanks for the patient.
 
 ----------------------------------------------------------------------
- buboleck - 04-09-06 01:21 
+ flujan - 04-09-06 02:08 
 ----------------------------------------------------------------------
-:) yes please
+Solved in the CVS. I tried the CVS and now it works again. I dunno what is
+the problem, but for sure now it is fixed.
+
+Thanks tiwaii.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-07-06 00:43 mborsick       New Issue                                    
-04-07-06 00:43 mborsick       Distribution              => Redhat/Fedora   
-04-07-06 00:43 mborsick       Kernel Version            => 2.6.16-1.2080 and
-with Xen
-04-07-06 01:07 rlrevell       Note Added: 0009129                          
-04-07-06 02:13 mborsick       Note Added: 0009130                          
-04-07-06 02:35 rlrevell       Note Added: 0009131                          
-04-07-06 06:38 mborsick       Note Added: 0009135                          
-04-07-06 22:45 buboleck       Note Added: 0009156                          
-04-07-06 22:47 buboleck       Note Edited: 0009156                         
-04-07-06 22:49 buboleck       Note Edited: 0009156                         
-04-07-06 23:06 rlrevell       Note Added: 0009157                          
-04-07-06 23:16 buboleck       Issue Monitored: buboleck                    
-04-07-06 23:26 buboleck       Note Added: 0009158                          
-04-07-06 23:32 rlrevell       Note Added: 0009159                          
-04-07-06 23:39 buboleck       Note Added: 0009160                          
-04-07-06 23:40 buboleck       Note Edited: 0009160                         
-04-07-06 23:43 buboleck       Note Edited: 0009160                         
-04-07-06 23:46 buboleck       Note Edited: 0009160                         
-04-07-06 23:47 rlrevell       Note Added: 0009161                          
-04-07-06 23:52 buboleck       Note Added: 0009162                          
-04-08-06 00:02 rlrevell       Note Added: 0009163                          
-04-08-06 00:16 buboleck       Note Added: 0009164                          
-04-08-06 00:19 buboleck       Note Added: 0009165                          
-04-08-06 00:29 rlrevell       Note Added: 0009166                          
-04-08-06 00:32 buboleck       Note Added: 0009167                          
-04-08-06 00:41 rlrevell       Note Added: 0009168                          
-04-08-06 00:42 buboleck       Note Added: 0009169                          
-04-08-06 00:44 buboleck       Note Edited: 0009169                         
-04-08-06 22:30 mborsick       Note Added: 0009173                          
-04-09-06 01:21 buboleck       Note Added: 0009174                          
+03-23-06 21:30 flujan         New Issue                                    
+03-23-06 21:30 flujan         Distribution              => Slackware       
+03-23-06 21:30 flujan         Kernel Version            => 2.6.13          
+03-24-06 11:57 tiwai          Note Added: 0008914                          
+03-24-06 12:52 er-ku          Note Added: 0008915                          
+03-24-06 13:01 tiwai          Note Added: 0008916                          
+03-25-06 04:33 flujan         Note Added: 0008941                          
+03-25-06 23:27 flujan         Note Added: 0008954                          
+03-26-06 01:35 tiwai          Note Added: 0008958                          
+03-27-06 17:20 flujan         Note Edited: 0008954                         
+03-29-06 18:43 flujan         Note Added: 0008998                          
+03-29-06 19:13 tiwai          Note Added: 0009011                          
+03-30-06 05:26 flujan         Note Added: 0009021                          
+04-09-06 02:08 flujan         Note Added: 0009175                          
 ======================================================================
 
 
