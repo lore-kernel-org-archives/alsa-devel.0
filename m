@@ -1,11 +1,14 @@
-From: Dale Sedivec <dale-keyword-alsa.049f33@codefu.org>
-Subject: [PATCH] au88x0: clean up __devinit/__devexit
-Date: Sat, 8 Apr 2006 20:40:19 -0400
-Message-ID: <20060409004019.GA23548@morgase.caliginous.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001335]: No sound on first probe
+Date: Sun, 9 Apr 2006 02:49:57 +0200
+Message-ID: <8be5a0c9b62165b36c5449b24a047ebf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E381134
+	for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2006 02:49:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,99 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: openvortex-dev@nongnu.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Removed all use of __devinit/__devexit and init.h from headers.  Any
-attributes given in the prototype but not in the function definition have
-been moved to the definition.
 
-An exception is vortex_eq_free: I removed the __devexit attribute because
-vortex_eq_free is called from vortex_core_shutdown, and
-vortex_core_shutdown may be called from __devinit snd_vortex_create.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1335> 
+======================================================================
+Reported By:                cpx
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1335
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Slackware 10.0
+Kernel Version:             2.6.13-rc6
+======================================================================
+Date Submitted:             08-14-2005 08:31 CEST
+Last Modified:              04-09-2006 02:49 CEST
+======================================================================
+Summary:                    No sound on first probe
+Description: 
+The first probe of the snd-via82xx module results in no sound from the
+speakers/headphone jack. Removing the module and reloading it fixes the
+problem. Upon reloading (sometimes when removing) a small bit of feedback
+is audible (i.e. suggesting the hardware's been "initialized").
 
-Compile tested with allyesconfig and allmodconfig.
+The module seems to have to be removed for it to work though... just
+rebooting and having it reload the module that way doesn't work.
 
-Signed-off-by: Dale Sedivec <dale@codefu.org>
+After performing the above to make it work the system can then be warm
+booted with the sound continuing to work until powering off.
+======================================================================
 
----
+----------------------------------------------------------------------
+ cpx - 01-06-06 19:10 
+----------------------------------------------------------------------
+So... this is still happening with the latest kernel, only sometime around
+2.6.14 the rmmod trick stop working. Now I have to boot to winders first
+to get the hardware initialized.
 
-Patches against 2.6.16, applies (with fuzz) against ALSA CVS.
+----------------------------------------------------------------------
+ cpx - 04-09-06 02:49 
+----------------------------------------------------------------------
+Still no luck with kernel 2.6.16... can someone help please? :)
 
-These fixes originated as part of a Kernel Janitors task [1].  Patch
-originally sent to kernel-janitors mailing list, resent here after it
-was suggested that any patches against ALSA must be made through
-alsa-devel [2].
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-14-05 08:31 cpx            New Issue                                    
+08-14-05 08:31 cpx            Distribution              => Slackware 10.0  
+08-14-05 08:31 cpx            Kernel Version            => 2.6.13-rc6      
+01-06-06 19:10 cpx            Note Added: 0007493                          
+01-10-06 20:10 mysticxhiro    Issue Monitored: mysticxhiro                    
+04-09-06 02:49 cpx            Note Added: 0009176                          
+======================================================================
 
-  [1] http://www.kerneljanitors.org/TODO
-  [2] http://lists.osdl.org/pipermail/kernel-janitors/2006-April/006193.html
 
-
- sound/pci/au88x0/au88x0.h      |   13 ++++++-------
- sound/pci/au88x0/au88x0_core.c |    2 +-
- sound/pci/au88x0/au88x0_eq.c   |    2 +-
- 3 files changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/sound/pci/au88x0/au88x0.h b/sound/pci/au88x0/au88x0.h
-index c2ad267..b115dba 100644
---- a/sound/pci/au88x0/au88x0.h
-+++ b/sound/pci/au88x0/au88x0.h
-@@ -19,7 +19,6 @@
- 
- #ifdef __KERNEL__
- #include <sound/driver.h>
--#include <linux/init.h>
- #include <linux/pci.h>
- #include <asm/io.h>
- #include <sound/core.h>
-@@ -277,14 +276,14 @@ static void vortex_Vort3D_InitializeSour
- #endif
- 
- /* Driver stuff. */
--static int __devinit vortex_gameport_register(vortex_t * card);
-+static int vortex_gameport_register(vortex_t * card);
- static void vortex_gameport_unregister(vortex_t * card);
- #ifndef CHIP_AU8820
--static int __devinit vortex_eq_init(vortex_t * vortex);
--static int __devexit vortex_eq_free(vortex_t * vortex);
-+static int vortex_eq_init(vortex_t * vortex);
-+static int vortex_eq_free(vortex_t * vortex);
- #endif
- /* ALSA stuff. */
--static int __devinit snd_vortex_new_pcm(vortex_t * vortex, int idx, int nr);
--static int __devinit snd_vortex_mixer(vortex_t * vortex);
--static int __devinit snd_vortex_midi(vortex_t * vortex);
-+static int snd_vortex_new_pcm(vortex_t * vortex, int idx, int nr);
-+static int snd_vortex_mixer(vortex_t * vortex);
-+static int snd_vortex_midi(vortex_t * vortex);
- #endif
-diff --git a/sound/pci/au88x0/au88x0_core.c b/sound/pci/au88x0/au88x0_core.c
-index e3394fe..5958945 100644
---- a/sound/pci/au88x0/au88x0_core.c
-+++ b/sound/pci/au88x0/au88x0_core.c
-@@ -2658,7 +2658,7 @@ static void vortex_spdif_init(vortex_t *
- 
- /* Initialization */
- 
--static int vortex_core_init(vortex_t * vortex)
-+static int __devinit vortex_core_init(vortex_t * vortex)
- {
- 
- 	printk(KERN_INFO "Vortex: init.... ");
-diff --git a/sound/pci/au88x0/au88x0_eq.c b/sound/pci/au88x0/au88x0_eq.c
-index c8280f8..6c3f636 100644
---- a/sound/pci/au88x0/au88x0_eq.c
-+++ b/sound/pci/au88x0/au88x0_eq.c
-@@ -886,7 +886,7 @@ static char *EqBandLabels[10] __devinitd
- };
- 
- /* ALSA driver entry points. Init and exit. */
--static int vortex_eq_init(vortex_t * vortex)
-+static int __devinit vortex_eq_init(vortex_t * vortex)
- {
- 	struct snd_kcontrol *kcontrol;
- 	int err, i;
 
 
 -------------------------------------------------------
