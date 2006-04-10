@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002014]: no sound on my asus u5a
-Date: Mon, 10 Apr 2006 16:29:39 +0200
-Message-ID: <a32603dfbc977d85a75023692b0b7491@bugtrack.alsa-project.org>
+Date: Mon, 10 Apr 2006 16:38:27 +0200
+Message-ID: <9f4293ec82d5db73a7c66db71a3890f1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F531184
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 16:29:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D0ED181
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 16:38:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2014> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               debian
 Kernel Version:             2.6.16.2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-10-2006 16:29 CEST
-Last Modified:              04-10-2006 16:29 CEST
+Last Modified:              04-10-2006 16:38 CEST
 ======================================================================
 Summary:                    no sound on my asus u5a
 Description: 
@@ -51,12 +53,21 @@ After that i've loaded the driver (snd-hda-intel) the pcskeaker (beep) is
 mute.
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 04-10-06 16:38 
+----------------------------------------------------------------------
+The problem should have been fixed on ALSA-1.0.11rc4 or later.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-10-06 16:29 diegor         New Issue                                    
 04-10-06 16:29 diegor         Distribution              => debian          
 04-10-06 16:29 diegor         Kernel Version            => 2.6.16.2        
+04-10-06 16:30 diegor         Issue Monitored: diegor                      
+04-10-06 16:38 tiwai          Status                   assigned => resolved
+04-10-06 16:38 tiwai          Resolution               open => fixed       
+04-10-06 16:38 tiwai          Note Added: 0009191                          
 ======================================================================
 
 
