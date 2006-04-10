@@ -1,14 +1,15 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: [ALSA STABLE 3/3] unregister platform device again if probe was unsuccessful
-Date: Tue, 11 Apr 2006 01:15:14 +0200
-Message-ID: <443AE702.6070308@keyaccess.nl>
+From: "jekdlvplhe" <jekdlvplhe@border.com>
+Subject: Fw: Darcy
+Date: Mon, 10 Apr 2006 20:09:25 -0000
+Message-ID: <001301c65d04$931420a0$6ec45547@yourf78bf48ce2>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060303090003040009050707"
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_000F_01C65CDA.AA3E18A0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq3.tilbu1.nb.home.nl (smtpq3.tilbu1.nb.home.nl [213.51.146.202])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCCAC188
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 01:13:45 +0200 (MEST)
+Received: from 71-85-196-110.dhcp.stls.mo.charter.com (71-85-196-110.dhcp.stls.mo.charter.com [71.85.196.110])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 1D7FE181
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 03:09:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,297 +19,226 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060303090003040009050707
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi Takashi
-
-Unregister the platform device again if the probe was unsuccessful for
--stable. Against 2.6.16.2.
-
-Could you relay this to -stable with your ack?
-
-Rene.
+------=_NextPart_000_000F_01C65CDA.AA3E18A0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0010_01C65CDA.AA3E18A0"
 
 
---------------060303090003040009050707
+------=_NextPart_001_0010_01C65CDA.AA3E18A0
 Content-Type: text/plain;
- name="alsa_platform_unregister.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa_platform_unregister.diff"
-
-Index: local/sound/isa/ad1848/ad1848.c
-===================================================================
---- local.orig/sound/isa/ad1848/ad1848.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/ad1848/ad1848.c	2006-04-11 00:02:46.000000000 +0200
-@@ -195,6 +195,10 @@ static int __init alsa_card_ad1848_init(
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/cmi8330.c
-===================================================================
---- local.orig/sound/isa/cmi8330.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/cmi8330.c	2006-04-11 00:02:46.000000000 +0200
-@@ -698,6 +698,10 @@ static int __init alsa_card_cmi8330_init
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		platform_devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/cs423x/cs4231.c
-===================================================================
---- local.orig/sound/isa/cs423x/cs4231.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/cs423x/cs4231.c	2006-04-11 00:02:46.000000000 +0200
-@@ -211,6 +211,10 @@ static int __init alsa_card_cs4231_init(
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/cs423x/cs4236.c
-===================================================================
---- local.orig/sound/isa/cs423x/cs4236.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/cs423x/cs4236.c	2006-04-11 00:02:46.000000000 +0200
-@@ -779,6 +779,10 @@ static int __init alsa_card_cs423x_init(
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		platform_devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/es1688/es1688.c
-===================================================================
---- local.orig/sound/isa/es1688/es1688.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/es1688/es1688.c	2006-04-11 00:02:46.000000000 +0200
-@@ -215,6 +215,10 @@ static int __init alsa_card_es1688_init(
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/gus/gusclassic.c
-===================================================================
---- local.orig/sound/isa/gus/gusclassic.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/gus/gusclassic.c	2006-04-11 00:02:47.000000000 +0200
-@@ -255,6 +255,10 @@ static int __init alsa_card_gusclassic_i
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/gus/gusextreme.c
-===================================================================
---- local.orig/sound/isa/gus/gusextreme.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/gus/gusextreme.c	2006-04-11 00:02:47.000000000 +0200
-@@ -365,6 +365,10 @@ static int __init alsa_card_gusextreme_i
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/gus/gusmax.c
-===================================================================
---- local.orig/sound/isa/gus/gusmax.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/gus/gusmax.c	2006-04-11 00:02:47.000000000 +0200
-@@ -392,6 +392,10 @@ static int __init alsa_card_gusmax_init(
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/gus/interwave.c
-===================================================================
---- local.orig/sound/isa/gus/interwave.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/gus/interwave.c	2006-04-11 00:02:47.000000000 +0200
-@@ -947,6 +947,10 @@ static int __init alsa_card_interwave_in
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		platform_devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/opl3sa2.c
-===================================================================
---- local.orig/sound/isa/opl3sa2.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/opl3sa2.c	2006-04-11 00:02:47.000000000 +0200
-@@ -961,6 +961,10 @@ static int __init alsa_card_opl3sa2_init
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		platform_devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/sb/sb16.c
-===================================================================
---- local.orig/sound/isa/sb/sb16.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/sb/sb16.c	2006-04-11 00:02:47.000000000 +0200
-@@ -720,6 +720,10 @@ static int __init alsa_card_sb16_init(vo
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		platform_devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/sb/sb8.c
-===================================================================
---- local.orig/sound/isa/sb/sb8.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/sb/sb8.c	2006-04-11 00:02:47.000000000 +0200
-@@ -266,6 +266,10 @@ static int __init alsa_card_sb8_init(voi
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/sgalaxy.c
-===================================================================
---- local.orig/sound/isa/sgalaxy.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/sgalaxy.c	2006-04-11 00:02:47.000000000 +0200
-@@ -368,6 +368,10 @@ static int __init alsa_card_sgalaxy_init
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/wavefront/wavefront.c
-===================================================================
---- local.orig/sound/isa/wavefront/wavefront.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/wavefront/wavefront.c	2006-04-11 00:02:47.000000000 +0200
-@@ -722,6 +722,10 @@ static int __init alsa_card_wavefront_in
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		platform_devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/es18xx.c
-===================================================================
---- local.orig/sound/isa/es18xx.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/es18xx.c	2006-04-11 00:02:47.000000000 +0200
-@@ -2233,6 +2233,10 @@ static int __init alsa_card_es18xx_init(
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 	       		continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		platform_devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/isa/opti9xx/opti92x-ad1848.c
-===================================================================
---- local.orig/sound/isa/opti9xx/opti92x-ad1848.c	2006-04-10 20:31:35.000000000 +0200
-+++ local/sound/isa/opti9xx/opti92x-ad1848.c	2006-04-11 00:02:47.000000000 +0200
-@@ -2099,8 +2099,11 @@ static int __init alsa_card_opti9xx_init
- 			return error;
- 		device = platform_device_register_simple(DRIVER_NAME, -1, NULL, 0);
- 		if (!IS_ERR(device)) {
--			snd_opti9xx_platform_device = device;
--			return 0;
-+			if (platform_get_drvdata(device)) {
-+				snd_opti9xx_platform_device = device;
-+				return 0;
-+			}
-+			platform_device_unregister(device);
- 		}
- 		platform_driver_unregister(&snd_opti9xx_driver);
- 	}
-Index: local/sound/isa/sscape.c
-===================================================================
---- local.orig/sound/isa/sscape.c	2006-04-10 23:59:58.000000000 +0200
-+++ local/sound/isa/sscape.c	2006-04-11 00:02:47.000000000 +0200
-@@ -1438,6 +1438,10 @@ static int __init sscape_manual_probe(vo
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		platform_devices[i] = device;
- 	}
- 	return 0;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
 
---------------060303090003040009050707--
+----- Original Message -----=20
+From: Coker Wilbert=20
+To: merhuwownux@extra.hu=20
+Sent: Tuesday, April 11, 2006 10:41 AM
+Subject: alsa-devel
 
 
--------------------------------------------------------
-This SF.Net email is sponsored by xPML, a groundbreaking scripting language
-that extends applications into web and mobile media. Attend the live webcast
-and join the prime developer group breaking into this new coding territory!
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
+
+------=_NextPart_001_0010_01C65CDA.AA3E18A0
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3DWindows-1252">
+<META content=3D"MSHTML 6.00.2900.2769" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV style=3D"FONT: 10pt arial">----- Original Message -----=20
+<DIV style=3D"BACKGROUND: #e4e4e4; font-color: black"><B>From:</B> <A=20
+title=3DCoker Wilbert =
+href=3D"mailto:yvsfyxiv@nts.net ">Coker Wilbert</A>=20
+</DIV>
+<DIV><B>To:</B> <A title=3Dmerhuwownux@extra.hu=20
+href=3D"mailto:merhuwownux@extra.hu">merhuwownux@extra.hu</A> </DIV>
+<DIV><B>Sent:</B> Tuesday, April 11, 2006 10:41 AM</DIV>
+<DIV><B>Subject:</B> alsa-devel</DIV></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT><BR></DIV>
+<DIV align=3Dcenter><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV align=3Dcenter><IMG =
+alt=3D"" hspace=3D0=20
+src=3D"cid:000e01c65d04$931420a0$6ec45547@yourf78bf48ce2" =
+align=3Dbaseline=20
+border=3D0></DIV></BODY></HTML>
+
+------=_NextPart_001_0010_01C65CDA.AA3E18A0--
+
+------=_NextPart_000_000F_01C65CDA.AA3E18A0
+Content-Type: image/gif;
+	name="alsa-devel.gif"
+Content-Transfer-Encoding: base64
+Content-ID: <000e01c65d04$931420a0$6ec45547@yourf78bf48ce2>
+
+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
+uTX4aI6jKI0mqYC4GBLpB4HA6I/KKJBx2XxMN4PGGIJV6YpRaY0ux4Q+qJH02IyXiJcruJd6
+mZdQOXDGt5GlR5Fb15TvyJQ8WYrlt4NNh5RNyYaQ6I3DqIn9eJn+hoUtSYSd6ZZWJ5clKYdW
+OJOnyZhcyJKW2HiSyI78eHSjuYd2mZooSY02KXYOGY6J55Or2ZHAmZJaKW9y2Zit55IpeZO3
++ZqsGZht+ZIb2YENmZb2JnnK+ZefGJ3/zVmFvRmT3BmcCbmbHWicAXeKrMiCK9mKOkmK3xd9
+63l2RCmOXHeMQ4mUTJmZlgmfUjiNx8kQATqWPjGghkmgSrGWU4eVCNqgDvqgEBqhEjqhFFqh
+FnqhGJqhGrqhHNqhHvqhIBqiIjqiJFqiJnqiKJqiKppkBNCiLToQLuqiMPqiBAAAMUqjNSoQ
+MnqjLzqjOSqjOgqkNsqjBNGjQ1qjRLqjOIqkQqoQRloRT9qkRzqlVBqjR2qlPmqkRAqjBbGl
+B5GjXUqjV9qkWlqmZjqlUto4YLqmXGqjM6qjbQqmbjqnP9qlRdqmcEqneYqnc9qndbqnSMqn
+TpoRcjqkYcqn/3/qpn9aqGwKqHdqp4IaqWsaqHr6qI6Kp43ap5CTqYwKqYVqqHsaqpZaqaP6
+qUGKqQbBqZrqEKYqEZ3KpplKqpCaqqhKq506qnAqp7cqqm+ap5+aqLH6OKoqq48Kq6LaqrrK
+q8n6paQKrHEaqYbKpHE6qT56qqf6qlwaq8HKq5cqq5QqqL+qqa3KrYrqq7Tqp+TKOFgapD2K
+rEJap7saplgartCqp5MapeWqq79KqfCaq/5argD7pPbareIar0VKpmQaqgbbrIPKrAF7rvm6
+qsKqsObqsI36reS6rPSasf/qrRE7q74KpEzarjiapeharAwrqbj6rCzLrssqqe/asP/nyq8Q
+G6gYu6kUi6uJiqkLm7MbK7GAuq2gKrDHWrQa+6Yve6s0m7OlihA7+7PBGq87K65O26sbS7KV
+M6wdq61Uu7JM+7IcW6vdqrUV268Pa7bfuqtk66z1urZd+7aIKrZhS7BqSznvyqP3mqVLiqhE
+K7Jmyqh9q6Uui69BK7B+y66gOqZlqrfVSqd/a7KNe7D3eqNVuqRp6rd5K7mpKriQa6njuqIN
+hreiO7qkW7qme7qom7qqu7qs27qu+7qwG7uyK7qgW7u7EwK2m7u6u7u827tvUwDACwDAWwAE
+QbzFa7zCG7wCMbzCOxDDi7zMm7zEy7zU+7zT+7wJYb0FQb3/BnG9yLu8yru824u94Gu81Yu9
+1hu+0ru+6Su94du+3+u85CsR6gu+4usQ0Uu/7mu+6pu/ySu/8du90Fu/DxHAMEHAC4HABey8
+29u9xcvA9tu8ECzB90vB0AvBF4wQGWzB8TvA49vAIGzBEyzC5lvBFZzBG5zCJjzBBtwQBtzC
+CUwRKkzBI2zCMPzANRwRN8wSHcwQOxzDNkzD/3u/PRzAJczCSBzCMIzCIXzCJPzAPezEQtzC
+VJzEMyzEWCzCE/HCWyzDVuzAH7zCGrzBXVwTUawQP4zGIzy9DXzEXAzC33vFR6zFB8HE2QvF
+DBzHU4zERrzCVUzESazFeqzEEby+///7voV8vYcsv2AcvAP8xlLcx20sxnUswR58yI7svTWs
+vI5sv4/syYr8yUO8yABcvozMv6bsvw4cxYPMxlksyYMsvnGcv/Nbx+R7w61syTg8y/37wqq8
+xM3ryhzcy/0rwJwsyxjsxrq8zJ08xyfMxs68xrQMxrucxY3MzIAczFKczZ28yHaMyq4czpbM
+ynnsydlszeV8vMWsza98zWtMw3MczU0szJWMwctcvrmcztWMw5UMzV9szzncwdx7ziV8y9zs
+voTMzhrMzwF9zWlc0PgMyKjM0IaszApt0RANwMJMzshMxMeMzvoMzywczfR8ziIdywC90CEt
+0vYcz/zszP8krdK2XMiCTNGy/NHvTNAdDdAZTc09Xc9iLMkvLdBnjNM3Dc9kjNESzdNLndN7
+/MQdfcEPPc9OfcV0/NTvTMZUfdUsTcexLMcMrdUJvc1JHdRwLMjKrNS6HNNNDclYrMdwbdNA
+jc06fdVq3dN3vdY7zdEXfc8lLdMVnclJXb+1jNDzrL207L/tW8qN/NHnm8rve8uCndjA/Mya
+jM8GPb4CzdjBzL+KvL/o+9mlXL2jzMrEfL6PTcmaPdL7bMhvDb+h7dqgHcqXvL/Ha8qYbdgg
+3RRpDMRX0du+TRPAjRPDPRTFXRTHDdhTkdxzLdzIvdwNpsohpcC+W93Wfd3Ynd3/2o0S6Sva
+anwR1K3cW0zA4V3O2jveAqzatizdd4wR543eCu3CzE2/s7wR5V0Vau3FC+zD9k3WLuzX+t3E
++73bHiHW+13SO5zgOazDAl7GBP7bDQ4Rwz3VGiHUU+3SDi7X/K3eIGHgG/Df8b3bCs7hIL7g
+DE7iWFHEjHzb3Uzal+3Nn/3YnDzjr+3Z6rzXIz7OjJ3JyZzHobziLw3KkE3KpT3jRW3ONO7B
+S2zkbXzJqZ3kt23OMN7ZO07MOI4amy3Ou6zlRB7Oaa3TKEzPdjzU7IzL0YvXEZzRGO3PUzy/
+au7RZa7XbZ7YzMzm4Y3haU7XdL3OXq7jpCzObO3NKP4U/+Rc2Pnt0t+M1Rtt0mP+xYUt4Oib
+0gV95gdt6Pvs3WlN2jSd06KM5u1d1jeN054tzwPd1+PM45seybqd4mf9xxYN4Il+5In+z0Ee
+4sr91arO0T8d1gSt1EZc20G853v93aAe4o3+1Is+61E+yrmOHIXuxwcN5kz96ot+zzWd0Fze
+3J7u2MIu52eMzXn95oHe7Z6u0sWu5bP+7MMO7lGN7dZuFZSNyZrt4pdN2UYu2oId2JjO5CzO
+43dO2KJM5ew76ojt3aCtzpId2/z+y+d95rBt22OM2zeeyBPN7xpt291d8RZ/yv4+3ybl8dud
+EiAf8ibB3iR/8iif8iq/8ixvb/9UPPIz3RITzt3FbfLyzez4O99GXRG9fd8RvjeVXeA7AfMB
+DuIeL88lnuHcPTl/PehKbxNE//TfDd5O//P4y8NM3+aGjerdHNinvNpe78boTtt+7vBDHvac
+3eW13eIAb+M33uJATtLg/PV0v/bQTPZwv9qTPdE+LuQDr/ZVzvc2HyIY3vVjH+dqnsth/uc/
+XuferufV3sx+bOfenu3HLvaCrueO3+f9jvh5vvli3taM7uvcTPni3u7B4uYtveM7jdDFfu15
+Te5z7sSx/sbee/skbOGTf+m4LfdfDu1rXeqxD9O4HtH/jOkSrelFjuqp39pvzu5VzevRPvyV
+zvvrHs//6h7sHFzrvlz9mk/6wP/T6R7tUW7Vx7/iv7/sXQ/kh5LPXu39gM7psD/99O/5sD7t
+4f/4Uq39bA3+ry7sAFEAwECBAwkeBCCwoEKDCxE6TIjw4cSIECVCZBhRo0OOBztWlGhQ5EiS
+JU2eRJlS5UqWBVwSfJnQZcyCMGe+xFkzpsyZInf25CmTZ06hQ3veVKjzaFKmNo2OXFpUKlKg
+PmnuDBqUKNWbVpEK/ep0q1KqNrsSdWoUKNa0Ztd+RftWaduaLO3exZtX716+ff3+BRxY8GDC
+hQ0fRpxY8WLGjR0/hhxZ8mTKlS1fxpxZ82bOnT1/Bh1a9GjSpU2fRp1a9WrW/q1dv4YdW/Zs
+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
+------=_NextPart_000_000F_01C65CDA.AA3E18A0--
