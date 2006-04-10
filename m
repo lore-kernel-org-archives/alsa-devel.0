@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001983]: compilation error on the file usbmixer.c
-Date: Mon, 10 Apr 2006 17:25:54 +0200
-Message-ID: <d8bc039ebff6018c7cbc35114dbb0dd9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002014]: no sound on my asus u5a
+Date: Mon, 10 Apr 2006 17:40:36 +0200
+Message-ID: <a62615fa90d4054cc6a172eee43f1df2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C8C216A
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 17:25:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57C6217B
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 17:40:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,92 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1983> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2014> 
 ======================================================================
-Reported By:                croiset
-Assigned To:                perex
+Reported By:                diegor
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1983
-Category:                   0_compilation problem_!!!
+Issue ID:                   2014
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Redhat 7.2
-Kernel Version:             2.4.7-10
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     feedback
+Distribution:               debian
+Kernel Version:             2.6.16.2
 ======================================================================
-Date Submitted:             03-31-2006 15:41 CEST
-Last Modified:              04-10-2006 17:25 CEST
+Date Submitted:             04-10-2006 16:29 CEST
+Last Modified:              04-10-2006 17:40 CEST
 ======================================================================
-Summary:                    compilation error on the file usbmixer.c
+Summary:                    no sound on my asus u5a
 Description: 
-In linux 2.4.7-10, it's impossible to compile because in the file
-usbmixer.c.
-
-I obtain this error :
-make[1]: Entre dans le répertoire
-`/home/redhat/BUILD/alsa-driver-1.0.11rc4/usb
-'
-i386-redhat-linux-gcc -D__KERNEL__ -DMODULE=1
--I/home/redhat/BUILD/alsa-driver-
-1.0.11rc4/include  -I/lib/modules/2.4.7-10/build/include -O2
--mpreferred-stack-
-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -
-Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
--nostdinc
- -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.7-10/build/includ
-e/linux/modversions.h
--I/home/redhat/BUILD/alsa-driver-1.0.11rc4/alsa-kernel/us
-b -DKBUILD_BASENAME=usbaudio   -c -o usbaudio.o usbaudio.c
-i386-redhat-linux-gcc -D__KERNEL__ -DMODULE=1
--I/home/redhat/BUILD/alsa-driver-
-1.0.11rc4/include  -I/lib/modules/2.4.7-10/build/include -O2
--mpreferred-stack-
-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -
-Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
--nostdinc
- -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.7-10/build/includ
-e/linux/modversions.h
--I/home/redhat/BUILD/alsa-driver-1.0.11rc4/alsa-kernel/us
-b -DKBUILD_BASENAME=usbmixer   -c -o usbmixer.o usbmixer.c
-usbmixer.c: In function `snd_usb_soundblaster_remote_init':
-usbmixer.c:1824: dereferencing pointer to incomplete type
-usbmixer.c:1830: dereferencing pointer to incomplete type
-usbmixer.c:1832: dereferencing pointer to incomplete type
-usbmixer.c:1833: dereferencing pointer to incomplete type
-usbmixer.c:1834: dereferencing pointer to incomplete type
-usbmixer.c:1835: dereferencing pointer to incomplete type
-make[1]: *** [usbmixer.o] Erreur 1
-make[1]: Quitte le répertoire
-`/home/redhat/BUILD/alsa-driver-1.0.11rc4/usb'
-make: *** [compile] Erreur 1
-error: Bad exit status from /var/tmp/rpm-tmp.10604 (%build)
-
+After i loaded the sound driver (snd-hda-intel) with chipset ad1986a, i set
+the volume about 80%. The main channel (Vol) il blocked at 100% with
+aumix. if i try to launch esd (or play an mp3) the speakers are mute.
+After that i've loaded the driver (snd-hda-intel) the pcskeaker (beep) is
+mute.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 17:25 
+ tiwai - 04-10-06 16:38 
 ----------------------------------------------------------------------
-Fixed on CVS.
+The problem should have been fixed on ALSA-1.0.11rc4 or later.
+
+----------------------------------------------------------------------
+ diegor - 04-10-06 17:40 
+----------------------------------------------------------------------
+i've tried also ALSA-1.0.11rc4 and cvs... nothing!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-06 15:41 croiset        New Issue                                    
-03-31-06 15:41 croiset        Distribution              => Redhat 7.2      
-03-31-06 15:41 croiset        Kernel Version            => 2.4.7-10        
-04-10-06 17:25 tiwai          Status                   assigned => resolved
-04-10-06 17:25 tiwai          Resolution               open => fixed       
-04-10-06 17:25 tiwai          Note Added: 0009205                          
+04-10-06 16:29 diegor         New Issue                                    
+04-10-06 16:29 diegor         Distribution              => debian          
+04-10-06 16:29 diegor         Kernel Version            => 2.6.16.2        
+04-10-06 16:30 diegor         Issue Monitored: diegor                      
+04-10-06 16:38 tiwai          Status                   assigned => resolved
+04-10-06 16:38 tiwai          Resolution               open => fixed       
+04-10-06 16:38 tiwai          Note Added: 0009191                          
+04-10-06 17:40 diegor         Status                   resolved => feedback
+04-10-06 17:40 diegor         Resolution               fixed => reopened   
+04-10-06 17:40 diegor         Note Added: 0009206                          
 ======================================================================
 
 
