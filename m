@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001934]: make problem
-Date: Mon, 10 Apr 2006 16:46:12 +0200
-Message-ID: <283cb72d8b36114ed5fd1c8f7f38a4ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001857]: regression in snd-cs4281 in recent 2.6.16-rcX kernels
+Date: Mon, 10 Apr 2006 16:47:28 +0200
+Message-ID: <62635d5f0026d2c19b45b7dc4da59286@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A914E184
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 16:46:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE66A184
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 16:47:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1857> 
 ======================================================================
-Reported By:                kvo
-Assigned To:                perex
+Reported By:                hoffmajs
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1934
-Category:                   0_compilation problem_!!!
+Issue ID:                   1857
+Category:                   PCI - cs4281
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               RHEL4 Update 3
-Kernel Version:             2.6.9-34.EL
+Status:                     resolved
+Distribution:               Ubuntu (Dapper)
+Kernel Version:             2.6.16-rc4
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-17-2006 12:19 CET
-Last Modified:              04-10-2006 16:46 CEST
+Date Submitted:             02-19-2006 06:11 CET
+Last Modified:              04-10-2006 16:47 CEST
 ======================================================================
-Summary:                    make problem
+Summary:                    regression in snd-cs4281 in recent 2.6.16-rcX
+kernels
 Description: 
-./configure works OK. running make give error during compilation: module
-'include/asound.h' (line 210) has some 'typedef' that doesn't match with
-(probably) OS include. As a result, compilation stops and driver can not
-be produced.
+In the recent 2.6.16-rc kernels snd-cs4281 broke for me.
+(I think since 2.6.16-rc2, but Im not sure atm. In 2.6.15 the card works
+fine.)
+
+# > modprobe snd-cs4281
+ACPI: PCI Interrupt 0000:00:08.0[A] -> Link [LNKC] -> GSI 5 (level, low)
+-> IRQ 5
+never read ISV3 and ISV4 from AC'97
+ACPI: PCI interrupt for device 0000:00:08.0 disabled
+CS4281: probe of 0000:00:08.0 failed with error -5
+
+and no soundcard is found.
+
+If you need more info or want me to test something, please say so.
+
+
+kind regards,
+Jens
+
 ======================================================================
 
 ----------------------------------------------------------------------
- kvo - 04-09-06 19:05 
+ Mo6eB - 04-09-06 12:29 
 ----------------------------------------------------------------------
-Please look at new info and possible reason.
+2.6.17-rc1 fixed it for me.
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 16:46 
+ tiwai - 04-10-06 16:47 
 ----------------------------------------------------------------------
-Sigh, it's a modified kernel by RedHat that not supported officially by
-alsa package.
-I don't know how to detect it.
+OK then let's close.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 12:19 kvo            New Issue                                    
-03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
-03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
-03-17-06 12:25 tiwai          Note Added: 0008643                          
-03-19-06 22:26 kvo            Note Added: 0008697                          
-03-21-06 17:33 tiwai          Note Added: 0008749                          
-03-25-06 20:47 kvo            File Added: config.log                       
-03-25-06 22:19 kvo            Note Added: 0008952                          
-04-09-06 18:47 kvo            File Added: info.zip                         
-04-09-06 18:56 kvo            Note Added: 0009181                          
-04-09-06 19:05 kvo            Issue Monitored: tiwai                       
-04-09-06 19:05 kvo            Note Added: 0009182                          
-04-10-06 16:46 tiwai          Note Added: 0009196                          
+02-19-06 06:11 hoffmajs       New Issue                                    
+02-19-06 06:11 hoffmajs       Distribution              => Ubuntu (Dapper) 
+02-19-06 06:11 hoffmajs       Kernel Version            => 2.6.16-rc4      
+03-02-06 16:05 tiwai          Note Added: 0008319                          
+04-05-06 10:33 julienbras     Note Added: 0009119                          
+04-07-06 13:11 Mo6eB          Note Added: 0009138                          
+04-07-06 19:16 tiwai          Note Added: 0009142                          
+04-09-06 12:29 Mo6eB          Note Added: 0009178                          
+04-10-06 16:47 tiwai          Status                   new => resolved     
+04-10-06 16:47 tiwai          Resolution               open => fixed       
+04-10-06 16:47 tiwai          Assigned To               => tiwai           
+04-10-06 16:47 tiwai          Note Added: 0009197                          
 ======================================================================
 
 
