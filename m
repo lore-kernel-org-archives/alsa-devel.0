@@ -1,11 +1,17 @@
-From: Daniel Kasak <dkasak@nusconsulting.com.au>
-Subject: Oops when unloading modules
-Date: Mon, 10 Apr 2006 14:42:13 +1000
-Message-ID: <4439E225.1070908@nusconsulting.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+From: "MSS, Inc." <Success_Tips@marketingsystemsolution-mailer.com>
+Subject: 5 Benchmarks To Listing Success, Success Tip #40
+Date: Sun, 9 Apr 2006 23:50:13 -0500
+Message-ID: <20060410045002.030E699378@mail.perex.cz>
+Reply-To: Success_Tips@marketingsystemsolution-mailer.com
+Content-Type: text/html;
+	charset="us-ascii"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E407125
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 06:50:03 +0200 (MEST)
+Received: from marketingsystemsolution-mailer.com (unknown [63.86.220.60])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 030E699378
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 06:50:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,73 +21,263 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all.
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
 
-I've been getting kernel oopses when unloading alsa modules, starting
-from alsa-driver-1.0.10-rc3.
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 11">
+<meta name=Originator content="Microsoft Word 11">
+<link rel=File-List
+href='http://marketingsystemsolution-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4341414145450E43430E400E4147424A4145460E08.aspx'>
+<title> </title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Monica Ryan</o:Author>
+  <o:Template>Normal</o:Template>
+  <o:LastAuthor>Monica Ryan</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>35</o:TotalTime>
+  <o:Created>2006-04-09T22:34:00Z</o:Created>
+  <o:LastSaved>2006-04-09T22:34:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>302</o:Words>
+  <o:Characters>1723</o:Characters>
+  <o:Lines>14</o:Lines>
+  <o:Paragraphs>4</o:Paragraphs>
+  <o:CharactersWithSpaces>2021</o:CharactersWithSpaces>
+  <o:Version>11.5606</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:PunctuationKerning/>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+   <w:DontGrowAutofit/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" LatentStyleCount="156">
+ </w:LatentStyles>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	&#123;mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";&#125;
+a:link, span.MsoHyperlink
+	&#123;color:blue;
+	text-decoration:underline;
+	text-underline:single;&#125;
+a:visited, span.MsoHyperlinkFollowed
+	&#123;color:purple;
+	text-decoration:underline;
+	text-underline:single;&#125;
+span.GramE
+	&#123;mso-style-name:"";
+	mso-gram-e:yes;&#125;
+@page Section1
+	&#123;size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;&#125;
+div.Section1
+	&#123;page:Section1;&#125;
+ /* List Definitions */
+ @list l0
+	&#123;mso-list-id:81489292;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-896342176 67698703 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;&#125;
+@list l0:level1
+	&#123;mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;&#125;
+@list l0:level2
+	&#123;mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;&#125;
+@list l0:level3
+	&#123;mso-level-tab-stop:1.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;&#125;
+@list l0:level4
+	&#123;mso-level-tab-stop:2.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;&#125;
+@list l0:level5
+	&#123;mso-level-tab-stop:2.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;&#125;
+@list l0:level6
+	&#123;mso-level-tab-stop:3.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;&#125;
+@list l0:level7
+	&#123;mso-level-tab-stop:3.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;&#125;
+@list l0:level8
+	&#123;mso-level-tab-stop:4.0in;
+	mso-level-number-position:left;
+	text-indent:-.25in;&#125;
+@list l0:level9
+	&#123;mso-level-tab-stop:4.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;&#125;
+@list l1
+	&#123;mso-list-id:1558736185;
+	mso-list-template-ids:-195134324;&#125;
+ol
+	&#123;margin-bottom:0in;&#125;
+ul
+	&#123;margin-bottom:0in;&#125;
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	&#123;mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;&#125;
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="4098">
+  <o:colormru v:ext="edit" colors="#ccecff,#ccf"/>
+  <o:colormenu v:ext="edit" fillcolor="#ccf"/>
+ </o:shapedefaults></xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
 
-I've tried a number of kernels, and the alsa-driver version has ranged
-from 1.0.10-rc3 to 1.0.11-rc3 to 1.0.11-rc4 ( which is the one I'm
-currently testing ).
+<body bgcolor="#CCCCFF" lang=EN-US link=blue vlink=purple style='tab-interval:
+5in'>
 
-I was advised previously to test with a vanilla kernel, but
-unfortunately I can't because I'm using a reiser4 root filesystem ...
-but I swear that reiser4 is the only option I've added over a vanilla
-kernel ... oh yeah ... other than the et131x module, for my ethernet
-card ... and also the ipw2200 module for my wireless card. What can I
-say? I need them all.
+<div class=Section1>
 
-The Oops:
+<p class=MsoNormal><b style='mso-bidi-font-weight:normal'><i style='mso-bidi-font-style:
+normal'><u><span style='font-size:20.0pt;font-family:Arial;color:blue'>MSS,
+Inc. Business Success Tips<o:p></o:p></span></u></i></b></p>
 
----
+<p class=MsoNormal style='text-align:justify'><b style='mso-bidi-font-weight:
+normal'><span style='font-family:Arial'>Tip #40 - When you are competing to win
+a listing, there are five benchmarks you must meet to increase your success.<o:p></o:p></span></b></p>
 
-Unable to handle kernel paging request at 000000000044d087 RIP:
-<ffffffff80224d30>{strlen+0}
-PGD 3923c067 PUD 39e45067 PMD 3b49d067 PTE 0
-Oops: 0000 [1] PREEMPT
-CPU 0
-Modules linked in: et131x snd_pcm_oss snd_mixer_oss snd_seq_oss
-snd_seq_midi_event snd_seq snd_seq_device ide_cd cdrom usbhid
-snd_hda_intel snd_hda_codec snd_pcm snd_timer snd soundcore
-snd_page_alloc ohci_hcd ohci1394 ieee1394 ipw2200 ieee80211
-ieee80211_crypt ehci_hcd usbcore yenta_socket rsrc_nonstatic
-Pid: 8400, comm: rmmod Tainted: P      2.6.16-beyond1 #1
-RIP: 0010:[<ffffffff80224d30>] <ffffffff80224d30>{strlen+0}
-RSP: 0018:ffff81003ed13e40  EFLAGS: 00010282
-RAX: ffff81003e83e180 RBX: ffff81003e83e180 RCX: 0000000000000001
-RDX: 0000000000000001 RSI: ffff81003e83e180 RDI: 000000000044d087
-RBP: ffff81003e83e1e0 R08: ffff81003eb84090 R09: 0000000000036c8d
-R10: 0000000000000000 R11: 0000000000000001 R12: 000000000044d087
-R13: 0000000000000000 R14: 0000000000000880 R15: 00007ffffffa01e8
-FS:  00002b4308b5fae0(0000) GS:ffffffff804f7000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
-CR2: 000000000044d087 CR3: 000000003bfd6000 CR4: 00000000000006e0
-Process rmmod (pid: 8400, threadinfo ffff81003ed12000, task
-ffff81003dc20f00)
-Stack: ffffffff801b8eac 0000000000000046 ffff81003e83e180 000000000044d087
-       ffff81003ece7540 ffff81003e83e180 ffff81003ed13f18 0000000000000000
-       ffffffff880e3644 ffff81003e0a0eb8
-Call Trace: <ffffffff801b8eac>{remove_proc_entry+76}
-       <ffffffff880e3644>{:snd:snd_info_unregister+68}
-<ffffffff88193294>{:snd_pcm_oss:snd_pcm_oss_unregister_minor+100}
-       <ffffffff880fac3b>{:snd_pcm:snd_pcm_notify+91}
-<ffffffff80147c74>{sys_delete_module+484}
-       <ffffffff80224b63>{__up_write+307} <ffffffff8016f59a>{sys_munmap+90}
-       <ffffffff8010ac36>{system_call+126}
+<ol style='margin-top:0in' start=1 type=1>
+ <li class=MsoNormal style='text-align:justify;mso-list:l0 level1 lfo3;
+     tab-stops:list .5in'><b style='mso-bidi-font-weight:normal'><span
+     style='font-family:Arial'>Know why you are different</span></b><span
+     style='font-family:Arial'> and express this in terms your prospect can
+     understand.<span style='mso-spacerun:yes'>&#160; </span>Nothing does this <span
+     class=GramE>better</span> than statistics!<o:p></o:p></span></li>
+ <li class=MsoNormal style='text-align:justify;mso-list:l0 level1 lfo3;
+     tab-stops:list .5in'><b style='mso-bidi-font-weight:normal'><span
+     style='font-family:Arial'>Prove the VALUE of your service</span></b><span
+     style='font-family:Arial'>.<span style='mso-spacerun:yes'>&#160; </span>Most
+     agents have a 10 or 20 step marketing plan.<span
+     style='mso-spacerun:yes'>&#160; </span>How can you crush your competition on
+     this point?<span style='mso-spacerun:yes'>&#160; </span>Can you list 50 things
+     you do to sell their home?<span style='mso-spacerun:yes'>&#160; </span>75?<span
+     style='mso-spacerun:yes'>&#160; </span>100?<o:p></o:p></span></li>
+ <li class=MsoNormal style='text-align:justify;mso-list:l0 level1 lfo3;
+     tab-stops:list .5in'><b style='mso-bidi-font-weight:normal'><span
+     style='font-family:Arial'>Educate your clients</span></b><span
+     style='font-family:Arial'>.<span style='mso-spacerun:yes'>&#160; </span>Let
+     them peak behind the scenes of the real estate transaction and educate
+     them about what you do to improve the sale of their home.<span
+     style='mso-spacerun:yes'>&#160; </span>A great way to do this would be to show
+     them the checklists you use to manage their transaction.<o:p></o:p></span></li>
+ <li class=MsoNormal style='text-align:justify;mso-list:l0 level1 lfo3;
+     tab-stops:list .5in'><b style='mso-bidi-font-weight:normal'><span
+     style='font-family:Arial'>Remove as much risk as you can</span></b><span
+     style='font-family:Arial'>.<span style='mso-spacerun:yes'>&#160; </span>Make it
+     easy for the prospect to say yes by providing proof of your success, and
+     by offering them creative guarantees.<o:p></o:p></span></li>
+ <li class=MsoNormal style='text-align:justify;mso-list:l0 level1 lfo3;
+     tab-stops:list .5in'><b style='mso-bidi-font-weight:normal'><span
+     style='font-family:Arial'>Present yourself as a serious professional</span></b><span
+     style='font-family:Arial'> before you ever show up for the
+     appointment.<span style='mso-spacerun:yes'>&#160; </span>Instead of showing up
+     for the appointment with an armload of paperwork and marketing plans and
+     all sorts of company-centric literature, deliver a pre-listing package
+     that meets each of the other four benchmarks on this list.<o:p></o:p></span></li>
+</ol>
 
-Code: 80 3f 00 48 89 f8 74 08 48 ff c0 80 38 00 eb f6 48 29 f8 c3
-RIP <ffffffff80224d30>{strlen+0} RSP <ffff81003ed13e40>
-CR2: 000000000044d087
+<p class=MsoNormal style='text-align:justify'><b style='mso-bidi-font-weight:
+normal'><span style='font-family:Arial'>Meet each of these five benchmarks, and
+you will be on your way to increasing your success at leaving every appointment
+with a new listing!<o:p></o:p></span></b></p>
 
----
+<p class=MsoNormal style='text-align:justify'><span style='font-family:Arial'>Are
+you unsure how to achieve these five benchmarks?<span
+style='mso-spacerun:yes'>&#160; </span>Don&#146;t want to create it all from
+scratch?<span style='mso-spacerun:yes'>&#160; </span>Or just don&#146;t have the
+time?<span style='mso-spacerun:yes'>&#160; </span><o:p></o:p></span></p>
 
-After this happens, whatever terminal was in use hangs. 'ps ax' shows a
-process still trying to remove the snd_pcm_oss module.
+<p class=MsoNormal style='text-align:justify'><span style='font-family:Arial'>Click
+here: <a href='http://marketingsystemsolution-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4341414145450E43430E400E4146454B4646420E08.aspx'>Pre-Listing
+Package</a> to learn about our Pre-Listing Package which includes solutions to
+each of the benchmarks listed above.<o:p></o:p></span></p>
 
-Dan
+<p class=MsoNormal style='text-align:justify'><span style='font-size:11.0pt;
+font-family:Arial'>If your internet browser doesn&#146;t automatically take you to
+our site, please enter this address in the address bar to learn more about our
+Pre-Listing Package:<span style='mso-spacerun:yes'>&#160; </span><a
+href='http://marketingsystemsolution-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4341414145450E43430E400E4146454B4646420E08.aspx'>http://www.mssincproducts.com/PreListingPackage.html</a>
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Arial'>Please do
+not reply to this message as this email address is not monitored.<o:p></o:p></span></p>
+
+</div>
+
+<br><br><table width='500' border='0' align='center' cellpadding='2' cellspacing='3'><tr><td align='center'> <p align='center'>
+<div align='center'><a href='http://marketingsystemsolution-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4341414145450E43430E08.aspx'><img src='http://marketingsystemsolution-mailer.com/img.gif' width='531' height='80' border='0'></a>
+<br><img src='http://marketingsystemsolution-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4341414145450E43430E430E420E08.aspx'>
+<font color="#999999" face="arial, verdana" size="2">Marketing System Solutions, Inc. &#183; P.O. Box 266 &#183; Washington, NJ 07882</font></p></td></tr></table></body>
+
+</html>
+
+
 
 
 -------------------------------------------------------
