@@ -1,18 +1,14 @@
-From: Jiri Slaby <jirislaby@gmail.com>
-Subject: Re: Two OOPSes in ALSA with kernel-2.6.17-rc1
-Date: Mon, 10 Apr 2006 17:57:48 +0159
-Message-ID: <443A8093.80505__11715.8100860708$1144684834$gmane$org@gmail.com>
-References: <200604101823.54600.shlomif@iglu.org.il>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002014]: no sound on my asus u5a
+Date: Mon, 10 Apr 2006 18:03:58 +0200
+Message-ID: <c3ad1b1d81b2fbe6d251f07f86df5d49@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from nproxy.gmail.com (nproxy.gmail.com [64.233.182.191])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3F6B17C
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 17:58:59 +0200 (MEST)
-Received: by nproxy.gmail.com with SMTP id a4so99146nfc
-        for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 08:58:58 -0700 (PDT)
-In-Reply-To: <200604101823.54600.shlomif@iglu.org.il>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D687617C
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 18:03:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,40 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Shlomi Fish <shlomif@iglu.org.il>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@suse.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-Shlomi Fish napsal(a):
-> Hi all!
-> 
-> (Please CC me on the replies)
-> 
-> I recently received these two OOPSes with kernel-2.6.17-rc1. They happened 
-> while mpg123 was playing a WAV file and I invoked KDE (along with artsd).
-> 
-> My soundcard is snd_intel8x0.
-> 
-> Let me know if you need any other information.
-Try to turn sound debug on and retest.
-It seems like struct snd_pcm_runtime *runtime is NULL.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2014> 
+======================================================================
+Reported By:                diegor
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2014
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     feedback
+Distribution:               debian
+Kernel Version:             2.6.16.2
+======================================================================
+Date Submitted:             04-10-2006 16:29 CEST
+Last Modified:              04-10-2006 18:03 CEST
+======================================================================
+Summary:                    no sound on my asus u5a
+Description: 
+After i loaded the sound driver (snd-hda-intel) with chipset ad1986a, i set
+the volume about 80%. The main channel (Vol) il blocked at 100% with
+aumix. if i try to launch esd (or play an mp3) the speakers are mute.
+After that i've loaded the driver (snd-hda-intel) the pcskeaker (beep) is
+mute.
+======================================================================
 
-regards,
-- --
-Jiri Slaby         www.fi.muni.cz/~xslaby
-\_.-^-._   jirislaby@gmail.com   _.-^-._/
-B67499670407CE62ACC8 22A032CC55C339D47A7E
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
+----------------------------------------------------------------------
+ diegor - 04-10-06 17:40 
+----------------------------------------------------------------------
+i've tried also ALSA-1.0.11rc4 and cvs... nothing!
 
-iD8DBQFEOoCTMsxVwznUen4RAkbcAJ4lYUt9LK5t9ECKbcy453qYPlOahACfR5pz
-zWEa8B9DzvmbKsdwyTVe49c=
-=YvAt
------END PGP SIGNATURE-----
+----------------------------------------------------------------------
+ diegor - 04-10-06 18:03 
+----------------------------------------------------------------------
+this is my lspci -nv of soundcard:
+
+0000:00:1b.0 0403: 8086:2668 (rev 04)
+        Subsystem: 1043:11f7
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at feb38000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] #10 [0091]
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-10-06 16:29 diegor         New Issue                                    
+04-10-06 16:29 diegor         Distribution              => debian          
+04-10-06 16:29 diegor         Kernel Version            => 2.6.16.2        
+04-10-06 16:30 diegor         Issue Monitored: diegor                      
+04-10-06 16:38 tiwai          Status                   assigned => resolved
+04-10-06 16:38 tiwai          Resolution               open => fixed       
+04-10-06 16:38 tiwai          Note Added: 0009191                          
+04-10-06 17:40 diegor         Status                   resolved => feedback
+04-10-06 17:40 diegor         Resolution               fixed => reopened   
+04-10-06 17:40 diegor         Note Added: 0009206                          
+04-10-06 18:03 diegor         Note Added: 0009207                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
