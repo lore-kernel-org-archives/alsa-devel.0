@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002014]: no sound on my asus u5a
-Date: Mon, 10 Apr 2006 19:22:20 +0200
-Message-ID: <76478763927a2829cf0a857b3ad50cf2@bugtrack.alsa-project.org>
+From: Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: [2.6 patch] move EXPORT_SYMBOL's away from sound/pci/emu10k1/emu10k1_main.c
+Date: Mon, 10 Apr 2006 19:22:14 +0200
+Message-ID: <20060410172214.GA8612__4328.02238869971$1144689823$gmane$org@mars.ravnborg.org>
+References: <20060407003105.GG7118@stusta.de> <s5hu095y367.wl%tiwai@suse.de> <20060407184909.GB9097@mars.ravnborg.org> <s5hodz992lx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 509F8172
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 19:22:20 +0200 (MEST)
+Received: from pasmtp.tele.dk (pasmtp.tele.dk [193.162.159.95])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1353E172
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 19:22:22 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hodz992lx.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +20,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Adrian Bunk <bunk@stusta.de>, perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Apr 10, 2006 at 11:55:22AM +0200, Takashi Iwai wrote:
+ > > > This patch moves the EXPORT_SYMBOL's from 
+> > > > sound/pci/emu10k1/emu10k1_main.c to the files with the actual functions.
+> > > 
+> > > What is the merit of this movement?
+> > 
+> > 1) Documentation - it is obvious that the function/data is exported so
+> > be a bit mroe careful when introducing changes
+> > 2) Style. In 2.6 the preferred style is to put the EXPORT_SYMBOL on the
+> > line following the closing } of the exported function.
+> > 3) Keep changes local. If one removes a previously exported symbol less
+> > files needs to be touched.
+> 
+> I know the above for the new codes, yes.  But my question is wheter do
+> we get a good enough benifit by changing the existing code.
+> 
+> I'm not against such an action but just wornder whether it's really
+> needed.  If yes, we should do it over the whole tree.
+That has been done to a lot of existing code also.
+In the 2.4 days it made sense to have them grouped due to build system
+limitations - that is no longer the case with 2.6 so it is preferred to
+do it correct.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2014> 
-======================================================================
-Reported By:                diegor
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2014
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     feedback
-Distribution:               debian
-Kernel Version:             2.6.16.2
-======================================================================
-Date Submitted:             04-10-2006 16:29 CEST
-Last Modified:              04-10-2006 19:22 CEST
-======================================================================
-Summary:                    no sound on my asus u5a
-Description: 
-After i loaded the sound driver (snd-hda-intel) with chipset ad1986a, i set
-the volume about 80%. The main channel (Vol) il blocked at 100% with
-aumix. if i try to launch esd (or play an mp3) the speakers are mute.
-After that i've loaded the driver (snd-hda-intel) the pcskeaker (beep) is
-mute.
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 04-10-06 19:08 
-----------------------------------------------------------------------
-Please elaborate what you did, what worked and what didn't work.
-
-The "PC speaker" element is reduced intentionally because it never worked
-on others.
-
-----------------------------------------------------------------------
- diegor - 04-10-06 19:22 
-----------------------------------------------------------------------
-than, after my change the soundcard work and i can see only four channel
-(Master, Pcm, Mic IGain)
-After loaded the driver the PC speaker don't work.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-10-06 16:29 diegor         New Issue                                    
-04-10-06 16:29 diegor         Distribution              => debian          
-04-10-06 16:29 diegor         Kernel Version            => 2.6.16.2        
-04-10-06 16:30 diegor         Issue Monitored: diegor                      
-04-10-06 16:38 tiwai          Status                   assigned => resolved
-04-10-06 16:38 tiwai          Resolution               open => fixed       
-04-10-06 16:38 tiwai          Note Added: 0009191                          
-04-10-06 17:40 diegor         Status                   resolved => feedback
-04-10-06 17:40 diegor         Resolution               fixed => reopened   
-04-10-06 17:40 diegor         Note Added: 0009206                          
-04-10-06 18:03 diegor         Note Added: 0009207                          
-04-10-06 18:10 tiwai          Note Added: 0009208                          
-04-10-06 19:05 diegor         Note Added: 0009217                          
-04-10-06 19:08 tiwai          Note Added: 0009218                          
-04-10-06 19:22 diegor         Note Added: 0009219                          
-======================================================================
-
-
+	Sam
 
 
 -------------------------------------------------------
