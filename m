@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002013]: no digital output
-Date: Mon, 10 Apr 2006 16:50:08 +0200
-Message-ID: <689b7bbf41ba676c08098bb55a5f1992@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
+Date: Mon, 10 Apr 2006 16:52:27 +0200
+Message-ID: <cbf20cf76f6543f31e2729bd800c9fd8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BEC1016D
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 16:50:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7CE2184
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 16:52:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2013> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
 ======================================================================
-Reported By:                SamiH
+Reported By:                Raymond
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2013
-Category:                   PCI - via82xx
+Project:                    ALSA - utils
+Issue ID:                   1990
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               BLFS
-Kernel Version:             2.6.15.4
 ======================================================================
-Date Submitted:             04-09-2006 11:43 CEST
-Last Modified:              04-10-2006 16:50 CEST
+Date Submitted:             04-01-2006 04:26 CEST
+Last Modified:              04-10-2006 16:52 CEST
 ======================================================================
-Summary:                    no digital output
+Summary:                    aplay/arecord cannot play/capture A_LAW
 Description: 
-Shortly: Digital output doesn't work at all, or I don't know how to use
-it.
+aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
 
-This has been my problem quite long time now. I have upgraded my kernel
-from  2.6.8 to 2.6.15.4 with some steps bitween those versions, and the
-problem is still here. I have tried some live-cds with same results as my
-stable system.
+arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
 
-Analog stereo output works with no problems. If someone did tell me what I
-should test on my system so that I could give the results to you.
+aplay -D hw:0,0 test.au
 
-These aren't broken:
- * my external amplifier
- * the digital coaxial cable
- * speakers etc.
 
-Please tell me at least what to do, what to search for, or something...
+Try to use -t raw but the quality of A_LAW is very bad when compare with
+MU_LAW
+
+arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
+
+aplay -D hw:0,0 test.raw
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 16:50 
+ Raymond - 04-08-06 07:47 
 ----------------------------------------------------------------------
-You didn't write what did you test...
+cat test.raw > /dev/dsp
+
+or 
+
+cat test.raw > /dev/audio
+
+
+
+Which of the above will play the sound correctly if test.raw is recorded
+by arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw ?
+
+----------------------------------------------------------------------
+ tiwai - 04-10-06 16:52 
+----------------------------------------------------------------------
+The OSS emulation doesn't support alaw format conversion, too.  It's the
+same behavior as OSS/Free.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-09-06 11:43 SamiH          New Issue                                    
-04-09-06 11:43 SamiH          Distribution              => BLFS            
-04-09-06 11:43 SamiH          Kernel Version            => 2.6.15.4        
-04-10-06 16:50 tiwai          Note Added: 0009198                          
+04-01-06 04:26 Raymond        New Issue                                    
+04-03-06 07:16 Raymond        Note Added: 0009085                          
+04-03-06 07:36 Raymond        Note Added: 0009086                          
+04-07-06 19:32 tiwai          Note Added: 0009152                          
+04-08-06 07:47 Raymond        Note Added: 0009171                          
+04-10-06 16:52 tiwai          Note Added: 0009199                          
 ======================================================================
 
 
