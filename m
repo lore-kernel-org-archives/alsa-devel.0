@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002014]: no sound on my asus u5a
-Date: Mon, 10 Apr 2006 20:07:43 +0200
-Message-ID: <788a4031f61c525b9579973f311c45c0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002004]: Via say unknown codec on FSC Amilo 1667G
+Date: Mon, 10 Apr 2006 20:23:12 +0200
+Message-ID: <2889c61641097f2f4aae510870d1c93e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 05401189
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 20:07:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF35A189
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 20:23:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,117 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2014> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2004> 
 ======================================================================
-Reported By:                diegor
-Assigned To:                tiwai
+Reported By:                deathlove23
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2014
-Category:                   PCI - hda-intel
+Issue ID:                   2004
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               debian
-Kernel Version:             2.6.16.2
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             04-10-2006 16:29 CEST
-Last Modified:              04-10-2006 20:07 CEST
+Date Submitted:             04-05-2006 18:40 CEST
+Last Modified:              04-10-2006 20:23 CEST
 ======================================================================
-Summary:                    no sound on my asus u5a
+Summary:                    Via say unknown codec on FSC Amilo 1667G
 Description: 
-After i loaded the sound driver (snd-hda-intel) with chipset ad1986a, i set
-the volume about 80%. The main channel (Vol) il blocked at 100% with
-aumix. if i try to launch esd (or play an mp3) the speakers are mute.
-After that i've loaded the driver (snd-hda-intel) the pcskeaker (beep) is
-mute.
+Hello,
+ 
+I have a Notebook from FSC: Amilo 1667G
+and is get thes messages in boot bzw. on dmesg:
+
+---
+ALSA device list:
+#0: VIA 8237 with unknown codec at 0xc800, irq 50
+---
+
+my Alsa Kernel config is:
+
+---
+CONFIG_SND=y
+CONFIG_SND_TIMER=y
+CONFIG_SND_PCM=y
+CONFIG_SND_RAWMIDI=y
+CONFIG_SND_RTCTIMER=y
+CONFIG_SND_MPU401_UART=y
+CONFIG_SND_AC97_CODEC=y
+CONFIG_SND_AC97_BUS=y
+CONFIG_SND_VIA82XX=y
+---
+
+and my lspci -vv is:
+
+---
+00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+        Subsystem: Fujitsu Siemens Computer GmbH Unknown device 1093
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin C routed to IRQ 50
+        Region 0: I/O ports at c800 [size=256]
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+---
+
+can you my soundcard to the ID lists eg. another Amilio's?
+
+Thanks
+Alex - Deathlove23
 ======================================================================
 
 ----------------------------------------------------------------------
- diegor - 04-10-06 20:01 
+ tiwai - 04-10-06 17:01 
 ----------------------------------------------------------------------
-"after my change" is this:
-###
-i changed the file patch_analog.c at the line 801.
-i changed the ".pci_subdevice = 0x1213" with my number, thus "0x11f7".
-###
-
-i have only changed, maybe i must add this subdevices! :)
-
-Tonight i'll prepare this patch!
-
-
+Actaully, it's an unknown codec chip.  Looks like an ac97 codec from VIA,
+but no idea what model is.  Do you have any information?
+Also, any missing features with the current version?
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 20:07 
+ deathlove23 - 04-10-06 20:23 
 ----------------------------------------------------------------------
-Thanks, now fixed on CVS.
+more information? hmm a little bit:
+
+the FCS Amilo is a OEM product, the Orginal is Uniwill P50CA[1]
+
+Chipset      : VIA (VT8237R) integrated audio controller
+Audio Codec  : VIA VT1618
+&#1048708;Sound        : DirectSound 3D, EAX 1.0 & 2.0 compatible
+Capabilities : A3D, I3DL2 compatible
+               AC97 V2.3 compatible
+               5.1 Multi-channel compatible
+               2 Stereo Speakers with 1 Subwoofer
+
+The sound works perfectly, but not a good bass.
+
+thanks
+[1] = http://www.uniwill.com/products/performance/p50ca/p50ca.php?HL=2&P=1
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-10-06 16:29 diegor         New Issue                                    
-04-10-06 16:29 diegor         Distribution              => debian          
-04-10-06 16:29 diegor         Kernel Version            => 2.6.16.2        
-04-10-06 16:30 diegor         Issue Monitored: diegor                      
-04-10-06 16:38 tiwai          Status                   assigned => resolved
-04-10-06 16:38 tiwai          Resolution               open => fixed       
-04-10-06 16:38 tiwai          Note Added: 0009191                          
-04-10-06 17:40 diegor         Status                   resolved => feedback
-04-10-06 17:40 diegor         Resolution               fixed => reopened   
-04-10-06 17:40 diegor         Note Added: 0009206                          
-04-10-06 18:03 diegor         Note Added: 0009207                          
-04-10-06 18:10 tiwai          Note Added: 0009208                          
-04-10-06 19:05 diegor         Note Added: 0009217                          
-04-10-06 19:08 tiwai          Note Added: 0009218                          
-04-10-06 19:22 diegor         Note Added: 0009219                          
-04-10-06 19:33 tiwai          Note Added: 0009220                          
-04-10-06 19:44 diegor         Note Added: 0009221                          
-04-10-06 20:01 diegor         Note Edited: 0009221                         
-04-10-06 20:07 tiwai          Status                   feedback => resolved
-04-10-06 20:07 tiwai          Resolution               reopened => fixed   
-04-10-06 20:07 tiwai          Note Added: 0009222                          
+04-05-06 18:40 deathlove23    New Issue                                    
+04-05-06 18:40 deathlove23    Distribution              => Gentoo          
+04-05-06 18:40 deathlove23    Kernel Version            => 2.6.16          
+04-07-06 19:21 tiwai          Note Added: 0009145                          
+04-07-06 20:17 deathlove23    Issue Monitored: deathlove23                    
+04-07-06 20:19 deathlove23    File Added: ac97#0-0                         
+04-07-06 20:19 deathlove23    File Added: ac97#0-0+regs                    
+04-07-06 20:19 deathlove23    Issue End Monitor: deathlove23                    
+04-07-06 20:21 deathlove23    Note Added: 0009155                          
+04-10-06 17:01 tiwai          Note Added: 0009201                          
+04-10-06 20:23 deathlove23    Note Added: 0009223                          
 ======================================================================
 
 
