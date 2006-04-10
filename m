@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001984]: Line in record level impossible with OSS compatibility
-Date: Mon, 10 Apr 2006 17:06:11 +0200
-Message-ID: <a09fe818188be562919501741ddcbd80@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001983]: compilation error on the file usbmixer.c
+Date: Mon, 10 Apr 2006 17:25:54 +0200
+Message-ID: <d8bc039ebff6018c7cbc35114dbb0dd9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB4BF184
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 17:06:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C8C216A
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 17:25:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1984> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1983> 
 ======================================================================
 Reported By:                croiset
-Assigned To:                tiwai
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1984
-Category:                   PCI - cmipci
+Issue ID:                   1983
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 won't fix
+Distribution:               Redhat 7.2
+Kernel Version:             2.4.7-10
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-31-2006 16:16 CEST
-Last Modified:              04-10-2006 17:06 CEST
+Date Submitted:             03-31-2006 15:41 CEST
+Last Modified:              04-10-2006 17:25 CEST
 ======================================================================
-Summary:                    Line in record level impossible with OSS
-compatibility
+Summary:                    compilation error on the file usbmixer.c
 Description: 
-it's impossible to adjust the analog input level by alsamixer except if you
-use the "Line" fader. So when you record you always have the input on the
-output.
+In linux 2.4.7-10, it's impossible to compile because in the file
+usbmixer.c.
 
-It will be better if it's possible to use IGAIN.
-
+I obtain this error :
+make[1]: Entre dans le répertoire
+`/home/redhat/BUILD/alsa-driver-1.0.11rc4/usb
+'
+i386-redhat-linux-gcc -D__KERNEL__ -DMODULE=1
+-I/home/redhat/BUILD/alsa-driver-
+1.0.11rc4/include  -I/lib/modules/2.4.7-10/build/include -O2
+-mpreferred-stack-
+boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -
+Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
+-nostdinc
+ -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.7-10/build/includ
+e/linux/modversions.h
+-I/home/redhat/BUILD/alsa-driver-1.0.11rc4/alsa-kernel/us
+b -DKBUILD_BASENAME=usbaudio   -c -o usbaudio.o usbaudio.c
+i386-redhat-linux-gcc -D__KERNEL__ -DMODULE=1
+-I/home/redhat/BUILD/alsa-driver-
+1.0.11rc4/include  -I/lib/modules/2.4.7-10/build/include -O2
+-mpreferred-stack-
+boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -
+Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
+-nostdinc
+ -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.7-10/build/includ
+e/linux/modversions.h
+-I/home/redhat/BUILD/alsa-driver-1.0.11rc4/alsa-kernel/us
+b -DKBUILD_BASENAME=usbmixer   -c -o usbmixer.o usbmixer.c
+usbmixer.c: In function `snd_usb_soundblaster_remote_init':
+usbmixer.c:1824: dereferencing pointer to incomplete type
+usbmixer.c:1830: dereferencing pointer to incomplete type
+usbmixer.c:1832: dereferencing pointer to incomplete type
+usbmixer.c:1833: dereferencing pointer to incomplete type
+usbmixer.c:1834: dereferencing pointer to incomplete type
+usbmixer.c:1835: dereferencing pointer to incomplete type
+make[1]: *** [usbmixer.o] Erreur 1
+make[1]: Quitte le répertoire
+`/home/redhat/BUILD/alsa-driver-1.0.11rc4/usb'
+make: *** [compile] Erreur 1
+error: Bad exit status from /var/tmp/rpm-tmp.10604 (%build)
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 17:06 
+ tiwai - 04-10-06 17:25 
 ----------------------------------------------------------------------
-OSS emulation can't work in 100% because it doesn't cover the all
-functionality ALSA provides.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-06 16:16 croiset        New Issue                                    
-04-10-06 17:06 tiwai          Status                   assigned => resolved
-04-10-06 17:06 tiwai          Resolution               open => won't fix   
-04-10-06 17:06 tiwai          Note Added: 0009204                          
+03-31-06 15:41 croiset        New Issue                                    
+03-31-06 15:41 croiset        Distribution              => Redhat 7.2      
+03-31-06 15:41 croiset        Kernel Version            => 2.4.7-10        
+04-10-06 17:25 tiwai          Status                   assigned => resolved
+04-10-06 17:25 tiwai          Resolution               open => fixed       
+04-10-06 17:25 tiwai          Note Added: 0009205                          
 ======================================================================
 
 
