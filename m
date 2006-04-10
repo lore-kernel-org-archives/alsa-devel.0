@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001938]: EPIPE on Audigy with surround sound when seeking in 6 channel sound file
-Date: Mon, 10 Apr 2006 18:22:46 +0200
-Message-ID: <482d636a6d5f5b39f148f44019cdd5dd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001566]: The misc.c is reported to have incomplete type with thread_excited.
+Date: Mon, 10 Apr 2006 18:22:06 +0200
+Message-ID: <210e44bf8304969dbc488f1a00622f67@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7866C177
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 18:22:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4AE56177
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 18:22:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,108 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1938> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1566> 
 ======================================================================
-Reported By:                bambam
-Assigned To:                tiwai
+Reported By:                croiset
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1938
-Category:                   PCI - emu10k1
+Issue ID:                   1566
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     resolved
-Distribution:               Debian sid with custom x86-64 kernel
-Kernel Version:             2.6.16-rc6
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-17-2006 20:31 CET
+Date Submitted:             11-16-2005 17:22 CET
 Last Modified:              04-10-2006 18:22 CEST
 ======================================================================
-Summary:                    EPIPE on Audigy with surround sound when seeking in
-6 channel sound file
+Summary:                    The misc.c is reported to have incomplete type with
+thread_excited.
 Description: 
-Seeking in a 6 channel sound or video file using a surround device gives
-EPIPE (Broken pipe). This happens with both mplayer and vlc. My soundcard
-is an Audigy 1 (SB0090). I'm running a 64-bit kernel with 32-bit
-userspace. I've tried libs and modules from CVS two days ago with no
-success.
+ kernel :linux-2.4.7-10.
+When I compile the alsa drive on my redhat7.2, it always failed with
+result as below.
+
+results:
+------------------------------------------------------------------------------
+i386-redhat-linux-gcc -D__KERNEL__ -DMODULE=1
+-I/home/redhat/BUILD/alsa-driver-
+1.0.10rc3/include  -I/lib/modules/2.4.7-10/build/include -O2
+-mpreferred-stack-
+boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -
+Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
+-nostdinc
+ -iwithprefix include -DMODVERSIONS -include
+/lib/modules/2.4.7-10/build/include/linux/modversions.h 
+-DKBUILD_BASENAME=misc   -c -o misc.o misc.c
+In file included from misc.c:77:
+misc.inc:288: field `thread_exited' has incomplete type
+misc.inc: In function `snd_compat_destroy_workqueue_Raba0304c':
+misc.inc:339: warning: implicit declaration of function
+`wait_for_completion_R02032293'
+misc.inc: In function `snd_compat_create_workqueue_R6659e20e':
+misc.inc:387: warning: implicit declaration of function `init_completion'
+make[1]: *** [misc.o] Erreur 1
+make[1]: Quitte le répertoire
+`/home/redhat/BUILD/alsa-driver-1.0.10rc3/acore'
+make: *** [compile] Erreur 1
 
 ======================================================================
 
 ----------------------------------------------------------------------
- bambam - 03-31-06 13:46 
+ croiset - 03-31-06 15:35 
 ----------------------------------------------------------------------
-The patch from the ML fixes the problem.
+This problem should be solved in 1.0.11rc4
 
 ----------------------------------------------------------------------
  tiwai - 04-10-06 18:22 
 ----------------------------------------------------------------------
-The patch was merged on CVS.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 20:31 bambam         New Issue                                    
-03-17-06 20:31 bambam         Distribution              => Debian sid with
-custom x86-64 kernel
-03-17-06 20:31 bambam         Kernel Version            => 2.6.16-rc6      
-03-17-06 20:36 bambam         Note Added: 0008656                          
-03-17-06 21:07 bambam         Note Added: 0008659                          
-03-17-06 21:53 bambam         Note Added: 0008662                          
-03-18-06 01:07 rlrevell       Note Added: 0008667                          
-03-18-06 01:11 bambam         Note Added: 0008668                          
-03-18-06 14:44 bambam         Note Added: 0008671                          
-03-20-06 12:25 tiwai          Note Added: 0008715                          
-03-21-06 00:29 bambam         Note Added: 0008733                          
-03-21-06 17:30 tiwai          Status                   new => resolved     
-03-21-06 17:30 tiwai          Resolution               open => fixed       
-03-21-06 17:30 tiwai          Assigned To               => tiwai           
-03-21-06 17:30 tiwai          Note Added: 0008747                          
-03-21-06 20:09 bambam         Status                   resolved => feedback
-03-21-06 20:09 bambam         Resolution               fixed => reopened   
-03-21-06 20:09 bambam         Note Added: 0008759                          
-03-21-06 20:10 tiwai          Status                   feedback => resolved
-03-21-06 20:10 tiwai          Resolution               reopened => fixed   
-03-21-06 20:10 tiwai          Note Added: 0008760                          
-03-24-06 16:55 bambam         Status                   resolved => feedback
-03-24-06 16:55 bambam         Resolution               fixed => reopened   
-03-24-06 16:55 bambam         Note Added: 0008921                          
-03-24-06 17:06 tiwai          Note Added: 0008922                          
-03-24-06 17:29 bambam         Note Added: 0008923                          
-03-24-06 17:34 tiwai          Note Added: 0008925                          
-03-24-06 17:36 tiwai          Status                   feedback => resolved
-03-24-06 17:36 tiwai          Resolution               reopened => fixed   
-03-24-06 17:36 tiwai          Note Added: 0008926                          
-03-24-06 17:38 tiwai          Note Added: 0008927                          
-03-24-06 17:39 tiwai          Status                   resolved => feedback
-03-24-06 17:39 tiwai          Resolution               fixed => reopened   
-03-24-06 17:39 tiwai          Note Added: 0008928                          
-03-24-06 18:07 bambam         Note Added: 0008931                          
-03-24-06 20:11 bambam         File Added: strace.tar.bz2                    
-03-24-06 20:12 bambam         Note Added: 0008935                          
-03-24-06 20:47 bambam         Note Added: 0008936                          
-03-25-06 13:16 bambam         Note Added: 0008946                          
-03-27-06 02:05 bambam         Note Added: 0008981                          
-03-29-06 18:56 tiwai          Status                   feedback => resolved
-03-29-06 18:56 tiwai          Resolution               reopened => fixed   
-03-29-06 18:56 tiwai          Note Added: 0009004                          
-03-29-06 23:30 rhardy         Issue Monitored: rhardy                      
-03-30-06 10:30 bambam         Status                   resolved => feedback
-03-30-06 10:30 bambam         Resolution               fixed => reopened   
-03-30-06 10:30 bambam         Note Added: 0009026                          
-03-30-06 11:41 tiwai          Status                   feedback => resolved
-03-30-06 11:41 tiwai          Resolution               reopened => fixed   
-03-30-06 11:41 tiwai          Note Added: 0009029                          
-03-30-06 21:04 bambam         Status                   resolved => feedback
-03-30-06 21:04 bambam         Resolution               fixed => reopened   
-03-30-06 21:04 bambam         Note Added: 0009038                          
-03-31-06 13:46 bambam         Note Added: 0009044                          
-04-10-06 18:22 tiwai          Status                   feedback => resolved
-04-10-06 18:22 tiwai          Resolution               reopened => fixed   
-04-10-06 18:22 tiwai          Note Added: 0009210                          
+11-16-05 17:22 croiset        New Issue                                    
+03-31-06 15:35 croiset        Note Added: 0009045                          
+04-10-06 18:22 tiwai          Status                   assigned => resolved
+04-10-06 18:22 tiwai          Resolution               open => fixed       
+04-10-06 18:22 tiwai          Note Added: 0009209                          
 ======================================================================
 
 
