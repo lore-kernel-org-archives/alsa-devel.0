@@ -1,14 +1,17 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] sound/core/pcm.c: make snd_pcm_format_name() static
-Date: Tue, 11 Apr 2006 00:18:01 +0200
-Message-ID: <20060410221801.GK2408__36009.733627043$1144707559$gmane$org@stusta.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Adding a new architecture to alsa-driver
+Date: Mon, 10 Apr 2006 18:40:42 -0400
+Message-ID: <1144708843.11532.46.camel@mindpipe>
+References: <1144510532.10642.1.camel@localhost.localdomain>
+	 <1144512218.22490.146.camel@mindpipe>
+	 <1144542208.10642.9.camel@localhost.localdomain>
+	 <1144545416.22490.184.camel@mindpipe>
+	 <1144706767.9278.11.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id EEAF8188
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 00:18:00 +0200 (MEST)
-Content-Disposition: inline
+In-Reply-To: <1144706767.9278.11.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,41 +21,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This patch makes the needlessly global snd_pcm_format_name() static.
+On Mon, 2006-04-10 at 23:06 +0100, Adrian McMenamin wrote:
+> On Sat, 2006-04-08 at 21:16 -0400, Lee Revell wrote:
+> > c_opts="-mno-space-regs -mfast-indirect-calls -mschedule=7200
+> > -mdisable-fpregs"
+> 
+> 
+> I have tried this patch and it doesn't work. Essentially the aica card
+> isn't picked up. I think this has something to do with aclocal.m4 or
+> something similar.
+> 
+> To be honest I've hit a brick wall and any help at all would be welcome.
+> 
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+I need to see your driver in the form of a patch against ALSA CVS
+sources to help any more.
 
----
-
- include/sound/pcm.h |    1 -
- sound/core/pcm.c    |    2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
-
---- linux-2.6.17-rc1-mm2-full/include/sound/pcm.h.old	2006-04-10 23:34:28.000000000 +0200
-+++ linux-2.6.17-rc1-mm2-full/include/sound/pcm.h	2006-04-10 23:34:38.000000000 +0200
-@@ -898,7 +898,6 @@
- const unsigned char *snd_pcm_format_silence_64(snd_pcm_format_t format);
- int snd_pcm_format_set_silence(snd_pcm_format_t format, void *buf, unsigned int frames);
- snd_pcm_format_t snd_pcm_build_linear_format(int width, int unsignd, int big_endian);
--const char *snd_pcm_format_name(snd_pcm_format_t format);
- 
- void snd_pcm_set_ops(struct snd_pcm * pcm, int direction, struct snd_pcm_ops *ops);
- void snd_pcm_set_sync(struct snd_pcm_substream *substream);
---- linux-2.6.17-rc1-mm2-full/sound/core/pcm.c.old	2006-04-10 23:32:17.000000000 +0200
-+++ linux-2.6.17-rc1-mm2-full/sound/core/pcm.c	2006-04-10 23:32:42.000000000 +0200
-@@ -196,7 +196,7 @@
- 	FORMAT(U18_3BE),
- };
- 
--const char *snd_pcm_format_name(snd_pcm_format_t format)
-+static const char *snd_pcm_format_name(snd_pcm_format_t format)
- {
- 	return snd_pcm_format_names[format];
- }
+Lee
 
 
 
