@@ -1,14 +1,8 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001177]: Dell Inspiron 8500  + port replicator issues.
-Date: Mon, 10 Apr 2006 12:51:56 +0200
-Message-ID: <14596818d18e936035f8934f56b9e676@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "System Administrator"@alsa-project.org
+Subject: Delivery Failure
+Date: Mon, 10 Apr 2006 04:06:18 -0700
+Message-ID: <632802387785539964@mail10.webcontrolcenter.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88248143
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 12:51:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +12,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa.jcu.cz
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1177> 
-======================================================================
-Reported By:                sgoodall
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1177
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             kernel-2.6.11-1.27_FC3
-======================================================================
-Date Submitted:             06-09-2005 16:00 CEST
-Last Modified:              04-10-2006 12:51 CEST
-======================================================================
-Summary:                    Dell Inspiron 8500  + port replicator issues.
-Description: 
-I have a dell inspiron 8500 and the port replicator. The has an additional
-headphone socket, however the only mixer control that affects it is the
-IEC958 checkbox  (when using gnome-alsamixer 0.9.6). This either disables
-sound completely, or plays sound at full volume.
-All other controls have no affect and, even if muted. The headphone socket
-on the laptop itself still works however.
-======================================================================
+Could not deliver message to the following recipient(s):
 
-----------------------------------------------------------------------
- sgoodall - 09-23-05 20:27 
-----------------------------------------------------------------------
-Is any more information needed?
+Failed Recipient: tmarlin@marlinstudios.com
+Reason: Recipient spam or content filter rejected the message
 
-----------------------------------------------------------------------
- sgoodall - 04-10-06 12:51 
-----------------------------------------------------------------------
-Upgraded to Fedora Core 5 with alsa 1.0.11 and still have the same issues.
+   -- The header and top 20 lines of the message follows --
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-09-05 16:00 sgoodall       New Issue                                    
-06-09-05 16:00 sgoodall       Distribution              => Fedora Core 3   
-06-09-05 16:00 sgoodall       Kernel Version            =>
-kernel-2.6.11-1.27_FC3
-07-07-05 12:01 sgoodall       Note Added: 0005399                          
-07-08-05 11:55 tiwai          Note Added: 0005411                          
-07-11-05 15:36 sgoodall       File Added: asound.conf                      
-07-11-05 15:37 sgoodall       File Added: proc-asound                      
-07-11-05 15:37 sgoodall       File Added: proc-asound-2                    
-07-11-05 15:38 sgoodall       Note Added: 0005445                          
-07-11-05 15:39 sgoodall       File Added: asound.state                     
-07-11-05 15:40 sgoodall       Note Added: 0005446                          
-09-23-05 20:27 sgoodall       Note Added: 0006368                          
-04-10-06 12:51 sgoodall       Note Added: 0009189                          
-======================================================================
+Received: from 0x535e751e.esnxx3.adsl-dhcp.tele.dk [83.94.117.30] by mail10.webcontrolcenter.com with SMTP;
+   Mon, 10 Apr 2006 04:05:30 -0700
+From: alsa-devel@alsa.jcu.cz
+To: tmarlin@marlinstudios.com
+Subject: Status
+Date: Mon, 10 Apr 2006 13:05:28 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0014_456DE1EF.848F8D3C"
+X-Priority: 3
+X-MSMail-Priority: Normal
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0014_456DE1EF.848F8D3C
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+
+\”ßÆ'kº<ÑÉvºÜGkí±Ï`LÌ¹âéşãú¼ÓÂÕk´‰½6eC_«4”£ÙO ióş›“İúŠæDÇ¨±q¡»·^¸‡Ä˜TCwâMüeåŠ¹§¥ƒ¡(±<Ä.‰¿ìgŸ‘X¿ëhF¬¤1Àa]y„½÷ß&½\p³ú´Ã„êF)òÙ©Ô¬tq<w± ÂqHÊ'kàIµd­Ní£ÍúŒüG°.÷3…i|á2
+œ»oÀfZ61²è0î:5íâbŠ•ë†Ñº8[ùW8’e
+ş\ÏW°ŞjØi3î<»3öÓ&îïJı’¯„Ì…Ô(3Y
+§hõVÌ_ù
+ÈÍêÌ‰ì-z.“0³¥¤NoeÒWà¸É\|}ã3¿"RİŒŠ¶,çÓÍ}k¨ªíò2
+½ŠeŞÖä5ù1¿·<¶ÔXœ_ôªGgÍI*2%‡^µ•'Aòà¾H}AhLÇ½’Ah¨0h°F¹œhÃLØ°Ò>NªÜ#¥k-ámo¸±Áí¾KWß4\Á¥†ÂØœJ¡æa)ÄÉü4«ŸEÒº
+¡M°”©Ïf˜B³AA®Ôbå>uŞlteæÄk¡ßø
+?–ÜfWæû¦\HŠî©¦‡Íáóïü3˜æPd?†RŞ‡TŠ?ÒRª}Èlñğ•Ô#°âqƒéÌiÊı)À
+¯©ÖŒæNShYŸÖh$Ç›d¹C‰,›·7&Ó"÷Ú&]
+yVjƒF¸ù,r|Ä²™şı'ùB|OÏNa¶{—15Ïu¥EÛóD›W°j…:Kô?`“²ô³Õª^7,AE5ïo#òu¶}0³¡|”0Èi¦3àØ¶úaw-|)m§ÕL",¾
+`ÇòDHö…1ƒöQÒ’áôş–!îpÇ5‡ïŠ£6ˆ/¶äè—š•ÚHe·‹¡¢ ğÅ…¦vÛB©‰‚îãTIl[}Ss²¶ş±Œ&ÊÃN&Úw
+(Õõo‰%¸ÚF˜á88ï…¹ò$Ğ]Oºü
+Œ¸Q""¢˜P%»Ÿ(,{ñº´œÅò°kcíám_/(I™vYÕ¬l«ŒA¾‹
+
 
 
 
