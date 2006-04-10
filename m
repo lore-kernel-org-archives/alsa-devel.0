@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001934]: make problem
-Date: Mon, 10 Apr 2006 18:43:54 +0200
-Message-ID: <c4333781cb4f18f351a420bdcfdde5c9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
+Date: Mon, 10 Apr 2006 19:01:10 +0200
+Message-ID: <0505be3ee80db2d6dbd4c00396a3df6e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 899B8189
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 18:43:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C0F08189
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 19:01:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,145 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
 ======================================================================
-Reported By:                kvo
-Assigned To:                perex
+Reported By:                alien999999999
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1934
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
+Issue ID:                   1047
+Category:                   PCI - au88x0
+Reproducibility:            sometimes
 Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               RHEL4 Update 3
-Kernel Version:             2.6.9-34.EL
+Distribution:               Mandrake
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             03-17-2006 12:19 CET
-Last Modified:              04-10-2006 18:43 CEST
+Date Submitted:             04-12-2005 20:43 CEST
+Last Modified:              04-10-2006 19:01 CEST
 ======================================================================
-Summary:                    make problem
+Summary:                    module hangs at seemingly random times
 Description: 
-./configure works OK. running make give error during compilation: module
-'include/asound.h' (line 210) has some 'typedef' that doesn't match with
-(probably) OS include. As a result, compilation stops and driver can not
-be produced.
+sometimes i start playing a song, and it starts playing a few second or so
+and hangs, then i kill the application and modprobe -r all sound modules
+and modprobe them again to make it work again.
+
+BUT: sometimes not only that happens, but also when i try to kill the apps
+it will not kill. when that happens, all kill, killall, top, ps aux
+commands hang at the command line and cannot be killed by CTRL-C or
+otherwise, i have been able to see that when i stopped my display
+managener I did an lsmod and it gave something like this:
+
+snd-pcm-oss            59752  11
+snd-mixer-oss          20480  1 snd-pcm-oss
+snd-au8810             43760  220
+snd-ac97-codec         83408  1 snd-au8810
+snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
+snd-page-alloc         10384  1 snd-pcm
+gameport                3840  1 snd-au8810
+snd-mpu401-uart        11904  1 snd-au8810
+
+
+as you can see the snd-au8810 module seem to have an impossible number of
+"dependencies" (i think has to do with the number of unclosed sound-apps
+trying to be played; this could be since gaim is programmed to execute an
+'aplay %s')
+
+i've had this major crash below only 3 times; and the logs didn't detect
+anything specific at the time. the only thing the logs mentioned at that
+time was an ntpd sync going on; so the only thing i can think of is that
+at a certain moment when a sync is going on, some kind of lock is holding
+cause this to happen... the only thing that i can do to fix this is
+reset...
+
+it is interesting to note that i also have an snd-emu10k1 as second card,
+which never gave problems like this, and i am always able to "modprobe -r
+snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- kvo - 04-10-06 18:38 
+ tiwai - 04-10-06 16:45 
 ----------------------------------------------------------------------
-I understand your reason, but 1) RedHat is one of two major distributions,
-and not taking it into account will seriously restrict ALSA scope; 2) I
-had the similar results for SuSE 10.0 (not OpenSuSE), but, in this case, I
-don't need compile ALSA myself, I could use packman ...
+Better than a wrong one.
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 18:43 
+ Raymond - 04-10-06 19:01 
 ----------------------------------------------------------------------
-The problem is how to _detect_ the very kernel and how do you activate the
-workaround.  If something is defined detectable as a flag, we can put just
-an idfdef SOMETHING.  Otherwise, we may need additional check in
-configure.in and include/adriver.h.  But, I can't work on this since I
-have no such a distribution.
+It really depend the usuage of VORTEX_PCM_TYPE() 
 
-Patches are welcome, of course.
+I am not sure why the driver not using 
+
+#define VORTEX_PCM_TYPE(x) ( x->device )
+
+instead of
+
+#define VORTEX_PCM_TYPE(x) (x->name[40])
+
+
+
+
+#define VORTEX_PCM_ADB		0
+#define VORTEX_PCM_SPDIF	1
+#define VORTEX_PCM_A3D		2
+#define VORTEX_PCM_WT		3
+#define VORTEX_PCM_I2S		4
+#define VORTEX_PCM_LAST		5
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 12:19 kvo            New Issue                                    
-03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
-03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
-03-17-06 12:25 tiwai          Note Added: 0008643                          
-03-19-06 22:26 kvo            Note Added: 0008697                          
-03-21-06 17:33 tiwai          Note Added: 0008749                          
-03-25-06 20:47 kvo            File Added: config.log                       
-03-25-06 22:19 kvo            Note Added: 0008952                          
-04-09-06 18:47 kvo            File Added: info.zip                         
-04-09-06 18:56 kvo            Note Added: 0009181                          
-04-09-06 19:05 kvo            Issue Monitored: tiwai                       
-04-09-06 19:05 kvo            Note Added: 0009182                          
-04-10-06 16:46 tiwai          Note Added: 0009196                          
-04-10-06 18:38 kvo            Note Added: 0009213                          
-04-10-06 18:43 tiwai          Note Added: 0009214                          
+04-12-05 20:43 alien999999999 New Issue                                    
+04-12-05 20:43 alien999999999 Distribution              => Mandrake        
+04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
+04-12-05 20:48 alien999999999 Note Added: 0004461                          
+04-12-05 20:49 alien999999999 File Added: au88x0.c                         
+04-12-05 20:49 alien999999999 File Added: au88x0.h                         
+04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
+04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
+04-12-05 20:51 alien999999999 Note Added: 0004462                          
+08-24-05 11:13 Raymond        Note Added: 0005928                          
+10-27-05 02:27 Raymond        Note Added: 0006564                          
+01-03-06 04:04 Raymond        Note Added: 0007397                          
+01-04-06 22:08 alien999999999 Note Added: 0007455                          
+01-05-06 07:21 Raymond        Note Added: 0007462                          
+01-05-06 20:32 shurick        Issue Monitored: shurick                     
+01-06-06 17:17 alien999999999 Note Added: 0007488                          
+01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
+      
+01-13-06 13:51 Raymond        Note Added: 0007639                          
+01-13-06 18:18 tiwai          Note Added: 0007648                          
+01-14-06 04:53 Raymond        Note Added: 0007653                          
+01-14-06 05:00 Raymond        Note Edited: 0007653                         
+01-17-06 12:27 Raymond        Note Added: 0007697                          
+01-18-06 15:51 Raymond        Note Added: 0007710                          
+01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
+01-19-06 13:51 Raymond        Note Added: 0007719                          
+02-05-06 05:20 Raymond        Note Edited: 0007710                         
+02-05-06 05:28 Raymond        Note Added: 0007930                          
+02-13-06 16:38 Raymond        Note Deleted: 0006564                        
+02-13-06 16:41 Raymond        Note Added: 0008054                          
+03-01-06 07:39 Raymond        Note Added: 0008273                          
+03-18-06 12:28 Raymond        Note Deleted: 0008273                        
+03-20-06 17:54 Raymond        File Added: au88x0_conf.patch                    
+03-21-06 02:02 Raymond        Note Added: 0008734                          
+03-21-06 18:01 tiwai          Note Added: 0008754                          
+03-22-06 02:05 Raymond        File Added: au88x0_mpu401.patch                   
+
+03-22-06 02:28 Raymond        Note Added: 0008779                          
+03-22-06 02:31 Raymond        Note Edited: 0008779                         
+03-22-06 02:38 rlrevell       Note Added: 0008782                          
+03-22-06 04:00 Raymond        Note Added: 0008836                          
+03-22-06 04:09 rlrevell       Note Added: 0008839                          
+03-26-06 09:55 Raymond        Note Added: 0008967                          
+03-29-06 17:48 Raymond        Note Added: 0008995                          
+03-31-06 06:52 Raymond        Note Edited: 0008995                         
+04-02-06 07:01 Raymond        Note Edited: 0008995                         
+04-10-06 16:07 Raymond        Note Added: 0009190                          
+04-10-06 16:39 tiwai          Note Added: 0009192                          
+04-10-06 16:43 Raymond        Note Added: 0009194                          
+04-10-06 16:45 tiwai          Note Added: 0009195                          
+04-10-06 19:01 Raymond        Note Added: 0009215                          
 ======================================================================
 
 
