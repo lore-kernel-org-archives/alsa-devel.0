@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002014]: no sound on my asus u5a
-Date: Mon, 10 Apr 2006 19:44:21 +0200
-Message-ID: <53d0100161e4ecd3df61af44d7fb2ff2@bugtrack.alsa-project.org>
+Date: Mon, 10 Apr 2006 20:07:43 +0200
+Message-ID: <788a4031f61c525b9579973f311c45c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 54762172
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 19:44:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 05401189
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 20:07:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2014> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               debian
 Kernel Version:             2.6.16.2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-10-2006 16:29 CEST
-Last Modified:              04-10-2006 19:44 CEST
+Last Modified:              04-10-2006 20:07 CEST
 ======================================================================
 Summary:                    no sound on my asus u5a
 Description: 
@@ -52,18 +54,7 @@ mute.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 19:33 
-----------------------------------------------------------------------
-What is "after my change" exactly?  If you changed a code, show the patch,
-please.
-
-It's no bug that you see only these mixer elements on OSS mixer.  It's
-designed so.  Also, no "PC Speaker".  It's also a feature.
-
-What else that doesn't work?
-
-----------------------------------------------------------------------
- diegor - 04-10-06 19:44 
+ diegor - 04-10-06 20:01 
 ----------------------------------------------------------------------
 "after my change" is this:
 ###
@@ -72,6 +63,15 @@ i changed the ".pci_subdevice = 0x1213" with my number, thus "0x11f7".
 ###
 
 i have only changed, maybe i must add this subdevices! :)
+
+Tonight i'll prepare this patch!
+
+
+
+----------------------------------------------------------------------
+ tiwai - 04-10-06 20:07 
+----------------------------------------------------------------------
+Thanks, now fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -93,6 +93,10 @@ Date Modified  Username       Field                    Change
 04-10-06 19:22 diegor         Note Added: 0009219                          
 04-10-06 19:33 tiwai          Note Added: 0009220                          
 04-10-06 19:44 diegor         Note Added: 0009221                          
+04-10-06 20:01 diegor         Note Edited: 0009221                         
+04-10-06 20:07 tiwai          Status                   feedback => resolved
+04-10-06 20:07 tiwai          Resolution               reopened => fixed   
+04-10-06 20:07 tiwai          Note Added: 0009222                          
 ======================================================================
 
 
