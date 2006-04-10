@@ -1,9 +1,10 @@
-From: Ashley Clark <aclark@ghoti.org>
-Subject: Adds HDA support for Intel D945Pvs board subdevice id 0x0707
-Date: Sun, 9 Apr 2006 19:42:28 -0500
-Message-ID: <EB97D297-97AD-4BF3-9829-E19865591315@ghoti.org>
-Mime-Version: 1.0 (Apple Message framework v749.3)
-Content-Type: multipart/mixed; boundary=Apple-Mail-6-966307627
+From: Seven Corvina <seven.corvina@gmail.com>
+Subject: Intel HD Audio Soundcard Problems
+Date: Sun, 09 Apr 2006 19:27:40 -0700
+Message-ID: <1144636060.6320.8.camel@sparkle>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,62 +18,52 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I recently was given a Dell Inspiron 9400 by work, and the first thing I
+did was drop linux on it. I've had hell-in-a-handbasket getting it
+working, but I'm down to my last two problems... and sound is one.
 
---Apple-Mail-6-966307627
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=US-ASCII;
-	delsp=yes;
-	format=flowed
+It's the Dell Inspiron 9400/E1705 Laptop... I'm not getting any sound
+output through ALSA, using no OSS applications.
 
-Sorry about the last message, not sure if it had the attachment in it.
+lspci -vvv:
+http://udevio.us/files/lspcivvv.txt
 
-Signed-Off-By: Ashley Clark <aclark@ghoti.org>
+uname -a:
+seven@sparkle:~$ uname -a
+Linux sparkle 2.6.16.2 #3 PREEMPT Sun Apr 9 18:53:54 PDT 2006 i686
+GNU/Linux
 
-Summary: Adds HDA support for Intel D945Pvs board with subdevice id  
-0x0707
+lsmod | grep intel:
+seven@sparkle:~$ lsmod |grep intel
+snd_hda_intel          17296  2
+snd_hda_codec         121984  1 snd_hda_intel
+snd_pcm                86152  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd                    52224  10
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+snd_page_alloc         10504  2 snd_hda_intel,snd_pcm
+intel_agp              22812  1
+agpgart                32476  3 drm,intel_agp
 
-This patch adds the entry for the 5-stack pin-config for the STAC  
-chip on the Intel D945Pvs board with subdevice id 0x0707.
+Umm, please tell me if there's anything else you need. I tested using an
+Example ogg, as follows:
 
-With this patch against 1.0.11rc4 in the linux kernel 2.6.17-rc1, I'm  
-able to successfully output over the optical port and analog ports.
+seven@sparkle:~$ ogg123 -d
+alsa09 /home/seven/Examples/kalimoto-miracle-\ lemon.ogg
 
-Ashley Clark
+Audio Device:   Advanced Linux Sound Architecture (ALSA) output
 
---Apple-Mail-6-966307627
-Content-Transfer-Encoding: 7bit
-Content-Type: application/octet-stream;
-	x-mac-type=42494E41;
-	x-unix-mode=0644;
-	x-mac-creator=68446D70;
-	name="sigmatel.diff"
-Content-Disposition: attachment;
-	filename=sigmatel.diff
+Playing: /home/seven/Examples/kalimoto-miracle- lemon.ogg
+Ogg Vorbis stream: 2 channel, 44100 Hz
 
---- patch_sigmatel.c.aclark     2006-04-09 14:49:38.000000000 -0500
-+++ patch_sigmatel.c    2006-04-09 15:38:35.000000000 -0500
-@@ -310,6 +310,9 @@
-          .pci_subdevice = 0x0b0b,
-          .config = STAC_D945GTP3 },    /* Intel D945PSN - 3 Stack, 9221 A1 */
-        { .pci_subvendor = PCI_VENDOR_ID_INTEL,
-+         .pci_subdevice = 0x0707,
-+         .config = STAC_D945GTP5 },    /* Intel D945PSV - 5 Stack */
-+       { .pci_subvendor = PCI_VENDOR_ID_INTEL,
-          .pci_subdevice = 0x0404,
-          .config = STAC_D945GTP5 },    /* Intel D945GTP - 5 Stack */
-        { .pci_subvendor = PCI_VENDOR_ID_INTEL,
+Done.
 
---Apple-Mail-6-966307627
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=US-ASCII;
-	format=flowed
+It played all the way through, but no sound came out. X.x
 
+Seven
 
+PS. Sorry if I sent this twice; I'm on a really weak network and gmail
+is having trouble getting response back to me.
 
-
---Apple-Mail-6-966307627--
 
 
 -------------------------------------------------------
