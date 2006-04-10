@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001982]: Compilation problem in misc_driver.c
-Date: Mon, 10 Apr 2006 18:23:10 +0200
-Message-ID: <516ad9a80ed33fd0dc49b007cd577cc0@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001981]: Compilation problem in pcm/pcm.c
+Date: Mon, 10 Apr 2006 18:32:56 +0200
+Message-ID: <f3b3606b9e28fbe1e73075ed7173439c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD7A9178
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 18:23:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B239617C
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 18:32:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1982> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1981> 
 ======================================================================
 Reported By:                croiset
-Assigned To:                perex
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1982
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - lib
+Issue ID:                   1981
+Category:                   0_general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Linux Redhat 7.2
-Kernel Version:             2.4.7-10
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             03-31-2006 14:17 CEST
-Last Modified:              04-10-2006 18:23 CEST
+Date Submitted:             03-31-2006 13:49 CEST
+Last Modified:              04-10-2006 18:32 CEST
 ======================================================================
-Summary:                    Compilation problem in misc_driver.c
+Summary:                    Compilation problem in pcm/pcm.c
 Description: 
- -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.7-10/build/includ
-e/linux/modversions.h  -DKBUILD_BASENAME=misc_driver   -c -o misc_driver.o
-misc
-_driver.c
-misc_driver.c:451: field `thread_exited' has incomplete type
-misc_driver.c: In function `snd_compat_destroy_workqueue':
-misc_driver.c:502: warning: implicit declaration of function
-`wait_for_completi
-on_R02032293'
-misc_driver.c: In function `snd_compat_create_workqueue':
-misc_driver.c:550: warning: implicit declaration of function
-`init_completion'
-make[1]: *** [misc_driver.o] Erreur 1
-make[1]: Quitte le répertoire
-`/home/redhat/BUILD/alsa-driver-1.0.11rc4/acore'
-make: *** [compile] Erreur 1
+In the function snd_pcm_get_params, you must declare everything before
+making any code. If it's not the case, it will create a compilation error
+on C.
 
+Before in line 7266 :
+int snd_pcm_get_params(snd_pcm_t *pcm,
+                       snd_pcm_uframes_t *buffer_size,
+                       snd_pcm_uframes_t *period_size)
+{
+   assert(pcm);
+   snd_pcm_hw_params_t *hw;
+   int err;
 
-To solve this problem we must modify the file acore/misc_driver.c
+   snd_pcm_hw_params_alloca(&hw);
 
-by adding this include in the list :
-#include <linux/completion.h>
+After correction :
+int snd_pcm_get_params(snd_pcm_t *pcm,
+                       snd_pcm_uframes_t *buffer_size,
+                       snd_pcm_uframes_t *period_size)
+{
+   snd_pcm_hw_params_t *hw;
+   int err;
 
+   assert(pcm);
 
+   snd_pcm_hw_params_alloca(&hw);
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 18:23 
+ tiwai - 04-10-06 18:32 
 ----------------------------------------------------------------------
 Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-06 14:17 croiset        New Issue                                    
-03-31-06 14:17 croiset        Distribution              => Linux Redhat 7.2
-03-31-06 14:17 croiset        Kernel Version            => 2.4.7-10        
-04-10-06 18:23 tiwai          Status                   assigned => resolved
-04-10-06 18:23 tiwai          Resolution               open => fixed       
-04-10-06 18:23 tiwai          Note Added: 0009211                          
+03-31-06 13:49 croiset        New Issue                                    
+04-10-06 18:32 tiwai          Status                   new => resolved     
+04-10-06 18:32 tiwai          Resolution               open => fixed       
+04-10-06 18:32 tiwai          Assigned To               => tiwai           
+04-10-06 18:32 tiwai          Note Added: 0009212                          
 ======================================================================
 
 
