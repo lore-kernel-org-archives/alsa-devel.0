@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002004]: Via say unknown codec on FSC Amilo 1667G
-Date: Mon, 10 Apr 2006 17:01:47 +0200
-Message-ID: <76a7db0dc173b6b76a892b9647aced45@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001991]: make errors
+Date: Mon, 10 Apr 2006 17:04:22 +0200
+Message-ID: <ea56c274e2be447e38db92fbb7d67522@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A2C7184
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 17:01:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 64AB5184
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 17:04:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,101 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2004> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1991> 
 ======================================================================
-Reported By:                deathlove23
-Assigned To:                
+Reported By:                stan senuta
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2004
-Category:                   PCI - via82xx
+Issue ID:                   1991
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
+Status:                     resolved
+Distribution:               Mandrake-9.2
 Kernel Version:             2.6.16
+Resolution:                 won't fix
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-05-2006 18:40 CEST
-Last Modified:              04-10-2006 17:01 CEST
+Date Submitted:             04-02-2006 14:27 CEST
+Last Modified:              04-10-2006 17:04 CEST
 ======================================================================
-Summary:                    Via say unknown codec on FSC Amilo 1667G
+Summary:                    make errors
 Description: 
-Hello,
- 
-I have a Notebook from FSC: Amilo 1667G
-and is get thes messages in boot bzw. on dmesg:
+I have the kernel-built snd-via82.ko module which will only play a sound
+file for about one or two seconds and then stops. Therefore I tried to
+build the alsa-driver- 1.0.10 module but it fails at the "make" 
 
----
-ALSA device list:
-#0: VIA 8237 with unknown codec at 0xc800, irq 50
----
-
-my Alsa Kernel config is:
-
----
-CONFIG_SND=y
-CONFIG_SND_TIMER=y
-CONFIG_SND_PCM=y
-CONFIG_SND_RAWMIDI=y
-CONFIG_SND_RTCTIMER=y
-CONFIG_SND_MPU401_UART=y
-CONFIG_SND_AC97_CODEC=y
-CONFIG_SND_AC97_BUS=y
-CONFIG_SND_VIA82XX=y
----
-
-and my lspci -vv is:
-
----
-00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: Fujitsu Siemens Computer GmbH Unknown device 1093
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin C routed to IRQ 50
-        Region 0: I/O ports at c800 [size=256]
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
----
-
-can you my soundcard to the ID lists eg. another Amilio's?
-
-Thanks
-Alex - Deathlove23
+My hope is that the alsa-driver-1.0.10 has a more up to date snd-via82xx
+module
 ======================================================================
 
 ----------------------------------------------------------------------
- deathlove23 - 04-07-06 20:21 
+ tiwai - 04-10-06 17:04 
 ----------------------------------------------------------------------
-thanks for you replay, i upload the Files.
-
-----------------------------------------------------------------------
- tiwai - 04-10-06 17:01 
-----------------------------------------------------------------------
-Actaully, it's an unknown codec chip.  Looks like an ac97 codec from VIA,
-but no idea what model is.  Do you have any information?
-Also, any missing features with the current version?
+ALSA 1.0.10 doesn't work with 2.6.15 or later kernel.  It was released
+before 2.6.15.  Use the later version of ALSA.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-05-06 18:40 deathlove23    New Issue                                    
-04-05-06 18:40 deathlove23    Distribution              => Gentoo          
-04-05-06 18:40 deathlove23    Kernel Version            => 2.6.16          
-04-07-06 19:21 tiwai          Note Added: 0009145                          
-04-07-06 20:17 deathlove23    Issue Monitored: deathlove23                    
-04-07-06 20:19 deathlove23    File Added: ac97#0-0                         
-04-07-06 20:19 deathlove23    File Added: ac97#0-0+regs                    
-04-07-06 20:19 deathlove23    Issue End Monitor: deathlove23                    
-04-07-06 20:21 deathlove23    Note Added: 0009155                          
-04-10-06 17:01 tiwai          Note Added: 0009201                          
+04-02-06 14:27 stan senuta    New Issue                                    
+04-02-06 14:27 stan senuta    File Added: alsa-make-error                    
+04-02-06 14:27 stan senuta    Distribution              => Mandrake-9.2    
+04-02-06 14:27 stan senuta    Kernel Version            => 2.6.16          
+04-10-06 17:04 tiwai          Status                   assigned => resolved
+04-10-06 17:04 tiwai          Resolution               open => won't fix   
+04-10-06 17:04 tiwai          Note Added: 0009202                          
 ======================================================================
 
 
