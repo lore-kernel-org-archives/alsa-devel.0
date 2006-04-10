@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001857]: regression in snd-cs4281 in recent 2.6.16-rcX kernels
-Date: Mon, 10 Apr 2006 16:47:28 +0200
-Message-ID: <62635d5f0026d2c19b45b7dc4da59286@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002013]: no digital output
+Date: Mon, 10 Apr 2006 16:50:08 +0200
+Message-ID: <689b7bbf41ba676c08098bb55a5f1992@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE66A184
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 16:47:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BEC1016D
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 16:50:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,77 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1857> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2013> 
 ======================================================================
-Reported By:                hoffmajs
-Assigned To:                tiwai
+Reported By:                SamiH
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1857
-Category:                   PCI - cs4281
+Issue ID:                   2013
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Ubuntu (Dapper)
-Kernel Version:             2.6.16-rc4
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               BLFS
+Kernel Version:             2.6.15.4
 ======================================================================
-Date Submitted:             02-19-2006 06:11 CET
-Last Modified:              04-10-2006 16:47 CEST
+Date Submitted:             04-09-2006 11:43 CEST
+Last Modified:              04-10-2006 16:50 CEST
 ======================================================================
-Summary:                    regression in snd-cs4281 in recent 2.6.16-rcX
-kernels
+Summary:                    no digital output
 Description: 
-In the recent 2.6.16-rc kernels snd-cs4281 broke for me.
-(I think since 2.6.16-rc2, but Im not sure atm. In 2.6.15 the card works
-fine.)
+Shortly: Digital output doesn't work at all, or I don't know how to use
+it.
 
-# > modprobe snd-cs4281
-ACPI: PCI Interrupt 0000:00:08.0[A] -> Link [LNKC] -> GSI 5 (level, low)
--> IRQ 5
-never read ISV3 and ISV4 from AC'97
-ACPI: PCI interrupt for device 0000:00:08.0 disabled
-CS4281: probe of 0000:00:08.0 failed with error -5
+This has been my problem quite long time now. I have upgraded my kernel
+from  2.6.8 to 2.6.15.4 with some steps bitween those versions, and the
+problem is still here. I have tried some live-cds with same results as my
+stable system.
 
-and no soundcard is found.
+Analog stereo output works with no problems. If someone did tell me what I
+should test on my system so that I could give the results to you.
 
-If you need more info or want me to test something, please say so.
+These aren't broken:
+ * my external amplifier
+ * the digital coaxial cable
+ * speakers etc.
 
-
-kind regards,
-Jens
-
+Please tell me at least what to do, what to search for, or something...
 ======================================================================
 
 ----------------------------------------------------------------------
- Mo6eB - 04-09-06 12:29 
+ tiwai - 04-10-06 16:50 
 ----------------------------------------------------------------------
-2.6.17-rc1 fixed it for me.
-
-----------------------------------------------------------------------
- tiwai - 04-10-06 16:47 
-----------------------------------------------------------------------
-OK then let's close.
+You didn't write what did you test...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-19-06 06:11 hoffmajs       New Issue                                    
-02-19-06 06:11 hoffmajs       Distribution              => Ubuntu (Dapper) 
-02-19-06 06:11 hoffmajs       Kernel Version            => 2.6.16-rc4      
-03-02-06 16:05 tiwai          Note Added: 0008319                          
-04-05-06 10:33 julienbras     Note Added: 0009119                          
-04-07-06 13:11 Mo6eB          Note Added: 0009138                          
-04-07-06 19:16 tiwai          Note Added: 0009142                          
-04-09-06 12:29 Mo6eB          Note Added: 0009178                          
-04-10-06 16:47 tiwai          Status                   new => resolved     
-04-10-06 16:47 tiwai          Resolution               open => fixed       
-04-10-06 16:47 tiwai          Assigned To               => tiwai           
-04-10-06 16:47 tiwai          Note Added: 0009197                          
+04-09-06 11:43 SamiH          New Issue                                    
+04-09-06 11:43 SamiH          Distribution              => BLFS            
+04-09-06 11:43 SamiH          Kernel Version            => 2.6.15.4        
+04-10-06 16:50 tiwai          Note Added: 0009198                          
 ======================================================================
 
 
