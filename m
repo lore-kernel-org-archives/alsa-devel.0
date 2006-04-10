@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Mon, 10 Apr 2006 19:01:10 +0200
-Message-ID: <0505be3ee80db2d6dbd4c00396a3df6e@bugtrack.alsa-project.org>
+Date: Mon, 10 Apr 2006 19:05:30 +0200
+Message-ID: <004cc5f17872ee192fe175672c8a9034@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C0F08189
-	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 19:01:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1111186
+	for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2006 19:05:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Mandrake
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              04-10-2006 19:01 CEST
+Last Modified:              04-10-2006 19:05 CEST
 ======================================================================
 Summary:                    module hangs at seemingly random times
 Description: 
@@ -82,22 +82,19 @@ snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 16:45 
-----------------------------------------------------------------------
-Better than a wrong one.
-
-----------------------------------------------------------------------
- Raymond - 04-10-06 19:01 
+ Raymond - 04-10-06 19:04 
 ----------------------------------------------------------------------
 It really depend the usuage of VORTEX_PCM_TYPE() 
 
-I am not sure why the driver not using 
+I am not sure why the driver using 
 
-#define VORTEX_PCM_TYPE(x) ( x->device )
+#define VORTEX_PCM_TYPE(x) (x->name[40])
 
 instead of
 
-#define VORTEX_PCM_TYPE(x) (x->name[40])
+#define VORTEX_PCM_TYPE(x) ( x->device )
+
+
 
 
 
@@ -108,6 +105,13 @@ instead of
 #define VORTEX_PCM_WT		3
 #define VORTEX_PCM_I2S		4
 #define VORTEX_PCM_LAST		5
+
+
+
+----------------------------------------------------------------------
+ tiwai - 04-10-06 19:05 
+----------------------------------------------------------------------
+Yes, but what is the relevance with this bug report?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -163,6 +167,8 @@ Date Modified  Username       Field                    Change
 04-10-06 16:43 Raymond        Note Added: 0009194                          
 04-10-06 16:45 tiwai          Note Added: 0009195                          
 04-10-06 19:01 Raymond        Note Added: 0009215                          
+04-10-06 19:04 Raymond        Note Edited: 0009215                         
+04-10-06 19:05 tiwai          Note Added: 0009216                          
 ======================================================================
 
 
