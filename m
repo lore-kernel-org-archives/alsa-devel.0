@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001999]: Latest cvs won't compile
-Date: Tue, 11 Apr 2006 19:17:54 +0200
-Message-ID: <2cac6658a626b6511f05c7ad41a0c508@bugtrack.alsa-project.org>
+Date: Tue, 11 Apr 2006 19:29:28 +0200
+Message-ID: <5cca83576518e3de548f36ae6fd95106@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EB95162
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 19:17:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D691125
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 19:29:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             -2.6.13.2
 ======================================================================
 Date Submitted:             04-03-2006 21:05 CEST
-Last Modified:              04-11-2006 19:17 CEST
+Last Modified:              04-11-2006 19:29 CEST
 ======================================================================
 Summary:                    Latest cvs won't compile
 Description: 
@@ -87,29 +87,6 @@ make[1]: Leaving directory `/usr/src/linux-2.6.13.2'
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-07-06 14:16 
-----------------------------------------------------------------------
-It seem to me that there is a problem on cvs 
-
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-utils/speaker-test/
-
-speaker-test.c 	 1.25 	 8 days 	 tiwai 	 Summary: Remove loops after
-errors Don't retry after fatal errors.
-
-http://sourceforge.net/mailarchive/forum.php?thread_id=10120162&forum_id=33141
-
-cvs -z3 update -P -d
-
-cannot retrieve rev 1.26 of speaker-test
-
-Summary: Avoid unnecessary drain/restart in speaker-test
-
-Avoid unnecessary drain/restart in speaker-test when the buffer
-is enough small.
-
-
-
-----------------------------------------------------------------------
  Raymond - 04-11-06 19:17 
 ----------------------------------------------------------------------
 Even copy whole tree once don't seem to obtain latest version of
@@ -147,6 +124,15 @@ config.status   include     pcmcia            synth
 configure       INSTALL     ppc               test
 configure.in    install-sh  README            TODO
 
+----------------------------------------------------------------------
+ rlrevell - 04-11-06 19:29 
+----------------------------------------------------------------------
+The directories are different because the build process creates them, so an
+alsa-driver tree that has been compiled will appear different from a fresh
+checkout.
+
+The rev 1.26 issue seems to be that ALSA CVS has not updated yet
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -156,6 +142,7 @@ Date Modified  Username       Field                    Change
 04-07-06 14:12 Raymond        Note Added: 0009139                          
 04-07-06 14:16 Raymond        Note Edited: 0009139                         
 04-11-06 19:17 Raymond        Note Added: 0009236                          
+04-11-06 19:29 rlrevell       Note Added: 0009237                          
 ======================================================================
 
 
