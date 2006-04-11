@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002014]: no sound on my asus u5a
-Date: Tue, 11 Apr 2006 17:38:56 +0200
-Message-ID: <26ff4cad6bf229e7ff6614897f402028@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001235]: ESI ESP 1010 partialy supportet
+Date: Tue, 11 Apr 2006 18:20:27 +0200
+Message-ID: <16caf7fca273103d95dad43de2641981@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A20B166
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 17:38:56 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CE5C166
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 18:20:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2014> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1235> 
 ======================================================================
-Reported By:                diegor
-Assigned To:                tiwai
+Reported By:                metasymbol
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2014
-Category:                   PCI - hda-intel
+Issue ID:                   1235
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               debian
-Kernel Version:             2.6.16.2
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               SuSE 9.2/9.3, Debian.
+Kernel Version:             2.6.xx
 ======================================================================
-Date Submitted:             04-10-2006 16:29 CEST
-Last Modified:              04-11-2006 17:38 CEST
+Date Submitted:             07-06-2005 10:16 CEST
+Last Modified:              04-11-2006 18:20 CEST
 ======================================================================
-Summary:                    no sound on my asus u5a
+Summary:                    ESI ESP 1010 partialy supportet
 Description: 
-After i loaded the sound driver (snd-hda-intel) with chipset ad1986a, i set
-the volume about 80%. The main channel (Vol) il blocked at 100% with
-aumix. if i try to launch esd (or play an mp3) the speakers are mute.
-After that i've loaded the driver (snd-hda-intel) the pcskeaker (beep) is
-mute.
+The ESI ESP1010 is a 10CH I/0 Audiosystem with 2 midi I/O.
+The base features are supportet:
+Midi I/O and 8 CH Analog
+
+not supportet:
+The digital I/O
+the virtual headphone mixing
+the virtual preampflifer mixing (by design of the Envy24control)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 20:07 
+ tiwai - 07-08-05 12:10 
 ----------------------------------------------------------------------
-Thanks, now fixed on CVS.
+Try another board model via model option in case that your device is
+compatible with another one?
 
 ----------------------------------------------------------------------
- diegor - 04-11-06 16:39 
+ supermihi - 04-11-06 18:20 
 ----------------------------------------------------------------------
-i have uploaded the patch!
-
-Good work and thanks 1k!
+I also have that device. I have no experience in driver development, but
+maybe I can help some way with e.g. debug outputs. Other than metasymbol I
+am not able to play anything on this device, at least not with xine using
+alsa.
+If I select the ESP card as output (which is hw:2 for me) in amarok, it
+says "device busy", although I'm not using it with any other application.
+I remember that I was able to play things on it (but not adjust the
+volume) with an earlier ALSA verison, maybe a year ago.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-10-06 16:29 diegor         New Issue                                    
-04-10-06 16:29 diegor         Distribution              => debian          
-04-10-06 16:29 diegor         Kernel Version            => 2.6.16.2        
-04-10-06 16:30 diegor         Issue Monitored: diegor                      
-04-10-06 16:38 tiwai          Status                   assigned => resolved
-04-10-06 16:38 tiwai          Resolution               open => fixed       
-04-10-06 16:38 tiwai          Note Added: 0009191                          
-04-10-06 17:40 diegor         Status                   resolved => feedback
-04-10-06 17:40 diegor         Resolution               fixed => reopened   
-04-10-06 17:40 diegor         Note Added: 0009206                          
-04-10-06 18:03 diegor         Note Added: 0009207                          
-04-10-06 18:10 tiwai          Note Added: 0009208                          
-04-10-06 19:05 diegor         Note Added: 0009217                          
-04-10-06 19:08 tiwai          Note Added: 0009218                          
-04-10-06 19:22 diegor         Note Added: 0009219                          
-04-10-06 19:33 tiwai          Note Added: 0009220                          
-04-10-06 19:44 diegor         Note Added: 0009221                          
-04-10-06 20:01 diegor         Note Edited: 0009221                         
-04-10-06 20:07 tiwai          Status                   feedback => resolved
-04-10-06 20:07 tiwai          Resolution               reopened => fixed   
-04-10-06 20:07 tiwai          Note Added: 0009222                          
-04-11-06 16:38 diegor         Status                   resolved => feedback
-04-11-06 16:38 diegor         Resolution               fixed => reopened   
-04-11-06 16:38 diegor         Note Added: 0009231                          
-04-11-06 16:38 diegor         Note Deleted: 0009231                        
-04-11-06 16:39 diegor         File Added: asusU5A.patch                    
-04-11-06 16:39 diegor         Note Added: 0009232                          
-04-11-06 17:38 tiwai          Status                   feedback => resolved
-04-11-06 17:38 tiwai          Resolution               reopened => fixed   
+07-06-05 10:16 metasymbol     New Issue                                    
+07-06-05 10:16 metasymbol     Distribution              => SuSE 9.2/9.3, Debian.
+07-06-05 10:16 metasymbol     Kernel Version            => 2.6.xx          
+07-08-05 12:10 tiwai          Note Added: 0005415                          
+04-11-06 18:17 supermihi      Issue Monitored: supermihi                    
+04-11-06 18:20 supermihi      Note Added: 0009233                          
 ======================================================================
 
 
