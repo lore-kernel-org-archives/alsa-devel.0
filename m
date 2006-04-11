@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002014]: no sound on my asus u5a
-Date: Tue, 11 Apr 2006 16:38:37 +0200
-Message-ID: <b99164824380b17149d43168dc7643e8@bugtrack.alsa-project.org>
+Date: Tue, 11 Apr 2006 16:39:49 +0200
+Message-ID: <2e40e562ba3b823ea28e5247fba2795d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE71A158
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 16:38:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 218BC158
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 16:39:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2014> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               debian
 Kernel Version:             2.6.16.2
 ======================================================================
 Date Submitted:             04-10-2006 16:29 CEST
-Last Modified:              04-11-2006 16:38 CEST
+Last Modified:              04-11-2006 16:39 CEST
 ======================================================================
 Summary:                    no sound on my asus u5a
 Description: 
@@ -57,18 +57,11 @@ mute.
 Thanks, now fixed on CVS.
 
 ----------------------------------------------------------------------
- diegor - 04-11-06 16:38 
+ diegor - 04-11-06 16:39 
 ----------------------------------------------------------------------
---- patch_analog.c      2006-04-11 15:56:01.000000000 +0200
-+++ patch_analog.c.modified     2006-04-11 16:13:34.000000000 +0200
-@@ -800,6 +800,8 @@
-          .config = AD1986A_LAPTOP_EAPD }, /* Samsung R65-T2300 Charis */
-        { .pci_subvendor = 0x1043, .pci_subdevice = 0x1213,
-          .config = AD1986A_LAPTOP_EAPD }, /* ASUS A6J */
-+        { .pci_subvendor = 0x1043, .pci_subdevice = 0x11f7,
-+          .config = AD1986A_LAPTOP_EAPD }, /* ASUS U5A */
-        {}
- };
+i have uploaded the patch!
+
+Good work and thanks 1k!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,6 +90,9 @@ Date Modified  Username       Field                    Change
 04-11-06 16:38 diegor         Status                   resolved => feedback
 04-11-06 16:38 diegor         Resolution               fixed => reopened   
 04-11-06 16:38 diegor         Note Added: 0009231                          
+04-11-06 16:38 diegor         Note Deleted: 0009231                        
+04-11-06 16:39 diegor         File Added: asusU5A.patch                    
+04-11-06 16:39 diegor         Note Added: 0009232                          
 ======================================================================
 
 
