@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001047]: module hangs at seemingly random times
-Date: Tue, 11 Apr 2006 18:36:25 +0200
-Message-ID: <795602184d12a49a06ab256883706b2f@bugtrack.alsa-project.org>
+Date: Tue, 11 Apr 2006 18:54:38 +0200
+Message-ID: <8a9eb23981a0bfa225d1501751889e6e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BCE42166
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 18:36:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E45FD166
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 18:54:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Mandrake
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              04-11-2006 18:36 CEST
+Last Modified:              04-11-2006 18:54 CEST
 ======================================================================
 Summary:                    module hangs at seemingly random times
 Description: 
@@ -82,11 +82,6 @@ snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 19:05 
-----------------------------------------------------------------------
-Yes, but what is the relevance with this bug report?
-
-----------------------------------------------------------------------
  Raymond - 04-11-06 18:36 
 ----------------------------------------------------------------------
 There are may fuctions called by vortex_core_init(), so why only
@@ -112,6 +107,16 @@ static int __devinit vortex_core_init(vortex_t * vortex)
 #ifndef CHIP_AU8810
 	vortex_wt_init(vortex);
 #endif
+
+----------------------------------------------------------------------
+ tiwai - 04-11-06 18:54 
+----------------------------------------------------------------------
+That patch just fixed a wrong use of __devinit in the header file. 
+__devinit was declared in header but not used in the function definition. 
+__devinit must be in function definitions.  So, it was moved from header
+to *.c.  That's all.
+
+And, what is your point?  How can it be relevant with *THIS* bug report??
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -170,6 +175,7 @@ Date Modified  Username       Field                    Change
 04-10-06 19:04 Raymond        Note Edited: 0009215                         
 04-10-06 19:05 tiwai          Note Added: 0009216                          
 04-11-06 18:36 Raymond        Note Added: 0009234                          
+04-11-06 18:54 tiwai          Note Added: 0009235                          
 ======================================================================
 
 
