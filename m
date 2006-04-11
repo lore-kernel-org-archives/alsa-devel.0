@@ -1,11 +1,19 @@
-From: Mikael Magnusson <mikma264@gmail.com>
-Subject: [patch] jack plugin closes stdin if jack is unavailable
-Date: Wed, 12 Apr 2006 00:07:08 +0200
-Message-ID: <20060411220708.GA7959@skinner.hem.za.org>
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: LAC: anybody from ALSA attending?
+Date: Tue, 11 Apr 2006 18:49:36 -0400
+Message-ID: <1144795776.10666.78.camel@localhost.localdomain>
+Reply-To: paul@linuxaudiosystems.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from vms048pub.verizon.net (vms048pub.verizon.net [206.46.252.48])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0619B138
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 00:45:42 +0200 (MEST)
+Received: from dual ([151.197.178.52])
+ by vms048.mailsrvcs.net (Sun Java System Messaging Server 6.2-4.02 (built Sep
+ 9 2005)) with ESMTPA id <0IXK00LL5XW2WX95@vms048.mailsrvcs.net> for
+ alsa-devel@alsa-project.org; Tue, 11 Apr 2006 17:45:38 -0500 (CDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,42 +23,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+There are likely to be some significant discussions about ieee1394 audio
+support on Linux and it would be helpful/useful if someone from ALSA
+could be there. 
 
-the jack plugin closes stdin if the pcm interfaces is opened but jack
-isn't running. Initializing the file descriptors to -1 fixes the problem.
+--p
 
-/Mikael
-
-diff -u -u -r1.2 pcm_jack.c
---- pcm_jack.c  21 Mar 2006 11:51:23 -0000      1.2
-+++ pcm_jack.c  11 Apr 2006 22:02:15 -0000
-@@ -61,8 +61,10 @@
-                                free(jack->port_names[i]);
-                        free(jack->port_names);
-                }
--               close(jack->fd);
--               close(jack->io.poll_fd);
-+               if (jack->fd >= 0)
-+                   close(jack->fd);
-+               if (jack->io.poll_fd >= 0)
-+                   close(jack->io.poll_fd);
-                free(jack->areas);
-                free(jack);
-        }
-@@ -321,6 +323,9 @@
-        if (!jack)
-                return -ENOMEM;
-
-+       jack->fd = -1;
-+       jack->io.poll_fd = -1;
-+
-        err = parse_ports(jack, stream == SND_PCM_STREAM_PLAYBACK ?
-                          playback_conf : capture_conf);
-        if (err) {
 
 
 
