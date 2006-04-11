@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002014]: no sound on my asus u5a
-Date: Tue, 11 Apr 2006 16:39:49 +0200
-Message-ID: <2e40e562ba3b823ea28e5247fba2795d@bugtrack.alsa-project.org>
+Date: Tue, 11 Apr 2006 17:38:56 +0200
+Message-ID: <26ff4cad6bf229e7ff6614897f402028@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 218BC158
-	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 16:39:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A20B166
+	for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2006 17:38:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2014> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               debian
 Kernel Version:             2.6.16.2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-10-2006 16:29 CEST
-Last Modified:              04-11-2006 16:39 CEST
+Last Modified:              04-11-2006 17:38 CEST
 ======================================================================
 Summary:                    no sound on my asus u5a
 Description: 
@@ -93,6 +95,8 @@ Date Modified  Username       Field                    Change
 04-11-06 16:38 diegor         Note Deleted: 0009231                        
 04-11-06 16:39 diegor         File Added: asusU5A.patch                    
 04-11-06 16:39 diegor         Note Added: 0009232                          
+04-11-06 17:38 tiwai          Status                   feedback => resolved
+04-11-06 17:38 tiwai          Resolution               reopened => fixed   
 ======================================================================
 
 
