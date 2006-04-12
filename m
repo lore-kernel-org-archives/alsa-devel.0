@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002017]: Identify ALC880 chip on Epox EP-5LDA+ GLi motherboard
-Date: Wed, 12 Apr 2006 20:16:34 +0200
-Message-ID: <5d0523d1838327277cd27536ce473420@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002010]: Terratec DMX Fire 1024 recording problem
+Date: Wed, 12 Apr 2006 21:16:16 +0200
+Message-ID: <1991b8682d922d24c6c8859a23e60f4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D09114F
-	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 20:16:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49AC814B
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 21:16:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2017> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2010> 
 ======================================================================
-Reported By:                timo
-Assigned To:                tiwai
+Reported By:                rbielefeld
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2017
-Category:                   PCI - hda-intel
-Reproducibility:            have not tried
-Severity:                   feature
+Issue ID:                   2010
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu - Dapper Flight 4
-Kernel Version:             2.6.15
+Status:                     new
+Distribution:               SuSE Linux 10.0
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-12-2006 20:16 CEST
-Last Modified:              04-12-2006 20:16 CEST
+Date Submitted:             04-07-2006 09:09 CEST
+Last Modified:              04-12-2006 21:16 CEST
 ======================================================================
-Summary:                    Identify ALC880 chip on Epox EP-5LDA+ GLi
-motherboard
+Summary:                    Terratec DMX Fire 1024 recording problem
 Description: 
-This motherboard has the Realtek ALC880 chip, but it was not recognized. No
-sound at all. I tried most of the index, position_fix and model
-possibilities, no help. Also alsa from cvs. I used instructions from this
-forum to generate an addition to the patch_realtek.c with the 1.0.11rc5:
-{ .pci_subvendor = 0x1695, .pci_subdevice = 0x4012, .config =
-ALC880_6ST_DIG },
-compiled and bingo.
+I want to record from LineIn port.
+Even with no signal on that port, one input channel is noisy.
+With a signal on that port, the noisy channel does not have the real audio
+signal.
 
-I'm not sure if this is the only way to go, but it did the trick for me.
-Now I have sound.
+
 
 
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 04-07-06 19:18 
+----------------------------------------------------------------------
+Upload /etc/asound.state for checking.  I guess you didn't set up mixer
+properly.
+Possibly "ADC Volume" or "ADC Capture Switch" isn't set up.
+
+----------------------------------------------------------------------
+ rbielefeld - 04-12-06 21:16 
+----------------------------------------------------------------------
+Adjusting the ADC and Capture slider resolves the noise problem, but on the
+previous "noisy" channel the sound data is still missing.
+Hopefully the attached files can help you.
+
+Thanks a lot.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-06 20:16 timo           New Issue                                    
-04-12-06 20:16 timo           Distribution              => Kubuntu - Dapper
-Flight 4
-04-12-06 20:16 timo           Kernel Version            => 2.6.15          
+04-07-06 09:09 rbielefeld     New Issue                                    
+04-07-06 09:09 rbielefeld     Distribution              => SuSE Linux 10.0 
+04-07-06 19:18 tiwai          Note Added: 0009143                          
+04-12-06 21:07 rbielefeld     File Added: asound.state                     
+04-12-06 21:07 rbielefeld     File Added: interrupts.txt                    
+04-12-06 21:07 rbielefeld     Issue Monitored: rbielefeld                    
+04-12-06 21:08 rbielefeld     Issue End Monitor: rbielefeld                    
+04-12-06 21:08 rbielefeld     File Added: modules.txt                      
+04-12-06 21:16 rbielefeld     Note Added: 0009248                          
 ======================================================================
 
 
