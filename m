@@ -1,16 +1,13 @@
-From: Axel Thimm <Axel.Thimm@ATrpms.net>
-Subject: Missing definition for DMA_31BIT_MASK on older kernels
-Date: Thu, 13 Apr 2006 00:25:16 +0200
-Message-ID: <20060412222516.GJ13693@neu.nirvana>
-Reply-To: alsa-devel@alsa-project.org
+From: Daniel Kasak <dkasak@nusconsulting.com.au>
+Subject: Re: Oops when unloading modules
+Date: Thu, 13 Apr 2006 08:36:01 +1000
+Message-ID: <443D80D1.803@nusconsulting.com.au>
+References: <4439E225.1070908@nusconsulting.com.au> <s5hirph918l.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="xs+9IvWevLaxKUtW"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from junior.physik.fu-berlin.de (junior.physik.fu-berlin.de [160.45.32.227])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E653154
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 00:25:46 +0200 (MEST)
-Content-Disposition: inline
+In-Reply-To: <s5hirph918l.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,63 +17,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Mon, 10 Apr 2006 14:42:13 +1000,
+> Daniel Kasak wrote:
+>   
+>> Hi all.
+>>
+>> I've been getting kernel oopses when unloading alsa modules, starting
+>> from alsa-driver-1.0.10-rc3.
+>>
+>> I've tried a number of kernels, and the alsa-driver version has ranged
+>> from 1.0.10-rc3 to 1.0.11-rc3 to 1.0.11-rc4 ( which is the one I'm
+>> currently testing ).
+>>
+>> I was advised previously to test with a vanilla kernel, but
+>> unfortunately I can't because I'm using a reiser4 root filesystem ...
+>>     
+>
+> I've got a similar bug report but it happened only on mm tree.
+> So, I suspected it's rather a problem in a different place from
+> ALSA.
+>   
 
---xs+9IvWevLaxKUtW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You're right :)
+I just booted a 2.6.16 kernel with a single patch - for reiser4, and I
+can load and unload alsa modules to my heart's content!
+Did you report the bug to the appropriate place for the mm tree? If not,
+I will ...
 
-Hi,
+-- 
+Daniel Kasak
+IT Developer
+NUS Consulting Group
+Level 5, 77 Pacific Highway
+North Sydney, NSW, Australia 2060
+T: (+61) 2 9922-7676 / F: (+61) 2 9922 7989
+email: dkasak@nusconsulting.com.au
+website: http://www.nusconsulting.com.au
 
-alsa-kernel/pci/ali5451/ali5451.c uses DMA_31BIT_MASK which for the
-latest kernels is defined in include/linux/dma-mapping.h. Previous
-kernels don't have this constant defined.
-
-E.g. on 2.6.12:
-
-  LD [M]  /builddir/alsa-driver-1.0.11rc5/pci/ac97/snd-ak4531-codec.o
-  CC [M]  /builddir/alsa-driver-1.0.11rc5/pci/ali5451/ali5451.o
-In file included from /builddir/alsa-driver-1.0.11rc5/pci/ali5451/ali5451.c=
-:1:
-/builddir/alsa-driver-1.0.11rc5/pci/ali5451/../../alsa-kernel/pci/ali5451/a=
-li5451.c: In function `ali_resume':
-/builddir/alsa-driver-1.0.11rc5/pci/ali5451/../../alsa-kernel/pci/ali5451/a=
-li5451.c:2054: warning: ignoring return value of `pci_enable_device', decla=
-red with attribute warn_unused_result
-In file included from /builddir/alsa-driver-1.0.11rc5/pci/ali5451/ali5451.c=
-:1:
-/builddir/alsa-driver-1.0.11rc5/pci/ali5451/../../alsa-kernel/pci/ali5451/a=
-li5451.c: In function `snd_ali_create':
-/builddir/alsa-driver-1.0.11rc5/pci/ali5451/../../alsa-kernel/pci/ali5451/a=
-li5451.c:2224: error: `DMA_31BIT_MASK' undeclared (first use in this functi=
-on)
-/builddir/alsa-driver-1.0.11rc5/pci/ali5451/../../alsa-kernel/pci/ali5451/a=
-li5451.c:2224: error: (Each undeclared identifier is reported only once
-/builddir/alsa-driver-1.0.11rc5/pci/ali5451/../../alsa-kernel/pci/ali5451/a=
-li5451.c:2224: error: for each function it appears in.)
-make[4]: *** [/builddir/alsa-driver-1.0.11rc5/pci/ali5451/ali5451.o] Error 1
-make[3]: *** [/builddir/alsa-driver-1.0.11rc5/pci/ali5451] Error 2
-make[2]: *** [/builddir/alsa-driver-1.0.11rc5/pci] Error 2
-make[1]: *** [_module_/builddir/alsa-driver-1.0.11rc5] Error 2
---=20
-Axel.Thimm at ATrpms.net
-
---xs+9IvWevLaxKUtW
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-
-iD8DBQFEPX5MQBVS1GOamfERAtrrAJ0cMLoz2YbHH7B8tlPNjQ3Tg4NzWQCfUqJ+
-lMOGkmpdVXCJ2wHCbcSOH8s=
-=O/uz
------END PGP SIGNATURE-----
-
---xs+9IvWevLaxKUtW--
 
 
 -------------------------------------------------------
