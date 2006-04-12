@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001214]: With Terratec DMX6fire, digital inputs cannot be selected correctly -always internal digital source
-Date: Thu, 13 Apr 2006 00:00:12 +0200
-Message-ID: <cc88f4110a5ebdd4cef6efda4e1e21d2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001652]: ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver output and input entry missing
+Date: Thu, 13 Apr 2006 00:00:49 +0200
+Message-ID: <6f2a2ccb836ea6c2ff804ae3f8b8c2a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC89914B
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 00:00:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DDD1C14B
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 00:00:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1214> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1652> 
 ======================================================================
-Reported By:                alanmann
-Assigned To:                rlrevell
+Reported By:                dschaefer79
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1214
-Category:                   envy24control
+Project:                    ALSA - driver
+Issue ID:                   1652
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   trivial
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Gentoo Linux 2005.1 X86_64
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             06-27-2005 15:27 CEST
+Date Submitted:             12-15-2005 18:40 CET
 Last Modified:              04-13-2006 00:00 CEST
 ======================================================================
-Summary:                    With Terratec DMX6fire, digital inputs cannot be
-selected correctly -always internal digital source
+Summary:                    ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver
+output and input entry missing
 Description: 
-The DMX6fire sound card has onboard 'digital in' for direct connection from
-a CD drive as well as coax and optical front panel in and out. 
-Envy24control has no button to select the internal source, but in fact it
-seems always selected and works fine.  Consequently the front panel inputs
-never work,(I can only test optical, but internal source is always
-working) although the selector 'SPDIF input' changes the panel lights
-correctly, and the 'SPDIF on/off' swaps the lights whichever way they
-were.
+Hi,
+
+My onboard soundcard works great with linux but I don't have a Master
+Output nor microphone ,cd, aux input under my linux. I try to use my tv
+sound with input but it doesn't work.
+
+Is it possible to add this ??
 ======================================================================
 
 ----------------------------------------------------------------------
- alanmann - 12-17-05 00:11 
+ bduc - 04-12-06 23:35 
 ----------------------------------------------------------------------
-As an update:
-Patches to fix this bug are now in alsa-1.0.11rc1 so should be included in
-the final 1.0.11 release.
+Having same problem ; is there any progress on this issue ?
 
 ----------------------------------------------------------------------
- alanmann - 04-12-06 23:11 
+ rlrevell - 04-13-06 00:00 
 ----------------------------------------------------------------------
-BTW this bug can be closed-resolved.
+Should be fixed in 1.0.11-rc5
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-27-05 15:27 alanmann       New Issue                                    
-06-27-05 16:05 tiwai          Note Added: 0005274                          
-06-29-05 22:39 alanmann       Note Added: 0005318                          
-07-08-05 14:48 tiwai          Note Added: 0005428                          
-07-08-05 22:09 alanmann       Note Added: 0005435                          
-08-23-05 18:52 alanmann       Note Added: 0005913                          
-12-17-05 00:11 alanmann       Note Added: 0007062                          
-04-12-06 23:11 alanmann       Note Added: 0009250                          
-04-13-06 00:00 rlrevell       Status                   new => resolved     
-04-13-06 00:00 rlrevell       Resolution               open => fixed       
-04-13-06 00:00 rlrevell       Assigned To               => rlrevell        
+12-15-05 18:40 dschaefer79    New Issue                                    
+12-15-05 18:40 dschaefer79    Distribution              => Gentoo Linux 2005.1
+X86_64
+12-15-05 18:40 dschaefer79    Kernel Version            => 2.6.14          
+12-15-05 19:14 dschaefer79    Issue Monitored: dschaefer79                    
+04-12-06 23:35 bduc           Note Added: 0009251                          
+04-12-06 23:35 bduc           Issue Monitored: bduc                        
+04-13-06 00:00 rlrevell       Note Added: 0009252                          
 ======================================================================
 
 
