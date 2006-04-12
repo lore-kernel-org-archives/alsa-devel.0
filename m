@@ -1,16 +1,14 @@
-From: Jiri Slaby <jirislaby@gmail.com>
-Subject: Re: Oops in 2.6.17-rc1: EIP is at snd_pcm_oss_sync+0x1f/0x260 [snd_pcm_oss]
-Date: Wed, 12 Apr 2006 02:34:59 +0200
-Message-ID: <443C4B33.60102@gmail.com>
-References: <443C41F2.5070307@ribosome.natur.cuni.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002016]: Choppy/skippy sound on onboard SiS SI7012-controller
+Date: Wed, 12 Apr 2006 04:40:19 +0200
+Message-ID: <d2272df09af45eb362d4f227f4dd0830@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from av2.karneval.cz (av2.karneval.cz [81.27.192.108])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5819165
-	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 02:34:47 +0200 (MEST)
-In-Reply-To: <443C41F2.5070307@ribosome.natur.cuni.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 864DF137
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 04:40:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,80 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?UTF-8?B?TWFydGluIE1PS1JFSsWg?= <mmokrejs@ribosome.natur.cuni.cz>
-Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-Martin MOKREJ=C5=A0 napsal(a):
-> I used skype to chat and after I tried to close the application it did
-> not return
-> to xterm. This is what I have found. Hope this helps someone to find th=
-e
-> cause. ;-)
->=20
-> BUG: unable to handle kernel NULL pointer dereference at virtual addres=
-s
-> 000000a0
-> printing eip:
-> f9a2e57f
-> *pde =3D 00000000
-> Oops: 0000 [#1]
-> Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
-> snd_seq_midi_event snd_seq snd_seq_device ohci_hcd ehci_hcd radeon drm
-> eth1394 pcmcia ohci1394 ieee1394 uhci_hcd snd_intel8x0 snd_ac97_codec
-> snd_ac97_bus snd_pcm snd_timer snd snd_page_alloc yenta_socket
-> rsrc_nonstatic pcmcia_core intel_agp agpgart 8139too
-> CPU:    0
-> EIP:    0060:[<f9a2e57f>]    Not tainted VLI
-> EFLAGS: 00010282   (2.6.17-rc1 #1) EIP is at snd_pcm_oss_sync+0x1f/0x26=
-0
-> [snd_pcm_oss]
-> eax: c1fe6580   ebx: f79f2140   ecx: f9a2f562   edx: 00000000
-> esi: dfdbdb60   edi: f79f2000   ebp: da51ae24   esp: da51ae00
-> ds: 007b   es: 007b   ss: 0068
-> Process skype (pid: 12275, threadinfo=3Dda51a000 task=3Df09bd070)
-> Stack: <0>c1ee1a60 c1ee1a40 c1ee1a40 00000000 c1fe6580 dfdbdb60 f79f214=
-0
-> dfdbdb60       f79f2000 da51ae3c f9a2f587 f4738540 00000008 f4738540
-> f752ae9c da51ae58       c014b2a3 c1cd4e40 f75208d4 f4738540 c1ec5f00
-> 00000000 da51ae60 c014b20e Call Trace:
-> <c0102f11> show_stack_log_lvl+0x89/0x91   <c0103066>
-> show_registers+0x10e/0x176
-> <c010321a> die+0xd8/0x168   <c01124ef> do_page_fault+0x452/0x538
-> <c0102bb7> error_code+0x4f/0x54   <f9a2f587>
-> snd_pcm_oss_release+0x25/0x88 [snd_pcm_oss]
-> <c014b2a3> __fput+0x93/0x120   <c014b20e> fput+0x16/0x18
-> <c0149fab> filp_close+0x4e/0x58   <c011a88e> close_files+0x57/0x67
-> <c011a8c6> put_files_struct+0x17/0x3d   <c011b129> do_exit+0x19d/0x2fb
-> <c011b305> sys_exit_group+0x0/0x11   <c0121a3a>
-> get_signal_to_deliver+0x20b/0x21b
-> <c01027a1> do_signal+0x54/0xfd   <c0102876> do_notify_resume+0x2c/0x3a
-> <c0102a1e> work_notifysig+0x13/0x19  Code: 6f c6 8d 65 f4 89 d8 5b 5e 5=
-f
-> 5d c3 55 89 e5 57 56 53 83 ec 18 89 45 f0 8b 00 85 c0 89 45 ec 0f 84 f5
-> 01 00 00 8b 50 5c 89 55 e8 <8b> 82 a0 00 00 00 85 c0 0f 85 a0 01 00 00
-> 8b 45 ec e8 c0 f6 ff <1>Fixing recursive fault but reboot is needed!
-Try this:
-http://bugzilla.kernel.org/show_bug.cgi?id=3D6329#c10
-(comment 10 patch)
-I think, that's it, if not, turn on sound debug on and retest.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2016> 
+======================================================================
+Reported By:                Ensnared
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2016
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu 5.10 "Breezy Badger"
+Kernel Version:             2.6.x
+======================================================================
+Date Submitted:             04-12-2006 04:40 CEST
+Last Modified:              04-12-2006 04:40 CEST
+======================================================================
+Summary:                    Choppy/skippy sound on onboard SiS SI7012-controller
+Description: 
+The sound on my specific sound controller is very bad. The times it even
+plays, the quality is very choppy and it skips almost like a scratched CD,
+which makes it pretty much unusable.
 
-regards,
-- --
-Jiri Slaby         www.fi.muni.cz/~xslaby
-~\-/~      jirislaby@gmail.com      ~\-/~
-B67499670407CE62ACC8 22A032CC55C339D47A7E
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
+I suspect this might be specific for my model laptop as I'm having a hard
+time finding anyone else with the same problem, but I've tried several
+distros and kernel versions, and the card works in Windows.
 
-iD8DBQFEPEszMsxVwznUen4RAiYzAKCV9qZb6SMMRv0DltWeY+Ty1EfOtACdFpL3
-YIxT7B1auhk840e5akEN4wk=3D
-=3Dnuw5
------END PGP SIGNATURE-----
+The laptop is an Elite Group G732, which has a SiS mainboard chipset with
+the SI7012 onboard controller (Realtek ALC202 chip).
+
+I've tried messing with the buffer_size and period_size in asound.conf,
+which seem to have some impact on the "pattern" of the chopping and
+skipping, but there are no values that I've found that will get rid of
+them entirely.
+
+I'm assuming this is an incompatibility with the driver and this specific
+hardware, but I could obviously be wrong.
+
+I've tried using the version of ALSA in the 2.6.10, 2.6.12 and 2.6.16.2
+kernels, as well as compiled the latest stable and developement releases
+of ALSA myself. The result is the same for them all.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-12-06 04:40 Ensnared       New Issue                                    
+04-12-06 04:40 Ensnared       Distribution              => Ubuntu 5.10 "Breezy
+Badger"
+04-12-06 04:40 Ensnared       Kernel Version            => 2.6.x           
+======================================================================
+
+
 
 
 -------------------------------------------------------
