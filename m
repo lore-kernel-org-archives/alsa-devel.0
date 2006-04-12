@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Wed, 12 Apr 2006 16:21:15 +0200
-Message-ID: <b8a6b4ecfcd4734400fceea9657ade59@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001643]: Microphone is muted and no mic option available
+Date: Wed, 12 Apr 2006 17:42:14 +0200
+Message-ID: <2cb36e7b2826983cf7b78f225679aa02@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 863B013D
-	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 16:21:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DA13125
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 17:42:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,135 +24,182 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1643> 
 ======================================================================
-Reported By:                liangalei
-Assigned To:                
+Reported By:                MACHINE
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Issue ID:                   1643
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Distribution:               Gentoo
+Kernel Version:             2.6.14.3
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              04-12-2006 16:21 CEST
+Date Submitted:             12-12-2005 04:12 CET
+Last Modified:              04-12-2006 17:42 CEST
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    Microphone is muted and no mic option available
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+This issue exists since I bought this notebook, and it was never solved
+since ALSA 1.0.9, no matter what kernel I use.
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
+The only mixer option related to microphone is "Input Source", and there
+is a "Front Mic", but useless.
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
+in 'alsamixer -V capture', the only three columns are IEC958, Capture, and
+Capture (not a typo!)
 
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+I unmuted everything and push every volumes to 100%. Everything works
+fine, except microphone.
 
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
-
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
+Hardware has no problem (checked by Windows2000).
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0001931 Unknown AC97 codec, digital sound works
+has duplicate       0001847 hda-intel on acer laptop (travelmate 30...
 ======================================================================
 
 ----------------------------------------------------------------------
- alt_ackbar - 04-09-06 03:23 
+ MACHINE - 04-12-06 11:36 
 ----------------------------------------------------------------------
-Same problem on benq s53w-s07
-- KUbuntu Dapper
-- Kernel 2.6.15-12-386
-- snd_intel8x0
+I've tried 1.0.11_rc5 today.
+Now the card(HDA/Sigmatel) records, however it records a lit bit crappy.
+
+I did a test that I say "A..B..C..D..E..F..G". The wave file is attached.
+
+
+nwang@travelmate ~ $ arecord -v test.wav
+Recording WAVE 'test.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+Plug PCM: Rate conversion PCM (48000, sformat=U8)
+Its setup is:
+  stream       : CAPTURE
+  access       : RW_INTERLEAVED
+  format       : U8
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 8
+  buffer_size  : 2000
+  period_size  : 1000
+  period_time  : 125000
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1000
+  xfer_align   : 1000
+  start_threshold  : 1
+  stop_threshold   : 2000
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 262144000
+Slave: Route conversion PCM (sformat=S16_LE)
+  Transformation table:
+    0 <- 0*0.5 + 1*0.5
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_INTERLEAVED
+  format       : U8
+  subformat    : STD
+  channels     : 1
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 8
+  buffer_size  : 12000
+  period_size  : 6000
+  period_time  : 125000
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 6000
+  xfer_align   : 6000
+  start_threshold  : 6
+  stop_threshold   : 12000
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1572864000
+Slave: Direct Snoop PCM
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 12000
+  period_size  : 6000
+  period_time  : 125000
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 6000
+  xfer_align   : 6000
+  start_threshold  : 6
+  stop_threshold   : 12000
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1572864000
+Hardware PCM card 0 'HDA Intel' device 0 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 12000
+  period_size  : 6000
+  period_time  : 125000
+  tick_time    : 1000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 6000
+  xfer_align   : 6000
+  start_threshold  : 1
+  stop_threshold   : 1572864000
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1572864000
+Aborted by signal &#20013;&#26029;...
+nwang@travelmate ~ $ aplay test.wav
+Playing WAVE 'test.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
 
 ----------------------------------------------------------------------
- kesiev - 04-12-06 16:21 
+ rlrevell - 04-12-06 17:42 
 ----------------------------------------------------------------------
-Just a note: I'm posting the .inf file from the windows driver. I don't
-know if it is useful (for example, the first lines confirms that is a AC97
-based driver) but is full of numbers that, I hope, can be useful for ALSA
-hackers.
+$ arecord -v test.wav
+Recording WAVE 'test.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
 
-Drivers are here:
-http://www.benq.it/ServiceAndSupport/downloads/downloads.cfm?product=829&type=D
+Yes, 8-bit, 8KHz .wav files sound crappy.
+
+Try arecord -f cd
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
-03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
-   
-03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
-03-17-06 04:10 Kooper         Note Added: 0008633                          
-03-17-06 12:07 tiwai          Note Added: 0008641                          
-03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
-      
-03-17-06 12:35 Kooper         Note Added: 0008644                          
-03-21-06 02:38 JProgrammer    Note Added: 0008736                          
-03-25-06 10:51 alessiodf      Note Added: 0008944                          
-03-26-06 20:12 alessiodf      Note Edited: 0008944                         
-03-26-06 20:15 alessiodf      Note Edited: 0008944                         
-03-30-06 15:47 trava          Note Added: 0009034                          
-04-07-06 13:05 kesiev         Note Added: 0009137                          
-04-07-06 13:06 kesiev         Note Edited: 0009137                         
-04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
-04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
-04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
-04-12-06 16:21 kesiev         Note Added: 0009246                          
+12-12-05 04:12 MACHINE        New Issue                                    
+12-12-05 04:12 MACHINE        File Added: alsa                             
+12-12-05 04:12 MACHINE        Distribution              => Gentoo          
+12-12-05 04:12 MACHINE        Kernel Version            => 2.6.14.3        
+02-16-06 17:56 lrupn          Issue Monitored: lrupn                       
+02-16-06 21:45 lrupn          Note Added: 0008102                          
+02-18-06 01:32 rlrevell       Relationship added       has duplicate 0001847
+02-18-06 08:27 cartman        Issue Monitored: cartman                     
+04-12-06 11:33 MACHINE        File Added: test.wav                         
+04-12-06 11:36 MACHINE        Note Added: 0009242                          
+04-12-06 17:42 rlrevell       Note Added: 0009247                          
 ======================================================================
 
 
