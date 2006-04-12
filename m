@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
-Date: Wed, 12 Apr 2006 17:40:00 -0400
-Message-ID: <1144878001.27496.33.camel@mindpipe>
-References: <20060412200957.GA4090@hurl.ugcs.caltech.edu>
-	 <1144873089.27496.22.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0001214]: With Terratec DMX6fire, digital inputs cannot be selected correctly -always internal digital source
+Date: Thu, 13 Apr 2006 00:00:12 +0200
+Message-ID: <cc88f4110a5ebdd4cef6efda4e1e21d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1144873089.27496.22.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC89914B
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 00:00:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,29 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-04-12 at 16:18 -0400, Lee Revell wrote:
-> pcm.multi_capture {
-> 	type multi
-> 	slaves.a.pcm hw:0,0
-> 	slaves.a.channels 8
-> 	slaves.b.pcm hw:0,1
-> 	slaves.b.channels 8
 
-Please disregard last message - try simply surrounding hw:0,0 and hw:0,1
-with quotes.
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1214> 
+======================================================================
+Reported By:                alanmann
+Assigned To:                rlrevell
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   1214
+Category:                   envy24control
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             06-27-2005 15:27 CEST
+Last Modified:              04-13-2006 00:00 CEST
+======================================================================
+Summary:                    With Terratec DMX6fire, digital inputs cannot be
+selected correctly -always internal digital source
+Description: 
+The DMX6fire sound card has onboard 'digital in' for direct connection from
+a CD drive as well as coax and optical front panel in and out. 
+Envy24control has no button to select the internal source, but in fact it
+seems always selected and works fine.  Consequently the front panel inputs
+never work,(I can only test optical, but internal source is always
+working) although the selector 'SPDIF input' changes the panel lights
+correctly, and the 'SPDIF on/off' swaps the lights whichever way they
+were.
+======================================================================
 
-pcm.multi_capture {
-	type multi
-	slaves.a.pcm "hw:0,0"
-	slaves.a.channels 8
-	slaves.b.pcm "hw:0,1"
-	slaves.b.channels 8
+----------------------------------------------------------------------
+ alanmann - 12-17-05 00:11 
+----------------------------------------------------------------------
+As an update:
+Patches to fix this bug are now in alsa-1.0.11rc1 so should be included in
+the final 1.0.11 release.
 
-Lee
+----------------------------------------------------------------------
+ alanmann - 04-12-06 23:11 
+----------------------------------------------------------------------
+BTW this bug can be closed-resolved.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-27-05 15:27 alanmann       New Issue                                    
+06-27-05 16:05 tiwai          Note Added: 0005274                          
+06-29-05 22:39 alanmann       Note Added: 0005318                          
+07-08-05 14:48 tiwai          Note Added: 0005428                          
+07-08-05 22:09 alanmann       Note Added: 0005435                          
+08-23-05 18:52 alanmann       Note Added: 0005913                          
+12-17-05 00:11 alanmann       Note Added: 0007062                          
+04-12-06 23:11 alanmann       Note Added: 0009250                          
+04-13-06 00:00 rlrevell       Status                   new => resolved     
+04-13-06 00:00 rlrevell       Resolution               open => fixed       
+04-13-06 00:00 rlrevell       Assigned To               => rlrevell        
+======================================================================
+
 
 
 
