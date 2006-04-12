@@ -1,11 +1,14 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: seq_midi client names
-Date: Wed, 12 Apr 2006 14:02:48 +0100
-Message-ID: <200604121402.48859.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001988]: No microphone input on Dell Inspiron 6400
+Date: Wed, 12 Apr 2006 16:00:24 +0200
+Message-ID: <eb150bf477ff9eafc1350a1e223dc7c5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_4pPPE7LVD/3pCxj"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8B82B166
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 16:00:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,64 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-00=_4pPPE7LVD/3pCxj
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1988> 
+======================================================================
+Reported By:                tbecker37
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1988
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             03-31-2006 21:28 CEST
+Last Modified:              04-12-2006 16:00 CEST
+======================================================================
+Summary:                    No microphone input on Dell Inspiron 6400
+Description: 
+Installing the 1.0.11rc4 driver enabled sound output both for extenal and
+headphone jack. However microphone input does not work.  Mic input is
+displayed in alsamixer but is not adjustable.
 
-(Takashi -message sent again with correct cc)
+I have also compiled and tried the driver from CVS on 3-31 with no
+success.
+======================================================================
 
-I delayed posting revised 'ice1712-pref-midi-names' patch to explore a 
-side-effect:- the client name in /proc/asound/seq/clients also becomes 
-'Wavetable DMX6fire 0' which is the intended name of the 2nd port.
+----------------------------------------------------------------------
+ anarki - 04-03-06 19:43 
+----------------------------------------------------------------------
+no, this never worked, regardless of kernel and alsa version i used...
 
-AFAICT in seq_midi.c 'snd_seq_midisynth_register_port' occurs first for the 
-2nd port, and has NULL client, so (L322) calls 
-'snd_seq_create_kernel_client', passing info->name as the string augument, 
-which is actually the specific port name.  Attached diff shows changing it to 
-card->id for example; card->shortname would be similar, both give a more 
-reasonable client name.  Is it correct for client to be NULL in this way?  
-When 'snd_seq_midisynth_register_port' is called the second time ( for the 
-first port) client == NULL is false so the section is passed.
+----------------------------------------------------------------------
+ tbecker37 - 04-12-06 16:00 
+----------------------------------------------------------------------
+Just tried alsa-driver-1.0.11rc5 w/ no effect in this issue.  Mic control
+is present is alsamixer but isn't ajustable and mic still doesn't work. 
+Is there anything else I can provie from my system to help resolve this
+issue?
 
-Do you think this client name behaviour is OK as it is, or should it be 
-changed?
-
-Revised ice1712 patch posted separately.
-
-Alan
-
-
-
---Boundary-00=_4pPPE7LVD/3pCxj
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="seq_midi.c-client-naming.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="seq_midi.c-client-naming.diff"
-
---- alsa-driver-orig-1.0.11rc3/alsa-kernel/core/seq/seq_midi.c	2006-01-16 16:29:08.000000000 +0000
-+++ alsa-driver-1.0.11rc3/alsa-kernel/core/seq/seq_midi.c	2006-04-11 21:42:51.000000000 +0100
-@@ -320,8 +322,8 @@
- 		}
- 		client->seq_client =
- 			snd_seq_create_kernel_client(
--				card, 0, "%s", info->name[0] ?
--				(const char *)info->name : "External MIDI");
-+				card, 0, "%s MIDI", card->id[0] ?
-+				(const char *)card->id : "External");
- 		if (client->seq_client < 0) {
- 			kfree(client);
- 			mutex_unlock(&register_mutex);
-
---Boundary-00=_4pPPE7LVD/3pCxj--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-31-06 21:28 tbecker37      New Issue                                    
+03-31-06 21:28 tbecker37      Distribution              => Fedora Core 5   
+03-31-06 21:28 tbecker37      Kernel Version            => 2.6.16-1.2080_FC5smp
+03-31-06 23:39 tbecker37      Issue Monitored: tbecker37                    
+04-03-06 08:03 anarki         Note Added: 0009087                          
+04-03-06 19:31 rlrevell       Note Added: 0009104                          
+04-03-06 19:43 anarki         Note Added: 0009105                          
+04-12-06 16:00 tbecker37      Note Added: 0009244                          
+======================================================================
 
 
 
