@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0001214]: With Terratec DMX6fire, digital inputs cannot be selected correctly -always internal digital source
-Date: Wed, 12 Apr 2006 23:11:35 +0200
-Message-ID: <48cccbdc7e57307d30fa3940fce6c4bc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001652]: ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver output and input entry missing
+Date: Wed, 12 Apr 2006 23:35:12 +0200
+Message-ID: <8955ca01613af4353c8d3ed583c53a8e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7460914F
-	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 23:11:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CABCB127
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 23:35:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1214> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1652> 
 ======================================================================
-Reported By:                alanmann
-Assigned To:                
+Reported By:                dschaefer79
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   1214
-Category:                   envy24control
+Project:                    ALSA - driver
+Issue ID:                   1652
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   trivial
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Gentoo Linux 2005.1 X86_64
+Kernel Version:             2.6.14
 ======================================================================
-Date Submitted:             06-27-2005 15:27 CEST
-Last Modified:              04-12-2006 23:11 CEST
+Date Submitted:             12-15-2005 18:40 CET
+Last Modified:              04-12-2006 23:35 CEST
 ======================================================================
-Summary:                    With Terratec DMX6fire, digital inputs cannot be
-selected correctly -always internal digital source
+Summary:                    ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver
+output and input entry missing
 Description: 
-The DMX6fire sound card has onboard 'digital in' for direct connection from
-a CD drive as well as coax and optical front panel in and out. 
-Envy24control has no button to select the internal source, but in fact it
-seems always selected and works fine.  Consequently the front panel inputs
-never work,(I can only test optical, but internal source is always
-working) although the selector 'SPDIF input' changes the panel lights
-correctly, and the 'SPDIF on/off' swaps the lights whichever way they
-were.
+Hi,
+
+My onboard soundcard works great with linux but I don't have a Master
+Output nor microphone ,cd, aux input under my linux. I try to use my tv
+sound with input but it doesn't work.
+
+Is it possible to add this ??
 ======================================================================
 
 ----------------------------------------------------------------------
- alanmann - 12-17-05 00:11 
+ bduc - 04-12-06 23:35 
 ----------------------------------------------------------------------
-As an update:
-Patches to fix this bug are now in alsa-1.0.11rc1 so should be included in
-the final 1.0.11 release.
-
-----------------------------------------------------------------------
- alanmann - 04-12-06 23:11 
-----------------------------------------------------------------------
-BTW this bug can be closed-resolved.
+Having same problem ; is there any progress on this issue ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-27-05 15:27 alanmann       New Issue                                    
-06-27-05 16:05 tiwai          Note Added: 0005274                          
-06-29-05 22:39 alanmann       Note Added: 0005318                          
-07-08-05 14:48 tiwai          Note Added: 0005428                          
-07-08-05 22:09 alanmann       Note Added: 0005435                          
-08-23-05 18:52 alanmann       Note Added: 0005913                          
-12-17-05 00:11 alanmann       Note Added: 0007062                          
-04-12-06 23:11 alanmann       Note Added: 0009250                          
+12-15-05 18:40 dschaefer79    New Issue                                    
+12-15-05 18:40 dschaefer79    Distribution              => Gentoo Linux 2005.1
+X86_64
+12-15-05 18:40 dschaefer79    Kernel Version            => 2.6.14          
+12-15-05 19:14 dschaefer79    Issue Monitored: dschaefer79                    
+04-12-06 23:35 bduc           Note Added: 0009251                          
 ======================================================================
 
 
