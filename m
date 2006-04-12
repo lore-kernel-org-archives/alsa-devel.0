@@ -1,13 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
-Date: Wed, 12 Apr 2006 16:18:08 -0400
-Message-ID: <1144873089.27496.22.camel@mindpipe>
-References: <20060412200957.GA4090@hurl.ugcs.caltech.edu>
+From: Realestate.com <moreinfo@triplealdo.com>
+Subject: Let RealEstate.com Prospect for You
+Date: Wed, 12 Apr 2006 19:50:27 +0000
+Message-ID: <443d5a03@www.aaaaldo.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html;
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060412200957.GA4090@hurl.ugcs.caltech.edu>
+Received: from www.aaaaldo.com (aaaaldo.com [66.103.151.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id DB161130
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 22:22:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,139 +17,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
-Cc: alsa-devel@lists.sourceforge.net
+To: Friend <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-04-12 at 13:09 -0700, Lance Blisters wrote:
-> I bought a Layla24 and Cardbus adaptor.  Works beatifully with ALSA/JACK/ARDOUR up to 8 channels.  However, the soundcard presents the 8 analog channels as device 0 and 8 digital channels as device 1.  JACK will only open one device at a time.  So in order to record 16 channels with Ardour, I apparently need to create a virtual ALSA device combining the two LAYLA subdevices.
-> 
-> Has anyone solved this problem for this device?  I know ".asoundrc" and 
-> "multi" and company, but that is far from a complete answer - what
-> I really need is an actual functional .asoundrc.
-> 
-> Please CC me, as I had to drop off the list about five years ago due to
-> bandwidth limitations.
+<html>
+<head>
+<title>ralestate01_06</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" link="#006aba" vlink="#006aba" alink="#006aba" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<!-- ImageReady Slices (ralestate01_06.psd) -->
+<table width="574" height="422" border="0" align="center" cellpadding="0" cellspacing="0" id="Table_01">
+	<tr>
+	  <td height="100" colspan="3"><a href="http://www.realestate.com/FAAenroll/qform.asp?init=1&esourceid=376360%20" target="_blank"><img src="http://marketing.lendingtree.com/stm/emails/images/TripleAldo_re_02_00_01.gif" width="600" height="100" border="0"></a></td>
+  </tr>
+	<tr align="center" valign="middle">
+		<td height="21" colspan="3" bgcolor="#000099"><strong><font color="#FFFFFF" size="4" face="Arial, Helvetica, sans-serif">Let
+		      RealEstate.com do the prospecting for you.</font></strong></td>
+  </tr>
+	<tr>
+	  <td height="220" colspan="2" align="center" valign="middle"><div align="center"><font color="#00754F" size="3" face="Geneva, Arial, Helvetica, sans-serif"><strong><font size="5">The
+		        <a href="http://www.realestate.com/FAAenroll/qform.asp?init=1&esourceid=376360%20" target="_blank">RealEstate.com<br>
+        Smart Touch Filtering</a></font>&#8482;<br>
+        <br> 
+		        </strong><font size="4">process increases
+		      closings by 63%. 
+        Partnering with a company that focuses on
+        filtering leads 
+        can positively impact lead
+    quality and the 
+    overall possibility they will close</font><strong>.*</strong></font><font size="1" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;</font></div>	    
+      </td>
+	    <td width="281" rowspan="4" align="right" valign="top"><a href="http://www.realestate.com/FAAenroll/qform.asp?init=1&esourceid=376360%20" target="_blank"><img src="http://marketing.lendingtree.com/stm/emails/images/TripleAldo_ralestate_people.gif" width="281" height="322" border="0"></a></td>
+	</tr>
+	<tr valign="top">
+	  <td height="19" colspan="2" align="right" valign="bottom" bgcolor="#cee465"><div align="right"></div>	    <div align="center"><font size="4" face="Arial, Helvetica, sans-serif"><em><strong><a href="http://www.realestate.com/FAAenroll/qform.asp?init=1&esourceid=376360%20" target="_blank"><font size="5">Click
+      Here to Learn More! </font></a></strong></em></font><font size="5" face="Geneva, Arial, Helvetica, sans-serif"> </font></div></td>
+  </tr>
+	<tr valign="top">
+	  <td colspan="2" align="right" valign="bottom" bgcolor="#ffcc33"><div align="center"><font size="5" face="Arial, Helvetica, sans-serif"><strong><em>Or
+        Call 800-877-2680</em></strong></font></div>
+	  </td>
+  </tr>
+	<tr valign="top">
+	  <td width="38" height="25" align="right" valign="bottom" bgcolor="#ffcc33"><font size="1" face="Geneva, Arial, Helvetica, sans-serif"><img src="http://marketing.lendingtree.com/stm/emails/images/TripleAldo_equalhousingsmall.gif" width="30" height="25"></font></td>
+	  <td width="281" align="right" valign="bottom" bgcolor="#ffcc33"><div align="left"><font size="1" face="Geneva, Arial, Helvetica, sans-serif">RealEstate.com
+      is a service of LendingTree, LLC</font></div></td>
+  </tr>
+</table>
+<!-- End ImageReady Slices -->
+<br>
+<table width="600" border="0" align="center" cellpadding="4" cellspacing="0">
+  <tr>
+    <td width="606" height="39"><p align="center"><font color="#999999" size="1" face="Arial, Helvetica, sans-serif">*Based
+          on a study by Real IQ. Study found that consumers that passed Smart
+          Touch Filtering were 63% more likely to have had a transaction than
+          consumers that did not pass Smart Touch Filtering. Determination of
+          whether a consumer bought or sold could only be made on affirmative
+          address matches and/or successful deed searches. Consumers do not necessarily
+          complete their transaction with an agent from the RealEstate.com network.</font></p>
+    </td>
+  </tr>
+  <tr>
+    <td height="40"><p><font color="#999999" 
 
-Maybe someone can explain why this .asoundrc does not work, AFAICT it
-should.  The error is:
+size="1" face="Arial, Helvetica, sans-serif">www.triplealdo.com is a leading
+          permission-based e-mail marketer for the RealEstate Industry. This
+          message is intended for <strong>them</strong> only. To unsubscribe
+          from triplealdo the fastest way, you may remove your address by &quot;Clicking
+          the Link on the very bottom&quot;</font></p>
+      <p align="right"><font color="#999999" size="1" face="Arial, Helvetica, sans-serif"><span 
 
-ALSA lib conf.c:1592:(snd_config_load1)_toplevel_:606:27:Unexpected char
-ALSA lib conf.c:2837:(snd_config_hook_load)/root/.asoundrc may be old or
-corrupted consider to remove or fix it
+DEFANGED_STYLE="FONT-FAMILY: 'Arial'">To advertise your product or service fax
+            or email us for info:<br>
+                <a href="http://www.triplealdo.com">www.triplealdo.com </a>P.O.
+                Box 161526 Altamonte Springs, FL 32716 For info about advertising <br>
+  Please Fax 604-608-3104 <a 
 
-Character 27 is either the '1' or the newline.
+href="mailto:Info@triplealdo.com">Info@triplealdo.com</a></span></font><font color="#999999"></font></p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
 
-The analog device is "hw:0,0" and digital "hw:0,1", right?
-
-# .asoundrc for layla 
-#
-# Create virtual devices out of multipls subdevices
-# JACK will need MMAP_COMPLEX support to use this. 
-
-pcm.multi_capture {
-	type multi
-	slaves.a.pcm hw:0,0
-	slaves.a.channels 8
-	slaves.b.pcm hw:0,1
-	slaves.b.channels 8
-
-# First 8 channels of first soundcard (capture)
-	bindings.0.slave a
-	bindings.0.channel 0
-	bindings.1.slave a
-	bindings.1.channel 1
-	bindings.2.slave a
-	bindings.2.channel 2
-	bindings.3.slave a
-	bindings.3.channel 3
-	bindings.4.slave a
-	bindings.4.channel 4
-	bindings.5.slave a
-	bindings.5.channel 5
-	bindings.6.slave a
-	bindings.6.channel 6
-	bindings.7.slave a
-	bindings.7.channel 7
-    
-# First 8 channels of second soundcard (capture)
-	bindings.8.slave b
-	bindings.8.channel 0
-	bindings.9.slave b
-	bindings.9.channel 1
-	bindings.10.slave b
-	bindings.10.channel 2
-	bindings.11.slave b
-	bindings.11.channel 3
-	bindings.12.slave b
-	bindings.12.channel 4
-	bindings.13.slave b
-	bindings.13.channel 5
-	bindings.14.slave b
-	bindings.14.channel 6
-	bindings.15.slave b
-	bindings.15.channel 7
-
-}
-
-ctl.multi_capture {
-	type hw
-	card 0
-}
-
-pcm.multi_playback {
-	type multi
-	slaves.a.pcm hw:0,0
-	slaves.a.channels 8
-	slaves.b.pcm hw:0,1
-	slaves.b.channels 8
-
-# First 8 channels of first soundcard (playback)
-	bindings.0.slave a
-	bindings.0.channel 0
-	bindings.1.slave a
-	bindings.1.channel 1
-	bindings.2.slave a
-	bindings.2.channel 2
-	bindings.3.slave a
-	bindings.3.channel 3
-	bindings.4.slave a
-	bindings.4.channel 4
-	bindings.5.slave a
-	bindings.5.channel 5
-	bindings.6.slave a
-	bindings.6.channel 6
-	bindings.7.slave a
-	bindings.7.channel 7
-
-# First 8 channels of second soundcard (playback)
-	bindings.8.slave b
-	bindings.8.channel 0
-	bindings.9.slave b
-	bindings.9.channel 1
-	bindings.10.slave b
-	bindings.10.channel 2
-	bindings.11.slave b
-	bindings.11.channel 3
-	bindings.12.slave b
-	bindings.12.channel 4
-	bindings.13.slave b
-	bindings.13.channel 5
-	bindings.14.slave b
-	bindings.14.channel 6
-	bindings.15.slave b
-	bindings.15.channel 7
-
-}
-
-ctl.multi_playback {
-	type hw
-	card 0
-}
-
-
-
-
+<br><br>
+______________________________________________________<br>
+<br>
+To change your subscription details or stop receiving emails, <a href="http://www.aaaaldo.com/c/4/alsa-devel%40alsa-project.org">click here</a>
+<img src="http://www.aaaaldo.com/ctx.pl?m=535"></body></html>
 
 
 -------------------------------------------------------
