@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001652]: ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver output and input entry missing
-Date: Wed, 12 Apr 2006 23:35:12 +0200
-Message-ID: <8955ca01613af4353c8d3ed583c53a8e@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
+Date: Wed, 12 Apr 2006 17:37:57 -0400
+Message-ID: <1144877878.27496.30.camel@mindpipe>
+References: <20060412200957.GA4090@hurl.ugcs.caltech.edu>
+	 <1144873089.27496.22.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CABCB127
-	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 23:35:12 +0200 (MEST)
+In-Reply-To: <1144873089.27496.22.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +18,163 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2006-04-12 at 16:18 -0400, Lee Revell wrote:
+> On Wed, 2006-04-12 at 13:09 -0700, Lance Blisters wrote:
+> > I bought a Layla24 and Cardbus adaptor.  Works beatifully with ALSA/JACK/ARDOUR up to 8 channels.  However, the soundcard presents the 8 analog channels as device 0 and 8 digital channels as device 1.  JACK will only open one device at a time.  So in order to record 16 channels with Ardour, I apparently need to create a virtual ALSA device combining the two LAYLA subdevices.
+> > 
+> > Has anyone solved this problem for this device?  I know ".asoundrc" and 
+> > "multi" and company, but that is far from a complete answer - what
+> > I really need is an actual functional .asoundrc.
+> > 
+> > Please CC me, as I had to drop off the list about five years ago due to
+> > bandwidth limitations.
+> 
+> Maybe someone can explain why this .asoundrc does not work, AFAICT it
+> should.  The error is:
+> 
+> ALSA lib conf.c:1592:(snd_config_load1)_toplevel_:606:27:Unexpected char
+> ALSA lib conf.c:2837:(snd_config_hook_load)/root/.asoundrc may be old or
+> corrupted consider to remove or fix it
+> 
+> Character 27 is either the '1' or the newline.
+> 
+> The analog device is "hw:0,0" and digital "hw:0,1", right?
+> 
+> # .asoundrc for layla 
+> #
+> # Create virtual devices out of multipls subdevices
+> # JACK will need MMAP_COMPLEX support to use this. 
+> 
+> pcm.multi_capture {
+> 	type multi
+> 	slaves.a.pcm hw:0,0
+> 	slaves.a.channels 8
+> 	slaves.b.pcm hw:0,1
+> 	slaves.b.channels 8
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1652> 
-======================================================================
-Reported By:                dschaefer79
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1652
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux 2005.1 X86_64
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             12-15-2005 18:40 CET
-Last Modified:              04-12-2006 23:35 CEST
-======================================================================
-Summary:                    ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver
-output and input entry missing
-Description: 
-Hi,
+Can you try replacing "slaves.a.pcm hw:0,0" with:
 
-My onboard soundcard works great with linux but I don't have a Master
-Output nor microphone ,cd, aux input under my linux. I try to use my tv
-sound with input but it doesn't work.
+slaves.a.pcm {
+	type hw;
+	card 0;
+	device 0;
+}
 
-Is it possible to add this ??
-======================================================================
+etc. ?
 
-----------------------------------------------------------------------
- bduc - 04-12-06 23:35 
-----------------------------------------------------------------------
-Having same problem ; is there any progress on this issue ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-15-05 18:40 dschaefer79    New Issue                                    
-12-15-05 18:40 dschaefer79    Distribution              => Gentoo Linux 2005.1
-X86_64
-12-15-05 18:40 dschaefer79    Kernel Version            => 2.6.14          
-12-15-05 19:14 dschaefer79    Issue Monitored: dschaefer79                    
-04-12-06 23:35 bduc           Note Added: 0009251                          
-======================================================================
-
+> # First 8 channels of first soundcard (capture)
+> 	bindings.0.slave a
+> 	bindings.0.channel 0
+> 	bindings.1.slave a
+> 	bindings.1.channel 1
+> 	bindings.2.slave a
+> 	bindings.2.channel 2
+> 	bindings.3.slave a
+> 	bindings.3.channel 3
+> 	bindings.4.slave a
+> 	bindings.4.channel 4
+> 	bindings.5.slave a
+> 	bindings.5.channel 5
+> 	bindings.6.slave a
+> 	bindings.6.channel 6
+> 	bindings.7.slave a
+> 	bindings.7.channel 7
+>     
+> # First 8 channels of second soundcard (capture)
+> 	bindings.8.slave b
+> 	bindings.8.channel 0
+> 	bindings.9.slave b
+> 	bindings.9.channel 1
+> 	bindings.10.slave b
+> 	bindings.10.channel 2
+> 	bindings.11.slave b
+> 	bindings.11.channel 3
+> 	bindings.12.slave b
+> 	bindings.12.channel 4
+> 	bindings.13.slave b
+> 	bindings.13.channel 5
+> 	bindings.14.slave b
+> 	bindings.14.channel 6
+> 	bindings.15.slave b
+> 	bindings.15.channel 7
+> 
+> }
+> 
+> ctl.multi_capture {
+> 	type hw
+> 	card 0
+> }
+> 
+> pcm.multi_playback {
+> 	type multi
+> 	slaves.a.pcm hw:0,0
+> 	slaves.a.channels 8
+> 	slaves.b.pcm hw:0,1
+> 	slaves.b.channels 8
+> 
+> # First 8 channels of first soundcard (playback)
+> 	bindings.0.slave a
+> 	bindings.0.channel 0
+> 	bindings.1.slave a
+> 	bindings.1.channel 1
+> 	bindings.2.slave a
+> 	bindings.2.channel 2
+> 	bindings.3.slave a
+> 	bindings.3.channel 3
+> 	bindings.4.slave a
+> 	bindings.4.channel 4
+> 	bindings.5.slave a
+> 	bindings.5.channel 5
+> 	bindings.6.slave a
+> 	bindings.6.channel 6
+> 	bindings.7.slave a
+> 	bindings.7.channel 7
+> 
+> # First 8 channels of second soundcard (playback)
+> 	bindings.8.slave b
+> 	bindings.8.channel 0
+> 	bindings.9.slave b
+> 	bindings.9.channel 1
+> 	bindings.10.slave b
+> 	bindings.10.channel 2
+> 	bindings.11.slave b
+> 	bindings.11.channel 3
+> 	bindings.12.slave b
+> 	bindings.12.channel 4
+> 	bindings.13.slave b
+> 	bindings.13.channel 5
+> 	bindings.14.slave b
+> 	bindings.14.channel 6
+> 	bindings.15.slave b
+> 	bindings.15.channel 7
+> 
+> }
+> 
+> ctl.multi_playback {
+> 	type hw
+> 	card 0
+> }
+> 
+> 
+> 
+> 
+> 
+> 
+> -------------------------------------------------------
+> This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+> that extends applications into web and mobile media. Attend the live webcast
+> and join the prime developer group breaking into this new coding territory!
+> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
 
 
 
