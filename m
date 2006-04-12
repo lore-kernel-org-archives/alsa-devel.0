@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002018]: Realtek ALC861 hda-intel headphones problem
-Date: Wed, 12 Apr 2006 22:05:29 +0200
-Message-ID: <841a48968619e7b54cc592410ca26dd6@bugtrack.alsa-project.org>
+From: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
+Subject: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
+Date: Wed, 12 Apr 2006 13:09:57 -0700
+Message-ID: <20060412200957.GA4090@hurl.ugcs.caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D22B614B
-	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 22:05:29 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,52 +15,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I bought a Layla24 and Cardbus adaptor.  Works beatifully with ALSA/JACK/ARDOUR up to 8 channels.  However, the soundcard presents the 8 analog channels as device 0 and 8 digital channels as device 1.  JACK will only open one device at a time.  So in order to record 16 channels with Ardour, I apparently need to create a virtual ALSA device combining the two LAYLA subdevices.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2018> 
-======================================================================
-Reported By:                fgrieco
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2018
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16
-======================================================================
-Date Submitted:             04-12-2006 22:05 CEST
-Last Modified:              04-12-2006 22:05 CEST
-======================================================================
-Summary:                    Realtek ALC861 hda-intel headphones problem
-Description: 
-The driver works but when i connect headphones to my notebook and then
-disconnet them, there is no sound. I have to restart the alsasound service
-in my Gentoo (unload and reload modules) to have again sounds on the
-notebook.
-If i connect headphones, disconnet and reconnect them, sounds are still
-present in headphones.
-Driver: alsa-driver 1.0.11-rc5
+Has anyone solved this problem for this device?  I know ".asoundrc" and 
+"multi" and company, but that is far from a complete answer - what
+I really need is an actual functional .asoundrc.
 
-The notebook is a Toshiba A100-155
-======================================================================
+Please CC me, as I had to drop off the list about five years ago due to
+bandwidth limitations.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-12-06 22:05 fgrieco        New Issue                                    
-04-12-06 22:05 fgrieco        Distribution              => Gentoo          
-04-12-06 22:05 fgrieco        Kernel Version            => 2.6.16          
-======================================================================
+Thanks,
 
-
+  -geoff
 
 
 -------------------------------------------------------
