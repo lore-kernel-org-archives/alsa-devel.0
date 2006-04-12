@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002016]: Choppy/skippy sound on onboard SiS SI7012-controller
-Date: Wed, 12 Apr 2006 06:57:19 +0200
-Message-ID: <63ba2bd95e02e6ec4ed002e9b8d52551@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
+Date: Wed, 12 Apr 2006 10:28:57 +0200
+Message-ID: <19f3708e611594e7ecf92b9c60f3e6c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DC7C516C
-	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 06:57:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A14EE10E
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 10:28:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,171 +24,199 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2016> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
 ======================================================================
-Reported By:                Ensnared
+Reported By:                ponchick
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2016
-Category:                   PCI - intel8x0
+Issue ID:                   1833
+Category:                   GENERIC - mpu401
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu 5.10 "Breezy Badger"
-Kernel Version:             2.6.x
+Distribution:               gentoo
+Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
-Date Submitted:             04-12-2006 04:40 CEST
-Last Modified:              04-12-2006 06:57 CEST
+Date Submitted:             02-09-2006 08:33 CET
+Last Modified:              04-12-2006 10:28 CEST
 ======================================================================
-Summary:                    Choppy/skippy sound on onboard SiS SI7012-controller
+Summary:                    oops in snd_mpu401_uart
 Description: 
-The sound on my specific sound controller is very bad. The times it even
-plays, the quality is very choppy and it skips almost like a scratched CD,
-which makes it pretty much unusable.
+I don't know what exactly happend but when I run wine or winecfg it
+segfaulted. dmesg shows following:
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
+snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
+snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
+snd_seq_device snd soundcore nvidia sky2
+Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
+ffff810002178440)
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
+       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
+       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
+       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
+       <ffffffff80397b49>{_spin_lock+27}
+<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
+       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
+       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
+       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
+       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
+       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
+       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
+       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
+       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
+<ffffffff8018075f>{__link_path_walk+3332}
+       <ffffffff80397b0c>{__lock_text_start+20}
+<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
+       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
+<ffffffff8017ab11>{chrdev_open+454}
+       <ffffffff8017a94b>{chrdev_open+0}
+<ffffffff80171031>{__dentry_open+310}
+       <ffffffff8017118d>{nameidata_to_filp+34}
+<ffffffff801711d6>{filp_open+58}
+       <ffffffff801713d4>{get_unused_fd+234}
+<ffffffff80171533>{do_sys_open+81}
+       <ffffffff8011e57f>{sysenter_do_call+27}
 
-I suspect this might be specific for my model laptop as I'm having a hard
-time finding anyone else with the same problem, but I've tried several
-distros and kernel versions, and the card works in Windows.
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
+CR2: 0000000010228800
+ <6>note: wine-preloader[11110] exited with preempt_count 1
 
-The laptop is an Elite Group G732, which has a SiS mainboard chipset with
-the SI7012 onboard controller (Realtek ALC202 chip).
-
-I've tried messing with the buffer_size and period_size in asound.conf,
-which seem to have some impact on the "pattern" of the chopping and
-skipping, but there are no values that I've found that will get rid of
-them entirely.
-
-I'm assuming this is an incompatibility with the driver and this specific
-hardware, but I could obviously be wrong.
-
-I've tried using the version of ALSA in the 2.6.10, 2.6.12 and 2.6.16.2
-kernels, as well as compiled the latest stable and developement releases
-of ALSA myself. The result is the same for them all.
+I use standalone alsa-driver (kernel one is out of date and doesn't
+support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
+gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
 ======================================================================
 
 ----------------------------------------------------------------------
- razorbroom - 04-12-06 06:57 
+ Raymond - 04-11-06 09:06 
 ----------------------------------------------------------------------
-I believe I have similar troubles with this same driver.  Chipset is also a
-SiS 7012.  Using Debian with a vanilla 2.6.16 kernel but no 2.6.x kernel
-I've used has solved the problems.  The choppiness is xruns I suspect.
+/* PCI hardware resources */
+	unsigned long io;
+	void __iomem *mmio;
 
-lspci:
-0000:00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
-Sound Controller (rev a0)
-        Subsystem: Elitegroup Computer Systems: Unknown device 0a14
-        Flags: bus master, medium devsel, latency 64, IRQ 11
-        I/O ports at dc00 [size=256]
-        I/O ports at d400 [size=64]
-        Capabilities: [48] Power Management version 2
+Do we need to define the variable io in struct snd_vortex ?
 
-lsmod:
-Module                  Size  Used by
-xt_tcpudp               3136  1
-iptable_filter          2304  1
-snd_intel8x0           26908  0
-snd_ac97_codec         90668  1 snd_intel8x0
-snd_ac97_bus            1856  1 snd_ac97_codec
-snd_pcm_oss            54432  0
-snd_mixer_oss          16256  1 snd_pcm_oss
-snd_pcm                79816  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd_timer              19844  1 snd_pcm
-snd                    46848  6
-snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore               6880  1 snd
-snd_page_alloc          8840  2 snd_intel8x0,snd_pcm
-i2c_sis630              6284  0
-ip_tables              10392  1 iptable_filter
-x_tables                9604  2 xt_tcpudp,ip_tables
-tuner                  52140  0
-tda9887                15568  0
-bttv                  163836  0
-usblp                  11456  0
-ohci_hcd               14852  0
-sr_mod                 13668  0
-sym53c8xx              73108  0
-scsi_transport_spi     19328  1 sym53c8xx
-sidewinder             11200  0
-ns558                   2056  0
-gameport               10504  3 sidewinder,ns558
-joydev                  8192  0
-ati_remote              9736  0
-radeon                106144  0
-sis900                 19264  0
-crc32                   4032  1 sis900
-video_buf              17220  1 bttv
-firmware_class          7744  1 bttv
-i2c_algo_bit            8520  1 bttv
-v4l2_common             6656  2 tuner,bttv
-btcx_risc               4104  1 bttv
-ir_common               8132  1 bttv
-tveeprom               13456  1 bttv
-i2c_core               16784  6
-i2c_sis630,tuner,tda9887,bttv,i2c_algo_bit,tveeprom
-ov511                  72596  0
-compat_ioctl32          1024  2 bttv,ov511
-videodev                6976  2 bttv,ov511
-usb_storage            31172  0
+It seem that it is used only once in the longname
 
-cat /proc/asound/cards:
- 0 [SI7012         ]: ICH - SiS SI7012
-                      SiS SI7012 with ALC100,100P at 0xdc00, irq 11
+	chip->io = pci_resource_start(pci, 0);
 
-Turned on debugging and here is a sample of what appears in dmesg when the
-choppiness occurs:
-XRUN: pcmC0D0p
- [<f8babd77>] snd_pcm_period_elapsed+0x1a7/0x350 [snd_pcm]
- [<f8b74652>] snd_intel8x0_interrupt+0x182/0x230 [snd_intel8x0]
- [<c013154d>] handle_IRQ_event+0x3d/0x70
- [<c01315e3>] __do_IRQ+0x63/0xc0
- [<c011ab33>] __do_softirq+0x43/0x90
- [<c0104a59>] do_IRQ+0x19/0x30
- [<c0102d12>] common_interrupt+0x1a/0x20
-XRUN: pcmC0D0p
- [<f8babd77>] snd_pcm_period_elapsed+0x1a7/0x350 [snd_pcm]
- [<f8b74652>] snd_intel8x0_interrupt+0x182/0x230 [snd_intel8x0]
- [<c013154d>] handle_IRQ_event+0x3d/0x70
- [<c01315e3>] __do_IRQ+0x63/0xc0
- [<c0104a59>] do_IRQ+0x19/0x30
- [<c0102d12>] common_interrupt+0x1a/0x20
-Unexpected hw_pointer value [2] (stream = 0, delta: -418, max jitter =
-4456): wrong interrupt acknowledge? [<f8badfa9>] snd_pcm_update_hw_ptr
-+0x129/0x260 [snd_pcm] [<f8ba8bb5>] snd_pcm_common_ioctl1+0x695/0x1080
-[snd_pcm] [<f8b746ca>] snd_intel8x0_interrupt+0x1fa/0x230 [snd_intel8x0]
- [<c011ab33>] __do_softirq+0x43/0x90
- [<c02e4e55>] schedule+0x2f5/0x5c0
- [<c02e54fc>] schedule_timeout+0x4c/0xc0
- [<f8bab4af>] snd_pcm_lib_write_transfer+0x9f/0xd0 [snd_pcm]
- [<c0162578>] poll_freewait+0x48/0x60
- [<c0162a82>] do_select+0x422/0x4a0
- [<f8ba9adf>] snd_pcm_playback_ioctl1+0x5f/0x4d0 [snd_pcm]
- [<f8baa9ec>] snd_pcm_kernel_playback_ioctl+0x2c/0x40 [snd_pcm]
- [<f8bbcbf5>] snd_pcm_oss_ioctl+0xa65/0xbe0 [snd_pcm_oss]
- [<c0161c0a>] do_ioctl+0x2a/0x80
- [<c0161cb2>] vfs_ioctl+0x52/0x2b0
- [<c016392b>] sys_select+0x11b/0x200
- [<c0161f55>] sys_ioctl+0x45/0x70
- [<c0102b45>] syscall_call+0x7/0xb
+	sprintf(card->longname, "%s at 0x%lx irq %i",
+		card->shortname, chip->io, chip->irq);
 
-And yes, I can always reproduce this.  Usually all it takes is loading up
-a bunch of images (use your imagination) in a browser and switching window
-focus or changing desktops.
+Since recent CVS version required a version of autoconf which is not
+available in FC1. 
 
-Ensnared: maybe if you echo 1 or 2 (as root, not sudo) to
-/proc/asound/card0/pcm*/xrun_debug you can get some more info from dmesg. 
-There is a kernal option (alsa debug?) that must be turned on for this to
-work.
+It's difficult to post a patch to ML when I cannot run cvscompile with
+alsa-driver , alsa-lib , ...
+
+I can only test the bug against the released version (e.g.
+alsa-driver-1.0.11rc4)
+
+Also it seem that cvs server has a problem,
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1999
+
+----------------------------------------------------------------------
+ Raymond - 04-12-06 10:28 
+----------------------------------------------------------------------
+>> Also I try wine at home with my "Monster Sound 2" (lspci output in bug
+>> 0001726) on 32-bit kernel and here is dmesg output on first run:
+>> vortex: FATAL: ResManager: resource type 0 exhausted.
+>> vortex: FATAL: ResManager: resource type 3 exhausted.
+
+Since the output of wavetable daugther card is connected to the "Video" of
+analog mixer of AC97 codec, it don't use any resources dma, src or mixer
+of au88x0 chip.
+
+Do you have any other error in system log when the driver is loaded ?
+
+Do you have Diamond MX25 (SPDIF) connected to your NX300 ?
+
+Are there any application trying to open hw:0,1 (SPDIF), hw:0,2 or hw:0,3
+? 
+
+AFAIK /dev/adsp cannot be mapped to hw:0,1 for au88x0
+
+
+>> Do you means that no oops with aplaymidi when you mention "aplaymidi
+doesn't 
+>> produce any sound with and without this patch" ?
+
+> Yes, with this patch there is no oops. 
+
+I assume that you mean the oops can be reproduced by 
+
+aplaymidi --port=16:0 any.mid
+
+on your EM64T with alsa-1.0.11rc4 , it is easy for other to test when the
+bug can be reproduced by a program in alsa-utils
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-06 04:40 Ensnared       New Issue                                    
-04-12-06 04:40 Ensnared       Distribution              => Ubuntu 5.10 "Breezy
-Badger"
-04-12-06 04:40 Ensnared       Kernel Version            => 2.6.x           
-04-12-06 06:57 razorbroom     Note Added: 0009239                          
+02-09-06 08:33 ponchick       New Issue                                    
+02-09-06 08:33 ponchick       Distribution              => gentoo          
+02-09-06 08:33 ponchick       Kernel Version            =>
+gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
+02-09-06 09:32 Raymond        Note Added: 0007973                          
+02-09-06 11:57 ponchick       Note Added: 0007975                          
+02-09-06 12:32 Raymond        Note Added: 0007976                          
+02-09-06 12:35 Raymond        Note Edited: 0007976                         
+02-10-06 03:06 Raymond        Note Added: 0007982                          
+02-10-06 03:11 rlrevell       Note Added: 0007983                          
+02-10-06 03:49 Raymond        Note Added: 0007984                          
+02-10-06 05:08 ponchick       Note Added: 0007986                          
+02-10-06 05:36 Raymond        Note Added: 0007988                          
+02-10-06 06:03 Raymond        Note Added: 0007990                          
+02-10-06 10:09 ponchick       Note Added: 0007997                          
+02-10-06 11:30 Raymond        Note Added: 0008001                          
+02-12-06 03:32 Raymond        Note Added: 0008024                          
+02-12-06 14:14 Raymond        Note Deleted: 0007990                        
+02-13-06 07:08 Raymond        Note Edited: 0008024                         
+02-13-06 16:44 Raymond        Note Edited: 0008001                         
+02-14-06 10:41 Raymond        Note Edited: 0008024                         
+02-16-06 04:40 Raymond        Note Added: 0008084                          
+02-16-06 06:33 ponchick       Note Added: 0008086                          
+02-16-06 09:57 Raymond        Note Added: 0008089                          
+02-16-06 10:16 ponchick       Note Added: 0008091                          
+02-16-06 10:38 Raymond        Note Added: 0008092                          
+02-16-06 10:40 Raymond        Note Edited: 0008092                         
+02-16-06 13:08 Raymond        Note Edited: 0008089                         
+02-25-06 13:15 Raymond        Note Added: 0008189                          
+03-21-06 18:02 Raymond        Note Edited: 0008089                         
+04-06-06 19:13 Raymond        Note Added: 0009126                          
+04-06-06 19:23 rlrevell       Note Added: 0009127                          
+04-11-06 05:09 Raymond        Note Added: 0009226                          
+04-11-06 06:08 ponchick       Note Added: 0009227                          
+04-11-06 09:06 Raymond        Note Added: 0009230                          
+04-12-06 10:28 Raymond        Note Added: 0009240                          
 ======================================================================
 
 
