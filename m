@@ -1,19 +1,16 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: LAC: anybody from ALSA attending?
-Date: Tue, 11 Apr 2006 18:49:36 -0400
-Message-ID: <1144795776.10666.78.camel@localhost.localdomain>
-Reply-To: paul@linuxaudiosystems.com
+From: Jiri Slaby <jirislaby@gmail.com>
+Subject: Re: Oops in 2.6.17-rc1: EIP is at snd_pcm_oss_sync+0x1f/0x260 [snd_pcm_oss]
+Date: Wed, 12 Apr 2006 02:34:59 +0200
+Message-ID: <443C4B33.60102@gmail.com>
+References: <443C41F2.5070307@ribosome.natur.cuni.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vms048pub.verizon.net (vms048pub.verizon.net [206.46.252.48])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0619B138
-	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 00:45:42 +0200 (MEST)
-Received: from dual ([151.197.178.52])
- by vms048.mailsrvcs.net (Sun Java System Messaging Server 6.2-4.02 (built Sep
- 9 2005)) with ESMTPA id <0IXK00LL5XW2WX95@vms048.mailsrvcs.net> for
- alsa-devel@alsa-project.org; Tue, 11 Apr 2006 17:45:38 -0500 (CDT)
+Received: from av2.karneval.cz (av2.karneval.cz [81.27.192.108])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E5819165
+	for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2006 02:34:47 +0200 (MEST)
+In-Reply-To: <443C41F2.5070307@ribosome.natur.cuni.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,16 +20,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: =?UTF-8?B?TWFydGluIE1PS1JFSsWg?= <mmokrejs@ribosome.natur.cuni.cz>
+Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There are likely to be some significant discussions about ieee1394 audio
-support on Linux and it would be helpful/useful if someone from ALSA
-could be there. 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
---p
+Martin MOKREJ=C5=A0 napsal(a):
+> I used skype to chat and after I tried to close the application it did
+> not return
+> to xterm. This is what I have found. Hope this helps someone to find th=
+e
+> cause. ;-)
+>=20
+> BUG: unable to handle kernel NULL pointer dereference at virtual addres=
+s
+> 000000a0
+> printing eip:
+> f9a2e57f
+> *pde =3D 00000000
+> Oops: 0000 [#1]
+> Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
+> snd_seq_midi_event snd_seq snd_seq_device ohci_hcd ehci_hcd radeon drm
+> eth1394 pcmcia ohci1394 ieee1394 uhci_hcd snd_intel8x0 snd_ac97_codec
+> snd_ac97_bus snd_pcm snd_timer snd snd_page_alloc yenta_socket
+> rsrc_nonstatic pcmcia_core intel_agp agpgart 8139too
+> CPU:    0
+> EIP:    0060:[<f9a2e57f>]    Not tainted VLI
+> EFLAGS: 00010282   (2.6.17-rc1 #1) EIP is at snd_pcm_oss_sync+0x1f/0x26=
+0
+> [snd_pcm_oss]
+> eax: c1fe6580   ebx: f79f2140   ecx: f9a2f562   edx: 00000000
+> esi: dfdbdb60   edi: f79f2000   ebp: da51ae24   esp: da51ae00
+> ds: 007b   es: 007b   ss: 0068
+> Process skype (pid: 12275, threadinfo=3Dda51a000 task=3Df09bd070)
+> Stack: <0>c1ee1a60 c1ee1a40 c1ee1a40 00000000 c1fe6580 dfdbdb60 f79f214=
+0
+> dfdbdb60       f79f2000 da51ae3c f9a2f587 f4738540 00000008 f4738540
+> f752ae9c da51ae58       c014b2a3 c1cd4e40 f75208d4 f4738540 c1ec5f00
+> 00000000 da51ae60 c014b20e Call Trace:
+> <c0102f11> show_stack_log_lvl+0x89/0x91   <c0103066>
+> show_registers+0x10e/0x176
+> <c010321a> die+0xd8/0x168   <c01124ef> do_page_fault+0x452/0x538
+> <c0102bb7> error_code+0x4f/0x54   <f9a2f587>
+> snd_pcm_oss_release+0x25/0x88 [snd_pcm_oss]
+> <c014b2a3> __fput+0x93/0x120   <c014b20e> fput+0x16/0x18
+> <c0149fab> filp_close+0x4e/0x58   <c011a88e> close_files+0x57/0x67
+> <c011a8c6> put_files_struct+0x17/0x3d   <c011b129> do_exit+0x19d/0x2fb
+> <c011b305> sys_exit_group+0x0/0x11   <c0121a3a>
+> get_signal_to_deliver+0x20b/0x21b
+> <c01027a1> do_signal+0x54/0xfd   <c0102876> do_notify_resume+0x2c/0x3a
+> <c0102a1e> work_notifysig+0x13/0x19  Code: 6f c6 8d 65 f4 89 d8 5b 5e 5=
+f
+> 5d c3 55 89 e5 57 56 53 83 ec 18 89 45 f0 8b 00 85 c0 89 45 ec 0f 84 f5
+> 01 00 00 8b 50 5c 89 55 e8 <8b> 82 a0 00 00 00 85 c0 0f 85 a0 01 00 00
+> 8b 45 ec e8 c0 f6 ff <1>Fixing recursive fault but reboot is needed!
+Try this:
+http://bugzilla.kernel.org/show_bug.cgi?id=3D6329#c10
+(comment 10 patch)
+I think, that's it, if not, turn on sound debug on and retest.
 
+regards,
+- --
+Jiri Slaby         www.fi.muni.cz/~xslaby
+~\-/~      jirislaby@gmail.com      ~\-/~
+B67499670407CE62ACC8 22A032CC55C339D47A7E
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
 
+iD8DBQFEPEszMsxVwznUen4RAiYzAKCV9qZb6SMMRv0DltWeY+Ty1EfOtACdFpL3
+YIxT7B1auhk840e5akEN4wk=3D
+=3Dnuw5
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
