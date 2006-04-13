@@ -1,8 +1,14 @@
-From: jayakumar.alsa@gmail.com
-Subject: [PATCH 2.6.16 1/1] ALSA: PM support for cs5535audio
-Date: Thu, 13 Apr 2006 11:55:27 +0800
-Message-ID: <200604130355.k3D3tR92001744@ns1.clipsalportal.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
+Date: Thu, 13 Apr 2006 07:16:00 +0200
+Message-ID: <7cbd3e2cb236dbd29bac3712fbbf5eb8@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4BC76148
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 07:16:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -12,389 +18,242 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi, Jaroslav, ALSA folk,
 
-Appended is my patch adding PM support to the cs5535audio driver.
-I also added the ac97 quirk but it's not yet confirmed which
-boards need to be in the quirk list. The patch also includes some
-Kconfig and misc cleanup.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
+======================================================================
+Reported By:                ponchick
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1833
+Category:                   GENERIC - mpu401
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             gentoo-sources-2.6.15-r4
+======================================================================
+Date Submitted:             02-09-2006 08:33 CET
+Last Modified:              04-13-2006 07:16 CEST
+======================================================================
+Summary:                    oops in snd_mpu401_uart
+Description: 
+I don't know what exactly happend but when I run wine or winecfg it
+segfaulted. dmesg shows following:
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
+snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
+snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
+snd_seq_device snd soundcore nvidia sky2
+Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
+ffff810002178440)
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
+       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
+       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
+       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
+       <ffffffff80397b49>{_spin_lock+27}
+<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
+       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
+       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
+       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
+       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
+       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
+       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
+       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
+       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
+<ffffffff8018075f>{__link_path_walk+3332}
+       <ffffffff80397b0c>{__lock_text_start+20}
+<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
+       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
+<ffffffff8017ab11>{chrdev_open+454}
+       <ffffffff8017a94b>{chrdev_open+0}
+<ffffffff80171031>{__dentry_open+310}
+       <ffffffff8017118d>{nameidata_to_filp+34}
+<ffffffff801711d6>{filp_open+58}
+       <ffffffff801713d4>{get_unused_fd+234}
+<ffffffff80171533>{do_sys_open+81}
+       <ffffffff8011e57f>{sysenter_do_call+27}
 
-Please let me know if it looks okay and if you have any feedback 
-or suggestions.
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
+CR2: 0000000010228800
+ <6>note: wine-preloader[11110] exited with preempt_count 1
 
-Thanks,
-Jaya Kumar
+I use standalone alsa-driver (kernel one is out of date and doesn't
+support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
+gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
+======================================================================
 
-Signed-off-by: Jaya Kumar <jayakumar.alsa@gmail.com>
+----------------------------------------------------------------------
+ Raymond - 04-12-06 15:16 
+----------------------------------------------------------------------
+>> Are there any application trying to open hw:0,1 (SPDIF), hw:0,2 or
+hw:0,3 ?
 
+>I don't think so. There is only arts running when these errors occur. As
+I know >in default configuration it use hw:0.0 only.
+
+ALSA CVS server still not working
+
+Try this diff against alsa-1.0.11rc5 to find out why the resources are
+exhausted
+
+diff -u alsa-driver-1.0.11rc5/alsa-kernel/pci/au88x0_orig/au88x0_pcm.c
+alsa-driver-1.0.11rc5/alsa-kernel/pci/au88x0/au88x0_pcm.c
 ---
-
- Kconfig                       |    9 ++-
- cs5535audio/Makefile          |    4 +
- cs5535audio/cs5535audio.c     |   31 ++++++++--
- cs5535audio/cs5535audio.h     |    8 ++
- cs5535audio/cs5535audio_pcm.c |   21 +++++++
- cs5535audio/cs5535audio_pm.c  |  125 ++++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 191 insertions(+), 7 deletions(-)
-
----
-
-diff -X linux-2.6.16/Documentation/dontdiff -uprN linux-2.6.16-vanilla/sound/pci/cs5535audio/cs5535audio.c linux-2.6.16/sound/pci/cs5535audio/cs5535audio.c
---- linux-2.6.16-vanilla/sound/pci/cs5535audio/cs5535audio.c	2006-03-24 22:55:13.000000000 +0800
-+++ linux-2.6.16/sound/pci/cs5535audio/cs5535audio.c	2006-04-13 11:25:41.000000000 +0800
-@@ -1,5 +1,5 @@
- /*
-- * Driver for audio on multifunction CS5535 companion device
-+ * Driver for audio on multifunction CS5535/6 companion device
-  * Copyright (C) Jaya Kumar
-  *
-  * Based on Jaroslav Kysela and Takashi Iwai's examples.
-@@ -40,16 +40,29 @@
- 
- #define DRIVER_NAME "cs5535audio"
- 
-+static char *ac97_quirk;
-+module_param(ac97_quirk, charp, 0444);
-+MODULE_PARM_DESC(ac97_quirk, "AC'97 board specific workarounds.");
+alsa-driver-1.0.11rc5/alsa-kernel/pci/au88x0_orig/au88x0_pcm.c	2006-04-10
+21:42:00.000000000 +0800
++++ alsa-driver-1.0.11rc5/alsa-kernel/pci/au88x0/au88x0_pcm.c	2006-04-12
+21:08:55.000000000 +0800
+@@ -122,6 +122,8 @@
+ 	vortex_t *vortex = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int err;
 +
-+static struct ac97_quirk ac97_quirks[] __devinitdata = {
-+#if 0 /* Not yet confirmed if all 5536 boards are HP only */
-+	{
-+		.subvendor = PCI_VENDOR_ID_AMD, 
-+		.subdevice = PCI_DEVICE_ID_AMD_CS5536_AUDIO, 
-+		.name = "AMD RDK",     
-+		.type = AC97_TUNE_HP_ONLY
-+	},
-+#endif
-+	{}
-+};
++	printk(KERN_INFO "vortex: pcm_open %s hw:%d,%d,%d\n",substream->stream
+== SNDRV_PCM_STREAM_PLAYBACK ? "Playback" : "Capture" ,
+vortex->card->number, substream->pcm->device, substream->number);
+ 	
+ 	/* Force equal size periods */
+ 	if ((err =
+@@ -171,9 +173,13 @@
+ /* close callback */
+ static int snd_vortex_pcm_close(struct snd_pcm_substream *substream)
+ {
+-	//vortex_t *chip = snd_pcm_substream_chip(substream);
++	vortex_t *chip = snd_pcm_substream_chip(substream);
+ 	stream_t *stream = (stream_t *) substream->runtime->private_data;
  
- static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
- static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
- static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
- 
- static struct pci_device_id snd_cs5535audio_ids[] = {
--	{ PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_CS5535_AUDIO,
--	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },
--	{ PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CS5536_AUDIO,
--	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0, },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_CS5535_AUDIO) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CS5536_AUDIO) },
- 	{}
- };
- 
-@@ -148,6 +161,8 @@ static int snd_cs5535audio_mixer(struct 
- 		return err;
++	printk(KERN_INFO "vortex: pcm_close %s hw:%d,%d,%d\n",
++		substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? "Playback" :
+"Capture",
++		chip->card->number, substream->pcm->device , substream->number );
++
+ 	// the hardware-specific codes will be here
+ 	if (stream != NULL) {
+ 		stream->substream = NULL;
+@@ -202,10 +208,9 @@
  	}
- 
-+	snd_ac97_tune_hardware(cs5535au->ac97, ac97_quirks, ac97_quirk);
-+
- 	return 0;
- }
- 
-@@ -347,6 +362,8 @@ static int __devinit snd_cs5535audio_pro
- 	if ((err = snd_cs5535audio_create(card, pci, &cs5535au)) < 0)
- 		goto probefail_out;
- 
-+	card->private_data = cs5535au;
-+
- 	if ((err = snd_cs5535audio_mixer(cs5535au)) < 0)
- 		goto probefail_out;
- 
-@@ -383,6 +400,10 @@ static struct pci_driver driver = {
- 	.id_table = snd_cs5535audio_ids,
- 	.probe = snd_cs5535audio_probe,
- 	.remove = __devexit_p(snd_cs5535audio_remove),
-+#ifdef CONFIG_PM
-+	.suspend = snd_cs5535audio_suspend,
-+	.resume = snd_cs5535audio_resume,
-+#endif
- };
- 
- static int __init alsa_card_cs5535audio_init(void)
-diff -X linux-2.6.16/Documentation/dontdiff -uprN linux-2.6.16-vanilla/sound/pci/cs5535audio/cs5535audio.h linux-2.6.16/sound/pci/cs5535audio/cs5535audio.h
---- linux-2.6.16-vanilla/sound/pci/cs5535audio/cs5535audio.h	2006-03-24 22:55:13.000000000 +0800
-+++ linux-2.6.16/sound/pci/cs5535audio/cs5535audio.h	2006-03-25 20:54:59.000000000 +0800
-@@ -74,6 +74,8 @@
- #define PRM_RDY_STS			0x00800000
- #define ACC_CODEC_CNTL_WR_CMD		(~0x80000000)
- #define ACC_CODEC_CNTL_RD_CMD		0x80000000
-+#define ACC_CODEC_CNTL_LNK_SHUTDOWN	0x00040000
-+#define ACC_CODEC_CNTL_LNK_WRM_RST	0x00020000
- #define PRD_JMP				0x2000
- #define PRD_EOP				0x4000
- #define PRD_EOT				0x8000
-@@ -88,6 +90,7 @@ struct cs5535audio_dma_ops {
- 	void (*disable_dma)(struct cs5535audio *cs5535au);
- 	void (*pause_dma)(struct cs5535audio *cs5535au);
- 	void (*setup_prd)(struct cs5535audio *cs5535au, u32 prd_addr);
-+	u32 (*read_prd)(struct cs5535audio *cs5535au);
- 	u32 (*read_dma_pntr)(struct cs5535audio *cs5535au);
- };
- 
-@@ -103,11 +106,14 @@ struct cs5535audio_dma {
- 	struct snd_pcm_substream *substream;
- 	unsigned int buf_addr, buf_bytes;
- 	unsigned int period_bytes, periods;
-+	int suspended;
-+	u32 saved_prd;
- };
- 
- struct cs5535audio {
- 	struct snd_card *card;
- 	struct snd_ac97 *ac97;
-+	struct snd_pcm *pcm;
- 	int irq;
- 	struct pci_dev *pci;
- 	unsigned long port;
-@@ -117,6 +123,8 @@ struct cs5535audio {
- 	struct cs5535audio_dma dmas[NUM_CS5535AUDIO_DMAS];
- };
- 
-+int snd_cs5535audio_suspend(struct pci_dev *pci, pm_message_t state);
-+int snd_cs5535audio_resume(struct pci_dev *pci);
- int __devinit snd_cs5535audio_pcm(struct cs5535audio *cs5535audio);
- 
- #endif /* __SOUND_CS5535AUDIO_H */
-diff -X linux-2.6.16/Documentation/dontdiff -uprN linux-2.6.16-vanilla/sound/pci/cs5535audio/cs5535audio_pcm.c linux-2.6.16/sound/pci/cs5535audio/cs5535audio_pcm.c
---- linux-2.6.16-vanilla/sound/pci/cs5535audio/cs5535audio_pcm.c	2006-03-24 22:55:13.000000000 +0800
-+++ linux-2.6.16/sound/pci/cs5535audio/cs5535audio_pcm.c	2006-03-25 20:46:17.000000000 +0800
-@@ -193,6 +193,11 @@ static void cs5535audio_playback_setup_p
- 	cs_writel(cs5535au, ACC_BM0_PRD, prd_addr);
- }
- 
-+static u32 cs5535audio_playback_read_prd(struct cs5535audio *cs5535au)
-+{
-+	return cs_readl(cs5535au, ACC_BM0_PRD);
-+}
-+
- static u32 cs5535audio_playback_read_dma_pntr(struct cs5535audio *cs5535au)
+ 	//sgbuf = (struct snd_sg_buf *) substream->runtime->dma_private;
+ 	sgbuf = snd_pcm_substream_sgbuf(substream);
+-	/*
+-	   printk(KERN_INFO "Vortex: periods %d, period_bytes %d, channels =
+%d\n", params_periods(hw_params),
+-	   params_period_bytes(hw_params), params_channels(hw_params));
+-	 */
++	
++   	printk(KERN_INFO "vortex: pcm_hwparams %s hw:%d,%d,%d channels = %d
+format = %d rate = %d\n", substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
+"Playback" : "Capture ", chip->card->number, substream->pcm->device,
+substream->number, params_channels(hw_params), params_format(hw_params),
+params_rate(hw_params));
++	 
+ 	spin_lock_irq(&chip->lock);
+ 	// Make audio routes and config buffer DMA.
+ 	if (VORTEX_PCM_TYPE(substream->pcm) != VORTEX_PCM_WT) {
+@@ -255,6 +260,9 @@
  {
- 	return cs_readl(cs5535au, ACC_BM0_PNTR);
-@@ -219,6 +224,11 @@ static void cs5535audio_capture_setup_pr
- 	cs_writel(cs5535au, ACC_BM1_PRD, prd_addr);
- }
+ 	vortex_t *chip = snd_pcm_substream_chip(substream);
+ 	stream_t *stream = (stream_t *) (substream->runtime->private_data);
++	printk(KERN_INFO "vortex: pcm_hw_free %s hw:%d,%d,%d\n",
++		substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? "Playback" :
+"Capture",
++		chip->card->number, substream->pcm->device , substream->number );
  
-+static u32 cs5535audio_capture_read_prd(struct cs5535audio *cs5535au)
-+{
-+	return cs_readl(cs5535au, ACC_BM1_PRD);
-+}
-+
- static u32 cs5535audio_capture_read_dma_pntr(struct cs5535audio *cs5535au)
- {
- 	return cs_readl(cs5535au, ACC_BM1_PNTR);
-@@ -285,9 +295,17 @@ static int snd_cs5535audio_trigger(struc
- 	case SNDRV_PCM_TRIGGER_START:
- 		dma->ops->enable_dma(cs5535au);
- 		break;
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		dma->ops->enable_dma(cs5535au);
-+		dma->suspended = 0;
-+		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		dma->ops->disable_dma(cs5535au);
- 		break;
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		dma->ops->disable_dma(cs5535au);
-+		dma->suspended = 1;
-+		break;
- 	default:
- 		snd_printk(KERN_ERR "unhandled trigger\n");
- 		err = -EINVAL;
-@@ -375,6 +393,7 @@ static struct cs5535audio_dma_ops snd_cs
-         .enable_dma = cs5535audio_playback_enable_dma,
-         .disable_dma = cs5535audio_playback_disable_dma,
-         .setup_prd = cs5535audio_playback_setup_prd,
-+        .read_prd = cs5535audio_playback_read_prd,
-         .pause_dma = cs5535audio_playback_pause_dma,
-         .read_dma_pntr = cs5535audio_playback_read_dma_pntr,
- };
-@@ -384,6 +403,7 @@ static struct cs5535audio_dma_ops snd_cs
-         .enable_dma = cs5535audio_capture_enable_dma,
-         .disable_dma = cs5535audio_capture_disable_dma,
-         .setup_prd = cs5535audio_capture_setup_prd,
-+        .read_prd = cs5535audio_capture_read_prd,
-         .pause_dma = cs5535audio_capture_pause_dma,
-         .read_dma_pntr = cs5535audio_capture_read_dma_pntr,
- };
-@@ -413,6 +433,7 @@ int __devinit snd_cs5535audio_pcm(struct
- 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
- 					snd_dma_pci_data(cs5535au->pci),
- 					64*1024, 128*1024);
-+	cs5535au->pcm = pcm;
- 
- 	return 0;
- }
-diff -X linux-2.6.16/Documentation/dontdiff -uprN linux-2.6.16-vanilla/sound/pci/cs5535audio/cs5535audio_pm.c linux-2.6.16/sound/pci/cs5535audio/cs5535audio_pm.c
---- linux-2.6.16-vanilla/sound/pci/cs5535audio/cs5535audio_pm.c	1970-01-01 07:30:00.000000000 +0730
-+++ linux-2.6.16/sound/pci/cs5535audio/cs5535audio_pm.c	2006-03-26 11:20:23.000000000 +0800
-@@ -0,0 +1,125 @@
-+/*
-+ * Power management for audio on multifunction CS5535 companion device
-+ * Copyright (C) Jaya Kumar
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/slab.h>
-+#include <linux/pci.h>
-+#include <linux/delay.h>
-+#include <sound/driver.h>
-+#include <sound/core.h>
-+#include <sound/control.h>
-+#include <sound/initval.h>
-+#include <sound/asoundef.h>
-+#include <sound/pcm.h>
-+#include <sound/ac97_codec.h>
-+#include "cs5535audio.h"
-+
-+static void snd_cs5535audio_stop_hardware(struct cs5535audio *cs5535au)
-+{
-+	/* 
-+	we depend on snd_ac97_suspend to tell the
-+	AC97 codec to shutdown. the amd spec suggests
-+	that the LNK_SHUTDOWN be done at the same time
-+	that the codec power-down is issued. instead,
-+	we do it just after rather than at the same 
-+	time. excluding codec specific build_ops->suspend
-+	ac97 powerdown hits:
-+	0x8000 EAPD 
-+	0x4000 Headphone amplifier 
-+	0x0300 ADC & DAC 
-+	0x0400 Analog Mixer powerdown (Vref on) 
-+	I am not sure if this is the best that we can do.
-+	The remainder to be investigated are:
-+	- analog mixer (vref off) 0x0800
-+	- AC-link powerdown 0x1000
-+	- codec internal clock 0x2000
-+	*/
-+
-+	/* set LNK_SHUTDOWN to shutdown AC link */
-+	cs_writel(cs5535au, ACC_CODEC_CNTL, ACC_CODEC_CNTL_LNK_SHUTDOWN);
-+
-+}
-+
-+int snd_cs5535audio_suspend(struct pci_dev *pci, pm_message_t state)
-+{
-+	struct snd_card *card = pci_get_drvdata(pci);
-+	struct cs5535audio *cs5535au = card->private_data;
-+	int i;
-+
-+
-+	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
-+	for (i = 0; i < NUM_CS5535AUDIO_DMAS; i++) {
-+		struct cs5535audio_dma *dma = &cs5535au->dmas[i];
-+		if (dma && dma->substream && !dma->suspended) 
-+			dma->saved_prd = dma->ops->read_prd(cs5535au);
-+		
-+	}
-+	snd_pcm_suspend_all(cs5535au->pcm);
-+	snd_ac97_suspend(cs5535au->ac97);
-+	/* save important regs, then disable aclink in hw */
-+	snd_cs5535audio_stop_hardware(cs5535au);
-+	pci_disable_device(pci);
-+	pci_save_state(pci);
-+
-+	return 0;
-+}
-+
-+int snd_cs5535audio_resume(struct pci_dev *pci)
-+{
-+	struct snd_card *card = pci_get_drvdata(pci);
-+	struct cs5535audio *cs5535au = card->private_data;
-+	u32 tmp;
-+	int timeout;
-+	int i;
-+
-+	pci_restore_state(pci);
-+	pci_enable_device(pci);
-+	pci_set_master(pci);
-+
-+	/* set LNK_WRM_RST to reset AC link */
-+	cs_writel(cs5535au, ACC_CODEC_CNTL, ACC_CODEC_CNTL_LNK_WRM_RST);
-+
-+	timeout = 50;
-+	do {
-+		tmp = cs_readl(cs5535au, ACC_CODEC_STATUS);
-+		if (tmp & PRM_RDY_STS)
-+			break;
-+		udelay(1);
-+	} while (--timeout);
-+
-+	if (!timeout)
-+		snd_printk(KERN_ERR "Failure getting AC Link ready\n");
-+
-+	/* we depend on ac97 to perform the codec power up */
-+	snd_ac97_resume(cs5535au->ac97);
-+	/* set up rate regs, dma. actual initiation is done in trig */
-+	for (i = 0; i < NUM_CS5535AUDIO_DMAS; i++) {
-+		struct cs5535audio_dma *dma = &cs5535au->dmas[i];
-+		if (dma && dma->substream && dma->suspended) {
-+			dma->substream->ops->prepare(dma->substream);
-+			dma->ops->setup_prd(cs5535au, dma->saved_prd);
-+		}
-+	}
-+		
-+	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
-+
-+	return 0;
-+}
-+
-diff -X linux-2.6.16/Documentation/dontdiff -uprN linux-2.6.16-vanilla/sound/pci/cs5535audio/Makefile linux-2.6.16/sound/pci/cs5535audio/Makefile
---- linux-2.6.16-vanilla/sound/pci/cs5535audio/Makefile	2006-03-24 22:55:13.000000000 +0800
-+++ linux-2.6.16/sound/pci/cs5535audio/Makefile	2006-03-26 19:29:27.000000000 +0800
-@@ -4,5 +4,9 @@
- 
- snd-cs5535audio-objs := cs5535audio.o cs5535audio_pcm.o
- 
-+ifdef CONFIG_PM
-+snd-cs5535audio-objs += cs5535audio_pm.o
-+endif
-+
- # Toplevel Module Dependency
- obj-$(CONFIG_SND_CS5535AUDIO) += snd-cs5535audio.o
-diff -X linux-2.6.16/Documentation/dontdiff -uprN linux-2.6.16-vanilla/sound/pci/Kconfig linux-2.6.16/sound/pci/Kconfig
---- linux-2.6.16-vanilla/sound/pci/Kconfig	2006-03-24 22:55:13.000000000 +0800
-+++ linux-2.6.16/sound/pci/Kconfig	2006-04-13 11:28:52.000000000 +0800
-@@ -203,14 +203,19 @@ config SND_CS46XX_NEW_DSP
- 	  This works better than the old code, so say Y.
- 
- config SND_CS5535AUDIO
--	tristate "CS5535 Audio"
-+	tristate "CS5535/CS5536 Audio"
- 	depends on SND && X86 && !X86_64
- 	select SND_PCM
- 	select SND_AC97_CODEC
- 	help
- 	  Say Y here to include support for audio on CS5535 chips. It is
- 	  referred to as NS CS5535 IO or AMD CS5535 IO companion in
--	  various literature.
-+	  various literature. This driver also supports the CS5536 audio
-+	  device. However, for both chips, on certain boards, you may
-+	  need to use ac97_quirk=hp_only if your board has physically 
-+	  mapped headphone out to master output. If that works for you,
-+	  send lspci -vvv output to the mailing list so that your board
-+	  can be identified in the quirks list.
- 
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-cs5535audio.
+ 	spin_lock_irq(&chip->lock);
+ 	// Delete audio routes.
+
+----------------------------------------------------------------------
+ Raymond - 04-13-06 07:16 
+----------------------------------------------------------------------
+> Please submit patches to alsa-devel mailing list and not through this bug
+tracker
+
+http://sourceforge.net/mailarchive/message.php?msg_id=15262419
+
+I think you should ask Alan Horstmann to test whether this patch work on
+his au88x0.
+
+His DMX6fire seem to have a 26-pins connector
+
+AFAIK , No one has tested mpu401 with aliens's alsa-cvs-2006-01-04.patch
+on 32-bits/64-bits platform. (i.e. alsa-1.0.11rc4)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-09-06 08:33 ponchick       New Issue                                    
+02-09-06 08:33 ponchick       Distribution              => gentoo          
+02-09-06 08:33 ponchick       Kernel Version            =>
+gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
+02-09-06 09:32 Raymond        Note Added: 0007973                          
+02-09-06 11:57 ponchick       Note Added: 0007975                          
+02-09-06 12:32 Raymond        Note Added: 0007976                          
+02-09-06 12:35 Raymond        Note Edited: 0007976                         
+02-10-06 03:06 Raymond        Note Added: 0007982                          
+02-10-06 03:11 rlrevell       Note Added: 0007983                          
+02-10-06 03:49 Raymond        Note Added: 0007984                          
+02-10-06 05:08 ponchick       Note Added: 0007986                          
+02-10-06 05:36 Raymond        Note Added: 0007988                          
+02-10-06 06:03 Raymond        Note Added: 0007990                          
+02-10-06 10:09 ponchick       Note Added: 0007997                          
+02-10-06 11:30 Raymond        Note Added: 0008001                          
+02-12-06 03:32 Raymond        Note Added: 0008024                          
+02-12-06 14:14 Raymond        Note Deleted: 0007990                        
+02-13-06 07:08 Raymond        Note Edited: 0008024                         
+02-13-06 16:44 Raymond        Note Edited: 0008001                         
+02-14-06 10:41 Raymond        Note Edited: 0008024                         
+02-16-06 04:40 Raymond        Note Added: 0008084                          
+02-16-06 06:33 ponchick       Note Added: 0008086                          
+02-16-06 09:57 Raymond        Note Added: 0008089                          
+02-16-06 10:16 ponchick       Note Added: 0008091                          
+02-16-06 10:38 Raymond        Note Added: 0008092                          
+02-16-06 10:40 Raymond        Note Edited: 0008092                         
+02-16-06 13:08 Raymond        Note Edited: 0008089                         
+02-25-06 13:15 Raymond        Note Added: 0008189                          
+03-21-06 18:02 Raymond        Note Edited: 0008089                         
+04-06-06 19:13 Raymond        Note Added: 0009126                          
+04-06-06 19:23 rlrevell       Note Added: 0009127                          
+04-11-06 05:09 Raymond        Note Added: 0009226                          
+04-11-06 06:08 ponchick       Note Added: 0009227                          
+04-11-06 09:06 Raymond        Note Added: 0009230                          
+04-12-06 10:28 Raymond        Note Added: 0009240                          
+04-12-06 11:36 ponchick       Note Added: 0009241                          
+04-12-06 15:16 Raymond        Note Added: 0009243                          
+04-13-06 07:16 Raymond        Note Added: 0009253                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
