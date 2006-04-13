@@ -1,16 +1,14 @@
-From: Russell King <rmk+lkml@arm.linux.org.uk>
-Subject: Re: [ALSA STABLE 3/3] a few more -- unregister platform device again if probe was unsuccessful
-Date: Thu, 13 Apr 2006 15:57:57 +0100
-Message-ID: <20060413145756.GA29959__4636.29614464498$1144940455$gmane$org@flint.arm.linux.org.uk>
-References: <443DAD5C.8080007@keyaccess.nl> <200604131126.35841.ioe-lkml@rameria.de> <443E5AAD.5040800@keyaccess.nl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001652]: ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver output and input entry missing
+Date: Thu, 13 Apr 2006 17:12:39 +0200
+Message-ID: <a3e8a31a12a21b35f720e0f7d432c5bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk [212.18.232.186])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9915163
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 16:59:00 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <443E5AAD.5040800@keyaccess.nl>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01249163
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 17:12:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,40 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rene Herman <rene.herman@keyaccess.nl>
-Cc: Ingo Oeser <ioe-lkml@rameria.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 13, 2006 at 04:05:33PM +0200, Rene Herman wrote:
-> Not honouring/passing up probe() method error returns, not even -ENODEV, 
-> makes some sense for discoverable busses such as PCI where you at least 
-> have a driver independent bus_id sitting in /sys/devices/pci* that you 
-> can later echo into /sys/bus/pci/drivers/*/bind to make the driver bind 
-> to a device, but not much sense for the platform bus. Platform devices 
-> only "exist" (in /sys/devices/platform) due to the driver creating them 
-> itself and keeping them after failing a probe means that directory 
-> becomes an enumeration of the drivers we loaded, rather than a view of 
-> what's present in the system.
 
-Incorrect.  In some circumstances, they may be created by architecture
-support code, and might be created and destroyed dynamically by
-architecture support code.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1652> 
+======================================================================
+Reported By:                dschaefer79
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1652
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux 2005.1 X86_64
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             12-15-2005 18:40 CET
+Last Modified:              04-13-2006 17:12 CEST
+======================================================================
+Summary:                    ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver
+output and input entry missing
+Description: 
+Hi,
 
-> The driver model crowd did not seem exceedingly interested in the 
-> problem though:
-> 
-> http://marc.theaimsgroup.com/?l=linux-kernel&m=114417829014332&w=2
+My onboard soundcard works great with linux but I don't have a Master
+Output nor microphone ,cd, aux input under my linux. I try to use my tv
+sound with input but it doesn't work.
 
-Incorrect summary.  The ALSA use model of the driver model doesn't fit
-with the driver model use model.  It's not that we're not interested
-in it - it's that it's perverted to the way driver model folk intend
-the subsystem to work, and the way that platform devices are used on
-some architectures.
+Is it possible to add this ??
+======================================================================
 
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:  2.6 Serial core
+----------------------------------------------------------------------
+ bduc - 04-13-06 08:56 
+----------------------------------------------------------------------
+Ok upgraded drivers to 1.0.11-rc5 :-( still the same; 
+
+Maybe there is an option I have to specify ?
+Any way I can further debug to help you all out ?
+
+----------------------------------------------------------------------
+ rlrevell - 04-13-06 17:12 
+----------------------------------------------------------------------
+Try passing "model=asus" (see ALSA-Configuration.txt)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-15-05 18:40 dschaefer79    New Issue                                    
+12-15-05 18:40 dschaefer79    Distribution              => Gentoo Linux 2005.1
+X86_64
+12-15-05 18:40 dschaefer79    Kernel Version            => 2.6.14          
+12-15-05 19:14 dschaefer79    Issue Monitored: dschaefer79                    
+04-12-06 23:35 bduc           Note Added: 0009251                          
+04-12-06 23:35 bduc           Issue Monitored: bduc                        
+04-13-06 00:00 rlrevell       Note Added: 0009252                          
+04-13-06 08:56 bduc           Note Added: 0009254                          
+04-13-06 17:12 rlrevell       Note Added: 0009262                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
