@@ -1,16 +1,14 @@
-From: Greg KH <gregkh@suse.de>
-Subject: Re: [ALSA STABLE 3/3] a few more -- unregister platform device again if probe was unsuccessful
-Date: Thu, 13 Apr 2006 15:02:05 -0700
-Message-ID: <20060413220205.GA1770__32883.195722434$1144965859$gmane$org@suse.de>
-References: <443DAD5C.8080007@keyaccess.nl> <200604131126.35841.ioe-lkml@rameria.de> <443E5AAD.5040800@keyaccess.nl> <20060413145756.GA29959@flint.arm.linux.org.uk> <443E79AD.50505@keyaccess.nl> <20060413170549.GB7805@flint.arm.linux.org.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002019]: Build fails on pcm_dmix.c
+Date: Fri, 14 Apr 2006 01:00:43 +0200
+Message-ID: <89092dc1da950f11eb5a691f3ae609ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mx2.suse.de (ns2.suse.de [195.135.220.15])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A98418B
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2006 00:03:18 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <20060413170549.GB7805@flint.arm.linux.org.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8A8F175
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2006 01:00:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,93 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rene Herman <rene.herman@keyaccess.nl>, Ingo Oeser <ioe-lkml@rameria.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 13, 2006 at 06:05:50PM +0100, Russell King wrote:
-> On Thu, Apr 13, 2006 at 06:17:49PM +0200, Rene Herman wrote:
-> > Russell King wrote:
-> > 
-> > >On Thu, Apr 13, 2006 at 04:05:33PM +0200, Rene Herman wrote:
-> > 
-> > >>Not honouring/passing up probe() method error returns, not even -ENODEV, 
-> > >>makes some sense for discoverable busses such as PCI where you at least 
-> > >>have a driver independent bus_id sitting in /sys/devices/pci* that you 
-> > >>can later echo into /sys/bus/pci/drivers/*/bind to make the driver bind 
-> > >>to a device, but not much sense for the platform bus. Platform devices 
-> > >>only "exist" (in /sys/devices/platform) due to the driver creating them 
-> > >>itself and keeping them after failing a probe means that directory 
-> > >>becomes an enumeration of the drivers we loaded, rather than a view of 
-> > >>what's present in the system.
-> > >
-> > >Incorrect.  In some circumstances, they may be created by architecture
-> > >support code, and might be created and destroyed dynamically by
-> > >architecture support code.
-> > 
-> > Okay, thanks, that's relevant information. Please explain though what's 
-> > incorrect about the fact that for these ISA devices on the plain old PC, 
-> > with nothing other than the driver available to probe for them, just 
-> > keeping them registered after failing a probe turns 
-> > /sys/devices/platform into a view of "what drivers did we load".
-> 
-> If a driver for an ISA device only wants to register a device and driver
-> if the hardware exists, it needs to handle behaviour itself and not force
-> such behaviour on the upper layers (which is what you're arguing for.)
-> 
-> > >>The driver model crowd did not seem exceedingly interested in the 
-> > >>problem though:
-> > >>
-> > >>http://marc.theaimsgroup.com/?l=linux-kernel&m=114417829014332&w=2
-> > >
-> > >Incorrect summary.  The ALSA use model of the driver model doesn't fit
-> > >with the driver model use model.  It's not that we're not interested
-> > >in it - it's that it's perverted to the way driver model folk intend
-> > >the subsystem to work, and the way that platform devices are used on
-> > >some architectures.
-> > 
-> > And I take it that interest is reflected in getting a grand total of 0 
-> > comments from anyone on my own feeble attempts to suggest things in that 
-> > thread such as the settable flag that would make the driver model pass 
-> > up the error return from probe when set, or having an additional 
-> > .discover method, or ..
-> 
-> I never commented on it because I'm not specifically a driver model
-> person - I just happen to be one of the major users of platform devices,
-> though I have put forward some changes to the platform driver model to
-> facilitate getting rid of quite frankly some extremely poor and buggy
-> driver code (and fixed up that crap code in the process.)
-> 
-> Greg is the maintainer of the driver model, and it's Greg who needs to
-> comment on changes to the way it works.
 
-Hm, I didn't see any patches sent to comment on :)
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2019> 
+======================================================================
+Reported By:                GrueMaster
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2019
+Category:                   1_pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             04-14-2006 01:00 CEST
+Last Modified:              04-14-2006 01:00 CEST
+======================================================================
+Summary:                    Build fails on pcm_dmix.c
+Description: 
+Build output:
 
-Anyway, no, no wierd flags to make the core pass stuff up on probe,
-that's just a mess.
+ gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -g -O2 -MT
+pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c pcm_dmix.c  -fPIC -DPIC -o
+.libs/pcm_dmix.o
+/tmp/ccJTuE56.s: Assembler messages:
+/tmp/ccJTuE56.s:209: Error: `(%ecx,%eax,1)' is not a valid 64 bit
+base/index expression
+/tmp/ccJTuE56.s:385: Error: `(%ecx,%eax,1)' is not a valid 64 bit
+base/index expression
 
-I still really don't understand why these ALSA drivers are so unlike any
-of the zillion other drivers we have in the kernel that work just fine
-today.  But to be fair, I've only been barely paying attention to this
-thread.  Once the bad driver core patch was dropped from my tree, I've
-been off doing other things...
 
-> > M'kay. I believe there's one clean way out of this. We could add an "isa 
-> > bus", where the _user_ would first need to setup the hardware from 
-> > userspace by echoing values into sysfs. Say, something like:
-> 
-> Maybe this is the best solution for ISA devices - they do appear to
-> have differing semantics at the probe level from platform devices.
-> Maybe this "discovery" should be part of the bus matching method, prior
-> to the driver probe method being called?  With an ISA bus type, you can
-> certainly arrange for that to happen without changing existing driver
-> model behaviour.
+linux:/usr/src/alsa # gcc -v
+Reading specs from /usr/lib64/gcc-lib/x86_64-suse-linux/3.3.3/specs
+Configured with: ../configure --enable-threads=posix --prefix=/usr
+--with-local-prefix=/usr/local --infodir=/usr/share/info
+--mandir=/usr/share/man --enable-languages=c,c++,f77,objc,java,ada
+--disable-checking --libdir=/usr/lib64 --enable-libgcj
+--with-gxx-include-dir=/usr/include/g++ --with-slibdir=/lib64
+--with-system-zlib --enable-shared --enable-__cxa_atexit
+x86_64-suse-linux
+Thread model: posix
+gcc version 3.3.3 (SuSE Linux)
 
-I know that Adam Belay had some work for ISA devices along these lines.
-You might want to ask him, as he understands the issues involved here.
 
-thanks,
+Tested on RedHat Enterprise Desktop 4 update 2 - builds ok.
 
-greg k-h
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-14-06 01:00 GrueMaster     New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
