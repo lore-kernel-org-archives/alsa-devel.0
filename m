@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001652]: ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver output and input entry missing
-Date: Thu, 13 Apr 2006 19:00:34 +0200
-Message-ID: <7230952dfbc08547858527ddef1ad0b8@bugtrack.alsa-project.org>
+From: Russell King <rmk+lkml@arm.linux.org.uk>
+Subject: Re: [ALSA STABLE 3/3] a few more -- unregister platform device again if probe was unsuccessful
+Date: Thu, 13 Apr 2006 18:05:50 +0100
+Message-ID: <20060413170549.GB7805__26533.3249270499$1144948097$gmane$org@flint.arm.linux.org.uk>
+References: <443DAD5C.8080007@keyaccess.nl> <200604131126.35841.ioe-lkml@rameria.de> <443E5AAD.5040800@keyaccess.nl> <20060413145756.GA29959@flint.arm.linux.org.uk> <443E79AD.50505@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4D1A10F
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 19:00:34 +0200 (MEST)
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk [212.18.232.186])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 022F314B
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 19:06:54 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <443E79AD.50505@keyaccess.nl>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +20,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Rene Herman <rene.herman@keyaccess.nl>
+Cc: Ingo Oeser <ioe-lkml@rameria.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Apr 13, 2006 at 06:17:49PM +0200, Rene Herman wrote:
+> Russell King wrote:
+> 
+> >On Thu, Apr 13, 2006 at 04:05:33PM +0200, Rene Herman wrote:
+> 
+> >>Not honouring/passing up probe() method error returns, not even -ENODEV, 
+> >>makes some sense for discoverable busses such as PCI where you at least 
+> >>have a driver independent bus_id sitting in /sys/devices/pci* that you 
+> >>can later echo into /sys/bus/pci/drivers/*/bind to make the driver bind 
+> >>to a device, but not much sense for the platform bus. Platform devices 
+> >>only "exist" (in /sys/devices/platform) due to the driver creating them 
+> >>itself and keeping them after failing a probe means that directory 
+> >>becomes an enumeration of the drivers we loaded, rather than a view of 
+> >>what's present in the system.
+> >
+> >Incorrect.  In some circumstances, they may be created by architecture
+> >support code, and might be created and destroyed dynamically by
+> >architecture support code.
+> 
+> Okay, thanks, that's relevant information. Please explain though what's 
+> incorrect about the fact that for these ISA devices on the plain old PC, 
+> with nothing other than the driver available to probe for them, just 
+> keeping them registered after failing a probe turns 
+> /sys/devices/platform into a view of "what drivers did we load".
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1652> 
-======================================================================
-Reported By:                dschaefer79
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1652
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux 2005.1 X86_64
-Kernel Version:             2.6.14
-======================================================================
-Date Submitted:             12-15-2005 18:40 CET
-Last Modified:              04-13-2006 19:00 CEST
-======================================================================
-Summary:                    ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver
-output and input entry missing
-Description: 
-Hi,
+If a driver for an ISA device only wants to register a device and driver
+if the hardware exists, it needs to handle behaviour itself and not force
+such behaviour on the upper layers (which is what you're arguing for.)
 
-My onboard soundcard works great with linux but I don't have a Master
-Output nor microphone ,cd, aux input under my linux. I try to use my tv
-sound with input but it doesn't work.
+> >>The driver model crowd did not seem exceedingly interested in the 
+> >>problem though:
+> >>
+> >>http://marc.theaimsgroup.com/?l=linux-kernel&m=114417829014332&w=2
+> >
+> >Incorrect summary.  The ALSA use model of the driver model doesn't fit
+> >with the driver model use model.  It's not that we're not interested
+> >in it - it's that it's perverted to the way driver model folk intend
+> >the subsystem to work, and the way that platform devices are used on
+> >some architectures.
+> 
+> And I take it that interest is reflected in getting a grand total of 0 
+> comments from anyone on my own feeble attempts to suggest things in that 
+> thread such as the settable flag that would make the driver model pass 
+> up the error return from probe when set, or having an additional 
+> .discover method, or ..
 
-Is it possible to add this ??
-======================================================================
+I never commented on it because I'm not specifically a driver model
+person - I just happen to be one of the major users of platform devices,
+though I have put forward some changes to the platform driver model to
+facilitate getting rid of quite frankly some extremely poor and buggy
+driver code (and fixed up that crap code in the process.)
 
-----------------------------------------------------------------------
- rlrevell - 04-13-06 17:12 
-----------------------------------------------------------------------
-Try passing "model=asus" (see ALSA-Configuration.txt)
+Greg is the maintainer of the driver model, and it's Greg who needs to
+comment on changes to the way it works.
 
-----------------------------------------------------------------------
- Grazy - 04-13-06 19:00 
-----------------------------------------------------------------------
-Some precision about CMI 9880 (I have a ASUS P5AD2 Premium (without the
-"E")):
-The available model for CMI 9880 are :
-- minimal
-- min_fp
-- full
-- full_dig
-- allout
-- auto
+> M'kay. I believe there's one clean way out of this. We could add an "isa 
+> bus", where the _user_ would first need to setup the hardware from 
+> userspace by echoing values into sysfs. Say, something like:
 
-There is no volume control on the chip so you need a recent alsalib with
-softvol pluggin and you will have a PCM mixer.
-There is no passthrow for CD, microphone and AUX. You need to record and
-replay it (try "arecord -f CD |aplay" for test). There is two record
-device : hw:0,0,0 and hw:0,0,1 and you can select the source for each
-capture device with "Input Source" (see alsamixer)
-I hope this can help.
+Maybe this is the best solution for ISA devices - they do appear to
+have differing semantics at the probe level from platform devices.
+Maybe this "discovery" should be part of the bus matching method, prior
+to the driver probe method being called?  With an ISA bus type, you can
+certainly arrange for that to happen without changing existing driver
+model behaviour.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-15-05 18:40 dschaefer79    New Issue                                    
-12-15-05 18:40 dschaefer79    Distribution              => Gentoo Linux 2005.1
-X86_64
-12-15-05 18:40 dschaefer79    Kernel Version            => 2.6.14          
-12-15-05 19:14 dschaefer79    Issue Monitored: dschaefer79                    
-04-12-06 23:35 bduc           Note Added: 0009251                          
-04-12-06 23:35 bduc           Issue Monitored: bduc                        
-04-13-06 00:00 rlrevell       Note Added: 0009252                          
-04-13-06 08:56 bduc           Note Added: 0009254                          
-04-13-06 17:12 rlrevell       Note Added: 0009262                          
-04-13-06 19:00 Grazy          Note Added: 0009267                          
-======================================================================
+In addition, you can check whether the driver was bound by checking
+whether dev->driver is non-NULL.
 
-
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 Serial core
 
 
 -------------------------------------------------------
