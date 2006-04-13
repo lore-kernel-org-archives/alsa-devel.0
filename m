@@ -1,12 +1,15 @@
-From: "Steve Finney" <sfinney@healthhero.com>
-Subject: pcm_oss.c bug?
-Date: Wed, 12 Apr 2006 19:06:02 -0600
-Message-ID: <F23ABFFDB8261D40A6F6D30EA0148825308F5E@VS6.EXCHPROD.USA.NET>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: [ALSA 1/2] a few more -- continue on IS_ERR from platform device
+ registration
+Date: Thu, 13 Apr 2006 03:41:40 +0200
+Message-ID: <443DAC54.5010801__45236.9246435866$1144892478$gmane$org@keyaccess.nl>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C65E96.6F040D5C"
+Content-Type: multipart/mixed;
+ boundary="------------040701090302030204060606"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from smtpq3.tilbu1.nb.home.nl (smtpq3.tilbu1.nb.home.nl [213.51.146.202])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57C0814B
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 03:40:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,94 +19,180 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
+--------------040701090302030204060606
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 
-------_=_NextPart_001_01C65E96.6F040D5C
+Hi Takashi
+
+I previously only concerned myself with sound/isa. When I now checked
+for more platform_device_register_simple() usages in ALSA I found a
+couple more drivers that needed the same patches as already submitted
+for all the ISA drivers.
+
+This first one is the continue-on-iserr patch for sound/drivers. This
+gets them all.
+
+   sound/drivers/dummy.c         |   14 ++++----------
+   sound/drivers/mpu401/mpu401.c |   14 ++++----------
+   sound/drivers/serial-u16550.c |   14 ++++----------
+   sound/drivers/virmidi.c       |   14 ++++----------
+   4 files changed, 16 insertions(+), 40 deletions(-)
+
+Signed-off-by: Rene Herman <rene.herman@keyaccess.nl>
+
+
+--------------040701090302030204060606
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ name="alsa_platform_iserr_remainder.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa_platform_iserr_remainder.diff"
 
-I'm totally new to ALSA, but I've encountered a situation where
-snd_pcm_oss_get_formats() is returning ENOMEM, and =
-snd_pcm_oss_set_format()
-doesn't seem to handle it properly. Proposed patch for 1.0.11.rc5:
+Index: mm/sound/drivers/mpu401/mpu401.c
+===================================================================
+--- mm.orig/sound/drivers/mpu401/mpu401.c	2006-04-13 01:37:08.000000000 +0200
++++ mm/sound/drivers/mpu401/mpu401.c	2006-04-13 01:37:40.000000000 +0200
+@@ -252,10 +252,8 @@ static int __init alsa_card_mpu401_init(
+ #endif
+ 		device = platform_device_register_simple(SND_MPU401_DRIVER,
+ 							 i, NULL, 0);
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		platform_devices[i] = device;
+ 		snd_mpu401_devices++;
+ 	}
+@@ -267,14 +265,10 @@ static int __init alsa_card_mpu401_init(
+ #ifdef MODULE
+ 		printk(KERN_ERR "MPU-401 device not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_mpu401_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_mpu401_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_mpu401_exit(void)
+Index: mm/sound/drivers/serial-u16550.c
+===================================================================
+--- mm.orig/sound/drivers/serial-u16550.c	2006-04-13 01:36:54.000000000 +0200
++++ mm/sound/drivers/serial-u16550.c	2006-04-13 01:37:40.000000000 +0200
+@@ -996,10 +996,8 @@ static int __init alsa_card_serial_init(
+ 			continue;
+ 		device = platform_device_register_simple(SND_SERIAL_DRIVER,
+ 							 i, NULL, 0);
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		devices[i] = device;
+ 		cards++;
+ 	}
+@@ -1007,14 +1005,10 @@ static int __init alsa_card_serial_init(
+ #ifdef MODULE
+ 		printk(KERN_ERR "serial midi soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_serial_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_serial_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_serial_exit(void)
+Index: mm/sound/drivers/virmidi.c
+===================================================================
+--- mm.orig/sound/drivers/virmidi.c	2006-04-13 01:36:54.000000000 +0200
++++ mm/sound/drivers/virmidi.c	2006-04-13 01:37:40.000000000 +0200
+@@ -169,10 +169,8 @@ static int __init alsa_card_virmidi_init
+ 			continue;
+ 		device = platform_device_register_simple(SND_VIRMIDI_DRIVER,
+ 							 i, NULL, 0);
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		devices[i] = device;
+ 		cards++;
+ 	}
+@@ -180,14 +178,10 @@ static int __init alsa_card_virmidi_init
+ #ifdef MODULE
+ 		printk(KERN_ERR "Card-VirMIDI soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_virmidi_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_virmidi_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_virmidi_exit(void)
+Index: mm/sound/drivers/dummy.c
+===================================================================
+--- mm.orig/sound/drivers/dummy.c	2006-04-13 01:36:54.000000000 +0200
++++ mm/sound/drivers/dummy.c	2006-04-13 01:39:12.000000000 +0200
+@@ -675,10 +675,8 @@ static int __init alsa_card_dummy_init(v
+ 			continue;
+ 		device = platform_device_register_simple(SND_DUMMY_DRIVER,
+ 							 i, NULL, 0);
+-		if (IS_ERR(device)) {
+-			err = PTR_ERR(device);
+-			goto errout;
+-		}
++		if (IS_ERR(device))
++			continue;
+ 		devices[i] = device;
+ 		cards++;
+ 	}
+@@ -686,14 +684,10 @@ static int __init alsa_card_dummy_init(v
+ #ifdef MODULE
+ 		printk(KERN_ERR "Dummy soundcard not found or device busy\n");
+ #endif
+-		err = -ENODEV;
+-		goto errout;
++		snd_dummy_unregister_all();
++		return -ENODEV;
+ 	}
+ 	return 0;
+-
+- errout:
+-	snd_dummy_unregister_all();
+-	return err;
+ }
+ 
+ static void __exit alsa_card_dummy_exit(void)
 
-Signed-off-by: Steven Finney <sfinney@healthhero.com>
 
---- alsa-kernel/core/oss/pcm_oss.c.orig 2006-04-12 17:55:29.229269992 =
--0700
-+++ alsa-kernel/core/oss/pcm_oss.c      2006-04-12 17:56:45.394691088 =
--0700
-@@ -1242,6 +1242,8 @@ static int snd_pcm_oss_set_format(struct
-
-        if (format !=3D AFMT_QUERY) {
-                formats =3D snd_pcm_oss_get_formats(pcm_oss_file);
-+               if (formats < 0)
-+                       return formats;
-                if (!(formats & format))
-                        format =3D AFMT_U8;
-                for (idx =3D 1; idx >=3D 0; --idx) {
-
-
-------_=_NextPart_001_01C65E96.6F040D5C
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Diso-8859-1">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7638.1">
-<TITLE>pcm_oss.c bug?</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/plain format -->
-
-<P><FONT SIZE=3D2>I'm totally new to ALSA, but I've encountered a =
-situation where<BR>
-snd_pcm_oss_get_formats() is returning ENOMEM, and =
-snd_pcm_oss_set_format()<BR>
-doesn't seem to handle it properly. Proposed patch for 1.0.11.rc5:<BR>
-<BR>
-Signed-off-by: Steven Finney &lt;sfinney@healthhero.com&gt;<BR>
-<BR>
---- alsa-kernel/core/oss/pcm_oss.c.orig 2006-04-12 17:55:29.229269992 =
--0700<BR>
-+++ alsa-kernel/core/oss/pcm_oss.c&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-2006-04-12 17:56:45.394691088 -0700<BR>
-@@ -1242,6 +1242,8 @@ static int snd_pcm_oss_set_format(struct<BR>
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (format !=3D AFMT_QUERY) =
-{<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; formats =3D snd_pcm_oss_get_formats(pcm_oss_file);<BR>
-+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp; if (formats &lt; 0)<BR>
-+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return =
-formats;<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; if (!(formats &amp; format))<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; format =
-=3D AFMT_U8;<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp;&nbsp;&nbsp; for (idx =3D 1; idx &gt;=3D 0; --idx) {<BR>
-<BR>
-</FONT>
-</P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C65E96.6F040D5C--
-
-
+--------------040701090302030204060606--
 
 
 -------------------------------------------------------
