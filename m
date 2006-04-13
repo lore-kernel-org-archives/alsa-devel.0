@@ -1,12 +1,14 @@
-From: MAILER-DAEMON@unipmn.it (Mail Delivery System)
-Subject: Undelivered Mail Returned to Sender
-Date: Thu, 13 Apr 2006 21:13:02 +0200 (CEST)
-Message-ID: <20060413191302.831C94BB7A@cicladi.unipmn.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002013]: no digital output
+Date: Thu, 13 Apr 2006 21:22:48 +0200
+Message-ID: <05163e7c57ac244f18a2791b094d288c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="5447A4BB4F.1144955582/cicladi.unipmn.it"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E917178
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 21:22:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,112 +18,104 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message.
 
---5447A4BB4F.1144955582/cicladi.unipmn.it
-Content-Description: Notification
-Content-Type: text/plain
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2013> 
+======================================================================
+Reported By:                SamiH
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2013
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               BLFS
+Kernel Version:             2.6.15.4
+======================================================================
+Date Submitted:             04-09-2006 11:43 CEST
+Last Modified:              04-13-2006 21:22 CEST
+======================================================================
+Summary:                    no digital output
+Description: 
+Shortly: Digital output doesn't work at all, or I don't know how to use
+it.
 
-This is the Postfix program at host cicladi.unipmn.it.
+This has been my problem quite long time now. I have upgraded my kernel
+from  2.6.8 to 2.6.15.4 with some steps bitween those versions, and the
+problem is still here. I have tried some live-cds with same results as my
+stable system.
 
-I'm sorry to have to inform you that the message returned
-below could not be delivered to one or more destinations.
+Analog stereo output works with no problems. If someone did tell me what I
+should test on my system so that I could give the results to you.
 
-For further assistance, please send mail to <postmaster>
+These aren't broken:
+ * my external amplifier
+ * the digital coaxial cable
+ * speakers etc.
 
-If you do so, please include this problem report. You can
-delete your own text from the message returned below.
+Please tell me at least what to do, what to search for, or something...
+======================================================================
 
-			The Postfix program
+----------------------------------------------------------------------
+ tiwai - 04-10-06 16:50 
+----------------------------------------------------------------------
+You didn't write what did you test...
 
-<sitta@al.unipmn.it>: mail for al.unipmn.it loops back to myself
+----------------------------------------------------------------------
+ SamiH - 04-13-06 21:22 
+----------------------------------------------------------------------
+Sorry about that incomplete post, hopefully this tells something to you.
 
---5447A4BB4F.1144955582/cicladi.unipmn.it
-Content-Description: Delivery error report
-Content-Type: message/delivery-status
+In alsa.txt is my alsactl output.
+The programs I have used: aplay, xmms, xine, speaker-test
 
-Reporting-MTA: dns; cicladi.unipmn.it
-Arrival-Date: Thu, 13 Apr 2006 21:13:02 +0200 (CEST)
+I have tested different mixer values, sometimes in order, sometimes
+random. But now I tested with speaker-test.
 
-Final-Recipient: rfc822; sitta@al.unipmn.it
-Action: failed
-Status: 5.0.0
-Diagnostic-Code: X-Postfix; mail for al.unipmn.it loops back to myself
+* speaker-test -c 2 -Dhw:0,0,[12] -> only analog stereo
+* speaker-test -c 2 -Dhw:0,0,3 -r 44100 -> no sound, but plays (44100 was
+the first samplerate I tried after it said: "Setting of hwparams failed:
+Invalid argument Rate 48000Hz not available for playback: Invalid
+argument) 
+* speaker-test -c 2 -Dhw:0,0,[4567] -> Playback open error: -16,Device or
+resource busy
+* speaker-test -c 2 -Dhw:0,1,0 -> only analog stereo
+* speaker-test -c 2 -Dhw:0,1,[12] -> Playback open error: -16,Device or
+resource busy
 
---5447A4BB4F.1144955582/cicladi.unipmn.it
-Content-Description: Undelivered Message
-Content-Type: message/rfc822
-Content-Transfer-Encoding: 7bit
+-----
 
-Received: from cicladi.unipmn.it (localhost [127.0.0.1])
-	by localhost.unipmn.it (Postfix) with SMTP id 5447A4BB4F
-	for <sitta@al.unipmn.it>; Thu, 13 Apr 2006 21:13:02 +0200 (CEST)
-Received: from al.unipmn.it (unknown [61.2.40.21])
-	by cicladi.unipmn.it (Postfix) with ESMTP id F05544BB66
-	for <sitta@al.unipmn.it>; Thu, 13 Apr 2006 21:12:38 +0200 (CEST)
-From: alsa-devel@lists.sourceforge.net
-To: sitta@al.unipmn.it
-Subject: [PMX:VIRUS] word document
-Date: Fri, 14 Apr 2006 00:38:16 +0530
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
-Message-Id: <20060413191239.F05544BB66@cicladi.unipmn.it>
-X-PMX-Ver: 5.1.2.240295, Antispam-Engine: 2.3.0.1, Antispam-Data: 2006.3.24.141109
-X-PerlMx-Virus-Detected: W32/Netsky-P
-X-PerlMx-Spam: Gauge=X, Probability=10%, Report='PRIORITY_NO_NAME 0.716, NO_REAL_NAME 0, __CT 0, __CTYPE_HAS_BOUNDARY 0, __CTYPE_MULTIPART 0, __HAS_MSGID 0, __HAS_MSMAIL_PRI 0, __HAS_X_PRIORITY 0, __MIME_TEXT_ONLY 0, __MIME_VERSION 0, __SANE_MSGID 0'
+aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: V8237 [VIA 8237], device 0: VIA 8237 [VIA 8237]
+  Subdevices: 4/4
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+  Subdevice #2: subdevice #2
+  Subdevice #3: subdevice #3
+card 0: V8237 [VIA 8237], device 1: VIA 8237 [VIA 8237]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-This is a multi-part message in MIME format.
-
-
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-
-Please read the attached file!
-
-+++ Attachment: No Virus found
-+++ MessageLabs AntiVirus - www.messagelabs.com
-
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-The original content of this message part has been replaced
-by this text because it tested positive for the following
-virus(es):
-
-    W32/Netsky-P, W32/Netsky-P
-
-The original message has been quarantined pending further
-action by the mail administrator.  For further information
-about the message and its delivery status, please contact
-the undersigned, and include the full content of this
-message.  The identifier for this message is
-'443EA2BD_8164_2187_1'.
-
-This notification is being sent to you and any other
-original envelope recipient(s).   To avoid creating a
-nuisance and to keep mail traffic under control, the
-original sender  of the message has NOT been notified.
-However, you may want to notify the sender at your
-discretion.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-09-06 11:43 SamiH          New Issue                                    
+04-09-06 11:43 SamiH          Distribution              => BLFS            
+04-09-06 11:43 SamiH          Kernel Version            => 2.6.15.4        
+04-10-06 16:50 tiwai          Note Added: 0009198                          
+04-13-06 21:10 SamiH          File Added: alsa.txt                         
+04-13-06 21:22 SamiH          Note Added: 0009269                          
+======================================================================
 
 
-The Management
-PureMessage Admin <postmaster@unipmn.it>
-
-------=_NextPart_000_0016----=_NextPart_000_0016--
-
---5447A4BB4F.1144955582/cicladi.unipmn.it--
 
 
 -------------------------------------------------------
