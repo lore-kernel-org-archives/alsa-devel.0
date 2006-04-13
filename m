@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001986]: Analog record level could not be adjust
-Date: Thu, 13 Apr 2006 21:47:23 +0200
-Message-ID: <65f4bf722ff8127720281bf7f4ea161e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001904]: No Sound At All
+Date: Thu, 13 Apr 2006 21:49:38 +0200
+Message-ID: <7631e434237fbf02069b44ad20d940d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8544912B
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 21:47:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2001D150
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 21:49:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1986> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1904> 
 ======================================================================
-Reported By:                croiset
+Reported By:                niels
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1986
+Issue ID:                   1904
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Linux Redhat 7.2
-Kernel Version:             2.4.7-10
-Resolution:                 open
-Fixed in Version:           
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.15-i686
 ======================================================================
-Date Submitted:             03-31-2006 17:25 CEST
-Last Modified:              04-13-2006 21:47 CEST
+Date Submitted:             03-10-2006 14:24 CET
+Last Modified:              04-13-2006 21:49 CEST
 ======================================================================
-Summary:                    Analog record level could not be adjust
+Summary:                    No Sound At All
 Description: 
-On the sound card it is possible to record but it is impossible to adjust
-the analog level with alsamixer.
+Hi There!
+Unfortunately I have to report that I am not getting a single sound out of
+my SB24Bit Live Sounbcard!
+All dependencies are fulfilled, the right kernel is installed, the actual
+libasound2 is installed, Alsaconf builds the driver, on alsamixer the
+Volumes are up - but still no sound!
+Well it could be the DSP, thats true, but thats pretty much unusual as it
+is a brandnew card!
+If you, the developer crew does have any suggestions what you want me to
+test tzo verify if it is a bug or not, don`t hesitate to contact me!
+If I am on the console and try aplay /usr/share/sounds/pop.wav nothing
+happens either. And yes I have disabled the artsd in the control menu of
+KDE!
+
+Thanks
+Niels
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 04-13-06 21:47 
+ jcdutton - 04-13-06 21:49 
 ----------------------------------------------------------------------
-Fixed in alsa-driver 1.0.11rc5 or above.
+please post the output of the following commands:
+cat /proc/asound/version
+cat /proc/asound/cards
+amixer
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-06 17:25 croiset        New Issue                                    
-03-31-06 17:25 croiset        Distribution              => Linux Redhat 7.2
-03-31-06 17:25 croiset        Kernel Version            => 2.4.7-10        
-04-13-06 21:47 jcdutton       Status                   assigned => closed  
-04-13-06 21:47 jcdutton       Note Added: 0009270                          
+03-10-06 14:24 niels          New Issue                                    
+03-10-06 14:24 niels          Distribution              => Debian          
+03-10-06 14:24 niels          Kernel Version            => 2.6.15-i686     
+04-13-06 21:49 jcdutton       Note Added: 0009272                          
+04-13-06 21:49 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
