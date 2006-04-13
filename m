@@ -1,12 +1,14 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: [PATCH] echoaudio, add missing module_param's
-Date: Thu, 13 Apr 2006 22:11:46 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0604132207510.18063@denise.shiny.it>
-References: <20060412215652.4b17d18c.pochini@shiny.it> <s5hlku9rcjj.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002010]: Terratec DMX Fire 1024 recording problem
+Date: Thu, 13 Apr 2006 23:20:18 +0200
+Message-ID: <4055c83dce4380d29552bf8308880abd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hlku9rcjj.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 604F018A
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 23:20:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,27 +18,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2010> 
+======================================================================
+Reported By:                rbielefeld
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2010
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               SuSE Linux 10.0
+Kernel Version:             
+======================================================================
+Date Submitted:             04-07-2006 09:09 CEST
+Last Modified:              04-13-2006 23:20 CEST
+======================================================================
+Summary:                    Terratec DMX Fire 1024 recording problem
+Description: 
+I want to record from LineIn port.
+Even with no signal on that port, one input channel is noisy.
+With a signal on that port, the noisy channel does not have the real audio
+signal.
 
-On Thu, 13 Apr 2006, Takashi Iwai wrote:
-
-> At Wed, 12 Apr 2006 21:56:52 +0200,
-> Giuliano Pochini wrote:
->>
->>
->> Add missing module_param's.
->
-> Heh, I was faster ;)
-
-I can do some work only from 8pm... I can't be that fast.
 
 
---
-Giuliano.
+
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 04-12-06 21:44 
+----------------------------------------------------------------------
+You have set the mixer to capture line on the left channel and mic on the
+right channel:
+
+        control.16 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 2
+                comment.item.0 Mic
+                comment.item.1 CD
+                comment.item.2 Video
+                comment.item.3 Aux
+                comment.item.4 Line
+                comment.item.5 Mix
+                comment.item.6 'Mix Mono'
+                comment.item.7 Phone
+                iface MIXER
+                name 'Capture Source' 
+                value.0 Line
+                value.1 Mic
+        }
+
+Set both left and right 'Capture Source' to Line.  Are you using a broken
+mixer app like kmix by any chance?
+
+----------------------------------------------------------------------
+ rbielefeld - 04-13-06 23:20 
+----------------------------------------------------------------------
+Yep, that was the problem !
+
+I now use gamix and it workes fine.
+I'll tell the Kmix guys about it.
+
+Thank you very much.
+
+Regards
+Reiner
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-07-06 09:09 rbielefeld     New Issue                                    
+04-07-06 09:09 rbielefeld     Distribution              => SuSE Linux 10.0 
+04-07-06 19:18 tiwai          Note Added: 0009143                          
+04-12-06 21:07 rbielefeld     File Added: asound.state                     
+04-12-06 21:07 rbielefeld     File Added: interrupts.txt                    
+04-12-06 21:07 rbielefeld     Issue Monitored: rbielefeld                    
+04-12-06 21:08 rbielefeld     Issue End Monitor: rbielefeld                    
+04-12-06 21:08 rbielefeld     File Added: modules.txt                      
+04-12-06 21:16 rbielefeld     Note Added: 0009248                          
+04-12-06 21:44 rlrevell       Note Added: 0009249                          
+04-13-06 23:20 rbielefeld     Note Added: 0009277                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
