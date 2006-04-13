@@ -1,14 +1,15 @@
 From: Axel Thimm <Axel.Thimm@ATrpms.net>
-Subject: 1.0.11rc5 on 2.6.10: ioctl32_new.c: too many arguments to function `snd_power_wait'
-Date: Thu, 13 Apr 2006 23:35:59 +0200
-Message-ID: <20060413213559.GA23511@neu.nirvana>
+Subject: 1.0.11rc5 on 2.4.22: riptide.c: structure has no member named `dev'
+Date: Thu, 13 Apr 2006 23:39:16 +0200
+Message-ID: <20060413213916.GB23511@neu.nirvana>
+Reply-To: alsa-devel@alsa-project.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
+	protocol="application/pgp-signature"; boundary="WhfpMioaduB5tiZL"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from junior.physik.fu-berlin.de (junior.physik.fu-berlin.de [160.45.32.227])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79B8418A
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 23:36:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E06618A
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 23:39:21 +0200 (MEST)
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -23,50 +24,48 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---gBBFr7Ir9EOA20Yy
+--WhfpMioaduB5tiZL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-according to 1.0.11rc5's changelog:
+the riptide driver in 1.0.11rc5 fails on 2.4.22 with
 
-  - Cleanup unused argument for snd_power_wait()
-
-but now on 2.6.10 1.0.11rc5 bails out with
-
-  CC [M]  /builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32.o
-In file included from /builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32=
-.c:27:
-/builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32_new.c: In function `g=
-et_ctl_type':
-/builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32_new.c:247: error: too=
- many arguments to function `snd_power_wait'
-/builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32_new.c: In function `_=
-snd_ioctl32_ctl_elem_value':
-/builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32_new.c:330: error: too=
- many arguments to function `snd_power_wait'
-make[4]: *** [/builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32.o] Erro=
-r 1
+make  -C riptide modules
+make[2]: Entering directory `/builddir/alsa-driver-1.0.11rc5/pci/riptide'
+/usr/bin/gcc32 -D__KERNEL__ -DMODULE=3D1 -I/builddir/alsa-driver-1.0.11rc5/=
+include  -I/amd/heretic/0/data_nobkp/bach/bach-kernel/fc1-i386/2.4.22-1.219=
+9.nptl_53.rhfc1.at-i686/include -O2 -mpreferred-stack-boundary=3D2 -march=
+=3Di686 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigrap=
+hs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwith=
+prefix include -DMODVERSIONS -include /amd/heretic/0/data_nobkp/bach/bach-k=
+ernel/fc1-i386/2.4.22-1.2199.nptl_53.rhfc1.at-i686/include/linux/modversion=
+s.h  -DKBUILD_BASENAME=3Driptide   -c -o riptide.o riptide.c
+In file included from riptide.c:1:
+=2E./../alsa-kernel/pci/riptide/riptide.c: In function `riptide_reset':
+=2E./../alsa-kernel/pci/riptide/riptide.c:1272: structure has no member nam=
+ed `dev'
+make[2]: *** [riptide.o] Error 1
 
 Thanks!
 --=20
 Axel.Thimm at ATrpms.net
 
---gBBFr7Ir9EOA20Yy
+--WhfpMioaduB5tiZL
 Content-Type: application/pgp-signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.3 (GNU/Linux)
 
-iD8DBQFEPsQ/QBVS1GOamfERAgjLAKCY0nA+CkVeG0aT9wck/ObdrkdtTgCfSir9
-tcM49toLqZ/+95t9CL3l1K0=
-=HH+B
+iD8DBQFEPsUEQBVS1GOamfERAhwqAKCH7tKwVjIpKwAMD2ckJp6Y/CnOigCffmlj
+nh8/YWjYAEyr2v2q76zI6bw=
+=ogIG
 -----END PGP SIGNATURE-----
 
---gBBFr7Ir9EOA20Yy--
+--WhfpMioaduB5tiZL--
 
 
 -------------------------------------------------------
