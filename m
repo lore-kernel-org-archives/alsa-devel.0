@@ -1,16 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: seq_midi client names
-Date: Thu, 13 Apr 2006 17:26:17 +0200
-Message-ID: <20060413152617.GB1147@turing.informatik.uni-halle.de>
-References: <200604121402.48859.gineera@aspect135.co.uk>
- <20060412155948.GB21693@turing.informatik.uni-halle.de>
- <200604131354.45544.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001347]: unable to configure sound card
+Date: Thu, 13 Apr 2006 17:42:49 +0200
+Message-ID: <68f310cd494002162ea7dd201592f1ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200604131354.45544.gineera@aspect135.co.uk>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DBC8149
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 17:42:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,28 +18,207 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Alan Horstmann wrote:
-> The ice1712 envy24 chip provides two mpu401 uart ports.  Is this the
-> same use of the term, ie the hardware wired to the panel connectors
-> that midi uses; can a midi device have more than one port?  So
-> rmidi->name is a device name, not port name?
 
-Yes; yes.  Yes.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1347> 
+======================================================================
+Reported By:                CptS
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1347
+Category:                   PCI - nm256
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Knoppix 4.0
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             08-17-2005 11:05 CEST
+Last Modified:              04-13-2006 17:42 CEST
+======================================================================
+Summary:                    unable to configure sound card
+Description: 
+I'm having problems configuring my sound card with alsa, here are the
+details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
 
-> > The id is just an internal identifier, shortname would be better.
-> 
-> I'll post a patch to change seq_midi to use card->shortname instead of 
-> info->name for the new client name, if that is OK with you?
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
 
-Yes.
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??I'm having problems configuring my sound card with
+alsa, here are the details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
+
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
+
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??I'm having problems configuring my sound card with
+alsa, here are the details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
+
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
+
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 03-20-06 01:26 
+----------------------------------------------------------------------
+That's not possible, OSS will eventually be removed from the kernel.
+
+If it works with the OSS sb16 model it should work with the ALSA snd-sb16
+driver.  
+
+Maybe you can try again with ALSA CVS and the snd-nm256 driver - the bug
+causing it to lock up the system was recently fixed.
+
+----------------------------------------------------------------------
+ CptS - 04-13-06 17:42 
+----------------------------------------------------------------------
+I didn't try with alsa cvs, but the hardware on that laptop is quite old so
+I won't upgrade to newer versions on debian so i guess OSS will be just
+fine for what it's used for.
+thanks anyways.
+Shay.
+p.s. this thread is pretty old, i've been using the laptop with the oss
+coniguration and kernel 2.4 for a long time now.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-17-05 11:05 CptS           New Issue                                    
+08-17-05 11:05 CptS           Distribution              => Knoppix 4.0     
+08-17-05 11:05 CptS           Kernel Version            => 2.6.11          
+08-17-05 11:24 CptS           Note Added: 0005835                          
+08-20-05 19:48 CptS           Issue Monitored: CptS                        
+08-20-05 19:50 CptS           Note Added: 0005883                          
+08-20-05 20:32 rlrevell       Note Added: 0005884                          
+08-20-05 20:37 rlrevell       Note Added: 0005885                          
+08-22-05 22:00 CptS           Note Added: 0005901                          
+08-23-05 16:40 tiwai          Note Added: 0005908                          
+09-07-05 21:33 dcooppan       Note Added: 0006066                          
+03-16-06 08:01 rlrevell       Note Added: 0008588                          
+03-19-06 23:42 CptS           Note Added: 0008699                          
+03-20-06 01:26 rlrevell       Note Added: 0008701                          
+04-13-06 17:42 CptS           Note Added: 0009264                          
+======================================================================
 
 
-Regards,
-Clemens
 
 
 -------------------------------------------------------
