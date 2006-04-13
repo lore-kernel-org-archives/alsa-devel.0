@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001622]: ASUS A8V-MX onboard sound does not work
-Date: Thu, 13 Apr 2006 17:49:16 +0200
-Message-ID: <3856a2f56c85ee0684b6a68476af21bd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001347]: unable to configure sound card
+Date: Thu, 13 Apr 2006 18:08:35 +0200
+Message-ID: <4c7fc6ef575ff30578d2bfae129eaaba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16EDF16D
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 17:49:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B24A2C9
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 18:08:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,124 +22,198 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1622> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1347> 
 ======================================================================
-Reported By:                m_yates
-Assigned To:                
+Reported By:                CptS
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1622
-Category:                   PCI - via82xx
+Issue ID:                   1347
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12 (also reproduced using 2.6.15-rc2)
+Status:                     closed
+Distribution:               Knoppix 4.0
+Kernel Version:             2.6.11
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-05-2005 18:59 CET
-Last Modified:              04-13-2006 17:49 CEST
+Date Submitted:             08-17-2005 11:05 CEST
+Last Modified:              04-13-2006 18:08 CEST
 ======================================================================
-Summary:                    ASUS A8V-MX onboard sound does not work
+Summary:                    unable to configure sound card
 Description: 
-Onboard sound plays for a second, then freezes on Asus A8V-MX mainboard. 
-Here is sound output from lspci:
+I'm having problems configuring my sound card with alsa, here are the
+details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
 
-matt@duster:~$ lspci | grep Multimedia
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 70)
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
 
-Here is alsa version (version that came with Ubuntu 5.10):
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
 
-||/ Name           Version        Description
-+++-==============-==============-============================================
-ii  alsa-base      1.0.9b-4       ALSA driver configuration files
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
 
-Here are the sound modules:
+I did a legacy scan using alsaconf for all legacy drivers.
 
-root@duster:/home/matt# lsmod | grep snd
-snd_seq_dummy 4484 0
-snd_seq_oss 32128 0
-snd_seq_midi 9920 0
-snd_seq_midi_event 8064 2 snd_seq_oss,snd_seq_midi
-snd_seq 52032 6 snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
-snd_via82xx 29472 1
-gameport 16392 1 snd_via82xx
-snd_ac97_codec 87000 1 snd_via82xx
-snd_pcm_oss 51232 0
-snd_mixer_oss 17664 1 snd_pcm_oss
-snd_pcm 91020 3 snd_via82xx,snd_ac97_codec,snd_pcm_oss
-snd_timer 24200 2 snd_seq,snd_pcm
-snd_page_alloc 11408 2 snd_via82xx,snd_pcm
-snd_mpu401_uart 7936 1 snd_via82xx
-snd_rawmidi 27040 2 snd_seq_midi,snd_mpu401_uart
-snd_seq_device 9488 5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq,snd_rawmidi
-snd 55784 13
-snd_seq_oss,snd_seq,snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu40
-1_uart,snd_rawmidi,snd_seq_device
-soundcore 10912 1 snd
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
 
-Asus lists the audio chip as "Realtek ALC653", alsamixer shows "Realtek
-ALC655 rev 1". 
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??I'm having problems configuring my sound card with
+alsa, here are the details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
+
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
+
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??I'm having problems configuring my sound card with
+alsa, here are the details:
+the sound card is NeoMagic 256AV (NM2200) located onboard a Compaq
+Presario 1920.
+I'm currently running Knoppix 4.0 hdd installed (kernel 2.6)
+
+here's lspci -vv outputs on the cards:
+0000:01:00.1 Multimedia audio controller: Neomagic Corporation NM2200
+[MagicMedia 256AV Audio] (rev 20)
+        Subsystem: Compaq Computer Corporation MagicMedia 256AV Audio
+Device on Durango
+        Control: I/O- Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B+
+        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin B routed to IRQ 10
+        Region 0: Memory at f4800000 (32-bit, prefetchable) [size=4M]
+        Region 1: Memory at f4200000 (32-bit, non-prefetchable) [size=1M]
+        Capabilities: <available only to root>
+
+I wouldn't have addressed you unless I've already tried everything:
+I've tried the solution of the same problem regarding HP Omni 4150 with
+the same card.
+
+I used alsaconf and it tried to load snd-nm256, after loading it crashed,
+dmesg suggested loading it with force_ac97=1 switch but once i did it the
+system crashed (on 3 differet linux installations)
+
+I did a legacy scan using alsaconf for all legacy drivers.
+
+I 'modprobe'ed for hours on every imaginable option (ad1848, sb, cs423x,
+etc..)
+
+I've edited the modules.conf and manually defined the dma and irq
+
+I removed alsa completly and re-install it.
+
+I had debian with 2.4 kernel installed and i've upgraded to 2.6
+
+I changed the distro from debian to Knoppix (kinda same thing but...)
+
+anyway, you get the point..
+
+can you please assist??
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001557 Sounds play only for a very short time ...
-======================================================================
 
 ----------------------------------------------------------------------
- m_yates - 04-13-06 15:30 
+ CptS - 04-13-06 17:42 
 ----------------------------------------------------------------------
-Someone posted a fix for the problem here:
-http://www.geocities.com/rajahuroman/main.html (scroll down to the bottom
-of the page)
-
-I haven't had a chance to test it yet.
-
-
+I didn't try with alsa cvs, but the hardware on that laptop is quite old so
+I won't upgrade to newer versions on debian so i guess OSS will be just
+fine for what it's used for.
+thanks anyways.
+Shay.
+p.s. this thread is pretty old, i've been using the laptop with the oss
+coniguration and kernel 2.4 for a long time now.
 
 ----------------------------------------------------------------------
- bjacques - 04-13-06 17:49 
+ rlrevell - 04-13-06 18:08 
 ----------------------------------------------------------------------
-That "fix" is an OSS driver with a proprietary module. Not very helpful.
-
-I have not been able to find any ALC653-specific code in the
-nonproprietary part of the patch.
+AFAICT there's no bug
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-05 18:59 m_yates        New Issue                                    
-12-05-05 18:59 m_yates        Distribution              => Ubuntu 5.10     
-12-05-05 18:59 m_yates        Kernel Version            => 2.6.12 (also
-reproduced using 2.6.15-rc2)
-12-06-05 15:53 tiwai          Note Added: 0006926                          
-12-06-05 18:21 m_yates        Note Added: 0006931                          
-12-06-05 20:16 m_yates        Note Added: 0006937                          
-12-07-05 01:09 Dakkus         Issue Monitored: Dakkus                      
-12-07-05 11:24 perex          Relationship added       has duplicate 0001557
-12-07-05 16:16 thijser        Issue Monitored: thijser                     
-01-02-06 23:53 AlexCline      Issue Monitored: AlexCline                    
-01-03-06 20:41 AlexCline      Note Added: 0007406                          
-01-29-06 02:14 adaviel        Note Added: 0007830                          
-01-29-06 02:15 adaviel        Issue Monitored: adaviel                     
-01-30-06 19:36 millallo       Issue Monitored: millallo                    
-02-10-06 14:07 Tuba           File Added: mplayer8251.strace                    
-02-10-06 14:09 Tuba           Note Added: 0008004                          
-02-10-06 14:09 Tuba           Issue Monitored: Tuba                        
-02-13-06 23:39 gobo           Issue Monitored: gobo                        
-02-13-06 23:56 gobo           Note Added: 0008065                          
-02-28-06 00:35 adaviel        Note Added: 0008234                          
-03-02-06 00:21 adaviel        Note Added: 0008288                          
-03-04-06 18:13 crlb           Issue Monitored: crlb                        
-03-14-06 10:07 adrian         Issue Monitored: adrian                      
-04-13-06 15:29 m_yates        Note Added: 0009261                          
-04-13-06 15:30 m_yates        Note Edited: 0009261                         
-04-13-06 15:30 m_yates        Note Edited: 0009261                         
-04-13-06 17:49 bjacques       Note Added: 0009265                          
+08-17-05 11:05 CptS           New Issue                                    
+08-17-05 11:05 CptS           Distribution              => Knoppix 4.0     
+08-17-05 11:05 CptS           Kernel Version            => 2.6.11          
+08-17-05 11:24 CptS           Note Added: 0005835                          
+08-20-05 19:48 CptS           Issue Monitored: CptS                        
+08-20-05 19:50 CptS           Note Added: 0005883                          
+08-20-05 20:32 rlrevell       Note Added: 0005884                          
+08-20-05 20:37 rlrevell       Note Added: 0005885                          
+08-22-05 22:00 CptS           Note Added: 0005901                          
+08-23-05 16:40 tiwai          Note Added: 0005908                          
+09-07-05 21:33 dcooppan       Note Added: 0006066                          
+03-16-06 08:01 rlrevell       Note Added: 0008588                          
+03-19-06 23:42 CptS           Note Added: 0008699                          
+03-20-06 01:26 rlrevell       Note Added: 0008701                          
+04-13-06 17:42 CptS           Note Added: 0009264                          
+04-13-06 18:08 rlrevell       Status                   assigned => closed  
+04-13-06 18:08 rlrevell       Note Added: 0009266                          
 ======================================================================
 
 
