@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002010]: Terratec DMX Fire 1024 recording problem
-Date: Thu, 13 Apr 2006 23:20:18 +0200
-Message-ID: <4055c83dce4380d29552bf8308880abd@bugtrack.alsa-project.org>
+From: Axel Thimm <Axel.Thimm@ATrpms.net>
+Subject: 1.0.11rc5 on 2.6.10: ioctl32_new.c: too many arguments to function `snd_power_wait'
+Date: Thu, 13 Apr 2006 23:35:59 +0200
+Message-ID: <20060413213559.GA23511@neu.nirvana>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 604F018A
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 23:20:18 +0200 (MEST)
+Received: from junior.physik.fu-berlin.de (junior.physik.fu-berlin.de [160.45.32.227])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79B8418A
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 23:36:07 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,95 +23,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2010> 
-======================================================================
-Reported By:                rbielefeld
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2010
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux 10.0
-Kernel Version:             
-======================================================================
-Date Submitted:             04-07-2006 09:09 CEST
-Last Modified:              04-13-2006 23:20 CEST
-======================================================================
-Summary:                    Terratec DMX Fire 1024 recording problem
-Description: 
-I want to record from LineIn port.
-Even with no signal on that port, one input channel is noisy.
-With a signal on that port, the noisy channel does not have the real audio
-signal.
+--gBBFr7Ir9EOA20Yy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
+according to 1.0.11rc5's changelog:
 
+  - Cleanup unused argument for snd_power_wait()
 
-======================================================================
+but now on 2.6.10 1.0.11rc5 bails out with
 
-----------------------------------------------------------------------
- rlrevell - 04-12-06 21:44 
-----------------------------------------------------------------------
-You have set the mixer to capture line on the left channel and mic on the
-right channel:
+  CC [M]  /builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32.o
+In file included from /builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32=
+.c:27:
+/builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32_new.c: In function `g=
+et_ctl_type':
+/builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32_new.c:247: error: too=
+ many arguments to function `snd_power_wait'
+/builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32_new.c: In function `_=
+snd_ioctl32_ctl_elem_value':
+/builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32_new.c:330: error: too=
+ many arguments to function `snd_power_wait'
+make[4]: *** [/builddir/alsa-driver-1.0.11rc5/acore/ioctl32/ioctl32.o] Erro=
+r 1
 
-        control.16 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 2
-                comment.item.0 Mic
-                comment.item.1 CD
-                comment.item.2 Video
-                comment.item.3 Aux
-                comment.item.4 Line
-                comment.item.5 Mix
-                comment.item.6 'Mix Mono'
-                comment.item.7 Phone
-                iface MIXER
-                name 'Capture Source' 
-                value.0 Line
-                value.1 Mic
-        }
+Thanks!
+--=20
+Axel.Thimm at ATrpms.net
 
-Set both left and right 'Capture Source' to Line.  Are you using a broken
-mixer app like kmix by any chance?
+--gBBFr7Ir9EOA20Yy
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-----------------------------------------------------------------------
- rbielefeld - 04-13-06 23:20 
-----------------------------------------------------------------------
-Yep, that was the problem !
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
 
-I now use gamix and it workes fine.
-I'll tell the Kmix guys about it.
+iD8DBQFEPsQ/QBVS1GOamfERAgjLAKCY0nA+CkVeG0aT9wck/ObdrkdtTgCfSir9
+tcM49toLqZ/+95t9CL3l1K0=
+=HH+B
+-----END PGP SIGNATURE-----
 
-Thank you very much.
-
-Regards
-Reiner
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-07-06 09:09 rbielefeld     New Issue                                    
-04-07-06 09:09 rbielefeld     Distribution              => SuSE Linux 10.0 
-04-07-06 19:18 tiwai          Note Added: 0009143                          
-04-12-06 21:07 rbielefeld     File Added: asound.state                     
-04-12-06 21:07 rbielefeld     File Added: interrupts.txt                    
-04-12-06 21:07 rbielefeld     Issue Monitored: rbielefeld                    
-04-12-06 21:08 rbielefeld     Issue End Monitor: rbielefeld                    
-04-12-06 21:08 rbielefeld     File Added: modules.txt                      
-04-12-06 21:16 rbielefeld     Note Added: 0009248                          
-04-12-06 21:44 rlrevell       Note Added: 0009249                          
-04-13-06 23:20 rbielefeld     Note Added: 0009277                          
-======================================================================
-
-
+--gBBFr7Ir9EOA20Yy--
 
 
 -------------------------------------------------------
