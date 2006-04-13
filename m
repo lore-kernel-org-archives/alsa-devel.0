@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001652]: ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver output and input entry missing
-Date: Thu, 13 Apr 2006 17:12:39 +0200
-Message-ID: <a3e8a31a12a21b35f720e0f7d432c5bd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001987]: Upmix Feature Request
+Date: Thu, 13 Apr 2006 17:14:24 +0200
+Message-ID: <7f58d87ffd256b0414d2f47e85d990b5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01249163
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 17:12:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31514163
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 17:14:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,62 +24,118 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1652> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1987> 
 ======================================================================
-Reported By:                dschaefer79
-Assigned To:                tiwai
+Reported By:                the-me
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1652
-Category:                   PCI - hda-intel
+Issue ID:                   1987
+Category:                   CORE - control
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux 2005.1 X86_64
-Kernel Version:             2.6.14
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.16.1
 ======================================================================
-Date Submitted:             12-15-2005 18:40 CET
-Last Modified:              04-13-2006 17:12 CEST
+Date Submitted:             03-31-2006 20:38 CEST
+Last Modified:              04-13-2006 17:14 CEST
 ======================================================================
-Summary:                    ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver
-output and input entry missing
+Summary:                    Upmix Feature Request
 Description: 
 Hi,
 
-My onboard soundcard works great with linux but I don't have a Master
-Output nor microphone ,cd, aux input under my linux. I try to use my tv
-sound with input but it doesn't work.
+I, and many users more, want a feature at the alsamixer, called Upmix.
+I've got an Terratec Aureon 5.1 Fun and I tried many things, but it's not
+able, that I can hear an mp3 with upmixed 5.1 sound. Here is my actual
+.asoundrc:
 
-Is it possible to add this ??
+pcm.ch51upmix {
+        type route
+        slave.pcm surround51
+        slave.channels 6
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+        ttable.0.4 0.5
+        ttable.1.4 0.5
+        ttable.0.5 0.5
+        ttable.1.5 0.5
+}
+pcm.!default
+{
+        type plug
+        slave.pcm ch51upmix
+}
+pcm.lowpass {
+type ladspa
+path "/usr/lib/ladspa"
+plugins [ {
+label lpf
+input {
+controls [ 50 ]
+}
+} ]
+}
+
+
+With this .asoundrc, all speakers work, but my subwoofer doesn't play only
+low frequen...
+
+Can you please add such a feature?
+
+
+Greetz, Patrick
 ======================================================================
 
 ----------------------------------------------------------------------
- bduc - 04-13-06 08:56 
+ the-me - 04-13-06 13:05 
 ----------------------------------------------------------------------
-Ok upgraded drivers to 1.0.11-rc5 :-( still the same; 
+how is it with the newest rc5:
+  + Automatic upmix / downmix plugins
+    - Summary: Misc fixes for upmix plugin
+      - Add channel option to specify the output channels explicitly
+      - Fix 6-channel input
 
-Maybe there is an option I have to specify ?
-Any way I can further debug to help you all out ?
+is this "automatic" upmix feature with a lowpass filter for my subwoofer?
+
+I will listen to music over XMMS, is it able, to use this upmix feature
+then with this player?
+
+If it will work, I will remove windows and install linux again.
+
+
 
 ----------------------------------------------------------------------
- rlrevell - 04-13-06 17:12 
+ rlrevell - 04-13-06 17:14 
 ----------------------------------------------------------------------
-Try passing "model=asus" (see ALSA-Configuration.txt)
+No I don't think it does low pass filtering for the sub
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-15-05 18:40 dschaefer79    New Issue                                    
-12-15-05 18:40 dschaefer79    Distribution              => Gentoo Linux 2005.1
-X86_64
-12-15-05 18:40 dschaefer79    Kernel Version            => 2.6.14          
-12-15-05 19:14 dschaefer79    Issue Monitored: dschaefer79                    
-04-12-06 23:35 bduc           Note Added: 0009251                          
-04-12-06 23:35 bduc           Issue Monitored: bduc                        
-04-13-06 00:00 rlrevell       Note Added: 0009252                          
-04-13-06 08:56 bduc           Note Added: 0009254                          
-04-13-06 17:12 rlrevell       Note Added: 0009262                          
+03-31-06 20:38 the-me         New Issue                                    
+03-31-06 20:38 the-me         Distribution              => Debian          
+03-31-06 20:38 the-me         Kernel Version            => 2.6.16.1        
+03-31-06 20:40 the-me         Note Added: 0009048                          
+03-31-06 21:02 rlrevell       Status                   new => closed       
+03-31-06 21:02 rlrevell       Note Added: 0009049                          
+03-31-06 21:15 the-me         Status                   closed => feedback  
+03-31-06 21:15 the-me         Resolution               open => reopened    
+03-31-06 21:15 the-me         Note Added: 0009050                          
+04-01-06 01:03 Raymond        Note Added: 0009052                          
+04-01-06 10:39 the-me         Note Added: 0009053                          
+04-02-06 10:42 Raymond        Note Added: 0009059                          
+04-02-06 11:44 the-me         Note Added: 0009060                          
+04-02-06 14:36 Raymond        Note Added: 0009061                          
+04-02-06 14:57 the-me         Note Added: 0009062                          
+04-02-06 16:26 Raymond        Note Added: 0009063                          
+04-04-06 09:33 Raymond        Note Added: 0009111                          
+04-13-06 12:52 the-me         Note Added: 0009257                          
+04-13-06 13:05 the-me         Note Edited: 0009257                         
+04-13-06 17:14 rlrevell       Note Added: 0009263                          
 ======================================================================
 
 
