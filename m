@@ -1,15 +1,13 @@
-From: Rene Herman <rene.herman@keyaccess.nl>
-Subject: [ALSA STABLE 3/3] a few more -- unregister platform device again
- if probe was unsuccessful
-Date: Thu, 13 Apr 2006 03:46:04 +0200
-Message-ID: <443DAD5C.8080007__35423.4622479$1144892721$gmane$org@keyaccess.nl>
+From: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
+Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
+Date: Wed, 12 Apr 2006 20:17:05 -0700
+Message-ID: <20060413031705.GA9160@hurl.ugcs.caltech.edu>
+References: <20060412200957.GA4090@hurl.ugcs.caltech.edu> <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------040703020001050005080109"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtpq1.tilbu1.nb.home.nl (smtpq1.tilbu1.nb.home.nl [213.51.146.200])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCCB010F
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 03:44:22 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <1144878001.27496.33.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,177 +17,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>
+To: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------040703020001050005080109
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+On Wed, Apr 12, 2006 at 05:40:00PM -0400, Lee Revell wrote:
+> 
+> Please disregard last message - try simply surrounding hw:0,0 and hw:0,1
+> with quotes.
+> 
+> pcm.multi_capture {
+> 	type multi
+> 	slaves.a.pcm "hw:0,0"
+> 	slaves.a.channels 8
+> 	slaves.b.pcm "hw:0,1"
+> 	slaves.b.channels 8
 
-Hi Takashi.
+Quotes don't work.  To get around the parse error, i need
+to give a name to the device elsewhere then refer to it by
+name.
 
-And finally, unregister on probe failure for sound/drivers,
-sound/arm/sa11xx-uda1341.c and sound/ppc/powermac.c.
+So for some reason
 
-   sound/arm/sa11xx-uda1341.c    |   14 +++++++++-----
-   sound/drivers/dummy.c         |    4 ++++
-   sound/drivers/mpu401/mpu401.c |    4 ++++
-   sound/drivers/mtpav.c         |   14 +++++++++-----
-   sound/drivers/serial-u16550.c |    4 ++++
-   sound/drivers/virmidi.c       |    4 ++++
-   sound/ppc/powermac.c          |   14 +++++++++-----
-   7 files changed, 43 insertions(+), 15 deletions(-)
+pcm.multi_capture {
+	type multi
+	slaves.a.pcm "hw:2,0"
+	slaves.a.channels 8
+	slaves.b.pcm "hw:2,1"
+	slaves.b.channels 8
 
-Signed-off-by: Rene Herman <rene.herman@keyaccess.nl>
+will fail to parse, but
 
+pcm.layla_analog {
+	type hw
+	card 2
+	device 0
+}
+pcm.layla_digital {
+	type hw
+	card 2
+	device 1
+}
+pcm.multi_capture {
+        type multi
+        slaves.a.pcm layla_analog
+        slaves.a.channels 8
+        slaves.b.pcm layla_digital
+        slaves.b.channels 8
 
---------------040703020001050005080109
-Content-Type: text/plain;
- name="alsa_platform_unregister_remainder.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa_platform_unregister_remainder.diff"
-
-Index: local/sound/arm/sa11xx-uda1341.c
-===================================================================
---- local.orig/sound/arm/sa11xx-uda1341.c	2006-03-20 06:53:29.000000000 +0100
-+++ local/sound/arm/sa11xx-uda1341.c	2006-04-13 03:14:49.000000000 +0200
-@@ -984,11 +984,15 @@ static int __init sa11xx_uda1341_init(vo
- 	if ((err = platform_driver_register(&sa11xx_uda1341_driver)) < 0)
- 		return err;
- 	device = platform_device_register_simple(SA11XX_UDA1341_DRIVER, -1, NULL, 0);
--	if (IS_ERR(device)) {
--		platform_driver_unregister(&sa11xx_uda1341_driver);
--		return PTR_ERR(device);
--	}
--	return 0;
-+	if (!IS_ERR(device)) {
-+		if (platform_get_drvdata(device))
-+			return 0;
-+		platform_device_unregister(device);
-+		err = -ENODEV
-+	} else
-+		err = PTR_ERR(device);
-+	platform_driver_unregister(&sa11xx_uda1341_driver);
-+	return err;
- }
- 
- static void __exit sa11xx_uda1341_exit(void)
-Index: local/sound/drivers/dummy.c
-===================================================================
---- local.orig/sound/drivers/dummy.c	2006-04-13 03:11:35.000000000 +0200
-+++ local/sound/drivers/dummy.c	2006-04-13 03:14:49.000000000 +0200
-@@ -677,6 +677,10 @@ static int __init alsa_card_dummy_init(v
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/drivers/mpu401/mpu401.c
-===================================================================
---- local.orig/sound/drivers/mpu401/mpu401.c	2006-04-13 03:11:35.000000000 +0200
-+++ local/sound/drivers/mpu401/mpu401.c	2006-04-13 03:14:49.000000000 +0200
-@@ -252,6 +252,10 @@ static int __init alsa_card_mpu401_init(
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		platform_devices[i] = device;
- 		devices++;
- 	}
-Index: local/sound/drivers/mtpav.c
-===================================================================
---- local.orig/sound/drivers/mtpav.c	2006-03-20 06:53:29.000000000 +0100
-+++ local/sound/drivers/mtpav.c	2006-04-13 03:14:49.000000000 +0200
-@@ -770,11 +770,15 @@ static int __init alsa_card_mtpav_init(v
- 		return err;
- 
- 	device = platform_device_register_simple(SND_MTPAV_DRIVER, -1, NULL, 0);
--	if (IS_ERR(device)) {
--		platform_driver_unregister(&snd_mtpav_driver);
--		return PTR_ERR(device);
--	}
--	return 0;
-+	if (!IS_ERR(device)) {
-+		if (platform_get_drvdata(device))
-+			return 0;
-+		platform_device_unregister(device);
-+		err = -ENODEV;
-+	} else
-+		err = PTR_ERR(device);
-+	platform_driver_unregister(&snd_mtpav_driver);
-+	return err;
- }
- 
- static void __exit alsa_card_mtpav_exit(void)
-Index: local/sound/drivers/serial-u16550.c
-===================================================================
---- local.orig/sound/drivers/serial-u16550.c	2006-04-13 03:11:35.000000000 +0200
-+++ local/sound/drivers/serial-u16550.c	2006-04-13 03:14:49.000000000 +0200
-@@ -997,6 +997,10 @@ static int __init alsa_card_serial_init(
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/drivers/virmidi.c
-===================================================================
---- local.orig/sound/drivers/virmidi.c	2006-04-13 03:11:35.000000000 +0200
-+++ local/sound/drivers/virmidi.c	2006-04-13 03:14:49.000000000 +0200
-@@ -171,6 +171,10 @@ static int __init alsa_card_virmidi_init
- 							 i, NULL, 0);
- 		if (IS_ERR(device))
- 			continue;
-+		if (!platform_get_drvdata(device)) {
-+			platform_device_unregister(device);
-+			continue;
-+		}
- 		devices[i] = device;
- 		cards++;
- 	}
-Index: local/sound/ppc/powermac.c
-===================================================================
---- local.orig/sound/ppc/powermac.c	2006-03-20 06:53:29.000000000 +0100
-+++ local/sound/ppc/powermac.c	2006-04-13 03:14:49.000000000 +0200
-@@ -188,11 +188,15 @@ static int __init alsa_card_pmac_init(vo
- 	if ((err = platform_driver_register(&snd_pmac_driver)) < 0)
- 		return err;
- 	device = platform_device_register_simple(SND_PMAC_DRIVER, -1, NULL, 0);
--	if (IS_ERR(device)) {
--		platform_driver_unregister(&snd_pmac_driver);
--		return PTR_ERR(device);
--	}
--	return 0;
-+	if (!IS_ERR(device)) {
-+		if (platform_get_drvdata(device))
-+			return 0;
-+		platform_device_unregister(device);
-+		err = -ENODEV;
-+	} else
-+		err = PTR_ERR(device);
-+	platform_driver_unregister(&snd_pmac_driver);
-+	return err;
- 
- }
- 
+  
+will parse OK.  
 
 
---------------040703020001050005080109--
+However, trying to run jack via qjackctl with a 
+few simple configs that the LAYLA is capable of yields:
+
+/usr/bin/jackd -R -t5000 -dalsa -dmulti_playback -r44100 -p256 -n2 -P -o2
+jackd 0.100.6
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... multi_playback|-|256|2|44100|0|2|nomon|swmeter|-|32bit
+configuring for 44100Hz, period = 256 frames, buffer = 2 periods
+ALSA: no playback configurations available (Invalid argument)
+ALSA: cannot configure playback channel
+cannot load driver module alsa
+
+
+Maybe need to define channels and/or rate in layla_* and/or multi*
+but in the past the presence of those has also seemed to cause problems
+(even if the definitions are accurate).
+
+
+Beyond that, the solution you suggest creates two devices, one 
+16 channel playback the other 16 channel capture.  The core problem 
+is that JACK will only open a single device.  So even if multi_playback
+and _capture worked, to the best of my knowledge that would still
+not enable me to run ardour in 16 channel duplex.  Wouldn't it require
+another layer of asym or something to present it as a single device?
+Or can _playback itself be opened duplex?  The definition seems
+identical to _capture anyhow....
+
+  -geoff
+
 
 
 -------------------------------------------------------
