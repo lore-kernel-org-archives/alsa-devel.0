@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001904]: No Sound At All
-Date: Thu, 13 Apr 2006 21:49:26 +0200
-Message-ID: <26e6a1ed8a165739a412bbad7af736c7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001800]: Input signal from analog input in snd-ca0106 with audigy SE distorted!
+Date: Thu, 13 Apr 2006 21:51:17 +0200
+Message-ID: <e7d8c72c2a38625557eeb8af07431d82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9810150
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 21:49:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CDFCF150
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 21:51:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1904> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1800> 
 ======================================================================
-Reported By:                niels
+Reported By:                AnarSoul
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1904
+Issue ID:                   1800
 Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.15-i686
+Status:                     feedback
+Distribution:               Slackware
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             03-10-2006 14:24 CET
-Last Modified:              04-13-2006 21:49 CEST
+Date Submitted:             01-31-2006 15:56 CET
+Last Modified:              04-13-2006 21:51 CEST
 ======================================================================
-Summary:                    No Sound At All
+Summary:                    Input signal from analog input in snd-ca0106 with
+audigy SE distorted!
 Description: 
-Hi There!
-Unfortunately I have to report that I am not getting a single sound out of
-my SB24Bit Live Sounbcard!
-All dependencies are fulfilled, the right kernel is installed, the actual
-libasound2 is installed, Alsaconf builds the driver, on alsamixer the
-Volumes are up - but still no sound!
-Well it could be the DSP, thats true, but thats pretty much unusual as it
-is a brandnew card!
-If you, the developer crew does have any suggestions what you want me to
-test tzo verify if it is a bug or not, don`t hesitate to contact me!
-If I am on the console and try aplay /usr/share/sounds/pop.wav nothing
-happens either. And yes I have disabled the artsd in the control menu of
-KDE!
-
-Thanks
-Niels
+Recorded signal from my audigy SE from analog MIC input badly distorted! =(
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 04-13-06 21:49 
+ AnarSoul - 02-07-06 21:55 
 ----------------------------------------------------------------------
-please post the output of the following commands:
-cat /proc/asound/version
-cat /proc/asound/cards
-amixer
+Recorded signal distorted only if number of channels set to 2.
+If number of capture channels set to 1 there's no distortion :)
+
+Probably bug with setting up number of capture channels in driver?
+
+----------------------------------------------------------------------
+ jcdutton - 04-13-06 21:51 
+----------------------------------------------------------------------
+Please try alsa-driver 1.0.11rc5 or above and report back.
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-10-06 14:24 niels          New Issue                                    
-03-10-06 14:24 niels          Distribution              => Debian          
-03-10-06 14:24 niels          Kernel Version            => 2.6.15-i686     
-04-13-06 21:49 jcdutton       Note Added: 0009272                          
+01-31-06 15:56 AnarSoul       New Issue                                    
+01-31-06 15:56 AnarSoul       Distribution              => Slackware       
+01-31-06 15:56 AnarSoul       Kernel Version            => 2.6.15          
+02-05-06 17:38 AnarSoul       Issue Monitored: AnarSoul                    
+02-07-06 21:55 AnarSoul       Note Added: 0007961                          
+04-13-06 21:51 jcdutton       Note Added: 0009273                          
+04-13-06 21:51 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
