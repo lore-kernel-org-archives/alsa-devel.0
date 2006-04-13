@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001999]: Latest cvs won't compile
-Date: Thu, 13 Apr 2006 13:47:27 +0200
-Message-ID: <83ebbe9f9dec2d544a276309a5188cb4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
+Date: Thu, 13 Apr 2006 14:00:18 +0200
+Message-ID: <87aa6344f6ac2d454eff53d2d54372ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 400B0154
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 13:47:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4EC9B13D
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 14:00:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,99 +24,140 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1999> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
 ======================================================================
-Reported By:                kotau
-Assigned To:                perex
+Reported By:                liangalei
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1999
-Category:                   0_compilation problem_!!!
+Issue ID:                   1134
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             -2.6.13.2
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
 ======================================================================
-Date Submitted:             04-03-2006 21:05 CEST
-Last Modified:              04-13-2006 13:47 CEST
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              04-13-2006 14:00 CEST
 ======================================================================
-Summary:                    Latest cvs won't compile
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
 Description: 
-Here's the error message.
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
 
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
 
-==============
-make[1]: Entering directory `/usr/src/linux-2.6.13.2'
-  CC [M]  /usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
-`snd_ac97_proc_read_main':
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
-`snd_ac97_stereo_enhancements' undeclared (first use in this function)
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
-(Each undeclared identifier is reported only once
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
-for each function it appears in.)
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
-`snd_ac97_proc_read':
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: warning:
-implicit declaration of function `snd_magic_cast'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: error:
-parse error before "ac97_t"
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:296: error:
-structure has no member named `semaphore'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:322: error:
-structure has no member named `semaphore'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
-`snd_ac97_proc_regs_read':
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:359: error:
-parse error before "ac97_t"
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:361: error:
-structure has no member named `semaphore'
-/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:377: error:
-structure has no member named `semaphore'
-make[5]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o]
-Error 1
-make[4]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97] Error 2
-make[3]: *** [/usr/local/src/1music/alsa/alsa-driver/pci] Error 2
-make[2]: *** [_module_/usr/local/src/1music/alsa/alsa-driver] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.13.2'
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
 
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
+
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
+
+thanks
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-11-06 19:53 
+ kesiev - 04-12-06 16:21 
 ----------------------------------------------------------------------
-alsa-driver/kernel
-alsa-driver/lowlevel
+Just a note: I'm posting the .inf file from the windows driver. I don't
+know if it is useful (for example, the first lines confirms that is a AC97
+based driver) but is full of numbers that, I hope, can be useful for ALSA
+hackers.
 
-These two directories seem to be empty.
-
-Seem 1.0.11rc5 will be released soon
+Drivers are here:
+http://www.benq.it/ServiceAndSupport/downloads/downloads.cfm?product=829&type=D
 
 ----------------------------------------------------------------------
- Raymond - 04-13-06 13:47 
+ kesiev - 04-13-06 14:00 
 ----------------------------------------------------------------------
-alsa-1.0.11rc5 tag still missing in
+Ok... is not too nice but I'm posting also the windows exported file about
+"multimedia" of the Benq S53w.y1 . Is in italian but I thing is quite
+readable for anyone.
 
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/ac97/
-
-Which tag is used to retreive the latest version ?
+Notice that the IRQ is different from windows to linux. Dunno if is useful
+but I'm trying to provide as many information I can, as asked in this
+thread.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-06 21:05 kotau          New Issue                                    
-04-03-06 21:05 kotau          Kernel Version            => -2.6.13.2       
-04-04-06 09:58 Raymond        Note Added: 0009112                          
-04-07-06 14:12 Raymond        Note Added: 0009139                          
-04-07-06 14:16 Raymond        Note Edited: 0009139                         
-04-11-06 19:17 Raymond        Note Added: 0009236                          
-04-11-06 19:29 rlrevell       Note Added: 0009237                          
-04-11-06 19:53 Raymond        Note Added: 0009238                          
-04-13-06 13:47 Raymond        Note Added: 0009258                          
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
+05-30-05 03:29 liangalei      Note Added: 0004795                          
+06-01-05 16:58 tiwai          Note Added: 0004863                          
+06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+06-02-05 10:42 liangalei      Note Added: 0004875                          
+06-06-05 09:53 perex          Assigned To              perex =>            
+06-23-05 12:42 tiwai          Note Added: 0005182                          
+06-24-05 03:12 liangalei      File Added: asound.state                     
+06-24-05 03:13 liangalei      File Added: ac97#0-0                         
+06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
+06-24-05 03:18 liangalei      Note Added: 0005202                          
+08-28-05 15:28 ybar           Note Added: 0005962                          
+11-29-05 05:59 derek          Issue Monitored: derek                       
+11-29-05 06:00 derek          Issue End Monitor: derek                     
+11-29-05 06:03 derek          Note Added: 0006870                          
+02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
+02-17-06 22:22 gandhi         Note Added: 0008110                          
+02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
+02-17-06 23:28 gandhi         Note Edited: 0008110                         
+02-17-06 23:43 gandhi         Note Edited: 0008110                         
+02-18-06 02:05 gandhi         Note Added: 0008112                          
+02-18-06 08:13 liangalei      Note Added: 0008116                          
+02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
+02-18-06 15:56 gandhi         Note Added: 0008120                          
+02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
+03-03-06 08:29 robitech       Note Added: 0008336                          
+03-15-06 05:34 JProgrammer    Note Added: 0008526                          
+03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
+03-15-06 06:39 Kooper         Note Added: 0008527                          
+03-15-06 11:40 tiwai          Note Added: 0008531                          
+03-15-06 11:53 Kooper         Note Added: 0008535                          
+03-15-06 12:13 JProgrammer    Note Added: 0008538                          
+03-15-06 12:18 tiwai          Note Added: 0008540                          
+03-15-06 23:48 JProgrammer    Note Added: 0008579                          
+03-16-06 15:04 tiwai          Note Added: 0008606                          
+03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
+   
+03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
+03-17-06 04:10 Kooper         Note Added: 0008633                          
+03-17-06 12:07 tiwai          Note Added: 0008641                          
+03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
+      
+03-17-06 12:35 Kooper         Note Added: 0008644                          
+03-21-06 02:38 JProgrammer    Note Added: 0008736                          
+03-25-06 10:51 alessiodf      Note Added: 0008944                          
+03-26-06 20:12 alessiodf      Note Edited: 0008944                         
+03-26-06 20:15 alessiodf      Note Edited: 0008944                         
+03-30-06 15:47 trava          Note Added: 0009034                          
+04-07-06 13:05 kesiev         Note Added: 0009137                          
+04-07-06 13:06 kesiev         Note Edited: 0009137                         
+04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
+04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
+04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
+04-12-06 16:21 kesiev         Note Added: 0009246                          
+04-12-06 16:21 kesiev         File Added: qta058Ba.inf                     
+04-13-06 14:00 kesiev         Note Added: 0009259                          
 ======================================================================
 
 
