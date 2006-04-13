@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Thu, 13 Apr 2006 14:00:18 +0200
-Message-ID: <87aa6344f6ac2d454eff53d2d54372ae@bugtrack.alsa-project.org>
+Subject: [ALSA - plugins 0001949]: pcm.jack config in alsa-plugins/doc/README-jack
+Date: Thu, 13 Apr 2006 14:50:15 +0200
+Message-ID: <c0781241f03dcbdce763e89c21e991c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4EC9B13D
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 14:00:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E57A212B
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 14:50:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,140 +24,161 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1949> 
 ======================================================================
-Reported By:                liangalei
+Reported By:                Raymond
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Project:                    ALSA - plugins
+Issue ID:                   1949
+Category:                   PCM - jack
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Status:                     new
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              04-13-2006 14:00 CEST
+Date Submitted:             03-21-2006 06:18 CET
+Last Modified:              04-13-2006 14:50 CEST
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    pcm.jack config in alsa-plugins/doc/README-jack
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+In  alsa-plugins/doc/README-jack
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
+   pcm.jack {
+		type jack
+		playback_ports {
+			0 alsa_pcm:playback_1
+			1 alsa_pcm:playback_1
+		}
+		capture_ports {
+			0 alsa_pcm:capture_1
+			1 alsa_pcm:pcapture_1
+		}
+	}
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
+There are four entries in Writable clients in qjackctl (jack-0.100.0) 
 
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+playback_1
+playback_2
+playback_3
+playback_4
 
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
+two entries in Readable clients
 
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
+capture_1
+capture_2
 
-thanks
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001931 Unknown AC97 codec, digital sound works
-======================================================================
 
 ----------------------------------------------------------------------
- kesiev - 04-12-06 16:21 
+ Raymond - 04-12-06 16:10 
 ----------------------------------------------------------------------
-Just a note: I'm posting the .inf file from the windows driver. I don't
-know if it is useful (for example, the first lines confirms that is a AC97
-based driver) but is full of numbers that, I hope, can be useful for ALSA
-hackers.
+It seem that speaker-test run much faster when using plug:jack than hw:0,0
 
-Drivers are here:
-http://www.benq.it/ServiceAndSupport/downloads/downloads.cfm?product=829&type=D
+> speaker-test -c 2 -Dplug:jack
+ 
+speaker-test 1.0.11rc5
+ 
+Playback device is plug:jack
+Stream parameters are 48000Hz, S16_LE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 32 to 524288
+Period size range from 16 to 8192
+Using max buffer size 524288
+Periods = 4
+was set period_size = 8192
+was set buffer_size = 524288
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 0.054775
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 0.064070
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 0.079937
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 0.063401
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 0.063787
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 0.063419
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 0.048568
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 0.083251
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 0.049356
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 0.047705
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 0.063587
+ 0 - Front Left
+ 1 - Front Right
+
+
+> speaker-test -c 2 -Dhw:0,0
+ 
+speaker-test 1.0.11rc5
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 2 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 16384
+Period size range from 1 to 1024
+Using max buffer size 16384
+Periods = 4
+was set period_size = 1024
+was set buffer_size = 16384
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 5.632776
+ 0 - Front Left
+ 1 - Front Right
+Time per period = 5.972448
+ 0 - Front Left
 
 ----------------------------------------------------------------------
- kesiev - 04-13-06 14:00 
+ Raymond - 04-13-06 14:50 
 ----------------------------------------------------------------------
-Ok... is not too nice but I'm posting also the windows exported file about
-"multimedia" of the Benq S53w.y1 . Is in italian but I thing is quite
-readable for anyone.
+http://sourceforge.net/mailarchive/forum.php?thread_id=10159370&forum_id=33141
 
-Notice that the IRQ is different from windows to linux. Dunno if is useful
-but I'm trying to provide as many information I can, as asked in this
-thread.
+The patch fixed the hang problem, aplay now aborted (as expected) instead
+of hang
+
+aplay  -Dplug:jack outls.wav
+Playing WAVE 'outls.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+cannot connect alsa-jack.jackP.4775.0:out_001
+ to alsa_pcm:playback_2
+aplay: pcm_write:1257: write error: Input/output error
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
-03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
-   
-03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
-03-17-06 04:10 Kooper         Note Added: 0008633                          
-03-17-06 12:07 tiwai          Note Added: 0008641                          
-03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
-      
-03-17-06 12:35 Kooper         Note Added: 0008644                          
-03-21-06 02:38 JProgrammer    Note Added: 0008736                          
-03-25-06 10:51 alessiodf      Note Added: 0008944                          
-03-26-06 20:12 alessiodf      Note Edited: 0008944                         
-03-26-06 20:15 alessiodf      Note Edited: 0008944                         
-03-30-06 15:47 trava          Note Added: 0009034                          
-04-07-06 13:05 kesiev         Note Added: 0009137                          
-04-07-06 13:06 kesiev         Note Edited: 0009137                         
-04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
-04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
-04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
-04-12-06 16:21 kesiev         Note Added: 0009246                          
-04-12-06 16:21 kesiev         File Added: qta058Ba.inf                     
-04-13-06 14:00 kesiev         Note Added: 0009259                          
+03-21-06 06:18 Raymond        New Issue                                    
+03-21-06 07:42 Raymond        Note Added: 0008738                          
+03-22-06 16:54 Raymond        Note Added: 0008863                          
+03-22-06 17:02 Raymond        Note Edited: 0008863                         
+03-22-06 18:47 tiwai          Note Added: 0008865                          
+03-23-06 03:44 Raymond        Note Added: 0008878                          
+03-23-06 05:51 Raymond        Note Edited: 0008878                         
+03-23-06 15:17 Raymond        Note Added: 0008882                          
+03-23-06 15:19 Raymond        Note Edited: 0008882                         
+03-23-06 15:20 Raymond        Note Edited: 0008882                         
+03-23-06 16:48 Raymond        Note Added: 0008889                          
+04-12-06 16:10 Raymond        Note Added: 0009245                          
+04-13-06 14:50 Raymond        Note Added: 0009260                          
 ======================================================================
 
 
