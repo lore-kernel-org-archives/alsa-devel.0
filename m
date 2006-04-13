@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002013]: no digital output
-Date: Thu, 13 Apr 2006 21:22:48 +0200
-Message-ID: <05163e7c57ac244f18a2791b094d288c@bugtrack.alsa-project.org>
+From: John Rigg <ad@sound-man.co.uk>
+Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
+Date: Thu, 13 Apr 2006 20:39:47 +0100
+Message-ID: <20060413193947.GA2738@localhost.localdomain>
+References: <20060412200957.GA4090@hurl.ugcs.caltech.edu> <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe> <20060413031705.GA9160@hurl.ugcs.caltech.edu> <1144898970.10666.139.camel@localhost.localdomain> <20060413053945.GB11100@hurl.ugcs.caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E917178
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 21:22:48 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20060413053945.GB11100@hurl.ugcs.caltech.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,104 +17,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Apr 12, 2006 at 10:39:45PM -0700, Lance Blisters wrote:
+> On Wed, Apr 12, 2006 at 11:29:30PM -0400, Paul Davis wrote:
+> > On Wed, 2006-04-12 at 20:17 -0700, Lance Blisters wrote:
+> > 
+> > > ALSA: cannot configure playback channel
+> > > cannot load driver module alsa
+> > 
+> > i don't believe that "multi" will work without the MMAP_COMPLEX patch to
+> > JACK that has been outstanding for months and months. its available in
+> > the patch tracker at jackit.sf.net if you want to try it; otherwise i
+> > intend to merge it next week or the week after.
+> 
+> So the only way to get 16 channels from the LAYLA is via 
+> MMAP_COMPLEX and multi?
+> 
+> Do you think the above problem is a direct result of lacking
+> MMAP_COMPLEX functionality, and .asoundrc might be otherwise 
+> correct?
+> 
+> > this command: 
+> > 
+> >    jackd -d alsa -P hw:0 -C hw:1
+> > 
+> > opens different devices for capture and playback
+> 
+> Great! I was thrown by the single Interface selection
+> in qjackctl, and my assumption that different cards
+> for input and output would present similar drift and
+> synch problems as outputting to multiple cards.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2013> 
-======================================================================
-Reported By:                SamiH
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2013
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               BLFS
-Kernel Version:             2.6.15.4
-======================================================================
-Date Submitted:             04-09-2006 11:43 CEST
-Last Modified:              04-13-2006 21:22 CEST
-======================================================================
-Summary:                    no digital output
-Description: 
-Shortly: Digital output doesn't work at all, or I don't know how to use
-it.
+Analog and digital inputs and outputs on the same physical card use the
+same word clock even if you have separate virtual devices defined.
 
-This has been my problem quite long time now. I have upgraded my kernel
-from  2.6.8 to 2.6.15.4 with some steps bitween those versions, and the
-problem is still here. I have tried some live-cds with same results as my
-stable system.
+Another thing: if you try to use -o2 ALSA doesn't like it.
+Anything other than the full number of channels (the default)
+doesn't work, which seems to defeat the object of the -o option. Just
+leave the -o option out (same applies to -i).
 
-Analog stereo output works with no problems. If someone did tell me what I
-should test on my system so that I could give the results to you.
+Since your analogue and digital in/outs are different logical devices
+you might have to remove the linking code that was added to pcm_multi.c
+between alsa-lib versions 1.0.8 and 1.0.9rc1. This broke duplex jackd
+operation with multiple cards; it's possible that it affects your
+multiple devices too. You might also need MMAP_COMPLEX support in jackd.
 
-These aren't broken:
- * my external amplifier
- * the digital coaxial cable
- * speakers etc.
-
-Please tell me at least what to do, what to search for, or something...
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 04-10-06 16:50 
-----------------------------------------------------------------------
-You didn't write what did you test...
-
-----------------------------------------------------------------------
- SamiH - 04-13-06 21:22 
-----------------------------------------------------------------------
-Sorry about that incomplete post, hopefully this tells something to you.
-
-In alsa.txt is my alsactl output.
-The programs I have used: aplay, xmms, xine, speaker-test
-
-I have tested different mixer values, sometimes in order, sometimes
-random. But now I tested with speaker-test.
-
-* speaker-test -c 2 -Dhw:0,0,[12] -> only analog stereo
-* speaker-test -c 2 -Dhw:0,0,3 -r 44100 -> no sound, but plays (44100 was
-the first samplerate I tried after it said: "Setting of hwparams failed:
-Invalid argument Rate 48000Hz not available for playback: Invalid
-argument) 
-* speaker-test -c 2 -Dhw:0,0,[4567] -> Playback open error: -16,Device or
-resource busy
-* speaker-test -c 2 -Dhw:0,1,0 -> only analog stereo
-* speaker-test -c 2 -Dhw:0,1,[12] -> Playback open error: -16,Device or
-resource busy
-
------
-
-aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: V8237 [VIA 8237], device 0: VIA 8237 [VIA 8237]
-  Subdevices: 4/4
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-  Subdevice #2: subdevice #2
-  Subdevice #3: subdevice #3
-card 0: V8237 [VIA 8237], device 1: VIA 8237 [VIA 8237]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-09-06 11:43 SamiH          New Issue                                    
-04-09-06 11:43 SamiH          Distribution              => BLFS            
-04-09-06 11:43 SamiH          Kernel Version            => 2.6.15.4        
-04-10-06 16:50 tiwai          Note Added: 0009198                          
-04-13-06 21:10 SamiH          File Added: alsa.txt                         
-04-13-06 21:22 SamiH          Note Added: 0009269                          
-======================================================================
-
-
+John
 
 
 -------------------------------------------------------
