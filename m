@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001971]: Some elements incorrectly have capture flags
-Date: Thu, 13 Apr 2006 11:32:28 +0200
-Message-ID: <1bca769c4e91c1c1dc24dbd1ec2a8054@bugtrack.alsa-project.org>
+From: Service de distribution du courrier <postmaster@neuf.fr>
+Subject: =?iso-8859-1?Q?Notification_de_l=27=E9tat_de_remise?=
+Date: Thu, 13 Apr 2006 11:51:34 +0200 (CEST)
+Message-ID: <0IXN002BGNDY0R00@sp604003mt.gpm.neuf.ld>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/report;
+ boundary="Boundary_(ID_bfzdN9ce+jcjSI4BvAGaAw)"; report-type=delivery-status
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7033D11E
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 11:32:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,145 +15,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa.jcu.cz
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971> 
-======================================================================
-Reported By:                pzad
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1971
-Category:                   simple mixer
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-28-2006 12:16 CEST
-Last Modified:              04-13-2006 11:32 CEST
-======================================================================
-Summary:                    Some elements incorrectly have capture flags
-Description: 
-Some elemnts have capture flags even they have nothing to do with capture.
-This will duplicate control in alsamixer - view ALL.
+--Boundary_(ID_bfzdN9ce+jcjSI4BvAGaAw)
+Content-type: text/plain; charset=iso-8859-1
+Content-language: fr-FR
+Content-Transfer-Encoding: quoted-printable
 
-On VIA8233A + ALC650:
+Ce rapport fait r=E9f=E9rence =E0 un message envoy=E9 avec les champs d'e=
+n-t=EAte
+suivants :
 
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 1 [7%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
+  Message-id: <0IXN00N13N8F3C30@sp604003mt.gpm.neuf.ld>
+  Date: Thu, 13 Apr 2006 11:47:13 +0200
+  From: alsa-devel@alsa.jcu.cz
+  To: diffserv@ietf.org
+  Subject: Status
 
-On Audigy 1:
-Simple mixer control 'Bass',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 23 [58%]
-  Front Right: 23 [58%]
-Simple mixer control 'Treble',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 27 [68%]
-  Front Right: 27 [68%]
+Le message ne peut pas =EAtre remis aux destinataires suivants :
+
+  Adresse du destinataire : diffserv@ietf.org
+  Raison : SMTP transmission failure has occurred
+  Code de diagnostic : smtp;550 This message contains malware (Worm.Mydoo=
+m.M)
+  Syst=E8me distant : dns;stiedprmail1.ietf.org (TCP|84.96.92.56|59053|15=
+6.154.16.150|25) (ietf-mx.ietf.org ESMTP Exim 4.43 Thu, 13 Apr 2006 05:51=
+:34 -0400)
 
 
-======================================================================
+--Boundary_(ID_bfzdN9ce+jcjSI4BvAGaAw)
+Content-type: message/delivery-status
 
-----------------------------------------------------------------------
- Raymond - 04-07-06 12:05 
-----------------------------------------------------------------------
-Please note that the above code is wrong.
+Reporting-MTA: dns;sp604003mt.gpm.neuf.ld (tcp-daemon)
 
-You need the following code to route capture channel to equalizer.
+Original-recipient: rfc822;diffserv@ietf.org
+Final-recipient: rfc822;diffserv@ietf.org
+Action: failed
+Status: 5.0.0 (SMTP transmission failure has occurred)
+Remote-MTA: dns;stiedprmail1.ietf.org (TCP|84.96.92.56|59053|156.154.16.150|25)
+ (ietf-mx.ietf.org ESMTP Exim 4.43 Thu, 13 Apr 2006 05:51:34 -0400)
+Diagnostic-code: smtp;550 This message contains malware (Worm.Mydoom.M)
 
-static void
-vortex_connect_codecrec(vortex_t * vortex, int en, unsigned char mixin0,
-			unsigned char mixin1)
-{
-	/*
-	   Enable: 0x1, 0x1
-	   Channel: 0x11, 0x11
-	   ADB Source address: 0x48, 0x49
-	   Destination Asp4Topology_0x9c,0x98
-	 */
-#ifndef CHIP_AU8820
-	if ( vortex->eq_route == 1 ) {
-		/* connect capture channels to EQ */
-		vortex_route(vortex, en, 0x11, ADB_CODECIN(0), ADB_EQIN(0));
-		vortex_route(vortex, en, 0x11, ADB_CODECIN(1), ADB_EQIN(1));
-		vortex_connection_adb_mixin(vortex, en, 0x11, ADB_EQOUT(0), mixin0);
-		vortex_connection_adb_mixin(vortex, en, 0x11, ADB_EQOUT(1), mixin1);
-		/* Lower volume, since EQ has some gain. */
-		vortex_mix_setvolumebyte(vortex, mixin0, 0);
-		vortex_mix_setvolumebyte(vortex, mixin1, 0);
-	}
-	else {
-#endif
-		vortex_connection_adb_mixin(vortex, en, 0x11, ADB_CODECIN(0), mixin0);
-		vortex_connection_adb_mixin(vortex, en, 0x11, ADB_CODECIN(1), mixin1);
-#ifndef CHIP_AU8820
-	};
-#endif
-}
+--Boundary_(ID_bfzdN9ce+jcjSI4BvAGaAw)
+Content-type: TEXT/RFC822-HEADERS
 
-----------------------------------------------------------------------
- Raymond - 04-13-06 11:32 
-----------------------------------------------------------------------
->> Anyway there is still bug, because this "Captrure" mixer element in
-alsamixer >> doesn't work at all.
-
-In View All of alsamixer
-
-The "Playback" control and "Capture" control are side by side.
-
-Both "Playback" and "Capture" will go up/down when we press key to
-increase/decrease the "Playback" control and it affect the output.
-
-The "Capture" control will go up/down when we press key to
-increase/decrese the "Capture" but it actually don't affect the output.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-28-06 12:16 pzad           New Issue                                    
-03-30-06 11:01 Raymond        Note Added: 0009028                          
-03-30-06 12:50 pzad           Note Added: 0009031                          
-03-30-06 13:13 pzad           Note Added: 0009032                          
-03-30-06 13:22 Raymond        Note Added: 0009033                          
-03-30-06 13:29 Raymond        Note Edited: 0009033                         
-03-30-06 13:41 Raymond        Note Edited: 0009033                         
-03-31-06 04:36 Raymond        Note Added: 0009041                          
-03-31-06 04:50 Raymond        Note Edited: 0009041                         
-04-01-06 01:13 Raymond        Note Edited: 0009033                         
-04-03-06 19:08 Raymond        Note Added: 0009103                          
-04-05-06 18:42 Raymond        Note Added: 0009121                          
-04-05-06 18:46 Raymond        Note Edited: 0009121                         
-04-05-06 18:50 Raymond        Note Edited: 0009121                         
-04-06-06 09:11 Raymond        Note Deleted: 0009103                        
-04-06-06 09:44 Raymond        Note Added: 0009124                          
-04-06-06 09:45 Raymond        Note Edited: 0009124                         
-04-07-06 12:05 Raymond        Note Added: 0009136                          
-04-13-06 11:32 Raymond        Note Added: 0009256                          
-======================================================================
+Return-path: <alsa-devel@alsa.jcu.cz>
+Received: from tcp-daemon.sp604003mt.gpm.neuf.ld by sp604003mt.gpm.neuf.ld
+ (Sun Java System Messaging Server 6.2-5.05 (built Feb 16 2006))
+ id <0IXN002BENDX0R00@sp604003mt.gpm.neuf.ld>; Thu,
+ 13 Apr 2006 11:51:34 +0200 (CEST)
+Received: from alsa.jcu.cz ([84.7.87.173]) by sp604003mt.gpm.neuf.ld
+ (Sun Java System Messaging Server 6.2-5.05 (built Feb 16 2006))
+ with ESMTP id <0IXN00N12N8F3C30@sp604003mt.gpm.neuf.ld> for diffserv@ietf.org;
+ Thu, 13 Apr 2006 11:48:16 +0200 (CEST)
+Date: Thu, 13 Apr 2006 11:47:13 +0200
+From: alsa-devel@alsa.jcu.cz
+Subject: Status
+To: diffserv@ietf.org
+Message-id: <0IXN00N13N8F3C30@sp604003mt.gpm.neuf.ld>
+MIME-version: 1.0
+X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+Content-type: TEXT/PLAIN
+Content-transfer-encoding: QUOTED-PRINTABLE
+X-Priority: 3
+X-MSMail-priority: Normal
 
 
+
+--Boundary_(ID_bfzdN9ce+jcjSI4BvAGaAw)--
 
 
 -------------------------------------------------------
