@@ -1,13 +1,14 @@
-From: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
-Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
-Date: Wed, 12 Apr 2006 22:39:45 -0700
-Message-ID: <20060413053945.GB11100@hurl.ugcs.caltech.edu>
-References: <20060412200957.GA4090@hurl.ugcs.caltech.edu> <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe> <20060413031705.GA9160@hurl.ugcs.caltech.edu> <1144898970.10666.139.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001652]: ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver output and input entry missing
+Date: Thu, 13 Apr 2006 08:56:18 +0200
+Message-ID: <358cdb8932784fb0aabbbcf00d69207f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1144898970.10666.139.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 090D8147
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 08:56:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,40 +18,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 12, 2006 at 11:29:30PM -0400, Paul Davis wrote:
-> On Wed, 2006-04-12 at 20:17 -0700, Lance Blisters wrote:
-> 
-> > ALSA: cannot configure playback channel
-> > cannot load driver module alsa
-> 
-> i don't believe that "multi" will work without the MMAP_COMPLEX patch to
-> JACK that has been outstanding for months and months. its available in
-> the patch tracker at jackit.sf.net if you want to try it; otherwise i
-> intend to merge it next week or the week after.
 
-So the only way to get 16 channels from the LAYLA is via 
-MMAP_COMPLEX and multi?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1652> 
+======================================================================
+Reported By:                dschaefer79
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1652
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux 2005.1 X86_64
+Kernel Version:             2.6.14
+======================================================================
+Date Submitted:             12-15-2005 18:40 CET
+Last Modified:              04-13-2006 08:56 CEST
+======================================================================
+Summary:                    ASUS P5AD2E-Premium CMI 9880 with HDA_INTEL driver
+output and input entry missing
+Description: 
+Hi,
 
-Do you think the above problem is a direct result of lacking
-MMAP_COMPLEX functionality, and .asoundrc might be otherwise 
-correct?
+My onboard soundcard works great with linux but I don't have a Master
+Output nor microphone ,cd, aux input under my linux. I try to use my tv
+sound with input but it doesn't work.
 
-> this command: 
-> 
->    jackd -d alsa -P hw:0 -C hw:1
-> 
-> opens different devices for capture and playback
+Is it possible to add this ??
+======================================================================
 
-Great! I was thrown by the single Interface selection
-in qjackctl, and my assumption that different cards
-for input and output would present similar drift and
-synch problems as outputting to multiple cards.
+----------------------------------------------------------------------
+ rlrevell - 04-13-06 00:00 
+----------------------------------------------------------------------
+Should be fixed in 1.0.11-rc5
 
-  -geoff
+----------------------------------------------------------------------
+ bduc - 04-13-06 08:56 
+----------------------------------------------------------------------
+Ok upgraded drivers to 1.0.11-rc5 :-( still the same; 
+
+Maybe there is an option I have to specify ?
+Any way I can further debug to help you all out ?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-15-05 18:40 dschaefer79    New Issue                                    
+12-15-05 18:40 dschaefer79    Distribution              => Gentoo Linux 2005.1
+X86_64
+12-15-05 18:40 dschaefer79    Kernel Version            => 2.6.14          
+12-15-05 19:14 dschaefer79    Issue Monitored: dschaefer79                    
+04-12-06 23:35 bduc           Note Added: 0009251                          
+04-12-06 23:35 bduc           Issue Monitored: bduc                        
+04-13-06 00:00 rlrevell       Note Added: 0009252                          
+04-13-06 08:56 bduc           Note Added: 0009254                          
+======================================================================
+
 
 
 
