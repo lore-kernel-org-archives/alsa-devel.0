@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001837]: No PCM, no Volume
-Date: Thu, 13 Apr 2006 21:53:33 +0200
-Message-ID: <f17b72cbb229ab63226612b9b7aff49c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001749]: SPDIF sound only in stereo
+Date: Thu, 13 Apr 2006 21:55:13 +0200
+Message-ID: <183f34944ae3c4b5e705bfc1b3a0c50c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0135116D
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 21:53:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7A7C178
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 21:55:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1837> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1749> 
 ======================================================================
-Reported By:                corrosion
+Reported By:                MechCow
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1837
+Issue ID:                   1749
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     feedback
-Distribution:               
-Kernel Version:             
+Distribution:               Debian
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             02-10-2006 18:14 CET
-Last Modified:              04-13-2006 21:53 CEST
+Date Submitted:             01-15-2006 04:56 CET
+Last Modified:              04-13-2006 21:55 CEST
 ======================================================================
-Summary:                    No PCM, no Volume
+Summary:                    SPDIF sound only in stereo
 Description: 
-I use KDE and in KMix and alsamixer, doesn't appear a Volume slider and a
-PCM slider. Skype and TeamSpeak don't work with this card.
-Soundcard model is: SB0570
+I can only get stereo sound out of the ca0106. All other volumes are at
+standard levels. 
+
+I'm using the SB Live 24Bit card. 
+
+0000:00:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
+
+I'm using a 2.6.12 kernel I compiled myself and alsa installed from debian
+unstable. 
+
+I have connected the soundcard up as it specifies in the manual, the top
+slot connected by a miniplug-to-rca into the coaxial of my panasonic 5.1
+surround sound system. 
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 04-13-06 21:53 
+ rlrevell - 01-16-06 00:32 
 ----------------------------------------------------------------------
-Thats correct there is no PCM or Master Volume control.
-Running alsamixer should control the audio gain via the "Analog Front",
-"Analog Rear" etc. controls.
-If alsamixer still fails to work, report back.
+SPDIF only supports stereo PCM, unless it's AC3 encoded.
+
+----------------------------------------------------------------------
+ jcdutton - 04-13-06 21:55 
+----------------------------------------------------------------------
+You will only get more than stereo sound when playing a DVD movie or
+similar AC3 encoded sound track.
+How are you testing it?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-10-06 18:14 corrosion      New Issue                                    
-02-12-06 05:16 corrosion      Issue Monitored: corrosion                    
-02-13-06 19:45 avuton         Issue Monitored: avuton                      
-04-13-06 21:53 jcdutton       Note Added: 0009274                          
-04-13-06 21:53 jcdutton       Status                   assigned => feedback
+01-15-06 04:56 MechCow        New Issue                                    
+01-15-06 04:56 MechCow        Distribution              => Debian          
+01-15-06 04:56 MechCow        Kernel Version            => 2.6.12          
+01-15-06 05:22 rlrevell       Note Added: 0007661                          
+01-15-06 06:37 MechCow        Note Added: 0007662                          
+01-15-06 13:59 rlrevell       Note Added: 0007664                          
+01-16-06 00:22 MechCow        Note Added: 0007681                          
+01-16-06 00:32 rlrevell       Note Added: 0007683                          
+04-13-06 21:55 jcdutton       Note Added: 0009275                          
+04-13-06 21:55 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
