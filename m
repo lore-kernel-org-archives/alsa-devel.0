@@ -1,18 +1,11 @@
 From: =?ISO-2022-JP?B?GyRCQG5DZk1bRnMbKEIg?= <mo-om@m8.gyao.ne.jp>
 Subject: =?ISO-2022-JP?B?GyRCTCQ+NUJ6OS05cCEqJF8kcyRKJE5OTyEqIzcjMEt8GyhC?=
  =?ISO-2022-JP?B?GyRCMV9GTUdLISobKEI=?=
-Date: Fri, 14 Apr 2006 01:35:20 +0900
-Message-ID: <20060413.1635200515@mo-om-m8.gyao.ne.jp>
+Date: Fri, 14 Apr 2006 01:35:21 +0900
+Message-ID: <20060413.1635210515@mo-om-m8.gyao.ne.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-2022-JP
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mx.gate01.com (pip2.gate01.com [61.122.117.240])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4629316D
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 18:35:26 +0200 (MEST)
-Received: from [125.102.124.213] (helo=localhost)
-	by smtp32.isp.us-com.jp with smtp (Mail 4.41)
-	id 1FU4mx-0000WA-Un
-	for alsa-devel@alsa-project.org; Fri, 14 Apr 2006 01:35:24 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +15,7 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 特定電子メールの送信の適正化等に関する法律（特定電子メール
