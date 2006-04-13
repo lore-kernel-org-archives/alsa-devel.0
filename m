@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001987]: Upmix Feature Request
-Date: Thu, 13 Apr 2006 12:52:03 +0200
-Message-ID: <579d76c1c0a9d68cf1ec9436ea611a93@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001999]: Latest cvs won't compile
+Date: Thu, 13 Apr 2006 13:47:27 +0200
+Message-ID: <83ebbe9f9dec2d544a276309a5188cb4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 790D8EF
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 12:52:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 400B0154
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 13:47:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,115 +24,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1987> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1999> 
 ======================================================================
-Reported By:                the-me
-Assigned To:                
+Reported By:                kotau
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1987
-Category:                   CORE - control
+Issue ID:                   1999
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               Debian
-Kernel Version:             2.6.16.1
+Status:                     assigned
+Distribution:               
+Kernel Version:             -2.6.13.2
 ======================================================================
-Date Submitted:             03-31-2006 20:38 CEST
-Last Modified:              04-13-2006 12:52 CEST
+Date Submitted:             04-03-2006 21:05 CEST
+Last Modified:              04-13-2006 13:47 CEST
 ======================================================================
-Summary:                    Upmix Feature Request
+Summary:                    Latest cvs won't compile
 Description: 
-Hi,
-
-I, and many users more, want a feature at the alsamixer, called Upmix.
-I've got an Terratec Aureon 5.1 Fun and I tried many things, but it's not
-able, that I can hear an mp3 with upmixed 5.1 sound. Here is my actual
-.asoundrc:
-
-pcm.ch51upmix {
-        type route
-        slave.pcm surround51
-        slave.channels 6
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.0.2 1
-        ttable.1.3 1
-        ttable.0.4 0.5
-        ttable.1.4 0.5
-        ttable.0.5 0.5
-        ttable.1.5 0.5
-}
-pcm.!default
-{
-        type plug
-        slave.pcm ch51upmix
-}
-pcm.lowpass {
-type ladspa
-path "/usr/lib/ladspa"
-plugins [ {
-label lpf
-input {
-controls [ 50 ]
-}
-} ]
-}
+Here's the error message.
 
 
-With this .asoundrc, all speakers work, but my subwoofer doesn't play only
-low frequen...
+==============
+make[1]: Entering directory `/usr/src/linux-2.6.13.2'
+  CC [M]  /usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_read_main':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+`snd_ac97_stereo_enhancements' undeclared (first use in this function)
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+(Each undeclared identifier is reported only once
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+for each function it appears in.)
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_read':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: warning:
+implicit declaration of function `snd_magic_cast'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: error:
+parse error before "ac97_t"
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:296: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:322: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_regs_read':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:359: error:
+parse error before "ac97_t"
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:361: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:377: error:
+structure has no member named `semaphore'
+make[5]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o]
+Error 1
+make[4]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97] Error 2
+make[3]: *** [/usr/local/src/1music/alsa/alsa-driver/pci] Error 2
+make[2]: *** [_module_/usr/local/src/1music/alsa/alsa-driver] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.13.2'
 
-Can you please add such a feature?
-
-
-Greetz, Patrick
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-04-06 09:33 
+ Raymond - 04-11-06 19:53 
 ----------------------------------------------------------------------
-The second thing is to test the route plugin
+alsa-driver/kernel
+alsa-driver/lowlevel
 
-It seem to me that it need a hw device with 6 channels
+These two directories seem to be empty.
 
-speaker-test -D hw:0,0 -c 6 -t wav
-
-Which alsa driver are you using ?
+Seem 1.0.11rc5 will be released soon
 
 ----------------------------------------------------------------------
- the-me - 04-13-06 12:52 
+ Raymond - 04-13-06 13:47 
 ----------------------------------------------------------------------
-how is it with the newest rc5:
-  + Automatic upmix / downmix plugins
-    - Summary: Misc fixes for upmix plugin
-      - Add channel option to specify the output channels explicitly
-      - Fix 6-channel input
+alsa-1.0.11rc5 tag still missing in
 
-is this "automatic" upmix feature with a lowpass filter for my subwoofer?
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/ac97/
+
+Which tag is used to retreive the latest version ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-31-06 20:38 the-me         New Issue                                    
-03-31-06 20:38 the-me         Distribution              => Debian          
-03-31-06 20:38 the-me         Kernel Version            => 2.6.16.1        
-03-31-06 20:40 the-me         Note Added: 0009048                          
-03-31-06 21:02 rlrevell       Status                   new => closed       
-03-31-06 21:02 rlrevell       Note Added: 0009049                          
-03-31-06 21:15 the-me         Status                   closed => feedback  
-03-31-06 21:15 the-me         Resolution               open => reopened    
-03-31-06 21:15 the-me         Note Added: 0009050                          
-04-01-06 01:03 Raymond        Note Added: 0009052                          
-04-01-06 10:39 the-me         Note Added: 0009053                          
-04-02-06 10:42 Raymond        Note Added: 0009059                          
-04-02-06 11:44 the-me         Note Added: 0009060                          
-04-02-06 14:36 Raymond        Note Added: 0009061                          
-04-02-06 14:57 the-me         Note Added: 0009062                          
-04-02-06 16:26 Raymond        Note Added: 0009063                          
-04-04-06 09:33 Raymond        Note Added: 0009111                          
-04-13-06 12:52 the-me         Note Added: 0009257                          
+04-03-06 21:05 kotau          New Issue                                    
+04-03-06 21:05 kotau          Kernel Version            => -2.6.13.2       
+04-04-06 09:58 Raymond        Note Added: 0009112                          
+04-07-06 14:12 Raymond        Note Added: 0009139                          
+04-07-06 14:16 Raymond        Note Edited: 0009139                         
+04-11-06 19:17 Raymond        Note Added: 0009236                          
+04-11-06 19:29 rlrevell       Note Added: 0009237                          
+04-11-06 19:53 Raymond        Note Added: 0009238                          
+04-13-06 13:47 Raymond        Note Added: 0009258                          
 ======================================================================
 
 
