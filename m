@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001904]: No Sound At All
-Date: Thu, 13 Apr 2006 21:49:38 +0200
-Message-ID: <7631e434237fbf02069b44ad20d940d6@bugtrack.alsa-project.org>
+Date: Thu, 13 Apr 2006 21:49:26 +0200
+Message-ID: <26e6a1ed8a165739a412bbad7af736c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2001D150
-	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 21:49:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C9810150
+	for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2006 21:49:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1904> 
 ======================================================================
@@ -35,7 +35,7 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     assigned
 Distribution:               Debian
 Kernel Version:             2.6.15-i686
 ======================================================================
@@ -77,7 +77,6 @@ Date Modified  Username       Field                    Change
 03-10-06 14:24 niels          Distribution              => Debian          
 03-10-06 14:24 niels          Kernel Version            => 2.6.15-i686     
 04-13-06 21:49 jcdutton       Note Added: 0009272                          
-04-13-06 21:49 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
