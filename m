@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001749]: SPDIF sound only in stereo
-Date: Fri, 14 Apr 2006 11:29:44 +0200
-Message-ID: <3e2b867f216b21dff9a98460f2c4bd98@bugtrack.alsa-project.org>
+From: John Rigg <ad@sound-man.co.uk>
+Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
+Date: Fri, 14 Apr 2006 12:54:48 +0100
+Message-ID: <20060414115448.GA3018@localhost.localdomain>
+References: <20060412200957.GA4090@hurl.ugcs.caltech.edu> <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe> <20060413031705.GA9160@hurl.ugcs.caltech.edu> <1144898970.10666.139.camel@localhost.localdomain> <20060414082632.GA21247@hurl.ugcs.caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1FB5157
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2006 11:29:44 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20060414082632.GA21247@hurl.ugcs.caltech.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Apr 14, 2006 at 01:26:32AM -0700, Lance Blisters wrote:
+> Now I have latest JACK from CCRMA in /usr/lib and JACK from CVS
+> patched for MMAP in a local directory.  I have alsa-lib RPM from
+> fedora core updates, patched for duplex multi access.  I can run
+> my patched JACK, and i can open multi_playback and multi_capture
+> with 16 channels each, JACK runs and reports the rare XRUN.  But
+> I can't connect from any clients; starting with QJACKCTL yields
+> "Cannot connect to JACK server as client" and ardour tries to start
+> its own server then fails because one is already running, then
+> "Could not connect to JACK server as  "ardour"".  I get the
+> same JACK connection problem whether using direct card access
+> or ALSA multi device.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1749> 
-======================================================================
-Reported By:                MechCow
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1749
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     feedback
-Distribution:               Debian
-Kernel Version:             2.6.12
-======================================================================
-Date Submitted:             01-15-2006 04:56 CET
-Last Modified:              04-14-2006 11:29 CEST
-======================================================================
-Summary:                    SPDIF sound only in stereo
-Description: 
-I can only get stereo sound out of the ca0106. All other volumes are at
-standard levels. 
+If you have two versions of JACK installed it will cause problems.
+Ardour expects to find libjack.so in /usr/lib and will use that instead of
+the one in /usr/local/lib. You can make it use the correct one by
+removing the packaged version and putting a symlink from
+/usr/lib/libjack.so to /usr/local/lib/libjack.so:
 
-I'm using the SB Live 24Bit card. 
+ln -s /usr/local/lib/libjack.so /usr/lib/libjack.so
 
-0000:00:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
-
-I'm using a 2.6.12 kernel I compiled myself and alsa installed from debian
-unstable. 
-
-I have connected the soundcard up as it specifies in the manual, the top
-slot connected by a miniplug-to-rca into the coaxial of my panasonic 5.1
-surround sound system. 
-======================================================================
-
-----------------------------------------------------------------------
- MechCow - 04-14-06 07:55 
-----------------------------------------------------------------------
-I'm testing it by running:
-
-speaker-test -c6 -Dplug:surround51
-
-And listening for sound. Also the sound unit heads up display has an
-indicator for what channels of input it is receiving.
-
-I assume speaker-test outputs AC3 sounds surely
-
-----------------------------------------------------------------------
- jcdutton - 04-14-06 11:29 
-----------------------------------------------------------------------
-You assume wrongly. speaker-test is for testing analog speakers. Not
-digital outputs. In future is might support AC3 testing, but currently it
-does not.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-15-06 04:56 MechCow        New Issue                                    
-01-15-06 04:56 MechCow        Distribution              => Debian          
-01-15-06 04:56 MechCow        Kernel Version            => 2.6.12          
-01-15-06 05:22 rlrevell       Note Added: 0007661                          
-01-15-06 06:37 MechCow        Note Added: 0007662                          
-01-15-06 13:59 rlrevell       Note Added: 0007664                          
-01-16-06 00:22 MechCow        Note Added: 0007681                          
-01-16-06 00:32 rlrevell       Note Added: 0007683                          
-04-13-06 21:55 jcdutton       Note Added: 0009275                          
-04-13-06 21:55 jcdutton       Status                   assigned => feedback
-04-14-06 07:55 MechCow        Note Added: 0009283                          
-04-14-06 11:29 jcdutton       Note Added: 0009284                          
-======================================================================
-
-
+John
 
 
 -------------------------------------------------------
