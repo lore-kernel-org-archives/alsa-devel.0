@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001971]: Some elements incorrectly have capture flags
-Date: Fri, 14 Apr 2006 06:21:08 +0200
-Message-ID: <f3858e1f7868e41a32b5a635198a1525@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001749]: SPDIF sound only in stereo
+Date: Fri, 14 Apr 2006 07:55:27 +0200
+Message-ID: <a274d0a7c3614e2ac36e99647a75ce3f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6B1C17A
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2006 06:21:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D10F18B
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2006 07:55:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,110 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1971> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1749> 
 ======================================================================
-Reported By:                pzad
-Assigned To:                
+Reported By:                MechCow
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1971
-Category:                   simple mixer
+Project:                    ALSA - driver
+Issue ID:                   1749
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     feedback
+Distribution:               Debian
+Kernel Version:             2.6.12
 ======================================================================
-Date Submitted:             03-28-2006 12:16 CEST
-Last Modified:              04-14-2006 06:21 CEST
+Date Submitted:             01-15-2006 04:56 CET
+Last Modified:              04-14-2006 07:55 CEST
 ======================================================================
-Summary:                    Some elements incorrectly have capture flags
+Summary:                    SPDIF sound only in stereo
 Description: 
-Some elemnts have capture flags even they have nothing to do with capture.
-This will duplicate control in alsamixer - view ALL.
+I can only get stereo sound out of the ca0106. All other volumes are at
+standard levels. 
 
-On VIA8233A + ALC650:
+I'm using the SB Live 24Bit card. 
 
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 1 [7%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Limits: 0 - 15
-  Mono: 0 [0%]
+0000:00:09.0 Multimedia audio controller: Creative Labs SB Audigy LS
 
-On Audigy 1:
-Simple mixer control 'Bass',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 23 [58%]
-  Front Right: 23 [58%]
-Simple mixer control 'Treble',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 40
-  Front Left: 27 [68%]
-  Front Right: 27 [68%]
+I'm using a 2.6.12 kernel I compiled myself and alsa installed from debian
+unstable. 
 
-
+I have connected the soundcard up as it specifies in the manual, the top
+slot connected by a miniplug-to-rca into the coaxial of my panasonic 5.1
+surround sound system. 
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 04-13-06 20:26 
+ jcdutton - 04-13-06 21:55 
 ----------------------------------------------------------------------
-This is because alsamixer doesn't check "has_common" flag.
+You will only get more than stereo sound when playing a DVD movie or
+similar AC3 encoded sound track.
+How are you testing it?
 
 ----------------------------------------------------------------------
- Raymond - 04-14-06 06:21 
+ MechCow - 04-14-06 07:55 
 ----------------------------------------------------------------------
-In View All of alsamixer, 
+I'm testing it by running:
 
-10-bands EQ peaks "Playback" appear as 2 stereo sliders and 2 mono
-sliders.
-10-bands EQ peaks "Capture" appear as 1 stereo slider.
+speaker-test -c6 -Dplug:surround51
 
-The alsamixer still allow to increase/decrese even the kcontrol has been
-declared access is read only (SNDRV_CTL_ELEM_ACCESS_READ)
+And listening for sound. Also the sound unit heads up display has an
+indicator for what channels of input it is receiving.
 
-static struct snd_kcontrol_new vortex_levels_kcontrol __devinitdata = {
-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name = "EQ Peaks",
-	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-	.info = snd_vortex_peaks_info,
-	.get = snd_vortex_peaks_get,
-};
+I assume speaker-test outputs AC3 sounds surely
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-28-06 12:16 pzad           New Issue                                    
-03-30-06 11:01 Raymond        Note Added: 0009028                          
-03-30-06 12:50 pzad           Note Added: 0009031                          
-03-30-06 13:13 pzad           Note Added: 0009032                          
-03-30-06 13:22 Raymond        Note Added: 0009033                          
-03-30-06 13:29 Raymond        Note Edited: 0009033                         
-03-30-06 13:41 Raymond        Note Edited: 0009033                         
-03-31-06 04:36 Raymond        Note Added: 0009041                          
-03-31-06 04:50 Raymond        Note Edited: 0009041                         
-04-01-06 01:13 Raymond        Note Edited: 0009033                         
-04-03-06 19:08 Raymond        Note Added: 0009103                          
-04-05-06 18:42 Raymond        Note Added: 0009121                          
-04-05-06 18:46 Raymond        Note Edited: 0009121                         
-04-05-06 18:50 Raymond        Note Edited: 0009121                         
-04-06-06 09:11 Raymond        Note Deleted: 0009103                        
-04-06-06 09:44 Raymond        Note Added: 0009124                          
-04-06-06 09:45 Raymond        Note Edited: 0009124                         
-04-07-06 12:05 Raymond        Note Added: 0009136                          
-04-13-06 11:32 Raymond        Note Added: 0009256                          
-04-13-06 20:26 pzad           Note Added: 0009268                          
-04-14-06 06:21 Raymond        Note Added: 0009282                          
+01-15-06 04:56 MechCow        New Issue                                    
+01-15-06 04:56 MechCow        Distribution              => Debian          
+01-15-06 04:56 MechCow        Kernel Version            => 2.6.12          
+01-15-06 05:22 rlrevell       Note Added: 0007661                          
+01-15-06 06:37 MechCow        Note Added: 0007662                          
+01-15-06 13:59 rlrevell       Note Added: 0007664                          
+01-16-06 00:22 MechCow        Note Added: 0007681                          
+01-16-06 00:32 rlrevell       Note Added: 0007683                          
+04-13-06 21:55 jcdutton       Note Added: 0009275                          
+04-13-06 21:55 jcdutton       Status                   assigned => feedback
+04-14-06 07:55 MechCow        Note Added: 0009283                          
 ======================================================================
 
 
