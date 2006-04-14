@@ -1,12 +1,16 @@
-From: John Rigg <ad@sound-man.co.uk>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
-Date: Fri, 14 Apr 2006 12:54:48 +0100
-Message-ID: <20060414115448.GA3018@localhost.localdomain>
-References: <20060412200957.GA4090@hurl.ugcs.caltech.edu> <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe> <20060413031705.GA9160@hurl.ugcs.caltech.edu> <1144898970.10666.139.camel@localhost.localdomain> <20060414082632.GA21247@hurl.ugcs.caltech.edu>
+Date: Fri, 14 Apr 2006 09:21:06 -0400
+Message-ID: <1145020867.2939.7.camel@mindpipe>
+References: <20060412200957.GA4090@hurl.ugcs.caltech.edu>
+	 <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe>
+	 <20060413031705.GA9160@hurl.ugcs.caltech.edu>
+	 <1144898970.10666.139.camel@localhost.localdomain>
+	 <20060414082632.GA21247@hurl.ugcs.caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 In-Reply-To: <20060414082632.GA21247@hurl.ugcs.caltech.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,10 +22,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 14, 2006 at 01:26:32AM -0700, Lance Blisters wrote:
+On Fri, 2006-04-14 at 01:26 -0700, Lance Blisters wrote:
 > Now I have latest JACK from CCRMA in /usr/lib and JACK from CVS
 > patched for MMAP in a local directory.  I have alsa-lib RPM from
 > fedora core updates, patched for duplex multi access.  I can run
@@ -33,16 +37,14 @@ On Fri, Apr 14, 2006 at 01:26:32AM -0700, Lance Blisters wrote:
 > "Could not connect to JACK server as  "ardour"".  I get the
 > same JACK connection problem whether using direct card access
 > or ALSA multi device.
+> 
 
-If you have two versions of JACK installed it will cause problems.
-Ardour expects to find libjack.so in /usr/lib and will use that instead of
-the one in /usr/local/lib. You can make it use the correct one by
-removing the packaged version and putting a symlink from
-/usr/lib/libjack.so to /usr/local/lib/libjack.so:
+The problem is probably that you have 2 different versions of JACK
+installed.  This will lead to bizarre behavior.
 
-ln -s /usr/local/lib/libjack.so /usr/lib/libjack.so
+Lee
 
-John
+
 
 
 -------------------------------------------------------
