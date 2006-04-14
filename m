@@ -1,7 +1,7 @@
 From: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
 Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
-Date: Thu, 13 Apr 2006 20:14:39 -0700
-Message-ID: <20060414031439.GB13550@hurl.ugcs.caltech.edu>
+Date: Thu, 13 Apr 2006 20:23:17 -0700
+Message-ID: <20060414032317.GC13550@hurl.ugcs.caltech.edu>
 References: <20060412200957.GA4090@hurl.ugcs.caltech.edu> <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe> <20060413031705.GA9160@hurl.ugcs.caltech.edu> <1144898970.10666.139.camel@localhost.localdomain> <20060413053945.GB11100@hurl.ugcs.caltech.edu> <20060413193947.GA2738@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -21,44 +21,11 @@ To: John Rigg <ad@sound-man.co.uk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-> Another thing: if you try to use -o2 ALSA doesn't like it.
-> Anything other than the full number of channels (the default)
-> doesn't work, which seems to defeat the object of the -o option. Just
-> leave the -o option out (same applies to -i).
-
-I used two channels output because I wanted the simplest test, I
-didn't want to conflate it with correctness of input device,
-or ability to actually access upper 8 channels.  That config
-works with hw:2,0 but not multi_playback.  After your suggestion
-I also tried 16 out, and removing -o entirely from the
-command line, got the same result:
-
-ALSA: no playback configurations available (Invalid argument)
-ALSA: cannot configure playback channel
-cannot load driver module alsa
-
-> Since your analogue and digital in/outs are different logical devices
-> you might have to remove the linking code that was added to pcm_multi.c
-> between alsa-lib versions 1.0.8 and 1.0.9rc1. This broke duplex jackd
-> operation with multiple cards; it's possible that it affects your
-> multiple devices too. You might also need MMAP_COMPLEX support in jackd.
-
-I have alsa-lib 1.0.10.26 as part of planet-ccrma, and there doesn't seem
-to be any suitably old version of alsa-lib in any of my package 
-repositories.  If MMAP_COMPLEX doesn't help i'll look into it further.
-
-Is there a way to have ALSA remap the memory, so that it appears to JACK
-in one of the supported formats?  Even if there is a performance loss?
-
-If I use as asym or similar to further wrap multi_playback and
-_capture as a single virtual device, would this help with
-the "duplex jackd operation with multiple cards" problem?
-
-Thanks for the advice.
+Disregard my question about having ALSA re-map.  I found your
+page about solving this problem for the ice1712 which discusses
+route plugin.
 
   -geoff
-
 
 
 -------------------------------------------------------
