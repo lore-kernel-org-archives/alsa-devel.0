@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Fri, 14 Apr 2006 03:30:57 +0200
-Message-ID: <bad7028ce267bbfa396cd9cd69fc8a6c@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
+Date: Fri, 14 Apr 2006 03:48:49 +0200
+Message-ID: <d61ef7387c0e84cf683f84b4270af7c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5579E176
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2006 03:30:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB399176
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2006 03:48:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,178 +24,114 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
 ======================================================================
-Reported By:                ponchick
-Assigned To:                
+Reported By:                wzzrd
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1833
-Category:                   GENERIC - mpu401
+Project:                    ALSA - lib
+Issue ID:                   154
+Category:                   2_mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             gentoo-sources-2.6.15-r4
+Status:                     assigned
 ======================================================================
-Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              04-14-2006 03:30 CEST
+Date Submitted:             03-23-2004 17:31 CET
+Last Modified:              04-14-2006 03:48 CEST
 ======================================================================
-Summary:                    oops in snd_mpu401_uart
+Summary:                    Master volume only controls front output (emu10k1)
 Description: 
-I don't know what exactly happend but when I run wine or winecfg it
-segfaulted. dmesg shows following:
-Unable to handle kernel paging request at 0000000010228800 RIP:
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-PGD 6e57067 PUD 0
-Oops: 0002 [1] PREEMPT SMP
-CPU 1
-Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
-snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
-snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
-snd_seq_device snd soundcore nvidia sky2
-Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
-RIP: 0010:[<ffffffff884ca00c>]
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
-RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
-RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
-RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
-R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
-FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
-knlGS:00000000556cb920
-CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
-CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
-Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
-ffff810002178440)
-Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
-ff00000000000286
-       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
-ffff81003eb606c0
-       0000000000000000 ffff81003d7c3bd0
-Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
-       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
-       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
-       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
-       <ffffffff80397b49>{_spin_lock+27}
-<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
-       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
-       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
-       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
-       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
-       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
-       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
-       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
-       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
-<ffffffff8018075f>{__link_path_walk+3332}
-       <ffffffff80397b0c>{__lock_text_start+20}
-<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
-       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
-<ffffffff8017ab11>{chrdev_open+454}
-       <ffffffff8017a94b>{chrdev_open+0}
-<ffffffff80171031>{__dentry_open+310}
-       <ffffffff8017118d>{nameidata_to_filp+34}
-<ffffffff801711d6>{filp_open+58}
-       <ffffffff801713d4>{get_unused_fd+234}
-<ffffffff80171533>{do_sys_open+81}
-       <ffffffff8011e57f>{sysenter_do_call+27}
+Setting the alsamixer Master Volume slider only controls the front two
+speakers. The rear speakers have to be controlled with the Wave Surround
+setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
+bug. If I'm wrong putting it here, sorry.
 
-Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
-RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
-<ffff81003564f8f0>
-CR2: 0000000010228800
- <6>note: wine-preloader[11110] exited with preempt_count 1
-
-I use standalone alsa-driver (kernel one is out of date and doesn't
-support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
-gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
+It would be very convenient to be able to control all four speakers with
+the Master Volume setting and to have a Front and Rear slider to control
+the front and rear speakers individually.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000176 Master volume does not alters center, L...
+has duplicate       0000786 Master can't handle all channel
+has duplicate       0001256 surround51: Master Volume control and M...
+has duplicate       0001071 Help with Volume Controls
+related to          0000919 Master volume doesn't control rear spea...
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-13-06 10:05 
+ Miwer - 03-17-06 14:16 
 ----------------------------------------------------------------------
->I don't think so. There is only arts running when these errors occur. As I
-know >in default configuration it use hw:0.0 only.
-
-Switching from gnome to kde on Fedora Core 1. (alsa-1.0.11rc5)
-
-With arts runing, I can run three instances of mplayer(-ao oss,-ao
-arts,-ao alsa:device=hw=0,0) concurrently without any "vortex: FATAL:
-ResManager: resource type 0 exhausted" in the system log.
-
-I can even run "jackd -d alsa -o2 -i2 -S -p512" with some xrun messages
-and another instance of mplayer -ao jack concurrently
-
-It seem to me that arts is using OSS emulation
+Raymond I have no idea what you're talking about... those values I wrote
+refer to the settings of the corresponding level adjusters in the
+alsamixer app.
 
 ----------------------------------------------------------------------
- Raymond - 04-14-06 03:30 
+ shina - 04-14-06 03:48 
 ----------------------------------------------------------------------
->> Also I try wine at home with my "Monster Sound 2" (lspci output in bug
-0001726) >> on 32-bit kernel and here is dmesg output on first run:
->> vortex: FATAL: ResManager: resource type 0 exhausted.
->> vortex: FATAL: ResManager: resource type 3 exhausted.
-
->> Message "vortex: FATAL: ResManager: resource type 0 exhausted" appears
-with and >> without surround patch. 
-
-May be due to the variables 
-
-u32 fixed_res[5] 
-
-is used without initialisation
-
-
-How do you load/unload the au8830 driver ?
+With master_volume_v3.patch there's now an extra Volumen Control called
+"Master Digital". That's useless since I still have to use Wave Sourround
+to control PCM Rear Volume. Changing "PCM" has no effect.
+Also there's still no Line/Midi output on rear :(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-09-06 08:33 ponchick       New Issue                                    
-02-09-06 08:33 ponchick       Distribution              => gentoo          
-02-09-06 08:33 ponchick       Kernel Version            =>
-gentoo-sources-2.6.15-r4
-02-09-06 09:12 Raymond        Note Added: 0007971                          
-02-09-06 09:32 Raymond        Note Added: 0007973                          
-02-09-06 11:57 ponchick       Note Added: 0007975                          
-02-09-06 12:32 Raymond        Note Added: 0007976                          
-02-09-06 12:35 Raymond        Note Edited: 0007976                         
-02-10-06 03:06 Raymond        Note Added: 0007982                          
-02-10-06 03:11 rlrevell       Note Added: 0007983                          
-02-10-06 03:49 Raymond        Note Added: 0007984                          
-02-10-06 05:08 ponchick       Note Added: 0007986                          
-02-10-06 05:36 Raymond        Note Added: 0007988                          
-02-10-06 06:03 Raymond        Note Added: 0007990                          
-02-10-06 10:09 ponchick       Note Added: 0007997                          
-02-10-06 11:30 Raymond        Note Added: 0008001                          
-02-12-06 03:32 Raymond        Note Added: 0008024                          
-02-12-06 14:14 Raymond        Note Deleted: 0007990                        
-02-13-06 07:08 Raymond        Note Edited: 0008024                         
-02-13-06 16:44 Raymond        Note Edited: 0008001                         
-02-14-06 10:41 Raymond        Note Edited: 0008024                         
-02-16-06 04:40 Raymond        Note Added: 0008084                          
-02-16-06 06:33 ponchick       Note Added: 0008086                          
-02-16-06 09:57 Raymond        Note Added: 0008089                          
-02-16-06 10:16 ponchick       Note Added: 0008091                          
-02-16-06 10:38 Raymond        Note Added: 0008092                          
-02-16-06 10:40 Raymond        Note Edited: 0008092                         
-02-16-06 13:08 Raymond        Note Edited: 0008089                         
-02-25-06 13:15 Raymond        Note Added: 0008189                          
-03-21-06 18:02 Raymond        Note Edited: 0008089                         
-04-06-06 19:13 Raymond        Note Added: 0009126                          
-04-06-06 19:23 rlrevell       Note Added: 0009127                          
-04-11-06 05:09 Raymond        Note Added: 0009226                          
-04-11-06 06:08 ponchick       Note Added: 0009227                          
-04-11-06 09:06 Raymond        Note Added: 0009230                          
-04-12-06 10:28 Raymond        Note Added: 0009240                          
-04-12-06 11:36 ponchick       Note Added: 0009241                          
-04-12-06 15:16 Raymond        Note Added: 0009243                          
-04-13-06 07:16 Raymond        Note Added: 0009253                          
-04-13-06 10:05 Raymond        Note Added: 0009255                          
-04-13-06 10:37 Raymond        Note Edited: 0009253                         
-04-14-06 03:30 Raymond        Note Added: 0009279                          
+03-23-04 17:31 wzzrd          New Issue                                    
+03-23-04 18:42 perex          View Status              @0@ => public       
+03-23-04 18:42 perex          Description Updated                          
+03-23-04 18:42 perex          Additional Information Updated                    
+03-23-04 18:43 perex          Status                   new => assigned     
+03-23-04 18:43 perex          Assigned To               => perex           
+03-26-04 20:21 djtm           Note Added: 0000708                          
+04-19-04 02:47 tarball        Issue Monitored: tarball                     
+04-19-04 21:23 perex          Relationship added       has duplicate 0000176
+05-24-04 22:51 delmonico      Note Added: 0001199                          
+10-22-04 16:44 perex          Relationship added       related to 0000172  
+10-23-04 01:09 djtm           Note Added: 0002253                          
+10-23-04 01:09 djtm           File Added: alsavol.sh                       
+10-23-04 01:10 djtm           Note Edited: 0002253                         
+11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
+01-04-05 21:01 Miwer          Note Added: 0003081                          
+01-04-05 21:11 rlrevell       Note Added: 0003082                          
+01-04-05 21:29 pzad           Note Added: 0003083                          
+01-04-05 21:38 rlrevell       Note Added: 0003084                          
+01-04-05 22:30 pzad           Note Added: 0003085                          
+01-04-05 22:38 rlrevell       Note Added: 0003086                          
+01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
+01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
+01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
+01-27-05 01:00 adamk75        Note Added: 0003418                          
+02-01-05 22:57 adamk75        Note Added: 0003475                          
+02-03-05 20:20 rlrevell       Note Added: 0003493                          
+02-17-05 22:01 adamk75        Note Added: 0003642                          
+02-17-05 22:59 rlrevell       Note Added: 0003646                          
+02-17-05 23:28 adamk75        Note Added: 0003647                          
+02-22-05 09:56 perex          Relationship added       related to 0000919  
+05-20-05 20:39 Miwer          Issue Monitored: Miwer                       
+05-20-05 22:02 Miwer          Note Added: 0004699                          
+05-20-05 22:05 rlrevell       Note Added: 0004700                          
+07-13-05 18:56 rlrevell       Relationship added       has duplicate 0001256
+07-16-05 17:11 jdthood        Relationship added       has duplicate 0001071
+09-02-05 19:55 blueSceaDa     Issue Monitored: blueSceaDa                    
+03-09-06 11:34 muffty         Note Added: 0008388                          
+03-09-06 11:37 muffty         Issue Monitored: muffty                      
+03-12-06 21:27 rlrevell       Relationship deleted     related to 0000172  
+03-12-06 21:34 rlrevell       File Added: master_volume_v3.patch                
+   
+03-12-06 21:35 rlrevell       Note Added: 0008436                          
+03-13-06 13:28 tiwai          Note Added: 0008440                          
+03-13-06 13:49 muffty         Note Deleted: 0008388                        
+03-13-06 13:51 muffty         Note Added: 0008442                          
+03-13-06 14:36 tiwai          Note Added: 0008443                          
+03-13-06 18:09 rlrevell       Note Added: 0008454                          
+03-14-06 00:04 Miwer          Note Added: 0008470                          
+03-16-06 15:41 Raymond        Note Added: 0008608                          
+03-16-06 19:22 rlrevell       Note Added: 0008617                          
+03-17-06 02:30 Raymond        Note Added: 0008628                          
+03-17-06 14:16 Miwer          Note Added: 0008645                          
+04-14-06 03:48 shina          Note Added: 0009280                          
 ======================================================================
 
 
