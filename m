@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002000]: Sound continually cuts in and out
-Date: Fri, 14 Apr 2006 04:22:27 +0200
-Message-ID: <cb49a5b103b031437e47657801bb37b0@bugtrack.alsa-project.org>
+From: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
+Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
+Date: Thu, 13 Apr 2006 20:00:33 -0700
+Message-ID: <20060414030033.GA13550@hurl.ugcs.caltech.edu>
+References: <20060412200957.GA4090@hurl.ugcs.caltech.edu> <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe> <20060413031705.GA9160@hurl.ugcs.caltech.edu> <1144898970.10666.139.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D9D8176
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2006 04:22:28 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <1144898970.10666.139.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +17,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Apr 12, 2006 at 11:29:30PM -0400, Paul Davis wrote:
+> On Wed, 2006-04-12 at 20:17 -0700, Lance Blisters wrote:
+> 
+> > ALSA: cannot configure playback channel
+> > cannot load driver module alsa
+> 
+> i don't believe that "multi" will work without the MMAP_COMPLEX patch to
+> JACK that has been outstanding for months and months. its available in
+> the patch tracker at jackit.sf.net if you want to try it; otherwise i
+> intend to merge it next week or the week after.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2000> 
-======================================================================
-Reported By:                spm
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2000
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10 Breezy
-Kernel Version:             2.6.12-10-386
-======================================================================
-Date Submitted:             04-04-2006 19:22 CEST
-Last Modified:              04-14-2006 04:22 CEST
-======================================================================
-Summary:                    Sound continually cuts in and out
-Description: 
-And it makes a pop sound when cutting out.
+is this it?
 
-I thought it was an IRQ conflict, but it is not (I checked with "cat
-/proc/interrupts".
+[ 1289682 ] M-Audio Audiophile USB and other byteswapped devices support
 
-This actually started to occur after plugging in a USB mouse. Mouse is no
-longer in, but problem persists. I have redone "alsaconf" problem still
-persists...pulling my hair out here...
-======================================================================
+i applied it (had to apply memop.c by hand), but
 
-----------------------------------------------------------------------
- rlrevell - 04-04-06 19:45 
-----------------------------------------------------------------------
-2.6.12 is too old to debug, please test with latest ALSA release
-(1.0.11-rc4 or CVS)
+JACK_DRIVER_DIR=./drivers/alsa/.libs/ ./jackd/jackd -R -t5000 -dalsa -dmulti_playback -r44100 -p256 -n2 -P -s
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... multi_playback|-|256|2|44100|0|0|nomon|swmeter|soft-mode|32bit
+configuring for 44100Hz, period = 256 frames, buffer = 2 periods
+ALSA: no playback configurations available (Invalid argument)
+ALSA: cannot configure playback channel
+cannot load driver module alsa
+zsh: segmentation fault  JACK_DRIVER_DIR=./drivers/alsa/.libs/ ./jackd/jackd -R -t5000 -dalsa  -r44100
 
-----------------------------------------------------------------------
- spm - 04-14-06 04:22 
-----------------------------------------------------------------------
-Okay...The problems still happens...I thought it might have been a hw
-problem...I tried another distribution (Kanotix) on that machine and sound
-was fine...
+the other three patches don't seem relevant.
 
-I have compiled my own kernel 2.6.16. It may be Ubuntu related, but still,
-I need help in debugging?!?
+> this command: 
+> 
+>    jackd -d alsa -P hw:0 -C hw:1
+> 
+> opens different devices for capture and playback
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-04-06 19:22 spm            New Issue                                    
-04-04-06 19:22 spm            Distribution              => Ubuntu 5.10 Breezy
-04-04-06 19:22 spm            Kernel Version            => 2.6.12-10-386   
-04-04-06 19:45 rlrevell       Note Added: 0009114                          
-04-14-06 04:22 spm            Note Added: 0009281                          
-======================================================================
+glad i was wrong about this.
 
+  -geoff
 
 
 
