@@ -1,16 +1,17 @@
-From: Parag Warudkar <kernel-stuff@comcast.net>
-Subject: ALSA CVS - pcm_oss.c:1872: BUG?
-Date: Fri, 14 Apr 2006 17:48:15 -0400
-Message-ID: <200604141748.15367.kernel-stuff__4473.25259815461$1145051360$gmane$org@comcast.net>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
+Date: Fri, 14 Apr 2006 14:59:53 -0700
+Message-ID: <1145051993.30003.4.camel@cmn3.stanford.edu>
+References: <20060412200957.GA4090@hurl.ugcs.caltech.edu>
+	 <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe>
+	 <20060413031705.GA9160@hurl.ugcs.caltech.edu>
+	 <1144898970.10666.139.camel@localhost.localdomain>
+	 <20060414082632.GA21247@hurl.ugcs.caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from rwcrmhc12.comcast.net (rwcrmhc12.comcast.net [216.148.227.152])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EDF17176
-	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2006 23:48:23 +0200 (MEST)
-Content-Disposition: inline
+In-Reply-To: <20060414082632.GA21247@hurl.ugcs.caltech.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,29 +21,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+To: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I get the below BUG in dmesg once or twice a day. Running snd_hda_intel on 
-2.6.16 along with yesterday's ALSA CVS. 
+On Fri, 2006-04-14 at 01:26 -0700, Lance Blisters wrote:
+> Must be related to permissions / capabilities?  I'm running
+> everything as root, which works with CCRMA's JACK.  CCRMA doesn't
+> seem to offer SRPMS anymore, so I can't recreate how it was built.
+> Maybe some autogen.sh args will yield a compatible JACK? 
 
-Parag
+SRPMS are always available at:
+  http://ccrma.stanford.edu/planetccrma/mirror/all/linux/SRPMS/
+-- Fernando
 
-[17197574.124000]  [<f89d8ad3>] snd_pcm_oss_get_active_substream+0x5d/0x7e 
-[snd_pcm_oss]
-[17197574.124000]  [<f89d9011>] snd_pcm_oss_ioctl+0x346/0x9c9 [snd_pcm_oss]
-[17197574.128000]  [<7815ca79>] do_ioctl+0x21/0x5f
-[17197574.128000]  [<7815cd07>] vfs_ioctl+0x250/0x263
-[17197574.128000]  [<7815cd60>] sys_ioctl+0x46/0x62
-[17197574.128000]  [<78102797>] sysenter_past_esp+0x54/0x75
-[17197574.128000] ALSA /root/alsa/alsa-driver/acore/oss/pcm_oss.c:1872: BUG? 
-(substream != ((void *)0))
-[17197574.128000]  [<f89d8376>] snd_pcm_oss_release+0x37/0xda [snd_pcm_oss]
-[17197574.128000]  [<7814df15>] __fput+0x86/0x14a
-[17197574.128000]  [<7814baaa>] filp_close+0x4e/0x57
-[17197574.128000]  [<7814c4a7>] sys_close+0x6b/0x80
-[17197574.128000]  [<78102797>] sysenter_past_esp+0x54/0x75
 
 
 
