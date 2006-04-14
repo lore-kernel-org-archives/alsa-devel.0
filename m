@@ -1,17 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
 Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
-Date: Thu, 13 Apr 2006 23:02:36 -0400
-Message-ID: <1144983757.2829.3.camel@mindpipe>
-References: <20060412200957.GA4090@hurl.ugcs.caltech.edu>
-	 <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe>
-	 <20060413031705.GA9160@hurl.ugcs.caltech.edu>
-	 <1144898970.10666.139.camel@localhost.localdomain>
-	 <20060414030033.GA13550@hurl.ugcs.caltech.edu>
+Date: Thu, 13 Apr 2006 20:14:39 -0700
+Message-ID: <20060414031439.GB13550@hurl.ugcs.caltech.edu>
+References: <20060412200957.GA4090@hurl.ugcs.caltech.edu> <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe> <20060413031705.GA9160@hurl.ugcs.caltech.edu> <1144898970.10666.139.camel@localhost.localdomain> <20060413053945.GB11100@hurl.ugcs.caltech.edu> <20060413193947.GA2738@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060414030033.GA13550@hurl.ugcs.caltech.edu>
+Content-Disposition: inline
+In-Reply-To: <20060413193947.GA2738@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,22 +17,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
+To: John Rigg <ad@sound-man.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-04-13 at 20:00 -0700, Lance Blisters wrote:
-> 
-> is this it?
-> 
-> [ 1289682 ] M-Audio Audiophile USB and other byteswapped devices
-> support
-> 
 
-No, it would have MMAP_COMPLEX in the name.  You can probably find it
-googling "jack MMAP_COMPLEX patch"
+> Another thing: if you try to use -o2 ALSA doesn't like it.
+> Anything other than the full number of channels (the default)
+> doesn't work, which seems to defeat the object of the -o option. Just
+> leave the -o option out (same applies to -i).
 
-Lee
+I used two channels output because I wanted the simplest test, I
+didn't want to conflate it with correctness of input device,
+or ability to actually access upper 8 channels.  That config
+works with hw:2,0 but not multi_playback.  After your suggestion
+I also tried 16 out, and removing -o entirely from the
+command line, got the same result:
+
+ALSA: no playback configurations available (Invalid argument)
+ALSA: cannot configure playback channel
+cannot load driver module alsa
+
+> Since your analogue and digital in/outs are different logical devices
+> you might have to remove the linking code that was added to pcm_multi.c
+> between alsa-lib versions 1.0.8 and 1.0.9rc1. This broke duplex jackd
+> operation with multiple cards; it's possible that it affects your
+> multiple devices too. You might also need MMAP_COMPLEX support in jackd.
+
+I have alsa-lib 1.0.10.26 as part of planet-ccrma, and there doesn't seem
+to be any suitably old version of alsa-lib in any of my package 
+repositories.  If MMAP_COMPLEX doesn't help i'll look into it further.
+
+Is there a way to have ALSA remap the memory, so that it appears to JACK
+in one of the supported formats?  Even if there is a performance loss?
+
+If I use as asym or similar to further wrap multi_playback and
+_capture as a single virtual device, would this help with
+the "duplex jackd operation with multiple cards" problem?
+
+Thanks for the advice.
+
+  -geoff
 
 
 
