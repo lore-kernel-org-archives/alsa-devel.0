@@ -1,15 +1,14 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: 16-channel recording w/ LAYLA, ALSA, JACK, ARDOUR
-Date: Fri, 14 Apr 2006 17:44:54 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0604141743180.5335@denise.shiny.it>
-References: <20060412200957.GA4090@hurl.ugcs.caltech.edu>
- <1144873089.27496.22.camel@mindpipe> <1144878001.27496.33.camel@mindpipe>
- <20060413031705.GA9160@hurl.ugcs.caltech.edu> <1144898970.10666.139.camel@localhost.localdomain>
- <20060414082632.GA21247@hurl.ugcs.caltech.edu>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002019]: Build fails on pcm_dmix.c
+Date: Fri, 14 Apr 2006 18:01:13 +0200
+Message-ID: <6cdeb87666dec05377bb5cbd85178fd4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060414082632.GA21247@hurl.ugcs.caltech.edu>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EE50194
+	for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2006 18:01:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,23 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lance Blisters <geoff@hurl.ugcs.caltech.edu>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2019> 
+======================================================================
+Reported By:                GrueMaster
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2019
+Category:                   1_pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             04-14-2006 01:00 CEST
+Last Modified:              04-14-2006 18:01 CEST
+======================================================================
+Summary:                    Build fails on pcm_dmix.c
+Description: 
+Build output:
 
-On Fri, 14 Apr 2006, Lance Blisters wrote:
+ gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -g -O2 -MT
+pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c pcm_dmix.c  -fPIC -DPIC -o
+.libs/pcm_dmix.o
+/tmp/ccJTuE56.s: Assembler messages:
+/tmp/ccJTuE56.s:209: Error: `(%ecx,%eax,1)' is not a valid 64 bit
+base/index expression
+/tmp/ccJTuE56.s:385: Error: `(%ecx,%eax,1)' is not a valid 64 bit
+base/index expression
 
-> I also discovered that during testing the LAYLA would get into
-> bad states where even simple access no longer worked, and would
-> have to reboot to get it working.
 
-Hrm :-/    More details ?
+linux:/usr/src/alsa # gcc -v
+Reading specs from /usr/lib64/gcc-lib/x86_64-suse-linux/3.3.3/specs
+Configured with: ../configure --enable-threads=posix --prefix=/usr
+--with-local-prefix=/usr/local --infodir=/usr/share/info
+--mandir=/usr/share/man --enable-languages=c,c++,f77,objc,java,ada
+--disable-checking --libdir=/usr/lib64 --enable-libgcj
+--with-gxx-include-dir=/usr/include/g++ --with-slibdir=/lib64
+--with-system-zlib --enable-shared --enable-__cxa_atexit
+x86_64-suse-linux
+Thread model: posix
+gcc version 3.3.3 (SuSE Linux)
 
 
---
-Giuliano.
+Tested on RedHat Enterprise Desktop 4 update 2 - builds ok.
+
+======================================================================
+
+----------------------------------------------------------------------
+ GrueMaster - 04-14-06 18:01 
+----------------------------------------------------------------------
+Compiler apparently has an issue with the pcm_dmix_x86_64.h inline assembly
+macro MIX_AREAS3.  The line in the macro is:
+
+291:  	"\tleal (%%ecx,%%eax,1), %%ecx\n"
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-14-06 01:00 GrueMaster     New Issue                                    
+04-14-06 18:01 GrueMaster     Note Added: 0009285                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
