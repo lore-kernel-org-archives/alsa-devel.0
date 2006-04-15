@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002021]: No sound from speakers (only headphone) after resume to suspend-to-ram
-Date: Sat, 15 Apr 2006 13:19:02 +0200
-Message-ID: <72e3546e60ce03b3be369f1b5aef8f1a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
+Date: Sat, 15 Apr 2006 14:43:57 +0200
+Message-ID: <685bece59c5cb4f43b861ce1d5733518@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8259F165
-	for <alsa-devel@alsa-project.org>; Sat, 15 Apr 2006 13:19:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37B10160
+	for <alsa-devel@alsa-project.org>; Sat, 15 Apr 2006 14:43:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,44 +22,106 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2021> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
 ======================================================================
-Reported By:                tsaiming
-Assigned To:                
+Reported By:                kratz00
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2021
-Category:                   PCI - via82xx
+Issue ID:                   1714
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             suspend2-2.6.16-r2
+Status:                     feedback
+Distribution:               LFS
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             04-15-2006 13:19 CEST
-Last Modified:              04-15-2006 13:19 CEST
+Date Submitted:             01-04-2006 18:04 CET
+Last Modified:              04-15-2006 14:43 CEST
 ======================================================================
-Summary:                    No sound from speakers (only headphone) after resume
-to suspend-to-ram
+Summary:                    Intel HDA (AD1986A) no sound
 Description: 
-After suspend2-to-ram (but it happens also with the suspend kernel built
-in) I have no more sound from speakers but only from headphones.
-With suspend to disk all works good 
-Also tried to stop alsasound and unload modules before suspending and
-restart service after resume with no change.
+It's a Samsung M50 Notebook.
+I also tried Alsa 1.0.10 but the problem is the same.
+There are no specific module options for the AD1986A chip, right?
+
+00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 03)
+        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+loaded modules:
+snd_pcm_oss            47136  0 
+snd_mixer_oss          16512  1 snd_pcm_oss
+snd_hda_intel          14224  0 
+snd_hda_codec         122624  1 snd_hda_intel
+snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              19844  1 snd_pcm
+snd                    46144  6
+snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
 
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001841 Mixer not working  / fujitsu laptop V20...
+======================================================================
+
+----------------------------------------------------------------------
+ kratz00 - 03-26-06 12:11 
+----------------------------------------------------------------------
+tried model=laptop but still the same
+
+00:1b.0 0403: 8086:2668 (rev 03)
+        Subsystem: 144d:c01e
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+----------------------------------------------------------------------
+ kratz00 - 04-15-06 14:43 
+----------------------------------------------------------------------
+still existent for rc5
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-15-06 13:19 tsaiming       New Issue                                    
-04-15-06 13:19 tsaiming       File Added: codec97#0.txt                    
-04-15-06 13:19 tsaiming       Distribution              => Gentoo          
-04-15-06 13:19 tsaiming       Kernel Version            => suspend2-2.6.16-r2
+01-04-06 18:04 kratz00        New Issue                                    
+01-04-06 18:04 kratz00        Distribution              => LFS             
+01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
+01-30-06 13:40 kratz00        Note Added: 0007837                          
+02-07-06 00:48 gerick         Issue Monitored: gerick                      
+02-08-06 13:13 simonckenyon   Issue Monitored: simonckenyon                    
+03-10-06 18:26 tiwai          Relationship added       duplicate of 0001841
+03-10-06 18:26 tiwai          Duplicate ID             0 => 1841           
+03-10-06 18:26 tiwai          Status                   new => resolved     
+03-10-06 18:26 tiwai          Resolution               open => duplicate   
+03-10-06 18:26 tiwai          Assigned To               => tiwai           
+03-10-06 18:26 tiwai          Note Added: 0008408                          
+03-15-06 21:49 kratz00        Status                   resolved => feedback
+03-15-06 21:49 kratz00        Resolution               duplicate => reopened
+03-15-06 21:49 kratz00        Note Added: 0008574                          
+03-23-06 17:45 tiwai          Note Added: 0008896                          
+03-25-06 15:31 kratz00        Note Added: 0008948                          
+03-25-06 15:31 kratz00        File Added: asound.state                     
+03-26-06 01:39 tiwai          Note Added: 0008959                          
+03-26-06 12:11 kratz00        Note Added: 0008969                          
+04-15-06 14:43 kratz00        Note Added: 0009296                          
 ======================================================================
 
 
