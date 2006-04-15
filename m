@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001882]: Use ESC key to stop the speaker-test instead of using ctrl-C
-Date: Sat, 15 Apr 2006 10:04:19 +0200
-Message-ID: <af170e0841ced14e015c760f4df435d3@bugtrack.alsa-project.org>
+From: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
+Subject: [patch] Audiophile-Usb.txt update
+Date: Sat, 15 Apr 2006 08:48:54 +0200
+Message-ID: <20060415084854.nin8kvjxko088wco@webmail.supelec.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: multipart/mixed;
+	boundary="=_46rcg47ho76s"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A182115A
-	for <alsa-devel@alsa-project.org>; Sat, 15 Apr 2006 10:04:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,427 +16,217 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: kouzinopoulos@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+This message is in MIME format.
 
-The following issue has been REOPENED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1882> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1882
-Category:                   speakertest
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     feedback
-======================================================================
-Date Submitted:             02-27-2006 03:57 CET
-Last Modified:              04-15-2006 10:04 CEST
-======================================================================
-Summary:                    Use ESC key to stop the speaker-test instead of
-using ctrl-C
-Description: 
-Is it possible to use ESC key to stop the speaker-test instead of abort the
-test by using control-C ?
+--=_46rcg47ho76s
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
-======================================================================
+Hi,
 
-----------------------------------------------------------------------
- tiwai - 03-29-06 19:06 
-----------------------------------------------------------------------
-Fixed on CVS.
+Here is a small patch to the Audiophile-Usb.txt documentation file.
 
-----------------------------------------------------------------------
- Raymond - 04-15-06 10:04 
-----------------------------------------------------------------------
-values return by read_wav seem strange at end of loop in write_loop 
+Summary: Fix typos and add information about Jack support
 
+Signed-Of-By: Charis Kouzinopoulos <kouzinopoulos@gmail.com>
+Signed-Of-By: Thibault Le Meur <Thibault.LeMeur@supelec.fr>
 
-speaker-test -c 4 -t wav -D hw:0,0
+Thanks to Charis Kouzinopoulos who sent me the typos fix.
+
+Thibault.
+
+--=_46rcg47ho76s
+Content-Type: text/x-patch;
+	charset=ISO-8859-1;
+	name="Audiophile-Usb.1.3.diff"
+Content-Disposition: attachment;
+	filename="Audiophile-Usb.1.3.diff"
+Content-Transfer-Encoding: 7bit
+
+--- Audiophile-Usb.txt.old	2006-04-14 09:48:55.000000000 +0200
++++ Audiophile-Usb.txt	2006-04-15 09:41:16.000000000 +0200
+@@ -1,4 +1,4 @@
+-	Guide to using M-Audio Audiophile USB with ALSA and Jack	v1.2
++	Guide to using M-Audio Audiophile USB with ALSA and Jack	v1.3
+ 	========================================================
  
-speaker-test 1.0.11rc5
+ 	    Thibault Le Meur <Thibault.LeMeur@supelec.fr>
+@@ -22,16 +22,16 @@
+  * Midi In (Mi)
+  * Midi Out (Mo)
  
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-WAV file(s)
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Using max buffer size 8192
-Periods = 4
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
-write_loop - channel=4  periods=281  period_size=512 bufsize=4096
-read_wav n=1024  err=1024
-read_wav n=2048  err=1024
-read_wav n=3072  err=1024
-read_wav n=4096  err=1024
-read_wav n=5120  err=1024
-read_wav n=6144  err=1024
-read_wav n=7168  err=1024
-read_wav n=8192  err=1024
-read_wav n=9216  err=1024
-read_wav n=10240  err=1024
-read_wav n=11264  err=1024
-read_wav n=12288  err=1024
-read_wav n=13312  err=1024
-read_wav n=14336  err=1024
-read_wav n=15360  err=1024
-read_wav n=16384  err=1024
-read_wav n=17408  err=1024
-read_wav n=18432  err=1024
-read_wav n=19456  err=1024
-read_wav n=20480  err=1024
-read_wav n=21504  err=1024
-read_wav n=22528  err=1024
-read_wav n=23552  err=1024
-read_wav n=24576  err=1024
-read_wav n=25600  err=1024
-read_wav n=26624  err=1024
-read_wav n=27648  err=1024
-read_wav n=28672  err=1024
-read_wav n=29696  err=1024
-read_wav n=30720  err=1024
-read_wav n=31744  err=1024
-read_wav n=32768  err=1024
-read_wav n=33792  err=1024
-read_wav n=34816  err=1024
-read_wav n=35840  err=1024
-read_wav n=36864  err=1024
-read_wav n=37888  err=1024
-read_wav n=38912  err=1024
-read_wav n=39936  err=1024
-read_wav n=40960  err=1024
-read_wav n=41984  err=1024
-read_wav n=43008  err=1024
-read_wav n=44032  err=1024
-read_wav n=45056  err=1024
-read_wav n=46080  err=1024
-read_wav n=47104  err=1024
-read_wav n=48128  err=1024
-read_wav n=49152  err=1024
-read_wav n=50176  err=1024
-read_wav n=51200  err=1024
-read_wav n=52224  err=1024
-read_wav n=53248  err=1024
-read_wav n=54272  err=1024
-read_wav n=55296  err=1024
-read_wav n=56320  err=1024
-read_wav n=57344  err=1024
-read_wav n=58368  err=1024
-read_wav n=59392  err=1024
-read_wav n=60416  err=1024
-read_wav n=61440  err=1024
-read_wav n=62464  err=1024
-read_wav n=63488  err=1024
-read_wav n=64512  err=1024
-read_wav n=65536  err=1024
-read_wav n=66560  err=1024
-read_wav n=67584  err=1024
-read_wav n=68608  err=1024
-read_wav n=69632  err=1024
-read_wav n=70656  err=1024
-read_wav n=71680  err=1024
-read_wav n=72704  err=1024
-read_wav n=73728  err=1024
-read_wav n=74752  err=1024
-read_wav n=75776  err=1024
-read_wav n=76800  err=1024
-read_wav n=77824  err=1024
-read_wav n=78848  err=1024
-read_wav n=79872  err=1024
-read_wav n=80896  err=1024
-read_wav n=81920  err=1024
-read_wav n=82944  err=1024
-read_wav n=83968  err=1024
-read_wav n=84992  err=1024
-read_wav n=86016  err=1024
-read_wav n=87040  err=1024
-read_wav n=88064  err=1024
-read_wav n=89088  err=1024
-read_wav n=90112  err=1024
-read_wav n=91136  err=1024
-read_wav n=92160  err=1024
-read_wav n=93184  err=1024
-read_wav n=94208  err=1024
-read_wav n=95232  err=1024
-read_wav n=96256  err=1024
-read_wav n=97280  err=1024
-read_wav n=98304  err=1024
-read_wav n=99328  err=1024
-read_wav n=100352  err=1024
-read_wav n=101376  err=1024
-read_wav n=102400  err=1024
-read_wav n=103424  err=1024
-read_wav n=104448  err=1024
-read_wav n=105472  err=1024
-read_wav n=106496  err=1024
-read_wav n=107520  err=1024
-read_wav n=108544  err=1024
-read_wav n=109568  err=1024
-read_wav n=110592  err=1024
-read_wav n=111616  err=1024
-read_wav n=112640  err=1024
-read_wav n=113664  err=1024
-read_wav n=114688  err=1024
-read_wav n=115712  err=1024
-read_wav n=116736  err=1024
-read_wav n=117760  err=1024
-read_wav n=118784  err=1024
-read_wav n=119808  err=1024
-read_wav n=120832  err=1024
-read_wav n=121856  err=1024
-read_wav n=122880  err=1024
-read_wav n=123904  err=1024
-read_wav n=124928  err=1024
-read_wav n=125952  err=1024
-read_wav n=126976  err=1024
-read_wav n=128000  err=1024
-read_wav n=129024  err=1024
-read_wav n=130048  err=1024
-read_wav n=131072  err=1024
-read_wav n=132096  err=1024
-read_wav n=133120  err=1024
-read_wav n=134144  err=1024
-read_wav n=135168  err=1024
-read_wav n=136192  err=1024
-read_wav n=137216  err=1024
-read_wav n=138240  err=1024
-read_wav n=139202  err=962
-read_wav n=139922  err=720
-read_wav n=140462  err=540
-read_wav n=140868  err=406
-read_wav n=141172  err=304
-read_wav n=141400  err=228
-read_wav n=141572  err=172
-read_wav n=141700  err=128
-read_wav n=141796  err=96
-read_wav n=141868  err=72
-read_wav n=141922  err=54
-read_wav n=141962  err=40
-read_wav n=141992  err=30
-read_wav n=142016  err=24
-read_wav n=142034  err=18
-read_wav n=142046  err=12
-read_wav n=142056  err=10
-read_wav n=142064  err=8
-read_wav n=142070  err=6
-read_wav n=142074  err=4
-read_wav n=142076  err=2
-read_wav n=142078  err=2
-read_wav n=142080  err=2
-read_wav n=142082  err=2
- 1 - Front Right
-write_loop - channel=4  periods=281  period_size=512 bufsize=4096
-read_wav n=1024  err=1024
-read_wav n=2048  err=1024
-read_wav n=3072  err=1024
-read_wav n=4096  err=1024
-read_wav n=5120  err=1024
-read_wav n=6144  err=1024
-read_wav n=7168  err=1024
-read_wav n=8192  err=1024
-read_wav n=9216  err=1024
-read_wav n=10240  err=1024
-read_wav n=11264  err=1024
-read_wav n=12288  err=1024
-read_wav n=13312  err=1024
-read_wav n=14336  err=1024
-read_wav n=15360  err=1024
-read_wav n=16384  err=1024
-read_wav n=17408  err=1024
-read_wav n=18432  err=1024
-read_wav n=19456  err=1024
-read_wav n=20480  err=1024
-read_wav n=21504  err=1024
-read_wav n=22528  err=1024
-read_wav n=23552  err=1024
-read_wav n=24576  err=1024
-read_wav n=25600  err=1024
-read_wav n=26624  err=1024
-read_wav n=27648  err=1024
-read_wav n=28672  err=1024
-read_wav n=29696  err=1024
-read_wav n=30720  err=1024
-read_wav n=31744  err=1024
-read_wav n=32768  err=1024
-read_wav n=33792  err=1024
-read_wav n=34816  err=1024
-read_wav n=35840  err=1024
-read_wav n=36864  err=1024
-read_wav n=37888  err=1024
-read_wav n=38912  err=1024
-read_wav n=39936  err=1024
-read_wav n=40960  err=1024
-read_wav n=41984  err=1024
-read_wav n=43008  err=1024
-read_wav n=44032  err=1024
-read_wav n=45056  err=1024
-read_wav n=46080  err=1024
-read_wav n=47104  err=1024
-read_wav n=48128  err=1024
-read_wav n=49152  err=1024
-read_wav n=50176  err=1024
-read_wav n=51200  err=1024
-read_wav n=52224  err=1024
-read_wav n=53248  err=1024
-read_wav n=54272  err=1024
-read_wav n=55296  err=1024
-read_wav n=56320  err=1024
-read_wav n=57344  err=1024
-read_wav n=58368  err=1024
-read_wav n=59392  err=1024
-read_wav n=60416  err=1024
-read_wav n=61440  err=1024
-read_wav n=62464  err=1024
-read_wav n=63488  err=1024
-read_wav n=64512  err=1024
-read_wav n=65536  err=1024
-read_wav n=66560  err=1024
-read_wav n=67584  err=1024
-read_wav n=68608  err=1024
-read_wav n=69632  err=1024
-read_wav n=70656  err=1024
-read_wav n=71680  err=1024
-read_wav n=72704  err=1024
-read_wav n=73728  err=1024
-read_wav n=74752  err=1024
-read_wav n=75776  err=1024
-read_wav n=76800  err=1024
-read_wav n=77824  err=1024
-read_wav n=78848  err=1024
-read_wav n=79872  err=1024
-read_wav n=80896  err=1024
-read_wav n=81920  err=1024
-read_wav n=82944  err=1024
-read_wav n=83968  err=1024
-read_wav n=84992  err=1024
-read_wav n=86016  err=1024
-read_wav n=87040  err=1024
-read_wav n=88064  err=1024
-read_wav n=89088  err=1024
-read_wav n=90112  err=1024
-read_wav n=91136  err=1024
-read_wav n=92160  err=1024
-read_wav n=93184  err=1024
-read_wav n=94208  err=1024
-read_wav n=95232  err=1024
-read_wav n=96256  err=1024
-read_wav n=97280  err=1024
-read_wav n=98304  err=1024
-read_wav n=99328  err=1024
-read_wav n=100352  err=1024
-read_wav n=101376  err=1024
-read_wav n=102400  err=1024
-read_wav n=103424  err=1024
-read_wav n=104448  err=1024
-read_wav n=105472  err=1024
-read_wav n=106496  err=1024
-read_wav n=107520  err=1024
-read_wav n=108544  err=1024
-read_wav n=109568  err=1024
-read_wav n=110592  err=1024
-read_wav n=111616  err=1024
-read_wav n=112640  err=1024
-read_wav n=113664  err=1024
-read_wav n=114688  err=1024
-read_wav n=115712  err=1024
-read_wav n=116736  err=1024
-read_wav n=117760  err=1024
-read_wav n=118784  err=1024
-read_wav n=119808  err=1024
-read_wav n=120832  err=1024
-read_wav n=121856  err=1024
-read_wav n=122880  err=1024
-read_wav n=123904  err=1024
-read_wav n=124928  err=1024
-read_wav n=125952  err=1024
-read_wav n=126976  err=1024
-read_wav n=128000  err=1024
-read_wav n=129024  err=1024
-read_wav n=130048  err=1024
-read_wav n=131072  err=1024
-read_wav n=132096  err=1024
-read_wav n=133120  err=1024
-read_wav n=134144  err=1024
-read_wav n=135168  err=1024
-read_wav n=136192  err=1024
-read_wav n=137216  err=1024
-read_wav n=138240  err=1024
-read_wav n=139264  err=1024
-read_wav n=140288  err=1024
-read_wav n=141312  err=1024
-read_wav n=142336  err=1024
-read_wav n=143360  err=1024
-read_wav n=144256  err=896
-read_wav n=144928  err=672
-read_wav n=145432  err=504
-read_wav n=145810  err=378
-read_wav n=146094  err=284
-read_wav n=146308  err=214
-read_wav n=146468  err=160
-read_wav n=146588  err=120
-read_wav n=146678  err=90
-read_wav n=146746  err=68
-read_wav n=146796  err=50
-read_wav n=146834  err=38
-read_wav n=146862  err=28
-read_wav n=146884  err=22
-read_wav n=146900  err=16
-read_wav n=146912  err=12
-read_wav n=146920  err=8
-read_wav n=146926  err=6
-read_wav n=146932  err=6
-read_wav n=146936  err=4
-read_wav n=146938  err=2
-read_wav n=146940  err=2
-read_wav n=146942  err=2
-read_wav n=146944  err=2
- 3 - Rear Right
-write_loop - channel=4  periods=281  period_size=512 bufsize=4096
-read_wav n=1024  err=1024
-read_wav n=2048  err=1024
+-The internal DAC/ADC has the following caracteristics:
++The internal DAC/ADC has the following characteristics:
+ * sample depth of 16 or 24 bits
+ * sample rate from 8kHz to 96kHz
+-* Two ports can't use different sample depths at the same time.Moreover, the 
++* Two ports can't use different sample depths at the same time. Moreover, the 
+ Audiophile USB documentation gives the following Warning: "Please exit any 
+ audio application running before switching between bit depths"
+ 
+ Due to the USB 1.1 bandwidth limitation, a limited number of interfaces can be 
+ activated at the same time depending on the audio mode selected:
+- * 16-bit/48kHz ==> 4 channels in/ 4 channels out
++ * 16-bit/48kHz ==> 4 channels in/4 channels out
+    - Ai+Ao+Di+Do
+  * 24-bit/48kHz ==> 4 channels in/2 channels out, 
+                     or 2 channels in/4 channels out
+@@ -41,8 +41,8 @@
+ 
+ Important facts about the Digital interface:
+ --------------------------------------------
+- * The Do port additionnaly supports surround-encoded AC-3 and DTS passthrough, 
+-though I haven't tested it under linux
++ * The Do port additionally supports surround-encoded AC-3 and DTS passthrough, 
++though I haven't tested it under Linux
+    - Note that in this setup only the Do interface can be enabled
+  * Apart from recording an audio digital stream, enabling the Di port is a way 
+ to synchronize the device to an external sample clock
+@@ -60,7 +60,6 @@
+ The Audiophile USB MIDI ports will be automatically supported once the 
+ following modules have been loaded:
+  * snd-usb-audio
+- * snd-seq
+  * snd-seq-midi
+ 
+ No additionnal setting is required.
+@@ -70,14 +69,14 @@
+ 
+ Audio functions of the Audiophile USB device are handled by the snd-usb-audio 
+ module. This module can work in a default mode (without any device-specific 
+-parameter), or in an advanced mode with the device-specific parameter called 
++parameter), or in an "advanced" mode with the device-specific parameter called 
+ "device_setup".
+ 
+ 2.2.1 - Default Alsa driver mode
+ 
+-The default behaviour of the snd-usb-audio driver is to parse the device 
++The default behavior of the snd-usb-audio driver is to parse the device 
+ capabilities at startup and enable all functions inside the device (including 
+-all ports at any sample rates and any sample depths supported). This approach 
++all ports at any supported sample rates and sample depths). This approach 
+ has the advantage to let the driver easily switch from sample rates/depths 
+ automatically according to the need of the application claiming the device.
+ 
+@@ -114,9 +113,9 @@
+ For people having this problem, the snd-usb-audio module has a new module 
+ parameter called "device_setup".
+ 
+-2.2.2.1 - Initializing the working mode of the Audiohile USB
++2.2.2.1 - Initializing the working mode of the Audiophile USB
+ 
+-As far as the Audiohile USB device is concerned, this value let the user 
++As far as the Audiophile USB device is concerned, this value let the user 
+ specify:
+  * the sample depth
+  * the sample rate
+@@ -174,20 +173,20 @@
+ 
+ IMPORTANT NOTE WHEN SWITCHING CONFIGURATION:
+ -------------------------------------------
+- * You may need to _first_ intialize the module with the correct device_setup 
++ * You may need to _first_ initialize the module with the correct device_setup 
+    parameter and _only_after_ turn on the Audiophile USB device
+  * This is especially true when switching the sample depth:
+-   - first trun off the device
+-   - de-register the snd-usb-audio module
+-   - change the device_setup parameter (by either manually reprobing the module 
+-     or changing modprobe.conf)
++   - first turn off the device
++   - de-register the snd-usb-audio module (modprobe -r)
++   - change the device_setup parameter by changing the device_setup
++     option in /etc/modprobe.conf 
+    - turn on the device
+ 
+ 2.2.2.3 - Audiophile USB's device_setup structure
+ 
+ If you want to understand the device_setup magic numbers for the Audiophile 
+ USB, you need some very basic understanding of binary computation. However, 
+-this is not required to use the parameter and you may skip thi section.
++this is not required to use the parameter and you may skip this section.
+ 
+ The device_setup is one byte long and its structure is the following:
+ 
+@@ -231,11 +230,11 @@
+ 
+ 2.2.3 -  USB implementation details for this device
+ 
+-You may safely skip this section if you're not interrested in driver 
++You may safely skip this section if you're not interested in driver 
+ development.
+ 
+-This section describes some internals aspect of the device and summarize the 
+-data I got by usb-snooping the windows and linux drivers.
++This section describes some internal aspects of the device and summarize the 
++data I got by usb-snooping the windows and Linux drivers.
+ 
+ The M-Audio Audiophile USB has 7 USB Interfaces:
+ a "USB interface":
+@@ -277,9 +276,9 @@
+   - 16-bit depth, 8-48kHz sample mode
+   - Synch playback (Do), audio format type III IEC1937_AC-3
+ 
+-In order to ensure a correct intialization of the device, the driver 
++In order to ensure a correct initialization of the device, the driver 
+ _must_know_ how the device will be used:
+- * if DTS is choosen, only Interface 2 with AltSet nb.6 must be
++ * if DTS is chosen, only Interface 2 with AltSet nb.6 must be
+    registered
+  * if 96KHz only AltSets nb.1 of each interface must be selected
+  * if samples are using 24bits/48KHz then AltSet 2 must me used if
+@@ -317,9 +316,8 @@
+ using the "default" ALSA device. This is less efficient than it could be. 
+ Consider using a hardware device instead rather than using the plug layer."
+ 
+-
+ 3.2 - Patching alsa to use direct pcm device
+--------------------------------------------
++--------------------------------------------
+ A patch for Jack by Andreas Steinmetz adds support for Big Endian devices. 
+ However it has not been included in the CVS tree.
+ 
+@@ -331,3 +329,32 @@
+ line:
+   % jackd -R -dalsa -Phw:1,0 -r48000 -p128 -n2 -D -Chw:1,1
+ 
++3.2 - Getting 2 input and/or output interfaces in Jack
++------------------------------------------------------
++
++As you can see, starting the Jack server this way will only enable 1 stereo
++input (Di or Ai) and 1 stereo output (Ao or Do).
++
++This is due to the following restrictions:
++* Jack can only open one capture device and one playback device at a time
++* The Audiophile USB is seen as 2 (or three) Alsa devices: hw:1,0, hw:1,1
++  (and optionnally hw:1,2)
++If you want to get Ai+Di and/or Ao+Do support with Jack, you would need to
++combine the Alsa devices into one logical "complex" device.
++
++If you want to give it a try, I recommend reading the information from
++this page: http://www.sound-man.co.uk/linuxaudio/ice1712multi.html
++It is related to another device (ice1712) but can be adapted to suit
++the Audiophile USB.
++
++Enabling multiple Audiophile USB interfaces for Jackd will certainly require:
++* patching Jack with the previously mentioned "Big Endian" patch
++* patching Jackd with the MMAP_COMPLEX patch (see the ice1712 page)
++* patching the alsa-lib/src/pcm/pcm_multi.c file (see the ice1712 page)
++* define a multi device (combination of hw:1,0 and hw:1,1) in your .asoundrc
++  file 
++* start jackd with this device
++
++I had no success in testing this for now, but this may be due to my OS
++configuration. If you have any success with this kind of setup, please
++drop me an email.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-27-06 03:57 Raymond        New Issue                                    
-02-27-06 04:01 rlrevell       Note Added: 0008212                          
-03-01-06 09:51 Raymond        Note Added: 0008277                          
-03-01-06 09:53 Raymond        Note Edited: 0008277                         
-03-01-06 18:01 rlrevell       Note Added: 0008284                          
-03-02-06 04:36 Raymond        Note Added: 0008293                          
-03-02-06 04:46 Raymond        Note Edited: 0008293                         
-03-02-06 04:49 Raymond        Note Edited: 0008293                         
-03-02-06 12:44 tiwai          Status                   new => resolved     
-03-02-06 12:44 tiwai          Resolution               open => won't fix   
-03-02-06 12:44 tiwai          Assigned To               => tiwai           
-03-02-06 12:44 tiwai          Note Added: 0008298                          
-03-24-06 17:29 Raymond        Status                   resolved => feedback
-03-24-06 17:29 Raymond        Resolution               won't fix => reopened
-03-24-06 17:29 Raymond        Note Added: 0008924                          
-03-24-06 17:32 Raymond        Note Edited: 0008924                         
-03-24-06 17:42 tiwai          Status                   feedback => resolved
-03-24-06 17:42 tiwai          Resolution               reopened => fixed   
-03-24-06 17:42 tiwai          Note Added: 0008929                          
-03-25-06 13:22 Raymond        Status                   resolved => feedback
-03-25-06 13:22 Raymond        Resolution               fixed => reopened   
-03-25-06 13:22 Raymond        Note Added: 0008947                          
-03-29-06 19:06 tiwai          Status                   feedback => resolved
-03-29-06 19:06 tiwai          Resolution               reopened => fixed   
-03-29-06 19:06 tiwai          Note Added: 0009007                          
-04-15-06 10:04 Raymond        Status                   resolved => feedback
-04-15-06 10:04 Raymond        Resolution               fixed => reopened   
-04-15-06 10:04 Raymond        Note Added: 0009292                          
-======================================================================
-
+--=_46rcg47ho76s--
 
 
 
