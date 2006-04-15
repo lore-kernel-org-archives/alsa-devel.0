@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Sat, 15 Apr 2006 10:49:37 +0200
-Message-ID: <b7e5098f9be6ca8ada0071041ed09f1b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001800]: Input signal from analog input in snd-ca0106 with audigy SE distorted!
+Date: Sat, 15 Apr 2006 12:37:11 +0200
+Message-ID: <0033794397282e3ce2b6ae90f7b508a6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0001B165
-	for <alsa-devel@alsa-project.org>; Sat, 15 Apr 2006 10:49:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C75B7165
+	for <alsa-devel@alsa-project.org>; Sat, 15 Apr 2006 12:37:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,80 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1800> 
 ======================================================================
-Reported By:                drolyk
-Assigned To:                
+Reported By:                AnarSoul
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1930
-Category:                   PCI - intel8x0
+Issue ID:                   1800
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.6
+Status:                     feedback
+Distribution:               Slackware
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              04-15-2006 10:49 CEST
+Date Submitted:             01-31-2006 15:56 CET
+Last Modified:              04-15-2006 12:37 CEST
 ======================================================================
-Summary:                    Can`t get timidity woking in soft synth mode
+Summary:                    Input signal from analog input in snd-ca0106 with
+audigy SE distorted!
 Description: 
-Can`t get timidity woking in "soft synth mode".
+Recorded signal from my audigy SE from analog MIC input badly distorted! =(
 ======================================================================
 
 ----------------------------------------------------------------------
- fdoffizi01 - 03-21-06 10:58 
+ jcdutton - 04-15-06 01:21 
 ----------------------------------------------------------------------
-I did some test with another pc (but with different sound card, sblive)
-with older kernel and new (2.6.11 2.6.15) but it worked and it works.
-I really don't know what to think.
-I tried exactly as Raymond but I get no sound or only the first note
-looping. (it depends on midi files I play). It seems as the virtual port
-receives the first midi event and then stop working.
+Please provide the output of
+amixer
 
 ----------------------------------------------------------------------
- Raymond - 04-15-06 10:49 
+ AnarSoul - 04-15-06 12:37 
 ----------------------------------------------------------------------
-There is some difference when using hw:1,0 and default:1  
+Here's amixer out. 
 
- export TIMIDITY_PCM_NAME=hw:1,0
- timidity test.mid
-Requested buffer size 32768, fragment size 8192
-ALSA pcm 'hw:1,0' set buffer size 32768, period size 8192 bytes
- 
- export TIMIDITY_PCM_NAME=default:1
- timidity test.mid
-Requested buffer size 32768, fragment size 8192
-ALSA pcm 'default:1' set buffer size 33868, period size 3760 bytes
+P.S. Position of 'Line In' slider has no effect on volume of recorded
+signal =(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 23:41 drolyk         New Issue                                    
-03-15-06 23:41 drolyk         Distribution              => Debian          
-03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
-03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
-03-20-06 01:28 rlrevell       Note Added: 0008702                          
-03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
-03-20-06 03:24 rlrevell       Note Added: 0008706                          
-03-20-06 06:08 drolyk         Note Added: 0008709                          
-03-20-06 06:22 rlrevell       Note Added: 0008710                          
-03-20-06 07:19 Raymond        Note Added: 0008711                          
-03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
-03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
-03-20-06 22:19 drolyk         Note Added: 0008726                          
-03-20-06 22:21 drolyk         Note Edited: 0008726                         
-03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
-03-20-06 23:29 rlrevell       Note Added: 0008729                          
-03-20-06 23:40 fdoffizi01     Note Added: 0008730                          
-03-20-06 23:54 rlrevell       Note Added: 0008731                          
-03-21-06 00:14 fdoffizi01     Note Added: 0008732                          
-03-21-06 08:46 Raymond        Note Added: 0008739                          
-03-21-06 09:00 Raymond        Note Edited: 0008739                         
-03-21-06 10:58 fdoffizi01     Note Added: 0008741                          
-04-15-06 10:49 Raymond        Note Added: 0009293                          
+01-31-06 15:56 AnarSoul       New Issue                                    
+01-31-06 15:56 AnarSoul       Distribution              => Slackware       
+01-31-06 15:56 AnarSoul       Kernel Version            => 2.6.15          
+02-05-06 17:38 AnarSoul       Issue Monitored: AnarSoul                    
+02-07-06 21:55 AnarSoul       Note Added: 0007961                          
+04-13-06 21:51 jcdutton       Note Added: 0009273                          
+04-13-06 21:51 jcdutton       Status                   assigned => feedback
+04-14-06 21:16 AnarSoul       Note Added: 0009287                          
+04-15-06 01:21 jcdutton       Note Added: 0009290                          
+04-15-06 12:36 AnarSoul       File Added: amixer-out.txt                    
+04-15-06 12:37 AnarSoul       Note Added: 0009294                          
 ======================================================================
 
 
