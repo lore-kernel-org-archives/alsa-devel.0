@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001800]: Input signal from analog input in snd-ca0106 with audigy SE distorted!
-Date: Sun, 16 Apr 2006 19:07:13 +0200
-Message-ID: <423c43293c9d3ac8681fb04393747f8d@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Unaligned fixup error
+Date: Sun, 16 Apr 2006 20:04:03 +0100
+Message-ID: <1145214243.9266.67.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2D3C19D
-	for <alsa-devel@alsa-project.org>; Sun, 16 Apr 2006 19:07:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +15,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+I assume this is a problem with my tools rather than alsa, but I'd
+better check.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1800> 
-======================================================================
-Reported By:                AnarSoul
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1800
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Slackware
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             01-31-2006 15:56 CET
-Last Modified:              04-16-2006 19:07 CEST
-======================================================================
-Summary:                    Input signal from analog input in snd-ca0106 with
-audigy SE distorted!
-Description: 
-Recorded signal from my audigy SE from analog MIC input badly distorted! =(
-======================================================================
+Switched over to using the alsa-driver/alsa-kernel modules on my
+Dreamcast (as opposed to 2.6.15 vanilla) and I get this:
 
-----------------------------------------------------------------------
- AnarSoul - 04-15-06 12:50 
-----------------------------------------------------------------------
-lspci identifies my audigy-se as audigy-ls (See attached lspci). But I have
-audigy SE, windoze detects it as audigy se. 
+/ # ./mpg123 -g 55 /Simple\ Minds/01\ Song\ For\ The\ Tribes.mp3 &
+/ # High Performance MPEG 1.0/2.0/2.5 Audio Player for Layer 1, 2 and 3.
+Version 0.59r-gpl (2005/04/Fault in unaligned fixup: 0000 [#1]
 
-Is it normal?
+Pid : 1232, Comm:               mpg123
+PC is at aica_pcmvolume_put+0x6/0x80 [snd_aica]
+PC  : c0100ee6 SP  : 8c2cfe0c SR  : 40008100 TEA : c01011de    Not
+tainted
+R0  : c0100ee0 R1  : 8c3c6180 R2  : 00000000 R3  : ffffffe7
+R4  : 8c3c6180 R5  : 8c9e8c00 R6  : 00000064 R7  : 0000ffff
+R8  : 8cb17640 R9  : 8cd59200 R10 : 8c3c6140 R11 : 8c9e8c00
+R12 : 8cb17600 R13 : 00000037 R14 : 8c2cfe10
+MACH: 000002b0 MACL: 000036c9 GBR : 00000000 PR  : c0128352
 
-P.S. 
-cat /proc/asound/cards
- 0 [CA0106         ]: CA0106 - CA0106
-                      Audigy SE [SB0570] at 0xd000 irq 17
+Call trace:
+[<c0128352>] snd_mixer_oss_put_volume1_vol+0x112/0x180 [snd_mixer_oss]
+[<c01286ca>] snd_mixer_oss_put_volume1+0x16a/0x260 [snd_mixer_oss]
+[<c0128240>] snd_mixer_oss_put_volume1_vol+0x0/0x180 [snd_mixer_oss]
+[<c0127628>] snd_mixer_oss_ioctl1+0x308/0x8a0 [snd_mixer_oss]
+[<8c00d6c4>] __do_page_fault+0xa4/0x1c0
+[<c0127be0>] snd_mixer_oss_ioctl_card+0x0/0x60 [snd_mixer_oss]
+[<8c005024>] call_dpf+0x10/0x3c
+[<8c005090>] ret_from_exception+0x0/0x8
+[<c0127be0>] snd_mixer_oss_ioctl_card+0x0/0x60 [snd_mixer_oss]
+[<c0127be0>] snd_mixer_oss_ioctl_card+0x0/0x60 [snd_mixer_oss]
+[<c0127c1c>] snd_mixer_oss_ioctl_card+0x3c/0x60 [snd_mixer_oss]
+[<c015a27a>] snd_pcm_oss_ioctl+0x15a/0x1080 [snd_pcm_oss]
+[<8c078704>] do_ioctl+0x84/0xc0
+[<8c0787b2>] vfs_ioctl+0x72/0x440
+[<8c05e20a>] do_sys_open+0x8a/0x120
+[<8c078bae>] sys_ioctl+0x2e/0xa0
+[<8c0051bc>] syscall_call+0xc/0xe
+[<8c078b80>] sys_ioctl+0x0/0xa0
+
+08). Copyright 1995-2005 by The Mpg123 Project.
+Uses code from various people, see 'AUTHORS' for full list.
+This software comes with ABSOLUTELY NO WARRANTY. For details, see
+the enclosed file COPYING for license information (GPL).
 
 
-
-----------------------------------------------------------------------
- AnarSoul - 04-16-06 19:07 
-----------------------------------------------------------------------
-Oh, I'm sorry :) Changing position of 'line in' slider in alsamixer has
-effect, but not in kmix (from kde-multimidia) :( for some reason changing
-'line in' volume in kmix has no effect. I don't know if this is kmix bug
-or driver bug.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-31-06 15:56 AnarSoul       New Issue                                    
-01-31-06 15:56 AnarSoul       Distribution              => Slackware       
-01-31-06 15:56 AnarSoul       Kernel Version            => 2.6.15          
-02-05-06 17:38 AnarSoul       Issue Monitored: AnarSoul                    
-02-07-06 21:55 AnarSoul       Note Added: 0007961                          
-04-13-06 21:51 jcdutton       Note Added: 0009273                          
-04-13-06 21:51 jcdutton       Status                   assigned => feedback
-04-14-06 21:16 AnarSoul       Note Added: 0009287                          
-04-15-06 01:21 jcdutton       Note Added: 0009290                          
-04-15-06 12:36 AnarSoul       File Added: amixer-out.txt                    
-04-15-06 12:37 AnarSoul       Note Added: 0009294                          
-04-15-06 12:42 AnarSoul       Note Added: 0009295                          
-04-15-06 12:42 AnarSoul       File Added: lspci.txt                        
-04-15-06 12:50 AnarSoul       Note Edited: 0009295                         
-04-15-06 12:52 AnarSoul       Note Edited: 0009294                         
-04-16-06 19:07 AnarSoul       Note Added: 0009297                          
-======================================================================
-
+If I try without the gain command there is no problem, though I can
+hardly hear the output obviously
 
 
 
