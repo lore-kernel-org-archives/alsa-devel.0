@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002022]: No midi hardware detected
-Date: Sun, 16 Apr 2006 08:24:23 +0200
-Message-ID: <0733bc014e4fca88f7207813c0885257@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Sun, 16 Apr 2006 12:18:55 +0200
+Message-ID: <502138b58a7e4b0a792738254a831a9f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F37EB183
-	for <alsa-devel@alsa-project.org>; Sun, 16 Apr 2006 08:24:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1563514B
+	for <alsa-devel@alsa-project.org>; Sun, 16 Apr 2006 12:18:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,37 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2022> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
 ======================================================================
-Reported By:                jmstevens
+Reported By:                zanonmark
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2022
-Category:                   CORE - sequencer
+Issue ID:                   2023
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
 ======================================================================
-Date Submitted:             04-16-2006 08:24 CEST
-Last Modified:              04-16-2006 08:24 CEST
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              04-16-2006 12:18 CEST
 ======================================================================
-Summary:                    No midi hardware detected
+Summary:                    midi/joystick port disabled and no way to enable it
 Description: 
-I want to get hardware MIDI operating with my system. the problem is that
-alsa can't seem to detect the hardware. I am running an onboard C-Media
-9761 chipset. In alsamixer I have no MIDI related devices at all showing
-although everything else runs flawlessly.My modules.conf file is attached.
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
+
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
+
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
+
+So, will you please include such a parameter in the next version of the
+driver?
+
+Thanks a lot,
+
+Marco.
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-06 08:24 jmstevens      New Issue                                    
-04-16-06 08:24 jmstevens      File Added: modules.conf                     
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
 ======================================================================
 
 
