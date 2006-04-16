@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002025]: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio lacks support for microphone
-Date: Sun, 16 Apr 2006 21:08:01 +0200
-Message-ID: <2a484c93bd0c6cf293ea415b2c003ac2@bugtrack.alsa-project.org>
+Date: Sun, 16 Apr 2006 21:28:40 +0200
+Message-ID: <44211e4733190d2210e64d71bbe33b65@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3E4619F
-	for <alsa-devel@alsa-project.org>; Sun, 16 Apr 2006 21:08:01 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED39419F
+	for <alsa-devel@alsa-project.org>; Sun, 16 Apr 2006 21:28:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2025> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             04-16-2006 21:08 CEST
-Last Modified:              04-16-2006 21:08 CEST
+Last Modified:              04-16-2006 21:28 CEST
 ======================================================================
 Summary:                    Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
 Family) High Definition Audio lacks support for microphone
@@ -49,10 +49,17 @@ The speakers to works but the microphone is always on i.e. it always
 captures sound and produces acoustic feedback.
 ======================================================================
 
+----------------------------------------------------------------------
+ gegtot - 04-16-06 21:28 
+----------------------------------------------------------------------
+It's also not possible to record sound.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-16-06 21:08 gegtot         New Issue                                    
+04-16-06 21:27 gegtot         Issue Monitored: gegtot                      
+04-16-06 21:28 gegtot         Note Added: 0009298                          
 ======================================================================
 
 
