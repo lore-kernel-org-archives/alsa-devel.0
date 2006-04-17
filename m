@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001783]: My DYI BurrBrown pcm2702 usb soundcard is making a lot of noise, crackling or only noise when playing music
-Date: Mon, 17 Apr 2006 17:57:29 +0200
-Message-ID: <c124442f606da92efed6cbea472859ff@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: alsa-driver annoyance
+Date: Mon, 17 Apr 2006 17:30:03 +0100
+Message-ID: <1145291403.9244.2.camel@localhost.localdomain>
+References: <1145048699.9434.7.camel@localhost.localdomain>
+	 <20060417120106.GA25991@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 79016185
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 17:57:29 +0200 (MEST)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id F409A185
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 18:30:07 +0200 (MEST)
+In-Reply-To: <20060417120106.GA25991@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +21,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-04-17 at 14:01 +0200, Clemens Ladisch wrote:
+> Adrian McMenamin wrote:
+> > I am cross compiling alsa driver for use on an NFS root mounted
+> > partition hosted on my development box for use by a box running a 2.6.15
+> > kernel - the development box uses a 2.6.12 kernel
+> > 
+> > Alsa-driver insists on creating a 2.6.15 modules directory on the
+> > development box hierarchy and then installing modules in that directory
+> > and not in the NFS root partition.
+> 
+> What are the parameters and the output of the configure script?
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1783> 
-======================================================================
-Reported By:                boniek
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1783
-Category:                   USB - usb-audio
-Reproducibility:            random
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo GNU/Linux
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             01-25-2006 11:51 CET
-Last Modified:              04-17-2006 17:57 CEST
-======================================================================
-Summary:                    My DYI BurrBrown pcm2702 usb soundcard is making a
-lot of noise, crackling or only noise when playing music
-Description: 
-Sound Card: PCM2702 BurrBrown DYI card (works perfectly in windows)
-Music Player: Does not matter. It is always the same. Using alsa plugin (
-I don't have oss emulation).
- Upon starting playing you will hear either ok sound, sound with a lot
-background noise, or static only (like cat /dev/urandom > /dev/dsp in
-oss). On start of playing music (either on beggining or after
-unpause/unstop) there can be heard (almost always) a very loud crack.
-Music can degradate itself to noise only too. Whole thing occurs very
-often, but randomly (well I think things tend to get broken/repaired upon
-restarting music stream - stop/pause and play).
-======================================================================
+I discovered that this was really an issue about the help.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 04-17-06 13:45 
-----------------------------------------------------------------------
-Does it work with kernel 2.6.16, and/or a recent ALSA (1.0.11rc5)?
+The option --with-moddir sets the installation directory for the modules
+though the help makes that less than clear - especially as it listed
+under "Optional Packages" and not "Fine tuning of the installation
+directories".
 
-----------------------------------------------------------------------
- boniek - 04-17-06 17:57 
-----------------------------------------------------------------------
-Just recompiled kernel with alsa support and after some testing it seems to
-work well. Thanks!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-25-06 11:51 boniek         New Issue                                    
-01-25-06 11:51 boniek         Distribution              => Gentoo GNU/Linux
-01-25-06 11:51 boniek         Kernel Version            => 2.6.15          
-01-25-06 12:04 boniek         Note Added: 0007779                          
-01-25-06 12:27 boniek         Note Added: 0007781                          
-01-25-06 12:27 boniek         Note Deleted: 0007781                        
-01-25-06 12:28 boniek         Note Edited: 0007779                         
-04-17-06 13:45 Clemens LadischNote Added: 0009308                          
-04-17-06 17:57 boniek         Note Added: 0009316                          
-======================================================================
-
+Maybe it should be patched?
 
 
 
