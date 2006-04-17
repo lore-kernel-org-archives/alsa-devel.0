@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002025]: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio lacks support for microphone
-Date: Mon, 17 Apr 2006 22:45:25 +0200
-Message-ID: <13ddf36ac3ac6d67e76e4850ad31517f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
+Date: Mon, 17 Apr 2006 22:57:16 +0200
+Message-ID: <66406ab4977f4f54d84c0702d9205f26@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 696881AC
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 22:45:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BD3C1AC
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 22:57:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,152 +24,175 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2025> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
 ======================================================================
-Reported By:                gegtot
-Assigned To:                tiwai
+Reported By:                ponchick
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2025
-Category:                   PCI - hda-intel
+Issue ID:                   1833
+Category:                   GENERIC - mpu401
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
-Date Submitted:             04-16-2006 21:08 CEST
-Last Modified:              04-17-2006 22:45 CEST
+Date Submitted:             02-09-2006 08:33 CET
+Last Modified:              04-17-2006 22:57 CEST
 ======================================================================
-Summary:                    Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio lacks support for microphone
+Summary:                    oops in snd_mpu401_uart
 Description: 
-The speakers to works but the microphone is always on i.e. it always
-captures sound and produces acoustic feedback.
+I don't know what exactly happend but when I run wine or winecfg it
+segfaulted. dmesg shows following:
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
+snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
+snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
+snd_seq_device snd soundcore nvidia sky2
+Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
+ffff810002178440)
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
+       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
+       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
+       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
+       <ffffffff80397b49>{_spin_lock+27}
+<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
+       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
+       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
+       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
+       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
+       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
+       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
+       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
+       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
+<ffffffff8018075f>{__link_path_walk+3332}
+       <ffffffff80397b0c>{__lock_text_start+20}
+<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
+       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
+<ffffffff8017ab11>{chrdev_open+454}
+       <ffffffff8017a94b>{chrdev_open+0}
+<ffffffff80171031>{__dentry_open+310}
+       <ffffffff8017118d>{nameidata_to_filp+34}
+<ffffffff801711d6>{filp_open+58}
+       <ffffffff801713d4>{get_unused_fd+234}
+<ffffffff80171533>{do_sys_open+81}
+       <ffffffff8011e57f>{sysenter_do_call+27}
+
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
+CR2: 0000000010228800
+ <6>note: wine-preloader[11110] exited with preempt_count 1
+
+I use standalone alsa-driver (kernel one is out of date and doesn't
+support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
+gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
 ======================================================================
 
 ----------------------------------------------------------------------
- tbecker37 - 04-17-06 19:29 
+ Raymond - 04-14-06 03:30 
 ----------------------------------------------------------------------
-I did unmute and set volume to 100%.  Still no luck.
+>> Also I try wine at home with my "Monster Sound 2" (lspci output in bug
+0001726) >> on 32-bit kernel and here is dmesg output on first run:
+>> vortex: FATAL: ResManager: resource type 0 exhausted.
+>> vortex: FATAL: ResManager: resource type 3 exhausted.
 
-No I'm a dork.  I DID work. but recording from the MIC is very scratchy.
-I've attached a short wav file to demonstrate.
+>> Message "vortex: FATAL: ResManager: resource type 0 exhausted" appears
+with and >> without surround patch. 
 
-BTW I'm using alsa-driver 1.0.11rc5
+May be due to the variables 
 
-Setting the capture levels to about 75% solves the scratchyness.  
+u32 fixed_res[5] 
 
-Thanks!
+is used without initialisation
 
 
+How do you load/unload the au8830 driver ?
 
 ----------------------------------------------------------------------
- gegtot - 04-17-06 22:45 
+ gineera - 04-17-06 22:57 
 ----------------------------------------------------------------------
-Used krecord at first. Krecord's feq spectrum shows some activity but
-leaves no recording. No luck with arecord. BTW... I saw a post by tiwai
-saying that this problem was solved in the cvs-version. I couldn't install
-it because I didn't find "configure" in the driver dir. Is it really
-missing or is it just me?
+>  I think you should ask Alan Horstmann to test whether this patch work on
+his au88x0.
+ 
+You did well to notice my au8820 card, Raymond!  I have already intended
+to look at the init-before-components patch as it sorts out the midi name,
+and will check soon.  I am willing to post to alsa-devel if you prefer, or
+do so yourself when I report back here.
 
-
-# amixer scontents
-
-Simple mixer control 'Headphone',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 64
-  Mono:
-  Front Left: Playback 46 [72%] [on]
-  Front Right: Playback 46 [72%] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 230 [90%]
-  Front Right: Playback 230 [90%]
-Simple mixer control 'Front',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 64
-  Mono:
-  Front Left: Playback 48 [75%] [on]
-  Front Right: Playback 48 [75%] [on]
-Simple mixer control 'Front Mic',0
-  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 65
-  Mono: Capture [off]
-  Front Left: Playback 0 [0%] [off]
-  Front Right: Playback 0 [0%] [off]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 65
-  Mono: Capture [off]
-  Front Left: Playback 38 [58%] [on]
-  Front Right: Playback 38 [58%] [on]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 65
-  Mono: Capture [off]
-  Front Left: Playback 58 [89%] [on]
-  Front Right: Playback 58 [89%] [on]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 65
-  Mono: Capture [on]
-  Front Left: Playback 31 [48%] [on]
-  Front Right: Playback 31 [48%] [on]
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 65
-  Mono:
-  Front Left: Playback 29 [45%] [on]
-  Front Right: Playback 29 [45%] [on]
-Simple mixer control 'Mono',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 65
-  Mono: Playback 0 [0%] [off]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 35
-  Front Left: Capture 21 [60%] [on]
-  Front Right: Capture 21 [60%] [on]
+regards  Alan
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-06 21:08 gegtot         New Issue                                    
-04-16-06 21:27 gegtot         Issue Monitored: gegtot                      
-04-16-06 21:28 gegtot         Note Added: 0009298                          
-04-17-06 07:29 rlrevell       Note Added: 0009304                          
-04-17-06 14:43 tbecker37      Note Added: 0009309                          
-04-17-06 14:44 tbecker37      Issue Monitored: tbecker37                    
-04-17-06 16:11 rlrevell       Note Added: 0009311                          
-04-17-06 16:20 tbecker37      Note Added: 0009312                          
-04-17-06 16:45 tbecker37      Note Edited: 0009312                         
-04-17-06 16:46 tbecker37      File Added: test.wav                         
-04-17-06 16:46 tbecker37      Note Edited: 0009312                         
-04-17-06 19:29 tbecker37      Note Edited: 0009312                         
-04-17-06 19:30 tbecker37      Issue End Monitor: tbecker37                    
-04-17-06 22:45 gegtot         Note Added: 0009321                          
+02-09-06 08:33 ponchick       New Issue                                    
+02-09-06 08:33 ponchick       Distribution              => gentoo          
+02-09-06 08:33 ponchick       Kernel Version            =>
+gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
+02-09-06 09:32 Raymond        Note Added: 0007973                          
+02-09-06 11:57 ponchick       Note Added: 0007975                          
+02-09-06 12:32 Raymond        Note Added: 0007976                          
+02-09-06 12:35 Raymond        Note Edited: 0007976                         
+02-10-06 03:06 Raymond        Note Added: 0007982                          
+02-10-06 03:11 rlrevell       Note Added: 0007983                          
+02-10-06 03:49 Raymond        Note Added: 0007984                          
+02-10-06 05:08 ponchick       Note Added: 0007986                          
+02-10-06 05:36 Raymond        Note Added: 0007988                          
+02-10-06 06:03 Raymond        Note Added: 0007990                          
+02-10-06 10:09 ponchick       Note Added: 0007997                          
+02-10-06 11:30 Raymond        Note Added: 0008001                          
+02-12-06 03:32 Raymond        Note Added: 0008024                          
+02-12-06 14:14 Raymond        Note Deleted: 0007990                        
+02-13-06 07:08 Raymond        Note Edited: 0008024                         
+02-13-06 16:44 Raymond        Note Edited: 0008001                         
+02-14-06 10:41 Raymond        Note Edited: 0008024                         
+02-16-06 04:40 Raymond        Note Added: 0008084                          
+02-16-06 06:33 ponchick       Note Added: 0008086                          
+02-16-06 09:57 Raymond        Note Added: 0008089                          
+02-16-06 10:16 ponchick       Note Added: 0008091                          
+02-16-06 10:38 Raymond        Note Added: 0008092                          
+02-16-06 10:40 Raymond        Note Edited: 0008092                         
+02-16-06 13:08 Raymond        Note Edited: 0008089                         
+02-25-06 13:15 Raymond        Note Added: 0008189                          
+03-21-06 18:02 Raymond        Note Edited: 0008089                         
+04-06-06 19:13 Raymond        Note Added: 0009126                          
+04-06-06 19:23 rlrevell       Note Added: 0009127                          
+04-11-06 05:09 Raymond        Note Added: 0009226                          
+04-11-06 06:08 ponchick       Note Added: 0009227                          
+04-11-06 09:06 Raymond        Note Added: 0009230                          
+04-12-06 10:28 Raymond        Note Added: 0009240                          
+04-12-06 11:36 ponchick       Note Added: 0009241                          
+04-12-06 15:16 Raymond        Note Added: 0009243                          
+04-13-06 07:16 Raymond        Note Added: 0009253                          
+04-13-06 10:05 Raymond        Note Added: 0009255                          
+04-13-06 10:37 Raymond        Note Edited: 0009253                         
+04-14-06 03:30 Raymond        Note Added: 0009279                          
+04-17-06 22:57 gineera        Note Added: 0009322                          
 ======================================================================
 
 
