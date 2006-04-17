@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002027]: No sound on AD1986A (ASUS Laptop, Z62F)
-Date: Mon, 17 Apr 2006 08:08:09 +0200
-Message-ID: <e597ab904d88edf678ada760b2faa6dc@bugtrack.alsa-project.org>
+Date: Mon, 17 Apr 2006 08:15:15 +0200
+Message-ID: <69ef61c106c78001575fae116c728f76@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25D791A9
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 08:08:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC5A5C1
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 08:15:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.16-gentoo-r2
 ======================================================================
 Date Submitted:             04-17-2006 08:00 CEST
-Last Modified:              04-17-2006 08:08 CEST
+Last Modified:              04-17-2006 08:15 CEST
 ======================================================================
 Summary:                    No sound on AD1986A (ASUS Laptop, Z62F)
 Description: 
@@ -57,13 +57,6 @@ shared sp-dif/headphone jack.
 
 Is there any output or system info I can provide to help?
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 04-17-06 08:04 
-----------------------------------------------------------------------
-Please post the output of "amixer"
-
-You should be using model=asus
 
 ----------------------------------------------------------------------
  jaidormi - 04-17-06 08:08 
@@ -120,6 +113,129 @@ Port 0
         Capabilities: [100] Virtual Channel
         Capabilities: [130] Unknown (5)
 
+----------------------------------------------------------------------
+ jaidormi - 04-17-06 08:15 
+----------------------------------------------------------------------
+OK, set model=asus.
+
+amixer output:
+
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Front',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Surround',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31  Mono:
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'Center',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 31 [100%] [off]
+Simple mixer control 'LFE',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 31 [100%] [off]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [off]
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [off]
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [on]
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'Phone',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Mono
+  Mono: Capture [off]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'PC Speaker',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 15
+  Mono:
+  Front Left: Playback 15 [100%] [off]
+  Front Right: Playback 15 [100%] [off]
+Simple mixer control 'Aux',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [off]
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'Mono',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [off]
+  Front Left: Playback 29 [94%] [off]
+  Front Right: Playback 29 [94%] [off]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [off]
+  Front Right: Capture 0 [0%] [off]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Mono
+  Mono: Capture [off]
+Simple mixer control 'Stereo Downmix',0
+  Capabilities: pswitch
+  Playback channels: Front Left - Front Right
+  Mono:
+  Front Left: Playback [off]
+  Front Right: Playback [off]
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -128,6 +244,7 @@ Date Modified  Username       Field                    Change
 04-17-06 08:00 jaidormi       Kernel Version            => 2.6.16-gentoo-r2
 04-17-06 08:04 rlrevell       Note Added: 0009305                          
 04-17-06 08:08 jaidormi       Note Added: 0009306                          
+04-17-06 08:15 jaidormi       Note Added: 0009307                          
 ======================================================================
 
 
