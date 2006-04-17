@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002025]: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio lacks support for microphone
-Date: Mon, 17 Apr 2006 16:11:08 +0200
-Message-ID: <796de811182636d0d3a250cff4be7cdf@bugtrack.alsa-project.org>
+Date: Mon, 17 Apr 2006 16:21:00 +0200
+Message-ID: <4729b34c20fa2d0f386ccbb067c3e93b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E78A5159
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 16:11:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C34117C
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 16:21:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             04-16-2006 21:08 CEST
-Last Modified:              04-17-2006 16:11 CEST
+Last Modified:              04-17-2006 16:20 CEST
 ======================================================================
 Summary:                    Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
 Family) High Definition Audio lacks support for microphone
@@ -48,41 +48,6 @@ Description:
 The speakers to works but the microphone is always on i.e. it always
 captures sound and produces acoustic feedback.
 ======================================================================
-
-----------------------------------------------------------------------
- tbecker37 - 04-17-06 14:43 
-----------------------------------------------------------------------
-I can confirm this with the Intel 82801G (ICH7 Family) as well (STAC 9200
-codec).    See bug # 1988.  Here's my amixer output:
-
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 8 [26%] [on]
-  Front Right: Playback 8 [26%] [on]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%] [off]
-  Front Right: Capture 0 [0%] [off]
-Simple mixer control 'Capture Mux',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 4
-  Front Left: 4 [100%]
-  Front Right: 4 [100%]
-Simple mixer control 'Input Source',0
-  Capabilities: enum
-  Items: 'Mic'
-  Item0: 'Mic'
 
 ----------------------------------------------------------------------
  rlrevell - 04-17-06 16:11 
@@ -96,6 +61,39 @@ Simple mixer control 'Capture',0
 
 You must unmute this control and raise volume for the mic to work
 
+----------------------------------------------------------------------
+ tbecker37 - 04-17-06 16:20 
+----------------------------------------------------------------------
+I did unmute and set volume to 100%.  Still no luck.
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 22 [71%] [on]
+  Front Right: Playback 22 [71%] [on]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 15 [100%] [on]
+  Front Right: Capture 15 [100%] [on]
+Simple mixer control 'Capture Mux',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 4
+  Front Left: 4 [100%]
+  Front Right: 4 [100%]
+Simple mixer control 'Input Source',0
+  Capabilities: enum
+  Items: 'Mic'
+  Item0: 'Mic'
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -106,6 +104,7 @@ Date Modified  Username       Field                    Change
 04-17-06 14:43 tbecker37      Note Added: 0009309                          
 04-17-06 14:44 tbecker37      Issue Monitored: tbecker37                    
 04-17-06 16:11 rlrevell       Note Added: 0009311                          
+04-17-06 16:20 tbecker37      Note Added: 0009312                          
 ======================================================================
 
 
