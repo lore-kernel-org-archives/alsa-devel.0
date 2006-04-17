@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001800]: Input signal from analog input in snd-ca0106 with audigy SE distorted!
-Date: Mon, 17 Apr 2006 06:58:18 +0200
-Message-ID: <3436ce9f224bfa80ad94aef7094bfb77@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Mon, 17 Apr 2006 07:19:07 +0200
+Message-ID: <6a4c6f25c2496cc8685d36a46eb1a318@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 704D81A8
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 06:58:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5AEB1A8
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 07:19:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1800> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
 ======================================================================
-Reported By:                AnarSoul
-Assigned To:                jcdutton
+Reported By:                zanonmark
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1800
-Category:                   PCI - ca0106
+Issue ID:                   2023
+Category:                   PCI - ens1371
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Slackware
-Kernel Version:             2.6.15
+Status:                     new
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
 ======================================================================
-Date Submitted:             01-31-2006 15:56 CET
-Last Modified:              04-17-2006 06:58 CEST
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              04-17-2006 07:19 CEST
 ======================================================================
-Summary:                    Input signal from analog input in snd-ca0106 with
-audigy SE distorted!
+Summary:                    midi/joystick port disabled and no way to enable it
 Description: 
-Recorded signal from my audigy SE from analog MIC input badly distorted! =(
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
+
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
+
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
+
+So, will you please include such a parameter in the next version of the
+driver?
+
+Thanks a lot,
+
+Marco.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- AnarSoul - 04-16-06 19:07 
+ rlrevell - 04-17-06 06:56 
 ----------------------------------------------------------------------
-Oh, I'm sorry :) Changing position of 'line in' slider in alsamixer has
-effect, but not in kmix (from kde-multimidia) :( for some reason changing
-'line in' volume in kmix has no effect. I don't know if this is kmix bug
-or driver bug.
+Is snd-mpu401 loaded?
 
 ----------------------------------------------------------------------
- rlrevell - 04-17-06 06:58 
+ Raymond - 04-17-06 07:19 
 ----------------------------------------------------------------------
-kmix bug (the kmix ALSA support is atrocious), it can't even tell a
-playback from a capture control.
+joystick_port=1  auto-scan or assign io port address :- 0x200, .....
 
-For the purposes of bug reporting please make sure to use alsamixer, it's
-the only "known good" reference implementation.
+
+config SND_ENS1371
+	tristate "(Creative) Ensoniq AudioPCI 1371/1373"
+	depends on SND
+	select SND_RAWMIDI
+	select SND_AC97_CODEC
+	help
+	  Say Y here to include support for Ensoniq AudioPCI ES1371 chips and
+	  Sound Blaster PCI 64 or 128 soundcards.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called snd-ens1371.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-06 15:56 AnarSoul       New Issue                                    
-01-31-06 15:56 AnarSoul       Distribution              => Slackware       
-01-31-06 15:56 AnarSoul       Kernel Version            => 2.6.15          
-02-05-06 17:38 AnarSoul       Issue Monitored: AnarSoul                    
-02-07-06 21:55 AnarSoul       Note Added: 0007961                          
-04-13-06 21:51 jcdutton       Note Added: 0009273                          
-04-13-06 21:51 jcdutton       Status                   assigned => feedback
-04-14-06 21:16 AnarSoul       Note Added: 0009287                          
-04-15-06 01:21 jcdutton       Note Added: 0009290                          
-04-15-06 12:36 AnarSoul       File Added: amixer-out.txt                    
-04-15-06 12:37 AnarSoul       Note Added: 0009294                          
-04-15-06 12:42 AnarSoul       Note Added: 0009295                          
-04-15-06 12:42 AnarSoul       File Added: lspci.txt                        
-04-15-06 12:50 AnarSoul       Note Edited: 0009295                         
-04-15-06 12:52 AnarSoul       Note Edited: 0009294                         
-04-16-06 19:07 AnarSoul       Note Added: 0009297                          
-04-17-06 06:58 rlrevell       Note Added: 0009302                          
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
+04-17-06 06:56 rlrevell       Note Added: 0009301                          
+04-17-06 07:19 Raymond        Note Added: 0009303                          
 ======================================================================
 
 
