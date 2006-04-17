@@ -1,131 +1,176 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Re: [PATCH] ALSA driver for Yamaa AICA on Sega
-	Dreamcast
-Date: Mon, 17 Apr 2006 21:40:29 +0100
-Message-ID: <1145306429.9244.30.camel@localhost.localdomain>
-References: <1145232784.12804.2.camel@localhost.localdomain>
-	 <20060417012913.GA16821@linux-sh.org>
-	 <1145267096.9238.6.camel@localhost.localdomain>
-	 <20060417095226.GA8910@linux-sh.org>  <20060417100412.GB8910@linux-sh.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002025]: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio lacks support for microphone
+Date: Mon, 17 Apr 2006 22:45:25 +0200
+Message-ID: <13ddf36ac3ac6d67e76e4850ad31517f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxsh-dev-admin@lists.sourceforge.net>
-In-Reply-To: <20060417100412.GB8910@linux-sh.org>
-Sender: linuxsh-dev-admin@lists.sourceforge.net
-Errors-To: linuxsh-dev-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
-	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
-List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
-	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
-To: Paul Mundt <lethal@linux-sh.org>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 696881AC
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 22:45:25 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-04-17 at 13:04 +0300, Paul Mundt wrote:
-> On Mon, Apr 17, 2006 at 12:52:26PM +0300, Paul Mundt wrote:
-> > Then the G2 DMA ->get_residue() op needs to be fixed, as it's broken.
-> > Don't work against the subsystem, it knows what it's doing.
-> > 
-> > You might be better off getting rid of it entirely and seeing about
-> > getting the TEI working, you can check for completion and wake up
-> > accordingly in this case, which is what you ideally want anyways. The
-> > busy-loop in the generic dma_wait_for_completion() is a stupid hack for
-> > people that haven't fixed up their TEI handling yet, it's not intended
-> > for widespread use..
-> > 
-> What about something like this?
-> 
-> diff --git a/arch/sh/drivers/dma/dma-g2.c b/arch/sh/drivers/dma/dma-g2.c
-> index 5afab6f..277581e 100644
-> --- a/arch/sh/drivers/dma/dma-g2.c
-> +++ b/arch/sh/drivers/dma/dma-g2.c
-> @@ -49,7 +49,14 @@ static volatile struct g2_dma_info *g2_d
->  
->  static irqreturn_t g2_dma_interrupt(int irq, void *dev_id, struct pt_regs *regs)
->  {
-> -	/* FIXME: Do some meaningful completion work here.. */
-> +	struct dma_channel *chan = dev_id;
-> +	unsigned int chan_nr = chan->chan;
-> +	unsigned int bytes;
-> +
-> +	bytes = g2_dma->channel[chan_nr].size - g2_dma->status[chan_nr].size;
-> +	if (likely(bytes == 0))
-> +		wake_up(&chan->wait_queue);
-> +
->  	return IRQ_HANDLED;
->  }
->  
-> @@ -133,10 +140,17 @@ static int g2_xfer_dma(struct dma_channe
->  		 g2_dma->channel[chan_nr].xfer_enable);
->  
->  	return 0;
-> +}
-> +
-> +static int g2_get_dma_residue(struct dma_channel *chan)
-> +{
-> +	unsigned int chan_nr = chan->chan;
-> +	return g2_dma->channel[chan_nr].size - g2_dma->status[chan_nr].size;
->  }
->  
->  static struct dma_ops g2_dma_ops = {
->  	.xfer		= g2_xfer_dma,
-> +	.get_residue	= g2_get_dma_residue,
->  };
->  
->  static struct dma_info g2_dma_info = {
-> 
-> 
 
-Doesn't appear to be working (though I'll try some adjustments to see if
-I can get it to work) ---
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2025> 
+======================================================================
+Reported By:                gegtot
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2025
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             04-16-2006 21:08 CEST
+Last Modified:              04-17-2006 22:45 CEST
+======================================================================
+Summary:                    Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio lacks support for microphone
+Description: 
+The speakers to works but the microphone is always on i.e. it always
+captures sound and produces acoustic feedback.
+======================================================================
+
+----------------------------------------------------------------------
+ tbecker37 - 04-17-06 19:29 
+----------------------------------------------------------------------
+I did unmute and set volume to 100%.  Still no luck.
+
+No I'm a dork.  I DID work. but recording from the MIC is very scratchy.
+I've attached a short wav file to demonstrate.
+
+BTW I'm using alsa-driver 1.0.11rc5
+
+Setting the capture levels to about 75% solves the scratchyness.  
+
+Thanks!
 
 
-/ # cat aine-email.wav > /dev/dsp
-Unable to handle kernel NULL pointer dereference at virtual address
-00000010
-pc = 8c15a466
-*pde = 00000000
-Oops: 0000 [#1]
 
-Pid : 0, Comm:              swapper
-PC is at g2_dma_interrupt+0x6/0x40
-PC  : 8c15a466 SP  : 8c255e10 SR  : 400081f0 TEA : c01061c4    Not
-tainted
-R0  : 8c15a460 R1  : ffffffe3 R2  : 8c220aa8 R3  : 0000001f
-R4  : 0000003f R5  : 00000000 R6  : 8c255e50 R7  : 00000005
-R8  : 8c220aac R9  : 00000000 R10 : 00000000 R11 : 8c255e50
-R12 : 0000003f R13 : 8c275a3c R14 : 8c03ab40
-MACH: 0000020e MACL: 147ae314 GBR : 8c000000 PR  : 8c03ab92
+----------------------------------------------------------------------
+ gegtot - 04-17-06 22:45 
+----------------------------------------------------------------------
+Used krecord at first. Krecord's feq spectrum shows some activity but
+leaves no recording. No luck with arecord. BTW... I saw a post by tiwai
+saying that this problem was solved in the cvs-version. I couldn't install
+it because I didn't find "configure" in the driver dir. Is it really
+missing or is it just me?
 
-Call trace:
-[<8c03ab92>] handle_IRQ_event+0x52/0xe0
-[<8c03aca0>] __do_IRQ+0x80/0x180
-[<8c0081cc>] do_IRQ+0x2c/0x60
-[<8c0081a0>] do_IRQ+0x0/0x60
-[<8c005098>] ret_from_irq+0x0/0x10
-[<8c0f5c4e>] memcpy+0x23a/0x28c
-[<8c146a32>] rtl8139_poll+0x132/0x5c0
-[<8c168120>] net_rx_action+0x60/0x180
-[<8c01b95a>] __do_softirq+0x5a/0xe0
-[<8c01ba26>] do_softirq+0x46/0x60
-[<8c1e13a0>] schedule+0x0/0x840
-[<8c0081a0>] do_IRQ+0x0/0x60
-[<8c01bb46>] irq_exit+0x46/0x80
-[<8c0081d2>] do_IRQ+0x32/0x60
-[<8c005098>] ret_from_irq+0x0/0x10
-[<8c0030a0>] default_idle+0x0/0x20
-[<8c1e13a0>] schedule+0x0/0x840
-[<8c0030aa>] default_idle+0xa/0x20
-[<8c0030e4>] cpu_idle+0x24/0x60
-[<8c015200>] printk+0x0/0x20
-[<8c002028>] _stext+0x28/0x60
 
-Kernel panic - not syncing: Aiee, killing interrupt handler!
+# amixer scontents
 
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 64
+  Mono:
+  Front Left: Playback 46 [72%] [on]
+  Front Right: Playback 46 [72%] [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Mono:
+  Front Left: Playback 230 [90%]
+  Front Right: Playback 230 [90%]
+Simple mixer control 'Front',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 64
+  Mono:
+  Front Left: Playback 48 [75%] [on]
+  Front Right: Playback 48 [75%] [on]
+Simple mixer control 'Front Mic',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 65
+  Mono: Capture [off]
+  Front Left: Playback 0 [0%] [off]
+  Front Right: Playback 0 [0%] [off]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 65
+  Mono: Capture [off]
+  Front Left: Playback 38 [58%] [on]
+  Front Right: Playback 38 [58%] [on]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 65
+  Mono: Capture [off]
+  Front Left: Playback 58 [89%] [on]
+  Front Right: Playback 58 [89%] [on]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 65
+  Mono: Capture [on]
+  Front Left: Playback 31 [48%] [on]
+  Front Right: Playback 31 [48%] [on]
+Simple mixer control 'PC Speaker',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 65
+  Mono:
+  Front Left: Playback 29 [45%] [on]
+  Front Right: Playback 29 [45%] [on]
+Simple mixer control 'Mono',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 65
+  Mono: Playback 0 [0%] [off]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 35
+  Front Left: Capture 21 [60%] [on]
+  Front Right: Capture 21 [60%] [on]
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-16-06 21:08 gegtot         New Issue                                    
+04-16-06 21:27 gegtot         Issue Monitored: gegtot                      
+04-16-06 21:28 gegtot         Note Added: 0009298                          
+04-17-06 07:29 rlrevell       Note Added: 0009304                          
+04-17-06 14:43 tbecker37      Note Added: 0009309                          
+04-17-06 14:44 tbecker37      Issue Monitored: tbecker37                    
+04-17-06 16:11 rlrevell       Note Added: 0009311                          
+04-17-06 16:20 tbecker37      Note Added: 0009312                          
+04-17-06 16:45 tbecker37      Note Edited: 0009312                         
+04-17-06 16:46 tbecker37      File Added: test.wav                         
+04-17-06 16:46 tbecker37      Note Edited: 0009312                         
+04-17-06 19:29 tbecker37      Note Edited: 0009312                         
+04-17-06 19:30 tbecker37      Issue End Monitor: tbecker37                    
+04-17-06 22:45 gegtot         Note Added: 0009321                          
+======================================================================
 
 
 
