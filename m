@@ -1,405 +1,450 @@
-From: Paul Mundt <lethal@linux-sh.org>
-Subject: Re: [PATCH] ALSA driver for Yamaa AICA on Sega Dreamcast
-Date: Mon, 17 Apr 2006 04:29:13 +0300
-Message-ID: <20060417012913.GA16821@linux-sh.org>
-References: <1145232784.12804.2.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0001882]: Use ESC key to stop the speaker-test instead of using ctrl-C
+Date: Mon, 17 Apr 2006 05:20:34 +0200
+Message-ID: <fb25533dc6720c8d15e2a434b1ca31b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linuxsh-dev-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <1145232784.12804.2.camel@localhost.localdomain>
-Sender: linuxsh-dev-admin@lists.sourceforge.net
-Errors-To: linuxsh-dev-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
-	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
-List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
-	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3715F19F
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 05:20:35 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A few quick comments.. though looking at the earlier thread, most of
-these were already pointed out..
 
-On Mon, Apr 17, 2006 at 01:13:04AM +0100, Adrian McMenamin wrote:
-> diff -ruN --exclude=acore --exclude='.#*' ./sh/aica.c /home/adrian/alsa-driver/sh/aica.c
-> --- ./sh/aica.c	1970-01-01 01:00:00.000000000 +0100
-> +++ /home/adrian/alsa-driver/sh/aica.c	2006-04-16 23:13:59.000000000 +0100
+The following issue has been CLOSED
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1882> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   1882
+Category:                   speakertest
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     closed
+Resolution:                 reopened
+Fixed in Version:           
+======================================================================
+Date Submitted:             02-27-2006 03:57 CET
+Last Modified:              04-17-2006 05:20 CEST
+======================================================================
+Summary:                    Use ESC key to stop the speaker-test instead of
+using ctrl-C
+Description: 
+Is it possible to use ESC key to stop the speaker-test instead of abort the
+test by using control-C ?
 
--p1 format please.
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726
+======================================================================
 
-> +#include <linux/init.h>
-> +#include <linux/jiffies.h>
-> +#include <linux/slab.h>
-> +#include <linux/time.h>
-> +#include <linux/wait.h>
-> +#include <linux/moduleparam.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/firmware.h>
-> +#include <linux/timer.h>
-> +#include <linux/delay.h>
-> +#include <asm-sh/io.h>
-> +#include <asm-sh/dma.h>
-> +#include <asm-sh/dreamcast/sysasic.h>
+----------------------------------------------------------------------
+ Raymond - 04-15-06 10:04 
+----------------------------------------------------------------------
+values return by read_wav seem strange at end of loop in write_loop 
 
-What's wrong with asm/? asm/ includes should also be last.
 
-> +
-> +
+speaker-test -c 4 -t wav -D hw:0,0
+ 
+speaker-test 1.0.11rc5
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Using max buffer size 8192
+Periods = 4
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+write_loop - channel=4  periods=281  period_size=512 bufsize=4096
+read_wav n=1024  err=1024
+read_wav n=2048  err=1024
+read_wav n=3072  err=1024
+read_wav n=4096  err=1024
+read_wav n=5120  err=1024
+read_wav n=6144  err=1024
+read_wav n=7168  err=1024
+read_wav n=8192  err=1024
+read_wav n=9216  err=1024
+read_wav n=10240  err=1024
+read_wav n=11264  err=1024
+read_wav n=12288  err=1024
+read_wav n=13312  err=1024
+read_wav n=14336  err=1024
+read_wav n=15360  err=1024
+read_wav n=16384  err=1024
+read_wav n=17408  err=1024
+read_wav n=18432  err=1024
+read_wav n=19456  err=1024
+read_wav n=20480  err=1024
+read_wav n=21504  err=1024
+read_wav n=22528  err=1024
+read_wav n=23552  err=1024
+read_wav n=24576  err=1024
+read_wav n=25600  err=1024
+read_wav n=26624  err=1024
+read_wav n=27648  err=1024
+read_wav n=28672  err=1024
+read_wav n=29696  err=1024
+read_wav n=30720  err=1024
+read_wav n=31744  err=1024
+read_wav n=32768  err=1024
+read_wav n=33792  err=1024
+read_wav n=34816  err=1024
+read_wav n=35840  err=1024
+read_wav n=36864  err=1024
+read_wav n=37888  err=1024
+read_wav n=38912  err=1024
+read_wav n=39936  err=1024
+read_wav n=40960  err=1024
+read_wav n=41984  err=1024
+read_wav n=43008  err=1024
+read_wav n=44032  err=1024
+read_wav n=45056  err=1024
+read_wav n=46080  err=1024
+read_wav n=47104  err=1024
+read_wav n=48128  err=1024
+read_wav n=49152  err=1024
+read_wav n=50176  err=1024
+read_wav n=51200  err=1024
+read_wav n=52224  err=1024
+read_wav n=53248  err=1024
+read_wav n=54272  err=1024
+read_wav n=55296  err=1024
+read_wav n=56320  err=1024
+read_wav n=57344  err=1024
+read_wav n=58368  err=1024
+read_wav n=59392  err=1024
+read_wav n=60416  err=1024
+read_wav n=61440  err=1024
+read_wav n=62464  err=1024
+read_wav n=63488  err=1024
+read_wav n=64512  err=1024
+read_wav n=65536  err=1024
+read_wav n=66560  err=1024
+read_wav n=67584  err=1024
+read_wav n=68608  err=1024
+read_wav n=69632  err=1024
+read_wav n=70656  err=1024
+read_wav n=71680  err=1024
+read_wav n=72704  err=1024
+read_wav n=73728  err=1024
+read_wav n=74752  err=1024
+read_wav n=75776  err=1024
+read_wav n=76800  err=1024
+read_wav n=77824  err=1024
+read_wav n=78848  err=1024
+read_wav n=79872  err=1024
+read_wav n=80896  err=1024
+read_wav n=81920  err=1024
+read_wav n=82944  err=1024
+read_wav n=83968  err=1024
+read_wav n=84992  err=1024
+read_wav n=86016  err=1024
+read_wav n=87040  err=1024
+read_wav n=88064  err=1024
+read_wav n=89088  err=1024
+read_wav n=90112  err=1024
+read_wav n=91136  err=1024
+read_wav n=92160  err=1024
+read_wav n=93184  err=1024
+read_wav n=94208  err=1024
+read_wav n=95232  err=1024
+read_wav n=96256  err=1024
+read_wav n=97280  err=1024
+read_wav n=98304  err=1024
+read_wav n=99328  err=1024
+read_wav n=100352  err=1024
+read_wav n=101376  err=1024
+read_wav n=102400  err=1024
+read_wav n=103424  err=1024
+read_wav n=104448  err=1024
+read_wav n=105472  err=1024
+read_wav n=106496  err=1024
+read_wav n=107520  err=1024
+read_wav n=108544  err=1024
+read_wav n=109568  err=1024
+read_wav n=110592  err=1024
+read_wav n=111616  err=1024
+read_wav n=112640  err=1024
+read_wav n=113664  err=1024
+read_wav n=114688  err=1024
+read_wav n=115712  err=1024
+read_wav n=116736  err=1024
+read_wav n=117760  err=1024
+read_wav n=118784  err=1024
+read_wav n=119808  err=1024
+read_wav n=120832  err=1024
+read_wav n=121856  err=1024
+read_wav n=122880  err=1024
+read_wav n=123904  err=1024
+read_wav n=124928  err=1024
+read_wav n=125952  err=1024
+read_wav n=126976  err=1024
+read_wav n=128000  err=1024
+read_wav n=129024  err=1024
+read_wav n=130048  err=1024
+read_wav n=131072  err=1024
+read_wav n=132096  err=1024
+read_wav n=133120  err=1024
+read_wav n=134144  err=1024
+read_wav n=135168  err=1024
+read_wav n=136192  err=1024
+read_wav n=137216  err=1024
+read_wav n=138240  err=1024
+read_wav n=139202  err=962
+read_wav n=139922  err=720
+read_wav n=140462  err=540
+read_wav n=140868  err=406
+read_wav n=141172  err=304
+read_wav n=141400  err=228
+read_wav n=141572  err=172
+read_wav n=141700  err=128
+read_wav n=141796  err=96
+read_wav n=141868  err=72
+read_wav n=141922  err=54
+read_wav n=141962  err=40
+read_wav n=141992  err=30
+read_wav n=142016  err=24
+read_wav n=142034  err=18
+read_wav n=142046  err=12
+read_wav n=142056  err=10
+read_wav n=142064  err=8
+read_wav n=142070  err=6
+read_wav n=142074  err=4
+read_wav n=142076  err=2
+read_wav n=142078  err=2
+read_wav n=142080  err=2
+read_wav n=142082  err=2
+ 1 - Front Right
+write_loop - channel=4  periods=281  period_size=512 bufsize=4096
+read_wav n=1024  err=1024
+read_wav n=2048  err=1024
+read_wav n=3072  err=1024
+read_wav n=4096  err=1024
+read_wav n=5120  err=1024
+read_wav n=6144  err=1024
+read_wav n=7168  err=1024
+read_wav n=8192  err=1024
+read_wav n=9216  err=1024
+read_wav n=10240  err=1024
+read_wav n=11264  err=1024
+read_wav n=12288  err=1024
+read_wav n=13312  err=1024
+read_wav n=14336  err=1024
+read_wav n=15360  err=1024
+read_wav n=16384  err=1024
+read_wav n=17408  err=1024
+read_wav n=18432  err=1024
+read_wav n=19456  err=1024
+read_wav n=20480  err=1024
+read_wav n=21504  err=1024
+read_wav n=22528  err=1024
+read_wav n=23552  err=1024
+read_wav n=24576  err=1024
+read_wav n=25600  err=1024
+read_wav n=26624  err=1024
+read_wav n=27648  err=1024
+read_wav n=28672  err=1024
+read_wav n=29696  err=1024
+read_wav n=30720  err=1024
+read_wav n=31744  err=1024
+read_wav n=32768  err=1024
+read_wav n=33792  err=1024
+read_wav n=34816  err=1024
+read_wav n=35840  err=1024
+read_wav n=36864  err=1024
+read_wav n=37888  err=1024
+read_wav n=38912  err=1024
+read_wav n=39936  err=1024
+read_wav n=40960  err=1024
+read_wav n=41984  err=1024
+read_wav n=43008  err=1024
+read_wav n=44032  err=1024
+read_wav n=45056  err=1024
+read_wav n=46080  err=1024
+read_wav n=47104  err=1024
+read_wav n=48128  err=1024
+read_wav n=49152  err=1024
+read_wav n=50176  err=1024
+read_wav n=51200  err=1024
+read_wav n=52224  err=1024
+read_wav n=53248  err=1024
+read_wav n=54272  err=1024
+read_wav n=55296  err=1024
+read_wav n=56320  err=1024
+read_wav n=57344  err=1024
+read_wav n=58368  err=1024
+read_wav n=59392  err=1024
+read_wav n=60416  err=1024
+read_wav n=61440  err=1024
+read_wav n=62464  err=1024
+read_wav n=63488  err=1024
+read_wav n=64512  err=1024
+read_wav n=65536  err=1024
+read_wav n=66560  err=1024
+read_wav n=67584  err=1024
+read_wav n=68608  err=1024
+read_wav n=69632  err=1024
+read_wav n=70656  err=1024
+read_wav n=71680  err=1024
+read_wav n=72704  err=1024
+read_wav n=73728  err=1024
+read_wav n=74752  err=1024
+read_wav n=75776  err=1024
+read_wav n=76800  err=1024
+read_wav n=77824  err=1024
+read_wav n=78848  err=1024
+read_wav n=79872  err=1024
+read_wav n=80896  err=1024
+read_wav n=81920  err=1024
+read_wav n=82944  err=1024
+read_wav n=83968  err=1024
+read_wav n=84992  err=1024
+read_wav n=86016  err=1024
+read_wav n=87040  err=1024
+read_wav n=88064  err=1024
+read_wav n=89088  err=1024
+read_wav n=90112  err=1024
+read_wav n=91136  err=1024
+read_wav n=92160  err=1024
+read_wav n=93184  err=1024
+read_wav n=94208  err=1024
+read_wav n=95232  err=1024
+read_wav n=96256  err=1024
+read_wav n=97280  err=1024
+read_wav n=98304  err=1024
+read_wav n=99328  err=1024
+read_wav n=100352  err=1024
+read_wav n=101376  err=1024
+read_wav n=102400  err=1024
+read_wav n=103424  err=1024
+read_wav n=104448  err=1024
+read_wav n=105472  err=1024
+read_wav n=106496  err=1024
+read_wav n=107520  err=1024
+read_wav n=108544  err=1024
+read_wav n=109568  err=1024
+read_wav n=110592  err=1024
+read_wav n=111616  err=1024
+read_wav n=112640  err=1024
+read_wav n=113664  err=1024
+read_wav n=114688  err=1024
+read_wav n=115712  err=1024
+read_wav n=116736  err=1024
+read_wav n=117760  err=1024
+read_wav n=118784  err=1024
+read_wav n=119808  err=1024
+read_wav n=120832  err=1024
+read_wav n=121856  err=1024
+read_wav n=122880  err=1024
+read_wav n=123904  err=1024
+read_wav n=124928  err=1024
+read_wav n=125952  err=1024
+read_wav n=126976  err=1024
+read_wav n=128000  err=1024
+read_wav n=129024  err=1024
+read_wav n=130048  err=1024
+read_wav n=131072  err=1024
+read_wav n=132096  err=1024
+read_wav n=133120  err=1024
+read_wav n=134144  err=1024
+read_wav n=135168  err=1024
+read_wav n=136192  err=1024
+read_wav n=137216  err=1024
+read_wav n=138240  err=1024
+read_wav n=139264  err=1024
+read_wav n=140288  err=1024
+read_wav n=141312  err=1024
+read_wav n=142336  err=1024
+read_wav n=143360  err=1024
+read_wav n=144256  err=896
+read_wav n=144928  err=672
+read_wav n=145432  err=504
+read_wav n=145810  err=378
+read_wav n=146094  err=284
+read_wav n=146308  err=214
+read_wav n=146468  err=160
+read_wav n=146588  err=120
+read_wav n=146678  err=90
+read_wav n=146746  err=68
+read_wav n=146796  err=50
+read_wav n=146834  err=38
+read_wav n=146862  err=28
+read_wav n=146884  err=22
+read_wav n=146900  err=16
+read_wav n=146912  err=12
+read_wav n=146920  err=8
+read_wav n=146926  err=6
+read_wav n=146932  err=6
+read_wav n=146936  err=4
+read_wav n=146938  err=2
+read_wav n=146940  err=2
+read_wav n=146942  err=2
+read_wav n=146944  err=2
+ 3 - Rear Right
+write_loop - channel=4  periods=281  period_size=512 bufsize=4096
+read_wav n=1024  err=1024
+read_wav n=2048  err=1024
 
-This patch adds a lot of superfluous whitespace, please trim it.
+----------------------------------------------------------------------
+ rlrevell - 04-17-06 05:20 
+----------------------------------------------------------------------
+Please don't reopen bugs to add information unrelated to the original bug -
+open a  new one
 
-> +static char *id = NULL;
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-27-06 03:57 Raymond        New Issue                                    
+02-27-06 04:01 rlrevell       Note Added: 0008212                          
+03-01-06 09:51 Raymond        Note Added: 0008277                          
+03-01-06 09:53 Raymond        Note Edited: 0008277                         
+03-01-06 18:01 rlrevell       Note Added: 0008284                          
+03-02-06 04:36 Raymond        Note Added: 0008293                          
+03-02-06 04:46 Raymond        Note Edited: 0008293                         
+03-02-06 04:49 Raymond        Note Edited: 0008293                         
+03-02-06 12:44 tiwai          Status                   new => resolved     
+03-02-06 12:44 tiwai          Resolution               open => won't fix   
+03-02-06 12:44 tiwai          Assigned To               => tiwai           
+03-02-06 12:44 tiwai          Note Added: 0008298                          
+03-24-06 17:29 Raymond        Status                   resolved => feedback
+03-24-06 17:29 Raymond        Resolution               won't fix => reopened
+03-24-06 17:29 Raymond        Note Added: 0008924                          
+03-24-06 17:32 Raymond        Note Edited: 0008924                         
+03-24-06 17:42 tiwai          Status                   feedback => resolved
+03-24-06 17:42 tiwai          Resolution               reopened => fixed   
+03-24-06 17:42 tiwai          Note Added: 0008929                          
+03-25-06 13:22 Raymond        Status                   resolved => feedback
+03-25-06 13:22 Raymond        Resolution               fixed => reopened   
+03-25-06 13:22 Raymond        Note Added: 0008947                          
+03-29-06 19:06 tiwai          Status                   feedback => resolved
+03-29-06 19:06 tiwai          Resolution               reopened => fixed   
+03-29-06 19:06 tiwai          Note Added: 0009007                          
+04-15-06 10:04 Raymond        Status                   resolved => feedback
+04-15-06 10:04 Raymond        Resolution               fixed => reopened   
+04-15-06 10:04 Raymond        Note Added: 0009292                          
+04-17-06 05:20 rlrevell       Status                   feedback => closed  
+04-17-06 05:20 rlrevell       Note Added: 0009299                          
+======================================================================
 
-Pointless initializer.
 
-> +
-> +/* Spinlocks */
-> +spinlock_t spu_memlock = SPIN_LOCK_UNLOCKED;
-> +spinlock_t spu_dmalock = SPIN_LOCK_UNLOCKED;
-> +
-DEFINE_SPINLOCK()..
-
-> +
-> +/* SPU specific functions */
-> +
-> +/* spu_write_wait - wait for G2-SH FIFO to clear */
-> +static inline void spu_write_wait(void)
-> +{
-> +	int time_count;
-> +	time_count = 0;
-> +	while (1) {
-> +		if (!(readl(G2_FIFO) & 0x11))
-> +			break;
-> +		/* To ensure hardware failure doesn't wedge kernel */
-> +		time_count++;
-> +		if (time_count > 0x10000)
-> +			break;
-> +	}
-> +
-> +	return;
-> +}
-> +
-Useless return.
-
-> +
-> +/* spu_memset - write to memory in SPU address space */
-> +static void spu_memset(uint32_t toi, void __iomem * what, int length)
-> +{
-> +	uint32_t *to = (uint32_t *) (SPU_MEMORY_BASE + toi);
-> +	int i;
-> +
-> +
-> +	if (length % 4)
-> +		length = (length / 4) + 1;
-> +	else
-> +		length = length / 4;
-> +	spu_write_wait();
-> +	for (i = 0; i < length; i++) {
-> +		spin_lock(&spu_memlock);
-> +		writel(what, to);
-> +		spin_unlock(&spu_memlock);
-> +		to++;
-> +		if (i && !(i % 8))
-> +			spu_write_wait();
-> +	}
-> +	return;
-> +}
-> +
-Likewise.
-
-> +static void spu_memload(uint32_t toi, void __iomem * from, int length)
-> +{
-> +	uint32_t __iomem *froml = from;
-> +	uint32_t __iomem *to =
-> +	    (uint32_t __iomem *) (SPU_MEMORY_BASE + toi);
-> +	int i, val;
-> +	if (length % 4)
-> +		length = (length / 4) + 1;
-> +	else
-> +		length = length / 4;
-> +	spu_write_wait();
-> +	for (i = 0; i < length; i++) {
-> +		val = *froml;
-> +		spin_lock(&spu_memlock);
-> +		writel(val, to);
-> +		spin_unlock(&spu_memlock);
-> +		froml++;
-> +		to++;
-> +		if (i && !(i % 8))
-> +			spu_write_wait();
-> +	}
-> +	return;
-> +
-> +}
-> +
-And again.
-
-> +/* Halt the sound processor,
-> +   clear the memory,
-> +   load some default ARM7 code,
-> +   and then restart ARM7
-> +*/
-> +static int spu_init(void)
-> +{
-> +
-> +	spu_disable();
-> +	spu_memset(0, 0, 0x200000 / 4);
-> +	*(uint32_t *) SPU_MEMORY_BASE = 0xea000002;
-
-Why are you not using ctrl_outl() or something similar? This should also
-be documented a bit better if it's not magic..
-
-> +/* aica_chn_start - write to spu to start playback */
-> +inline static void aica_chn_start(void)
-
-static inline void..
-
-> +/* aica_chn_halt - write to spu to halt playback */
-> +inline static void aica_chn_halt(void)
-> +{
-Likewise..
-
-> +/* Simple platform device */
-> +static struct platform_device *pd = NULL;
-> +
-> +
-> +
-Useless initializer and whitespace damage.
-
-> +static int stereo_buffer_transfer(struct snd_pcm_substream *substream,
-> +				  int buffer_size, int period)
-> +{
-> +	int transferred;
-> +	struct snd_pcm_runtime *runtime;
-> +	int period_offset;
-> +	period_offset = period;
-> +	period_offset %= (AICA_PERIOD_NUMBER / 2);
-> +	runtime = substream->runtime;
-> +
-> +	/* transfer left and then right */
-> +	spin_lock(&spu_dmalock);
-> +	dma_xfer(0,
-> +		 runtime->dma_area + (AICA_PERIOD_SIZE * period_offset),
-> +		 AICA_CHANNEL0_OFFSET + (AICA_PERIOD_SIZE * period_offset),
-> +		 buffer_size / 2, 5);
-> +	/* wait for completion */
-> +	do {
-> +		udelay(5);
-> +		transferred = get_dma_residue(0);
-> +	}
-> +	while (transferred < buffer_size / 2);
-
-You can't be serious, you're trying to setup, transfer, and wait for
-completion for a DMA transfer while holding a spinlock? The fact this
-hasn't blown up on you is sheer luck. Use dma_wait_for_completion(), it
-does the right thing.
-
-Additionaly you need a timeout here if you were for some reason intent on
-doing this while working against the DMA subsystem, if your DMA gets
-stuck this will blow up.
-
-> +void static aica_period_elapsed(unsigned long timer_var)
-> +{
-
-static void..
-
-> +	int transferred;
-> +	int play_period;
-> +	struct snd_pcm_runtime *runtime;
-> +	struct snd_pcm_substream *substream;
-> +	struct snd_card_aica *dreamcastcard;
-> +	substream = (struct snd_pcm_substream *) timer_var;
-> +	runtime = substream->runtime;
-> +	dreamcastcard =
-> +	    (struct snd_card_aica *) (substream->pcm->private_data);
-
-Useless cast.
-
-> +	} else {
-> +		spin_lock(&spu_dmalock);
-> +		dma_xfer(0,
-> +			 runtime->dma_area +
-> +			 (AICA_PERIOD_SIZE * dreamcastcard->clicks),
-> +			 AICA_CHANNEL0_OFFSET +
-> +			 (AICA_PERIOD_SIZE * dreamcastcard->clicks),
-> +			 AICA_PERIOD_SIZE, 5);
-> +		do {
-> +			/* Try to fine tune the delay to keep it as short as possible */
-> +			udelay(5);
-> +			/* get_dma_residue reports residue until completion when it reports total bytes transferred */
-> +			transferred = get_dma_residue(0);
-> +		}
-> +		while (transferred < AICA_PERIOD_SIZE);
-> +		spin_unlock(&spu_dmalock);
-> +	}
-> +
-spinlock / DMA brain damage.
-
-> +	snd_pcm_period_elapsed(dreamcastcard->substream);
-> +	dreamcastcard->clicks++;
-> +	dreamcastcard->clicks %= AICA_PERIOD_NUMBER;
-> +	/* reschedule the timer */
-> +	dreamcastcard->timer.expires = jiffies + 1;
-> +	add_timer(&(dreamcastcard->timer));
-> +	return;
-> +}
-> +
-Superfluous return.
-
-> +static int snd_aicapcm_pcm_open(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_pcm_runtime *runtime;
-> +	struct aica_channel *channel;
-> +	struct snd_card_aica *dreamcastcard;
-> +
-> +	if (!enable)
-> +		return -ENOENT;
-
-unlikely()?
-
-> +	dreamcastcard =
-> +	    (struct snd_card_aica *) (substream->pcm->private_data);
-
-Useless cast.
-
-> +static int snd_aicapcm_pcm_close(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_card_aica *dreamcastcard =
-> +	    (struct snd_card_aica *) (substream->pcm->private_data);
-Likewise.
-
-> +static int snd_aicapcm_pcm_prepare(struct snd_pcm_substream *substream)
-> +{
-> +
-> +	struct snd_card_aica *dreamcastcard =
-> +	    (struct snd_card_aica *) (substream->pcm->private_data);
-
-And again.
-
-> +static void startup_aica(struct snd_card_aica *dreamcastcard)
-> +{
-> +	spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
-> +		    (uint8_t *) dreamcastcard->channel,
-> +		    sizeof(struct aica_channel));
-> +	aica_chn_start();
-> +	return;
-> +}
-> +
-Useless return.
-
-> +
-> +static void spu_begin_dma(struct snd_pcm_substream *substream)
-> +{
-> +	int buffer_size;
-> +	snd_pcm_runtime_t *runtime;
-> +	struct snd_card_aica *dreamcastcard =
-> +	    (struct snd_card_aica *) (substream->pcm->private_data);
-
-Superfluous cast.
-
-> +	runtime = substream->runtime;
-> +	buffer_size = frames_to_bytes(runtime, runtime->buffer_size);
-> +	if (runtime->channels == 1) {
-> +		spin_lock(&spu_dmalock);
-> +		dma_xfer(0, runtime->dma_area, AICA_CHANNEL0_OFFSET,
-> +			 buffer_size, 5);
-> +		spin_unlock(&spu_dmalock);
-
-Broken locking.
-
-> +static int __init snd_aicapcmchip(struct snd_card_aica *dreamcastcard,
-> +				  int pcm_index)
-> +{
-> +	struct snd_pcm *pcm;
-> +	int err;
-> +
-> +	/* Can we lock the memory */
-> +
-> +	if (request_mem_region(ARM_RESET_REGISTER, 4, "AICA ARM control")
-> +	    == NULL)
-> +		return -ENOMEM;
-> +	if (request_mem_region(SPU_MEMORY_BASE, 0x200000, "AICA Sound RAM")
-> +	    == NULL) {
-> +		release_mem_region(ARM_RESET_REGISTER, 0x4);
-> +		return -ENOMEM;
-> +	}
-> +
-Why aren't these setup in the platform device?
-
-> +	/* AICA has no capture ability */
-> +	if ((err =
-> +	     snd_pcm_new(dreamcastcard->card, "AICA PCM", pcm_index, 1, 0,
-> +			 &pcm)) < 0)
-> +		return err;
-
-Weird notation, linux kernel style would be:
-
-	err = snc_pcm_new(...);
-	if (unlikely(err < 0))
-		return err;
-
-please refactor accordingly.
-
-> +static int aica_pcmvolume_put(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_card_aica *dreamcastcard;
-> +	dreamcastcard = (struct snd_card_aica *) kcontrol->private_value;
-> +
-> +	if (!dreamcastcard->channel) {
-> +		snd_printk("No channel yet\n");
-> +		return -ETXTBSY;	/* too soon */
-> +	}
-> +
-> +	else if (dreamcastcard->channel->vol ==
-> +		 ucontrol->value.integer.value[0])
-> +		return 0;
-> +
-> +	else {
-
-The if/elses are all over the place, please see
-Documentation/CodingStyle.
-
-> +static struct device_driver aica_driver = {
-> +	.name = "AICA",
-> +	.bus = &platform_bus_type,
-> +	.remove = remove_dreamcastcard,
-> +};
-> +
-Deprecated, see struct platform_device.
-
-> +	pd = platform_device_register_simple(dreamcastcard->card->driver,
-> +					     -1, NULL, 0);
-> +
-This is also going away, you'll want to update this for the new platform
-device semantics.
-
-> +      freepcm:
-> +	snd_aicapcm_free();
-> +
-> +      freedreamcast:
-> +	snd_card_free(dreamcastcard->card);
-> +
-Why are these goto labels in magical locations?
-
-> +static void __exit aica_exit(void)
-> +{
-> +	struct device_driver *drv = (&pd->dev)->driver;
-> +	device_release_driver(&pd->dev);
-> +	driver_unregister(drv);
-> +	platform_device_unregister(pd);
-> +	/* Kill any sound still playing and reset ARM7 to safe state */
-> +	spu_init();
-> +
-> +
-> +	return;
-> +}
-> +
-And another useless return.
 
 
 -------------------------------------------------------
