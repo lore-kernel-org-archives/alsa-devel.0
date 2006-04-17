@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002027]: No sound on AD1986A (ASUS Laptop, Z62F)
-Date: Mon, 17 Apr 2006 08:00:08 +0200
-Message-ID: <a4d33704e9e8ff48942c8b61c4fc29ce@bugtrack.alsa-project.org>
+Date: Mon, 17 Apr 2006 08:04:23 +0200
+Message-ID: <f6910031811964a7b6583120ac36c5ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3460F1A9
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 08:00:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E45131A9
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 08:04:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2027> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.16-gentoo-r2
 ======================================================================
 Date Submitted:             04-17-2006 08:00 CEST
-Last Modified:              04-17-2006 08:00 CEST
+Last Modified:              04-17-2006 08:04 CEST
 ======================================================================
 Summary:                    No sound on AD1986A (ASUS Laptop, Z62F)
 Description: 
@@ -58,12 +58,20 @@ shared sp-dif/headphone jack.
 Is there any output or system info I can provide to help?
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 04-17-06 08:04 
+----------------------------------------------------------------------
+Please post the output of "amixer"
+
+You should be using model=asus
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-17-06 08:00 jaidormi       New Issue                                    
 04-17-06 08:00 jaidormi       Distribution              => Gentoo          
 04-17-06 08:00 jaidormi       Kernel Version            => 2.6.16-gentoo-r2
+04-17-06 08:04 rlrevell       Note Added: 0009305                          
 ======================================================================
 
 
