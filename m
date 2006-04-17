@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002028]: cat /proc/asound/timers
-Date: Mon, 17 Apr 2006 12:04:46 +0200
-Message-ID: <10a9065091dea49065d928793908caaa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001783]: My DYI BurrBrown pcm2702 usb soundcard is making a lot of noise, crackling or only noise when playing music
+Date: Mon, 17 Apr 2006 13:45:08 +0200
+Message-ID: <a925ed7bcc4164a470929934db09f5dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B86F1A9
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 12:04:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F13C3188
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 13:45:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,156 +22,254 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2028> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1783> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                
+Reported By:                boniek
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2028
-Category:                   CORE - timer
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1783
+Category:                   USB - usb-audio
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Status:                     assigned
+Distribution:               Gentoo GNU/Linux
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             04-17-2006 12:04 CEST
-Last Modified:              04-17-2006 12:04 CEST
+Date Submitted:             01-25-2006 11:51 CET
+Last Modified:              04-17-2006 13:45 CEST
 ======================================================================
-Summary:                    cat /proc/asound/timers
+Summary:                    My DYI BurrBrown pcm2702 usb soundcard is making a
+lot of noise, crackling or only noise when playing music
 Description: 
-Do all subdevices of cards list in /proc/asound/timers ?
-
-some of 64 playback subdevices of device 3 of card 0 and card 1 'intel8x0'
-is not listed
-
-
-cat /proc/asound/timers
-G0: system timer : 10000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-P0-0-2: PCM playback 0-0-2 : SLAVE
-P0-0-3: PCM capture 0-0-3 : SLAVE
-P0-0-4: PCM playback 0-0-4 : SLAVE
-P0-0-5: PCM capture 0-0-5 : SLAVE
-P0-0-6: PCM playback 0-0-6 : SLAVE
-P0-0-7: PCM capture 0-0-7 : SLAVE
-P0-0-8: PCM playback 0-0-8 : SLAVE
-P0-0-9: PCM capture 0-0-9 : SLAVE
-P0-0-10: PCM playback 0-0-10 : SLAVE
-P0-0-11: PCM capture 0-0-11 : SLAVE
-P0-0-12: PCM playback 0-0-12 : SLAVE
-P0-0-13: PCM capture 0-0-13 : SLAVE
-P0-0-14: PCM playback 0-0-14 : SLAVE
-P0-0-15: PCM capture 0-0-15 : SLAVE
-P0-0-16: PCM playback 0-0-16 : SLAVE
-P0-0-17: PCM capture 0-0-17 : SLAVE
-P0-0-18: PCM playback 0-0-18 : SLAVE
-P0-0-19: PCM capture 0-0-19 : SLAVE
-P0-0-20: PCM playback 0-0-20 : SLAVE
-P0-0-21: PCM capture 0-0-21 : SLAVE
-P0-0-22: PCM playback 0-0-22 : SLAVE
-P0-0-23: PCM capture 0-0-23 : SLAVE
-P0-0-24: PCM playback 0-0-24 : SLAVE
-P0-0-25: PCM capture 0-0-25 : SLAVE
-P0-0-26: PCM playback 0-0-26 : SLAVE
-P0-0-27: PCM capture 0-0-27 : SLAVE
-P0-0-28: PCM playback 0-0-28 : SLAVE
-P0-0-29: PCM capture 0-0-29 : SLAVE
-P0-0-30: PCM playback 0-0-30 : SLAVE
-P0-0-31: PCM capture 0-0-31 : SLAVE
-P0-0-32: PCM playback 0-0-32 : SLAVE
-P0-0-33: PCM capture 0-0-33 : SLAVE
-P0-0-34: PCM playback 0-0-34 : SLAVE
-P0-0-35: PCM capture 0-0-35 : SLAVE
-P0-0-36: PCM playback 0-0-36 : SLAVE
-P0-0-37: PCM capture 0-0-37 : SLAVE
-P0-0-38: PCM playback 0-0-38 : SLAVE
-P0-0-39: PCM capture 0-0-39 : SLAVE
-P0-0-40: PCM playback 0-0-40 : SLAVE
-P0-0-41: PCM capture 0-0-41 : SLAVE
-P0-0-42: PCM playback 0-0-42 : SLAVE
-P0-0-43: PCM capture 0-0-43 : SLAVE
-P0-0-44: PCM playback 0-0-44 : SLAVE
-P0-0-45: PCM capture 0-0-45 : SLAVE
-P0-0-46: PCM playback 0-0-46 : SLAVE
-P0-0-47: PCM capture 0-0-47 : SLAVE
-P0-0-48: PCM playback 0-0-48 : SLAVE
-P0-0-49: PCM capture 0-0-49 : SLAVE
-P0-0-50: PCM playback 0-0-50 : SLAVE
-P0-0-51: PCM capture 0-0-51 : SLAVE
-P0-0-52: PCM playback 0-0-52 : SLAVE
-P0-0-53: PCM capture 0-0-53 : SLAVE
-P0-0-54: PCM playback 0-0-54 : SLAVE
-P0-0-55: PCM capture 0-0-55 : SLAVE
-P0-0-56: PCM playback 0-0-56 : SLAVE
-P0-0-57: PCM capture 0-0-57 : SLAVE
-P0-0-58: PCM playback 0-0-58 : SLAVE
-P0-0-59: PCM capture 0-0-59 : SLAVE
-P0-0-60: PCM playback 0-0-60 : SLAVE
-P0-0-61: PCM capture 0-0-61 : SLAVE
-P0-0-62: PCM playback 0-0-62 : SLAVE
-P0-0-63: PCM capture 0-0-63 : SLAVE
-P0-1-0: PCM playback 0-1-0 : SLAVE
-P0-2-0: PCM playback 0-2-0 : SLAVE
-P0-2-2: PCM playback 0-2-2 : SLAVE
-P0-2-4: PCM playback 0-2-4 : SLAVE
-P0-2-6: PCM playback 0-2-6 : SLAVE
-P0-2-8: PCM playback 0-2-8 : SLAVE
-P0-2-10: PCM playback 0-2-10 : SLAVE
-P0-2-12: PCM playback 0-2-12 : SLAVE
-P0-2-14: PCM playback 0-2-14 : SLAVE
-P0-2-16: PCM playback 0-2-16 : SLAVE
-P0-2-18: PCM playback 0-2-18 : SLAVE
-P0-2-20: PCM playback 0-2-20 : SLAVE
-P0-2-22: PCM playback 0-2-22 : SLAVE
-P0-2-24: PCM playback 0-2-24 : SLAVE
-P0-2-26: PCM playback 0-2-26 : SLAVE
-P0-2-28: PCM playback 0-2-28 : SLAVE
-P0-2-30: PCM playback 0-2-30 : SLAVE
-P0-3-0: PCM playback 0-3-0 : SLAVE
-P0-3-2: PCM playback 0-3-2 : SLAVE
-P0-3-4: PCM playback 0-3-4 : SLAVE
-P0-3-6: PCM playback 0-3-6 : SLAVE
-P0-3-8: PCM playback 0-3-8 : SLAVE
-P0-3-10: PCM playback 0-3-10 : SLAVE
-P0-3-12: PCM playback 0-3-12 : SLAVE
-P0-3-14: PCM playback 0-3-14 : SLAVE
-P0-3-16: PCM playback 0-3-16 : SLAVE
-P0-3-18: PCM playback 0-3-18 : SLAVE
-P0-3-20: PCM playback 0-3-20 : SLAVE
-P0-3-22: PCM playback 0-3-22 : SLAVE
-P0-3-24: PCM playback 0-3-24 : SLAVE
-P0-3-26: PCM playback 0-3-26 : SLAVE
-P0-3-28: PCM playback 0-3-28 : SLAVE
-P0-3-30: PCM playback 0-3-30 : SLAVE
-P0-3-32: PCM playback 0-3-32 : SLAVE
-P0-3-34: PCM playback 0-3-34 : SLAVE
-P0-3-36: PCM playback 0-3-36 : SLAVE
-P0-3-38: PCM playback 0-3-38 : SLAVE
-P0-3-40: PCM playback 0-3-40 : SLAVE
-P0-3-42: PCM playback 0-3-42 : SLAVE
-P0-3-44: PCM playback 0-3-44 : SLAVE
-P0-3-46: PCM playback 0-3-46 : SLAVE
-P0-3-48: PCM playback 0-3-48 : SLAVE
-P0-3-50: PCM playback 0-3-50 : SLAVE
-P0-3-52: PCM playback 0-3-52 : SLAVE
-P0-3-54: PCM playback 0-3-54 : SLAVE
-P0-3-56: PCM playback 0-3-56 : SLAVE
-P0-3-58: PCM playback 0-3-58 : SLAVE
-P0-3-60: 
+Sound Card: PCM2702 BurrBrown DYI card (works perfectly in windows)
+Music Player: Does not matter. It is always the same. Using alsa plugin (
+I don't have oss emulation).
+ Upon starting playing you will hear either ok sound, sound with a lot
+background noise, or static only (like cat /dev/urandom > /dev/dsp in
+oss). On start of playing music (either on beggining or after
+unpause/unstop) there can be heard (almost always) a very loud crack.
+Music can degradate itself to noise only too. Whole thing occurs very
+often, but randomly (well I think things tend to get broken/repaired upon
+restarting music stream - stop/pause and play).
 ======================================================================
+
+----------------------------------------------------------------------
+ boniek - 01-25-06 12:28 
+----------------------------------------------------------------------
+Obsolete OSS USB Audio driver works very well (but it is obsolete ;)).
+Output of lsusb -v for my soundcard
+
+
+Bus 003 Device 002: ID 08bb:2702 Texas Instruments Japan
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.00
+  bDeviceClass            0 (Defined at Interface level)
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x08bb Texas Instruments Japan
+  idProduct          0x2702
+  bcdDevice            1.00
+  iManufacturer           1 Burr-Brown Japan
+  iProduct                2 Burr-Brown Japan PCM2702
+  iSerial                 0
+  bNumConfigurations      1
+  Configuration Descriptor:
+    bLength                 9
+    bDescriptorType         2
+    wTotalLength          165
+    bNumInterfaces          2
+    bConfigurationValue     1
+    iConfiguration          0
+    bmAttributes         0x40
+      Self Powered
+    MaxPower                0mA
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        0
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      1 Control Device
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      1 (HEADER)
+        bcdADC               1.00
+        wTotalLength           40
+        bInCollection           1
+        baInterfaceNr( 0)       1
+      AudioControl Interface Descriptor:
+        bLength                12
+        bDescriptorType        36
+        bDescriptorSubtype      2 (INPUT_TERMINAL)
+        bTerminalID             1
+        wTerminalType      0x0101 USB Streaming
+        bAssocTerminal          0
+        bNrChannels             2
+        wChannelConfig     0x0003
+          Left Front (L)
+          Right Front (R)
+        iChannelNames           0
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                 9
+        bDescriptorType        36
+        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+        bTerminalID             2
+        wTerminalType      0x0301 Speaker
+        bAssocTerminal          0
+        bSourceID               3
+        iTerminal               0
+      AudioControl Interface Descriptor:
+        bLength                10
+        bDescriptorType        36
+        bDescriptorSubtype      6 (FEATURE_UNIT)
+        bUnitID                 3
+        bSourceID               1
+        bControlSize            1
+        bmaControls( 0)      0x03
+          Mute
+          Volume
+        bmaControls( 1)      0x02
+          Volume
+        bmaControls( 2)      0x02
+          Volume
+        iFeature                0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       0
+      bNumEndpoints           0
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       1
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioStreaming Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioStreaming Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             2
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            3 Discrete
+        tSamFreq[ 0]        32000
+        tSamFreq[ 1]        44100
+        tSamFreq[ 2]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x00c0  1x 192 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay            512 Decoded PCM samples
+    Interface Descriptor:
+      bLength                 9
+      bDescriptorType         4
+      bInterfaceNumber        1
+      bAlternateSetting       2
+      bNumEndpoints           1
+      bInterfaceClass         1 Audio
+      bInterfaceSubClass      2 Streaming
+      bInterfaceProtocol      0
+      iInterface              0
+      AudioStreaming Interface Descriptor:
+        bLength                 7
+        bDescriptorType        36
+        bDescriptorSubtype      1 (AS_GENERAL)
+        bTerminalLink           1
+        bDelay                  0 frames
+        wFormatTag              1 PCM
+      AudioStreaming Interface Descriptor:
+        bLength                17
+        bDescriptorType        36
+        bDescriptorSubtype      2 (FORMAT_TYPE)
+        bFormatType             1 (FORMAT_TYPE_I)
+        bNrChannels             1
+        bSubframeSize           2
+        bBitResolution         16
+        bSamFreqType            3 Discrete
+        tSamFreq[ 0]        32000
+        tSamFreq[ 1]        44100
+        tSamFreq[ 2]        48000
+      Endpoint Descriptor:
+        bLength                 9
+        bDescriptorType         5
+        bEndpointAddress     0x02  EP 2 OUT
+        bmAttributes            9
+          Transfer Type            Isochronous
+          Synch Type               Adaptive
+          Usage Type               Data
+        wMaxPacketSize     0x0060  1x 96 bytes
+        bInterval               1
+        bRefresh                0
+        bSynchAddress           0
+        AudioControl Endpoint Descriptor:
+          bLength                 7
+          bDescriptorType        37
+          bDescriptorSubtype      1 (EP_GENERAL)
+          bmAttributes         0x00
+          bLockDelayUnits         2 Decoded PCM samples
+          wLockDelay            512 Decoded PCM samples
+
+
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 04-17-06 13:45 
+----------------------------------------------------------------------
+Does it work with kernel 2.6.16, and/or a recent ALSA (1.0.11rc5)?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-17-06 12:04 Raymond        New Issue                                    
-04-17-06 12:04 Raymond        Distribution              => Fedora Core 1   
-04-17-06 12:04 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-25-06 11:51 boniek         New Issue                                    
+01-25-06 11:51 boniek         Distribution              => Gentoo GNU/Linux
+01-25-06 11:51 boniek         Kernel Version            => 2.6.15          
+01-25-06 12:04 boniek         Note Added: 0007779                          
+01-25-06 12:27 boniek         Note Added: 0007781                          
+01-25-06 12:27 boniek         Note Deleted: 0007781                        
+01-25-06 12:28 boniek         Note Edited: 0007779                         
+04-17-06 13:45 Clemens LadischNote Added: 0009308                          
 ======================================================================
 
 
