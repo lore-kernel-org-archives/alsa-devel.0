@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Mon, 17 Apr 2006 19:59:35 +0200
-Message-ID: <07f190bc8746953e6af14772ca8c3f79@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002006]: High frequency noise in output from SI7012 (intel8x0)
+Date: Mon, 17 Apr 2006 20:18:39 +0200
+Message-ID: <841ba8d19f15f00858f450f2d1c0556b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 68AAC1AC
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 19:59:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 079F91AC
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 20:18:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,97 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2006> 
 ======================================================================
-Reported By:                zanonmark
+Reported By:                jaime
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
+Issue ID:                   2006
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
+Distribution:               Slax 5.1.0, Debian Etch, Ubuntu Dapper
+Kernel Version:             2.6.16 / 2.6.15
 ======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              04-17-2006 19:59 CEST
+Date Submitted:             04-06-2006 04:27 CEST
+Last Modified:              04-17-2006 20:18 CEST
 ======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
+Summary:                    High frequency noise in output from SI7012
+(intel8x0)
 Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+Sound chip is SI7012 built into Asrock K7S8X. To demonstrate the noise,
+I've played "orig.wav" throught the SI7012 and recorded the (analog)
+output on
+another computer. When I boot the PC into Windows 2000, the output is
+clean: the recording is "win2k.wav". Then I reboot into Linux and use
+"aplay -Dhw:0,0 orig.wav" and record the output again: the recording is
+"alsa.wav". Ignoring the  clicks in the last half of "win2k.wav" (the
+click are the hard-drive reads), I can hear a high frequency intermittent
+"buzz" in the last half of "alsa.wav" that isn't present in "win2k.wav".
+To hear this, I think you will need headphones, but the buzzing is
+definitely there.
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
+As the three wave files are too big to attach, I've put them on the web
+here:
+orig.wav:   http://www.carbon.eclipse.co.uk/orig.wav
+win2k.wav:  http://www.carbon.eclipse.co.uk/win2k.wav
+alsa.wav:   http://www.carbon.eclipse.co.uk/alsa.wav
 
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
-
-So, will you please include such a parameter in the next version of the
-driver?
-
-Thanks a lot,
-
-Marco.
+The version used is 1.0.11rc2, but the same problem occurs in the older
+1.0.10.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-17-06 07:19 
+ jaime - 04-17-06 20:18 
 ----------------------------------------------------------------------
-joystick_port=1  auto-scan or assign io port address :- 0x200, .....
+FWIW, I've just tried the same thing on an up-to-date Gentoo ~x86
+("testing" or "unstable") and the problem is still there. This is using
+vanilla-sources 2.6.17-rc1 which contains alsa 1.0.11rc4 (Wed Mar 22
+10:27:24 2006 UTC)
 
-
-config SND_ENS1371
-	tristate "(Creative) Ensoniq AudioPCI 1371/1373"
-	depends on SND
-	select SND_RAWMIDI
-	select SND_AC97_CODEC
-	help
-	  Say Y here to include support for Ensoniq AudioPCI ES1371 chips and
-	  Sound Blaster PCI 64 or 128 soundcards.
-
-	  To compile this driver as a module, choose M here: the module
-	  will be called snd-ens1371.
-
-----------------------------------------------------------------------
- zanonmark - 04-17-06 19:59 
-----------------------------------------------------------------------
-yes, snd_mpu401 is loaded,
-
-I also tried with:
-
-rmmod snd_ens1371
-modprobe snd_ens1371 joystick_port=1
-
-or
-
-rmmod snd_ens1371
-modprobe snd_ens1371 joystick_port=0x200
-
-but nothing changes...
+Hope this helps.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
+04-06-06 04:27 jaime          New Issue                                    
+04-06-06 04:27 jaime          Distribution              => Slax 5.1.0, Debian
+Etch, Ubuntu Dapper
+04-06-06 04:27 jaime          Kernel Version            => 2.6.16 / 2.6.15 
+04-14-06 03:29 Ensnared       Issue Monitored: Ensnared                    
+04-17-06 20:18 jaime          Note Added: 0009320                          
 ======================================================================
 
 
