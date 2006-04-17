@@ -1,376 +1,986 @@
-From: Andreas Mohr <andim2@users.sourceforge.net>
-Subject: Re: [PATCH] azt3328.c: add suspend/resume support
-Date: Sun, 16 Apr 2006 23:26:14 +0200
-Message-ID: <20060416212614.GA16301@rhlx01.fht-esslingen.de>
-References: <20060411082956.GA20725@rhlx01.fht-esslingen.de> <s5hvetg30n6.wl%tiwai@suse.de>
-Reply-To: andi@lisas.de
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: [PATCH] ALSA driver for Yamaa AICA on Sega Dreamcast
+Date: Mon, 17 Apr 2006 01:13:04 +0100
+Message-ID: <1145232784.12804.2.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hvetg30n6.wl%tiwai@suse.de>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: andi@lisas.de, alsa-devel@lists.sourceforge.net
+Content-Type: multipart/mixed; boundary="=-2o5k+lFHLMmLRnzpWkhM"
+Return-path: <linuxsh-dev-admin@lists.sourceforge.net>
+Sender: linuxsh-dev-admin@lists.sourceforge.net
+Errors-To: linuxsh-dev-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
+List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Tue, Apr 11, 2006 at 11:46:37AM +0200, Takashi Iwai wrote:
-> At Tue, 11 Apr 2006 10:29:56 +0200,
-> Andreas Mohr wrote:
-> > +	for (reg = 0; reg < AZF_IO_SIZE_MIXER_PM; reg += 2)
-> > +		*(u16 *)&chip->saved_regs_mixer[reg] = inw(chip->mixer_port + reg);
-> 
-> That's a bad style.  Rather define
-> 
-> 	u16 saved_regs_mixer[AZF_IO_SIZE_CODEC_PM / 2];
-> 
-> and
-> 	for (reg = 0; reg < AZF_IO_SIZE_MIXER_PM / 2; reg++)
-> 		chip->saved_regs_mixer[reg] = inw(chip->mixer_port + reg * 2);
-> 
-> than type-punning.  Or, you can use ARRAY_SIZE() in the loop, too.
+--=-2o5k+lFHLMmLRnzpWkhM
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Indeed. That better?
+Takashi,
 
-Changes:
-- much better register array access
-- add missing pre 3D/post 3D mixer switch (just like with standard AC97 mixers!)
-- shorten/correct some mixer strings / rename some mixer controls to match
-  AC97 names
-- update some comments
+Here is a second attempt at this - this time built against the
+alsa-driver sources rather than the kernel mainline. please consider for
+submission to alsa-driver.
 
-With this update I consider this driver to be >= 95% finished. Yay!
+Signed off by Adrian McMenamin <adrian@mcmen.demon.co.uk>
 
-Patch tested on 2.6.16-ck5, rediffed against current CVS.
-
-Signed-off-by: Andreas Mohr <andi@lisas.de>
+Adrian
 
 
-Index: alsa-kernel/pci/azt3328.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/azt3328.c,v
-retrieving revision 1.35
-diff -u -r1.35 azt3328.c
---- alsa-kernel/pci/azt3328.c	17 Nov 2005 15:02:42 -0000	1.35
-+++ alsa-kernel/pci/azt3328.c	16 Apr 2006 21:18:42 -0000
-@@ -33,14 +33,21 @@
-  *  in the first place >:-P}),
-  *  I was forced to base this driver on reverse engineering
-  *  (3 weeks' worth of evenings filled with driver work).
-- *  (and no, I did NOT go the easy way: to pick up a PCI128 for 9 Euros)
-+ *  (and no, I did NOT go the easy way: to pick up a SB PCI128 for 9 Euros)
-  *
-  *  The AZF3328 chip (note: AZF3328, *not* AZT3328, that's just the driver name
-  *  for compatibility reasons) has the following features:
-  *
-  *  - builtin AC97 conformant codec (SNR over 80dB)
-- *    (really AC97 compliant?? I really doubt it when looking
-- *    at the mixer register layout)
-+ *    Note that "conformant" != "compliant"!! this chip's mixer register layout
-+ *    *differs* from the standard AC97 layout:
-+ *    they chose to not implement the headphone register (which is not a
-+ *    problem since it's merely optional), yet when doing this, they committed
-+ *    the grave sin of letting other registers follow immediately instead of
-+ *    keeping a headphone dummy register, thereby shifting the mixer register
-+ *    addresses illegally. So far unfortunately it looks like the very flexible
-+ *    ALSA AC97 support is still not enough to easily compensate for such a
-+ *    grave layout violation despite all tweaks and quirks mechanisms it offers.
-  *  - builtin genuine OPL3
-  *  - full duplex 16bit playback/record at independent sampling rate
-  *  - MPU401 (+ legacy address support) FIXME: how to enable legacy addr??
-@@ -90,10 +97,15 @@
-  * 
-  * TODO
-  *  - test MPU401 MIDI playback etc.
-- *  - power management. See e.g. intel8x0 or cs4281.
-- *    This would be nice since the chip runs a bit hot, and it's *required*
-- *    anyway for proper ACPI power management.
-+ *  - add some power micro-management (disable various units of the card
-+ *    as long as they're unused). However this requires I/O ports which I
-+ *    haven't figured out yet and which thus might not even exist...
-+ *    The standard suspend/resume functionality could probably make use of
-+ *    some improvement, too...
-  *  - figure out what all unknown port bits are responsible for
-+ *  - figure out some cleverly evil scheme to possibly make ALSA AC97 code
-+ *    fully accept our quite incompatible ""AC97"" mixer and thus save some
-+ *    code (but I'm not too optimistic that doing this is possible at all)
-  */
- 
- #include <sound/driver.h>
-@@ -213,6 +225,16 @@
- 
- 	struct pci_dev *pci;
- 	int irq;
+
+--=-2o5k+lFHLMmLRnzpWkhM
+Content-Disposition: attachment; filename=aica.diff
+Content-Type: text/x-patch; name=aica.diff; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+diff -ruN --exclude=acore --exclude='.#*' ./sh/aica.c /home/adrian/alsa-driver/sh/aica.c
+--- ./sh/aica.c	1970-01-01 01:00:00.000000000 +0100
++++ /home/adrian/alsa-driver/sh/aica.c	2006-04-16 23:13:59.000000000 +0100
+@@ -0,0 +1,833 @@
++/*
++* This code is licenced under 
++* the General Public Licence
++* version 2
++*
++* Copyright Adrian McMenamin 2005, 2006
++* <adrian@mcmen.demon.co.uk>
++* See also http://newgolddream.dyndns.info/cgi-bin/cvsweb
++* 
++*
++* This program is free software; you can redistribute it and/or modify
++* it under the terms of version 2 of the GNU General Public License as published by
++* the Free Software Foundation.
++*
++* This program is distributed in the hope that it will be useful,
++* but WITHOUT ANY WARRANTY; without even the implied warranty of
++* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++* GNU General Public License for more details.
++*
++* You should have received a copy of the GNU General Public License
++* along with this program; if not, write to the Free Software
++* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++*
++*/
 +
-+#ifdef CONFIG_PM
-+	/* register value containers for power management
-+	 * Note: not always full I/O range preserved (just like Win driver!) */
-+	u16 saved_regs_codec [AZF_IO_SIZE_CODEC_PM / 2];
-+	u16 saved_regs_io2   [AZF_IO_SIZE_IO2_PM / 2];
-+	u16 saved_regs_mpu   [AZF_IO_SIZE_MPU_PM / 2];
-+	u16 saved_regs_synth[AZF_IO_SIZE_SYNTH_PM / 2];
-+	u16 saved_regs_mixer[AZF_IO_SIZE_MIXER_PM / 2];
-+#endif
- };
- 
- static const struct pci_device_id snd_azf3328_ids[] = {
-@@ -513,15 +535,18 @@
- 			    struct snd_ctl_elem_info *uinfo)
- {
- 	static const char * const texts1[] = {
--		"ModemOut1", "ModemOut2"
-+		"Mic1", "Mic2"
- 	};
- 	static const char * const texts2[] = {
--		"MonoSelectSource1", "MonoSelectSource2"
-+		"Mix", "Mic"
- 	};
- 	static const char * const texts3[] = {
-                 "Mic", "CD", "Video", "Aux",
- 		"Line", "Mix", "Mix Mono", "Phone"
-         };
-+	static const char * const texts4[] = {
-+		"pre 3D", "post 3D"
-+        };
- 	struct azf3328_mixer_reg reg;
- 
- 	snd_azf3328_mixer_reg_decode(&reg, kcontrol->private_value);
-@@ -532,10 +557,17 @@
-                 uinfo->value.enumerated.item = reg.enum_c - 1U;
- 	if (reg.reg == IDX_MIXER_ADVCTL2)
- 	{
--		if (reg.lchan_shift == 8) /* modem out sel */
--			strcpy(uinfo->value.enumerated.name, texts1[uinfo->value.enumerated.item]);
--		else /* mono sel source */
--			strcpy(uinfo->value.enumerated.name, texts2[uinfo->value.enumerated.item]);
-+		switch(reg.lchan_shift) {
-+			case 8: /* modem out sel */
-+				strcpy(uinfo->value.enumerated.name, texts1[uinfo->value.enumerated.item]);
-+				break;
-+			case 9: /* mono sel source */
-+				strcpy(uinfo->value.enumerated.name, texts2[uinfo->value.enumerated.item]);
-+				break;
-+			case 15: /* PCM Out Path */
-+				strcpy(uinfo->value.enumerated.name, texts4[uinfo->value.enumerated.item]);
-+				break;
++
++#include <linux/init.h>
++#include <linux/jiffies.h>
++#include <linux/slab.h>
++#include <linux/time.h>
++#include <linux/wait.h>
++#include <linux/moduleparam.h>
++#include <linux/platform_device.h>
++#include <linux/firmware.h>
++#include <linux/timer.h>
++#include <linux/delay.h>
++#include <asm-sh/io.h>
++#include <asm-sh/dma.h>
++#include <asm-sh/dreamcast/sysasic.h>
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/control.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++#include <sound/info.h>
++#include "aica.h"
++
++
++MODULE_AUTHOR("Adrian McMenamin <adrian@mcmen.demon.co.uk>");
++MODULE_DESCRIPTION("Dreamcast AICA sound (pcm) driver");
++MODULE_LICENSE("GPL");
++MODULE_SUPPORTED_DEVICE("{{Yamaha/SEGA, AICA}}");
++
++/* module parameters */
++#define CARD_NAME "AICA"
++
++static int index;
++static char *id = NULL;
++static int enable = 1;
++
++module_param(index, int, 0444);
++MODULE_PARM_DESC(index, "Index value for " CARD_NAME " soundcard.");
++module_param(id, charp, 0444);
++MODULE_PARM_DESC(id, "ID string for " CARD_NAME " soundcard.");
++module_param(enable, bool, 0644);
++MODULE_PARM_DESC(enable, "Enable " CARD_NAME " soundcard.");
++
++
++
++/* Spinlocks */
++spinlock_t spu_memlock = SPIN_LOCK_UNLOCKED;
++spinlock_t spu_dmalock = SPIN_LOCK_UNLOCKED;
++
++
++/* SPU specific functions */
++
++/* spu_write_wait - wait for G2-SH FIFO to clear */
++static inline void spu_write_wait(void)
++{
++	int time_count;
++	time_count = 0;
++	while (1) {
++		if (!(readl(G2_FIFO) & 0x11))
++			break;
++		/* To ensure hardware failure doesn't wedge kernel */
++		time_count++;
++		if (time_count > 0x10000)
++			break;
++	}
++
++	return;
++}
++
++
++/* spu_memset - write to memory in SPU address space */
++static void spu_memset(uint32_t toi, void __iomem * what, int length)
++{
++	uint32_t *to = (uint32_t *) (SPU_MEMORY_BASE + toi);
++	int i;
++
++
++	if (length % 4)
++		length = (length / 4) + 1;
++	else
++		length = length / 4;
++	spu_write_wait();
++	for (i = 0; i < length; i++) {
++		spin_lock(&spu_memlock);
++		writel(what, to);
++		spin_unlock(&spu_memlock);
++		to++;
++		if (i && !(i % 8))
++			spu_write_wait();
++	}
++	return;
++}
++
++/* spu_memload - write to SPU address space */
++static void spu_memload(uint32_t toi, void __iomem * from, int length)
++{
++	uint32_t __iomem *froml = from;
++	uint32_t __iomem *to =
++	    (uint32_t __iomem *) (SPU_MEMORY_BASE + toi);
++	int i, val;
++	if (length % 4)
++		length = (length / 4) + 1;
++	else
++		length = length / 4;
++	spu_write_wait();
++	for (i = 0; i < length; i++) {
++		val = *froml;
++		spin_lock(&spu_memlock);
++		writel(val, to);
++		spin_unlock(&spu_memlock);
++		froml++;
++		to++;
++		if (i && !(i % 8))
++			spu_write_wait();
++	}
++	return;
++
++}
++
++/* spu_disable - set spu registers to stop sound output */
++static void spu_disable(void)
++{
++	int i;
++	uint32_t regval;
++	spu_write_wait();
++	regval = readl(ARM_RESET_REGISTER);
++	regval |= 1;
++	spu_write_wait();
++	spin_lock(&spu_memlock);
++	writel(regval, ARM_RESET_REGISTER);
++	spin_unlock(&spu_memlock);
++	for (i = 0; i < 64; i++) {
++		spu_write_wait();
++		regval = readl(SPU_REGISTER_BASE + (i * 0x80));
++		regval = (regval & ~0x4000) | 0x8000;
++		spu_write_wait();
++		spin_lock(&spu_memlock);
++		writel(regval, SPU_REGISTER_BASE + (i * 0x80));
++		spin_unlock(&spu_memlock);
++
++	}
++
++}
++
++/* spu_enable - set spu registers to enable sound output */
++static void spu_enable(void)
++{
++	uint32_t regval = readl(ARM_RESET_REGISTER);
++	regval &= ~1;
++	spu_write_wait();
++	spin_lock(&spu_memlock);
++	writel(regval, ARM_RESET_REGISTER);
++	spin_unlock(&spu_memlock);
++	return;
++
++}
++
++
++/* Halt the sound processor,
++   clear the memory,
++   load some default ARM7 code,
++   and then restart ARM7
++*/
++static int spu_init(void)
++{
++
++	spu_disable();
++	spu_memset(0, 0, 0x200000 / 4);
++	*(uint32_t *) SPU_MEMORY_BASE = 0xea000002;
++	spu_enable();
++	schedule();
++	return 0;
++}
++
++
++
++
++/* aica_chn_start - write to spu to start playback */
++inline static void aica_chn_start(void)
++{
++	spu_write_wait();
++	spin_lock(&spu_memlock);
++	writel(AICA_CMD_KICK | AICA_CMD_START,
++	       (uint32_t *) AICA_CONTROL_POINT);
++	spin_unlock(&spu_memlock);
++
++}
++
++/* aica_chn_halt - write to spu to halt playback */
++inline static void aica_chn_halt(void)
++{
++	spu_write_wait();
++	spin_lock(&spu_memlock);
++	writel(AICA_CMD_KICK | AICA_CMD_STOP,
++	       (uint32_t *) AICA_CONTROL_POINT);
++	spin_unlock(&spu_memlock);
++
++}
++
++
++/* ALSA code below */
++
++static struct snd_pcm_hardware snd_pcm_aica_playback_hw = {
++
++	.info = (SNDRV_PCM_INFO_NONINTERLEAVED),
++	.formats =
++	    (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
++	     SNDRV_PCM_FMTBIT_IMA_ADPCM),
++	.rates = SNDRV_PCM_RATE_8000_48000,
++	.rate_min = 8000,
++	.rate_max = 48000,
++	.channels_min = 1,
++	.channels_max = 2,
++	.buffer_bytes_max = AICA_BUFFER_SIZE,
++	.period_bytes_min = AICA_PERIOD_SIZE,
++	.period_bytes_max = AICA_PERIOD_SIZE,
++	.periods_min = AICA_PERIOD_NUMBER,
++	.periods_max = AICA_PERIOD_NUMBER,
++};
++
++/* Simple platform device */
++static struct platform_device *pd = NULL;
++
++
++
++static int stereo_buffer_transfer(struct snd_pcm_substream *substream,
++				  int buffer_size, int period)
++{
++	int transferred;
++	struct snd_pcm_runtime *runtime;
++	int period_offset;
++	period_offset = period;
++	period_offset %= (AICA_PERIOD_NUMBER / 2);
++	runtime = substream->runtime;
++
++	/* transfer left and then right */
++	spin_lock(&spu_dmalock);
++	dma_xfer(0,
++		 runtime->dma_area + (AICA_PERIOD_SIZE * period_offset),
++		 AICA_CHANNEL0_OFFSET + (AICA_PERIOD_SIZE * period_offset),
++		 buffer_size / 2, 5);
++	/* wait for completion */
++	do {
++		udelay(5);
++		transferred = get_dma_residue(0);
++	}
++	while (transferred < buffer_size / 2);
++	dma_xfer(0,
++		 AICA_BUFFER_SIZE / 2 + runtime->dma_area +
++		 (AICA_PERIOD_SIZE * period_offset),
++		 AICA_CHANNEL1_OFFSET + (AICA_PERIOD_SIZE * period_offset),
++		 buffer_size / 2, 5);
++	/* have to wait again */
++	do {
++		udelay(5);
++		transferred = get_dma_residue(0);
++	}
++	while (transferred < buffer_size / 2);
++	spin_unlock(&spu_dmalock);
++	return 0;
++}
++
++
++
++
++void static aica_period_elapsed(unsigned long timer_var)
++{
++	int transferred;
++	int play_period;
++	struct snd_pcm_runtime *runtime;
++	struct snd_pcm_substream *substream;
++	struct snd_card_aica *dreamcastcard;
++	substream = (struct snd_pcm_substream *) timer_var;
++	runtime = substream->runtime;
++	dreamcastcard =
++	    (struct snd_card_aica *) (substream->pcm->private_data);
++	/* Have we played out an additional period? */
++	play_period =
++	    frames_to_bytes(runtime,
++			    readl
++			    (AICA_CONTROL_CHANNEL_SAMPLE_NUMBER)) /
++	    AICA_PERIOD_SIZE;
++	if (play_period == dreamcastcard->current_period) {
++		dreamcastcard->timer.expires = jiffies + 1;
++		add_timer(&(dreamcastcard->timer));
++		return;
++	}
++	if (runtime->channels > 1) {
++		dreamcastcard->current_period = play_period;	/*TO DO: Work out why this doesn't work for 1 channel */
++
++		stereo_buffer_transfer(dreamcastcard->substream,
++				       AICA_PERIOD_SIZE * 2,
++				       dreamcastcard->clicks);
++	} else {
++		spin_lock(&spu_dmalock);
++		dma_xfer(0,
++			 runtime->dma_area +
++			 (AICA_PERIOD_SIZE * dreamcastcard->clicks),
++			 AICA_CHANNEL0_OFFSET +
++			 (AICA_PERIOD_SIZE * dreamcastcard->clicks),
++			 AICA_PERIOD_SIZE, 5);
++		do {
++			/* Try to fine tune the delay to keep it as short as possible */
++			udelay(5);
++			/* get_dma_residue reports residue until completion when it reports total bytes transferred */
++			transferred = get_dma_residue(0);
 +		}
- 	}
- 	else
-         	strcpy(uinfo->value.enumerated.name, texts3[uinfo->value.enumerated.item]
-@@ -628,13 +660,14 @@
- 	AZF3328_MIXER_VOL_MONO("Modem Playback Volume", IDX_MIXER_MODEMOUT, 0x1f, 1),
- 	AZF3328_MIXER_SWITCH("Modem Capture Switch", IDX_MIXER_MODEMIN, 15, 1),
- 	AZF3328_MIXER_VOL_MONO("Modem Capture Volume", IDX_MIXER_MODEMIN, 0x1f, 1),
--	AZF3328_MIXER_ENUM("Modem Out Select", IDX_MIXER_ADVCTL2, 2, 8),
--	AZF3328_MIXER_ENUM("Mono Select Source", IDX_MIXER_ADVCTL2, 2, 9),
-+	AZF3328_MIXER_ENUM("Mic Select", IDX_MIXER_ADVCTL2, 2, 8),
-+	AZF3328_MIXER_ENUM("Mono Output Select", IDX_MIXER_ADVCTL2, 2, 9),
-+	AZF3328_MIXER_ENUM("PCM", IDX_MIXER_ADVCTL2, 2, 15), /* PCM Out Path, place in front since it controls *both* 3D and Bass/Treble! */
- 	AZF3328_MIXER_VOL_SPECIAL("Tone Control - Treble", IDX_MIXER_BASSTREBLE, 0x07, 1, 0),
- 	AZF3328_MIXER_VOL_SPECIAL("Tone Control - Bass", IDX_MIXER_BASSTREBLE, 0x07, 9, 0),
- 	AZF3328_MIXER_SWITCH("3D Control - Switch", IDX_MIXER_ADVCTL2, 13, 0),
--	AZF3328_MIXER_VOL_SPECIAL("3D Control - Wide", IDX_MIXER_ADVCTL1, 0x07, 1, 0), /* "3D Width" */
--	AZF3328_MIXER_VOL_SPECIAL("3D Control - Space", IDX_MIXER_ADVCTL1, 0x03, 8, 0), /* "Hifi 3D" */
-+	AZF3328_MIXER_VOL_SPECIAL("3D Control - Width", IDX_MIXER_ADVCTL1, 0x07, 1, 0), /* "3D Width" */
-+	AZF3328_MIXER_VOL_SPECIAL("3D Control - Depth", IDX_MIXER_ADVCTL1, 0x03, 8, 0), /* "Hifi 3D" */
- #if MIXER_TESTING
- 	AZF3328_MIXER_SWITCH("0", IDX_MIXER_ADVCTL2, 0, 0),
- 	AZF3328_MIXER_SWITCH("1", IDX_MIXER_ADVCTL2, 1, 0),
-@@ -1765,6 +1798,8 @@
- 		goto out_err;
- 	}
- 
-+	card->private_data = chip;
++		while (transferred < AICA_PERIOD_SIZE);
++		spin_unlock(&spu_dmalock);
++	}
 +
- 	if ((err = snd_mpu401_uart_new( card, 0, MPU401_HW_MPU401,
- 				        chip->mpu_port, 1, pci->irq, 0,
- 				        &chip->rmidi)) < 0) {
-@@ -1790,6 +1825,8 @@
- 		}
- 	}
- 
-+	opl3->private_data = chip;
++	snd_pcm_period_elapsed(dreamcastcard->substream);
++	dreamcastcard->clicks++;
++	dreamcastcard->clicks %= AICA_PERIOD_NUMBER;
++	/* reschedule the timer */
++	dreamcastcard->timer.expires = jiffies + 1;
++	add_timer(&(dreamcastcard->timer));
++	return;
++}
 +
- 	sprintf(card->longname, "%s at 0x%lx, irq %i",
- 		card->shortname, chip->codec_port, chip->irq);
- 
-@@ -1833,11 +1870,80 @@
- 	snd_azf3328_dbgcallleave();
- }
- 
-+#ifdef CONFIG_PM
-+static int
-+snd_azf3328_suspend(struct pci_dev *pci, pm_message_t state)
++static int snd_aicapcm_pcm_open(struct snd_pcm_substream *substream)
 +{
-+	struct snd_card *card = pci_get_drvdata(pci);
-+	struct snd_azf3328 *chip = card->private_data;
-+	int reg;
++	struct snd_pcm_runtime *runtime;
++	struct aica_channel *channel;
++	struct snd_card_aica *dreamcastcard;
 +
-+	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
-+	
-+	snd_pcm_suspend_all(chip->pcm);
++	if (!enable)
++		return -ENOENT;
++	dreamcastcard =
++	    (struct snd_card_aica *) (substream->pcm->private_data);
++	channel = kmalloc(sizeof(struct aica_channel), GFP_KERNEL);
++	if (!channel)
++		return -ENOMEM;
++	/* set defaults for channel */
++	channel->sfmt = SM_8BIT;
++	channel->cmd = AICA_CMD_START;
++	channel->vol = dreamcastcard->master_volume;
++	channel->pan = 0x80;
++	channel->pos = 0;
++	channel->flags = 0;	/* default to mono */
++	dreamcastcard->channel = channel;
++	runtime = substream->runtime;
++	runtime->hw = snd_pcm_aica_playback_hw;
++	spu_enable();
++	dreamcastcard->clicks = 0;
++	dreamcastcard->current_period = 0;
++	return 0;
 +
-+	for (reg = 0; reg < AZF_IO_SIZE_MIXER_PM / 2; reg++)
-+		chip->saved_regs_mixer[reg] = inw(chip->mixer_port + reg * 2);
++}
 +
-+	/* make sure to disable master volume etc. to prevent looping sound */
-+	snd_azf3328_mixer_set_mute(chip, IDX_MIXER_PLAY_MASTER, 1);
-+	snd_azf3328_mixer_set_mute(chip, IDX_MIXER_WAVEOUT, 1);
-+	
-+	for (reg = 0; reg < AZF_IO_SIZE_CODEC_PM / 2; reg++)
-+		chip->saved_regs_codec[reg] = inw(chip->codec_port + reg * 2);
-+	for (reg = 0; reg < AZF_IO_SIZE_IO2_PM / 2; reg++)
-+		chip->saved_regs_io2[reg] = inw(chip->io2_port + reg * 2);
-+	for (reg = 0; reg < AZF_IO_SIZE_MPU_PM / 2; reg++)
-+		chip->saved_regs_mpu[reg] = inw(chip->mpu_port + reg * 2);
-+	for (reg = 0; reg < AZF_IO_SIZE_SYNTH_PM / 2; reg++)
-+		chip->saved_regs_synth[reg] = inw(chip->synth_port + reg * 2);
-+
-+	pci_set_power_state(pci, PCI_D3hot);
-+	pci_disable_device(pci);
-+	pci_save_state(pci);
++static int snd_aicapcm_pcm_close(struct snd_pcm_substream *substream)
++{
++	struct snd_card_aica *dreamcastcard =
++	    (struct snd_card_aica *) (substream->pcm->private_data);
++	del_timer(&dreamcastcard->timer);
++	kfree(dreamcastcard->channel);
++	spu_disable();
 +	return 0;
 +}
 +
-+static int
-+snd_azf3328_resume(struct pci_dev *pci)
++static int snd_aicapcm_pcm_hw_free(struct snd_pcm_substream *substream)
 +{
-+	struct snd_card *card = pci_get_drvdata(pci);
-+	struct snd_azf3328 *chip = card->private_data;
-+	int reg;
++	/* Free the DMA buffer */
++	return snd_pcm_lib_free_pages(substream);
++}
 +
-+	pci_restore_state(pci);
-+	pci_enable_device(pci);
-+	pci_set_power_state(pci, PCI_D0);
-+	pci_set_master(pci);
++static int snd_aicapcm_pcm_hw_params(struct snd_pcm_substream *substream,
++				     struct snd_pcm_hw_params *hw_params)
++{
++	/* Allocate a DMA buffer using ALSA built-ins */
++	return
++	    snd_pcm_lib_malloc_pages(substream,
++				     params_buffer_bytes(hw_params));
++}
 +
-+	for (reg = 0; reg < AZF_IO_SIZE_IO2_PM / 2; reg++)
-+		outw(chip->saved_regs_io2[reg], chip->io2_port + reg * 2);
-+	for (reg = 0; reg < AZF_IO_SIZE_MPU_PM / 2; reg++)
-+		outw(chip->saved_regs_mpu[reg], chip->mpu_port + reg * 2);
-+	for (reg = 0; reg < AZF_IO_SIZE_SYNTH_PM / 2; reg++)
-+		outw(chip->saved_regs_synth[reg], chip->synth_port + reg * 2);
-+	for (reg = 0; reg < AZF_IO_SIZE_MIXER_PM / 2; reg++)
-+		outw(chip->saved_regs_mixer[reg], chip->mixer_port + reg * 2);
-+	for (reg = 0; reg < AZF_IO_SIZE_CODEC_PM / 2; reg++)
-+		outw(chip->saved_regs_codec[reg], chip->codec_port + reg * 2);
++static int snd_aicapcm_pcm_prepare(struct snd_pcm_substream *substream)
++{
 +
-+	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
++	struct snd_card_aica *dreamcastcard =
++	    (struct snd_card_aica *) (substream->pcm->private_data);
++	/* Set up the playback */
++	/* basic settings to test working */
++	if ((substream->runtime)->format == SNDRV_PCM_FORMAT_S16_LE)
++		dreamcastcard->channel->sfmt = SM_16BIT;
++	dreamcastcard->channel->freq = substream->runtime->rate;
++	dreamcastcard->substream = substream;
 +	return 0;
 +}
-+#endif
++
++
++static void startup_aica(struct snd_card_aica *dreamcastcard)
++{
++	spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
++		    (uint8_t *) dreamcastcard->channel,
++		    sizeof(struct aica_channel));
++	aica_chn_start();
++	return;
++}
++
++
++static void spu_begin_dma(struct snd_pcm_substream *substream)
++{
++	int buffer_size;
++	snd_pcm_runtime_t *runtime;
++	struct snd_card_aica *dreamcastcard =
++	    (struct snd_card_aica *) (substream->pcm->private_data);
++	runtime = substream->runtime;
++	buffer_size = frames_to_bytes(runtime, runtime->buffer_size);
++	if (runtime->channels == 1) {
++		spin_lock(&spu_dmalock);
++		dma_xfer(0, runtime->dma_area, AICA_CHANNEL0_OFFSET,
++			 buffer_size, 5);
++		spin_unlock(&spu_dmalock);
++	} else {
++		int transfer_status;
++		dreamcastcard->channel->flags |= 0x01;
++		transfer_status =
++		    stereo_buffer_transfer(substream, buffer_size, 0);
++		if (transfer_status != 0)
++			return;
++		dreamcastcard->clicks =
++		    buffer_size / (AICA_PERIOD_SIZE * runtime->channels);
++	}
++	startup_aica(dreamcastcard);
++	/* Timer may already be running - if so delete it */
++	if (dreamcastcard->timer.data)
++		del_timer(&dreamcastcard->timer);
++
++	init_timer(&(dreamcastcard->timer));
++	dreamcastcard->timer.data = (unsigned long) substream;
++	dreamcastcard->timer.function = aica_period_elapsed;
++
++
++	dreamcastcard->timer.expires = jiffies + 4;
++	add_timer(&(dreamcastcard->timer));
++	return;
++}
++
++static int snd_aicapcm_pcm_trigger(struct snd_pcm_substream *substream,
++				   int cmd)
++{
++	struct snd_card_aica *dreamcastcard;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		spu_begin_dma(substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		dreamcastcard =
++		    (struct snd_card_aica *) (substream->pcm->
++					      private_data);
++
++		if (dreamcastcard->timer.data)
++			del_timer(&dreamcastcard->timer);
++		aica_chn_halt();
++		break;
++	default:
++		return -EINVAL;
++	}
++
++
++	return 0;
++}
++
++static unsigned long snd_aicapcm_pcm_pointer(struct snd_pcm_substream
++					     *substream)
++{
++	return readl(AICA_CONTROL_CHANNEL_SAMPLE_NUMBER);
++
++}
++
++
++static struct snd_pcm_ops snd_aicapcm_playback_ops = {
++	.open = snd_aicapcm_pcm_open,
++	.close = snd_aicapcm_pcm_close,
++	.ioctl = snd_pcm_lib_ioctl,
++	.hw_params = snd_aicapcm_pcm_hw_params,
++	.hw_free = snd_aicapcm_pcm_hw_free,
++	.prepare = snd_aicapcm_pcm_prepare,
++	.trigger = snd_aicapcm_pcm_trigger,
++	.pointer = snd_aicapcm_pcm_pointer,
++};
++
++
++static void snd_aicapcm_free(void)
++{
++	release_mem_region(ARM_RESET_REGISTER, 0x4);
++	release_mem_region(SPU_MEMORY_BASE, 0x200000);
++}
++
++/* TO DO: set up to handle more than one pcm instance */
++
++
++static int __init snd_aicapcmchip(struct snd_card_aica *dreamcastcard,
++				  int pcm_index)
++{
++	struct snd_pcm *pcm;
++	int err;
++
++	/* Can we lock the memory */
++
++	if (request_mem_region(ARM_RESET_REGISTER, 4, "AICA ARM control")
++	    == NULL)
++		return -ENOMEM;
++	if (request_mem_region(SPU_MEMORY_BASE, 0x200000, "AICA Sound RAM")
++	    == NULL) {
++		release_mem_region(ARM_RESET_REGISTER, 0x4);
++		return -ENOMEM;
++	}
++
++	/* AICA has no capture ability */
++	if ((err =
++	     snd_pcm_new(dreamcastcard->card, "AICA PCM", pcm_index, 1, 0,
++			 &pcm)) < 0)
++		return err;
++	pcm->private_data = dreamcastcard;
++	strcpy(pcm->name, "AICA PCM");
++
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
++			&snd_aicapcm_playback_ops);
++
++	/* Allocate the DMA buffers */
++	err =
++	    snd_pcm_lib_preallocate_pages_for_all(pcm,
++						  SNDRV_DMA_TYPE_CONTINUOUS,
++						  snd_dma_continuous_data
++						  (GFP_KERNEL),
++						  AICA_BUFFER_SIZE,
++						  AICA_BUFFER_SIZE);
++
++	return err;
++}
++
++/* Mixer controls */
++static int aica_pcmswitch_info(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 1;
++	return 0;
++}
++
++static int aica_pcmswitch_get(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	ucontrol->value.integer.value[0] = 1;	/* TO DO: Fix me */
++	return 0;
++}
++
++static int aica_pcmswitch_put(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	if (ucontrol->value.integer.value[0] == 1)
++		return 0;	/* TO DO: Fix me */
++	else
++		aica_chn_halt();
++	return 0;
++}
 +
 +
 +
 +
- static struct pci_driver driver = {
- 	.name = "AZF3328",
- 	.id_table = snd_azf3328_ids,
- 	.probe = snd_azf3328_probe,
- 	.remove = __devexit_p(snd_azf3328_remove),
-+#ifdef CONFIG_PM
-+	.suspend = snd_azf3328_suspend,
-+	.resume = snd_azf3328_resume,
-+#endif
- };
- 
- static int __init
-Index: alsa-kernel/pci/azt3328.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/azt3328.h,v
-retrieving revision 1.2
-diff -u -r1.2 azt3328.h
---- alsa-kernel/pci/azt3328.h	25 Oct 2005 10:17:45 -0000	1.2
-+++ alsa-kernel/pci/azt3328.h	16 Apr 2006 21:18:42 -0000
-@@ -5,6 +5,9 @@
- 
- /*** main I/O area port indices ***/
- /* (only 0x70 of 0x80 bytes saved/restored by Windows driver) */
-+#define AZF_IO_SIZE_CODEC	0x80
-+#define AZF_IO_SIZE_CODEC_PM	0x70
++static int aica_pcmvolume_info(struct snd_kcontrol *kcontrol,
++			       struct snd_ctl_elem_info *uinfo)
++{
 +
- /* the driver initialisation suggests a layout of 4 main areas:
-  * from 0x00 (playback), from 0x20 (recording) and from 0x40 (maybe MPU401??).
-  * And another area from 0x60 to 0x6f (DirectX timer, IRQ management,
-@@ -87,7 +90,7 @@
- #define IDX_IO_REC_DMA_CURROFS  0x34 /* PU:0x00000000 */
- #define IDX_IO_REC_SOUNDFORMAT  0x36 /* PU:0x0000 */
- 
--/** hmm, what is this I/O area for? MPU401?? (after playback, recording, ???, timer) **/
-+/** hmm, what is this I/O area for? MPU401?? or external DAC via I2S?? (after playback, recording, ???, timer) **/
- #define IDX_IO_SOMETHING_FLAGS	0x40 /* gets set to 0x34 just like port 0x0 and 0x20 on card init, PU:0x0000 */
- /* general */
- #define IDX_IO_42H		0x42 /* PU:0x0001 */
-@@ -107,7 +110,8 @@
-   #define IRQ_UNKNOWN2			0x0080 /* probably unused */
- #define IDX_IO_66H		0x66    /* writing 0xffff returns 0x0000 */
- #define IDX_IO_SOME_VALUE	0x68	/* this is set to e.g. 0x3ff or 0x300, and writable; maybe some buffer limit, but I couldn't find out more, PU:0x00ff */
--#define IDX_IO_6AH		0x6A	/* this WORD can be set to have bits 0x0028 activated; actually inhibits PCM playback!!! maybe power management?? */
-+#define IDX_IO_6AH		0x6A	/* this WORD can be set to have bits 0x0028 activated (FIXME: correct??); actually inhibits PCM playback!!! maybe power management?? */
-+  #define IO_6A_PAUSE_PLAYBACK		0x0200 /* bit 9; sure, this pauses playback, but what the heck is this really about?? */
- #define IDX_IO_6CH		0x6C
- #define IDX_IO_6EH		0x6E	/* writing 0xffff returns 0x83fe */
- /* further I/O indices not saved/restored, so probably not used */
-@@ -115,15 +119,25 @@
- 
- /*** I/O 2 area port indices ***/
- /* (only 0x06 of 0x08 bytes saved/restored by Windows driver) */ 
-+#define AZF_IO_SIZE_IO2		0x08
-+#define AZF_IO_SIZE_IO2_PM	0x06
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 0xFF;
 +
- #define IDX_IO2_LEGACY_ADDR	0x04
-   #define LEGACY_SOMETHING		0x01 /* OPL3?? */
-   #define LEGACY_JOY			0x08
- 
-+#define AZF_IO_SIZE_MPU		0x04
-+#define AZF_IO_SIZE_MPU_PM	0x04
++	return 0;
++}
 +
-+#define AZF_IO_SIZE_SYNTH	0x08
-+#define AZF_IO_SIZE_SYNTH_PM	0x06
- 
- /*** mixer I/O area port indices ***/
- /* (only 0x22 of 0x40 bytes saved/restored by Windows driver)
-- * generally spoken: AC97 register index = AZF3328 mixer reg index + 2
-- * (in other words: AZF3328 NOT fully AC97 compliant) */
-+ * UNFORTUNATELY azf3328 is NOT truly AC97 compliant: see main file intro */
-+#define AZF_IO_SIZE_MIXER	0x40
-+#define AZF_IO_SIZE_MIXER_PM	0x22
++static int aica_pcmvolume_get(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_card_aica *dreamcastcard;
++	dreamcastcard = (struct snd_card_aica *) kcontrol->private_value;
++	if (!dreamcastcard->channel)
++		return -ETXTBSY;	/* we've not yet been set up */
++	ucontrol->value.integer.value[0] = dreamcastcard->channel->vol;
++	return 0;
++}
 +
-   #define MIXER_VOLUME_RIGHT_MASK	0x001f
-   #define MIXER_VOLUME_LEFT_MASK	0x1f00
-   #define MIXER_MUTE_MASK		0x8000
-@@ -156,14 +170,14 @@
- #define IDX_MIXER_ADVCTL1       0x1e
-   /* unlisted bits are unmodifiable */
-   #define MIXER_ADVCTL1_3DWIDTH_MASK	0x000e
--  #define MIXER_ADVCTL1_HIFI3D_MASK	0x0300
--#define IDX_MIXER_ADVCTL2       0x20 /* resembles AC97_GENERAL_PURPOSE reg! */
-+  #define MIXER_ADVCTL1_HIFI3D_MASK	0x0300 /* yup, this is missing the high bit that official AC97 contains, plus it doesn't have linear bit value range behaviour but instead acts weirdly (possibly we're dealing with two *different* 3D settings here??) */
-+#define IDX_MIXER_ADVCTL2       0x20 /* subset of AC97_GENERAL_PURPOSE reg! */
-   /* unlisted bits are unmodifiable */
--  #define MIXER_ADVCTL2_BIT7		0x0080 /* WaveOut 3D Bypass? mutes WaveOut at LineOut */
--  #define MIXER_ADVCTL2_BIT8		0x0100 /* is this Modem Out Select? */
--  #define MIXER_ADVCTL2_BIT9		0x0200 /* Mono Select Source? */
--  #define MIXER_ADVCTL2_BIT13		0x2000 /* 3D enable? */
--  #define MIXER_ADVCTL2_BIT15		0x8000 /* unknown */
-+  #define MIXER_ADVCTL2_LPBK		0x0080 /* Loopback mode -- Win driver: "WaveOut3DBypass"? mutes WaveOut at LineOut */
-+  #define MIXER_ADVCTL2_MS		0x0100 /* Mic Select 0=Mic1, 1=Mic2 -- Win driver: "ModemOutSelect"?? */
-+  #define MIXER_ADVCTL2_MIX		0x0200 /* Mono output select 0=Mix, 1=Mic; Win driver: "MonoSelectSource"?? */
-+  #define MIXER_ADVCTL2_3D		0x2000 /* 3D Enhancement 1=on */
-+  #define MIXER_ADVCTL2_POP		0x8000 /* Pcm Out Path, 0=pre 3D, 1=post 3D */
-   
- #define IDX_MIXER_SOMETHING30H	0x30 /* used, but unknown??? */
- 
++static int aica_pcmvolume_put(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_card_aica *dreamcastcard;
++	dreamcastcard = (struct snd_card_aica *) kcontrol->private_value;
++
++	if (!dreamcastcard->channel) {
++		snd_printk("No channel yet\n");
++		return -ETXTBSY;	/* too soon */
++	}
++
++	else if (dreamcastcard->channel->vol ==
++		 ucontrol->value.integer.value[0])
++		return 0;
++
++	else {
++		dreamcastcard->channel->vol =
++		    ucontrol->value.integer.value[0];
++		dreamcastcard->master_volume =
++		    ucontrol->value.integer.value[0];
++		spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
++			    (uint8_t *) dreamcastcard->channel,
++			    sizeof(struct aica_channel));
++	}
++	return 1;
++}
++
++
++static struct snd_kcontrol_new snd_aica_pcmswitch_control __devinitdata = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "PCM Playback Switch",
++	.index = 0,
++	.private_value = 0xffff,
++	.info = aica_pcmswitch_info,
++	.get = aica_pcmswitch_get,
++	.put = aica_pcmswitch_put
++};
++
++
++
++static struct snd_kcontrol_new snd_aica_pcmvolume_control __devinitdata = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "PCM Playback Volume",
++	.index = 0,
++	.private_value = 0xffff,
++	.info = aica_pcmvolume_info,
++	.get = aica_pcmvolume_get,
++	.put = aica_pcmvolume_put
++};
++
++static int remove_dreamcastcard(struct device *dreamcast_device)
++{
++	struct snd_card_aica *dreamcastcard =
++	    (struct snd_card_aica *) dreamcast_device->driver_data;
++	snd_aicapcm_free();
++	snd_card_free(dreamcastcard->card);
++	kfree(dreamcastcard);
++	return 0;
++
++}
++
++
++static struct device_driver aica_driver = {
++	.name = "AICA",
++	.bus = &platform_bus_type,
++	.remove = remove_dreamcastcard,
++};
++
++
++/* Fill up the members of the embedded device structure */
++
++static void populate_dreamcastaicadev(struct device *dev)
++{
++	dev->bus = &platform_bus_type;
++	dev->driver = &aica_driver;
++	driver_register(dev->driver);
++	device_bind_driver(dev);
++}
++
++static int load_aica_firmware()
++{
++	int err;
++	err = 0;
++	spu_init();
++	const struct firmware *fw_entry;
++	err = request_firmware(&fw_entry, "aica_firmware.bin", &pd->dev);
++	if (err)
++		return err;
++	/* write firware into memory */
++	spu_disable();
++	spu_memload(0, fw_entry->data, fw_entry->size);
++	spu_enable();
++	release_firmware(fw_entry);
++	return err;
++}
++
++static int __devinit add_aicamixer_controls(struct snd_card_aica
++					    *dreamcastcard)
++{
++	int err;
++	err = snd_ctl_add
++	    (dreamcastcard->card,
++	     snd_ctl_new1(&snd_aica_pcmvolume_control, dreamcastcard));
++	if (err < 0) {
++		snd_printk("pcmvolume failed\n");
++		return err;
++	}
++
++
++	err = snd_ctl_add
++	    (dreamcastcard->card,
++	     snd_ctl_new1(&snd_aica_pcmswitch_control, dreamcastcard));
++	if (err < 0) {
++		snd_printk("pcmswitch failed\n");
++		return err;
++	}
++
++	/* succeeded */
++	return 0;
++}
++
++
++
++static int __init aica_init(void)
++{
++
++
++	int err;
++	struct snd_card_aica *dreamcastcard;
++
++	/* Are we in a Dreamcast at all? */
++	if (!mach_is_dreamcast())
++		return -ENODEV;
++	dreamcastcard = kmalloc(sizeof(struct snd_card_aica), GFP_KERNEL);
++	if (!dreamcastcard)
++		return -ENOMEM;
++	dreamcastcard->card = snd_card_new(-1, "AICA", THIS_MODULE, 0);
++	if (!dreamcastcard->card) {
++		kfree(dreamcastcard);
++		return -ENODEV;
++	}
++	strcpy(dreamcastcard->card->driver, "snd_aica");
++	strcpy(dreamcastcard->card->shortname, "AICA");
++	strcpy(dreamcastcard->card->longname,
++	       "Yamaha AICA Super Intelligent Sound Processor for SEGA Dreamcast");
++
++	/* Load the PCM 'chip' */
++	if ((err = snd_aicapcmchip(dreamcastcard, 0)) < 0)
++		goto freedreamcast;
++
++
++	pd = platform_device_register_simple(dreamcastcard->card->driver,
++					     -1, NULL, 0);
++
++	if (IS_ERR(pd)) {
++		err = -ENODEV;
++		goto freepcm;
++	}
++
++	populate_dreamcastaicadev(&pd->dev);
++	snd_card_set_dev(dreamcastcard->card, &pd->dev);
++	pd->dev.driver_data = dreamcastcard;
++	dreamcastcard->timer.data = 0;
++	dreamcastcard->channel = NULL;
++
++	/* Load the firmware */
++	if ((err = load_aica_firmware()) < 0)
++		goto freepcm;
++
++	/* Add basic controls */
++	if (add_aicamixer_controls(dreamcastcard) < 0)
++		goto freepcm;
++
++
++	/* Register the card with ALSA subsystem */
++	if ((err = snd_card_register(dreamcastcard->card)) < 0)
++		goto freepcm;
++
++
++	snd_printk
++	    ("ALSA Driver for Yamaha AICA Super Intelligent Sound Processor\n");
++
++	return 0;
++
++      freepcm:
++	snd_aicapcm_free();
++
++      freedreamcast:
++	snd_card_free(dreamcastcard->card);
++
++	if (pd) {
++		struct device_driver *drv = (&pd->dev)->driver;
++		device_release_driver(&pd->dev);
++		driver_unregister(drv);
++		platform_device_unregister(pd);
++		pd = NULL;
++	}
++	kfree(dreamcastcard);
++	return err;
++
++
++}
++
++
++
++
++static void __exit aica_exit(void)
++{
++	struct device_driver *drv = (&pd->dev)->driver;
++	device_release_driver(&pd->dev);
++	driver_unregister(drv);
++	platform_device_unregister(pd);
++	/* Kill any sound still playing and reset ARM7 to safe state */
++	spu_init();
++
++
++	return;
++}
++
++
++module_init(aica_init);
++module_exit(aica_exit);
+diff -ruN --exclude=acore --exclude='.#*' ./sh/aica.h /home/adrian/alsa-driver/sh/aica.h
+--- ./sh/aica.h	1970-01-01 01:00:00.000000000 +0100
++++ /home/adrian/alsa-driver/sh/aica.h	2006-04-15 16:48:01.000000000 +0100
+@@ -0,0 +1,83 @@
++/* aica.h
++ * Header file for ALSA driver for
++ * Sega Dreamcast Yamaha AICA sound
++ * Copyright Adrian McMenamin
++ * <adrian@mcmen.demon.co.uk>
++ * 2006
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of version 2 of the GNU General Public License as published by
++ * the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *
++ */
++
++/* SPU memory and register constants etc */
++#define G2_FIFO 0xa05f688c
++#define SPU_MEMORY_BASE 0xA0800000
++#define ARM_RESET_REGISTER 0xA0702C00
++#define SPU_REGISTER_BASE 0xA0700000
++
++
++
++/* AICA channels stuff */
++
++#define AICA_CONTROL_POINT 0xA0810000
++#define AICA_CONTROL_CHANNEL_SAMPLE_NUMBER 0xA0810008
++#define AICA_CHANNEL0_CONTROL_OFFSET 0x10004
++
++/* Command values */
++#define AICA_CMD_KICK 0x80000000
++#define AICA_CMD_NONE 0
++#define AICA_CMD_START 1
++#define AICA_CMD_STOP 2
++#define AICA_CMD_VOL 3
++
++/* Sound modes */
++#define SM_8BIT		1
++#define SM_16BIT	0
++#define SM_ADPCM	2
++
++/* Buffer and period size */
++#define AICA_BUFFER_SIZE 0x8000
++#define AICA_PERIOD_SIZE 0x800
++#define AICA_PERIOD_NUMBER 16
++
++#define AICA_CHANNEL0_OFFSET 0x11000
++#define AICA_CHANNEL1_OFFSET 0x21000
++
++
++
++
++struct aica_channel {
++	uint32_t cmd;		/* Command ID           */
++	uint32_t pos;		/* Sample position      */
++	uint32_t length;	/* Sample length        */
++	uint32_t freq;		/* Frequency            */
++	uint32_t vol;		/* Volume 0-255         */
++	uint32_t pan;		/* Pan 0-255            */
++	uint32_t sfmt;		/* Sound format         */
++	uint32_t flags;		/* Bit flags            */
++};
++
++
++struct snd_card_aica {
++	struct snd_card *card;
++	struct aica_channel *channel;
++	snd_pcm_substream_t *substream;
++	int clicks;
++	int current_period;
++	struct timer_list timer;
++	int master_volume;
++
++};
++
++
+diff -ruN --exclude=acore --exclude='.#*' ./sh/Makefile /home/adrian/alsa-driver/sh/Makefile
+--- ./sh/Makefile	1970-01-01 01:00:00.000000000 +0100
++++ /home/adrian/alsa-driver/sh/Makefile	2006-04-14 18:48:02.000000000 +0100
+@@ -0,0 +1,11 @@
++ifndef SND_TOPDIR
++SND_TOPDIR=..
++endif
++
++include $(SND_TOPDIR)/toplevel.config
++include $(SND_TOPDIR)/Makefile.conf
++
++snd-aica-objs := aica.o
++obj-$(CONFIG_SND_AICA) += snd-aica.o
++
++include $(SND_TOPDIR)/Rules.make
+
+--=-2o5k+lFHLMmLRnzpWkhM--
+
 
 
 -------------------------------------------------------
