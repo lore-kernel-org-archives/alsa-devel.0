@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001783]: My DYI BurrBrown pcm2702 usb soundcard is making a lot of noise, crackling or only noise when playing music
-Date: Mon, 17 Apr 2006 13:45:08 +0200
-Message-ID: <a925ed7bcc4164a470929934db09f5dd@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: [linuxsh-dev] Re: [PATCH] ALSA driver for Yamaa AICA on Sega
+ Dreamcast
+Date: Mon, 17 Apr 2006 12:51:11 +0100
+Message-ID: <1145274671.9238.10.camel@localhost.localdomain>
+References: <1145232784.12804.2.camel@localhost.localdomain>
+	 <20060417012913.GA16821@linux-sh.org>
+	 <1145267096.9238.6.camel@localhost.localdomain>
+	 <20060417095226.GA8910@linux-sh.org>  <20060417100412.GB8910@linux-sh.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F13C3188
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 13:45:08 +0200 (MEST)
+In-Reply-To: <20060417100412.GB8910@linux-sh.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,260 +21,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Paul Mundt <lethal@linux-sh.org>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-04-17 at 13:04 +0300, Paul Mundt wrote:
+> On Mon, Apr 17, 2006 at 12:52:26PM +0300, Paul Mundt wrote:
+> > Then the G2 DMA ->get_residue() op needs to be fixed, as it's broken.
+> > Don't work against the subsystem, it knows what it's doing.
+> > 
+> > You might be better off getting rid of it entirely and seeing about
+> > getting the TEI working, you can check for completion and wake up
+> > accordingly in this case, which is what you ideally want anyways. The
+> > busy-loop in the generic dma_wait_for_completion() is a stupid hack for
+> > people that haven't fixed up their TEI handling yet, it's not intended
+> > for widespread use..
+> > 
+> What about something like this?
+> 
+> diff --git a/arch/sh/drivers/dma/dma-g2.c b/arch/sh/drivers/dma/dma-g2.c
+> index 5afab6f..277581e 100644
+> --- a/arch/sh/drivers/dma/dma-g2.c
+> +++ b/arch/sh/drivers/dma/dma-g2.c
+> @@ -49,7 +49,14 @@ static volatile struct g2_dma_info *g2_d
+>  
+>  static irqreturn_t g2_dma_interrupt(int irq, void *dev_id, struct pt_regs *regs)
+>  {
+> -	/* FIXME: Do some meaningful completion work here.. */
+> +	struct dma_channel *chan = dev_id;
+> +	unsigned int chan_nr = chan->chan;
+> +	unsigned int bytes;
+> +
+> +	bytes = g2_dma->channel[chan_nr].size - g2_dma->status[chan_nr].size;
+> +	if (likely(bytes == 0))
+> +		wake_up(&chan->wait_queue);
+> +
+>  	return IRQ_HANDLED;
+>  }
+>  
+> @@ -133,10 +140,17 @@ static int g2_xfer_dma(struct dma_channe
+>  		 g2_dma->channel[chan_nr].xfer_enable);
+>  
+>  	return 0;
+> +}
+> +
+> +static int g2_get_dma_residue(struct dma_channel *chan)
+> +{
+> +	unsigned int chan_nr = chan->chan;
+> +	return g2_dma->channel[chan_nr].size - g2_dma->status[chan_nr].size;
+>  }
+>  
+>  static struct dma_ops g2_dma_ops = {
+>  	.xfer		= g2_xfer_dma,
+> +	.get_residue	= g2_get_dma_residue,
+>  };
+>  
+>  static struct dma_info g2_dma_info = {
+> 
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1783> 
-======================================================================
-Reported By:                boniek
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1783
-Category:                   USB - usb-audio
-Reproducibility:            random
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo GNU/Linux
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             01-25-2006 11:51 CET
-Last Modified:              04-17-2006 13:45 CEST
-======================================================================
-Summary:                    My DYI BurrBrown pcm2702 usb soundcard is making a
-lot of noise, crackling or only noise when playing music
-Description: 
-Sound Card: PCM2702 BurrBrown DYI card (works perfectly in windows)
-Music Player: Does not matter. It is always the same. Using alsa plugin (
-I don't have oss emulation).
- Upon starting playing you will hear either ok sound, sound with a lot
-background noise, or static only (like cat /dev/urandom > /dev/dsp in
-oss). On start of playing music (either on beggining or after
-unpause/unstop) there can be heard (almost always) a very loud crack.
-Music can degradate itself to noise only too. Whole thing occurs very
-often, but randomly (well I think things tend to get broken/repaired upon
-restarting music stream - stop/pause and play).
-======================================================================
-
-----------------------------------------------------------------------
- boniek - 01-25-06 12:28 
-----------------------------------------------------------------------
-Obsolete OSS USB Audio driver works very well (but it is obsolete ;)).
-Output of lsusb -v for my soundcard
-
-
-Bus 003 Device 002: ID 08bb:2702 Texas Instruments Japan
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.00
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0
-  bDeviceProtocol         0
-  bMaxPacketSize0         8
-  idVendor           0x08bb Texas Instruments Japan
-  idProduct          0x2702
-  bcdDevice            1.00
-  iManufacturer           1 Burr-Brown Japan
-  iProduct                2 Burr-Brown Japan PCM2702
-  iSerial                 0
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength          165
-    bNumInterfaces          2
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0x40
-      Self Powered
-    MaxPower                0mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      1 Control Device
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      1 (HEADER)
-        bcdADC               1.00
-        wTotalLength           40
-        bInCollection           1
-        baInterfaceNr( 0)       1
-      AudioControl Interface Descriptor:
-        bLength                12
-        bDescriptorType        36
-        bDescriptorSubtype      2 (INPUT_TERMINAL)
-        bTerminalID             1
-        wTerminalType      0x0101 USB Streaming
-        bAssocTerminal          0
-        bNrChannels             2
-        wChannelConfig     0x0003
-          Left Front (L)
-          Right Front (R)
-        iChannelNames           0
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                 9
-        bDescriptorType        36
-        bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-        bTerminalID             2
-        wTerminalType      0x0301 Speaker
-        bAssocTerminal          0
-        bSourceID               3
-        iTerminal               0
-      AudioControl Interface Descriptor:
-        bLength                10
-        bDescriptorType        36
-        bDescriptorSubtype      6 (FEATURE_UNIT)
-        bUnitID                 3
-        bSourceID               1
-        bControlSize            1
-        bmaControls( 0)      0x03
-          Mute
-          Volume
-        bmaControls( 1)      0x02
-          Volume
-        bmaControls( 2)      0x02
-          Volume
-        iFeature                0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           0
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           1
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                17
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             2
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            3 Discrete
-        tSamFreq[ 0]        32000
-        tSamFreq[ 1]        44100
-        tSamFreq[ 2]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-          Usage Type               Data
-        wMaxPacketSize     0x00c0  1x 192 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x00
-          bLockDelayUnits         2 Decoded PCM samples
-          wLockDelay            512 Decoded PCM samples
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       2
-      bNumEndpoints           1
-      bInterfaceClass         1 Audio
-      bInterfaceSubClass      2 Streaming
-      bInterfaceProtocol      0
-      iInterface              0
-      AudioStreaming Interface Descriptor:
-        bLength                 7
-        bDescriptorType        36
-        bDescriptorSubtype      1 (AS_GENERAL)
-        bTerminalLink           1
-        bDelay                  0 frames
-        wFormatTag              1 PCM
-      AudioStreaming Interface Descriptor:
-        bLength                17
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             1
-        bSubframeSize           2
-        bBitResolution         16
-        bSamFreqType            3 Discrete
-        tSamFreq[ 0]        32000
-        tSamFreq[ 1]        44100
-        tSamFreq[ 2]        48000
-      Endpoint Descriptor:
-        bLength                 9
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            9
-          Transfer Type            Isochronous
-          Synch Type               Adaptive
-          Usage Type               Data
-        wMaxPacketSize     0x0060  1x 96 bytes
-        bInterval               1
-        bRefresh                0
-        bSynchAddress           0
-        AudioControl Endpoint Descriptor:
-          bLength                 7
-          bDescriptorType        37
-          bDescriptorSubtype      1 (EP_GENERAL)
-          bmAttributes         0x00
-          bLockDelayUnits         2 Decoded PCM samples
-          wLockDelay            512 Decoded PCM samples
-
-
-
-----------------------------------------------------------------------
- Clemens Ladisch - 04-17-06 13:45 
-----------------------------------------------------------------------
-Does it work with kernel 2.6.16, and/or a recent ALSA (1.0.11rc5)?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-25-06 11:51 boniek         New Issue                                    
-01-25-06 11:51 boniek         Distribution              => Gentoo GNU/Linux
-01-25-06 11:51 boniek         Kernel Version            => 2.6.15          
-01-25-06 12:04 boniek         Note Added: 0007779                          
-01-25-06 12:27 boniek         Note Added: 0007781                          
-01-25-06 12:27 boniek         Note Deleted: 0007781                        
-01-25-06 12:28 boniek         Note Edited: 0007779                         
-04-17-06 13:45 Clemens LadischNote Added: 0009308                          
-======================================================================
-
+Looks reasonable! I'll give it a go later today
 
 
 
