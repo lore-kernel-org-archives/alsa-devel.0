@@ -1,140 +1,405 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] sound/pci/: remove duplicate #include's
-Date: Mon, 17 Apr 2006 03:03:41 +0200
-Message-ID: <20060417010341.GA7429@stusta.de>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: [PATCH] ALSA driver for Yamaa AICA on Sega Dreamcast
+Date: Mon, 17 Apr 2006 04:29:13 +0300
+Message-ID: <20060417012913.GA16821@linux-sh.org>
+References: <1145232784.12804.2.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 4743D19F
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 03:03:41 +0200 (MEST)
+Return-path: <linuxsh-dev-admin@lists.sourceforge.net>
 Content-Disposition: inline
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1145232784.12804.2.camel@localhost.localdomain>
+Sender: linuxsh-dev-admin@lists.sourceforge.net
+Errors-To: linuxsh-dev-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
+List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-There's no reason for #include'ing linux/dma-mapping.h more than once.
+A few quick comments.. though looking at the earlier thread, most of
+these were already pointed out..
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+On Mon, Apr 17, 2006 at 01:13:04AM +0100, Adrian McMenamin wrote:
+> diff -ruN --exclude=acore --exclude='.#*' ./sh/aica.c /home/adrian/alsa-driver/sh/aica.c
+> --- ./sh/aica.c	1970-01-01 01:00:00.000000000 +0100
+> +++ /home/adrian/alsa-driver/sh/aica.c	2006-04-16 23:13:59.000000000 +0100
 
----
+-p1 format please.
 
- sound/pci/ad1889.c           |    1 -
- sound/pci/emu10k1/emu10k1x.c |    1 -
- sound/pci/es1968.c           |    1 -
- sound/pci/ice1712/ice1712.c  |    1 -
- sound/pci/maestro3.c         |    1 -
- sound/pci/mixart/mixart.c    |    1 -
- sound/pci/pcxhr/pcxhr.c      |    1 -
- 7 files changed, 7 deletions(-)
+> +#include <linux/init.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/slab.h>
+> +#include <linux/time.h>
+> +#include <linux/wait.h>
+> +#include <linux/moduleparam.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/firmware.h>
+> +#include <linux/timer.h>
+> +#include <linux/delay.h>
+> +#include <asm-sh/io.h>
+> +#include <asm-sh/dma.h>
+> +#include <asm-sh/dreamcast/sysasic.h>
 
---- linux-2.6.17-rc1-mm2-full/sound/pci/ad1889.c.old	2006-04-17 02:51:46.000000000 +0200
-+++ linux-2.6.17-rc1-mm2-full/sound/pci/ad1889.c	2006-04-17 02:51:55.000000000 +0200
-@@ -37,11 +37,10 @@
- #include <linux/dma-mapping.h>
- #include <linux/slab.h>
- #include <linux/interrupt.h>
- #include <linux/compiler.h>
- #include <linux/delay.h>
--#include <linux/dma-mapping.h>
- 
- #include <sound/driver.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/initval.h>
---- linux-2.6.17-rc1-mm2-full/sound/pci/emu10k1/emu10k1x.c.old	2006-04-17 02:52:04.000000000 +0200
-+++ linux-2.6.17-rc1-mm2-full/sound/pci/emu10k1/emu10k1x.c	2006-04-17 02:52:07.000000000 +0200
-@@ -34,11 +34,10 @@
- #include <linux/interrupt.h>
- #include <linux/pci.h>
- #include <linux/dma-mapping.h>
- #include <linux/slab.h>
- #include <linux/moduleparam.h>
--#include <linux/dma-mapping.h>
- #include <sound/core.h>
- #include <sound/initval.h>
- #include <sound/pcm.h>
- #include <sound/ac97_codec.h>
- #include <sound/info.h>
---- linux-2.6.17-rc1-mm2-full/sound/pci/es1968.c.old	2006-04-17 02:52:16.000000000 +0200
-+++ linux-2.6.17-rc1-mm2-full/sound/pci/es1968.c	2006-04-17 02:52:27.000000000 +0200
-@@ -102,11 +102,10 @@
- #include <linux/pci.h>
- #include <linux/dma-mapping.h>
- #include <linux/slab.h>
- #include <linux/gameport.h>
- #include <linux/moduleparam.h>
--#include <linux/dma-mapping.h>
- #include <linux/mutex.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/mpu401.h>
---- linux-2.6.17-rc1-mm2-full/sound/pci/ice1712/ice1712.c.old	2006-04-17 02:52:31.000000000 +0200
-+++ linux-2.6.17-rc1-mm2-full/sound/pci/ice1712/ice1712.c	2006-04-17 02:52:34.000000000 +0200
-@@ -54,11 +54,10 @@
- #include <linux/init.h>
- #include <linux/pci.h>
- #include <linux/dma-mapping.h>
- #include <linux/slab.h>
- #include <linux/moduleparam.h>
--#include <linux/dma-mapping.h>
- #include <linux/mutex.h>
- 
- #include <sound/core.h>
- #include <sound/cs8427.h>
- #include <sound/info.h>
---- linux-2.6.17-rc1-mm2-full/sound/pci/maestro3.c.old	2006-04-17 02:52:43.000000000 +0200
-+++ linux-2.6.17-rc1-mm2-full/sound/pci/maestro3.c	2006-04-17 02:52:47.000000000 +0200
-@@ -39,11 +39,10 @@
- #include <linux/pci.h>
- #include <linux/dma-mapping.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
- #include <linux/moduleparam.h>
--#include <linux/dma-mapping.h>
- #include <sound/core.h>
- #include <sound/info.h>
- #include <sound/control.h>
- #include <sound/pcm.h>
- #include <sound/mpu401.h>
---- linux-2.6.17-rc1-mm2-full/sound/pci/mixart/mixart.c.old	2006-04-17 02:53:06.000000000 +0200
-+++ linux-2.6.17-rc1-mm2-full/sound/pci/mixart/mixart.c	2006-04-17 02:53:09.000000000 +0200
-@@ -26,11 +26,10 @@
- #include <linux/interrupt.h>
- #include <linux/pci.h>
- #include <linux/dma-mapping.h>
- #include <linux/moduleparam.h>
- #include <linux/mutex.h>
--#include <linux/dma-mapping.h>
- 
- #include <sound/core.h>
- #include <sound/initval.h>
- #include <sound/info.h>
- #include <sound/control.h>
---- linux-2.6.17-rc1-mm2-full/sound/pci/pcxhr/pcxhr.c.old	2006-04-17 02:53:18.000000000 +0200
-+++ linux-2.6.17-rc1-mm2-full/sound/pci/pcxhr/pcxhr.c	2006-04-17 02:53:21.000000000 +0200
-@@ -28,11 +28,10 @@
- #include <linux/pci.h>
- #include <linux/dma-mapping.h>
- #include <linux/delay.h>
- #include <linux/moduleparam.h>
- #include <linux/mutex.h>
--#include <linux/dma-mapping.h>
- 
- #include <sound/core.h>
- #include <sound/initval.h>
- #include <sound/info.h>
- #include <sound/control.h>
+What's wrong with asm/? asm/ includes should also be last.
+
+> +
+> +
+
+This patch adds a lot of superfluous whitespace, please trim it.
+
+> +static char *id = NULL;
+
+Pointless initializer.
+
+> +
+> +/* Spinlocks */
+> +spinlock_t spu_memlock = SPIN_LOCK_UNLOCKED;
+> +spinlock_t spu_dmalock = SPIN_LOCK_UNLOCKED;
+> +
+DEFINE_SPINLOCK()..
+
+> +
+> +/* SPU specific functions */
+> +
+> +/* spu_write_wait - wait for G2-SH FIFO to clear */
+> +static inline void spu_write_wait(void)
+> +{
+> +	int time_count;
+> +	time_count = 0;
+> +	while (1) {
+> +		if (!(readl(G2_FIFO) & 0x11))
+> +			break;
+> +		/* To ensure hardware failure doesn't wedge kernel */
+> +		time_count++;
+> +		if (time_count > 0x10000)
+> +			break;
+> +	}
+> +
+> +	return;
+> +}
+> +
+Useless return.
+
+> +
+> +/* spu_memset - write to memory in SPU address space */
+> +static void spu_memset(uint32_t toi, void __iomem * what, int length)
+> +{
+> +	uint32_t *to = (uint32_t *) (SPU_MEMORY_BASE + toi);
+> +	int i;
+> +
+> +
+> +	if (length % 4)
+> +		length = (length / 4) + 1;
+> +	else
+> +		length = length / 4;
+> +	spu_write_wait();
+> +	for (i = 0; i < length; i++) {
+> +		spin_lock(&spu_memlock);
+> +		writel(what, to);
+> +		spin_unlock(&spu_memlock);
+> +		to++;
+> +		if (i && !(i % 8))
+> +			spu_write_wait();
+> +	}
+> +	return;
+> +}
+> +
+Likewise.
+
+> +static void spu_memload(uint32_t toi, void __iomem * from, int length)
+> +{
+> +	uint32_t __iomem *froml = from;
+> +	uint32_t __iomem *to =
+> +	    (uint32_t __iomem *) (SPU_MEMORY_BASE + toi);
+> +	int i, val;
+> +	if (length % 4)
+> +		length = (length / 4) + 1;
+> +	else
+> +		length = length / 4;
+> +	spu_write_wait();
+> +	for (i = 0; i < length; i++) {
+> +		val = *froml;
+> +		spin_lock(&spu_memlock);
+> +		writel(val, to);
+> +		spin_unlock(&spu_memlock);
+> +		froml++;
+> +		to++;
+> +		if (i && !(i % 8))
+> +			spu_write_wait();
+> +	}
+> +	return;
+> +
+> +}
+> +
+And again.
+
+> +/* Halt the sound processor,
+> +   clear the memory,
+> +   load some default ARM7 code,
+> +   and then restart ARM7
+> +*/
+> +static int spu_init(void)
+> +{
+> +
+> +	spu_disable();
+> +	spu_memset(0, 0, 0x200000 / 4);
+> +	*(uint32_t *) SPU_MEMORY_BASE = 0xea000002;
+
+Why are you not using ctrl_outl() or something similar? This should also
+be documented a bit better if it's not magic..
+
+> +/* aica_chn_start - write to spu to start playback */
+> +inline static void aica_chn_start(void)
+
+static inline void..
+
+> +/* aica_chn_halt - write to spu to halt playback */
+> +inline static void aica_chn_halt(void)
+> +{
+Likewise..
+
+> +/* Simple platform device */
+> +static struct platform_device *pd = NULL;
+> +
+> +
+> +
+Useless initializer and whitespace damage.
+
+> +static int stereo_buffer_transfer(struct snd_pcm_substream *substream,
+> +				  int buffer_size, int period)
+> +{
+> +	int transferred;
+> +	struct snd_pcm_runtime *runtime;
+> +	int period_offset;
+> +	period_offset = period;
+> +	period_offset %= (AICA_PERIOD_NUMBER / 2);
+> +	runtime = substream->runtime;
+> +
+> +	/* transfer left and then right */
+> +	spin_lock(&spu_dmalock);
+> +	dma_xfer(0,
+> +		 runtime->dma_area + (AICA_PERIOD_SIZE * period_offset),
+> +		 AICA_CHANNEL0_OFFSET + (AICA_PERIOD_SIZE * period_offset),
+> +		 buffer_size / 2, 5);
+> +	/* wait for completion */
+> +	do {
+> +		udelay(5);
+> +		transferred = get_dma_residue(0);
+> +	}
+> +	while (transferred < buffer_size / 2);
+
+You can't be serious, you're trying to setup, transfer, and wait for
+completion for a DMA transfer while holding a spinlock? The fact this
+hasn't blown up on you is sheer luck. Use dma_wait_for_completion(), it
+does the right thing.
+
+Additionaly you need a timeout here if you were for some reason intent on
+doing this while working against the DMA subsystem, if your DMA gets
+stuck this will blow up.
+
+> +void static aica_period_elapsed(unsigned long timer_var)
+> +{
+
+static void..
+
+> +	int transferred;
+> +	int play_period;
+> +	struct snd_pcm_runtime *runtime;
+> +	struct snd_pcm_substream *substream;
+> +	struct snd_card_aica *dreamcastcard;
+> +	substream = (struct snd_pcm_substream *) timer_var;
+> +	runtime = substream->runtime;
+> +	dreamcastcard =
+> +	    (struct snd_card_aica *) (substream->pcm->private_data);
+
+Useless cast.
+
+> +	} else {
+> +		spin_lock(&spu_dmalock);
+> +		dma_xfer(0,
+> +			 runtime->dma_area +
+> +			 (AICA_PERIOD_SIZE * dreamcastcard->clicks),
+> +			 AICA_CHANNEL0_OFFSET +
+> +			 (AICA_PERIOD_SIZE * dreamcastcard->clicks),
+> +			 AICA_PERIOD_SIZE, 5);
+> +		do {
+> +			/* Try to fine tune the delay to keep it as short as possible */
+> +			udelay(5);
+> +			/* get_dma_residue reports residue until completion when it reports total bytes transferred */
+> +			transferred = get_dma_residue(0);
+> +		}
+> +		while (transferred < AICA_PERIOD_SIZE);
+> +		spin_unlock(&spu_dmalock);
+> +	}
+> +
+spinlock / DMA brain damage.
+
+> +	snd_pcm_period_elapsed(dreamcastcard->substream);
+> +	dreamcastcard->clicks++;
+> +	dreamcastcard->clicks %= AICA_PERIOD_NUMBER;
+> +	/* reschedule the timer */
+> +	dreamcastcard->timer.expires = jiffies + 1;
+> +	add_timer(&(dreamcastcard->timer));
+> +	return;
+> +}
+> +
+Superfluous return.
+
+> +static int snd_aicapcm_pcm_open(struct snd_pcm_substream *substream)
+> +{
+> +	struct snd_pcm_runtime *runtime;
+> +	struct aica_channel *channel;
+> +	struct snd_card_aica *dreamcastcard;
+> +
+> +	if (!enable)
+> +		return -ENOENT;
+
+unlikely()?
+
+> +	dreamcastcard =
+> +	    (struct snd_card_aica *) (substream->pcm->private_data);
+
+Useless cast.
+
+> +static int snd_aicapcm_pcm_close(struct snd_pcm_substream *substream)
+> +{
+> +	struct snd_card_aica *dreamcastcard =
+> +	    (struct snd_card_aica *) (substream->pcm->private_data);
+Likewise.
+
+> +static int snd_aicapcm_pcm_prepare(struct snd_pcm_substream *substream)
+> +{
+> +
+> +	struct snd_card_aica *dreamcastcard =
+> +	    (struct snd_card_aica *) (substream->pcm->private_data);
+
+And again.
+
+> +static void startup_aica(struct snd_card_aica *dreamcastcard)
+> +{
+> +	spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
+> +		    (uint8_t *) dreamcastcard->channel,
+> +		    sizeof(struct aica_channel));
+> +	aica_chn_start();
+> +	return;
+> +}
+> +
+Useless return.
+
+> +
+> +static void spu_begin_dma(struct snd_pcm_substream *substream)
+> +{
+> +	int buffer_size;
+> +	snd_pcm_runtime_t *runtime;
+> +	struct snd_card_aica *dreamcastcard =
+> +	    (struct snd_card_aica *) (substream->pcm->private_data);
+
+Superfluous cast.
+
+> +	runtime = substream->runtime;
+> +	buffer_size = frames_to_bytes(runtime, runtime->buffer_size);
+> +	if (runtime->channels == 1) {
+> +		spin_lock(&spu_dmalock);
+> +		dma_xfer(0, runtime->dma_area, AICA_CHANNEL0_OFFSET,
+> +			 buffer_size, 5);
+> +		spin_unlock(&spu_dmalock);
+
+Broken locking.
+
+> +static int __init snd_aicapcmchip(struct snd_card_aica *dreamcastcard,
+> +				  int pcm_index)
+> +{
+> +	struct snd_pcm *pcm;
+> +	int err;
+> +
+> +	/* Can we lock the memory */
+> +
+> +	if (request_mem_region(ARM_RESET_REGISTER, 4, "AICA ARM control")
+> +	    == NULL)
+> +		return -ENOMEM;
+> +	if (request_mem_region(SPU_MEMORY_BASE, 0x200000, "AICA Sound RAM")
+> +	    == NULL) {
+> +		release_mem_region(ARM_RESET_REGISTER, 0x4);
+> +		return -ENOMEM;
+> +	}
+> +
+Why aren't these setup in the platform device?
+
+> +	/* AICA has no capture ability */
+> +	if ((err =
+> +	     snd_pcm_new(dreamcastcard->card, "AICA PCM", pcm_index, 1, 0,
+> +			 &pcm)) < 0)
+> +		return err;
+
+Weird notation, linux kernel style would be:
+
+	err = snc_pcm_new(...);
+	if (unlikely(err < 0))
+		return err;
+
+please refactor accordingly.
+
+> +static int aica_pcmvolume_put(struct snd_kcontrol *kcontrol,
+> +			      struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_card_aica *dreamcastcard;
+> +	dreamcastcard = (struct snd_card_aica *) kcontrol->private_value;
+> +
+> +	if (!dreamcastcard->channel) {
+> +		snd_printk("No channel yet\n");
+> +		return -ETXTBSY;	/* too soon */
+> +	}
+> +
+> +	else if (dreamcastcard->channel->vol ==
+> +		 ucontrol->value.integer.value[0])
+> +		return 0;
+> +
+> +	else {
+
+The if/elses are all over the place, please see
+Documentation/CodingStyle.
+
+> +static struct device_driver aica_driver = {
+> +	.name = "AICA",
+> +	.bus = &platform_bus_type,
+> +	.remove = remove_dreamcastcard,
+> +};
+> +
+Deprecated, see struct platform_device.
+
+> +	pd = platform_device_register_simple(dreamcastcard->card->driver,
+> +					     -1, NULL, 0);
+> +
+This is also going away, you'll want to update this for the new platform
+device semantics.
+
+> +      freepcm:
+> +	snd_aicapcm_free();
+> +
+> +      freedreamcast:
+> +	snd_card_free(dreamcastcard->card);
+> +
+Why are these goto labels in magical locations?
+
+> +static void __exit aica_exit(void)
+> +{
+> +	struct device_driver *drv = (&pd->dev)->driver;
+> +	device_release_driver(&pd->dev);
+> +	driver_unregister(drv);
+> +	platform_device_unregister(pd);
+> +	/* Kill any sound still playing and reset ARM7 to safe state */
+> +	spu_init();
+> +
+> +
+> +	return;
+> +}
+> +
+And another useless return.
 
 
 -------------------------------------------------------
