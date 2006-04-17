@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002028]: cat /proc/asound/timers
-Date: Mon, 17 Apr 2006 19:45:07 +0200
-Message-ID: <7c6678fab1e6dadb2b2670e6178a1500@bugtrack.alsa-project.org>
+Date: Mon, 17 Apr 2006 19:57:45 +0200
+Message-ID: <f6d72c71f1e21dca936be6a1b33b88f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF278188
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 19:45:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B59EF1AC
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 19:57:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2028> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 1
 Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
 Date Submitted:             04-17-2006 12:04 CEST
-Last Modified:              04-17-2006 19:45 CEST
+Last Modified:              04-17-2006 19:57 CEST
 ======================================================================
 Summary:                    cat /proc/asound/timers
 Description: 
@@ -167,12 +167,7 @@ P0-3-60:
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 04-17-06 16:09 
-----------------------------------------------------------------------
-This question belongs on the alsa-devel mailing list not the bug tracker
-
-----------------------------------------------------------------------
- Raymond - 04-17-06 19:45 
+ Raymond - 04-17-06 19:47 
 ----------------------------------------------------------------------
 It is a bug
 
@@ -182,7 +177,15 @@ alsa-kernel/core/timer.c
 		entry->c.text.read = snd_timer_proc_read;
 
 
-32+32+1+16+64=135 > 128
+32+32+1+16+64=135
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 04-17-06 19:57 
+----------------------------------------------------------------------
+OK, please post a patch (to alsa-devel mailing list not bug tracker) to
+raise that to 256
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -195,6 +198,8 @@ Date Modified  Username       Field                    Change
 04-17-06 19:45 Raymond        Status                   closed => feedback  
 04-17-06 19:45 Raymond        Resolution               open => reopened    
 04-17-06 19:45 Raymond        Note Added: 0009317                          
+04-17-06 19:47 Raymond        Note Edited: 0009317                         
+04-17-06 19:57 rlrevell       Note Added: 0009318                          
 ======================================================================
 
 
