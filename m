@@ -1,17 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsa-driver annoyance
-Date: Mon, 17 Apr 2006 14:01:06 +0200
-Message-ID: <20060417120106.GA25991@turing.informatik.uni-halle.de>
-References: <1145048699.9434.7.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002025]: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio lacks support for microphone
+Date: Mon, 17 Apr 2006 14:43:52 +0200
+Message-ID: <080a1c02b5c0127fb431901ce757b815@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 503A3199
-	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 14:01:10 +0200 (MEST)
-In-reply-to: <1145048699.9434.7.camel@localhost.localdomain>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13D6515A
+	for <alsa-devel@alsa-project.org>; Mon, 17 Apr 2006 14:43:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,24 +18,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Adrian McMenamin wrote:
-> I am cross compiling alsa driver for use on an NFS root mounted
-> partition hosted on my development box for use by a box running a 2.6.15
-> kernel - the development box uses a 2.6.12 kernel
-> 
-> Alsa-driver insists on creating a 2.6.15 modules directory on the
-> development box hierarchy and then installing modules in that directory
-> and not in the NFS root partition.
 
-What are the parameters and the output of the configure script?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2025> 
+======================================================================
+Reported By:                gegtot
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2025
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             04-16-2006 21:08 CEST
+Last Modified:              04-17-2006 14:43 CEST
+======================================================================
+Summary:                    Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio lacks support for microphone
+Description: 
+The speakers to works but the microphone is always on i.e. it always
+captures sound and produces acoustic feedback.
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 04-17-06 07:29 
+----------------------------------------------------------------------
+Please post the output of "amixer".
+
+How are you testing recording?  Does "arecord" work?
+
+----------------------------------------------------------------------
+ tbecker37 - 04-17-06 14:43 
+----------------------------------------------------------------------
+I can confirm this with the Intel 82801G (ICH7 Family) as well (STAC 9200
+codec).    See bug # 1988.  Here's my amixer output:
+
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 8 [26%] [on]
+  Front Right: Playback 8 [26%] [on]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [off]
+  Front Right: Capture 0 [0%] [off]
+Simple mixer control 'Capture Mux',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 4
+  Front Left: 4 [100%]
+  Front Right: 4 [100%]
+Simple mixer control 'Input Source',0
+  Capabilities: enum
+  Items: 'Mic'
+  Item0: 'Mic'
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-16-06 21:08 gegtot         New Issue                                    
+04-16-06 21:27 gegtot         Issue Monitored: gegtot                      
+04-16-06 21:28 gegtot         Note Added: 0009298                          
+04-17-06 07:29 rlrevell       Note Added: 0009304                          
+04-17-06 14:43 tbecker37      Note Added: 0009309                          
+======================================================================
 
 
-Regards,
-Clemens
 
 
 -------------------------------------------------------
