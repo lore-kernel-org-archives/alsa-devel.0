@@ -1,18 +1,14 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: Re: No snd_pcm_resume_all() ?
-Date: Wed, 19 Apr 2006 06:59:22 +1000
-Message-ID: <1145393964.4705.76.camel@localhost.localdomain>
-References: <1145321918.4705.4.camel@localhost.localdomain>
-	 <s5hd5ffxc1r.wl%tiwai@suse.de> <1145382922.4116.81.camel@localhost>
-	 <s5hodyyvjxr.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
+Date: Tue, 18 Apr 2006 23:02:06 +0200
+Message-ID: <51e53891a4470702fa8c85e500d9b3fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25FF5183
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 22:59:29 +0200 (MEST)
-In-Reply-To: <s5hodyyvjxr.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 713CC183
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 23:02:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,30 +18,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Johannes Berg <johannes@sipsolutions.net>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-04-18 at 20:05 +0200, Takashi Iwai wrote:
-> At Tue, 18 Apr 2006 19:55:22 +0200,
-> Johannes Berg wrote:
-> > 
-> > On Tue, 2006-04-18 at 15:12 +0200, Takashi Iwai wrote:
-> > 
-> > > Indeed, the pcm resume was designed to be called from application to
-> > > restart.  The flow is like below:
-> > 
-> > Why does the app even need to know?!
-> 
-> We cannot freeze the running user process at the very same moment the
-> driver's suspend callback is called...
 
-On ppc, I don't freeze processes at all... though from my experience,
-just doing the suspend at sleep and the resume on wakeup from the driver
-without freezing the app just works... the samples just stop getting
-pumped for a little while. 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+======================================================================
+Reported By:                vertex
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2035
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              04-18-2006 23:02 CEST
+======================================================================
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
+Description: 
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-Ben.
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
+
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 04-18-06 22:45 
+----------------------------------------------------------------------
+I would not expect it to work with model=auto as that is the default.  Try
+the other options
+
+----------------------------------------------------------------------
+ vertex - 04-18-06 23:02 
+----------------------------------------------------------------------
+I tried all three options, 3stack, 3stack-dig and 6stack-dig. No audible
+playback using any of the options.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+======================================================================
 
 
 
