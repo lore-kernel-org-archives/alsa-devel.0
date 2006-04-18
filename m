@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Tue, 18 Apr 2006 10:54:10 +0200
-Message-ID: <0506341b516899da06c66ac1adc499ad@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002029]: Cannot compile pcm/pcm_direct.c
+Date: Tue, 18 Apr 2006 11:26:03 +0200
+Message-ID: <f0955f7d44cb9911ed127ce6f05bd071@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E537B219
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 10:54:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0BB9173
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 11:26:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,95 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2029> 
 ======================================================================
-Reported By:                zanonmark
+Reported By:                croiset
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
+Project:                    ALSA - lib
+Issue ID:                   2029
+Category:                   0_general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
 ======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              04-18-2006 10:54 CEST
+Date Submitted:             04-18-2006 11:26 CEST
+Last Modified:              04-18-2006 11:26 CEST
 ======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
+Summary:                    Cannot compile pcm/pcm_direct.c
 Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+It is impossible to compile pcm/pcm_direct.c.
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
-
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
-
-So, will you please include such a parameter in the next version of the
-driver?
-
-Thanks a lot,
-
-Marco.
+I have this error :
+then mv -f ".deps/pcm_direct.Tpo" ".deps/pcm_direct.Plo"; else rm -f
+".deps/pcm
+_direct.Tpo"; exit 1; fi
+ i386-redhat-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include
+-I../../include
+-O2 -march=i386 -mcpu=i686 -MT pcm_direct.lo -MD -MP -MF
+.deps/pcm_direct.Tpo -
+c pcm_direct.c  -fPIC -DPIC -o .libs/pcm_direct.o
+pcm_direct.c: In function `snd_pcm_direct_parse_open_conf':
+pcm_direct.c:1418: parse error before `const'
+pcm_direct.c:1419: `id' undeclared (first use in this function)
+pcm_direct.c:1419: (Each undeclared identifier is reported only once
+pcm_direct.c:1419: for each function it appears in.)
+make[2]: *** [pcm_direct.lo] Erreur 1
+make[2]: Quitte le répertoire
+`/home/redhat/BUILD/alsa-lib-1.0.11rc5/src/pcm'
+make[1]: *** [all-recursive] Erreur 1
+make[1]: Quitte le répertoire `/home/redhat/BUILD/alsa-lib-1.0.11rc5/src'
+make: *** [all-recursive] Erreur 1
 
 ======================================================================
-
-----------------------------------------------------------------------
- zanonmark - 04-17-06 19:59 
-----------------------------------------------------------------------
-yes, snd_mpu401 is loaded,
-
-I also tried with:
-
-rmmod snd_ens1371
-modprobe snd_ens1371 joystick_port=1
-
-or
-
-rmmod snd_ens1371
-modprobe snd_ens1371 joystick_port=0x200
-
-but nothing changes...
-
-----------------------------------------------------------------------
- Raymond - 04-18-06 10:54 
-----------------------------------------------------------------------
-It seem that joystick is not working on ens1371 
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1774
-
-Could you try 0x218 ?
-
-Do your joystick require specific module ? (jsdev, analog)
-
-Are those io ports already used by other hardware ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
+04-18-06 11:26 croiset        New Issue                                    
 ======================================================================
 
 
