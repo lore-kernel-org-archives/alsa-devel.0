@@ -1,15 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: AC97 codec mixer control question
-Date: Tue, 18 Apr 2006 14:38:14 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0604181432390.9432@tm8103.perex-int.cz>
-References: <20060411220808.13530.qmail@web86911.mail.ukl.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002033]: Capture volume ok with alsa-mixer not OK with aumix
+Date: Tue, 18 Apr 2006 14:43:20 +0200
+Message-ID: <4da5bde395222ed61100b7006b2dee35@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9CD71A9
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 14:38:15 +0200 (MEST)
-In-Reply-To: <20060411220808.13530.qmail@web86911.mail.ukl.yahoo.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5FE951A9
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 14:43:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,30 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adam Ward <adamward2005@yahoo.co.uk>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 11 Apr 2006, Adam Ward wrote:
 
-> AC97_ENUM_DOUBLE(AC97_REC_SEL,8,0,8,std_rec_sel)
-> 
-> SO, Linphone asks for "Mic" and sets 0x0000, but my
-> codec, AK4650, needs 0x0200 to select the mic, which
-> actually corresponds to "Video".
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2033> 
+======================================================================
+Reported By:                croiset
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2033
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Redhat 7.2
+Kernel Version:             2.4.7-10
+======================================================================
+Date Submitted:             04-18-2006 14:43 CEST
+Last Modified:              04-18-2006 14:43 CEST
+======================================================================
+Summary:                    Capture volume ok with alsa-mixer not OK with aumix
+Description: 
+It's impossible to change the volume with aumix of the line IN for
+example.
 
-AK4650 Record Source register seems to be incompatible with
-the original AC97 specification. You have to implement
-special code for this codec. You should create a new
-AC97_SCAP_AKRECSEL define. Perhaps, other AK codecs are
-"broken" in this way as well.
+Result of : cat /proc/asound/card0/oss_mixer
+VOLUME "" 0
+BASS "" 0
+TREBLE "" 0
+SYNTH "" 0
+PCM "" 0
+SPEAKER "" 0
+LINE "" 0
+MIC "Mic" 0
+CD "" 0
+IMIX "" 0
+ALTPCM "" 0
+RECLEV "" 0
+IGAIN "" 0
+OGAIN "" 0
+LINE1 "Aux" 0
+LINE2 "" 0
+LINE3 "" 0
+DIGITAL1 "IEC958" 0
+DIGITAL2 "" 0
+DIGITAL3 "" 0
+PHONEIN "Phone" 0
+PHONEOUT "Phone" 0
+VIDEO "" 0
+RADIO "" 0
+MONITOR "" 0
+======================================================================
 
-						Jaroslav
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-06 14:43 croiset        New Issue                                    
+04-18-06 14:43 croiset        Distribution              => Redhat 7.2      
+04-18-06 14:43 croiset        Kernel Version            => 2.4.7-10        
+======================================================================
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
 
 
 -------------------------------------------------------
