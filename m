@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002017]: Identify ALC880 chip on Epox EP-5LDA+ GLi motherboard
-Date: Tue, 18 Apr 2006 13:47:53 +0200
-Message-ID: <dc38c434bd44ad8fdb54dd25e422048a@bugtrack.alsa-project.org>
+From: Christoph Hellwig <hch@infradead.org>
+Subject: Re: Re: [linuxsh-dev] [PATCH] ALSA driver for Yamaa AICA on Sega Dreamcast
+Date: Tue, 18 Apr 2006 12:52:24 +0100
+Message-ID: <20060418115224.GA8591@infradead.org>
+References: <1145232784.12804.2.camel@localhost.localdomain> <20060417012913.GA16821@linux-sh.org> <1145304037.9244.27.camel@localhost.localdomain> <1145310435.16138.83.camel@mindpipe> <20060417220512.GA16119@infradead.org> <s5hhd4r9ohh.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8781B160
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 13:47:53 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hhd4r9ohh.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,66 +17,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Christoph Hellwig <hch@infradead.org>, Lee Revell <rlrevell@joe-job.com>, Adrian McMenamin <adrian@mcmen.demon.co.uk>, Paul Mundt <lethal@linux-sh.org>, Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Apr 18, 2006 at 12:17:46PM +0200, Takashi Iwai wrote:
+> Heh, the suggested line is what CondingStyle suggets -- the output of
+> indent program.  Yeah, but better to fix "bad programming" :)
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2017> 
-======================================================================
-Reported By:                timo
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2017
-Category:                   PCI - hda-intel
-Reproducibility:            have not tried
-Severity:                   feature
-Priority:                   normal
-Status:                     resolved
-Distribution:               Kubuntu - Dapper Flight 4
-Kernel Version:             2.6.15
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             04-12-2006 20:16 CEST
-Last Modified:              04-18-2006 13:47 CEST
-======================================================================
-Summary:                    Identify ALC880 chip on Epox EP-5LDA+ GLi
-motherboard
-Description: 
-This motherboard has the Realtek ALC880 chip, but it was not recognized. No
-sound at all. I tried most of the index, position_fix and model
-possibilities, no help. Also alsa from cvs. I used instructions from this
-forum to generate an addition to the patch_realtek.c with the 1.0.11rc5:
-{ .pci_subvendor = 0x1695, .pci_subdevice = 0x4012, .config =
-ALC880_6ST_DIG },
-compiled and bingo.
-
-I'm not sure if this is the only way to go, but it did the trick for me.
-Now I have sound.
-
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 04-18-06 13:47 
-----------------------------------------------------------------------
-The PCI SSID entry is added on CVS.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-12-06 20:16 timo           New Issue                                    
-04-12-06 20:16 timo           Distribution              => Kubuntu - Dapper
-Flight 4
-04-12-06 20:16 timo           Kernel Version            => 2.6.15          
-04-18-06 13:47 tiwai          Status                   assigned => resolved
-04-18-06 13:47 tiwai          Resolution               open => fixed       
-04-18-06 13:47 tiwai          Note Added: 0009333                          
-======================================================================
-
+indent only fixes indentation.  Moving the if check to a different line
+as the function call changes more than indentation so indent doesn't do it.
+Yes, there's more to code codingstyle than just running indent :)
 
 
 
