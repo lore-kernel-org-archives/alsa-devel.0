@@ -1,19 +1,19 @@
 From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Subject: Re: No snd_pcm_resume_all() ?
-Date: Tue, 18 Apr 2006 12:12:47 +1000
-Message-ID: <1145326367.4705.37.camel@localhost.localdomain>
+Date: Tue, 18 Apr 2006 12:13:41 +1000
+Message-ID: <1145326421.4705.39.camel@localhost.localdomain>
 References: <1145321918.4705.4.camel@localhost.localdomain>
 	 <1145323208.16138.119.camel@mindpipe>
 	 <1145323654.4705.31.camel@localhost.localdomain>
-	 <1145324168.16138.126.camel@mindpipe>
+	 <1145324168.16138.126.camel@mindpipe> <1145324740.16138.129.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12426171
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 04:12:51 +0200 (MEST)
-In-Reply-To: <1145324168.16138.126.camel@mindpipe>
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 543BF171
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 04:13:46 +0200 (MEST)
+In-Reply-To: <1145324740.16138.129.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,28 +27,24 @@ To: Lee Revell <rlrevell@joe-job.com>
 Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Johannes Berg <johannes@sipsolutions.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-04-17 at 21:36 -0400, Lee Revell wrote:
-> On Tue, 2006-04-18 at 11:27 +1000, Benjamin Herrenschmidt wrote:
-> > How are apps supposed to know about system suspend/resume ? There is
-> > no proper way to do so that works accross architectures and
-> > suspend/resume methods so far ... I yet have to see a single audio app
-> > that knows about it ... (tried various KDE based things like Amarok,
-> > mpg123, xine, ... ) 
+On Mon, 2006-04-17 at 21:45 -0400, Lee Revell wrote:
+> On Mon, 2006-04-17 at 21:36 -0400, Lee Revell wrote:
+> > Are any of these native ALSA apps, or do they all go through artsd
+> > which
+> > uses the OSS emulation layer?
+> > 
+> > Does it work OK with aplay?
+> > 
 > 
-> They don't specifically have to know about suspend and resume - from the
-> application point of view it just looks like an underrun - poll() or
-> write() will return an error code so the app checks the state with
-> snd_pcm_state() and recovers if it is SND_PCM_STATE_XRUN or
-> SND_PCM_STATE_SUSPENDED.
+> Argh, actually it looks like aplay doesn't even handle this (and I was
+> wrong - apps do have to know about suspend they just don't have to do
+> anything special to handle it).
 > 
-> Are any of these native ALSA apps, or do they all go through artsd which
-> uses the OSS emulation layer?
-> 
-> Does it work OK with aplay?
+> I don't know why snd_pcm_resume_all() can't be added.
 
-I'm not sure what they use at this point, I'll check later. I think I
-didn't enabled artsd and amarok is using xine engine so it's probably
-using alsa directly though.
+Ok, well, you have the patch, here's a signed-off for it too: :)
+
+Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
 Ben.
 
