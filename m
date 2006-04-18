@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Tue, 18 Apr 2006 04:53:22 +0200
-Message-ID: <05d22fd35dfe7d9527d9357f25b4a696@bugtrack.alsa-project.org>
+Date: Tue, 18 Apr 2006 05:11:53 +0200
+Message-ID: <5f8399197b3b872695bfe09758a3aff8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC9851AA
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 04:53:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 026801AA
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 05:11:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              04-18-2006 04:53 CEST
+Last Modified:              04-18-2006 05:11 CEST
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -114,19 +114,6 @@ gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4.
 ======================================================================
 
 ----------------------------------------------------------------------
- gineera - 04-17-06 22:57 
-----------------------------------------------------------------------
->  I think you should ask Alan Horstmann to test whether this patch work on
-his au88x0.
- 
-You did well to notice my au8820 card, Raymond!  I have already intended
-to look at the init-before-components patch as it sorts out the midi name,
-and will check soon.  I am willing to post to alsa-devel if you prefer, or
-do so yourself when I report back here.
-
-regards  Alan
-
-----------------------------------------------------------------------
  ponchick - 04-18-06 04:53 
 ----------------------------------------------------------------------
 I try rc3-rc5 with and without au88x0_surround40.patch and "verbose" patch
@@ -135,6 +122,15 @@ it should - kde doesn't play builtin sounds (when I test
 au88x0_surround40.patch it does) though artsplay work fine. While writing
 this note I realize that I change a little .asoundrc so today I'll try
 reproduce this again.
+
+----------------------------------------------------------------------
+ ponchick - 04-18-06 05:11 
+----------------------------------------------------------------------
+> How do you load/unload the au8830 driver ?
+
+I use '/etc/init.d/alsasound restart'. It kill processes that use sound
+devices, save mixer state, do rmmod then do modprobe for
+alsa/oss-emulation modules and restore mixer levels.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -184,6 +180,7 @@ gentoo-sources-2.6.15-r4
 04-14-06 03:30 Raymond        Note Added: 0009279                          
 04-17-06 22:57 gineera        Note Added: 0009322                          
 04-18-06 04:53 ponchick       Note Added: 0009323                          
+04-18-06 05:11 ponchick       Note Added: 0009324                          
 ======================================================================
 
 
