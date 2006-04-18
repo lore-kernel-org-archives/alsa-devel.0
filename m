@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
-Date: Tue, 18 Apr 2006 20:40:35 +0200
-Message-ID: <65fc9e6e131bc6731db5dfdb5821c842@bugtrack.alsa-project.org>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: Re: No snd_pcm_resume_all() ?
+Date: Tue, 18 Apr 2006 20:40:53 +0200
+Message-ID: <1145385653.4116.88.camel@localhost>
+References: <1145321918.4705.4.camel@localhost.localdomain>
+	 <s5hd5ffxc1r.wl%tiwai@suse.de> <1145382922.4116.81.camel@localhost>
+	 <s5hodyyvjxr.wl%tiwai@suse.de> <1145383590.4116.83.camel@localhost>
+	 <s5hmzeivjom.wl%tiwai@suse.de> <1145383929.4116.85.camel@localhost>
+	 <s5hlku2vizk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-6VG7H6Ri6W5YqIPHPP/d"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E295D138
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 20:40:35 +0200 (MEST)
+Received: from sipsolutions.net (195.210.38.204.no-dns.no-wires.co.uk [195.210.38.204])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 358C7138
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 20:40:58 +0200 (MEST)
+In-Reply-To: <s5hlku2vizk.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,131 +23,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
-======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
-======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              04-18-2006 20:40 CEST
-======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
-Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
+--=-6VG7H6Ri6W5YqIPHPP/d
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+On Tue, 2006-04-18 at 20:25 +0200, Takashi Iwai wrote:
 
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
+> Yes, of course, it's not an XRUN but "another type" of state.
+> The driver just notifes the SUSPENDED state when any access comes from
+> the app.
 
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+I still don't see why it is necessary. I can see two cases:
 
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
+1) the app is frozen before the driver suspends, so that we get into a
+regular xrun situation. That can be handled as an xrun
 
-Please let me know if there is something more I can provide.
-======================================================================
+2) the driver suspends before the app is frozen, which means that the
+app won't be getting any pcm progress for a bit of time, which doesn't
+matter at all. Or is that the point where I'm mistaken, and it does
+matter to the app if the hardware pauses for a bit (say for video/audio
+sync)?
 
-----------------------------------------------------------------------
- pzad - 04-18-06 20:25 
-----------------------------------------------------------------------
->From datasheet looks like this codec doesn't have any volume control on
-output. Mixer you get is nearly everything what this codec has.
+johannes
 
-----------------------------------------------------------------------
- vertex - 04-18-06 20:40 
-----------------------------------------------------------------------
-Nothing appears to work. No audio playback at any time. I don't know of any
-easy way to test the mic functionality if I can't hear playback. I don't
-see anything in the mixer controls that would allow me to turn volume up,
-much less mute/unmute a channel. Does the second statement imply that
-there is no volume control for the sound card? Is the "CD" channel control
-the general audio playback?
+--=-6VG7H6Ri6W5YqIPHPP/d
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-Yes, I added model=ACL861 to my /etc/modprobe.conf, this had no impact
-that I can see. dmesg says:
+-----BEGIN PGP SIGNATURE-----
 
-hda_codec: Unknown model for ACL861, trying auto-probe from BIOS
+iQIVAwUAREUys6Vg1VMiehFYAQI5vQ//cYhrG+59QmkQvhI3E6QMb8iQl+MInRuP
+lTD9vNImqAkzOx4rZJlsQWbokDrKgenwYvHHDhGRNlYF5xiKxD7F+xukx8TBZ0Xc
+ls2+rMszzJmcLoFC1svcqS4LYkpB0pTgb6htf+q7ispgWzJZ2vM6iDSMJPSIpx7F
+2D4tHJ7UBMmarSRTjE5ncm3/WzZzK3hdw6hnB721rezBu/Nonr7ueHAKZNbS8Eaa
+C/sEphtuWJsaBsG9PC2oeMM5EIhScB8VVhu41UTe5f8aWA2bN0ezmbTmV9WZ5joM
+s7kA7fIKreARLxDjwyA43OYnhOomyM4ACCvXqQ27tPme61t2hzHE3255IGay3SZ3
+IEMD63Mit54Gb+Kx46AmX0Evhe6h0VTcOhMCGUxIJhRUobgqxbc4+ePQJc7UUKDO
+/30JRrT7Deg7o2NR7rIkr8ldV1l51zGq+wtjJe6QW87Ul/SQ5+H5mI2mcwsXibso
+RiI71cWe1z0FLEfInakrrDMtNseqo8CC//MHlLWx1Ll+DnqwsjiYkRzoG3mOLwkf
+5WnPtB+Jc/1FezYL0P+opBggz+OqYhlFyl6Lsvi+NzdmQoyOpoSAJN14W9qU8jI+
+zyI4ss8/RmdU4YgeaBLZJoEikthQ3p34Hr7+I2itetsgr6wNfs69aggrK5PNlxAt
+Je/MbRl25SQ=
+=ynXT
+-----END PGP SIGNATURE-----
 
-Also, I have verified the same issue exists using the 2.6.15 kernel
-provided by FC5.
-
-This system only has two ports, one for headphones and one for an external
-mic. The system has a built-in mic also.
-
-Output of amixer is as follows:
-
-Simple mixer control 'Front',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 23
-  Mono:
-  Front Left: Playback 0 [0%] [on]
-  Front Right: Playback 0 [0%] [on]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 23
-  Mono:
-  Front Left: Playback 0 [0%] [on]
-  Front Right: Playback 0 [0%] [on]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 13
-  Front Left: Capture 0 [0%] [on]
-  Front Right: Capture 0 [0%] [on]
-Simple mixer control 'Input Source',0
-  Capabilities: enum
-  Items: 'Mic' 'CD'
-  Item0: 'Mic'
-
-Thanks very much for looking at this so promptly.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-======================================================================
-
+--=-6VG7H6Ri6W5YqIPHPP/d--
 
 
 
