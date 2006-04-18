@@ -1,17 +1,14 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: Re: No snd_pcm_resume_all() ?
-Date: Tue, 18 Apr 2006 20:06:30 +0200
-Message-ID: <1145383590.4116.83.camel@localhost>
-References: <1145321918.4705.4.camel@localhost.localdomain>
-	 <s5hd5ffxc1r.wl%tiwai@suse.de> <1145382922.4116.81.camel@localhost>
-	 <s5hodyyvjxr.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
+Date: Tue, 18 Apr 2006 20:09:40 +0200
+Message-ID: <fea2c74eddac5a7b948d01dfd74090da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-puOSFrLTeNUTKMz8TXau"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sipsolutions.net (195.210.38.204.no-dns.no-wires.co.uk [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E318171
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 20:06:34 +0200 (MEST)
-In-Reply-To: <s5hodyyvjxr.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25313183
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 20:09:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,47 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-puOSFrLTeNUTKMz8TXau
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+======================================================================
+Reported By:                vertex
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2035
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              04-18-2006 20:09 CEST
+======================================================================
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
+Description: 
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-On Tue, 2006-04-18 at 20:05 +0200, Takashi Iwai wrote:
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-> We cannot freeze the running user process at the very same moment the
-> driver's suspend callback is called...
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
 
-Yeah but we can freeze the pcm before the app, so for the app it's just
-as though there was a small pause/hiccup/whatever
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-johannes
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
 
---=-puOSFrLTeNUTKMz8TXau
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Please let me know if there is something more I can provide.
+======================================================================
 
------BEGIN PGP SIGNATURE-----
+----------------------------------------------------------------------
+ rlrevell - 04-18-06 20:09 
+----------------------------------------------------------------------
+What exactly does not work?
 
-iQIVAwUAREUqo6Vg1VMiehFYAQLMKBAAw1SzVmYJU5FIIq8xNry5zJoxW+JXuPgL
-LPzXJbLN0/Bdf/aagNF2Iogh+XZA7FC8O5CccGAjZrp5q75i1r1TLt57WtL1wAHu
-42wTUDrUgz93T56MGx36apZzxMAhU2oPEtNa8We3McP4L8EY5/ayYzCx1MaPhXYm
-iT10rijt3CbttoqUazxcV9RAMrEg7cHXVlRqUAUkiqL5rpIpO/MsJRMjs3d0e22e
-fgB/MQb7Gs5kLbVe1lCC/i/vfr1QWDWCn9Gi1YVcn4gzuFkEmCZcqJM/cLqGFPaG
-YdKoqSOvcQy56/YeKoXR4nJ0cGglEk2HdD9plajcXGzV3hSRgH8E0S4VHch9IH5N
-MV77FO+GTyiwcW+Kr959q8UmNbji00i0TVY22nUPIHwNtslOc5k4p4JId0H/pkv5
-wv7eV3UUgkfDjHxAmCcFWLpAtSquvBKMD0I+TBO07XnyN5m73kqZCooKAIkia9yp
-z39WH67S6W28vioWOHiwrku/a8qFVDn5kU+wiS2QYXDZe5H6v0uLm/8WJitoTEuh
-/bnUU40a37dXRS96m+xTLYXjecHi23+xfMEqkO/p1TJejev5lw89nMyRK4ca7caG
-v+8qZKajVLUyC2piaRf9xXQAk97RzSHZhMcHE1U1PyF4BumPLY8ujzpDGrzJQjOZ
-qTGLcLtRp1k=
-=4dxP
------END PGP SIGNATURE-----
+What is the output of "amixer"?
 
---=-puOSFrLTeNUTKMz8TXau--
+Did you try loading snd-hda-intel with all the available "model=" options
+described in ALSA-Configuration.txt?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+======================================================================
+
 
 
 
