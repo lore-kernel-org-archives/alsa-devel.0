@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002030]: compilation problem ali5451.c
-Date: Tue, 18 Apr 2006 13:40:04 +0200
-Message-ID: <1af2277ab014861b037eb991a4f363f6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001999]: Latest cvs won't compile
+Date: Tue, 18 Apr 2006 13:42:48 +0200
+Message-ID: <dc9af7576fe39a58cc35bb8b28145b62@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5977C1A7
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 13:40:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1FE02127
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 13:42:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,88 +22,97 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2030> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1999> 
 ======================================================================
-Reported By:                croiset
+Reported By:                kotau
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2030
+Issue ID:                   1999
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Redhat 7.2
-Kernel Version:             2.4.7-10
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               
+Kernel Version:             -2.6.13.2
 ======================================================================
-Date Submitted:             04-18-2006 11:57 CEST
-Last Modified:              04-18-2006 13:40 CEST
+Date Submitted:             04-03-2006 21:05 CEST
+Last Modified:              04-18-2006 13:42 CEST
 ======================================================================
-Summary:                    compilation problem ali5451.c
+Summary:                    Latest cvs won't compile
 Description: 
-it is impossible to compil under kernel 2.4.7 because there is an
-undeclared variable.
+Here's the error message.
 
-make  -C ali5451 modules
-make[2]: Entre dans le répertoire
-`/home/redhat/BUILD/alsa-driver-1.0.11rc5/pci
-/ali5451'
-i386-redhat-linux-gcc -D__KERNEL__ -DMODULE=1
--I/home/redhat/BUILD/alsa-driver-
-1.0.11rc5/include  -I/lib/modules/2.4.7-10/build/include -O2
--mpreferred-stack-
-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -
-Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
--nostdinc
- -iwithprefix include -DMODVERSIONS -include
-/lib/modules/2.4.7-10/build/includ
-e/linux/modversions.h  -DKBUILD_BASENAME=ali5451   -c -o ali5451.o
-ali5451.c
-In file included from ali5451.c:1:
-../../alsa-kernel/pci/ali5451/ali5451.c: In function `snd_ali_create':
-../../alsa-kernel/pci/ali5451/ali5451.c:2224: `DMA_31BIT_MASK' undeclared
-(firs
-t use in this function)
-../../alsa-kernel/pci/ali5451/ali5451.c:2224: (Each undeclared identifier
-is re
-ported only once
-../../alsa-kernel/pci/ali5451/ali5451.c:2224: for each function it appears
-in.)
-ali5451.c: At top level:
-../../alsa-kernel/pci/ali5451/ali5451.c:64: warning: `enable' defined but
-not u
-sed
-make[2]: *** [ali5451.o] Erreur 1
-make[2]: Quitte le répertoire
-`/home/redhat/BUILD/alsa-driver-1.0.11rc5/pci/ali
-5451'
-make[1]: *** [_modsubdir_ali5451] Erreur 2
-make[1]: Quitte le répertoire
-`/home/redhat/BUILD/alsa-driver-1.0.11rc5/pci'
-make: *** [compile] Erreur 1
+
+==============
+make[1]: Entering directory `/usr/src/linux-2.6.13.2'
+  CC [M]  /usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_read_main':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+`snd_ac97_stereo_enhancements' undeclared (first use in this function)
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+(Each undeclared identifier is reported only once
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:122: error:
+for each function it appears in.)
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_read':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: warning:
+implicit declaration of function `snd_magic_cast'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:294: error:
+parse error before "ac97_t"
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:296: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:322: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c: In function
+`snd_ac97_proc_regs_read':
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:359: error:
+parse error before "ac97_t"
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:361: error:
+structure has no member named `semaphore'
+/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.c:377: error:
+structure has no member named `semaphore'
+make[5]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97/ac97_proc.o]
+Error 1
+make[4]: *** [/usr/local/src/1music/alsa/alsa-driver/pci/ac97] Error 2
+make[3]: *** [/usr/local/src/1music/alsa/alsa-driver/pci] Error 2
+make[2]: *** [_module_/usr/local/src/1music/alsa/alsa-driver] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.13.2'
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-18-06 13:40 
+ Raymond - 04-13-06 13:47 
 ----------------------------------------------------------------------
-Fixed on CVS.
+alsa-1.0.11rc5 tag still missing in
+
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/ac97/
+
+Which tag is used to retreive the latest version ?
+
+----------------------------------------------------------------------
+ tiwai - 04-18-06 13:42 
+----------------------------------------------------------------------
+It's a problem of CVS server on sourceforge.  Cannot fix from here.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-06 11:57 croiset        New Issue                                    
-04-18-06 11:57 croiset        Distribution              => Redhat 7.2      
-04-18-06 11:57 croiset        Kernel Version            => 2.4.7-10        
-04-18-06 13:40 tiwai          Status                   assigned => resolved
-04-18-06 13:40 tiwai          Resolution               open => fixed       
-04-18-06 13:40 tiwai          Note Added: 0009331                          
+04-03-06 21:05 kotau          New Issue                                    
+04-03-06 21:05 kotau          Kernel Version            => -2.6.13.2       
+04-04-06 09:58 Raymond        Note Added: 0009112                          
+04-07-06 14:12 Raymond        Note Added: 0009139                          
+04-07-06 14:16 Raymond        Note Edited: 0009139                         
+04-11-06 19:17 Raymond        Note Added: 0009236                          
+04-11-06 19:29 rlrevell       Note Added: 0009237                          
+04-11-06 19:53 Raymond        Note Added: 0009238                          
+04-13-06 13:47 Raymond        Note Added: 0009258                          
+04-18-06 13:42 tiwai          Note Added: 0009332                          
 ======================================================================
 
 
