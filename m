@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: OSS-EMULATION bug?
-Date: Tue, 18 Apr 2006 14:18:39 -0400
-Message-ID: <1145384320.23853.40.camel@mindpipe>
-References: <4445012F.1070400@riccardotempesta.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
+Date: Tue, 18 Apr 2006 20:25:19 +0200
+Message-ID: <39061168b8653019f632d6df8fadb45b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4445012F.1070400@riccardotempesta.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09C61183
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 20:25:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,22 +18,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Riccardo Tempesta <info@riccardotempesta.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-04-18 at 17:09 +0200, Riccardo Tempesta wrote:
-> I tried to compile alsa-driver-1.0.11rc4 with dynamic minors to allow 
-> more than 8 soundcards.
-> I connected 12 audio devices and it worked perfectly as alsa, but I can 
-> find only 8 dsp under "/dev".
-> 
-> Is it a bug?
 
-Could be udev/hotplug issue.  If you create the last 4 by hand with
-mknod do they work?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+======================================================================
+Reported By:                vertex
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2035
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              04-18-2006 20:25 CEST
+======================================================================
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
+Description: 
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-Lee
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
+
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 04-18-06 20:09 
+----------------------------------------------------------------------
+What exactly does not work?
+
+What is the output of "amixer"?
+
+Did you try loading snd-hda-intel with all the available "model=" options
+described in ALSA-Configuration.txt?
+
+----------------------------------------------------------------------
+ pzad - 04-18-06 20:25 
+----------------------------------------------------------------------
+>From datasheet looks like this codec doesn't have any volume control on
+output. Mixer you get is nearly everything what this codec has.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+======================================================================
+
 
 
 
