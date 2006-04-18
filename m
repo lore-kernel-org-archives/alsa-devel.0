@@ -1,19 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: alsa-driver annoyance
-Date: Tue, 18 Apr 2006 18:52:35 +0100
-Message-ID: <1145382755.9257.1.camel@localhost.localdomain>
-References: <1145048699.9434.7.camel@localhost.localdomain>
-	 <20060417120106.GA25991@turing.informatik.uni-halle.de>
-	 <1145291403.9244.2.camel@localhost.localdomain>
-	 <s5hlku39p4g.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
+Date: Tue, 18 Apr 2006 20:00:20 +0200
+Message-ID: <45a9631e6c08f8a0fa00640988181443@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 3BC00183
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 19:52:42 +0200 (MEST)
-In-Reply-To: <s5hlku39p4g.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ACBB7183
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 20:00:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,44 +18,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-04-18 at 12:03 +0200, Takashi Iwai wrote:
-> At Mon, 17 Apr 2006 17:30:03 +0100,
-> Adrian McMenamin wrote:
-> > 
-> > On Mon, 2006-04-17 at 14:01 +0200, Clemens Ladisch wrote:
-> > > Adrian McMenamin wrote:
-> > > > I am cross compiling alsa driver for use on an NFS root mounted
-> > > > partition hosted on my development box for use by a box running a 2.6.15
-> > > > kernel - the development box uses a 2.6.12 kernel
-> > > > 
-> > > > Alsa-driver insists on creating a 2.6.15 modules directory on the
-> > > > development box hierarchy and then installing modules in that directory
-> > > > and not in the NFS root partition.
-> > > 
-> > > What are the parameters and the output of the configure script?
-> > > 
-> > 
-> > I discovered that this was really an issue about the help.
-> > 
-> > The option --with-moddir sets the installation directory for the modules
-> > though the help makes that less than clear - especially as it listed
-> > under "Optional Packages" and not "Fine tuning of the installation
-> > directories".
-> > 
-> > Maybe it should be patched?
-> 
-> No, it should work without --with-moddir option.
-> 
-> The symptom implies that the configure script didn't detect the right 
-> kernel version.  Did you pass a proper --with-build=xxx option?
 
-Yes, I did. The problem was it attempted to install the modules in the
-hierarchy of the build machine not in the NFS mountable hierarchy. This
-is not a question of detecting the right kernel version at all.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+======================================================================
+Reported By:                vertex
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2035
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              04-18-2006 20:00 CEST
+======================================================================
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
+Description: 
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
+
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
+
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+======================================================================
+
 
 
 
