@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Tue, 18 Apr 2006 16:28:49 +0200
-Message-ID: <b33f0e9b4ddf8ecd890e65ecd51f5c76@bugtrack.alsa-project.org>
+From: Bastiaan Jacques <b.jacques@planet.nl>
+Subject: Re: [PATCH ALSA-CVS] via82xx: add support for VIA VT8251 (AC'97)
+Date: Tue, 18 Apr 2006 17:00:03 +0200
+Message-ID: <200604181700.03420.b.jacques@planet.nl>
+References: <200604160410.35227.b.jacques@planet.nl>
+ <s5hirp79ou5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D66D4110
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 16:28:49 +0200 (MEST)
+In-reply-to: <s5hirp79ou5.wl%tiwai@suse.de>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,103 +19,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Add support for VIA VT8251 AC'97. Includes a workaround which ensures sound 
+won't stop playing after one second of playback.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
-======================================================================
-Reported By:                zanonmark
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
-======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              04-18-2006 16:28 CEST
-======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
-Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+Signed-off-by: Bastiaan Jacques <b.jacques@planet.nl>
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
+---
 
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
+On Tuesday 18 April 2006 12:10, Takashi Iwai wrote:
+> At Sun, 16 Apr 2006 04:10:35 +0200,
+> Bastiaan Jacques wrote:
+> > 
+> > @@ -2461,6 +2471,8 @@ static int __devinit snd_via82xx_probe(s
+> >  			strcpy(card->driver, "VIA8233A");
+> >  		else if (revision >= VIA_REV_8237)
+> >  			strcpy(card->driver, "VIA8237"); /* no slog assignment */
+> > +		else if (revision >= VIA_REV_8251)
+> > +			strcpy(card->driver, "VIA8251");
+> >  		else
+> >  			strcpy(card->driver, "VIA8233");
+> >  		break;
+> 
+> The driver field can be set to VIA8237 unless VIA8251 has any
+> incompatibility with VIA8237 regarding PCM.  Then we can save one
+> config file in alsa-lib.
 
-So, will you please include such a parameter in the next version of the
-driver?
+There don't appear to be any incompatiblities. Below is the patch with
+the driver field change omitted.
 
-Thanks a lot,
+Bastiaan
 
-Marco.
-
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 04-18-06 13:18 
-----------------------------------------------------------------------
-It seem that joystick is not working on ens1371 
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1774
-
-Could you try 0x218 ?
-
-Do your joystick require specific module ? (joydev, analog, gameport)
-
-Are those io ports already used by other hardware ?
-
-
-
-----------------------------------------------------------------------
- Clemens Ladisch - 04-18-06 16:28 
-----------------------------------------------------------------------
-You do not need to enable the joystick port; the MIDI functionality of the
-game port is completely independent from that.
-
-You do not need snd-mpu401, it's only used for mainboard game ports and
-for separate MPU-401-compatible cards.  The ENS1371 chip is not MPU-401
-compatible.
-
-The MIDI port is always enabled, and should work.
-
-What is the output of "amidi -l"?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
-04-18-06 13:18 Raymond        Note Edited: 0009328                         
-04-18-06 16:28 Clemens LadischNote Added: 0009338                          
-======================================================================
-
-
+Index: pci/via82xx.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/via82xx.c,v
+retrieving revision 1.194
+diff -p -u -r1.194 via82xx.c
+--- pci/via82xx.c	23 Mar 2006 16:11:32 -0000	1.194
++++ pci/via82xx.c	18 Apr 2006 14:28:09 -0000
+@@ -123,6 +123,7 @@ module_param(enable, bool, 0444);
+ #define VIA_REV_8233A		0x40	/* 1 rec, 1 multi-pb, spdf */
+ #define VIA_REV_8235		0x50	/* 2 rec, 4 pb, 1 multi-pb, spdif */
+ #define VIA_REV_8237		0x60
++#define VIA_REV_8251		0x70
+ 
+ /*
+  *  Direct registers
+@@ -863,8 +864,15 @@ static snd_pcm_uframes_t snd_via8233_pcm
+ 		status = inb(VIADEV_REG(viadev, OFFSET_STATUS));
+ 
+ 	if (!(status & VIA_REG_STAT_ACTIVE)) {
+-		res = 0;
+-		goto unlock;
++		/* An apparent bug in the 8251 is worked around by sending
++		 * a REG_CTRL_START. */
++		if (chip->revision == VIA_REV_8251)
++			snd_via82xx_pcm_trigger(substream,
++						SNDRV_PCM_TRIGGER_START);
++		else {
++			res = 0;
++			goto unlock;
++		}
+ 	}
+ 	if (count & 0xffffff) {
+ 		idx = count >> 24;
+@@ -2313,6 +2321,7 @@ static struct via823x_info via823x_cards
+ 	{ VIA_REV_8233A, "VIA 8233A", TYPE_VIA8233A },
+ 	{ VIA_REV_8235, "VIA 8235", TYPE_VIA8233 },
+ 	{ VIA_REV_8237, "VIA 8237", TYPE_VIA8233 },
++	{ VIA_REV_8251, "VIA 8251", TYPE_VIA8233 },
+ };
+ 
+ /*
+@@ -2341,6 +2350,7 @@ static int __devinit check_dxs_list(stru
+ 		{ .subvendor = 0x1043, .subdevice = 0x810d, .action = VIA_DXS_SRC }, /* ASUS */
+ 		{ .subvendor = 0x1043, .subdevice = 0x812a, .action = VIA_DXS_SRC    }, /* ASUS A8V Deluxe */ 
+ 		{ .subvendor = 0x1043, .subdevice = 0x8174, .action = VIA_DXS_SRC    }, /* ASUS */
++		{ .subvendor = 0x1043, .subdevice = 0x81b9, .action = VIA_DXS_SRC    }, /* ASUS A8V-MX */
+ 		{ .subvendor = 0x1071, .subdevice = 0x8375, .action = VIA_DXS_NO_VRA }, /* Vobis/Yakumo/Mitac notebook */
+ 		{ .subvendor = 0x1071, .subdevice = 0x8399, .action = VIA_DXS_NO_VRA }, /* Umax AB 595T (VIA K8N800A - VT8237) */
+ 		{ .subvendor = 0x10cf, .subdevice = 0x118e, .action = VIA_DXS_ENABLE }, /* FSC laptop */
 
 
 -------------------------------------------------------
