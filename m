@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
-Date: Tue, 18 Apr 2006 23:02:06 +0200
-Message-ID: <51e53891a4470702fa8c85e500d9b3fe@bugtrack.alsa-project.org>
+From: Maximilian Rehkopf <otakon@gmx.net>
+Subject: [PATCH] ice1712: Improve PCM volume gradient for aureon cards
+Date: Tue, 18 Apr 2006 23:18:53 +0200
+Message-ID: <444557BD.6000900@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------010003000501010603050202"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 713CC183
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 23:02:06 +0200 (MEST)
+Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E7C311A7
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 23:18:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,84 +21,145 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------010003000501010603050202
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
-======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
-======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              04-18-2006 23:02 CEST
-======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
-Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
+This patch introduces logarithmic volume control for the "PCM Playback
+Volume" control of Terratec Aureon cards (digital master attenuation of
+WM8770). A separate logarithmic table is used.
 
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+diff created against alsa-driver-1.0.11rc5 as suggested by Takashi.
 
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
+Signed-off-by: Maximilian Rehkopf <otakon@gmx.net>
 
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+Many people seem to post patches in-line instead of attaching them. What
+do you prefer?
 
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
+-- 
+Maximilian Rehkopf
 
-Please let me know if there is something more I can provide.
-======================================================================
+--------------010003000501010603050202
+Content-Type: text/plain;
+ name="aureon-pcmvol.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="aureon-pcmvol.diff"
 
-----------------------------------------------------------------------
- rlrevell - 04-18-06 22:45 
-----------------------------------------------------------------------
-I would not expect it to work with model=auto as that is the default.  Try
-the other options
+--- alsa-kernel/pci/ice1712/aureon.c	2006-04-06 15:34:58.000000000 +0200
++++ alsa-kernel.pcm/pci/ice1712/aureon.c	2006-04-18 22:11:52.000000000 +0200
+@@ -679,6 +679,31 @@ static unsigned char wm_vol[256] = {
+ 	0, 0
+ };
+ 
++/* 
++ * Logarithmic volume values for digital attenuation
++ * for WM8770 
++ * Computed as 2 * (20 * Log10(255 / x))
++ */
++static unsigned char wm_vol_dig[256] = {
++        255, 96, 84, 77, 72, 68, 65, 62, 60, 58, 56, 55, 53, 52, 50, 49,
++         48, 47, 46, 45, 44, 43, 43, 42, 41, 40, 40, 39, 38, 38, 37, 37,
++         36, 36, 35, 34, 34, 34, 33, 33, 32, 32, 31, 31, 31, 30, 30, 29,
++         29, 29, 28, 28, 28, 27, 27, 27, 26, 26, 26, 25, 25, 25, 25, 24,
++         24, 24, 23, 23, 23, 23, 22, 22, 22, 22, 21, 21, 21, 21, 21, 20,
++         20, 20, 20, 19, 19, 19, 19, 19, 18, 18, 18, 18, 18, 18, 17, 17,
++         17, 17, 17, 16, 16, 16, 16, 16, 16, 15, 15, 15, 15, 15, 15, 14,
++         14, 14, 14, 14, 14, 14, 13, 13, 13, 13, 13, 13, 13, 12, 12, 12,
++         12, 12, 12, 12, 11, 11, 11, 11, 11, 11, 11, 11, 10, 10, 10, 10,
++         10, 10, 10, 10,  9,  9,  9,  9,  9,  9,  9,  9,  9,  8,  8,  8,
++          8,  8,  8,  8,  8,  8,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,
++          6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  5,  5,  5,  5,  5,  5,
++          5,  5,  5,  5,  5,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,
++          4,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  2,  2,  2,
++          2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  1,  1,  1,  1,  1,  1,
++          1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0
++};
++
++
+ #define WM_VOL_MAX	(sizeof(wm_vol) - 1)
+ #define WM_VOL_MUTE	0x8000
+ 
+@@ -913,45 +938,46 @@ static int wm_master_mute_put(struct snd
+ 
+ /* digital master volume */
+ #define PCM_0dB 0xff
+-#define PCM_RES 128	/* -64dB */
++#define PCM_RES 255	/* available steps to mute */ 
+ #define PCM_MIN (PCM_0dB - PCM_RES)
+-static int wm_pcm_vol_info(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
++static int wm_pcm_vol_info(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_info *uinfo)
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 	uinfo->count = 1;
+-	uinfo->value.integer.min = 0;		/* mute (-64dB) */
++	uinfo->value.integer.min = 0;		/* mute */
+ 	uinfo->value.integer.max = PCM_RES;	/* 0dB */
+ 	return 0;
+ }
+ 
+-static int wm_pcm_vol_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
++static int wm_pcm_vol_get(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
+ 	unsigned short val;
+ 
+-	mutex_lock(&ice->gpio_mutex);
+-	val = wm_get(ice, WM_DAC_DIG_MASTER_ATTEN) & 0xff;
++	val = ice->spec.aureon.pcm_vol;
+ 	val = val > PCM_MIN ? (val - PCM_MIN) : 0;
+ 	ucontrol->value.integer.value[0] = val;
+-	mutex_unlock(&ice->gpio_mutex);
+ 	return 0;
+ }
+ 
+-static int wm_pcm_vol_put(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
++static int wm_pcm_vol_put(struct snd_kcontrol *kcontrol,
++			  struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
+ 	unsigned short ovol, nvol;
+ 	int change = 0;
+ 
+ 	snd_ice1712_save_gpio_status(ice);
+-	nvol = ucontrol->value.integer.value[0];
+-	nvol = (nvol ? (nvol + PCM_MIN) : 0) & 0xff;
+-	ovol = wm_get(ice, WM_DAC_DIG_MASTER_ATTEN) & 0xff;
++	nvol = PCM_0dB - wm_vol_dig[ucontrol->value.integer.value[0]];
++	ovol = PCM_0dB - wm_vol_dig[ice->spec.aureon.pcm_vol & 0xff];
+ 	if (ovol != nvol) {
+ 		wm_put(ice, WM_DAC_DIG_MASTER_ATTEN, nvol); /* prelatch */
+ 		wm_put_nocache(ice, WM_DAC_DIG_MASTER_ATTEN, nvol | 0x100); /* update */
+ 		change = 1;
+ 	}
++	ice->spec.aureon.pcm_vol = ucontrol->value.integer.value[0];
+ 	snd_ice1712_restore_gpio_status(ice);
+ 	return change;
+ }
+@@ -2021,6 +2047,8 @@ static int __devinit aureon_init(struct 
+ 		wm_set_vol(ice, i, ice->spec.aureon.vol[i], ice->spec.aureon.master[i % 2]);
+ 	}
+ 
++	ice->spec.aureon.pcm_vol = 0;
++	
+ 	return 0;
+ }
+ 
+--- alsa-kernel/pci/ice1712/ice1712.h	2006-04-06 15:34:58.000000000 +0200
++++ alsa-kernel.pcm/pci/ice1712/ice1712.h	2006-04-18 22:08:04.000000000 +0200
+@@ -373,6 +373,7 @@ struct snd_ice1712 {
+ 			unsigned int cs8415_mux;
+ 			unsigned short master[2];
+ 			unsigned short vol[8];
++			unsigned char pcm_vol;
+ 			unsigned char pca9554_out;
+ 		} aureon;
+ 		/* AC97 register cache for Phase28 */
 
-----------------------------------------------------------------------
- vertex - 04-18-06 23:02 
-----------------------------------------------------------------------
-I tried all three options, 3stack, 3stack-dig and 6stack-dig. No audible
-playback using any of the options.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-======================================================================
-
-
+--------------010003000501010603050202--
 
 
 -------------------------------------------------------
