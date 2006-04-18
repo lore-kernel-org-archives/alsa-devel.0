@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002034]: alsa library should support I18N support for mixer names
-Date: Tue, 18 Apr 2006 19:35:31 +0200
-Message-ID: <f82aade0f3c92a6426e7b10e9e10602a@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: alsa-driver annoyance
+Date: Tue, 18 Apr 2006 18:52:35 +0100
+Message-ID: <1145382755.9257.1.camel@localhost.localdomain>
+References: <1145048699.9434.7.camel@localhost.localdomain>
+	 <20060417120106.GA25991@turing.informatik.uni-halle.de>
+	 <1145291403.9244.2.camel@localhost.localdomain>
+	 <s5hlku39p4g.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9917817C
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 19:35:31 +0200 (MEST)
+Received: from sc-outsmtp2.homechoice.co.uk (sc-outsmtp2.homechoice.co.uk [81.1.65.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 3BC00183
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 19:52:42 +0200 (MEST)
+In-Reply-To: <s5hlku39p4g.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +23,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-04-18 at 12:03 +0200, Takashi Iwai wrote:
+> At Mon, 17 Apr 2006 17:30:03 +0100,
+> Adrian McMenamin wrote:
+> > 
+> > On Mon, 2006-04-17 at 14:01 +0200, Clemens Ladisch wrote:
+> > > Adrian McMenamin wrote:
+> > > > I am cross compiling alsa driver for use on an NFS root mounted
+> > > > partition hosted on my development box for use by a box running a 2.6.15
+> > > > kernel - the development box uses a 2.6.12 kernel
+> > > > 
+> > > > Alsa-driver insists on creating a 2.6.15 modules directory on the
+> > > > development box hierarchy and then installing modules in that directory
+> > > > and not in the NFS root partition.
+> > > 
+> > > What are the parameters and the output of the configure script?
+> > > 
+> > 
+> > I discovered that this was really an issue about the help.
+> > 
+> > The option --with-moddir sets the installation directory for the modules
+> > though the help makes that less than clear - especially as it listed
+> > under "Optional Packages" and not "Fine tuning of the installation
+> > directories".
+> > 
+> > Maybe it should be patched?
+> 
+> No, it should work without --with-moddir option.
+> 
+> The symptom implies that the configure script didn't detect the right 
+> kernel version.  Did you pass a proper --with-build=xxx option?
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2034> 
-======================================================================
-Reported By:                Stanislav Brabec
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2034
-Category:                   2_mixer
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             04-18-2006 19:35 CEST
-Last Modified:              04-18-2006 19:35 CEST
-======================================================================
-Summary:                    alsa library should support I18N support for mixer
-names
-Description: 
-Because ALSA now contains undefined set of strings, which are used as names
-of mixer channels, triggers, outputs etc., it is impossible to translate
-them in third party applications (like GStreamer tries).
-
-ALSA library should support I18N support for these names, e. g.
-alsa_gettext(const char *string)
-
-This consist from two parts:
-1) Mark all translatable strings in all ALSA kernel modules by a defined
-macro (for example gettext uses N_ for collecting of translatable strings
-and defines it as identity macro).
-2) Provide translatable pot file and translations.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-06 19:35 Stanislav BrabecNew Issue                                    
-======================================================================
-
+Yes, I did. The problem was it attempted to install the modules in the
+hierarchy of the build machine not in the NFS mountable hierarchy. This
+is not a question of detecting the right kernel version at all.
 
 
 
