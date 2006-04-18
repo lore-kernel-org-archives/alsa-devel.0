@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
-Date: Tue, 18 Apr 2006 22:25:32 +0200
-Message-ID: <b0d37f9716e5800237326edbc6aecb2d@bugtrack.alsa-project.org>
+Date: Tue, 18 Apr 2006 22:32:23 +0200
+Message-ID: <5eb2cbc8aa632afa193c63afeabc2065@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B6A8183
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 22:25:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A946A183
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 22:32:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              04-18-2006 22:25 CEST
+Last Modified:              04-18-2006 22:32 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -71,56 +71,6 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- vertex - 04-18-06 20:50 
-----------------------------------------------------------------------
-Something interesting here. I rebooted into single user mode, removed the
-snd-hda-intel module. Loaded it with modprobe snd-hda-intel model=ACL861.
-I ran amixer and it didn't show any changes. I then executed "telinit 3".
-I ran "aplay somewavfile.wav" and then ran alsamixer. I now see a PCM
-channel:
-
-Simple mixer control 'PCM',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 255 [100%]
-  Front Right: Playback 255 [100%]
-Simple mixer control 'Front',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [on]
-  Front Right: Playback [on]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 23
-  Mono:
-  Front Left: Playback 23 [100%] [on]
-  Front Right: Playback 23 [100%] [on]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 23
-  Mono:
-  Front Left: Playback 0 [0%] [on]
-  Front Right: Playback 0 [0%] [on]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 13
-  Front Left: Capture 0 [0%] [on]
-  Front Right: Capture 0 [0%] [on]
-Simple mixer control 'Input Source',0
-  Capabilities: enum
-  Items: 'Mic' 'CD'
-  Item0: 'CD'
-
-I still do not have any sound coming out of the headphones or built in
-speakers.
-
-----------------------------------------------------------------------
  rlrevell - 04-18-06 22:25 
 ----------------------------------------------------------------------
 ACL861 is not a valid model name (neither is ALC861)
@@ -134,6 +84,12 @@ ALC861
 The valid models for the ALC861 codec are 3stack, 3stack-dig, 6stack-dig,
 and auto
 
+----------------------------------------------------------------------
+ vertex - 04-18-06 22:32 
+----------------------------------------------------------------------
+Forgive my ignorance(and typo). I tried again using model=auto and have the
+same result. I don't have 3 jacks on this machine, only two.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -145,6 +101,7 @@ Date Modified  Username       Field                    Change
 04-18-06 20:40 vertex         Note Added: 0009342                          
 04-18-06 20:50 vertex         Note Added: 0009343                          
 04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
 ======================================================================
 
 
