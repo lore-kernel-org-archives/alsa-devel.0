@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Tue, 18 Apr 2006 05:11:53 +0200
-Message-ID: <5f8399197b3b872695bfe09758a3aff8@bugtrack.alsa-project.org>
+Date: Tue, 18 Apr 2006 05:32:05 +0200
+Message-ID: <0b5591ac3435314bc9f49d49b6cf1d96@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 026801AA
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 05:11:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 371581AA
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 05:32:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              04-18-2006 05:11 CEST
+Last Modified:              04-18-2006 05:32 CEST
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -114,16 +114,6 @@ gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4.
 ======================================================================
 
 ----------------------------------------------------------------------
- ponchick - 04-18-06 04:53 
-----------------------------------------------------------------------
-I try rc3-rc5 with and without au88x0_surround40.patch and "verbose" patch
-posted here but cannot reproduce this messages. arts also doesn't work as
-it should - kde doesn't play builtin sounds (when I test
-au88x0_surround40.patch it does) though artsplay work fine. While writing
-this note I realize that I change a little .asoundrc so today I'll try
-reproduce this again.
-
-----------------------------------------------------------------------
  ponchick - 04-18-06 05:11 
 ----------------------------------------------------------------------
 > How do you load/unload the au8830 driver ?
@@ -131,6 +121,36 @@ reproduce this again.
 I use '/etc/init.d/alsasound restart'. It kill processes that use sound
 devices, save mixer state, do rmmod then do modprobe for
 alsa/oss-emulation modules and restore mixer levels.
+
+----------------------------------------------------------------------
+ Raymond - 04-18-06 05:32 
+----------------------------------------------------------------------
+1) 15-pin MPU401/Game port connector
+2) 26-pin Waveblaster 2 connector
+3) 32/64 voices Wavetable Synth (au8820/au8830) not yet implemented
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1593
+
+http://lists.nongnu.org/archive/html/openvortex-dev/2003-04/msg00063.html
+
+Can we use 15-pin to keyboard and 26-pin to waveblaster 2 card
+concurrently ?
+
+if not, how do we select to use (1) and (2) ?
+
+Some au8820/au8830 seem do not have 26-pin connector 
+
+Do we need to disable gameport when using 15 pin midi connector ?
+
+Are the nameing convention consistent with other cards such as emu10k1,
+ice1724, ens1371 , ... ?
+
+
+MPU401_UART can be accessed
+
+a) MMIO (default)
+b) Legacy port 0x330.      ( need patch to use 300h, 310h, 320h)
+c) It may also accessed with index and data IO ports (PCI BAR1) by writing
+offset to index and read/write through data
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -181,6 +201,7 @@ gentoo-sources-2.6.15-r4
 04-17-06 22:57 gineera        Note Added: 0009322                          
 04-18-06 04:53 ponchick       Note Added: 0009323                          
 04-18-06 05:11 ponchick       Note Added: 0009324                          
+04-18-06 05:32 Raymond        Note Added: 0009325                          
 ======================================================================
 
 
