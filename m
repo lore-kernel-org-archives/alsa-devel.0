@@ -1,38 +1,137 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [Alsa-devel] Re: [linuxsh-dev] [PATCH] ALSA driver for Yamaa
-	AICA on Sega Dreamcast
-Date: Mon, 17 Apr 2006 18:15:56 -0400
-Message-ID: <1145312157.16138.87.camel@mindpipe>
-References: <1145232784.12804.2.camel@localhost.localdomain>
-	 <20060417012913.GA16821@linux-sh.org>
-	 <1145304037.9244.27.camel@localhost.localdomain>
-	 <1145310435.16138.83.camel@mindpipe> <20060417220512.GA16119@infradead.org>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: No snd_pcm_resume_all() ?
+Date: Tue, 18 Apr 2006 10:58:38 +1000
+Message-ID: <1145321918.4705.4.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751300AbWDQWQA@vger.kernel.org>
-In-Reply-To: <20060417220512.GA16119@infradead.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Adrian McMenamin <adrian@mcmen.demon.co.uk>, Paul Mundt <lethal@linux-sh.org>, Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE2A81AC
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 02:58:47 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Johannes Berg <johannes@sipsolutions.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-04-17 at 23:05 +0100, Christoph Hellwig wrote:
-> On Mon, Apr 17, 2006 at 05:47:15PM -0400, Lee Revell wrote:
-> > On Mon, 2006-04-17 at 21:00 +0100, Adrian McMenamin wrote:
-> > > But I am happy to change it.
-> > > 
-> > > 
-> > 
-> > Please don't - when adding code to a subsystem with different
-> > conventions than mainline the FAQ says to follow the subsystem
-> > conventions.
-> 
-> Nope.  Alsa needs to gradually converted from something that looks like
-> cat puke to normal kernel style.  Every new driver that's written properly
-> helps.
+Hi !
 
-OK thanks.  I was certain I saw this in the FAQ at some point but now I
-can't find it.
+While tweaking a bit the power management code in Johannes' new snd-aoa
+for powermac, I got it to properly suspend & resume playback on
+sleep/waekup of the machine. However, an Alsa bit is missing for that to
+work and I'd like to understand why.
 
-Lee
+On suspend, it's fairly simple, we call snd_pcm_suspend_all() to suspend
+all streams before we go put the hardware into low power state.
+
+On resume, I would expect to have a similar snd_pcm_resume_all() to call
+after I've restored the hardware & codecs state. However... it's not
+there. I hacked one up myself (patch below) and it seems to work fine.
+
+It appears that Alsa expects the streams to be resumed via some userland
+initiated ioctl, which for some reason is never called on my machine.
+What is the rationale there ? it's userland that is expected to
+save/restore hardware state ? That doesn't really match the linux PM
+model at this point and it seems that Alsa userland isn't notified of
+suspend/resume at least on powermacs.
+
+Just adding snd_pcm_resume_all() and calling it at the right time seems
+to work fine for us, thus is there any reason why the patch below
+couldn't be pushed upstream ?
+
+Cheers,
+Ben.
+
+Index: linux-work/sound/core/pcm_native.c
+===================================================================
+--- linux-work.orig/sound/core/pcm_native.c	2006-04-13 09:58:55.000000000 +1000
++++ linux-work/sound/core/pcm_native.c	2006-04-18 10:34:46.000000000 +1000
+@@ -1176,6 +1176,35 @@
+ 	return res;
+ }
+ 
++/**
++ * snd_pcm_resume_all
++ * @pcm: the PCM instance
++ *
++ * Trigger RESUME to all substreams in the given pcm.
++ * After this call, all streams that were SUSPENDED gets resumed to RUNNING state.
++ */
++int snd_pcm_resume_all(struct snd_pcm *pcm)
++{
++        struct snd_pcm_substream *substream;
++        int stream, err = 0;
++
++        if (! pcm)
++                return 0;
++
++        for (stream = 0; stream < 2; stream++) {
++                for (substream = pcm->streams[stream].substream;
++                     substream; substream = substream->next) {
++                        /* FIXME: the open/close code should lock this as well */
++                        if (substream->runtime == NULL)
++                                continue;
++                        err = snd_pcm_resume(substream);
++                        if (err < 0 && err != -EBUSY)
++                                return err;
++                }
++        }
++        return 0;
++}
++
+ #else
+ 
+ static int snd_pcm_resume(struct snd_pcm_substream *substream)
+@@ -1183,6 +1212,11 @@
+ 	return -ENOSYS;
+ }
+ 
++int snd_pcm_resume_all(struct snd_pcm *pcm)
++{
++	return -ENOSYS;
++}
++
+ #endif /* CONFIG_PM */
+ 
+ /*
+Index: linux-work/include/sound/pcm.h
+===================================================================
+--- linux-work.orig/include/sound/pcm.h	2006-04-13 09:58:51.000000000 +1000
++++ linux-work/include/sound/pcm.h	2006-04-18 10:37:23.000000000 +1000
+@@ -464,6 +464,7 @@
+ #ifdef CONFIG_PM
+ int snd_pcm_suspend(struct snd_pcm_substream *substream);
+ int snd_pcm_suspend_all(struct snd_pcm *pcm);
++int snd_pcm_resume_all(struct snd_pcm *pcm);
+ #endif
+ int snd_pcm_kernel_ioctl(struct snd_pcm_substream *substream, unsigned int cmd, void *arg);
+ int snd_pcm_open_substream(struct snd_pcm *pcm, int stream, struct file *file,
+Index: linux-work/sound/core/pcm.c
+===================================================================
+--- linux-work.orig/sound/core/pcm.c	2006-04-13 09:58:55.000000000 +1000
++++ linux-work/sound/core/pcm.c	2006-04-18 10:36:35.000000000 +1000
+@@ -1110,6 +1110,7 @@
+ #ifdef CONFIG_PM
+ EXPORT_SYMBOL(snd_pcm_suspend);
+ EXPORT_SYMBOL(snd_pcm_suspend_all);
++EXPORT_SYMBOL(snd_pcm_resume_all);
+ #endif
+ EXPORT_SYMBOL(snd_pcm_kernel_ioctl);
+ EXPORT_SYMBOL(snd_pcm_mmap_data);
+
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by xPML, a groundbreaking scripting language
+that extends applications into web and mobile media. Attend the live webcast
+and join the prime developer group breaking into this new coding territory!
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=110944&bid=241720&dat=121642
