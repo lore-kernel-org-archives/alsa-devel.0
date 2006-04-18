@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
-Date: Tue, 18 Apr 2006 22:32:23 +0200
-Message-ID: <5eb2cbc8aa632afa193c63afeabc2065@bugtrack.alsa-project.org>
+Date: Tue, 18 Apr 2006 22:45:11 +0200
+Message-ID: <0fd6e2182d8413b7c2f9822b9223a669@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A946A183
-	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 22:32:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 41855183
+	for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2006 22:45:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              04-18-2006 22:32 CEST
+Last Modified:              04-18-2006 22:45 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -71,24 +71,16 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 04-18-06 22:25 
-----------------------------------------------------------------------
-ACL861 is not a valid model name (neither is ALC861)
-
-ALC861
-  3stack        3-jack
-  3stack-dig    3-jack with SPDIF I/O
-  6stack-dig    6-jack with SPDIF I/O
-  auto          auto-config reading BIOS (default)
-
-The valid models for the ALC861 codec are 3stack, 3stack-dig, 6stack-dig,
-and auto
-
-----------------------------------------------------------------------
  vertex - 04-18-06 22:32 
 ----------------------------------------------------------------------
 Forgive my ignorance(and typo). I tried again using model=auto and have the
 same result. I don't have 3 jacks on this machine, only two.
+
+----------------------------------------------------------------------
+ rlrevell - 04-18-06 22:45 
+----------------------------------------------------------------------
+I would not expect it to work with model=auto as that is the default.  Try
+the other options
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -102,6 +94,7 @@ Date Modified  Username       Field                    Change
 04-18-06 20:50 vertex         Note Added: 0009343                          
 04-18-06 22:25 rlrevell       Note Added: 0009345                          
 04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
 ======================================================================
 
 
