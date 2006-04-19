@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002036]: Missing PCI subsystem vendor and device in /proc/asound/../codec97#0/ac97#0-0 for some pci sound card drivers
-Date: Wed, 19 Apr 2006 17:28:18 +0200
-Message-ID: <cbf07724e5b3258d0e0971423fab50cd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001808]: Line 6 Toneport UX1 driver
+Date: Wed, 19 Apr 2006 19:21:03 +0200
+Message-ID: <d2c847164f5e505a8d232a569442f188@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E09718A
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 17:28:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CA5C160
+	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 19:21:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,87 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2036> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1808> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                tiwai
+Reported By:                daste
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2036
+Issue ID:                   1808
 Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               
 Kernel Version:             
-Resolution:                 won't fix
-Fixed in Version:           
 ======================================================================
-Date Submitted:             04-19-2006 17:17 CEST
-Last Modified:              04-19-2006 17:28 CEST
+Date Submitted:             02-02-2006 00:49 CET
+Last Modified:              04-19-2006 19:21 CEST
 ======================================================================
-Summary:                    Missing PCI subsystem vendor and device in
-/proc/asound/../codec97#0/ac97#0-0 for some pci sound card drivers
+Summary:                    Line 6 Toneport UX1 driver
 Description: 
-Only a few of pci sound card drivers have initialised 'ac97.pci'.
-
-ad1889.c:       ac97.pci = chip->pci;
-atiixp.c:               ac97.pci = chip->pci;
-atiixp_modem.c:         ac97.pci = chip->pci;
-cs5535audio/cs5535audio.c:      ac97.pci = cs5535au->pci;
-intel8x0.c:     ac97.pci = chip->pci;
-intel8x0m.c:    ac97.pci = chip->pci;
-riptide/riptide.c:      ac97.pci = chip->pci;
-via82xx.c:      ac97.pci = chip->pci;
-via82xx_modem.c:        ac97.pci = chip->pci;
-
+I recently bought a Line 6 Toneport UX1 USB sound card, but I can't use it
+under Linux, since it's not supported by ALSA.
+So I'd like to ask you what can I do: altough I'm quite capable of
+programming in C, I never developed any kind of driver either for Linux or
+any other OS.
+I thought that maybe it was my turn to learn, so I wrote an e-mail to Line
+6 asking them if they had plans on a Linux driver for such soundcard, or
+otherwise, if they would have sent me infos, so that I could have tried to
+spend some time trying to develop a driver. They haven't answered yet.
+I do want to use that unbelivable sound card under Linux, so I think I'm
+going to code, but I don't know where to start: can you give me any
+suggestions?
+And since I think I have to do some reverse engineering on Microsoft
+Windows drivers, can you give some other advice on such topic too?
+Otherwise, I'd like to ask you whether you're already developing a
+solution for such a problem or not. Thanks in advance.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-19-06 17:28 
+ daste - 03-26-06 09:23 
 ----------------------------------------------------------------------
-It's no bug.  The pci field is not mandatory, and required only for quirks.
+Yes I know, but I belive that PODxt and Toneport UX1/UX2 have similar
+driver interfaces (can't remember where I read something about this). I
+also tried to hack this driver to make it work with my Toneport UX1, but I
+didn't succeed, so I'm trying to contact the author right now.
+
+----------------------------------------------------------------------
+ daste - 04-19-06 19:21 
+----------------------------------------------------------------------
+I just started reverse-engineering the windows driver, and so I uploaded
+the code I've just written.
+Right now it just inits the sound card and sets up a PCM with a master
+playback volume. Please don't care too much about coding style and compile
+warnings, it just have to start working.
+Since this sound card has a very strange and uncomprehensible volume
+setting at hardware level, I'm thinking to implement it at driver level,
+am I doing right?
+If you have any other suggestion, please tell me!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-06 17:17 Raymond        New Issue                                    
-04-19-06 17:28 tiwai          Status                   new => resolved     
-04-19-06 17:28 tiwai          Resolution               open => won't fix   
-04-19-06 17:28 tiwai          Assigned To               => tiwai           
-04-19-06 17:28 tiwai          Note Added: 0009352                          
+02-02-06 00:49 daste          New Issue                                    
+02-02-06 01:31 rlrevell       Note Added: 0007866                          
+02-02-06 08:58 Clemens LadischNote Added: 0007870                          
+02-02-06 12:47 daste          File Added: lsusb                            
+02-02-06 12:47 daste          Note Added: 0007875                          
+02-02-06 16:29 daste          Issue Monitored: daste                       
+02-03-06 08:37 Clemens LadischNote Added: 0007892                          
+02-03-06 08:37 Clemens LadischAssigned To               => Clemens Ladisch 
+02-03-06 08:37 Clemens LadischReproducibility          N/A => always       
+02-03-06 08:37 Clemens LadischStatus                   new => assigned     
+02-03-06 10:57 daste          Note Added: 0007895                          
+03-03-06 10:46 daste          Note Added: 0008339                          
+03-26-06 00:33 suamor         Note Added: 0008955                          
+03-26-06 09:23 daste          Note Added: 0008966                          
+04-19-06 19:16 daste          File Added: line6_tp_ux1.c                    
+04-19-06 19:17 daste          File Added: line6_tp_ux1.h                    
+04-19-06 19:21 daste          Note Added: 0009353                          
 ======================================================================
 
 
