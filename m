@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002041]: Two little compiler warnings
-Date: Wed, 19 Apr 2006 22:51:51 +0200
-Message-ID: <ecb7d59d71b13774058f99174fc42454@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002038]: Microphone is not working on Sigmatel STAC9200
+Date: Wed, 19 Apr 2006 23:21:02 +0200
+Message-ID: <1644f33be69f8767888c9bef4bf5631f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EDE19191
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 22:51:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D72C1191
+	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 23:21:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2041> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2038> 
 ======================================================================
-Reported By:                Henne
-Assigned To:                perex
+Reported By:                telles
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2041
-Category:                   0_compilation problem_!!!
+Issue ID:                   2038
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Suse 10.0 x86_64
-Kernel Version:             2.6.17-rc2
+Distribution:               Mandriva 2006
+Kernel Version:             2.6.12-18mdk
 ======================================================================
-Date Submitted:             04-19-2006 22:10 CEST
-Last Modified:              04-19-2006 22:51 CEST
+Date Submitted:             04-19-2006 20:58 CEST
+Last Modified:              04-19-2006 23:21 CEST
 ======================================================================
-Summary:                    Two little compiler warnings
+Summary:                    Microphone is not working on Sigmatel STAC9200
 Description: 
-The first one:
-
-In file included from /pci/pcxhr/pcxhr_hwdep.c:9:
-/pci/pcxhr/../../alsa-kernel/pci/pcxhr/pcxhr_hwdep.c: In function
-&#8216;pcxhr_hwdep_dsp_load&#8217;:
-/pci/pcxhr/../../alsa-kernel/pci/pcxhr/pcxhr_hwdep.c:388: warning: format
-&#8216;%d&#8217; expects type &#8216;int&#8217;, but argument 4 has type
-&#8216;size_t&#8217;
-
-It's just a portability issue, since size_t on i386 has 4 bytes and on
-x86_64 8 bytes.
-
-WARNING: /home/henne/alsa/alsa-driver-1.0.11/pci/pdplus/snd-pdplus.o -
-Section mismatch: reference to .exit.text:pdplus_sweep from
-.text.pdplus_probe after 'pdplus_probe' (at offset 0xbe)
-
-after the prototype of pdplus_sweep on line 1405 is an __exit.
-I deleted it and the warning disappeared.
+I have a laptop Dell Latitude 120L with a HDA Intel Sound Board:
+Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition
+Audio Controller (rev 03)
+that is recognized as Sigmatel STAC9200.
+Sound is working great but the microphone is not working at all.
+I think that is missing some control on alsamixer about Mic, because there
+is no Mic's volume or sound control, only "Input Source" is present
+(Line|Mic) and seems that it doesn't change anything about Microphone.
 ======================================================================
 
 ----------------------------------------------------------------------
- Henne - 04-19-06 22:51 
+ telles - 04-19-06 22:50 
 ----------------------------------------------------------------------
-Here's a patch for pcxhr.
+Follow the output of amixer:
+
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 23 [74%] [on]
+  Front Right: Playback 23 [74%] [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Mono:
+  Front Left: Playback 158 [62%]
+  Front Right: Playback 158 [62%]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 12 [80%] [on]
+  Front Right: Capture 12 [80%] [on]
+Simple mixer control 'Capture Mux',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 4
+  Front Left: 4 [100%]
+  Front Right: 4 [100%]
+Simple mixer control 'Input Source',0
+  Capabilities: enum
+  Items: 'Mic' 'Line'
+  Item0: 'Mic'
+
+----------------------------------------------------------------------
+ rlrevell - 04-19-06 23:21 
+----------------------------------------------------------------------
+Check /proc/asound/version to confirm you are running ALSA 1.0.11
+
+Try loading the snd-hda-intel with the various "model" options described
+in ALSA-Configuration.txt
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-06 22:10 Henne          New Issue                                    
-04-19-06 22:10 Henne          Distribution              => Suse 10.0 x86_64
-04-19-06 22:10 Henne          Kernel Version            => 2.6.17-rc2      
-04-19-06 22:51 Henne          File Added: pcxhr_format.diff                    
-04-19-06 22:51 Henne          Note Added: 0009360                          
+04-19-06 20:58 telles         New Issue                                    
+04-19-06 20:58 telles         Distribution              => Mandriva 2006   
+04-19-06 20:58 telles         Kernel Version            => 2.6.12-18mdk    
+04-19-06 22:09 rlrevell       Note Added: 0009358                          
+04-19-06 22:50 telles         Note Added: 0009359                          
+04-19-06 23:21 rlrevell       Note Added: 0009361                          
 ======================================================================
 
 
