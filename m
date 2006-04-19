@@ -1,11 +1,14 @@
-From: Thomas Glanzmann <sithglan@stud.uni-erlangen.de>
-Subject: Mac Mini Analog Output Support
-Date: Wed, 19 Apr 2006 16:55:54 +0200
-Message-ID: <20060419145554.GK27483@cip.informatik.uni-erlangen.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002036]: Missing PCI subsystem vendor and device in /proc/asound/../codec97#0/ac97#0-0 for some pci sound card drivers
+Date: Wed, 19 Apr 2006 17:17:41 +0200
+Message-ID: <43079a93faafbfba14a197f0bcf20e76@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA3B018A
+	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 17:17:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,32 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, mactel-linux-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hell everyone,
-is someone working on getting the analog audio port working on the mac
-mini? At the moment I have an USB Soundcard attached to my system. A
-friend of mine who has a intel mac mini and a digital amplifier tried
-the digital output and it already works. But the analog output doesn't
-seem to work.
 
-0000:00:1b.0 0403: (8086:27d8) Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller (rev 02)
-        Subsystem: Unknown device 8384:7680
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size: 0x40 (256 bytes)
-        Interrupt: pin A routed to IRQ 21
-        Region 0: Memory at 90440000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] #10 [0091]
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2036> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2036
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             04-19-2006 17:17 CEST
+Last Modified:              04-19-2006 17:17 CEST
+======================================================================
+Summary:                    Missing PCI subsystem vendor and device in
+/proc/asound/../codec97#0/ac97#0-0 for some pci sound card drivers
+Description: 
+Only a few of pci sound card drivers have initialised 'ac97.pci'.
 
-Sincerely,
-        Thomas
+ad1889.c:       ac97.pci = chip->pci;
+atiixp.c:               ac97.pci = chip->pci;
+atiixp_modem.c:         ac97.pci = chip->pci;
+cs5535audio/cs5535audio.c:      ac97.pci = cs5535au->pci;
+intel8x0.c:     ac97.pci = chip->pci;
+intel8x0m.c:    ac97.pci = chip->pci;
+riptide/riptide.c:      ac97.pci = chip->pci;
+via82xx.c:      ac97.pci = chip->pci;
+via82xx_modem.c:        ac97.pci = chip->pci;
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-19-06 17:17 Raymond        New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
