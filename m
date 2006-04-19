@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002038]: Microphone is not working on Sigmatel STAC9200
-Date: Wed, 19 Apr 2006 23:21:02 +0200
-Message-ID: <1644f33be69f8767888c9bef4bf5631f@bugtrack.alsa-project.org>
+From: Bastiaan Jacques <bastiaan@dahhosting.com>
+Subject: [PATCH ALSA-1.0.11] via82xx: tweak VT8251 workaround
+Date: Thu, 20 Apr 2006 01:53:39 +0200
+Message-ID: <200604200153.39834.bastiaan@dahhosting.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D72C1191
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 23:21:02 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,99 +17,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Move the workaround for the VT8251 up a bit, and check for STAT_EOL
+rather than STAT_ACTIVE. This resolves issues some people were having
+with certain ALSA clients (and allows the STAT_ACTIVE check to do what
+it was intended to do).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2038> 
-======================================================================
-Reported By:                telles
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2038
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva 2006
-Kernel Version:             2.6.12-18mdk
-======================================================================
-Date Submitted:             04-19-2006 20:58 CEST
-Last Modified:              04-19-2006 23:21 CEST
-======================================================================
-Summary:                    Microphone is not working on Sigmatel STAC9200
-Description: 
-I have a laptop Dell Latitude 120L with a HDA Intel Sound Board:
-Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition
-Audio Controller (rev 03)
-that is recognized as Sigmatel STAC9200.
-Sound is working great but the microphone is not working at all.
-I think that is missing some control on alsamixer about Mic, because there
-is no Mic's volume or sound control, only "Input Source" is present
-(Line|Mic) and seems that it doesn't change anything about Microphone.
-======================================================================
+This change was suggested by Andrew Daviel.
 
-----------------------------------------------------------------------
- telles - 04-19-06 22:50 
-----------------------------------------------------------------------
-Follow the output of amixer:
+Signed-off-by: Bastiaan Jacques <b.jacques@planet.nl>
+---
 
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 23 [74%] [on]
-  Front Right: Playback 23 [74%] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 158 [62%]
-  Front Right: Playback 158 [62%]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 12 [80%] [on]
-  Front Right: Capture 12 [80%] [on]
-Simple mixer control 'Capture Mux',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 4
-  Front Left: 4 [100%]
-  Front Right: 4 [100%]
-Simple mixer control 'Input Source',0
-  Capabilities: enum
-  Items: 'Mic' 'Line'
-  Item0: 'Mic'
-
-----------------------------------------------------------------------
- rlrevell - 04-19-06 23:21 
-----------------------------------------------------------------------
-Check /proc/asound/version to confirm you are running ALSA 1.0.11
-
-Try loading the snd-hda-intel with the various "model" options described
-in ALSA-Configuration.txt
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-19-06 20:58 telles         New Issue                                    
-04-19-06 20:58 telles         Distribution              => Mandriva 2006   
-04-19-06 20:58 telles         Kernel Version            => 2.6.12-18mdk    
-04-19-06 22:09 rlrevell       Note Added: 0009358                          
-04-19-06 22:50 telles         Note Added: 0009359                          
-04-19-06 23:21 rlrevell       Note Added: 0009361                          
-======================================================================
-
-
+--- pci/via82xx.c.orig	2006-04-20 01:39:10.000000000 +0200
++++ pci/via82xx.c	2006-04-20 01:41:59.000000000 +0200
+@@ -863,16 +863,14 @@ static snd_pcm_uframes_t snd_via8233_pcm
+ 	if (!status)
+ 		status = inb(VIADEV_REG(viadev, OFFSET_STATUS));
+ 
++	/* An apparent bug in the 8251 is worked around by sending a 
++	 * REG_CTRL_START. */
++	if (chip->revision == VIA_REV_8251 && (status & VIA_REG_STAT_EOL))
++		snd_via82xx_pcm_trigger(substream, SNDRV_PCM_TRIGGER_START);
++
+ 	if (!(status & VIA_REG_STAT_ACTIVE)) {
+-		/* An apparent bug in the 8251 is worked around by sending
+-		 * a REG_CTRL_START. */
+-		if (chip->revision == VIA_REV_8251)
+-			snd_via82xx_pcm_trigger(substream,
+-						SNDRV_PCM_TRIGGER_START);
+-		else {
+-			res = 0;
+-			goto unlock;
+-		}
++		res = 0;
++		goto unlock;
+ 	}
+ 	if (count & 0xffffff) {
+ 		idx = count >> 24;
 
 
 -------------------------------------------------------
