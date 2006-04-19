@@ -1,14 +1,14 @@
-From: Erik Mouw <erik@harddisk-recovery.com>
-Subject: [PATCH 2.6.17-rc2] ALSA: PCMCIA sound devices shouldn't depend on ISA
-Date: Wed, 19 Apr 2006 16:40:08 +0200
-Message-ID: <20060419144008.GD24807@harddisk-recovery.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
+Date: Wed, 19 Apr 2006 16:56:38 +0200
+Message-ID: <11d43b2825c926b875beae8e90226338@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from abra2.bitwizard.nl (dtp.xs4all.nl [80.126.206.180])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 7AB8616E
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 16:40:15 +0200 (MEST)
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9C3F130
+	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 16:56:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,37 +19,83 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The ALSA drivers for PCMCIA devices depend on ISA, but modern
-laptops can have PCMCIA support without ISA. This patch removes
-the dependency.
 
-Signed-off-by: Erik Mouw <erik@harddisk-recovery.com>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
+======================================================================
+Reported By:                drolyk
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1930
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15.6
+======================================================================
+Date Submitted:             03-15-2006 23:41 CET
+Last Modified:              04-19-2006 16:56 CEST
+======================================================================
+Summary:                    Can`t get timidity woking in soft synth mode
+Description: 
+Can`t get timidity woking in "soft synth mode".
+======================================================================
 
-diff --git a/sound/pcmcia/Kconfig b/sound/pcmcia/Kconfig
-index 5d1b0b7..c9fa1a2 100644
---- a/sound/pcmcia/Kconfig
-+++ b/sound/pcmcia/Kconfig
-@@ -5,7 +5,7 @@ menu "PCMCIA devices"
- 
- config SND_VXPOCKET
- 	tristate "Digigram VXpocket"
--	depends on SND && PCMCIA && ISA
-+	depends on SND && PCMCIA
- 	select SND_VX_LIB
- 	help
- 	  Say Y here to include support for Digigram VXpocket and
-@@ -16,7 +16,7 @@ config SND_VXPOCKET
- 
- config SND_PDAUDIOCF
- 	tristate "Sound Core PDAudioCF"
--	depends on SND && PCMCIA && ISA
-+	depends on SND && PCMCIA
- 	select SND_PCM
- 	help
- 	  Say Y here to include support for Sound Core PDAudioCF
+----------------------------------------------------------------------
+ Raymond - 04-19-06 10:08 
+----------------------------------------------------------------------
+How do you build ALSA ? ( ./configure --with-sequencer=yes )
+
+How do you build timidity ?
+
+Do  /proc/asound/seq  exist ?
+
+----------------------------------------------------------------------
+ fdoffizi01 - 04-19-06 16:56 
+----------------------------------------------------------------------
+Well I configured it with standard ebuild (gentoo user) system.
+I have some info. It's not really broken! I can use it by Rosegarden, by
+Band in a Box emulated (wine). So it works. But If i play the same midi
+files throw amidiplay or kmid, it locks on first events.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-15-06 23:41 drolyk         New Issue                                    
+03-15-06 23:41 drolyk         Distribution              => Debian          
+03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
+03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
+03-20-06 01:28 rlrevell       Note Added: 0008702                          
+03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
+03-20-06 03:24 rlrevell       Note Added: 0008706                          
+03-20-06 06:08 drolyk         Note Added: 0008709                          
+03-20-06 06:22 rlrevell       Note Added: 0008710                          
+03-20-06 07:19 Raymond        Note Added: 0008711                          
+03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
+03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
+03-20-06 22:19 drolyk         Note Added: 0008726                          
+03-20-06 22:21 drolyk         Note Edited: 0008726                         
+03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
+03-20-06 23:29 rlrevell       Note Added: 0008729                          
+03-20-06 23:40 fdoffizi01     Note Added: 0008730                          
+03-20-06 23:54 rlrevell       Note Added: 0008731                          
+03-21-06 00:14 fdoffizi01     Note Added: 0008732                          
+03-21-06 08:46 Raymond        Note Added: 0008739                          
+03-21-06 09:00 Raymond        Note Edited: 0008739                         
+03-21-06 10:58 fdoffizi01     Note Added: 0008741                          
+04-15-06 10:49 Raymond        Note Added: 0009293                          
+04-19-06 10:05 Raymond        Note Deleted: 0009293                        
+04-19-06 10:08 Raymond        Note Added: 0009350                          
+04-19-06 16:56 fdoffizi01     Note Added: 0009351                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
