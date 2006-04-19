@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Wed, 19 Apr 2006 16:56:38 +0200
-Message-ID: <11d43b2825c926b875beae8e90226338@bugtrack.alsa-project.org>
+From: Thomas Glanzmann <sithglan@stud.uni-erlangen.de>
+Subject: Mac Mini Analog Output Support
+Date: Wed, 19 Apr 2006 16:55:54 +0200
+Message-ID: <20060419145554.GK27483@cip.informatik.uni-erlangen.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9C3F130
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 16:56:38 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +15,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net, mactel-linux-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hell everyone,
+is someone working on getting the analog audio port working on the mac
+mini? At the moment I have an USB Soundcard attached to my system. A
+friend of mine who has a intel mac mini and a digital amplifier tried
+the digital output and it already works. But the analog output doesn't
+seem to work.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
-======================================================================
-Reported By:                drolyk
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1930
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.6
-======================================================================
-Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              04-19-2006 16:56 CEST
-======================================================================
-Summary:                    Can`t get timidity woking in soft synth mode
-Description: 
-Can`t get timidity woking in "soft synth mode".
-======================================================================
+0000:00:1b.0 0403: (8086:27d8) Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller (rev 02)
+        Subsystem: Unknown device 8384:7680
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size: 0x40 (256 bytes)
+        Interrupt: pin A routed to IRQ 21
+        Region 0: Memory at 90440000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] #10 [0091]
 
-----------------------------------------------------------------------
- Raymond - 04-19-06 10:08 
-----------------------------------------------------------------------
-How do you build ALSA ? ( ./configure --with-sequencer=yes )
-
-How do you build timidity ?
-
-Do  /proc/asound/seq  exist ?
-
-----------------------------------------------------------------------
- fdoffizi01 - 04-19-06 16:56 
-----------------------------------------------------------------------
-Well I configured it with standard ebuild (gentoo user) system.
-I have some info. It's not really broken! I can use it by Rosegarden, by
-Band in a Box emulated (wine). So it works. But If i play the same midi
-files throw amidiplay or kmid, it locks on first events.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-15-06 23:41 drolyk         New Issue                                    
-03-15-06 23:41 drolyk         Distribution              => Debian          
-03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
-03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
-03-20-06 01:28 rlrevell       Note Added: 0008702                          
-03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
-03-20-06 03:24 rlrevell       Note Added: 0008706                          
-03-20-06 06:08 drolyk         Note Added: 0008709                          
-03-20-06 06:22 rlrevell       Note Added: 0008710                          
-03-20-06 07:19 Raymond        Note Added: 0008711                          
-03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
-03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
-03-20-06 22:19 drolyk         Note Added: 0008726                          
-03-20-06 22:21 drolyk         Note Edited: 0008726                         
-03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
-03-20-06 23:29 rlrevell       Note Added: 0008729                          
-03-20-06 23:40 fdoffizi01     Note Added: 0008730                          
-03-20-06 23:54 rlrevell       Note Added: 0008731                          
-03-21-06 00:14 fdoffizi01     Note Added: 0008732                          
-03-21-06 08:46 Raymond        Note Added: 0008739                          
-03-21-06 09:00 Raymond        Note Edited: 0008739                         
-03-21-06 10:58 fdoffizi01     Note Added: 0008741                          
-04-15-06 10:49 Raymond        Note Added: 0009293                          
-04-19-06 10:05 Raymond        Note Deleted: 0009293                        
-04-19-06 10:08 Raymond        Note Added: 0009350                          
-04-19-06 16:56 fdoffizi01     Note Added: 0009351                          
-======================================================================
-
-
+Sincerely,
+        Thomas
 
 
 -------------------------------------------------------
