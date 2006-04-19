@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002037]: no sound
-Date: Wed, 19 Apr 2006 22:02:17 +0200
-Message-ID: <44384e95ca3998574d60c254e2291f80@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: /dev/dsp exclusive open?
+Date: Wed, 19 Apr 2006 16:05:21 -0400
+Message-ID: <1145477122.31023.17.camel@mindpipe>
+References: <F23ABFFDB8261D40A6F6D30EA0148825308F62@VS6.EXCHPROD.USA.NET>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1CED218A
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 22:02:18 +0200 (MEST)
+In-Reply-To: <F23ABFFDB8261D40A6F6D30EA0148825308F62@VS6.EXCHPROD.USA.NET>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,55 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Steve Finney <sfinney@healthhero.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2006-04-19 at 12:06 -0600, Steve Finney wrote:
+> In various docs, I thought I had seen references to the fact that
+> only one process should be able to open /dev/dsp (OSS). I'm running
+> ALSA 1.0.10rc1
+> (Linux kernel 2.6.14.3), and it appears as if it is possible to open
+> /dev/dsp twice (two separate processes), but the _third_ open will
+> return EBUSY. Is this a bug or a feature?
+> 
+It depends on the hardware.  If the device does hardware mixing like
+emu10k1 or some VIA chips then multiple open will be possible.  If the
+hardware only handles a single stereo stream like most new devices then
+only one process can open it.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2037> 
-======================================================================
-Reported By:                jobofly
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2037
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora core 5
-Kernel Version:             2.6.16-1.2080_FC5
-======================================================================
-Date Submitted:             04-19-2006 19:22 CEST
-Last Modified:              04-19-2006 22:02 CEST
-======================================================================
-Summary:                    no sound
-Description: 
-i have a asus a6km laptop and i cant get any sound from it in fedora core
-5, the chipset is sis 756, my company is going to be selling alot of these
-laptops with dual booting configurations with fedora 5 and xp, please let
-me know if there is anything i can do.  Thanks
+Since your hardware supports two streams I am guessing this is a VIA
+chipset?
 
-Joe Williamson
-Red Barn Computers
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 04-19-06 22:02 
-----------------------------------------------------------------------
-Should be fixed in ALSA 1.0.11 release
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-19-06 19:22 jobofly        New Issue                                    
-04-19-06 19:22 jobofly        Distribution              => Fedora core 5   
-04-19-06 19:22 jobofly        Kernel Version            => 2.6.16-1.2080_FC5
-04-19-06 22:02 rlrevell       Note Added: 0009357                          
-======================================================================
-
+Lee
 
 
 
