@@ -1,13 +1,14 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: seq_midi client names
-Date: Wed, 19 Apr 2006 20:54:16 +0100
-Message-ID: <200604191247.12207.gineera@aspect135.co.uk>
-References: <200604121402.48859.gineera@aspect135.co.uk> <200604131354.45544.gineera@aspect135.co.uk> <20060413152617.GB1147@turing.informatik.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002037]: no sound
+Date: Wed, 19 Apr 2006 22:02:17 +0200
+Message-ID: <44384e95ca3998574d60c254e2291f80@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_oVpREjr1r1pizdO"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060413152617.GB1147@turing.informatik.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1CED218A
+	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 22:02:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,63 +18,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-00=_oVpREjr1r1pizdO
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2037> 
+======================================================================
+Reported By:                jobofly
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2037
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora core 5
+Kernel Version:             2.6.16-1.2080_FC5
+======================================================================
+Date Submitted:             04-19-2006 19:22 CEST
+Last Modified:              04-19-2006 22:02 CEST
+======================================================================
+Summary:                    no sound
+Description: 
+i have a asus a6km laptop and i cant get any sound from it in fedora core
+5, the chipset is sis 756, my company is going to be selling alot of these
+laptops with dual booting configurations with fedora 5 and xp, please let
+me know if there is anything i can do.  Thanks
 
-On Thursday 13 April 2006 16:26, Clemens wrote:
-> Alan Horstmann wrote:
-> > I'll post a patch to change seq_midi to use card->shortname instead of
-> > info->name for the new client name, if that is OK with you?
->
-> Yes.
+Joe Williamson
+Red Barn Computers
+======================================================================
 
-Patch to change midi client names, following discussion with Clemens.
+----------------------------------------------------------------------
+ rlrevell - 04-19-06 22:02 
+----------------------------------------------------------------------
+Should be fixed in ALSA 1.0.11 release
 
-seq_midi.c-client-naming.patch
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-19-06 19:22 jobofly        New Issue                                    
+04-19-06 19:22 jobofly        Distribution              => Fedora core 5   
+04-19-06 19:22 jobofly        Kernel Version            => 2.6.16-1.2080_FC5
+04-19-06 22:02 rlrevell       Note Added: 0009357                          
+======================================================================
 
-Summary: Change seq_midi.c so client name is card, rather than port, specific
-
-Change snd_seq_midisynth_register_port() in seq_midi.c so that if a new client 
-is created, the client name string is based on card->shortname not 
-(port-specific) info->name.
-
-Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
-
-
-
-
-
---Boundary-00=_oVpREjr1r1pizdO
-Content-Type: text/x-diff;
-  charset="iso-8859-1";
-  name="seq_midi.c-client-naming.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="seq_midi.c-client-naming.patch"
-
---- alsa-driver-orig-1.0.11rc3/alsa-kernel/core/seq/seq_midi.c	2006-01-16 16:29:08.000000000 +0000
-+++ alsa-driver-1.0.11rc3/alsa-kernel/core/seq/seq_midi.c	2006-04-11 21:42:51.000000000 +0100
-@@ -320,8 +320,8 @@
- 		}
- 		client->seq_client =
- 			snd_seq_create_kernel_client(
--				card, 0, "%s", info->name[0] ?
--				(const char *)info->name : "External MIDI");
-+				card, 0, "%s", card->shortname[0] ?
-+				(const char *)card->shortname : "External MIDI");
- 		if (client->seq_client < 0) {
- 			kfree(client);
- 			mutex_unlock(&register_mutex);
-
---Boundary-00=_oVpREjr1r1pizdO--
 
 
 
