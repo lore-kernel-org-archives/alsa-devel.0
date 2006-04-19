@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Wed, 19 Apr 2006 20:05:26 +0200
-Message-ID: <4d6b27a155a7708ff993a5c48df4e1f4@bugtrack.alsa-project.org>
+From: "Steve Finney" <sfinney@healthhero.com>
+Subject: /dev/dsp exclusive open?
+Date: Wed, 19 Apr 2006 12:06:56 -0600
+Message-ID: <F23ABFFDB8261D40A6F6D30EA0148825308F62@VS6.EXCHPROD.USA.NET>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C663DC.0BC8BBF0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CEE9191
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 20:05:26 +0200 (MEST)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,102 +16,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
-======================================================================
-Reported By:                zanonmark
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
-======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              04-19-2006 20:05 CEST
-======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
-Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+------_=_NextPart_001_01C663DC.0BC8BBF0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
+In various docs, I thought I had seen references to the fact that
+only one process should be able to open /dev/dsp (OSS). I'm running ALSA =
+1.0.10rc1
+(Linux kernel 2.6.14.3), and it appears as if it is possible to open
+/dev/dsp twice (two separate processes), but the _third_ open will
+return EBUSY. Is this a bug or a feature?
 
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
+Thanks,
+sf
 
-So, will you please include such a parameter in the next version of the
-driver?
+------_=_NextPart_001_01C663DC.0BC8BBF0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks a lot,
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.5.7638.1">
+<TITLE>/dev/dsp exclusive open?</TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/plain format -->
 
-Marco.
+<P><FONT SIZE=3D2>In various docs, I thought I had seen references to =
+the fact that<BR>
+only one process should be able to open /dev/dsp (OSS). I'm running ALSA =
+1.0.10rc1<BR>
+(Linux kernel 2.6.14.3), and it appears as if it is possible to open<BR>
+/dev/dsp twice (two separate processes), but the _third_ open will<BR>
+return EBUSY. Is this a bug or a feature?<BR>
+<BR>
+Thanks,<BR>
+sf</FONT>
+</P>
 
-======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 04-18-06 16:28 
-----------------------------------------------------------------------
-You do not need to enable the joystick port; the MIDI functionality of the
-game port is completely independent from that.
-
-You do not need snd-mpu401, it's only used for mainboard game ports and
-for separate MPU-401-compatible cards.  The ENS1371 chip is not MPU-401
-compatible.
-
-The MIDI port is always enabled, and should work.
-
-What is the output of "amidi -l"?
-
-----------------------------------------------------------------------
- zanonmark - 04-19-06 20:05 
-----------------------------------------------------------------------
-"amidi -l" returns:
-
-Device    Name
-hw:0,0    ES1371
-hw:2,0    MPU-401 UART MIDI
-
-and, for Raymond: I also tried 0x218, but nothing changes...
-
-Thanks all,
-
-MZ
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
-04-18-06 13:18 Raymond        Note Edited: 0009328                         
-04-18-06 16:28 Clemens LadischNote Added: 0009338                          
-04-19-06 20:05 zanonmark      Note Added: 0009354                          
-======================================================================
+</BODY>
+</HTML>
+------_=_NextPart_001_01C663DC.0BC8BBF0--
 
 
 
