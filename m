@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002036]: Missing PCI subsystem vendor and device in /proc/asound/../codec97#0/ac97#0-0 for some pci sound card drivers
-Date: Wed, 19 Apr 2006 17:17:41 +0200
-Message-ID: <43079a93faafbfba14a197f0bcf20e76@bugtrack.alsa-project.org>
+Date: Wed, 19 Apr 2006 17:28:18 +0200
+Message-ID: <cbf07724e5b3258d0e0971423fab50cd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EA3B018A
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 17:17:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E09718A
+	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 17:28:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2036> 
 ======================================================================
 Reported By:                Raymond
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   2036
@@ -35,12 +35,14 @@ Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 won't fix
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-19-2006 17:17 CEST
-Last Modified:              04-19-2006 17:17 CEST
+Last Modified:              04-19-2006 17:28 CEST
 ======================================================================
 Summary:                    Missing PCI subsystem vendor and device in
 /proc/asound/../codec97#0/ac97#0-0 for some pci sound card drivers
@@ -59,10 +61,19 @@ via82xx_modem.c:        ac97.pci = chip->pci;
 
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 04-19-06 17:28 
+----------------------------------------------------------------------
+It's no bug.  The pci field is not mandatory, and required only for quirks.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-19-06 17:17 Raymond        New Issue                                    
+04-19-06 17:28 tiwai          Status                   new => resolved     
+04-19-06 17:28 tiwai          Resolution               open => won't fix   
+04-19-06 17:28 tiwai          Assigned To               => tiwai           
+04-19-06 17:28 tiwai          Note Added: 0009352                          
 ======================================================================
 
 
