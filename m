@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Wed, 19 Apr 2006 21:49:20 +0200
-Message-ID: <115bfb14d64eba23066177a6e126e828@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: seq_midi client names
+Date: Wed, 19 Apr 2006 20:54:16 +0100
+Message-ID: <200604191247.12207.gineera@aspect135.co.uk>
+References: <200604121402.48859.gineera@aspect135.co.uk> <200604131354.45544.gineera@aspect135.co.uk> <20060413152617.GB1147@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_oVpREjr1r1pizdO"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07A9A18A
-	for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2006 21:49:21 +0200 (MEST)
+In-Reply-To: <20060413152617.GB1147@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,99 +17,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
-======================================================================
-Reported By:                zanonmark
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
-======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              04-19-2006 21:49 CEST
-======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
-Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+--Boundary-00=_oVpREjr1r1pizdO
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
+On Thursday 13 April 2006 16:26, Clemens wrote:
+> Alan Horstmann wrote:
+> > I'll post a patch to change seq_midi to use card->shortname instead of
+> > info->name for the new client name, if that is OK with you?
+>
+> Yes.
 
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
+Patch to change midi client names, following discussion with Clemens.
 
-So, will you please include such a parameter in the next version of the
-driver?
+seq_midi.c-client-naming.patch
 
-Thanks a lot,
+Summary: Change seq_midi.c so client name is card, rather than port, specific
 
-Marco.
+Change snd_seq_midisynth_register_port() in seq_midi.c so that if a new client 
+is created, the client name string is based on card->shortname not 
+(port-specific) info->name.
 
-======================================================================
+Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
 
-----------------------------------------------------------------------
- zanonmark - 04-19-06 20:05 
-----------------------------------------------------------------------
-"amidi -l" returns:
 
-Device    Name
-hw:0,0    ES1371
-hw:2,0    MPU-401 UART MIDI
 
-and, for Raymond: I also tried 0x218, but nothing changes...
 
-Thanks all,
 
-MZ
+--Boundary-00=_oVpREjr1r1pizdO
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="seq_midi.c-client-naming.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="seq_midi.c-client-naming.patch"
 
-----------------------------------------------------------------------
- rlrevell - 04-19-06 21:49 
-----------------------------------------------------------------------
-Does:
+--- alsa-driver-orig-1.0.11rc3/alsa-kernel/core/seq/seq_midi.c	2006-01-16 16:29:08.000000000 +0000
++++ alsa-driver-1.0.11rc3/alsa-kernel/core/seq/seq_midi.c	2006-04-11 21:42:51.000000000 +0100
+@@ -320,8 +320,8 @@
+ 		}
+ 		client->seq_client =
+ 			snd_seq_create_kernel_client(
+-				card, 0, "%s", info->name[0] ?
+-				(const char *)info->name : "External MIDI");
++				card, 0, "%s", card->shortname[0] ?
++				(const char *)card->shortname : "External MIDI");
+ 		if (client->seq_client < 0) {
+ 			kfree(client);
+ 			mutex_unlock(&register_mutex);
 
-amidi -d -p "hw:0,0"
-
-while playing with the keyboard connected output anything?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
-04-18-06 13:18 Raymond        Note Edited: 0009328                         
-04-18-06 16:28 Clemens LadischNote Added: 0009338                          
-04-19-06 20:05 zanonmark      Note Added: 0009354                          
-04-19-06 21:49 rlrevell       Note Added: 0009356                          
-======================================================================
-
+--Boundary-00=_oVpREjr1r1pizdO--
 
 
 
