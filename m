@@ -1,9 +1,14 @@
-From: "alasinski" <alasinski@rogers.com>
-Subject: Re: How to access vendor specific AC97 codec register ?
-Date: Thu, 20 Apr 2006 11:34:22 -0400
-Message-ID: <e289m2$u2p$1@sea.gmane.org>
-References: <e28805$nlf$1@sea.gmane.org> <s5hbquwb7f0.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002044]: How about adding __devinitdata to the PCI-IDs?
+Date: Thu, 20 Apr 2006 17:44:59 +0200
+Message-ID: <230f343bfa6167337eb0db55a0ff7c3c@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C570C16C
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 17:44:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -13,83 +18,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thx Takashi,
 
-since I'm not being well frased in ALSA terminology I need some guidance:
-- what "accessor" is ?
-- Is it part of the driver or asoundlib ?
-- what ALSA files, calls are involved ?
-- where can I find some explanation on it ?
-- do you have a sample that implements other (similar ?) accessor ?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2044> 
+======================================================================
+Reported By:                Henne
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2044
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               Suse 10.0 x86_64
+Kernel Version:             2.6.17-rc2
+======================================================================
+Date Submitted:             04-20-2006 17:44 CEST
+Last Modified:              04-20-2006 17:44 CEST
+======================================================================
+Summary:                    How about adding __devinitdata to the PCI-IDs?
+Description: 
+I found a way to save GBs of Memory. Like in 
+<kernelsources>/Documentation/pci.txt  mentioned, the definiton of PCI
+drivers device-IDs can be marked as __devinitdata.
 
-cheers
--al
+This can be interesting, cause from 394 definitions of pci_device_ids in
+kernel 2.6.17-rc2, only 37 have it.
+That are 28Bytes/line on 32bit machines and 32Bytes/line on 64 bit
+machines.
+So I found the reason why the kernel is so resoucehungry. ;)
+I'll contact the kerneljanitors to add it in their TODO.
 
-"Takashi Iwai" <tiwai@suse.de> wrote in message 
-news:s5hbquwb7f0.wl%tiwai@suse.de...
-> At Thu, 20 Apr 2006 11:05:38 -0400,
-> alasinski wrote:
->>
->> Hi,
->>
->> I need to do IO specific operation from UCB1400 on Snapper Arm board. 
->> This
->> has to be done from C code as it is part of a larger project. All what I
->> need is to be able to read and write content of the few vendor specific 
->> AC97
->> codec registers: 0x5A,0x5C. I'm not interested with any other ALSA
->> functionality.
->>
->> I have ALSA installed and running with simple programs that can 
->> successfully
->> open controller with snd_ctl_open () and list available control elements.
->> This is basically J.C.Georgas sample I found. I can read content of all 
->> AC97
->> registers by cat /proc/asound/card0/codec97#/ac97#0-0+regs. That assures 
->> me
->> that all driver and lib parts are working. All what I need is to write a
->> simple piece of code ....
->>
->> However, I spent 2 days reading through ALSA back and forth and I find 
->> this
->> task very daunting to say at least. For one things I was not able to find 
->> an
->> architecture document explaining how parts of ALSA work, to be able to 
->> find
->> some sort of direction. There are samples dedicated to solving some of a
->> problems, unfortunately not my problem. Man pages and reference are only
->> little more then code browsing. Tutorials explain in brief what I don't 
->> need
->> to know. In summary: typical situation when you are tasked with something
->> that is off main stream.
->>
->> I have an inkling that I should prepare UCB1400.conf file to define 
->> control
->> elements that map to the registers (how ?). Then I should be able to
->> snd_ctl_elem_read() or .._write() to them. Perhaps there is other way
->> around: something like making ioctl() call on a driver directly w/o
->> libasound. I'm in lost.
->
-> You have to implement an accessor (e.g. via ALSA control API) to the
-> certain ac97 registers in the driver.  There is no generic interface
-> allowing you to access the all ac97 registers.
-> (The proc file is an exception.  It's provided only for debugging
-> purpose.)
->
->
-> Takashi
->
->
-> -------------------------------------------------------
-> Using Tomcat but need to do more? Need to support web services, security?
-> Get stuff done quickly with pre-integrated technology to make your job 
-> easier
-> Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642 
+I've added a patch for "writing an alsa driver".
+======================================================================
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-20-06 17:44 Henne          New Issue                                    
+04-20-06 17:44 Henne          File Added: wr.diff                          
+04-20-06 17:44 Henne          Distribution              => Suse 10.0 x86_64
+04-20-06 17:44 Henne          Kernel Version            => 2.6.17-rc2      
+======================================================================
 
 
 
