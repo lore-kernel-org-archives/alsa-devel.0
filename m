@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001980]: No Sound with module snd-hda-intel and no error output
-Date: Thu, 20 Apr 2006 15:44:48 +0200
-Message-ID: <ed8d5deca21dc5eef98ecc6d997f9f85@bugtrack.alsa-project.org>
+Date: Thu, 20 Apr 2006 15:50:15 +0200
+Message-ID: <648f0f69a121faf47454e456273945f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3958F16E
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:44:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9AA821F
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:50:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               ubuntu
 Kernel Version:             2.6.15-19-386
 ======================================================================
 Date Submitted:             03-30-2006 14:43 CEST
-Last Modified:              04-20-2006 15:44 CEST
+Last Modified:              04-20-2006 15:50 CEST
 ======================================================================
 Summary:                    No Sound with module snd-hda-intel and no error
 output
@@ -60,15 +60,14 @@ Hope somebody could help!!!
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-20-06 15:34 
-----------------------------------------------------------------------
-What model is your laptop exactly?  I need it for a comment in the source
-code.
-
-----------------------------------------------------------------------
  zyfhie - 04-20-06 15:44 
 ----------------------------------------------------------------------
 It's  "laptop-eapd"
+
+----------------------------------------------------------------------
+ tiwai - 04-20-06 15:50 
+----------------------------------------------------------------------
+I meant the "product/brand model" (of ASUS laptop, I suppose)...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -89,6 +88,7 @@ Date Modified  Username       Field                    Change
 04-04-06 09:24 zyfhie         Note Deleted: 0009090                        
 04-20-06 15:34 tiwai          Note Added: 0009386                          
 04-20-06 15:44 zyfhie         Note Added: 0009391                          
+04-20-06 15:50 tiwai          Note Added: 0009392                          
 ======================================================================
 
 
