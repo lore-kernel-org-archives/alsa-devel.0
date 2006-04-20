@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002040]: Compilation breaks on hpimod.c
-Date: Thu, 20 Apr 2006 13:09:38 +0200
-Message-ID: <72f102b12047383da464f518817368ad@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002039]: Compilation breaks on serialmidi.c
+Date: Thu, 20 Apr 2006 13:11:17 +0200
+Message-ID: <46448b3a37e3839f1060bf07ea17efef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3789174
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 13:09:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 04866174
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 13:11:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2040> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2039> 
 ======================================================================
 Reported By:                Henne
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2040
+Issue ID:                   2039
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               
 Kernel Version:             2.6.17-rc2
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
-Date Submitted:             04-19-2006 21:44 CEST
-Last Modified:              04-20-2006 13:09 CEST
+Date Submitted:             04-19-2006 21:17 CEST
+Last Modified:              04-20-2006 13:11 CEST
 ======================================================================
-Summary:                    Compilation breaks on hpimod.c
+Summary:                    Compilation breaks on serialmidi.c
 Description: 
-I know, this one doesn't work on x86_64 at all, but the compiler gives
-these warnings and stop compiling:
+Hello,
 
-/pci/asihpi/hpimod.c:95: error: syntax error before string constant
-/pci/asihpi/hpimod.c:95: warning: type defaults to &#8216;int&#8217; in
-declaration of &#8216;MODULE_PARM&#8217;
-/pci/asihpi/hpimod.c:95: warning: function declaration isn&#8217;t a
-prototype
-/pci/asihpi/hpimod.c:95: warning: data definition has no type or storage
-class
-/pci/asihpi/hpimod.c:97: error: syntax error before string constant
-/pci/asihpi/hpimod.c:97: warning: type defaults to &#8216;int&#8217; in
-declaration of &#8216;MODULE_PARM&#8217;
-/pci/asihpi/hpimod.c:97: warning: function declaration isn&#8217;t a
-prototype
-/pci/asihpi/hpimod.c:97: warning: data definition has no type or storage
-class
-/pci/asihpi/hpimod.c:101: error: syntax error before string constant
-/pci/asihpi/hpimod.c:101: warning: type defaults to &#8216;int&#8217; in
-declaration of &#8216;MODULE_PARM&#8217;
-/pci/asihpi/hpimod.c:101: warning: function declaration isn&#8217;t a
-prototype
-/pci/asihpi/hpimod.c:101: warning: data definition has no type or storage
-class
-/pci/asihpi/hpimod.c: In function &#8216;hpi_ioctl&#8217;:
-/pci/asihpi/hpimod.c:260: warning: cast to pointer from integer of
-different size
-/pci/asihpi/hpimod.c:266: warning: cast from pointer to integer of
-different size
+today I upgraded to kernel-2.6.17-rc2 and wanted to try out the new
+alsa-driver.
+
+drivers/serialmidi.c:317: error: &#8216;struct tty_struct&#8217; has no
+member named &#8216;atomic_write      &#8217;
+drivers/serialmidi.c:322: error: &#8216;struct tty_struct&#8217; has no
+member named &#8216;atomic_write      &#8217;
+drivers/serialmidi.c:339: error: &#8216;struct tty_struct&#8217; has no
+member named &#8216;atomic_write      &#8217;
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-20-06 13:09 
+ Henne - 04-19-06 21:26 
 ----------------------------------------------------------------------
-Fixed the compile errors.
+This affects only 2.6.17-rc[12] kernels. the semaphores were changed to
+mutexes.
 
-Also mod-deps program was fixed so that the driver won't be compiled on
-x86-64, too.
+----------------------------------------------------------------------
+ tiwai - 04-20-06 13:11 
+----------------------------------------------------------------------
+The snd-serialmidi driver is anyway broken with the recent 2.6 kernels, so
+I think it's better to be killed...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-06 21:44 Henne          New Issue                                    
-04-19-06 21:44 Henne          Kernel Version            => 2.6.17-rc2      
-04-20-06 13:09 tiwai          Status                   assigned => resolved
-04-20-06 13:09 tiwai          Resolution               open => fixed       
-04-20-06 13:09 tiwai          Note Added: 0009370                          
+04-19-06 21:17 Henne          New Issue                                    
+04-19-06 21:17 Henne          Kernel Version            => 2.6.17-rc2      
+04-19-06 21:26 Henne          Note Added: 0009355                          
+04-20-06 13:11 tiwai          Note Added: 0009371                          
 ======================================================================
 
 
