@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002046]: Driver build fails due to bug in kernel include/asm/dma-mapping.h file.
-Date: Thu, 20 Apr 2006 23:53:55 +0200
-Message-ID: <b40c78b07502687741e31a0615b8096f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001934]: make problem
+Date: Fri, 21 Apr 2006 00:03:07 +0200
+Message-ID: <a9199ff0d4824e5b4cb25167e6d445f8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1797A156
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 23:53:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2602156
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 00:03:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,42 +22,100 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2046> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
 ======================================================================
-Reported By:                GrueMaster
+Reported By:                kvo
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2046
+Issue ID:                   1934
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Novell Linux Desktop 9 Service pack 3
-Kernel Version:             
+Distribution:               RHEL4 Update 3
+Kernel Version:             2.6.9-34.EL
 ======================================================================
-Date Submitted:             04-20-2006 23:53 CEST
-Last Modified:              04-20-2006 23:53 CEST
+Date Submitted:             03-17-2006 12:19 CET
+Last Modified:              04-21-2006 00:03 CEST
 ======================================================================
-Summary:                    Driver build fails due to bug in kernel
-include/asm/dma-mapping.h file.
+Summary:                    make problem
 Description: 
-Compile fails at acore/sgbuf.c.  Multiple define errors in
-include/asm/dma-mapping.h file.  This has also been reproduced againast a
-clean 2.6.5 kernel from kernel.org.
-
-
+./configure works OK. running make give error during compilation: module
+'include/asound.h' (line 210) has some 'typedef' that doesn't match with
+(probably) OS include. As a result, compilation stops and driver can not
+be produced.
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0002042 Compile error : /usr/local/src/alsa/als...
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 04-10-06 18:43 
+----------------------------------------------------------------------
+The problem is how to _detect_ the very kernel and how do you activate the
+workaround.  If something is defined detectable as a flag, we can put just
+an idfdef SOMETHING.  Otherwise, we may need additional check in
+configure.in and include/adriver.h.  But, I can't work on this since I
+have no such a distribution.
+
+Patches are welcome, of course.
+
+----------------------------------------------------------------------
+ mnemotronic - 04-21-06 00:03 
+----------------------------------------------------------------------
+FYI, in an attempt to get a working driver, I commented out this line in
+adriver.h:
+// typedef unsigned __nocast gfp_t
+
+and recompiled.  This returned a different error:
+...etc.../acore/pcm_native.c:74: error: syntax error before
+"snd_pcm_link_rwlock"
+...etc.../acore/pcm_native.c:74: warning: type defaults to `int' in
+declaration of `snd_pcm_link_rwlock'
+...etc.../acore/pcm_native.c:74: error: conflicting types for
+'snd_pcm_link_rwlock'
+...etc.../include/sound/pcm.h:454: error: previous declaration of
+'snd_pcm_link_rwlock' was here
+...etc.../acore/pcm_native.c:74: error: conflicting types for
+'snd_pcm_link_rwlock'
+...etc.../include/sound/pcm.h:454: error: previous declaration of
+'snd_pcm_link_rwlock' was here
+...etc.../acore/pcm_native.c:74: error: incompatible types in
+initialization
+...etc.../acore/pcm_native.c:74: error: initializer element is not
+constant
+...etc.../acore/pcm_native.c:74: warning: data definition has no type or
+storage class
+...etc.../acore/pcm_native.c: In function `snd_pcm_action_lock_irq':
+
+heavy sigh.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-20-06 23:53 GrueMaster     New Issue                                    
-04-20-06 23:53 GrueMaster     Distribution              => Novell Linux Desktop
-9 Service pack 3
+03-17-06 12:19 kvo            New Issue                                    
+03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
+03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
+03-17-06 12:25 tiwai          Note Added: 0008643                          
+03-19-06 22:26 kvo            Note Added: 0008697                          
+03-21-06 17:33 tiwai          Note Added: 0008749                          
+03-25-06 20:47 kvo            File Added: config.log                       
+03-25-06 22:19 kvo            Note Added: 0008952                          
+04-09-06 18:47 kvo            File Added: info.zip                         
+04-09-06 18:56 kvo            Note Added: 0009181                          
+04-09-06 19:05 kvo            Issue Monitored: tiwai                       
+04-09-06 19:05 kvo            Note Added: 0009182                          
+04-10-06 16:46 tiwai          Note Added: 0009196                          
+04-10-06 18:38 kvo            Note Added: 0009213                          
+04-10-06 18:43 tiwai          Note Added: 0009214                          
+04-20-06 15:30 tiwai          Relationship added       has duplicate 0002042
+04-20-06 22:04 mnemotronic    Issue Monitored: mnemotronic                    
+04-21-06 00:03 mnemotronic    Note Added: 0009402                          
 ======================================================================
 
 
