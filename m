@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001980]: No Sound with module snd-hda-intel and no error output
-Date: Thu, 20 Apr 2006 16:32:33 +0200
-Message-ID: <83580551784487e03b7e1f3bb50e0c2f@bugtrack.alsa-project.org>
+Date: Thu, 20 Apr 2006 16:43:33 +0200
+Message-ID: <92c8ebb1c861e512d35f5d429b7bd01e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CF77147
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 16:32:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13BBA177
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 16:43:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1980> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               ubuntu
 Kernel Version:             2.6.15-19-386
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-30-2006 14:43 CEST
-Last Modified:              04-20-2006 16:32 CEST
+Last Modified:              04-20-2006 16:43 CEST
 ======================================================================
 Summary:                    No Sound with module snd-hda-intel and no error
 output
@@ -60,15 +62,15 @@ Hope somebody could help!!!
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-20-06 15:50 
-----------------------------------------------------------------------
-I meant the "product/brand model" (of ASUS laptop, I suppose)...
-
-----------------------------------------------------------------------
  zyfhie - 04-20-06 16:32 
 ----------------------------------------------------------------------
 M9417A  in
 ASUS M9 series
+
+----------------------------------------------------------------------
+ tiwai - 04-20-06 16:43 
+----------------------------------------------------------------------
+Thanks, fixed on HG.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -91,6 +93,9 @@ Date Modified  Username       Field                    Change
 04-20-06 15:44 zyfhie         Note Added: 0009391                          
 04-20-06 15:50 tiwai          Note Added: 0009392                          
 04-20-06 16:32 zyfhie         Note Added: 0009394                          
+04-20-06 16:43 tiwai          Status                   assigned => resolved
+04-20-06 16:43 tiwai          Resolution               open => fixed       
+04-20-06 16:43 tiwai          Note Added: 0009395                          
 ======================================================================
 
 
