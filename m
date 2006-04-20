@@ -1,14 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002044]: How about adding __devinitdata to the PCI-IDs?
-Date: Thu, 20 Apr 2006 17:44:59 +0200
-Message-ID: <230f343bfa6167337eb0db55a0ff7c3c@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "alasinski" <alasinski@rogers.com>
+Subject: Re: How to access vendor specific AC97 codec register?
+Date: Thu, 20 Apr 2006 11:48:19 -0400
+Message-ID: <e28ag6$1hb$1@sea.gmane.org>
+References: <e28805$nlf$1@sea.gmane.org> <1145546855.3008.0.camel@mindpipe>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C570C16C
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 17:44:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,54 +13,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Thx Lee,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2044> 
-======================================================================
-Reported By:                Henne
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2044
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   tweak
-Priority:                   normal
-Status:                     new
-Distribution:               Suse 10.0 x86_64
-Kernel Version:             2.6.17-rc2
-======================================================================
-Date Submitted:             04-20-2006 17:44 CEST
-Last Modified:              04-20-2006 17:44 CEST
-======================================================================
-Summary:                    How about adding __devinitdata to the PCI-IDs?
-Description: 
-I found a way to save GBs of Memory. Like in 
-<kernelsources>/Documentation/pci.txt  mentioned, the definiton of PCI
-drivers device-IDs can be marked as __devinitdata.
+I have looked at pxa2xx-ac97.c driver. It provides generic functions to 
+read/write any ac97 register: pxa2xx_ac97_read/write that are made available 
+to generic ac97_codec with snd_ac97_bus() call. My problem is I don't know 
+how to invoke those functions with proper arguments from application level. 
+It all goes through the generic concept of element I suppose. I fail to 
+correlate element value with a particular register I want. So far I'm lead 
+to believe that there is no need to change a driver, perhaps only do 
+configuration on asoundlib.
 
-This can be interesting, cause from 394 definitions of pci_device_ids in
-kernel 2.6.17-rc2, only 37 have it.
-That are 28Bytes/line on 32bit machines and 32Bytes/line on 64 bit
-machines.
-So I found the reason why the kernel is so resoucehungry. ;)
-I'll contact the kerneljanitors to add it in their TODO.
+Do you see the way how to do it ?
 
-I've added a patch for "writing an alsa driver".
-======================================================================
+cheers
+-al
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-20-06 17:44 Henne          New Issue                                    
-04-20-06 17:44 Henne          File Added: wr.diff                          
-04-20-06 17:44 Henne          Distribution              => Suse 10.0 x86_64
-04-20-06 17:44 Henne          Kernel Version            => 2.6.17-rc2      
-======================================================================
+"Lee Revell" <rlrevell@joe-job.com> wrote in message 
+news:1145546855.3008.0.camel@mindpipe...
+> On Thu, 2006-04-20 at 11:05 -0400, alasinski wrote:
+>> I need to do IO specific operation from UCB1400 on Snapper Arm board.
+>> This has to be done from C code as it is part of a larger project. All
+>> what I need is to be able to read and write content of the few vendor
+>> specific AC97 codec registers: 0x5A,0x5C. I'm not interested with any
+>> other ALSA functionality.
+>
+> Did you read the "Writing an ALSA driver" document?  It sounds like you
+> just want simple mixer controls (change the value of the codec register
+> when user toggles a mixer control)?  Look at any existing ALSA driver
+> for an example.
+>
+> Lee
+>
+>
+>
+> -------------------------------------------------------
+> Using Tomcat but need to do more? Need to support web services, security?
+> Get stuff done quickly with pre-integrated technology to make your job 
+> easier
+> Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642 
+
 
 
 
