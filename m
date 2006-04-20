@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002038]: Microphone is not working on Sigmatel STAC9200
-Date: Thu, 20 Apr 2006 14:30:39 +0200
-Message-ID: <bb9bd1d14fb9148f0f88d9b725f4536f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
+Date: Thu, 20 Apr 2006 14:37:24 +0200
+Message-ID: <17c8cf3b5fb1dc41b4a8bff1dbcd71f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB66E191
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 14:30:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38C441A8
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 14:37:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2038> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
 ======================================================================
-Reported By:                telles
-Assigned To:                tiwai
+Reported By:                drolyk
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2038
-Category:                   PCI - hda-intel
+Issue ID:                   1930
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandriva 2006
-Kernel Version:             2.6.12-18mdk
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15.6
 ======================================================================
-Date Submitted:             04-19-2006 20:58 CEST
-Last Modified:              04-20-2006 14:30 CEST
+Date Submitted:             03-15-2006 23:41 CET
+Last Modified:              04-20-2006 14:37 CEST
 ======================================================================
-Summary:                    Microphone is not working on Sigmatel STAC9200
+Summary:                    Can`t get timidity woking in soft synth mode
 Description: 
-I have a laptop Dell Latitude 120L with a HDA Intel Sound Board:
-Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition
-Audio Controller (rev 03)
-that is recognized as Sigmatel STAC9200.
-Sound is working great but the microphone is not working at all.
-I think that is missing some control on alsamixer about Mic, because there
-is no Mic's volume or sound control, only "Input Source" is present
-(Line|Mic) and seems that it doesn't change anything about Microphone.
+Can`t get timidity woking in "soft synth mode".
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 04-19-06 23:21 
+ fdoffizi01 - 04-19-06 16:56 
 ----------------------------------------------------------------------
-Check /proc/asound/version to confirm you are running ALSA 1.0.11
-
-Try loading the snd-hda-intel with the various "model" options described
-in ALSA-Configuration.txt
+Well I configured it with standard ebuild (gentoo user) system.
+I have some info. It's not really broken! I can use it by Rosegarden, by
+Band in a Box emulated (wine). So it works. But If i play the same midi
+files throw amidiplay or kmid, it locks on first events.
 
 ----------------------------------------------------------------------
- tiwai - 04-20-06 14:30 
+ tiwai - 04-20-06 14:37 
 ----------------------------------------------------------------------
-stac92xx has no proper model option except for the psedo setup for Intel
-reference boards.
-
-If it doesn't work with 1.0.11, upload the contents of
-/proc/asound/card0/codec#* files.  (Don't attach to form since it's hard
-to read via text editor.)
+This might have been a bug introduced around 1.0.11rc4.  1.0.11-final
+should work fine.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-06 20:58 telles         New Issue                                    
-04-19-06 20:58 telles         Distribution              => Mandriva 2006   
-04-19-06 20:58 telles         Kernel Version            => 2.6.12-18mdk    
-04-19-06 22:09 rlrevell       Note Added: 0009358                          
-04-19-06 22:50 telles         Note Added: 0009359                          
-04-19-06 23:21 rlrevell       Note Added: 0009361                          
-04-20-06 14:30 tiwai          Note Added: 0009373                          
+03-15-06 23:41 drolyk         New Issue                                    
+03-15-06 23:41 drolyk         Distribution              => Debian          
+03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
+03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
+03-20-06 01:28 rlrevell       Note Added: 0008702                          
+03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
+03-20-06 03:24 rlrevell       Note Added: 0008706                          
+03-20-06 06:08 drolyk         Note Added: 0008709                          
+03-20-06 06:22 rlrevell       Note Added: 0008710                          
+03-20-06 07:19 Raymond        Note Added: 0008711                          
+03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
+03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
+03-20-06 22:19 drolyk         Note Added: 0008726                          
+03-20-06 22:21 drolyk         Note Edited: 0008726                         
+03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
+03-20-06 23:29 rlrevell       Note Added: 0008729                          
+03-20-06 23:40 fdoffizi01     Note Added: 0008730                          
+03-20-06 23:54 rlrevell       Note Added: 0008731                          
+03-21-06 00:14 fdoffizi01     Note Added: 0008732                          
+03-21-06 08:46 Raymond        Note Added: 0008739                          
+03-21-06 09:00 Raymond        Note Edited: 0008739                         
+03-21-06 10:58 fdoffizi01     Note Added: 0008741                          
+04-15-06 10:49 Raymond        Note Added: 0009293                          
+04-19-06 10:05 Raymond        Note Deleted: 0009293                        
+04-19-06 10:08 Raymond        Note Added: 0009350                          
+04-19-06 16:56 fdoffizi01     Note Added: 0009351                          
+04-20-06 14:37 tiwai          Note Added: 0009374                          
 ======================================================================
 
 
