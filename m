@@ -1,15 +1,9 @@
-From: James Stafford <jstafford@ampltd.com>
-Subject: Re: AUDIO2000 and DShare plugin
-Date: Thu, 20 Apr 2006 16:27:01 +0100
-Message-ID: <4.2.2.20060420160712.02ab55f8@192.168.1.6>
-References: <4.2.2.20060418153155.0514e5d0@192.168.1.6>
- <4.2.2.20060418153155.0514e5d0@192.168.1.6> <s5hfyk8b8n4.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+From: "alasinski" <alasinski@rogers.com>
+Subject: Re: How to access vendor specific AC97 codec register ?
+Date: Thu, 20 Apr 2006 11:34:22 -0400
+Message-ID: <e289m2$u2p$1@sea.gmane.org>
+References: <e28805$nlf$1@sea.gmane.org> <s5hbquwb7f0.wl%tiwai@suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfyk8b8n4.wl%tiwai@suse.de>
-References: <4.2.2.20060418153155.0514e5d0@192.168.1.6>
- <4.2.2.20060418153155.0514e5d0@192.168.1.6>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,65 +13,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Thx Takashi,
 
+since I'm not being well frased in ALSA terminology I need some guidance:
+- what "accessor" is ?
+- Is it part of the driver or asoundlib ?
+- what ALSA files, calls are involved ?
+- where can I find some explanation on it ?
+- do you have a sample that implements other (similar ?) accessor ?
+
+cheers
+-al
+
+"Takashi Iwai" <tiwai@suse.de> wrote in message 
+news:s5hbquwb7f0.wl%tiwai@suse.de...
+> At Thu, 20 Apr 2006 11:05:38 -0400,
+> alasinski wrote:
+>>
+>> Hi,
+>>
+>> I need to do IO specific operation from UCB1400 on Snapper Arm board. 
+>> This
+>> has to be done from C code as it is part of a larger project. All what I
+>> need is to be able to read and write content of the few vendor specific 
+>> AC97
+>> codec registers: 0x5A,0x5C. I'm not interested with any other ALSA
+>> functionality.
+>>
+>> I have ALSA installed and running with simple programs that can 
+>> successfully
+>> open controller with snd_ctl_open () and list available control elements.
+>> This is basically J.C.Georgas sample I found. I can read content of all 
+>> AC97
+>> registers by cat /proc/asound/card0/codec97#/ac97#0-0+regs. That assures 
+>> me
+>> that all driver and lib parts are working. All what I need is to write a
+>> simple piece of code ....
+>>
+>> However, I spent 2 days reading through ALSA back and forth and I find 
+>> this
+>> task very daunting to say at least. For one things I was not able to find 
+>> an
+>> architecture document explaining how parts of ALSA work, to be able to 
+>> find
+>> some sort of direction. There are samples dedicated to solving some of a
+>> problems, unfortunately not my problem. Man pages and reference are only
+>> little more then code browsing. Tutorials explain in brief what I don't 
+>> need
+>> to know. In summary: typical situation when you are tasked with something
+>> that is off main stream.
+>>
+>> I have an inkling that I should prepare UCB1400.conf file to define 
+>> control
+>> elements that map to the registers (how ?). Then I should be able to
+>> snd_ctl_elem_read() or .._write() to them. Perhaps there is other way
+>> around: something like making ioctl() call on a driver directly w/o
+>> libasound. I'm in lost.
 >
->Could you try with ALSA 1.0.11?
+> You have to implement an accessor (e.g. via ALSA control API) to the
+> certain ac97 registers in the driver.  There is no generic interface
+> allowing you to access the all ac97 registers.
+> (The proc file is an exception.  It's provided only for debugging
+> purpose.)
+>
+>
+> Takashi
+>
+>
+> -------------------------------------------------------
+> Using Tomcat but need to do more? Need to support web services, security?
+> Get stuff done quickly with pre-integrated technology to make your job 
+> easier
+> Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642 
 
-I tried with 1.0.11rc5 and still had the problem (I don't currently have 
-the hardware setup to try 1.0.11).
-In the end I solved the seg fault by changing from using dshare to dmix.
-The entries in .asoundrc ended up as follows
-
-pcm.dshare2{
-         type dmix
-         ipc_key 2048
-         slave {
-                 pcm "hw:0"
-                 format S32_LE
-                 channels 6
-         }
-         bindings {
-                 0 0
-                 1 1
-                 2 4
-                 3 5
-                 4 2
-                 5 3
-         }
-}
-
-pcm.frontl {
-         type plug
-         slave {
-                 pcm "dshare2"
-                 channels 6
-         }
-         ttable.0.0 1
-}
-
-etc
-
-This probably isn't the most elegant solution but worked.
-
---
-James Stafford
-
-
-mailto:jstafford@ampltd.com
-
-Advanced Micro Peripherals Ltd
-Unit 1
-Harrier House
-Sedgeway Business Park
-Witchford
-Cambridge
-CB6 2HY
-
-Fax:+44 1353 659 600
 
 
 
