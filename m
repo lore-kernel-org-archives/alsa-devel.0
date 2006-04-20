@@ -1,17 +1,14 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: Re: Re: How to access vendor specific AC97
-	codecregister?
-Date: Thu, 20 Apr 2006 17:57:52 +0100
-Message-ID: <1145552273.25762.22.camel@localhost.localdomain>
-References: <e28805$nlf$1@sea.gmane.org> <1145546855.3008.0.camel@mindpipe>
-	 <e28ag6$1hb$1@sea.gmane.org>
-	 <1145549628.25762.4.camel@localhost.localdomain>
-	 <e28dd5$chl$1@sea.gmane.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002044]: How about adding __devinitdata to the PCI-IDs?
+Date: Thu, 20 Apr 2006 19:00:36 +0200
+Message-ID: <36e22b378cdfa3f61c7cdd8c0b618640@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <e28dd5$chl$1@sea.gmane.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 796FC222
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 19:00:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,47 +18,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alasinski <alasinski@rogers.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-04-20 at 12:37 -0400, alasinski wrote:
-> Thx Liam,
-> 
-> > You will only be able to access these functions from an ad-hoc AC97
-> > driver. Please see the UCB14xx touch driver for implementation details.
-> - where I can find it ?
 
-Please use Google.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2044> 
+======================================================================
+Reported By:                Henne
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2044
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     new
+Distribution:               Suse 10.0 x86_64
+Kernel Version:             2.6.17-rc2
+======================================================================
+Date Submitted:             04-20-2006 17:44 CEST
+Last Modified:              04-20-2006 19:00 CEST
+======================================================================
+Summary:                    How about adding __devinitdata to the PCI-IDs?
+Description: 
+I found a way to save GBs of Memory. Like in 
+<kernelsources>/Documentation/pci.txt  mentioned, the definiton of PCI
+drivers device-IDs can be marked as __devinitdata.
 
-> 
-> > Alternatively, you could always export the vendor specific registers
-> > using sysfs. That way your user space program could read and write to
-> > the codec registers exported. I've done this with the codec GPIO status
-> > register (0x54) for the WM97xx touch drivers.
+This can be interesting, cause from 394 definitions of pci_device_ids in
+kernel 2.6.17-rc2, only 37 have it.
+That are 28Bytes/line on 32bit machines and 32Bytes/line on 64 bit
+machines.
+So I found the reason why the kernel is so resoucehungry. ;)
+I'll contact the kerneljanitors to add it in their TODO.
 
-As Takashi said this is really not a standard way to do this. Your
-probably better of writing your own driver to handle your codec GPIO
-needs.
+I've added a patch for "writing an alsa driver".
+======================================================================
 
-> How to go about using sysfs() to access to registers ? It provides info on 
-> file system equivalent to /proc/filesystems content I'm told. I know of one 
-> way to do it: I can map registers into user space with open("/dev/mem",...) 
-> followed by mmap (...). Then I'm a king and can read/write to any of them. 
+----------------------------------------------------------------------
+ Henne - 04-20-06 19:00 
+----------------------------------------------------------------------
+The second patch "dev.diff" is for adding that to all ALSA-PCI-drivers.
 
-This wont work for AC97 codec registers as they are not part of the host
-memory map and are accessed via the hosts AC97 controller.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-20-06 17:44 Henne          New Issue                                    
+04-20-06 17:44 Henne          File Added: wr.diff                          
+04-20-06 17:44 Henne          Distribution              => Suse 10.0 x86_64
+04-20-06 17:44 Henne          Kernel Version            => 2.6.17-rc2      
+04-20-06 19:00 Henne          Note Added: 0009396                          
+======================================================================
 
-> > I've done this with the codec GPIO status register (0x54) for the WM97xx 
-> > touch drivers.
-> Did you handled AC97 initialization yourself, or you relied on other driver 
-> (exp: ALSA) ?
-> 
-
-I used the standard Alsa AC97 codec driver and every thing works fine
-for me.
-
-Liam
 
 
 
