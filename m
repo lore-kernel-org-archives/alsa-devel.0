@@ -1,9 +1,14 @@
-From: "alasinski" <alasinski@rogers.com>
-Subject: Re: Re: Re: Re: How to access vendor specificAC97codecregister?
-Date: Thu, 20 Apr 2006 14:54:25 -0400
-Message-ID: <e28ld5$9r1$1@sea.gmane.org>
-References: <e28805$nlf$1@sea.gmane.org> <1145546855.3008.0.camel@mindpipe> <e28ag6$1hb$1@sea.gmane.org> <1145549628.25762.4.camel@localhost.localdomain> <e28dd5$chl$1@sea.gmane.org> <1145552273.25762.22.camel@localhost.localdomain> <e28h2d$qij$1@sea.gmane.org> <1145556884.25762.40.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001908]: Stereo channels swapped using Midiman Audiophile 24/96
+Date: Thu, 20 Apr 2006 20:56:40 +0200
+Message-ID: <80b459f737109e552b7bef30d5265722@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56FDD176
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 20:56:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -13,36 +18,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> Your Google must be better then mine. But I don't give up, I'm still
->> looking. For sure UCB14xx leads nowhere. Little hint could go long way.
-> Google for "linux ucb touchscreen driver"
-> Also look in drivers/mfd/
-OK, I have: drivers/mfd/ucb1x00*.* I will look at those. Thx
 
->> > This wont work for AC97 codec registers as they are not part of the 
->> > host
->> > memory map and are accessed via the hosts AC97 controller.
->> It should. What I intended to do is make same calls as pxa2xx_ac97_read. 
->> It
->> talks to memory mapped AC97 codec registers to obtain content of UCB1400
->> registers. They appear to be mapped 1 to 1 with gsr_bit toggled as a
->> handshake protocol.
->>
-> I'm afraid it's not a simple as that (only register 0x54 can work this
-> way - see pxa manual on AC97 slot 12). You still have to check and clear
-> the command and status done bits in GSR. You will also have to manage
-> access with the audio driver as only one read/write can take place at a
-> time over the AC97 link. I'm not sure how your going to use your mmap
-> vm_ops to do all this.
-I'm not sure either. If pxa2xx_ac97_read() can do it (remenber /proc/...regs 
-where all registers are listed?), why applying same strategy in a user code 
-would fail ? At that point I will just cobble some code and let it try. As 
-far interference with existing ALSA it may be tricky. I will find out a hard 
-way, I'm afraid. Will keep you posted. Thx.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1908> 
+======================================================================
+Reported By:                sebastian_ml
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1908
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.15.6
+======================================================================
+Date Submitted:             03-11-2006 09:34 CET
+Last Modified:              04-20-2006 20:56 CEST
+======================================================================
+Summary:                    Stereo channels swapped using Midiman Audiophile
+24/96
+Description: 
+Hi all,
 
+the stereo channels (L/R) are swapped. Say you patch PCM0 to HW Out 0 and
+do the same with PCM1 and HW Out 1 then the channel order is wrong.
+For now I use the Digital Mixer to make it right.
+
+I discovered this by accident when I had both my mp3 player and my 2496
+connected to the same amp playing the same song. They sounded different. I
+swapped L/R and all was fine.
+
+When booting Windows the L/R order is accurate.
+
+I'll upload some pictures of envy24control in a few.
+
+Thanks
+
+Sebastian
+======================================================================
+
+----------------------------------------------------------------------
+ sebastian_ml - 03-11-06 10:24 
+----------------------------------------------------------------------
+The first attachment is a picture of the Patchbay. Patching PCM Out 1 to
+H/W Out 1 (L) and doing the same with PCM Out 2 and H/W Out 2 (R) results
+in L and R being swapped.
+
+To "fix" this I patch Digital Mix 1 to H/W Out 1 (L) and Digital Mix 2 to
+H/W Out 2 (R) and then I set the Monitor Mixer like shown in the second
+attachment.
+
+The correct way to use the Monitor Mixer would be the one shown in
+attachment 3. But then L/R is swapped.
+
+----------------------------------------------------------------------
+ sebastian_ml - 04-20-06 20:56 
+----------------------------------------------------------------------
+Sorry, my fault. It wasn't the driver, it was a wrongly marked cable (red
+and white were swapped.
+
+Mea culpa :D
+
+Sebastian
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-11-06 09:34 sebastian_ml   New Issue                                    
+03-11-06 09:34 sebastian_ml   Distribution              => Gentoo          
+03-11-06 09:34 sebastian_ml   Kernel Version            => 2.6.15.6        
+03-11-06 10:17 sebastian_ml   File Added: patchbay-pcm.png                    
+03-11-06 10:24 sebastian_ml   Note Added: 0008415                          
+03-11-06 10:24 sebastian_ml   File Added: monitor-reversed.png                  
+ 
+03-11-06 10:25 sebastian_ml   File Added: monitor-accurate.png                  
+ 
+04-20-06 20:56 sebastian_ml   Note Added: 0009399                          
+======================================================================
 
 
 
