@@ -1,13 +1,14 @@
-From: Carlos Munoz <carlos@kenati.com>
-Subject: Re: buffer_bytes not multiple of period_bytes
-Date: Thu, 20 Apr 2006 10:50:43 -0700
-Message-ID: <4447C9F3.6040008@kenati.com>
-References: <XFMail.20060420091724.pochini@shiny.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002045]: playback stops after 1 second on Intel D945GPM
+Date: Thu, 20 Apr 2006 20:00:38 +0200
+Message-ID: <dc6333221749daa56e36474f9c35d2f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <XFMail.20060420091724.pochini@shiny.it>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 82ACC227
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 20:00:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,41 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Giuliano Pochini wrote:
 
->On 20-Apr-2006 Carlos Munoz wrote:
->  
->
->>Hi all,
->>
->>I just noticed that alsa doesn't allocate a buffer size that is a
->>multiple of the period size.
->>    
->>
->
->It's not required. If it is not a multiple, then the IRQ happens
->in different points of the ring buffer each round. On some cards
->this is hard or impossible to do. In those cases you can add this
->constraint:
->
->if ((err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) < 0)
->    return err;
->
->
->  
->
-Hi Giuliano,
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2045> 
+======================================================================
+Reported By:                mda2376
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2045
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.15-gentoo-r7
+======================================================================
+Date Submitted:             04-20-2006 20:00 CEST
+Last Modified:              04-20-2006 20:00 CEST
+======================================================================
+Summary:                    playback stops after 1 second on Intel D945GPM
+Description: 
+Playback stops after a very brief period, about one second, and the
+application playing sound locks up, but can be killed with Ctrl-C.
 
-Yes, that solved the problem.
+This is an Intel Desktop motherboard, sku: BOXD945GPMLKR with a SigmaTel
+STAC9220D/9223D A2 according to alsamixer. hda-intel is compiled as a
+module and loaded with model=5stack-digout. Processor is a Pentium D dual
+core, with everything compiled with -O2 -march=nocona -fomit-frame-pointer
+-pipe.
 
-Thanks,
+When the module is loaded, dmesg reports:
+GSI 21 sharing vector 0x5A and IRQ 21
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 90
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
 
 
-Carlos
+Output from mplayer trying to play an mp3:
+..
+Starting playback...
+alsa-play: write error: Broken pipe0) ??,?%
+alsa-play: trying to reset soundcard
+alsa-play: write error: Broken pipe 0.8%
+alsa-play: trying to reset soundcard
+A:   0.7 (00.6) of 328.0 (05:28.0)  0.8%
+
+If I use alsa-driver-1.0.10-r2 the two alsa-play: messages are not
+displayed but the same sound problem exists. Trying to play sound again
+results in the same issue.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-20-06 20:00 mda2376        New Issue                                    
+04-20-06 20:00 mda2376        Distribution              => Gentoo          
+04-20-06 20:00 mda2376        Kernel Version            => 2.6.15-gentoo-r7
+======================================================================
+
+
 
 
 -------------------------------------------------------
