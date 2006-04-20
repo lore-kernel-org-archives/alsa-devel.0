@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002042]: Compile error : /usr/local/src/alsa/alsa-driver/include/adriver.h:219: error: conflicting types for 'gfp_t'
-Date: Thu, 20 Apr 2006 15:30:46 +0200
-Message-ID: <b04642c0f9d6d008c5c2f4f9af82118e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001980]: No Sound with module snd-hda-intel and no error output
+Date: Thu, 20 Apr 2006 15:34:01 +0200
+Message-ID: <3990ea2f37c9346dd4274016c07fbc78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4FC6176
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:30:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 87C3D176
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:34:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2042> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1980> 
 ======================================================================
-Reported By:                mnemotronic
+Reported By:                zyfhie
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2042
-Category:                   CORE - control
+Issue ID:                   1980
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Centos
-Kernel Version:             2.6.9-34.ELsmp
-Resolution:                 duplicate
-Duplicate:                  1934
-Fixed in Version:           
+Status:                     assigned
+Distribution:               ubuntu
+Kernel Version:             2.6.15-19-386
 ======================================================================
-Date Submitted:             04-20-2006 08:04 CEST
-Last Modified:              04-20-2006 15:30 CEST
+Date Submitted:             03-30-2006 14:43 CEST
+Last Modified:              04-20-2006 15:34 CEST
 ======================================================================
-Summary:                    Compile error :
-/usr/local/src/alsa/alsa-driver/include/adriver.h:219: error: conflicting types
-for 'gfp_t'
+Summary:                    No Sound with module snd-hda-intel and no error
+output
 Description: 
-Can't compile using directions from
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+Live+7.1.&chip=SB0410%2C+P17&module=ca0106
+I just have ubuntu installed in my laptop,and there is no sound at all.
+In dmesg|grep hda-intel there is no message,but I could see 
+[4296289.511000] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+[4296330.997000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
+low) -> IRQ 201
+[4296330.997000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ 
+after rmmod snd-hda-intel &modprobe snd-hda-intel
 
-error:
-In file included from
-/usr/local/src/alsa/alsa-driver/acore/memalloc.inc:13,
-                 from /usr/local/src/alsa/alsa-driver/acore/memalloc.c:1:
-/usr/local/src/alsa/alsa-driver/include/adriver.h:219: error: conflicting
-types for 'gfp_t'
-include/linux/gfp.h:134: error: previous declaration of 'gfp_t' was here
+I had tried many parm in my alsa-base such as model,position_fix.
+Hope somebody could help!!! 
 
 ======================================================================
-Relationships       ID      Summary
+
 ----------------------------------------------------------------------
-duplicate of        0001934 make problem
-======================================================================
+ zyfhie - 04-04-06 09:23 
+----------------------------------------------------------------------
+Finally I'm loading with "model=laptop-eapd" and it works:)
+
+----------------------------------------------------------------------
+ tiwai - 04-20-06 15:34 
+----------------------------------------------------------------------
+What model is your laptop exactly?  I need it for a comment in the source
+code.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-20-06 08:04 mnemotronic    New Issue                                    
-04-20-06 08:04 mnemotronic    Distribution              => Centos          
-04-20-06 08:04 mnemotronic    Kernel Version            => 2.6.9-34.ELsmp  
-04-20-06 15:30 tiwai          Relationship added       duplicate of 0001934
-04-20-06 15:30 tiwai          Duplicate ID             0 => 1934           
-04-20-06 15:30 tiwai          Status                   new => resolved     
-04-20-06 15:30 tiwai          Resolution               open => duplicate   
-04-20-06 15:30 tiwai          Assigned To               => tiwai           
+03-30-06 14:43 zyfhie         New Issue                                    
+03-30-06 14:43 zyfhie         Distribution              => ubuntu          
+03-30-06 14:43 zyfhie         Kernel Version            => 2.6.15-19-386   
+04-01-06 00:28 error10        Note Added: 0009051                          
+04-03-06 01:57 anarki         Note Added: 0009076                          
+04-03-06 02:12 zyfhie         Note Added: 0009078                          
+04-03-06 02:46 zyfhie         Note Added: 0009079                          
+04-03-06 03:22 zyfhie         Note Added: 0009082                          
+04-03-06 05:52 rlrevell       Note Added: 0009083                          
+04-03-06 09:03 zyfhie         Note Added: 0009090                          
+04-04-06 09:23 zyfhie         Note Added: 0009110                          
+04-04-06 09:23 zyfhie         Issue Monitored: zyfhie                      
+04-04-06 09:23 zyfhie         Issue End Monitor: zyfhie                    
+04-04-06 09:24 zyfhie         Note Deleted: 0009090                        
+04-20-06 15:34 tiwai          Note Added: 0009386                          
 ======================================================================
 
 
