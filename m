@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002027]: No sound on AD1986A (ASUS Laptop, Z62F)
-Date: Thu, 20 Apr 2006 14:47:05 +0200
-Message-ID: <19ce7dc01196d78e57f21f16269e3e53@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001714]: Intel HDA (AD1986A) no sound
+Date: Thu, 20 Apr 2006 14:48:18 +0200
+Message-ID: <60a10b930a21aa9a61329184a4a4fae1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF0E31A8
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 14:47:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 472311A8
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 14:48:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,179 +24,94 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2027> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1714> 
 ======================================================================
-Reported By:                jaidormi
+Reported By:                kratz00
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2027
-Category:                   PCI - hda-intel
+Issue ID:                   1714
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16-gentoo-r2
+Status:                     feedback
+Distribution:               LFS
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             04-17-2006 08:00 CEST
-Last Modified:              04-20-2006 14:47 CEST
+Date Submitted:             01-04-2006 18:04 CET
+Last Modified:              04-20-2006 14:48 CEST
 ======================================================================
-Summary:                    No sound on AD1986A (ASUS Laptop, Z62F)
+Summary:                    Intel HDA (AD1986A) no sound
 Description: 
-Actually I am using 1.0.11rc5
+It's a Samsung M50 Notebook.
+I also tried Alsa 1.0.10 but the problem is the same.
+There are no specific module options for the AD1986A chip, right?
 
-I am unable to get any sound output on speakers or headphone jack.  Oddly,
-it seems that the IEC958 output works (shared with headphone jack), based
-on the fact that it lights up when un-muted.
+00:1b.0 Audio device: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 03)
+        Subsystem: Samsung Electronics Co Ltd Unknown device c01e
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at 80000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-I have tried a number of model= and position_fix= options with no luck.
+loaded modules:
+snd_pcm_oss            47136  0 
+snd_mixer_oss          16512  1 snd_pcm_oss
+snd_hda_intel          14224  0 
+snd_hda_codec         122624  1 snd_hda_intel
+snd_pcm                75912  3 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              19844  1 snd_pcm
+snd                    46144  6
+snd_pcm_oss,snd_mixer_oss,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+snd_page_alloc          8328  2 snd_hda_intel,snd_pcm
 
-On this machine there is a set of stereo speakers, a line-in, mic, and
-shared sp-dif/headphone jack.
-
-Is there any output or system info I can provide to help?
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001841 Mixer not working  / fujitsu laptop V20...
 ======================================================================
 
 ----------------------------------------------------------------------
- jaidormi - 04-17-06 08:15 
+ kratz00 - 04-15-06 14:43 
 ----------------------------------------------------------------------
-OK, set model=asus.
-
-amixer output:
-
-Simple mixer control 'Headphone',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 31 [100%] [off]
-  Front Right: Playback 31 [100%] [off]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 31 [100%] [on]
-  Front Right: Playback 31 [100%] [on]
-Simple mixer control 'Front',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 31 [100%] [on]
-  Front Right: Playback 31 [100%] [on]
-Simple mixer control 'Surround',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31  Mono:
-  Front Left: Playback 31 [100%] [off]
-  Front Right: Playback 31 [100%] [off]
-Simple mixer control 'Center',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [off]
-Simple mixer control 'LFE',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [off]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Capture [off]
-  Front Left: Playback 31 [100%] [off]
-  Front Right: Playback 31 [100%] [off]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Capture [off]
-  Front Left: Playback 31 [100%] [off]
-  Front Right: Playback 31 [100%] [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Capture [on]
-  Front Left: Playback 31 [100%] [off]
-  Front Right: Playback 31 [100%] [off]
-Simple mixer control 'Phone',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 15
-  Mono:
-  Front Left: Playback 15 [100%] [off]
-  Front Right: Playback 15 [100%] [off]
-Simple mixer control 'Aux',0
-  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Capture [off]
-  Front Left: Playback 31 [100%] [off]
-  Front Right: Playback 31 [100%] [off]
-Simple mixer control 'Mono',0
-  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Capture [off]
-  Front Left: Playback 29 [94%] [off]
-  Front Right: Playback 29 [94%] [off]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%] [off]
-  Front Right: Capture 0 [0%] [off]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Mono
-  Mono: Capture [off]
-Simple mixer control 'Stereo Downmix',0
-  Capabilities: pswitch
-  Playback channels: Front Left - Front Right
-  Mono:
-  Front Left: Playback [off]
-  Front Right: Playback [off]
+still existent for rc5
 
 ----------------------------------------------------------------------
- tiwai - 04-20-06 14:47 
+ tiwai - 04-20-06 14:48 
 ----------------------------------------------------------------------
-Try model=asus-eapd instead.
+How about model=laptop-eapd ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-17-06 08:00 jaidormi       New Issue                                    
-04-17-06 08:00 jaidormi       Distribution              => Gentoo          
-04-17-06 08:00 jaidormi       Kernel Version            => 2.6.16-gentoo-r2
-04-17-06 08:04 rlrevell       Note Added: 0009305                          
-04-17-06 08:08 jaidormi       Note Added: 0009306                          
-04-17-06 08:15 jaidormi       Note Added: 0009307                          
-04-17-06 08:15 jaidormi       Note Deleted: 0009306                        
-04-20-06 14:47 tiwai          Note Added: 0009377                          
+01-04-06 18:04 kratz00        New Issue                                    
+01-04-06 18:04 kratz00        Distribution              => LFS             
+01-04-06 18:04 kratz00        Kernel Version            => 2.6.15          
+01-30-06 13:40 kratz00        Note Added: 0007837                          
+02-07-06 00:48 gerick         Issue Monitored: gerick                      
+02-08-06 13:13 simonckenyon   Issue Monitored: simonckenyon                    
+03-10-06 18:26 tiwai          Relationship added       duplicate of 0001841
+03-10-06 18:26 tiwai          Duplicate ID             0 => 1841           
+03-10-06 18:26 tiwai          Status                   new => resolved     
+03-10-06 18:26 tiwai          Resolution               open => duplicate   
+03-10-06 18:26 tiwai          Assigned To               => tiwai           
+03-10-06 18:26 tiwai          Note Added: 0008408                          
+03-15-06 21:49 kratz00        Status                   resolved => feedback
+03-15-06 21:49 kratz00        Resolution               duplicate => reopened
+03-15-06 21:49 kratz00        Note Added: 0008574                          
+03-23-06 17:45 tiwai          Note Added: 0008896                          
+03-25-06 15:31 kratz00        Note Added: 0008948                          
+03-25-06 15:31 kratz00        File Added: asound.state                     
+03-26-06 01:39 tiwai          Note Added: 0008959                          
+03-26-06 12:11 kratz00        Note Added: 0008969                          
+04-15-06 14:43 kratz00        Note Added: 0009296                          
+04-20-06 14:48 tiwai          Note Added: 0009378                          
 ======================================================================
 
 
