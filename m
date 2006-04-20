@@ -1,19 +1,14 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: Re: Re: Re: How to access vendor specific
-	AC97codecregister?
-Date: Thu, 20 Apr 2006 19:14:44 +0100
-Message-ID: <1145556884.25762.40.camel@localhost.localdomain>
-References: <e28805$nlf$1@sea.gmane.org> <1145546855.3008.0.camel@mindpipe>
-	 <e28ag6$1hb$1@sea.gmane.org>
-	 <1145549628.25762.4.camel@localhost.localdomain>
-	 <e28dd5$chl$1@sea.gmane.org>
-	 <1145552273.25762.22.camel@localhost.localdomain>
-	 <e28h2d$qij$1@sea.gmane.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
+Date: Thu, 20 Apr 2006 20:23:39 +0200
+Message-ID: <0ba571afbc0a3cdc7119af1a2055188f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <e28h2d$qij$1@sea.gmane.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31852227
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 20:23:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,48 +18,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alasinski <alasinski@rogers.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-04-20 at 13:40 -0400, alasinski wrote:
-> Liam Girdwood wrote:
-> 
-> >> > You will only be able to access these functions from an ad-hoc AC97
-> >> > driver. Please see the UCB14xx touch driver for implementation details.
-> >> - where I can find it ?
-> >
-> > Please use Google.
-> Your Google must be better then mine. But I don't give up, I'm still 
-> looking. For sure UCB14xx leads nowhere. Little hint could go long way.
-> 
 
-Google for "linux ucb touchscreen driver" 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+======================================================================
+Reported By:                vertex
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2035
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              04-20-2006 20:23 CEST
+======================================================================
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
+Description: 
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-Also look in drivers/mfd/
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-> >
-> > This wont work for AC97 codec registers as they are not part of the host
-> > memory map and are accessed via the hosts AC97 controller.
-> It should. What I intended to do is make same calls as pxa2xx_ac97_read. It 
-> talks to memory mapped AC97 codec registers to obtain content of UCB1400 
-> registers. They appear to be mapped 1 to 1 with gsr_bit toggled as a 
-> handshake protocol.
-> 
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
 
-I'm afraid it's not a simple as that (only register 0x54 can work this
-way - see pxa manual on AC97 slot 12). You still have to check and clear
-the command and status done bits in GSR. You will also have to manage
-access with the audio driver as only one read/write can take place at a
-time over the AC97 link. I'm not sure how your going to use your mmap
-vm_ops to do all this.
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-> Is sysfs() going to be more helpfull ?
-> 
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
 
-It depends on what your trying to do.
+Please let me know if there is something more I can provide.
+======================================================================
 
-Liam
+----------------------------------------------------------------------
+ tiwai - 04-20-06 14:41 
+----------------------------------------------------------------------
+Compile ALSA drivers with debug option and check the kernel message without
+model option.  It'll show the detected pin assignment to be used.
+
+Then, upload /proc/asound/card0/codec#0 (don't paste to form) _during_
+playback a sound.
+
+----------------------------------------------------------------------
+ vertex - 04-20-06 20:23 
+----------------------------------------------------------------------
+I added the tail of dmesg after inserting the modules, and the contents of
+/proc/asound/card0/codec#0 during aplayback of a wav file.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+======================================================================
+
 
 
 
