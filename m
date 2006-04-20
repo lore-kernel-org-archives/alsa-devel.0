@@ -1,14 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002044]: How about adding __devinitdata to the PCI-IDs?
-Date: Thu, 20 Apr 2006 19:00:36 +0200
-Message-ID: <36e22b378cdfa3f61c7cdd8c0b618640@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "alasinski" <alasinski@rogers.com>
+Subject: Re: Re: Re: How to access vendor specific AC97codecregister?
+Date: Thu, 20 Apr 2006 13:40:25 -0400
+Message-ID: <e28h2d$qij$1@sea.gmane.org>
+References: <e28805$nlf$1@sea.gmane.org> <1145546855.3008.0.camel@mindpipe> <e28ag6$1hb$1@sea.gmane.org> <1145549628.25762.4.camel@localhost.localdomain> <e28dd5$chl$1@sea.gmane.org> <1145552273.25762.22.camel@localhost.localdomain>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 796FC222
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 19:00:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +13,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Liam Girdwood wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2044> 
-======================================================================
-Reported By:                Henne
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2044
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   tweak
-Priority:                   normal
-Status:                     new
-Distribution:               Suse 10.0 x86_64
-Kernel Version:             2.6.17-rc2
-======================================================================
-Date Submitted:             04-20-2006 17:44 CEST
-Last Modified:              04-20-2006 19:00 CEST
-======================================================================
-Summary:                    How about adding __devinitdata to the PCI-IDs?
-Description: 
-I found a way to save GBs of Memory. Like in 
-<kernelsources>/Documentation/pci.txt  mentioned, the definiton of PCI
-drivers device-IDs can be marked as __devinitdata.
+>> > You will only be able to access these functions from an ad-hoc AC97
+>> > driver. Please see the UCB14xx touch driver for implementation details.
+>> - where I can find it ?
+>
+> Please use Google.
+Your Google must be better then mine. But I don't give up, I'm still 
+looking. For sure UCB14xx leads nowhere. Little hint could go long way.
 
-This can be interesting, cause from 394 definitions of pci_device_ids in
-kernel 2.6.17-rc2, only 37 have it.
-That are 28Bytes/line on 32bit machines and 32Bytes/line on 64 bit
-machines.
-So I found the reason why the kernel is so resoucehungry. ;)
-I'll contact the kerneljanitors to add it in their TODO.
+>> How to go about using sysfs() to access to registers ? It provides info 
+>> on
+>> file system equivalent to /proc/filesystems content I'm told. I know of 
+>> one
+>> way to do it: I can map registers into user space with 
+>> open("/dev/mem",...)
+>> followed by mmap (...). Then I'm a king and can read/write to any of 
+>> them.
+>
+> This wont work for AC97 codec registers as they are not part of the host
+> memory map and are accessed via the hosts AC97 controller.
+It should. What I intended to do is make same calls as pxa2xx_ac97_read. It 
+talks to memory mapped AC97 codec registers to obtain content of UCB1400 
+registers. They appear to be mapped 1 to 1 with gsr_bit toggled as a 
+handshake protocol.
 
-I've added a patch for "writing an alsa driver".
-======================================================================
+Is sysfs() going to be more helpfull ?
 
-----------------------------------------------------------------------
- Henne - 04-20-06 19:00 
-----------------------------------------------------------------------
-The second patch "dev.diff" is for adding that to all ALSA-PCI-drivers.
+cheers
+-al 
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-20-06 17:44 Henne          New Issue                                    
-04-20-06 17:44 Henne          File Added: wr.diff                          
-04-20-06 17:44 Henne          Distribution              => Suse 10.0 x86_64
-04-20-06 17:44 Henne          Kernel Version            => 2.6.17-rc2      
-04-20-06 19:00 Henne          Note Added: 0009396                          
-======================================================================
 
 
 
