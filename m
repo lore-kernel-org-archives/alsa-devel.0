@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001622]: ASUS A8V-MX onboard sound does not work
-Date: Thu, 20 Apr 2006 14:45:43 +0200
-Message-ID: <210e7a78f6b9380f813889eb32a762aa@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002027]: No sound on AD1986A (ASUS Laptop, Z62F)
+Date: Thu, 20 Apr 2006 14:47:05 +0200
+Message-ID: <19ce7dc01196d78e57f21f16269e3e53@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C364C1A8
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 14:45:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF0E31A8
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 14:47:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,127 +22,181 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1622> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2027> 
 ======================================================================
-Reported By:                m_yates
+Reported By:                jaidormi
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1622
-Category:                   PCI - via82xx
+Issue ID:                   2027
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12 (also reproduced using 2.6.15-rc2)
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.16-gentoo-r2
 ======================================================================
-Date Submitted:             12-05-2005 18:59 CET
-Last Modified:              04-20-2006 14:45 CEST
+Date Submitted:             04-17-2006 08:00 CEST
+Last Modified:              04-20-2006 14:47 CEST
 ======================================================================
-Summary:                    ASUS A8V-MX onboard sound does not work
+Summary:                    No sound on AD1986A (ASUS Laptop, Z62F)
 Description: 
-Onboard sound plays for a second, then freezes on Asus A8V-MX mainboard. 
-Here is sound output from lspci:
+Actually I am using 1.0.11rc5
 
-matt@duster:~$ lspci | grep Multimedia
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 70)
+I am unable to get any sound output on speakers or headphone jack.  Oddly,
+it seems that the IEC958 output works (shared with headphone jack), based
+on the fact that it lights up when un-muted.
 
-Here is alsa version (version that came with Ubuntu 5.10):
+I have tried a number of model= and position_fix= options with no luck.
 
-||/ Name           Version        Description
-+++-==============-==============-============================================
-ii  alsa-base      1.0.9b-4       ALSA driver configuration files
+On this machine there is a set of stereo speakers, a line-in, mic, and
+shared sp-dif/headphone jack.
 
-Here are the sound modules:
-
-root@duster:/home/matt# lsmod | grep snd
-snd_seq_dummy 4484 0
-snd_seq_oss 32128 0
-snd_seq_midi 9920 0
-snd_seq_midi_event 8064 2 snd_seq_oss,snd_seq_midi
-snd_seq 52032 6 snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
-snd_via82xx 29472 1
-gameport 16392 1 snd_via82xx
-snd_ac97_codec 87000 1 snd_via82xx
-snd_pcm_oss 51232 0
-snd_mixer_oss 17664 1 snd_pcm_oss
-snd_pcm 91020 3 snd_via82xx,snd_ac97_codec,snd_pcm_oss
-snd_timer 24200 2 snd_seq,snd_pcm
-snd_page_alloc 11408 2 snd_via82xx,snd_pcm
-snd_mpu401_uart 7936 1 snd_via82xx
-snd_rawmidi 27040 2 snd_seq_midi,snd_mpu401_uart
-snd_seq_device 9488 5
-snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq,snd_rawmidi
-snd 55784 13
-snd_seq_oss,snd_seq,snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu40
-1_uart,snd_rawmidi,snd_seq_device
-soundcore 10912 1 snd
-
-Asus lists the audio chip as "Realtek ALC653", alsamixer shows "Realtek
-ALC655 rev 1". 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001557 Sounds play only for a very short time ...
+Is there any output or system info I can provide to help?
 ======================================================================
 
 ----------------------------------------------------------------------
- bjacques - 04-13-06 17:49 
+ jaidormi - 04-17-06 08:15 
 ----------------------------------------------------------------------
-That "fix" is an OSS driver with a proprietary module. Not very helpful.
+OK, set model=asus.
 
-I have not been able to find any ALC653-specific code in the
-nonproprietary part of the patch.
+amixer output:
+
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Front',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 31 [100%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Surround',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31  Mono:
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'Center',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 31 [100%] [off]
+Simple mixer control 'LFE',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 31 [100%] [off]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [off]
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [off]
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [on]
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'Phone',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Mono
+  Mono: Capture [off]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'PC Speaker',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 15
+  Mono:
+  Front Left: Playback 15 [100%] [off]
+  Front Right: Playback 15 [100%] [off]
+Simple mixer control 'Aux',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [off]
+  Front Left: Playback 31 [100%] [off]
+  Front Right: Playback 31 [100%] [off]
+Simple mixer control 'Mono',0
+  Capabilities: pvolume pswitch cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Capture [off]
+  Front Left: Playback 29 [94%] [off]
+  Front Right: Playback 29 [94%] [off]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [off]
+  Front Right: Capture 0 [0%] [off]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Mono
+  Mono: Capture [off]
+Simple mixer control 'Stereo Downmix',0
+  Capabilities: pswitch
+  Playback channels: Front Left - Front Right
+  Mono:
+  Front Left: Playback [off]
+  Front Right: Playback [off]
 
 ----------------------------------------------------------------------
- tiwai - 04-20-06 14:45 
+ tiwai - 04-20-06 14:47 
 ----------------------------------------------------------------------
-The workaround for 8251 was merged in the upstream.
+Try model=asus-eapd instead.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-05 18:59 m_yates        New Issue                                    
-12-05-05 18:59 m_yates        Distribution              => Ubuntu 5.10     
-12-05-05 18:59 m_yates        Kernel Version            => 2.6.12 (also
-reproduced using 2.6.15-rc2)
-12-06-05 15:53 tiwai          Note Added: 0006926                          
-12-06-05 18:21 m_yates        Note Added: 0006931                          
-12-06-05 20:16 m_yates        Note Added: 0006937                          
-12-07-05 01:09 Dakkus         Issue Monitored: Dakkus                      
-12-07-05 11:24 perex          Relationship added       has duplicate 0001557
-12-07-05 16:16 thijser        Issue Monitored: thijser                     
-01-02-06 23:53 AlexCline      Issue Monitored: AlexCline                    
-01-03-06 20:41 AlexCline      Note Added: 0007406                          
-01-29-06 02:14 adaviel        Note Added: 0007830                          
-01-29-06 02:15 adaviel        Issue Monitored: adaviel                     
-01-30-06 19:36 millallo       Issue Monitored: millallo                    
-02-10-06 14:07 Tuba           File Added: mplayer8251.strace                    
-02-10-06 14:09 Tuba           Note Added: 0008004                          
-02-10-06 14:09 Tuba           Issue Monitored: Tuba                        
-02-13-06 23:39 gobo           Issue Monitored: gobo                        
-02-13-06 23:56 gobo           Note Added: 0008065                          
-02-28-06 00:35 adaviel        Note Added: 0008234                          
-03-02-06 00:21 adaviel        Note Added: 0008288                          
-03-04-06 18:13 crlb           Issue Monitored: crlb                        
-03-14-06 10:07 adrian         Issue Monitored: adrian                      
-04-13-06 15:29 m_yates        Note Added: 0009261                          
-04-13-06 15:30 m_yates        Note Edited: 0009261                         
-04-13-06 15:30 m_yates        Note Edited: 0009261                         
-04-13-06 17:49 bjacques       Note Added: 0009265                          
-04-17-06 12:29 bjacques       File Added: vt8251-audiosupp-alsacvs.patch        
-           
-04-17-06 16:52 bjacques       Issue Monitored: bjacques                    
-04-20-06 14:45 tiwai          Status                   new => resolved     
-04-20-06 14:45 tiwai          Resolution               open => fixed       
-04-20-06 14:45 tiwai          Assigned To               => tiwai           
-04-20-06 14:45 tiwai          Note Added: 0009376                          
+04-17-06 08:00 jaidormi       New Issue                                    
+04-17-06 08:00 jaidormi       Distribution              => Gentoo          
+04-17-06 08:00 jaidormi       Kernel Version            => 2.6.16-gentoo-r2
+04-17-06 08:04 rlrevell       Note Added: 0009305                          
+04-17-06 08:08 jaidormi       Note Added: 0009306                          
+04-17-06 08:15 jaidormi       Note Added: 0009307                          
+04-17-06 08:15 jaidormi       Note Deleted: 0009306                        
+04-20-06 14:47 tiwai          Note Added: 0009377                          
 ======================================================================
 
 
