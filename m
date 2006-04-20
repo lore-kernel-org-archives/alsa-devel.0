@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002041]: Two little compiler warnings
-Date: Thu, 20 Apr 2006 12:43:14 +0200
-Message-ID: <10a93c963ed081478a179a9c8f7c0880@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002040]: Compilation breaks on hpimod.c
+Date: Thu, 20 Apr 2006 13:09:38 +0200
+Message-ID: <72f102b12047383da464f518817368ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A422116C
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 12:43:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3789174
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 13:09:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2041> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2040> 
 ======================================================================
 Reported By:                Henne
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2041
+Issue ID:                   2040
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   block
 Priority:                   normal
 Status:                     resolved
-Distribution:               Suse 10.0 x86_64
+Distribution:               
 Kernel Version:             2.6.17-rc2
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             04-19-2006 22:10 CEST
-Last Modified:              04-20-2006 12:43 CEST
+Date Submitted:             04-19-2006 21:44 CEST
+Last Modified:              04-20-2006 13:09 CEST
 ======================================================================
-Summary:                    Two little compiler warnings
+Summary:                    Compilation breaks on hpimod.c
 Description: 
-The first one:
+I know, this one doesn't work on x86_64 at all, but the compiler gives
+these warnings and stop compiling:
 
-In file included from /pci/pcxhr/pcxhr_hwdep.c:9:
-/pci/pcxhr/../../alsa-kernel/pci/pcxhr/pcxhr_hwdep.c: In function
-&#8216;pcxhr_hwdep_dsp_load&#8217;:
-/pci/pcxhr/../../alsa-kernel/pci/pcxhr/pcxhr_hwdep.c:388: warning: format
-&#8216;%d&#8217; expects type &#8216;int&#8217;, but argument 4 has type
-&#8216;size_t&#8217;
+/pci/asihpi/hpimod.c:95: error: syntax error before string constant
+/pci/asihpi/hpimod.c:95: warning: type defaults to &#8216;int&#8217; in
+declaration of &#8216;MODULE_PARM&#8217;
+/pci/asihpi/hpimod.c:95: warning: function declaration isn&#8217;t a
+prototype
+/pci/asihpi/hpimod.c:95: warning: data definition has no type or storage
+class
+/pci/asihpi/hpimod.c:97: error: syntax error before string constant
+/pci/asihpi/hpimod.c:97: warning: type defaults to &#8216;int&#8217; in
+declaration of &#8216;MODULE_PARM&#8217;
+/pci/asihpi/hpimod.c:97: warning: function declaration isn&#8217;t a
+prototype
+/pci/asihpi/hpimod.c:97: warning: data definition has no type or storage
+class
+/pci/asihpi/hpimod.c:101: error: syntax error before string constant
+/pci/asihpi/hpimod.c:101: warning: type defaults to &#8216;int&#8217; in
+declaration of &#8216;MODULE_PARM&#8217;
+/pci/asihpi/hpimod.c:101: warning: function declaration isn&#8217;t a
+prototype
+/pci/asihpi/hpimod.c:101: warning: data definition has no type or storage
+class
+/pci/asihpi/hpimod.c: In function &#8216;hpi_ioctl&#8217;:
+/pci/asihpi/hpimod.c:260: warning: cast to pointer from integer of
+different size
+/pci/asihpi/hpimod.c:266: warning: cast from pointer to integer of
+different size
 
-It's just a portability issue, since size_t on i386 has 4 bytes and on
-x86_64 8 bytes.
-
-WARNING: /home/henne/alsa/alsa-driver-1.0.11/pci/pdplus/snd-pdplus.o -
-Section mismatch: reference to .exit.text:pdplus_sweep from
-.text.pdplus_probe after 'pdplus_probe' (at offset 0xbe)
-
-after the prototype of pdplus_sweep on line 1405 is an __exit.
-I deleted it and the warning disappeared.
 ======================================================================
 
 ----------------------------------------------------------------------
- Henne - 04-19-06 22:51 
+ tiwai - 04-20-06 13:09 
 ----------------------------------------------------------------------
-Here's a patch for pcxhr.
+Fixed the compile errors.
 
-----------------------------------------------------------------------
- tiwai - 04-20-06 12:43 
-----------------------------------------------------------------------
-Thanks, both fixed.
+Also mod-deps program was fixed so that the driver won't be compiled on
+x86-64, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-06 22:10 Henne          New Issue                                    
-04-19-06 22:10 Henne          Distribution              => Suse 10.0 x86_64
-04-19-06 22:10 Henne          Kernel Version            => 2.6.17-rc2      
-04-19-06 22:51 Henne          File Added: pcxhr_format.diff                    
-04-19-06 22:51 Henne          Note Added: 0009360                          
-04-20-06 12:43 tiwai          Status                   assigned => resolved
-04-20-06 12:43 tiwai          Resolution               open => fixed       
-04-20-06 12:43 tiwai          Note Added: 0009369                          
+04-19-06 21:44 Henne          New Issue                                    
+04-19-06 21:44 Henne          Kernel Version            => 2.6.17-rc2      
+04-20-06 13:09 tiwai          Status                   assigned => resolved
+04-20-06 13:09 tiwai          Resolution               open => fixed       
+04-20-06 13:09 tiwai          Note Added: 0009370                          
 ======================================================================
 
 
