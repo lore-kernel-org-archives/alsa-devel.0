@@ -1,11 +1,17 @@
-From: "Tobias Urban" <TobiU@gmx.net>
-Subject: restart after a snd_pcm_drop() call
-Date: Thu, 20 Apr 2006 18:27:09 +0200 (MEST)
-Message-ID: <18199.1145550429@www036.gmx.net>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: Re: How to access vendor specific AC97
+	codec	register?
+Date: Thu, 20 Apr 2006 17:37:04 +0100
+Message-ID: <1145551024.25762.13.camel@localhost.localdomain>
+References: <e28805$nlf$1@sea.gmane.org> <1145546855.3008.0.camel@mindpipe>
+	 <e28ag6$1hb$1@sea.gmane.org>
+	 <1145549628.25762.4.camel@localhost.localdomain>
+	 <s5hirp4z0bo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hirp4z0bo.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,32 +21,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alasinski <alasinski@rogers.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
+On Thu, 2006-04-20 at 18:19 +0200, Takashi Iwai wrote:
+> At Thu, 20 Apr 2006 17:13:47 +0100,
+> Liam Girdwood wrote:
+> > 
+> > Alternatively, you could always export the vendor specific registers
+> > using sysfs. That way your user space program could read and write to
+> > the codec registers exported. I've done this with the codec GPIO status
+> > register (0x54) for the WM97xx touch drivers.
+> 
+> Well, I don't think sysfs as an API is a good idea although you can
+> use it as a simple workaround...
+> 
 
-for several times I want to start, drop and - after a prepare call -
-eventually restart my capture stream. Unfortunately I cannot get data after
-the first snd_pcm_drop() call any more. The documentation tells me that this
-function enters the SND_PCM_STATE_SETUP and a snd_pcm_prepare() seems to be
-successful. However, a snd_pcm_wait(handle, -1) leads to a crash of the
-program. If I leave out the wait() call, the program is going on but - as
-mentioned above - nothing is captured any more.
+Agreed, I really only use it for testing. Although, a standard AC97 gpio
+API would be nice (if anyone has the time to add one).
 
-It does not even work to loop the entire program including open, set
-parameters, close etc.
+Liam
 
-If I understand the documentation properly I have done it all right. So is
-this really a bug or do I just have to use a different function or maybe to
-set a particular parameter.
-
-
-Thank you for your answer!
-
--- 
-Echte DSL-Flatrate dauerhaft für 0,- Euro*!
-"Feel free" mit GMX DSL! http://www.gmx.net/de/go/dsl
 
 
 -------------------------------------------------------
