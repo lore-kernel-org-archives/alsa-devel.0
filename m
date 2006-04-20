@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001957]: HP dv8000t hda-intel codec not recognized
-Date: Thu, 20 Apr 2006 15:39:16 +0200
-Message-ID: <689c4adf0363a7f111a048a1a566c374@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000842]: plug:multi:ladspa chain causes "aplay: pcm_params.c:146: snd_pcm_hw_param_get_min: Assertion `!snd_interval_empty(i)' failed."
+Date: Thu, 20 Apr 2006 15:40:23 +0200
+Message-ID: <a3cd8c8352758e127919a4689eaa2e13@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D123421E
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:39:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1DB9A21E
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:40:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,194 +24,129 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1957> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=842> 
 ======================================================================
-Reported By:                legoguy
-Assigned To:                tiwai
+Reported By:                roothorick
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1957
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   842
+Category:                   1_pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.16
+Status:                     new
 ======================================================================
-Date Submitted:             03-24-2006 02:18 CET
-Last Modified:              04-20-2006 15:39 CEST
+Date Submitted:             01-22-2005 19:40 CET
+Last Modified:              04-20-2006 15:40 CEST
 ======================================================================
-Summary:                    HP dv8000t hda-intel codec not recognized
+Summary:                    plug:multi:ladspa chain causes "aplay:
+pcm_params.c:146: snd_pcm_hw_param_get_min: Assertion `!snd_interval_empty(i)'
+failed."
 Description: 
-lspci -nv:
-00:1b.0 0403: 8086:27d8 (rev 01)
-	Subsystem: 103c:30a5
-	Flags: bus master, fast devsel, latency 0, IRQ 7
-	Memory at d2400000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: [50] Power Management version 2
-	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-	Capabilities: [70] Express Unknown type IRQ 0
-	Capabilities: [100] Virtual Channel
-	Capabilities: [130] Unknown (5)
+For reference, my primary soundcard has a CMI8738 chipset with two DACs.
 
+My .asoundrc contains the following PCM definitions:
 
-cat /proc/asound/card0/codec\#0:
-Codec: Generic 14f1 ID 5047
-Address: 0
-Vendor Id: 0x14f15047
-Subsystem Id: 0x103c30a5
-Revision Id: 0x100000
-Default PCM: rates 0x040, bits 0x02, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-Node 0x10 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x11 0x11]
-  PCM: rates 0x040, bits 0x02, types 0x1
-  Power: 0x0
-Node 0x11 [Audio Output] wcaps 0x611: Stereo Digital
-  PCM: rates 0x040, bits 0x02, types 0x1
-  Power: 0x0
-Node 0x12 [Audio Input] wcaps 0x100d1b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x0e, stepsize=0x05, mute=1
-  Amp-In vals:  [0x0e 0x0e] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
-0x80] [0x80 0x80]
-  PCM: rates 0x040, bits 0x02, types 0x1
-  Power: 0x0
-  Connection: 6
-     0x19* 0x14 0x15 0x1a 0x16 0x10
-Node 0x13 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x1e 0x1e]
-  Pincap 0x081001c: OUT HP
-  Pin Default 0xc3111010: [Both] Speaker at Ext Left
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0xc0: OUT HP
-  Power: 0x0
-  Connection: 3
-     0x19* 0x10 0x16
-Node 0x14 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x1f 0x1f]
-  Pincap 0x0833c: IN OUT HP
-  Pin Default 0x03811011: [Jack] Line In at Ext Left
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x20: IN
-  Power: 0x0
-  Connection: 2
-     0x19* 0x16
-Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x1f 0x1f]
-  Pincap 0x0833c: IN OUT HP
-  Pin Default 0x03a11012: [Jack] Mic at Ext Left
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x20: IN
-  Power: 0x0
-  Connection: 3
-     0x1c 0x19* 0x16
-Node 0x16 [Pin Complex] wcaps 0x400401: Stereo
-  Pincap 0x0860: IN
-  Pin Default 0x99330100: [Fixed] CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-  Power: 0x0
-Node 0x17 [Pin Complex] wcaps 0x400481: Stereo
-  Pincap 0x08324: IN
-  Pin Default 0xb7a00100: [Fixed] Mic at Oth Mobile-In
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x00:
-  Power: 0x0
-Node 0x18 [Pin Complex] wcaps 0x400701: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x21440100: [Jack] SPDIF Out at Sep Rear
-    Conn = RCA, Color = Unknown
-  Pin-ctls: 0x00:
-  Power: 0x0
-  Connection: 1
-     0x11
-Node 0x19 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals:  [0x07 0x07] [0x07 0x07] [0x80 0x80] [0x17 0x17]
-  Power: 0x0
-  Connection: 4
-     0x10 0x1b 0x1a 0x16
-Node 0x1a [Audio Selector] wcaps 0x30050d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x1f, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Power: 0x0
-  Connection: 3
-     0x15* 0x14 0x17
-Node 0x1b [Audio Selector] wcaps 0x300501: Stereo
-  Power: 0x0
-  Connection: 2
-     0x14* 0x15
-Node 0x1c [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  PCM: rates 0x040, bits 0x02, types 0x1
-  Power: 0x0
-Node 0x1d [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x1f 0x1f]
-  Pincap 0x08314: OUT
-  Pin Default 0x90100112: [Fixed] Speaker at Int N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Power: 0x0
-  Connection: 3
-     0x1c 0x19* 0x16
-Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
+pcm.pfront {
+        type plug
+        slave.pcm "front"
+}
 
+pcm.prear {
+        type plug
+        slave.pcm "rear"
+}
 
+pcm.prearinv {
+        type plug
+        slave.pcm {
+                type ladspa
+                slave.pcm "prear"
+                plugins [
+                        {       
+                                label inv
+                        }
+                ]
+        }
+}
 
-I'm only given one out channel, Master, and one in channel, Mic, along
-with Line and Capture. I cannot adjust the volume of the PC Speaker beep,
-which is outrageously loud. From past experience with ALSA et al shouldn't
-there be PCM and (since this supposedly supports S/PDIF with some special
-jack) some other additional channels?
+pcm.surround40fixbass {
+        type multi
+        slaves.0.pcm "pfront"
+        slaves.0.channels 2
+        slaves.1.pcm "prearinv"
+        slaves.1.channels 2
+        bindings [
+                { slave 0; channel 0 }
+                { slave 0; channel 1 }
+                { slave 1; channel 0 }
+                { slave 1; channel 1 }
+        ]
+        master 0
+}
 
-At any rate, this codec isn't detected/identified by the driver as
-anything other than Generic.
+pcm.psurround40fixbass {
+        type plug
+        slave.pcm "surround40fixbass"
+}
+
+Using MPlayer, I created two .wav files for test purposes: test-2ch.wav (2
+channels), and test-4ch.wav (4 channels). I then attempted several
+different tests (I'm posting the most notable here):
+
+roothorick@prodigy ~/tmp $ aplay -D pfront test-2ch.wav
+Playing WAVE 'test-2ch.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+# Sound plays from front speakers. Expected behavior.
+
+roothorick@prodigy ~/tmp $ aplay -D prearinv test-2ch.wav
+Playing WAVE 'test-2ch.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+# Sound plays from rear speakers. Expected behavior.
+
+roothorick@prodigy ~/tmp $ aplay -D surround40 test-4ch.wav
+Playing WAVE 'test-4ch.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Channels 4
+# Sound plays from all four speakers. Expected behavior.
+
+roothorick@prodigy ~/tmp $ aplay -D surround40fixbass test-4ch.wav
+Playing WAVE 'test-4ch.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Channels 4
+# Sound plays from only front speakers. Was expecting sound from all four
+speakers.
+
+roothorick@prodigy ~/tmp $ aplay -D psurround40fixbass test-4ch.wav
+Playing WAVE 'test-4ch.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Channels 4
+aplay: pcm_params.c:146: snd_pcm_hw_param_get_min: Assertion
+`!snd_interval_empty(i)' failed.
+Aborted by signal Aborted...
+# No sound is ever produced. Was expecting sound from all four speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- legoguy - 03-26-06 23:09 
+ roothorick - 03-25-06 22:36 
 ----------------------------------------------------------------------
-Windows recognizes it as some kind of Conexant chip, at least that's the
-driver that's installed for it.
-
---with-debug=detect didn't seem to make any change at all, no more
-messages than before :/
-
-I'm supposed to be looking in dmesg for debugging messages correct? all I
-get when I load the modules is:
-
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> Link [LNKG] -> GSI 7 (level, low)
--> IRQ 7
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-
-
+Still happens with ALSA lib 1.0.11rc3. This was tested on a different card
+however (SB PCI 512 -- emu10k1).
 
 ----------------------------------------------------------------------
- tiwai - 04-20-06 15:39 
+ tiwai - 04-20-06 15:40 
 ----------------------------------------------------------------------
-It should show more kernel messages but using KERN_DEBUG prefix.  Check
-/var/log/messages again.
+I fixed some bugs regarding multi plugin recently, so hopefully it got
+fixed in 1.0.11-final.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-06 02:18 legoguy        New Issue                                    
-03-24-06 02:18 legoguy        Distribution              => Gentoo Linux    
-03-24-06 02:18 legoguy        Kernel Version            => 2.6.16          
-03-24-06 03:06 legoguy        Issue Monitored: legoguy                     
-03-26-06 01:55 tiwai          Note Added: 0008963                          
-03-26-06 22:18 legoguy        Note Added: 0008976                          
-03-26-06 23:09 legoguy        Note Edited: 0008976                         
-04-20-06 15:39 tiwai          Note Added: 0009389                          
+01-22-05 19:40 roothorick     New Issue                                    
+01-22-05 19:42 roothorick     Note Added: 0003377                          
+05-30-05 13:42 perex          Category                 ordinary pcm => pcm -
+digital audio
+03-22-06 04:27 rlrevell       Note Added: 0008840                          
+03-25-06 22:36 roothorick     Note Added: 0008953                          
+04-20-06 15:40 tiwai          Note Added: 0009390                          
 ======================================================================
 
 
