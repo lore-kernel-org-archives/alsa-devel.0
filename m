@@ -1,14 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
-Date: Thu, 20 Apr 2006 15:29:01 +0200
-Message-ID: <5a51f74413cbbce399ed9aa590f9d9e5@bugtrack.alsa-project.org>
+Subject: =?iso-8859-1?Q?[ALSA_-_driver_0002015]:_The_sound_isn=B4t_coordinate_with?=
+ =?iso-8859-1?Q?_the_video,_i_can=B4t_use_my_5.1_speakers?=
+Date: Thu, 20 Apr 2006 15:30:02 +0200
+Message-ID: <38342c912ccc617e11de12e8104c4bd1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C904176
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:29:01 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AB89176
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:30:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,90 +23,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2015> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                tiwai
+Reported By:                Newcastle
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1990
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   2015
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Ubuntu
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             04-01-2006 04:26 CEST
-Last Modified:              04-20-2006 15:29 CEST
+Date Submitted:             04-10-2006 20:34 CEST
+Last Modified:              04-20-2006 15:30 CEST
 ======================================================================
-Summary:                    aplay/arecord cannot play/capture A_LAW
+Summary:                    The sound isn´t coordinate with the video, i can´t
+use my 5.1 speakers
 Description: 
-aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
+Hi, when i play a DVD or Game the video show before the sound..., and in my
+AC'97 Atiixp i cant enable the 5.1 speakers, or i havn´t any
+documentation
 
-arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
+Any solution?
+Any documentation?
 
-aplay -D hw:0,0 test.au
-
-
-Try to use -t raw but the quality of A_LAW is very bad when compare with
-MU_LAW
-
-arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
-
-aplay -D hw:0,0 test.raw
-
-
+Regards
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-11-06 09:41 
+ tiwai - 04-20-06 15:30 
 ----------------------------------------------------------------------
-cat test.raw > /dev/dsp
-
-vortex: pcm_hwparams Playback channels = 1 format =1 rate = 8000
-
-
-cat test.raw > /dev/audio
-
-vortex: pcm_hwparams Playback channels = 1 format =20 rate = 8000
-
-It seem that by default
-
-/dev/dsp support U8
-/dev/audio support mu-law
-
-if the hardware of sound card support
-
-
-
-----------------------------------------------------------------------
- tiwai - 04-20-06 15:29 
-----------------------------------------------------------------------
-Yes, _usually_ they are so, but the default status is not strictly
-defined.
-
-I see no real bugs, so let's close this one.
+More specific bug report is required.  What you tested with which
+configuration, and the exact symptom that happened.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-01-06 04:26 Raymond        New Issue                                    
-04-03-06 07:16 Raymond        Note Added: 0009085                          
-04-03-06 07:36 Raymond        Note Added: 0009086                          
-04-07-06 19:32 tiwai          Note Added: 0009152                          
-04-08-06 07:47 Raymond        Note Added: 0009171                          
-04-10-06 16:52 tiwai          Note Added: 0009199                          
-04-11-06 07:46 Raymond        Note Added: 0009229                          
-04-11-06 07:55 Raymond        Note Edited: 0009229                         
-04-11-06 09:41 Raymond        Note Edited: 0009229                         
-04-20-06 15:29 tiwai          Status                   new => resolved     
-04-20-06 15:29 tiwai          Resolution               open => not an issue
-04-20-06 15:29 tiwai          Assigned To               => tiwai           
-04-20-06 15:29 tiwai          Note Added: 0009384                          
+04-10-06 20:34 Newcastle      New Issue                                    
+04-10-06 20:34 Newcastle      Distribution              => Ubuntu          
+04-10-06 20:34 Newcastle      Kernel Version            => 2.6.15          
+04-20-06 15:30 tiwai          Note Added: 0009385                          
 ======================================================================
 
 
