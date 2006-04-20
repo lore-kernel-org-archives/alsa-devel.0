@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001980]: No Sound with module snd-hda-intel and no error output
-Date: Thu, 20 Apr 2006 15:34:01 +0200
-Message-ID: <3990ea2f37c9346dd4274016c07fbc78@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001994]: alsa-oss dont use dmix
+Date: Thu, 20 Apr 2006 15:35:24 +0200
+Message-ID: <2549db350e946a04f65463e35bcda989@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 87C3D176
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:34:01 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 399B021E
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:35:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1980> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1994> 
 ======================================================================
-Reported By:                zyfhie
+Reported By:                crissi
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1980
-Category:                   PCI - hda-intel
+Issue ID:                   1994
+Category:                   CORE OSS - pcm
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               ubuntu
-Kernel Version:             2.6.15-19-386
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-30-2006 14:43 CEST
-Last Modified:              04-20-2006 15:34 CEST
+Date Submitted:             04-02-2006 19:45 CEST
+Last Modified:              04-20-2006 15:35 CEST
 ======================================================================
-Summary:                    No Sound with module snd-hda-intel and no error
-output
+Summary:                    alsa-oss dont use dmix
 Description: 
-I just have ubuntu installed in my laptop,and there is no sound at all.
-In dmesg|grep hda-intel there is no message,but I could see 
-[4296289.511000] ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-[4296330.997000] ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 16 (level,
-low) -> IRQ 201
-[4296330.997000] PCI: Setting latency timer of device 0000:00:1b.0 to 64
- 
-after rmmod snd-hda-intel &modprobe snd-hda-intel
-
-I had tried many parm in my alsa-base such as model,position_fix.
-Hope somebody could help!!! 
-
+The alsa-oss module doesnt use the dmix module but it should.
 ======================================================================
 
 ----------------------------------------------------------------------
- zyfhie - 04-04-06 09:23 
+ rlrevell - 04-02-06 19:58 
 ----------------------------------------------------------------------
-Finally I'm loading with "model=laptop-eapd" and it works:)
+Works for me:
+
+$ ALSA_OSS_DEBUG=1 aoss /usr/bin/play /usr/share/sounds/error.wav 
+Opened PCM dsp0 for stream 0 (result = -2)
+Opened PCM default for stream 0 (result = 0)
+           ^^^^^^^
+
+'default' should be defined to use dmix with no need for .asoundrc.
+
+The in-kernel OSS emulation can't be made to use dmix - you must use aoss.
 
 ----------------------------------------------------------------------
- tiwai - 04-20-06 15:34 
+ tiwai - 04-20-06 15:35 
 ----------------------------------------------------------------------
-What model is your laptop exactly?  I need it for a comment in the source
-code.
+Maybe using an older version?  It should work in 1.0.11, so closing this
+now.
+Reopen if you still have the same problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-06 14:43 zyfhie         New Issue                                    
-03-30-06 14:43 zyfhie         Distribution              => ubuntu          
-03-30-06 14:43 zyfhie         Kernel Version            => 2.6.15-19-386   
-04-01-06 00:28 error10        Note Added: 0009051                          
-04-03-06 01:57 anarki         Note Added: 0009076                          
-04-03-06 02:12 zyfhie         Note Added: 0009078                          
-04-03-06 02:46 zyfhie         Note Added: 0009079                          
-04-03-06 03:22 zyfhie         Note Added: 0009082                          
-04-03-06 05:52 rlrevell       Note Added: 0009083                          
-04-03-06 09:03 zyfhie         Note Added: 0009090                          
-04-04-06 09:23 zyfhie         Note Added: 0009110                          
-04-04-06 09:23 zyfhie         Issue Monitored: zyfhie                      
-04-04-06 09:23 zyfhie         Issue End Monitor: zyfhie                    
-04-04-06 09:24 zyfhie         Note Deleted: 0009090                        
-04-20-06 15:34 tiwai          Note Added: 0009386                          
+04-02-06 19:45 crissi         New Issue                                    
+04-02-06 19:58 rlrevell       Note Added: 0009069                          
+04-20-06 15:35 tiwai          Status                   new => resolved     
+04-20-06 15:35 tiwai          Resolution               open => fixed       
+04-20-06 15:35 tiwai          Assigned To               => tiwai           
+04-20-06 15:35 tiwai          Note Added: 0009387                          
 ======================================================================
 
 
