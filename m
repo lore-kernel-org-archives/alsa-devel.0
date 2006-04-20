@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001908]: Stereo channels swapped using Midiman Audiophile 24/96
-Date: Thu, 20 Apr 2006 20:56:40 +0200
-Message-ID: <80b459f737109e552b7bef30d5265722@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002027]: No sound on AD1986A (ASUS Laptop, Z62F)
+Date: Thu, 20 Apr 2006 21:38:39 +0200
+Message-ID: <0d059d08efe93f14f5f75212a7df7e0d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56FDD176
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 20:56:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58C17219
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 21:38:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1908> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2027> 
 ======================================================================
-Reported By:                sebastian_ml
-Assigned To:                
+Reported By:                jaidormi
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1908
-Category:                   PCI - ice1712
+Issue ID:                   2027
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               Gentoo
-Kernel Version:             2.6.15.6
+Kernel Version:             2.6.16-gentoo-r2
 ======================================================================
-Date Submitted:             03-11-2006 09:34 CET
-Last Modified:              04-20-2006 20:56 CEST
+Date Submitted:             04-17-2006 08:00 CEST
+Last Modified:              04-20-2006 21:38 CEST
 ======================================================================
-Summary:                    Stereo channels swapped using Midiman Audiophile
-24/96
+Summary:                    No sound on AD1986A (ASUS Laptop, Z62F)
 Description: 
-Hi all,
+Actually I am using 1.0.11rc5
 
-the stereo channels (L/R) are swapped. Say you patch PCM0 to HW Out 0 and
-do the same with PCM1 and HW Out 1 then the channel order is wrong.
-For now I use the Digital Mixer to make it right.
+I am unable to get any sound output on speakers or headphone jack.  Oddly,
+it seems that the IEC958 output works (shared with headphone jack), based
+on the fact that it lights up when un-muted.
 
-I discovered this by accident when I had both my mp3 player and my 2496
-connected to the same amp playing the same song. They sounded different. I
-swapped L/R and all was fine.
+I have tried a number of model= and position_fix= options with no luck.
 
-When booting Windows the L/R order is accurate.
+On this machine there is a set of stereo speakers, a line-in, mic, and
+shared sp-dif/headphone jack.
 
-I'll upload some pictures of envy24control in a few.
-
-Thanks
-
-Sebastian
+Is there any output or system info I can provide to help?
 ======================================================================
 
 ----------------------------------------------------------------------
- sebastian_ml - 03-11-06 10:24 
+ tiwai - 04-20-06 14:47 
 ----------------------------------------------------------------------
-The first attachment is a picture of the Patchbay. Patching PCM Out 1 to
-H/W Out 1 (L) and doing the same with PCM Out 2 and H/W Out 2 (R) results
-in L and R being swapped.
-
-To "fix" this I patch Digital Mix 1 to H/W Out 1 (L) and Digital Mix 2 to
-H/W Out 2 (R) and then I set the Monitor Mixer like shown in the second
-attachment.
-
-The correct way to use the Monitor Mixer would be the one shown in
-attachment 3. But then L/R is swapped.
+Try model=asus-eapd instead.
 
 ----------------------------------------------------------------------
- sebastian_ml - 04-20-06 20:56 
+ jaidormi - 04-20-06 21:38 
 ----------------------------------------------------------------------
-Sorry, my fault. It wasn't the driver, it was a wrongly marked cable (red
-and white were swapped.
-
-Mea culpa :D
-
-Sebastian
+Still doesn't seem to work.  I tried all the position_fix options, and also
+tried using hw:0,0 as well as hw:0,1 for output.  I've tried the mixer
+settings in _a_lot_ of different configurations, not being certain whether
+some settings might affect others.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-06 09:34 sebastian_ml   New Issue                                    
-03-11-06 09:34 sebastian_ml   Distribution              => Gentoo          
-03-11-06 09:34 sebastian_ml   Kernel Version            => 2.6.15.6        
-03-11-06 10:17 sebastian_ml   File Added: patchbay-pcm.png                    
-03-11-06 10:24 sebastian_ml   Note Added: 0008415                          
-03-11-06 10:24 sebastian_ml   File Added: monitor-reversed.png                  
- 
-03-11-06 10:25 sebastian_ml   File Added: monitor-accurate.png                  
- 
-04-20-06 20:56 sebastian_ml   Note Added: 0009399                          
+04-17-06 08:00 jaidormi       New Issue                                    
+04-17-06 08:00 jaidormi       Distribution              => Gentoo          
+04-17-06 08:00 jaidormi       Kernel Version            => 2.6.16-gentoo-r2
+04-17-06 08:04 rlrevell       Note Added: 0009305                          
+04-17-06 08:08 jaidormi       Note Added: 0009306                          
+04-17-06 08:15 jaidormi       Note Added: 0009307                          
+04-17-06 08:15 jaidormi       Note Deleted: 0009306                        
+04-20-06 14:47 tiwai          Note Added: 0009377                          
+04-20-06 21:38 jaidormi       Note Added: 0009400                          
 ======================================================================
 
 
