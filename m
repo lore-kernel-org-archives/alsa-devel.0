@@ -1,15 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: =?iso-8859-1?Q?[ALSA_-_driver_0002015]:_The_sound_isn=B4t_coordinate_with?=
- =?iso-8859-1?Q?_the_video,_i_can=B4t_use_my_5.1_speakers?=
-Date: Thu, 20 Apr 2006 15:30:02 +0200
-Message-ID: <38342c912ccc617e11de12e8104c4bd1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002042]: Compile error : /usr/local/src/alsa/alsa-driver/include/adriver.h:219: error: conflicting types for 'gfp_t'
+Date: Thu, 20 Apr 2006 15:30:46 +0200
+Message-ID: <b04642c0f9d6d008c5c2f4f9af82118e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AB89176
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:30:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4FC6176
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 15:30:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,52 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2015> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2042> 
 ======================================================================
-Reported By:                Newcastle
-Assigned To:                
+Reported By:                mnemotronic
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2015
-Category:                   1_OTHERS
+Issue ID:                   2042
+Category:                   CORE - control
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu
-Kernel Version:             2.6.15
+Status:                     resolved
+Distribution:               Centos
+Kernel Version:             2.6.9-34.ELsmp
+Resolution:                 duplicate
+Duplicate:                  1934
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-10-2006 20:34 CEST
+Date Submitted:             04-20-2006 08:04 CEST
 Last Modified:              04-20-2006 15:30 CEST
 ======================================================================
-Summary:                    The sound isn´t coordinate with the video, i can´t
-use my 5.1 speakers
+Summary:                    Compile error :
+/usr/local/src/alsa/alsa-driver/include/adriver.h:219: error: conflicting types
+for 'gfp_t'
 Description: 
-Hi, when i play a DVD or Game the video show before the sound..., and in my
-AC'97 Atiixp i cant enable the 5.1 speakers, or i havn´t any
-documentation
+Can't compile using directions from
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+Live+7.1.&chip=SB0410%2C+P17&module=ca0106
 
-Any solution?
-Any documentation?
+error:
+In file included from
+/usr/local/src/alsa/alsa-driver/acore/memalloc.inc:13,
+                 from /usr/local/src/alsa/alsa-driver/acore/memalloc.c:1:
+/usr/local/src/alsa/alsa-driver/include/adriver.h:219: error: conflicting
+types for 'gfp_t'
+include/linux/gfp.h:134: error: previous declaration of 'gfp_t' was here
 
-Regards
 ======================================================================
-
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- tiwai - 04-20-06 15:30 
-----------------------------------------------------------------------
-More specific bug report is required.  What you tested with which
-configuration, and the exact symptom that happened.
+duplicate of        0001934 make problem
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-10-06 20:34 Newcastle      New Issue                                    
-04-10-06 20:34 Newcastle      Distribution              => Ubuntu          
-04-10-06 20:34 Newcastle      Kernel Version            => 2.6.15          
-04-20-06 15:30 tiwai          Note Added: 0009385                          
+04-20-06 08:04 mnemotronic    New Issue                                    
+04-20-06 08:04 mnemotronic    Distribution              => Centos          
+04-20-06 08:04 mnemotronic    Kernel Version            => 2.6.9-34.ELsmp  
+04-20-06 15:30 tiwai          Relationship added       duplicate of 0001934
+04-20-06 15:30 tiwai          Duplicate ID             0 => 1934           
+04-20-06 15:30 tiwai          Status                   new => resolved     
+04-20-06 15:30 tiwai          Resolution               open => duplicate   
+04-20-06 15:30 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
