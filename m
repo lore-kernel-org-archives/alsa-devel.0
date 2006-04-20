@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
-Date: Thu, 20 Apr 2006 14:37:24 +0200
-Message-ID: <17c8cf3b5fb1dc41b4a8bff1dbcd71f6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
+Date: Thu, 20 Apr 2006 14:41:54 +0200
+Message-ID: <5f2e872d50b1b5d677e1214bcbd7005f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38C441A8
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 14:37:25 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C2121A8
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 14:41:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
 ======================================================================
-Reported By:                drolyk
-Assigned To:                
+Reported By:                vertex
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1930
-Category:                   PCI - intel8x0
+Issue ID:                   2035
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15.6
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
-Date Submitted:             03-15-2006 23:41 CET
-Last Modified:              04-20-2006 14:37 CEST
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              04-20-2006 14:41 CEST
 ======================================================================
-Summary:                    Can`t get timidity woking in soft synth mode
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
 Description: 
-Can`t get timidity woking in "soft synth mode".
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
+
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
+
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- fdoffizi01 - 04-19-06 16:56 
+ vertex - 04-18-06 23:02 
 ----------------------------------------------------------------------
-Well I configured it with standard ebuild (gentoo user) system.
-I have some info. It's not really broken! I can use it by Rosegarden, by
-Band in a Box emulated (wine). So it works. But If i play the same midi
-files throw amidiplay or kmid, it locks on first events.
+I tried all three options, 3stack, 3stack-dig and 6stack-dig. No audible
+playback using any of the options.
 
 ----------------------------------------------------------------------
- tiwai - 04-20-06 14:37 
+ tiwai - 04-20-06 14:41 
 ----------------------------------------------------------------------
-This might have been a bug introduced around 1.0.11rc4.  1.0.11-final
-should work fine.
+Compile ALSA drivers with debug option and check the kernel message without
+model option.  It'll show the detected pin assignment to be used.
+
+Then, upload /proc/asound/card0/codec#0 (don't paste to form) _during_
+playback a sound.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-15-06 23:41 drolyk         New Issue                                    
-03-15-06 23:41 drolyk         Distribution              => Debian          
-03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
-03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
-03-20-06 01:28 rlrevell       Note Added: 0008702                          
-03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
-03-20-06 03:24 rlrevell       Note Added: 0008706                          
-03-20-06 06:08 drolyk         Note Added: 0008709                          
-03-20-06 06:22 rlrevell       Note Added: 0008710                          
-03-20-06 07:19 Raymond        Note Added: 0008711                          
-03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
-03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
-03-20-06 22:19 drolyk         Note Added: 0008726                          
-03-20-06 22:21 drolyk         Note Edited: 0008726                         
-03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
-03-20-06 23:29 rlrevell       Note Added: 0008729                          
-03-20-06 23:40 fdoffizi01     Note Added: 0008730                          
-03-20-06 23:54 rlrevell       Note Added: 0008731                          
-03-21-06 00:14 fdoffizi01     Note Added: 0008732                          
-03-21-06 08:46 Raymond        Note Added: 0008739                          
-03-21-06 09:00 Raymond        Note Edited: 0008739                         
-03-21-06 10:58 fdoffizi01     Note Added: 0008741                          
-04-15-06 10:49 Raymond        Note Added: 0009293                          
-04-19-06 10:05 Raymond        Note Deleted: 0009293                        
-04-19-06 10:08 Raymond        Note Added: 0009350                          
-04-19-06 16:56 fdoffizi01     Note Added: 0009351                          
-04-20-06 14:37 tiwai          Note Added: 0009374                          
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
 ======================================================================
 
 
