@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002036]: Missing PCI subsystem vendor and device in /proc/asound/../codec97#0/ac97#0-0 for some pci sound card drivers
-Date: Thu, 20 Apr 2006 03:14:08 +0200
-Message-ID: <769a8357e111ffccc9a7bca1c32df657@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Thu, 20 Apr 2006 03:39:04 +0200
+Message-ID: <f0b26a1ebc72296cf3f2c2af6cf5eacd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3342C171
-	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 03:14:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 45CD71A7
+	for <alsa-devel@alsa-project.org>; Thu, 20 Apr 2006 03:39:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,75 +22,101 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2036> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                tiwai
+Reported By:                zanonmark
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2036
-Category:                   1_OTHERS
+Issue ID:                   2023
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               alsa-driver-1.0.11
-Kernel Version:             
+Status:                     new
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
 ======================================================================
-Date Submitted:             04-19-2006 17:17 CEST
-Last Modified:              04-20-2006 03:14 CEST
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              04-20-2006 03:39 CEST
 ======================================================================
-Summary:                    Missing PCI subsystem vendor and device in
-/proc/asound/../codec97#0/ac97#0-0 for some pci sound card drivers
+Summary:                    midi/joystick port disabled and no way to enable it
 Description: 
-Only a few of pci sound card drivers have initialised 'ac97.pci'.
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
 
-ad1889.c:       ac97.pci = chip->pci;
-atiixp.c:               ac97.pci = chip->pci;
-atiixp_modem.c:         ac97.pci = chip->pci;
-cs5535audio/cs5535audio.c:      ac97.pci = cs5535au->pci;
-intel8x0.c:     ac97.pci = chip->pci;
-intel8x0m.c:    ac97.pci = chip->pci;
-riptide/riptide.c:      ac97.pci = chip->pci;
-via82xx.c:      ac97.pci = chip->pci;
-via82xx_modem.c:        ac97.pci = chip->pci;
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
+
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
+
+So, will you please include such a parameter in the next version of the
+driver?
+
+Thanks a lot,
+
+Marco.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-19-06 17:28 
+ rlrevell - 04-19-06 21:49 
 ----------------------------------------------------------------------
-It's no bug.  The pci field is not mandatory, and required only for quirks.
+Does:
+
+amidi -d -p "hw:0,0"
+
+while playing with the keyboard connected output anything?
 
 ----------------------------------------------------------------------
- Raymond - 04-20-06 03:14 
+ Raymond - 04-20-06 03:39 
 ----------------------------------------------------------------------
-This mean that it should not display pci subsystem if ac97 is on non-pci
-sound card
+I don't have this card, this mean that SUPPORT_JOYSTICK is not defined
 
-alsa-driver-1.0.11/alsa-kernel/pci/ac97/ac97_proc.c
+#if defined(CONFIG_GAMEPORT) || (defined(MODULE) &&
+defined(CONFIG_GAMEPORT_MODULE))
+#define SUPPORT_JOYSTICK
+#endif
 
-+ifdef CONFIG_PCI
-        snd_iprintf(buffer, "PCI Subsys Vendor: 0x%04x\n",
-	            ac97->subsystem_vendor);
-        snd_iprintf(buffer, "PCI Subsys Device: 0x%04x\n\n",
-                    ac97->subsystem_device);
-+endif
+	snd_iprintf(buffer, "Joystick enable  : %s\n",
+		    ensoniq->ctrl & ES_JYSTK_EN ? "on" : "off");
+
+#ifdef SUPPORT_JOYSTICK
+...
+	ensoniq->ctrl |= ES_JYSTK_EN;
+...
+#endif
+
+
+BTW, please use alsa-driver-1.0.11 if possible
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-06 17:17 Raymond        New Issue                                    
-04-19-06 17:28 tiwai          Status                   new => resolved     
-04-19-06 17:28 tiwai          Resolution               open => won't fix   
-04-19-06 17:28 tiwai          Assigned To               => tiwai           
-04-19-06 17:28 tiwai          Note Added: 0009352                          
-04-20-06 03:14 Raymond        Distribution              => alsa-driver-1.0.11
-04-20-06 03:14 Raymond        Status                   resolved => feedback
-04-20-06 03:14 Raymond        Resolution               won't fix => reopened
-04-20-06 03:14 Raymond        Note Added: 0009362                          
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
+04-17-06 06:56 rlrevell       Note Added: 0009301                          
+04-17-06 07:19 Raymond        Note Added: 0009303                          
+04-17-06 19:59 zanonmark      Note Added: 0009319                          
+04-18-06 10:54 Raymond        Note Added: 0009328                          
+04-18-06 13:18 Raymond        Note Edited: 0009328                         
+04-18-06 16:28 Clemens LadischNote Added: 0009338                          
+04-19-06 20:05 zanonmark      Note Added: 0009354                          
+04-19-06 21:49 rlrevell       Note Added: 0009356                          
+04-20-06 03:39 Raymond        Note Added: 0009363                          
 ======================================================================
 
 
