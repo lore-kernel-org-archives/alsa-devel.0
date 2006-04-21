@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
-Date: Fri, 21 Apr 2006 16:50:19 +0200
-Message-ID: <3334cffbae5787684ceb67e7daa8a486@bugtrack.alsa-project.org>
+Date: Fri, 21 Apr 2006 16:51:47 +0200
+Message-ID: <38c7eb311f5921a4aa3a4d8439d1b607@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E465E17B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 16:50:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0010217B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 16:51:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              04-21-2006 16:50 CEST
+Last Modified:              04-21-2006 16:51 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -71,12 +71,6 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- vertex - 04-20-06 20:23 
-----------------------------------------------------------------------
-I added the tail of dmesg after inserting the modules, and the contents of
-/proc/asound/card0/codec#0 during aplayback of a wav file.
-
-----------------------------------------------------------------------
  tiwai - 04-21-06 16:50 
 ----------------------------------------------------------------------
 Great, the BIOS on your board doesn't initialize the pin assignment at all.
@@ -84,6 +78,12 @@ Great, the BIOS on your board doesn't initialize the pin assignment at all.
 
 The only method is trial-and-error.  Or, hope that the BIOS update will
 improve something...
+
+----------------------------------------------------------------------
+ tiwai - 04-21-06 16:51 
+----------------------------------------------------------------------
+At the second glance, I see the HP jack was detected.  Is this the only
+output on your board?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -106,6 +106,7 @@ Date Modified  Username       Field                    Change
    
 04-20-06 20:23 vertex         Note Added: 0009398                          
 04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
 ======================================================================
 
 
