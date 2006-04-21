@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002045]: playback stops after 1 second on Intel D945GPM
-Date: Fri, 21 Apr 2006 02:08:03 +0200
-Message-ID: <ad6375a89bcf93b146a410c17e0dc8dd@bugtrack.alsa-project.org>
+Date: Fri, 21 Apr 2006 02:24:31 +0200
+Message-ID: <3bed4ad7d03d5120faf055d2d60cedf2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C2BD16C
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 02:08:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1883F16C
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 02:24:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2045> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               Gentoo
 Kernel Version:             2.6.15-gentoo-r7
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-20-2006 20:00 CEST
-Last Modified:              04-21-2006 02:08 CEST
+Last Modified:              04-21-2006 02:24 CEST
 ======================================================================
 Summary:                    playback stops after 1 second on Intel D945GPM
 Description: 
@@ -74,26 +76,14 @@ results in the same issue.
 ======================================================================
 
 ----------------------------------------------------------------------
- mda2376 - 04-20-06 20:10 
-----------------------------------------------------------------------
-Almost forgot,
-
-lspci -nv
-00:1b.0 0403: 8086:27d8 (rev 01)
-        Subsystem: 8086:1112
-        Flags: bus master, fast devsel, latency 0, IRQ 90
-        Memory at a2200000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-----------------------------------------------------------------------
  mda2376 - 04-21-06 02:08 
 ----------------------------------------------------------------------
 Please disregard. This is an mplayer alsa output bug.
+
+----------------------------------------------------------------------
+ rlrevell - 04-21-06 02:24 
+----------------------------------------------------------------------
+Not a bug
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,6 +93,8 @@ Date Modified  Username       Field                    Change
 04-20-06 20:00 mda2376        Kernel Version            => 2.6.15-gentoo-r7
 04-20-06 20:10 mda2376        Note Added: 0009397                          
 04-21-06 02:08 mda2376        Note Added: 0009403                          
+04-21-06 02:24 rlrevell       Status                   assigned => closed  
+04-21-06 02:24 rlrevell       Note Added: 0009404                          
 ======================================================================
 
 
