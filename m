@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
-Date: Fri, 21 Apr 2006 16:51:47 +0200
-Message-ID: <38c7eb311f5921a4aa3a4d8439d1b607@bugtrack.alsa-project.org>
+Date: Fri, 21 Apr 2006 16:54:55 +0200
+Message-ID: <4d081ed3753af3e712f07637e31873c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0010217B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 16:51:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A664617B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 16:54:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              04-21-2006 16:51 CEST
+Last Modified:              04-21-2006 16:54 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -71,19 +71,16 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-21-06 16:50 
-----------------------------------------------------------------------
-Great, the BIOS on your board doesn't initialize the pin assignment at all.
- There is no information.
-
-The only method is trial-and-error.  Or, hope that the BIOS update will
-improve something...
-
-----------------------------------------------------------------------
  tiwai - 04-21-06 16:51 
 ----------------------------------------------------------------------
 At the second glance, I see the HP jack was detected.  Is this the only
 output on your board?
+
+----------------------------------------------------------------------
+ tiwai - 04-21-06 16:54 
+----------------------------------------------------------------------
+Also, during the playback, you must see a kernel message like
+"hda_codec_setup_stream: ....".  Please show that, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +104,7 @@ Date Modified  Username       Field                    Change
 04-20-06 20:23 vertex         Note Added: 0009398                          
 04-21-06 16:50 tiwai          Note Added: 0009416                          
 04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
 ======================================================================
 
 
