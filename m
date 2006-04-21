@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002054]: gentoo emrge failer
-Date: Fri, 21 Apr 2006 19:34:41 +0200
-Message-ID: <ee38e8d8156481fa2dbbb19feabc1eb6@bugtrack.alsa-project.org>
+Date: Fri, 21 Apr 2006 19:52:32 +0200
+Message-ID: <8b736b1fb6ec1a5f0067f4658712be4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 135EE160
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 19:34:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C81D0160
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 19:52:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2054> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               
 Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-21-2006 19:34 CEST
-Last Modified:              04-21-2006 19:34 CEST
+Last Modified:              04-21-2006 19:52 CEST
 ======================================================================
 Summary:                    gentoo emrge failer
 Description: 
@@ -600,10 +602,17 @@ configure: exit 1
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 04-21-06 19:52 
+----------------------------------------------------------------------
+This is a Gentoo issue not an ALSA bug
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-21-06 19:34 drzin          New Issue                                    
+04-21-06 19:52 rlrevell       Status                   assigned => closed  
+04-21-06 19:52 rlrevell       Note Added: 0009429                          
 ======================================================================
 
 
