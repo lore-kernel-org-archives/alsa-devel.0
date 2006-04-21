@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002048]: Choppy sound output with MythTV
-Date: Fri, 21 Apr 2006 04:39:46 +0200
-Message-ID: <2abc3d932c624b5859768069cc9390b5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002049]: No sound output on Sony Vaio PCG FR130
+Date: Fri, 21 Apr 2006 04:43:18 +0200
+Message-ID: <e58d982bac89e059a5b0a2113b73e275@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19C4E16F
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 04:39:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 07D6F16F
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 04:43:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,46 +22,38 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2048> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2049> 
 ======================================================================
 Reported By:                gerd94706
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2048
-Category:                   PCI - atiixp
+Issue ID:                   2049
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             04-21-2006 04:38 CEST
-Last Modified:              04-21-2006 04:39 CEST
+Date Submitted:             04-21-2006 04:43 CEST
+Last Modified:              04-21-2006 04:43 CEST
 ======================================================================
-Summary:                    Choppy sound output with MythTV
+Summary:                    No sound output on Sony Vaio PCG FR130
 Description: 
-I don't know who's to blame: whether it's MythTV's fault or the device
-driver,
-but the sound output is choppy at times and requires restart of the
-playback.
+The driver compiles & loads fine, but sound output does not work.
+Don't recall if the sound output was choppy or not-present, since it's
+been a while since I last tried.
 
 ======================================================================
-
-----------------------------------------------------------------------
- gerd94706 - 04-21-06 04:39 
-----------------------------------------------------------------------
-I forgot to mention the hardware used: Shuttle XPC ST62K with onboard
-atiixp support.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-21-06 04:38 gerd94706      New Issue                                    
-04-21-06 04:39 gerd94706      Note Added: 0009405                          
+04-21-06 04:43 gerd94706      New Issue                                    
 ======================================================================
 
 
