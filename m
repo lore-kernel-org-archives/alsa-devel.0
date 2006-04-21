@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002046]: Driver build fails due to bug in kernel include/asm/dma-mapping.h file.
-Date: Fri, 21 Apr 2006 12:42:03 +0200
-Message-ID: <e1f8f4bafee235418a0afc39bed46f3c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002027]: No sound on AD1986A (ASUS Laptop, Z62F)
+Date: Fri, 21 Apr 2006 12:45:38 +0200
+Message-ID: <d1020ce14fa654f2b58657d238bfd147@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB07116C
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 12:42:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F5C116C
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 12:45:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2046> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2027> 
 ======================================================================
-Reported By:                GrueMaster
-Assigned To:                perex
+Reported By:                jaidormi
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2046
-Category:                   0_compilation problem_!!!
+Issue ID:                   2027
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Novell Linux Desktop 9 Service pack 3
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.16-gentoo-r2
 ======================================================================
-Date Submitted:             04-20-2006 23:53 CEST
-Last Modified:              04-21-2006 12:42 CEST
+Date Submitted:             04-17-2006 08:00 CEST
+Last Modified:              04-21-2006 12:45 CEST
 ======================================================================
-Summary:                    Driver build fails due to bug in kernel
-include/asm/dma-mapping.h file.
+Summary:                    No sound on AD1986A (ASUS Laptop, Z62F)
 Description: 
-Compile fails at acore/sgbuf.c.  Multiple define errors in
-include/asm/dma-mapping.h file.  This has also been reproduced againast a
-clean 2.6.5 kernel from kernel.org.
+Actually I am using 1.0.11rc5
 
+I am unable to get any sound output on speakers or headphone jack.  Oddly,
+it seems that the IEC958 output works (shared with headphone jack), based
+on the fact that it lights up when un-muted.
 
+I have tried a number of model= and position_fix= options with no luck.
+
+On this machine there is a set of stereo speakers, a line-in, mic, and
+shared sp-dif/headphone jack.
+
+Is there any output or system info I can provide to help?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-21-06 12:42 
+ jaidormi - 04-20-06 21:38 
 ----------------------------------------------------------------------
-Fixed on Hg repo.
+Still doesn't seem to work.  I tried all the position_fix options, and also
+tried using hw:0,0 as well as hw:0,1 for output.  I've tried the mixer
+settings in _a_lot_ of different configurations, not being certain whether
+some settings might affect others.
+
+----------------------------------------------------------------------
+ tiwai - 04-21-06 12:45 
+----------------------------------------------------------------------
+Are you sure that the model option is properly passed to the driver?
+
+With and without model=laptop-eapd, there are significant differences in
+the mixer elements.  The latter has much simpler mixer.
+
+The position_fix option is usually irrelevant with the "total silent"
+problem.
+
+Anyway, if model=eapd-laptop doesn't work, the device has likely a
+completely different pin assignment.  Please upload (not attach)
+/proc/asound/card0/codec#* files for analysis.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-20-06 23:53 GrueMaster     New Issue                                    
-04-20-06 23:53 GrueMaster     Distribution              => Novell Linux Desktop
-9 Service pack 3
-04-21-06 12:42 tiwai          Status                   assigned => resolved
-04-21-06 12:42 tiwai          Resolution               open => fixed       
-04-21-06 12:42 tiwai          Note Added: 0009409                          
+04-17-06 08:00 jaidormi       New Issue                                    
+04-17-06 08:00 jaidormi       Distribution              => Gentoo          
+04-17-06 08:00 jaidormi       Kernel Version            => 2.6.16-gentoo-r2
+04-17-06 08:04 rlrevell       Note Added: 0009305                          
+04-17-06 08:08 jaidormi       Note Added: 0009306                          
+04-17-06 08:15 jaidormi       Note Added: 0009307                          
+04-17-06 08:15 jaidormi       Note Deleted: 0009306                        
+04-20-06 14:47 tiwai          Note Added: 0009377                          
+04-20-06 21:38 jaidormi       Note Added: 0009400                          
+04-21-06 12:45 tiwai          Note Added: 0009410                          
 ======================================================================
 
 
