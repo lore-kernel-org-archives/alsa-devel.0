@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001934]: make problem
-Date: Fri, 21 Apr 2006 00:03:07 +0200
-Message-ID: <a9199ff0d4824e5b4cb25167e6d445f8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002045]: playback stops after 1 second on Intel D945GPM
+Date: Fri, 21 Apr 2006 02:08:03 +0200
+Message-ID: <ad6375a89bcf93b146a410c17e0dc8dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2602156
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 00:03:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5C2BD16C
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 02:08:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,98 +24,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2045> 
 ======================================================================
-Reported By:                kvo
-Assigned To:                perex
+Reported By:                mda2376
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1934
-Category:                   0_compilation problem_!!!
+Issue ID:                   2045
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               RHEL4 Update 3
-Kernel Version:             2.6.9-34.EL
+Distribution:               Gentoo
+Kernel Version:             2.6.15-gentoo-r7
 ======================================================================
-Date Submitted:             03-17-2006 12:19 CET
-Last Modified:              04-21-2006 00:03 CEST
+Date Submitted:             04-20-2006 20:00 CEST
+Last Modified:              04-21-2006 02:08 CEST
 ======================================================================
-Summary:                    make problem
+Summary:                    playback stops after 1 second on Intel D945GPM
 Description: 
-./configure works OK. running make give error during compilation: module
-'include/asound.h' (line 210) has some 'typedef' that doesn't match with
-(probably) OS include. As a result, compilation stops and driver can not
-be produced.
+Playback stops after a very brief period, about one second, and the
+application playing sound locks up, but can be killed with Ctrl-C.
+
+This is an Intel Desktop motherboard, sku: BOXD945GPMLKR with a SigmaTel
+STAC9220D/9223D A2 according to alsamixer. hda-intel is compiled as a
+module and loaded with model=5stack-digout. Processor is a Pentium D dual
+core, with everything compiled with -O2 -march=nocona -fomit-frame-pointer
+-pipe.
+
+When the module is loaded, dmesg reports:
+GSI 21 sharing vector 0x5A and IRQ 21
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 90
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+
+
+Output from mplayer trying to play an mp3:
+..
+Starting playback...
+alsa-play: write error: Broken pipe0) ??,?%
+alsa-play: trying to reset soundcard
+alsa-play: write error: Broken pipe 0.8%
+alsa-play: trying to reset soundcard
+A:   0.7 (00.6) of 328.0 (05:28.0)  0.8%
+
+If I use alsa-driver-1.0.10-r2 the two alsa-play: messages are not
+displayed but the same sound problem exists. Trying to play sound again
+results in the same issue.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0002042 Compile error : /usr/local/src/alsa/als...
-======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-10-06 18:43 
+ mda2376 - 04-20-06 20:10 
 ----------------------------------------------------------------------
-The problem is how to _detect_ the very kernel and how do you activate the
-workaround.  If something is defined detectable as a flag, we can put just
-an idfdef SOMETHING.  Otherwise, we may need additional check in
-configure.in and include/adriver.h.  But, I can't work on this since I
-have no such a distribution.
+Almost forgot,
 
-Patches are welcome, of course.
+lspci -nv
+00:1b.0 0403: 8086:27d8 (rev 01)
+        Subsystem: 8086:1112
+        Flags: bus master, fast devsel, latency 0, IRQ 90
+        Memory at a2200000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
 ----------------------------------------------------------------------
- mnemotronic - 04-21-06 00:03 
+ mda2376 - 04-21-06 02:08 
 ----------------------------------------------------------------------
-FYI, in an attempt to get a working driver, I commented out this line in
-adriver.h:
-// typedef unsigned __nocast gfp_t
-
-and recompiled.  This returned a different error:
-...etc.../acore/pcm_native.c:74: error: syntax error before
-"snd_pcm_link_rwlock"
-...etc.../acore/pcm_native.c:74: warning: type defaults to `int' in
-declaration of `snd_pcm_link_rwlock'
-...etc.../acore/pcm_native.c:74: error: conflicting types for
-'snd_pcm_link_rwlock'
-...etc.../include/sound/pcm.h:454: error: previous declaration of
-'snd_pcm_link_rwlock' was here
-...etc.../acore/pcm_native.c:74: error: conflicting types for
-'snd_pcm_link_rwlock'
-...etc.../include/sound/pcm.h:454: error: previous declaration of
-'snd_pcm_link_rwlock' was here
-...etc.../acore/pcm_native.c:74: error: incompatible types in
-initialization
-...etc.../acore/pcm_native.c:74: error: initializer element is not
-constant
-...etc.../acore/pcm_native.c:74: warning: data definition has no type or
-storage class
-...etc.../acore/pcm_native.c: In function `snd_pcm_action_lock_irq':
-
-heavy sigh.
+Please disregard. This is an mplayer alsa output bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 12:19 kvo            New Issue                                    
-03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
-03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
-03-17-06 12:25 tiwai          Note Added: 0008643                          
-03-19-06 22:26 kvo            Note Added: 0008697                          
-03-21-06 17:33 tiwai          Note Added: 0008749                          
-03-25-06 20:47 kvo            File Added: config.log                       
-03-25-06 22:19 kvo            Note Added: 0008952                          
-04-09-06 18:47 kvo            File Added: info.zip                         
-04-09-06 18:56 kvo            Note Added: 0009181                          
-04-09-06 19:05 kvo            Issue Monitored: tiwai                       
-04-09-06 19:05 kvo            Note Added: 0009182                          
-04-10-06 16:46 tiwai          Note Added: 0009196                          
-04-10-06 18:38 kvo            Note Added: 0009213                          
-04-10-06 18:43 tiwai          Note Added: 0009214                          
-04-20-06 15:30 tiwai          Relationship added       has duplicate 0002042
-04-20-06 22:04 mnemotronic    Issue Monitored: mnemotronic                    
-04-21-06 00:03 mnemotronic    Note Added: 0009402                          
+04-20-06 20:00 mda2376        New Issue                                    
+04-20-06 20:00 mda2376        Distribution              => Gentoo          
+04-20-06 20:00 mda2376        Kernel Version            => 2.6.15-gentoo-r7
+04-20-06 20:10 mda2376        Note Added: 0009397                          
+04-21-06 02:08 mda2376        Note Added: 0009403                          
 ======================================================================
 
 
