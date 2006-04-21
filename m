@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002050]: Modprobe snd-intel8x0 gives unknown symbol
-Date: Fri, 21 Apr 2006 16:46:47 +0200
-Message-ID: <42474d44a284b39658d59448e7603d9d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
+Date: Fri, 21 Apr 2006 16:50:19 +0200
+Message-ID: <3334cffbae5787684ceb67e7daa8a486@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E943A17B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 16:46:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E465E17B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 16:50:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,44 +24,88 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2050> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
 ======================================================================
-Reported By:                binro
-Assigned To:                
+Reported By:                vertex
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2050
-Category:                   PCI - intel8x0
+Issue ID:                   2035
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.16.1
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
-Date Submitted:             04-21-2006 13:58 CEST
-Last Modified:              04-21-2006 16:46 CEST
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              04-21-2006 16:50 CEST
 ======================================================================
-Summary:                    Modprobe snd-intel8x0 gives unknown symbol
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
 Description: 
-When I emerged alsa-driver-1.0.11 against a 2.6.16 kernel, the module load
-produces "unknown symbol snd_ac97_pcm_close" and many more similar
-messages. This worked fine with version 1.0.11_rc3 but fails with rc4, rc5
-and final versions.
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
+
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
+
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-21-06 16:46 
+ vertex - 04-20-06 20:23 
 ----------------------------------------------------------------------
-No idea.  There is no such a big difference between 1.0.11-rc5 and final...
+I added the tail of dmesg after inserting the modules, and the contents of
+/proc/asound/card0/codec#0 during aplayback of a wav file.
+
+----------------------------------------------------------------------
+ tiwai - 04-21-06 16:50 
+----------------------------------------------------------------------
+Great, the BIOS on your board doesn't initialize the pin assignment at all.
+ There is no information.
+
+The only method is trial-and-error.  Or, hope that the BIOS update will
+improve something...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-21-06 13:58 binro          New Issue                                    
-04-21-06 13:58 binro          Distribution              => Gentoo          
-04-21-06 13:58 binro          Kernel Version            => 2.6.16.1        
-04-21-06 16:46 tiwai          Note Added: 0009415                          
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
 ======================================================================
 
 
