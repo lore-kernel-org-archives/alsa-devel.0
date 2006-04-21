@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002053]: Sounds not working
-Date: Fri, 21 Apr 2006 16:56:40 +0200
-Message-ID: <9dc457bc7d0e1bd5a89c47fe3d7926ce@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002051]: USB control failure
+Date: Fri, 21 Apr 2006 17:09:36 +0200
+Message-ID: <f8bbab1e1a9b675d6b830837206ab4d4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D20D417B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 16:56:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3875140
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 17:09:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,39 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2053> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2051> 
 ======================================================================
-Reported By:                jukiapina
+Reported By:                xatt
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2053
-Category:                   PCI - intel8x0
+Issue ID:                   2051
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               
-Kernel Version:             2.6.16-1.2096
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             04-21-2006 16:56 CEST
-Last Modified:              04-21-2006 16:56 CEST
+Date Submitted:             04-21-2006 14:55 CEST
+Last Modified:              04-21-2006 17:09 CEST
 ======================================================================
-Summary:                    Sounds not working
+Summary:                    USB control failure
 Description: 
-I have  integrated ADI AD1888 SoundMax 6-chanel sound chip and I dont
-manage to get sound of the machine. Is there any way that i could get
-sounds work.
+  Hi!
+  I have Audigy 2 NX USB sound card and was trying to install it on my
+Fedora Core5. The version of my kernel is 2.6.15. Recompiled it hundred
+times :). All work with sound card ends up with message from kernel:
+
+ALSA /root/ALSA/alsa-driver-1.0.11/usb/usbaudio.c:1330: 2:1:3:
+usb_set_interface failed
+
+  I thought that it was some other module blocking the USB control and
+turned off all unnecessary options in kernel, but that doesn't seem to
+help.
+  I checked 'aplay -l' and /proc/asound, 
+
+[root@ghostchaser ~]# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: NX [SB Audigy 2 NX], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+   Soundcard also detected in /proc/asound.
+
+   I'm stumped around this problem and submit some additional
+files.(kernel config, modprobe.conf, asound.conf)
 ======================================================================
+
+----------------------------------------------------------------------
+ xatt - 04-21-06 15:17 
+----------------------------------------------------------------------
+When working in XWindow i get sometimes 
+ALSA lib pcm_direct.c:904:(snd_pcm_direct_initialize_slave) unable to
+install hw params
+ALSA lib pcm_dmix.c:877:(snd_pcm_dmix_open) unable to initialize slave
+libao - OSS cannot set channels to 1
+
+from applications which probably try to play some sound
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-21-06 16:56 jukiapina      New Issue                                    
-04-21-06 16:56 jukiapina      File Added: scsound.log                      
-04-21-06 16:56 jukiapina      Kernel Version            => 2.6.16-1.2096   
+04-21-06 14:55 xatt           New Issue                                    
+04-21-06 14:55 xatt           File Added: config                           
+04-21-06 14:55 xatt           Kernel Version            => 2.6.15          
+04-21-06 15:17 xatt           Note Added: 0009412                          
+04-21-06 17:09 Clemens LadischCategory                 CORE - control => USB -
+usb-audio
 ======================================================================
 
 
