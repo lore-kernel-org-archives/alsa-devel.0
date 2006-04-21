@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Fri, 21 Apr 2006 18:28:52 +0200
-Message-ID: <78e1192b1fcbfff92f21d391fe883479@bugtrack.alsa-project.org>
+Date: Fri, 21 Apr 2006 18:54:33 +0200
+Message-ID: <846f653637f433a7ed5bf724f9b4bf44@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBCCE13E
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 18:28:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EAE5159
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 18:54:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              04-21-2006 18:28 CEST
+Last Modified:              04-21-2006 18:54 CEST
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -114,27 +114,19 @@ gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-21-06 18:23 
-----------------------------------------------------------------------
-alan,
-
-http://sourceforge.net/mailarchive/forum.php?thread_id=10218567&forum_id=33141
-
-Can you post the output with your dmx6fire and au8820 ?
-
-aplaymidi -l 
-
-arecordmidi -l
-
-amidi -l
-
-----------------------------------------------------------------------
  Raymond - 04-21-06 18:28 
 ----------------------------------------------------------------------
 >> None of the patches from this thread are in CVS because Raymond refuses
 to submit them by email to alsa-devel mailing list. 
 
 There is no CVS repos now, and HG is not available on FC1 too.
+
+----------------------------------------------------------------------
+ rlrevell - 04-21-06 18:54 
+----------------------------------------------------------------------
+Yes, the CVS/HG repository is in transition now.  If you email any patches
+to alsa-devel with a proper Signed-Off-By line and a description of the
+problem they solve they will be applied.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -202,6 +194,7 @@ gentoo-sources-2.6.15-r4
 04-21-06 18:13 Raymond        Note Added: 0009422                          
 04-21-06 18:23 Raymond        Note Added: 0009425                          
 04-21-06 18:28 Raymond        Note Added: 0009426                          
+04-21-06 18:54 rlrevell       Note Added: 0009427                          
 ======================================================================
 
 
