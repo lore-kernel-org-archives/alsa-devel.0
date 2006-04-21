@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002044]: How about adding __devinitdata to the PCI-IDs?
-Date: Fri, 21 Apr 2006 12:50:54 +0200
-Message-ID: <ea478f26248c119640a429e804fdec54@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002050]: Modprobe snd-intel8x0 gives unknown symbol
+Date: Fri, 21 Apr 2006 13:58:51 +0200
+Message-ID: <4481a3765589425ace6c439cbd6ef31d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9880A16C
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 12:50:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09BA116F
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 13:58:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,73 +22,40 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2044> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2050> 
 ======================================================================
-Reported By:                Henne
+Reported By:                binro
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2044
-Category:                   1_OTHERS
+Issue ID:                   2050
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Suse 10.0 x86_64
-Kernel Version:             2.6.17-rc2
+Distribution:               Gentoo
+Kernel Version:             2.6.16.1
 ======================================================================
-Date Submitted:             04-20-2006 17:44 CEST
-Last Modified:              04-21-2006 12:50 CEST
+Date Submitted:             04-21-2006 13:58 CEST
+Last Modified:              04-21-2006 13:58 CEST
 ======================================================================
-Summary:                    How about adding __devinitdata to the PCI-IDs?
+Summary:                    Modprobe snd-intel8x0 gives unknown symbol
 Description: 
-I found a way to save GBs of Memory. Like in 
-<kernelsources>/Documentation/pci.txt  mentioned, the definiton of PCI
-drivers device-IDs can be marked as __devinitdata.
-
-This can be interesting, cause from 394 definitions of pci_device_ids in
-kernel 2.6.17-rc2, only 37 have it.
-That are 28Bytes/line on 32bit machines and 32Bytes/line on 64 bit
-machines.
-So I found the reason why the kernel is so resoucehungry. ;)
-I'll contact the kerneljanitors to add it in their TODO.
-
-I've added a patch for "writing an alsa driver".
+When I emerged alsa-driver-1.0.11 against a 2.6.16 kernel, the module load
+produces "unknown symbol snd_ac97_pcm_close" and many more similar
+messages. This worked fine with version 1.0.11_rc3 but fails with rc4, rc5
+and final versions.
 ======================================================================
-
-----------------------------------------------------------------------
- Henne - 04-20-06 19:00 
-----------------------------------------------------------------------
-The second patch "dev.diff" is for adding that to all ALSA-PCI-drivers.
-
-----------------------------------------------------------------------
- tiwai - 04-21-06 12:50 
-----------------------------------------------------------------------
-Usually __devinitdata is appended after the variable name, such as
-
-  static struct pci_device_id foo_ids[] __devinitdata = {
-  ...
-
-Although the position doesn't matter in practice, it's better to follow
-the majority.
-
-Could you regenerate the patchs in that style?  Thanks.
-
-(BTW, we would save likely no GB space because __devinitdata has no effect
-when PCI_HOTPLUG is enabled :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-20-06 17:44 Henne          New Issue                                    
-04-20-06 17:44 Henne          File Added: wr.diff                          
-04-20-06 17:44 Henne          Distribution              => Suse 10.0 x86_64
-04-20-06 17:44 Henne          Kernel Version            => 2.6.17-rc2      
-04-20-06 19:00 Henne          Note Added: 0009396                          
-04-20-06 19:00 Henne          File Added: dev.diff                         
-04-21-06 12:50 tiwai          Note Added: 0009411                          
+04-21-06 13:58 binro          New Issue                                    
+04-21-06 13:58 binro          Distribution              => Gentoo          
+04-21-06 13:58 binro          Kernel Version            => 2.6.16.1        
 ======================================================================
 
 
