@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002051]: USB control failure
-Date: Fri, 21 Apr 2006 17:09:36 +0200
-Message-ID: <f8bbab1e1a9b675d6b830837206ab4d4@bugtrack.alsa-project.org>
+Date: Fri, 21 Apr 2006 17:13:37 +0200
+Message-ID: <3de4fed9c6e6b4c4a97e573ee5ea5d8d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3875140
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 17:09:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36125140
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 17:13:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2051> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             04-21-2006 14:55 CEST
-Last Modified:              04-21-2006 17:09 CEST
+Last Modified:              04-21-2006 17:13 CEST
 ======================================================================
 Summary:                    USB control failure
 Description: 
@@ -80,6 +80,13 @@ libao - OSS cannot set channels to 1
 
 from applications which probably try to play some sound
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 04-21-06 17:13 
+----------------------------------------------------------------------
+What are the contents of /proc/asound/card0/stream0?
+
+Does "aplay -D plughw:0 something.wav" work?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -89,6 +96,7 @@ Date Modified  Username       Field                    Change
 04-21-06 15:17 xatt           Note Added: 0009412                          
 04-21-06 17:09 Clemens LadischCategory                 CORE - control => USB -
 usb-audio
+04-21-06 17:13 Clemens LadischNote Added: 0009419                          
 ======================================================================
 
 
