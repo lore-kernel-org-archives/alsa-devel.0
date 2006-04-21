@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002027]: No sound on AD1986A (ASUS Laptop, Z62F)
-Date: Fri, 21 Apr 2006 12:45:38 +0200
-Message-ID: <d1020ce14fa654f2b58657d238bfd147@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002044]: How about adding __devinitdata to the PCI-IDs?
+Date: Fri, 21 Apr 2006 12:50:54 +0200
+Message-ID: <ea478f26248c119640a429e804fdec54@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F5C116C
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 12:45:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9880A16C
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 12:50:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,76 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2027> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2044> 
 ======================================================================
-Reported By:                jaidormi
-Assigned To:                tiwai
+Reported By:                Henne
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2027
-Category:                   PCI - hda-intel
+Issue ID:                   2044
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   tweak
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16-gentoo-r2
+Status:                     new
+Distribution:               Suse 10.0 x86_64
+Kernel Version:             2.6.17-rc2
 ======================================================================
-Date Submitted:             04-17-2006 08:00 CEST
-Last Modified:              04-21-2006 12:45 CEST
+Date Submitted:             04-20-2006 17:44 CEST
+Last Modified:              04-21-2006 12:50 CEST
 ======================================================================
-Summary:                    No sound on AD1986A (ASUS Laptop, Z62F)
+Summary:                    How about adding __devinitdata to the PCI-IDs?
 Description: 
-Actually I am using 1.0.11rc5
+I found a way to save GBs of Memory. Like in 
+<kernelsources>/Documentation/pci.txt  mentioned, the definiton of PCI
+drivers device-IDs can be marked as __devinitdata.
 
-I am unable to get any sound output on speakers or headphone jack.  Oddly,
-it seems that the IEC958 output works (shared with headphone jack), based
-on the fact that it lights up when un-muted.
+This can be interesting, cause from 394 definitions of pci_device_ids in
+kernel 2.6.17-rc2, only 37 have it.
+That are 28Bytes/line on 32bit machines and 32Bytes/line on 64 bit
+machines.
+So I found the reason why the kernel is so resoucehungry. ;)
+I'll contact the kerneljanitors to add it in their TODO.
 
-I have tried a number of model= and position_fix= options with no luck.
-
-On this machine there is a set of stereo speakers, a line-in, mic, and
-shared sp-dif/headphone jack.
-
-Is there any output or system info I can provide to help?
+I've added a patch for "writing an alsa driver".
 ======================================================================
 
 ----------------------------------------------------------------------
- jaidormi - 04-20-06 21:38 
+ Henne - 04-20-06 19:00 
 ----------------------------------------------------------------------
-Still doesn't seem to work.  I tried all the position_fix options, and also
-tried using hw:0,0 as well as hw:0,1 for output.  I've tried the mixer
-settings in _a_lot_ of different configurations, not being certain whether
-some settings might affect others.
+The second patch "dev.diff" is for adding that to all ALSA-PCI-drivers.
 
 ----------------------------------------------------------------------
- tiwai - 04-21-06 12:45 
+ tiwai - 04-21-06 12:50 
 ----------------------------------------------------------------------
-Are you sure that the model option is properly passed to the driver?
+Usually __devinitdata is appended after the variable name, such as
 
-With and without model=laptop-eapd, there are significant differences in
-the mixer elements.  The latter has much simpler mixer.
+  static struct pci_device_id foo_ids[] __devinitdata = {
+  ...
 
-The position_fix option is usually irrelevant with the "total silent"
-problem.
+Although the position doesn't matter in practice, it's better to follow
+the majority.
 
-Anyway, if model=eapd-laptop doesn't work, the device has likely a
-completely different pin assignment.  Please upload (not attach)
-/proc/asound/card0/codec#* files for analysis.
+Could you regenerate the patchs in that style?  Thanks.
+
+(BTW, we would save likely no GB space because __devinitdata has no effect
+when PCI_HOTPLUG is enabled :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-17-06 08:00 jaidormi       New Issue                                    
-04-17-06 08:00 jaidormi       Distribution              => Gentoo          
-04-17-06 08:00 jaidormi       Kernel Version            => 2.6.16-gentoo-r2
-04-17-06 08:04 rlrevell       Note Added: 0009305                          
-04-17-06 08:08 jaidormi       Note Added: 0009306                          
-04-17-06 08:15 jaidormi       Note Added: 0009307                          
-04-17-06 08:15 jaidormi       Note Deleted: 0009306                        
-04-20-06 14:47 tiwai          Note Added: 0009377                          
-04-20-06 21:38 jaidormi       Note Added: 0009400                          
-04-21-06 12:45 tiwai          Note Added: 0009410                          
+04-20-06 17:44 Henne          New Issue                                    
+04-20-06 17:44 Henne          File Added: wr.diff                          
+04-20-06 17:44 Henne          Distribution              => Suse 10.0 x86_64
+04-20-06 17:44 Henne          Kernel Version            => 2.6.17-rc2      
+04-20-06 19:00 Henne          Note Added: 0009396                          
+04-20-06 19:00 Henne          File Added: dev.diff                         
+04-21-06 12:50 tiwai          Note Added: 0009411                          
 ======================================================================
 
 
