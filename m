@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002050]: Modprobe snd-intel8x0 gives unknown symbol
-Date: Fri, 21 Apr 2006 13:58:51 +0200
-Message-ID: <4481a3765589425ace6c439cbd6ef31d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002051]: USB control failure
+Date: Fri, 21 Apr 2006 14:55:20 +0200
+Message-ID: <30d40c43120babf7700459abcae754b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09BA116F
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 13:58:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 337FC172
+	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 14:55:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,38 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2050> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2051> 
 ======================================================================
-Reported By:                binro
+Reported By:                xatt
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2050
-Category:                   PCI - intel8x0
+Issue ID:                   2051
+Category:                   CORE - control
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.16.1
+Distribution:               
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             04-21-2006 13:58 CEST
-Last Modified:              04-21-2006 13:58 CEST
+Date Submitted:             04-21-2006 14:55 CEST
+Last Modified:              04-21-2006 14:55 CEST
 ======================================================================
-Summary:                    Modprobe snd-intel8x0 gives unknown symbol
+Summary:                    USB control failure
 Description: 
-When I emerged alsa-driver-1.0.11 against a 2.6.16 kernel, the module load
-produces "unknown symbol snd_ac97_pcm_close" and many more similar
-messages. This worked fine with version 1.0.11_rc3 but fails with rc4, rc5
-and final versions.
+  Hi!
+  I have Audigy 2 NX USB sound card and was trying to install it on my
+Fedora Core5. The version of my kernel is 2.6.15. Recompiled it hundred
+times :). All work with sound card ends up with message from kernel:
+
+ALSA /root/ALSA/alsa-driver-1.0.11/usb/usbaudio.c:1330: 2:1:3:
+usb_set_interface failed
+
+  I thought that it was some other module blocking the USB control and
+turned off all unnecessary options in kernel, but that doesn't seem to
+help.
+  I checked 'aplay -l' and /proc/asound, 
+
+[root@ghostchaser ~]# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: NX [SB Audigy 2 NX], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+   Soundcard also detected in /proc/asound.
+
+   I'm stumped around this problem and submit some additional
+files.(kernel config, modprobe.conf, asound.conf)
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-21-06 13:58 binro          New Issue                                    
-04-21-06 13:58 binro          Distribution              => Gentoo          
-04-21-06 13:58 binro          Kernel Version            => 2.6.16.1        
+04-21-06 14:55 xatt           New Issue                                    
+04-21-06 14:55 xatt           File Added: config                           
+04-21-06 14:55 xatt           Kernel Version            => 2.6.15          
 ======================================================================
 
 
