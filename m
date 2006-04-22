@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001890]: Only the PCM channel in alsa mixer, unmuted, no sound at all
-Date: Sun, 23 Apr 2006 01:03:37 +0200
-Message-ID: <3d4ba520f81510a452f52f73e267f360@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
+Date: Sun, 23 Apr 2006 01:04:28 +0200
+Message-ID: <a3c4b3cf088da552d43ac8d83722d530@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59C7314F
-	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 01:03:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9D7614F
+	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 01:04:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,214 +22,135 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0002059.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1890> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
 ======================================================================
-Reported By:                arielo
+Reported By:                chrmue
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1890
+Issue ID:                   1733
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Ubuntu
-Kernel Version:             Linux haifa 2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20
-17:26:04 UTC 2006 i686 GNU/Linux
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               SuSE Linux 10.0
+Kernel Version:             2.6.13-15
 ======================================================================
-Date Submitted:             03-04-2006 18:19 CET
-Last Modified:              03-14-2006 20:51 CET
+Date Submitted:             01-11-2006 07:23 CET
+Last Modified:              04-23-2006 01:04 CEST
 ======================================================================
-Summary:                    Only the PCM channel in alsa mixer, unmuted, no
-sound at all
+Summary:                    Intel HDA Modem ?
 Description: 
-Alsamixer shows only one channel called PCM. It's unmuted, and the volume
-at its maximum. There is no sound at all, even though there is no error
-reported by the system.
+I want to use my HDA Softmodem in Linux, is there any development on a HDA
+Modem Module ?
 
+cat /proc/asound/card0/codec#1 gives me:
+Codec: Generic 11c1 ID 3026
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x70500
 
+In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
+
+If there is development on this i would like to participate to get it
+going, because i dont't want to have a windows-installation on my Notebook
+(Acer TravelMate 8104) just for getting my mails at my parents house,
+where there is only analog telephone.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001921 Unsupported Sound Card
-related to          0002059 Can't set external input switch for rec...
-======================================================================
 
 ----------------------------------------------------------------------
- sk0rp10 - 03-14-06 00:25 
+ kratz00 - 03-16-06 19:44 
 ----------------------------------------------------------------------
-Same hardware and same issue reported for Sony VAIO FE series and SZ
-series.
+i tried slmodem-2.9.11-20051101 but still the same if i have a little more
+time i will have a close look at this but maybe somebody has an idea what
+could be wrong in the mean time
 
 ----------------------------------------------------------------------
- tiwai - 03-14-06 14:55 
+ fdoffizi01 - 04-23-06 01:04 
 ----------------------------------------------------------------------
-Try the patch below.  It's to ALSA CVS version.
-If nothing is changed, pass "model=vaio" module option.
+Same question for different hardware.
 
-Would be nice if you can test the recording, too.
+Here lspci output:
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+        Subsystem: Sony Corporation Unknown device 81ef
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0, Cache Line Size 10
+        Interrupt: pin A routed to IRQ 66
+        Region 0: Memory at d2300000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
+        Capabilities: [70] Express Unknown type IRQ 0
+                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                Device: Latency L0s <64ns, L1 <1us
+                Device: Errors: Correctable- Non-Fatal- Fatal-
+Unsupported-
+                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                Link: Latency L0s <64ns, L1 <1us
+                Link: ASPM Disabled CommClk- ExtSynch-
+                Link: Speed unknown, Width x0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-----------------------------------------------------------------------
- sk0rp10 - 03-14-06 15:16 
-----------------------------------------------------------------------
-now sound output works, also with headphones,great work. Here is the
-alsamixer status:
+And as you can see current hda modules can't see modem functions:
 
-Playback : Master , PCM
-Capture: PCM (disabled) , CD , Mic (disabled) , Capture , HP ("L R CAPTUR"
-written in red on top of  disabled control) , Unknown (disabled)
+aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
 
-Mic volume  Control  is disabled, so I can't test capture.
-
-----------------------------------------------------------------------
- tiwai - 03-14-06 15:21 
-----------------------------------------------------------------------
-Push space on 'Mic' in capture view to select as the source.  I'm not sure
-whether it's a mic jack or whether any internal mic is equipped on this
-laptop.
-
-It's better to show the content of /etc/asound.state after running
-"alsactl store", though.
-
-----------------------------------------------------------------------
- sk0rp10 - 03-14-06 16:47 
-----------------------------------------------------------------------
-On this Laptop there is an input jack for external mic and also an
-integrated microphone. 
-
-Another issue : /dev/dsp and /dev/sound/ are missing , so apps like flash
-player don't work
-
-----------------------------------------------------------------------
- sk0rp10 - 03-14-06 16:49 
-----------------------------------------------------------------------
-here is asound.state
-
-state.Intel {
-        control.1 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 127'
-                iface MIXER
-                name 'Master Playback Volume'
-                value.0 127
-                value.1 127
-        }
-        control.2 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Master Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.3 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'CD Capture Volume'
-                value.0 4
-                value.1 4
-        }
-        control.4 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 15'
-                iface MIXER
-                name 'Capture Volume'
-                value.0 3
-                value.1 3
-        }
-        control.5 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                comment.count 2
-                iface MIXER
-                name 'Capture Switch'
-                value.0 false
-                value.1 false
-        }
-        control.6 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.count 1
-                comment.item.0 HP
-                comment.item.1 Unknown
-                comment.item.2 Mic
-                comment.item.3 PCM
-                iface MIXER
-                name 'Capture Source'
-                value HP
-        }
-        control.7 {
-                comment.access 'read write user'
-                comment.type INTEGER
-                comment.count 2
-                comment.range '0 - 255'
-                iface MIXER
-                name 'PCM Playback Volume'
-                value.0 255
-                value.1 255
-        }
-}
-
-----------------------------------------------------------------------
- tiwai - 03-14-06 16:53 
-----------------------------------------------------------------------
-/dev/dsp is irrelevant.  You didn't load the necessary modules.
-
-Apparently, the capture switch is off, and "HP" is chosen as the recording
-source.  Change it via alsamixer.
-
-----------------------------------------------------------------------
- rlrevell - 03-14-06 17:06 
-----------------------------------------------------------------------
-On my Ubuntu system the flash issue can be fixed by setting
-FIREFOX_DSP="aoss" in /etc/firefox/firefoxrc.
-
-You can also load the snd-pcm-oss module but this is not as good as any
-app using /dev/dsp will block your soundcard
-
-----------------------------------------------------------------------
- arielo - 03-14-06 20:28 
-----------------------------------------------------------------------
-tested on the vaio sz110. Sound output and recording works perfectly now.
-Thanks a lot!
+Hardware is a Sony Vaio FE11x series notebook
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-06 18:19 arielo         New Issue                                    
-03-04-06 18:19 arielo         Distribution              => Ubuntu          
-03-04-06 18:19 arielo         Kernel Version            => Linux haifa
-2.6.15-16-686 #1 SMP PREEMPT Mon Feb 20 17:26:04 UTC 2006 i686 GNU/Linux
-03-14-06 00:25 sk0rp10        Note Added: 0008471                          
-03-14-06 14:55 tiwai          Note Added: 0008475                          
-03-14-06 14:56 tiwai          File Added: vaio-stac7661-test3.diff              
-     
-03-14-06 14:57 tiwai          Relationship added       has duplicate 0001921
-03-14-06 15:16 sk0rp10        Note Added: 0008479                          
-03-14-06 15:21 tiwai          Note Added: 0008480                          
-03-14-06 16:47 sk0rp10        Note Added: 0008485                          
-03-14-06 16:49 sk0rp10        Note Added: 0008486                          
-03-14-06 16:53 tiwai          Note Added: 0008488                          
-03-14-06 17:06 rlrevell       Note Added: 0008491                          
-03-14-06 17:17 rlrevell       Relationship added       related to 0001631  
-03-14-06 17:17 rlrevell       Relationship deleted     related to 0001631  
-03-14-06 20:28 arielo         Note Added: 0008513                          
-03-14-06 20:51 rlrevell       Status                   assigned => resolved
-03-14-06 20:51 rlrevell       Resolution               open => fixed       
-04-23-06 01:03 rlrevell       Relationship added       related to 0002059  
+01-11-06 07:23 chrmue         New Issue                                    
+01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
+01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
+01-11-06 07:42 rlrevell       Note Added: 0007559                          
+01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
+            
+01-11-06 23:35 sashak         Note Added: 0007571                          
+01-12-06 00:00 sashak         Note Added: 0007574                          
+01-12-06 00:02 sashak         Issue Monitored: sashak                      
+01-12-06 05:35 chrmue         Note Added: 0007581                          
+01-13-06 00:16 sashak         Note Added: 0007598                          
+01-16-06 20:19 chrmue         Note Added: 0007692                          
+01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
+03-03-06 15:43 lrupn          Note Added: 0008341                          
+03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
+03-10-06 23:44 kratz00        Note Added: 0008413                          
+03-11-06 15:19 kratz00        Note Added: 0008416                          
+03-11-06 19:03 rlrevell       Note Added: 0008421                          
+03-11-06 19:23 kratz00        Note Added: 0008423                          
+03-11-06 19:33 rlrevell       Note Added: 0008424                          
+03-11-06 23:08 sashak         Note Added: 0008427                          
+03-12-06 11:22 kratz00        Note Added: 0008431                          
+03-15-06 00:42 chrmue         Note Added: 0008525                          
+03-15-06 11:35 tiwai          Note Added: 0008530                          
+03-15-06 21:42 kratz00        Note Added: 0008573                          
+03-15-06 21:42 kratz00        Issue Monitored: kratz00                     
+03-16-06 02:17 sashak         Note Added: 0008581                          
+03-16-06 19:44 kratz00        Note Added: 0008619                          
+04-23-06 01:04 fdoffizi01     Note Added: 0009436                          
 ======================================================================
 
 
