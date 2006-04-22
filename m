@@ -1,18 +1,14 @@
-From: "Slade Lacher" <lachslade@wineasy.se>
-Subject: Re: PHAhtpRMACY
-Date: Fri, 21 Apr 2006 22:23:55 -0400
-Message-ID: <000001c665b3$ce372670$9b5fa8c0@wpn65>
-Reply-To: "Slade Lacher" <lachslade@wineasy.se>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002056]: UA-20 unusable in "advanced mode"
+Date: Sat, 22 Apr 2006 06:14:55 +0200
+Message-ID: <96ec3b6034e2408de3819e9384a2e847@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C66592.47258670"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1563A172
-	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2006 04:24:15 +0200 (MEST)
-Received: from vds.it (unknown [218.57.60.19])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 383BB99378
-	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2006 04:24:13 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66AE8174
+	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2006 06:14:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,107 +21,63 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C66592.47258670
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2056> 
+======================================================================
+Reported By:                jp30
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2056
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             04-22-2006 06:14 CEST
+Last Modified:              04-22-2006 06:14 CEST
+======================================================================
+Summary:                    UA-20 unusable in "advanced mode"
+Description: 
+I have an Edirol UA-20, and was hoping to use it for recording 24 bit
+sound.  When I start jack 0.100.7 with "jackd -d alsa -d hw:2", I see
+this:
 
-X z A c N j A e X j=20
-C w I x A j L v I a S e $3 , 75=20
-V z I q A p G o R d A s $3 , 33=20
-S d O w M d A k=20
-V f A s L y I o U i M m $1 , 21=20
-A r M x B k I r E t N i=20
-M y E u R j I l D k I h A n=20
-=20
-and many other ... <http://www.staretteere.com>=20
-=20
-=20
-=20
-  _____ =20
+creating alsa driver ... hw:2|hw:2|1024|2|48000|0|0|nomon|swmeter|-|32bit
+control device hw:2
+configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
+Note: audio device hw:2 doesn't support a 32bit sample format so JACK will
+try a 24bit format instead
+nperiods = 2 for capture
+Note: audio device hw:2 doesn't support a 32bit sample format so JACK will
+try a 24bit format instead
+nperiods = 2 for playback
+ALSA: could not start playback (Broken pipe)
+DRIVER NT: could not start driver
+cannot start driver
 
-in the wrong society. His parents should have come over with mine when
-the Bolsheviks took the throne. I forget. Your family was Russian.
-Speaking the language helps with Kruppie. I can nail his nuances. Hes
-the quintessential capitalist. Like the economic ministers in Beijing,
-he doesnt just like money, hes obsessed with it-and
+At that point jackd locks up (only responding to SIGKILL), loadavg goes to
+1.0, and I see this message in the kernel log:
 
-------=_NextPart_000_0001_01C66592.47258670
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+cannot submit datapipe for urb 0, err = -90
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial> X <FONT face=3DArial size=3D2 =
-color=3D#C4F618>z</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#C4F618>c</FONT> N <FONT face=3DArial size=3D2 =
-color=3D#C4F618>j</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#C4F618>e</FONT> X <FONT face=3DArial size=3D2 =
-color=3D#C4F618>j</FONT>  </FONT></DIV>
-<DIV><FONT face=3DArial> <STRONG>C <FONT face=3DArial size=3D2 =
-color=3D#BAE721>w</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#BAE721>x</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#BAE721>j</FONT> L <FONT face=3DArial size=3D2 =
-color=3D#BAE721>v</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#BAE721>a</FONT> S <FONT face=3DArial size=3D2 =
-color=3D#BAE721>e</FONT>  $3 , 75</STRONG> </FONT></DIV>
-<DIV><FONT face=3DArial> <STRONG>V <FONT face=3DArial size=3D2 =
-color=3D#C1F722>z</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#C1F722>q</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#C1F722>p</FONT> G <FONT face=3DArial size=3D2 =
-color=3D#C1F722>o</FONT> R <FONT face=3DArial size=3D2 =
-color=3D#C1F722>d</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#C1F722>s</FONT>  $3 , 33</STRONG> </FONT></DIV>
-<DIV><FONT face=3DArial> S <FONT face=3DArial size=3D2 =
-color=3D#BEE724>d</FONT> O <FONT face=3DArial size=3D2 =
-color=3D#BEE724>w</FONT> M <FONT face=3DArial size=3D2 =
-color=3D#BEE724>d</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#BEE724>k</FONT>  </FONT></DIV>
-<DIV><FONT face=3DArial> <STRONG>V <FONT face=3DArial size=3D2 =
-color=3D#C5EC27>f</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#C5EC27>s</FONT> L <FONT face=3DArial size=3D2 =
-color=3D#C5EC27>y</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#C5EC27>o</FONT> U <FONT face=3DArial size=3D2 =
-color=3D#C5EC27>i</FONT> M <FONT face=3DArial size=3D2 =
-color=3D#C5EC27>m</FONT>  $1 , 21</STRONG> </FONT></DIV>
-<DIV><FONT face=3DArial> A <FONT face=3DArial size=3D2 =
-color=3D#B6F215>r</FONT> M <FONT face=3DArial size=3D2 =
-color=3D#B6F215>x</FONT> B <FONT face=3DArial size=3D2 =
-color=3D#B6F215>k</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#B6F215>r</FONT> E <FONT face=3DArial size=3D2 =
-color=3D#B6F215>t</FONT> N <FONT face=3DArial size=3D2 =
-color=3D#B6F215>i</FONT>  </FONT></DIV>
-<DIV><FONT face=3DArial> M <FONT face=3DArial size=3D2 =
-color=3D#C6EE1F>y</FONT> E <FONT face=3DArial size=3D2 =
-color=3D#C6EE1F>u</FONT> R <FONT face=3DArial size=3D2 =
-color=3D#C6EE1F>j</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#C6EE1F>l</FONT> D <FONT face=3DArial size=3D2 =
-color=3D#C6EE1F>k</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#C6EE1F>h</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#C6EE1F>n</FONT>  </FONT></DIV>
-<DIV>&nbsp;</DIV><DIV><A href=3D"http://www.staretteere.com">and many =
-other ...</A></DIV>
-<DIV>&nbsp;</DIV><DIV>&nbsp;</DIV><DIV>&nbsp;</DIV>
-<HR>
-<DIV><FONT face=3DArial size=3D2 color=3D#C7F117>in the wrong society. =
-His parents should have come over with mine when
-the Bolsheviks took the throne.
-   I forget. Your family was Russian.
-   Speaking the language helps with Kruppie. I can nail his nuances.
-Hes the quintessential capitalist. Like the economic ministers in
-Beijing, he doesnt just like money, hes obsessed with =
-it-and</FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C66592.47258670--
+This message, and the strange loadavg behavior makes me think this is an
+alsa problem rather than a jack problem, but this is hard to check as I
+know of no other apps that will speak the 24bit format this device uses.
+======================================================================
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-22-06 06:14 jp30           New Issue                                    
+04-22-06 06:14 jp30           Distribution              => gentoo          
+04-22-06 06:14 jp30           Kernel Version            => 2.6.16          
+======================================================================
 
 
 
