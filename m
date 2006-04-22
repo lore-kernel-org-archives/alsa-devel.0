@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Sat, 22 Apr 2006 13:36:01 +0200
-Message-ID: <5438e3f4843522744e105c350f3c0253@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
+Date: Sat, 22 Apr 2006 14:02:53 +0200
+Message-ID: <362bef39788eba736d22d6762912a74a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2340C17E
-	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2006 13:36:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 15FB717E
+	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2006 14:02:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,105 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2008> 
 ======================================================================
-Reported By:                zanonmark
-Assigned To:                
+Reported By:                mborsick
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
+Issue ID:                   2008
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
+Status:                     assigned
+Distribution:               Redhat/Fedora
+Kernel Version:             2.6.16-1.2080 and with Xen
 ======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              04-22-2006 13:36 CEST
+Date Submitted:             04-07-2006 00:43 CEST
+Last Modified:              04-22-2006 14:02 CEST
 ======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
+Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
 Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+Kernel is up-to-date Xen kernel.
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
-
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
-
-So, will you please include such a parameter in the next version of the
-driver?
-
-Thanks a lot,
-
-Marco.
+Initial install did not recognize the sound on an ASUS P5VDC-MX
+motherboard.
+Motherboard has southbridge VIA VT8251. CODEC is Realtek ACL653 AC'97 6
+channel
+Audio. Tried the updated drivers in 002404, but was unsuccessful. Also
+tried
+drivers on VIA site and Realltek site. The last couple of tries show no
+errors
+in compiling, make, etc. However, as I am just above novice in
+understanding
+everything about Linux, this has thrown me for a loop.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-20-06 03:39 
+ buboleck - 04-09-06 01:21 
 ----------------------------------------------------------------------
-I don't have this card, this mean that SUPPORT_JOYSTICK is not defined
-
-#if defined(CONFIG_GAMEPORT) || (defined(MODULE) &&
-defined(CONFIG_GAMEPORT_MODULE))
-#define SUPPORT_JOYSTICK
-#endif
-
-	snd_iprintf(buffer, "Joystick enable  : %s\n",
-		    ensoniq->ctrl & ES_JYSTK_EN ? "on" : "off");
-
-#ifdef SUPPORT_JOYSTICK
-...
-	ensoniq->ctrl |= ES_JYSTK_EN;
-...
-#endif
-
-
-BTW, please use alsa-driver-1.0.11 if possible
+:) yes please
 
 ----------------------------------------------------------------------
- zanonmark - 04-22-06 13:36 
+ buboleck - 04-22-06 14:02 
 ----------------------------------------------------------------------
-amidi -d -p "hw:0,0"
-does not return anything,
-
-just one question: why is SUPPORT_JOYSTICK not defined? I mean, is it a
-bug or is the Alsa project missing some information on this card so that
-it is not possible to enable it?
-
-thanks,
-
-MZ
+Hi again. I'm glad to report that I got it to work. With kernel
+gentoo-2.6.16-r3 and alsa-driver-1.0.11. Currently is working on x86_64, 2
+chanels (I have to rearange to check for 4 and 6), maybe later I check on
+i386 too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
-04-18-06 13:18 Raymond        Note Edited: 0009328                         
-04-18-06 16:28 Clemens LadischNote Added: 0009338                          
-04-19-06 20:05 zanonmark      Note Added: 0009354                          
-04-19-06 21:49 rlrevell       Note Added: 0009356                          
-04-20-06 03:39 Raymond        Note Added: 0009363                          
-04-22-06 13:36 zanonmark      Note Added: 0009433                          
+04-07-06 00:43 mborsick       New Issue                                    
+04-07-06 00:43 mborsick       Distribution              => Redhat/Fedora   
+04-07-06 00:43 mborsick       Kernel Version            => 2.6.16-1.2080 and
+with Xen
+04-07-06 01:07 rlrevell       Note Added: 0009129                          
+04-07-06 02:13 mborsick       Note Added: 0009130                          
+04-07-06 02:35 rlrevell       Note Added: 0009131                          
+04-07-06 06:38 mborsick       Note Added: 0009135                          
+04-07-06 22:45 buboleck       Note Added: 0009156                          
+04-07-06 22:47 buboleck       Note Edited: 0009156                         
+04-07-06 22:49 buboleck       Note Edited: 0009156                         
+04-07-06 23:06 rlrevell       Note Added: 0009157                          
+04-07-06 23:16 buboleck       Issue Monitored: buboleck                    
+04-07-06 23:26 buboleck       Note Added: 0009158                          
+04-07-06 23:32 rlrevell       Note Added: 0009159                          
+04-07-06 23:39 buboleck       Note Added: 0009160                          
+04-07-06 23:40 buboleck       Note Edited: 0009160                         
+04-07-06 23:43 buboleck       Note Edited: 0009160                         
+04-07-06 23:46 buboleck       Note Edited: 0009160                         
+04-07-06 23:47 rlrevell       Note Added: 0009161                          
+04-07-06 23:52 buboleck       Note Added: 0009162                          
+04-08-06 00:02 rlrevell       Note Added: 0009163                          
+04-08-06 00:16 buboleck       Note Added: 0009164                          
+04-08-06 00:19 buboleck       Note Added: 0009165                          
+04-08-06 00:29 rlrevell       Note Added: 0009166                          
+04-08-06 00:32 buboleck       Note Added: 0009167                          
+04-08-06 00:41 rlrevell       Note Added: 0009168                          
+04-08-06 00:42 buboleck       Note Added: 0009169                          
+04-08-06 00:44 buboleck       Note Edited: 0009169                         
+04-08-06 22:30 mborsick       Note Added: 0009173                          
+04-09-06 01:21 buboleck       Note Added: 0009174                          
+04-22-06 14:02 buboleck       Note Added: 0009434                          
 ======================================================================
 
 
