@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
-Date: Sun, 23 Apr 2006 01:12:18 +0200
-Message-ID: <210e7e8c2e6021e007995fe9836d15e7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002060]: Intel HDA Soft modem
+Date: Sun, 23 Apr 2006 01:29:49 +0200
+Message-ID: <686d644a28eceb63428129eedeb99148@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2CF1110
-	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 01:12:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65BA112E
+	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 01:29:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,95 +22,83 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2060> 
 ======================================================================
-Reported By:                chrmue
+Reported By:                fdoffizi01
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1733
+Issue ID:                   2060
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               SuSE Linux 10.0
-Kernel Version:             2.6.13-15
-Resolution:                 fixed
-Fixed in Version:           1.0.11
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             01-11-2006 07:23 CET
-Last Modified:              04-23-2006 01:12 CEST
+Date Submitted:             04-23-2006 01:29 CEST
+Last Modified:              04-23-2006 01:29 CEST
 ======================================================================
-Summary:                    Intel HDA Modem ?
+Summary:                    Intel HDA Soft modem
 Description: 
-I want to use my HDA Softmodem in Linux, is there any development on a HDA
-Modem Module ?
+I'd like to use my hda softmodem but it's not even recognised from system.
 
-cat /proc/asound/card0/codec#1 gives me:
-Codec: Generic 11c1 ID 3026
-Address: 1
-Vendor Id: 0x11c13026
-Subsystem Id: 0x11c13026
-Revision Id: 0x70500
-
-In Windows it is called "Agere Systems HDA Modem" (Conexant ?)
-
-If there is development on this i would like to participate to get it
-going, because i dont't want to have a windows-installation on my Notebook
-(Acer TravelMate 8104) just for getting my mails at my parents house,
-where there is only analog telephone.
+Here lspci output:
+ 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+         Subsystem: Sony Corporation Unknown device 81ef
+         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+         Latency: 0, Cache Line Size 10
+         Interrupt: pin A routed to IRQ 66
+         Region 0: Memory at d2300000 (64-bit, non-prefetchable)
+[size=16K]
+         Capabilities: [50] Power Management version 2
+                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                 Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+         Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                 Address: 0000000000000000 Data: 0000
+         Capabilities: [70] Express Unknown type IRQ 0
+                 Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                 Device: Latency L0s <64ns, L1 <1us
+                 Device: Errors: Correctable- Non-Fatal- Fatal-
+Unsupported-
+                 Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                 Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                 Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                 Link: Latency L0s <64ns, L1 <1us
+                 Link: ASPM Disabled CommClk- ExtSynch-
+                 Link: Speed unknown, Width x0
+         Capabilities: [100] Virtual Channel
+         Capabilities: [130] Unknown (5)
+ 
+ And as you can see current hda modules can't see modem functions:
+ 
+ aplay -l
+ **** List of PLAYBACK Hardware Devices ****
+ card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
+   Subdevices: 0/1
+   Subdevice #0: subdevice #0
+ 
+ Hardware is a Sony Vaio FE11x series notebook.
+It doesn't even work with linuxant driver (that now should support hda
+softmodems)
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 04-23-06 01:06 
-----------------------------------------------------------------------
-Please open a new bug report for different hardware
-
-----------------------------------------------------------------------
- rlrevell - 04-23-06 01:12 
-----------------------------------------------------------------------
-Submitter reports this bug is fixed
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-11-06 07:23 chrmue         New Issue                                    
-01-11-06 07:23 chrmue         Distribution              => SuSE Linux 10.0 
-01-11-06 07:23 chrmue         Kernel Version            => 2.6.13-15       
-01-11-06 07:42 rlrevell       Note Added: 0007559                          
-01-11-06 23:32 sashak         File Added: hda-modem-si3054-11c13026.patch       
-            
-01-11-06 23:35 sashak         Note Added: 0007571                          
-01-12-06 00:00 sashak         Note Added: 0007574                          
-01-12-06 00:02 sashak         Issue Monitored: sashak                      
-01-12-06 05:35 chrmue         Note Added: 0007581                          
-01-13-06 00:16 sashak         Note Added: 0007598                          
-01-16-06 20:19 chrmue         Note Added: 0007692                          
-01-16-06 20:22 chrmue         Issue Monitored: chrmue                      
-03-03-06 15:43 lrupn          Note Added: 0008341                          
-03-03-06 15:44 lrupn          Issue Monitored: lrupn                       
-03-10-06 23:44 kratz00        Note Added: 0008413                          
-03-11-06 15:19 kratz00        Note Added: 0008416                          
-03-11-06 19:03 rlrevell       Note Added: 0008421                          
-03-11-06 19:23 kratz00        Note Added: 0008423                          
-03-11-06 19:33 rlrevell       Note Added: 0008424                          
-03-11-06 23:08 sashak         Note Added: 0008427                          
-03-12-06 11:22 kratz00        Note Added: 0008431                          
-03-15-06 00:42 chrmue         Note Added: 0008525                          
-03-15-06 11:35 tiwai          Note Added: 0008530                          
-03-15-06 21:42 kratz00        Note Added: 0008573                          
-03-15-06 21:42 kratz00        Issue Monitored: kratz00                     
-03-16-06 02:17 sashak         Note Added: 0008581                          
-03-16-06 19:44 kratz00        Note Added: 0008619                          
-04-23-06 01:04 fdoffizi01     Note Added: 0009436                          
-04-23-06 01:06 rlrevell       Note Added: 0009437                          
-04-23-06 01:12 rlrevell       Status                   assigned => resolved
-04-23-06 01:12 rlrevell       Fixed in Version          => 1.0.11          
-04-23-06 01:12 rlrevell       Resolution               open => fixed       
-04-23-06 01:12 rlrevell       Note Added: 0009438                          
+04-23-06 01:29 fdoffizi01     New Issue                                    
+04-23-06 01:29 fdoffizi01     Kernel Version            => 2.6.15          
 ======================================================================
 
 
