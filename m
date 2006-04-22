@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002058]: Audigy 2 ZS Notebook lacks record capability
-Date: Sat, 22 Apr 2006 21:11:13 +0200
-Message-ID: <637015ab7efda4b326ce277940b5cb46@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002059]: Can't set external input switch for recording.
+Date: Sun, 23 Apr 2006 00:56:42 +0200
+Message-ID: <483246e0a055825727974580b95e9462@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3952F15D
-	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2006 21:11:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 181AA149
+	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 00:56:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,45 +24,37 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2058> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2059> 
 ======================================================================
-Reported By:                artdent
-Assigned To:                
+Reported By:                fdoffizi01
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2058
-Category:                   PCI - emu10k1
+Issue ID:                   2059
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.15
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-22-2006 21:11 CEST
-Last Modified:              04-22-2006 21:11 CEST
+Date Submitted:             04-23-2006 00:56 CEST
+Last Modified:              04-23-2006 00:56 CEST
 ======================================================================
-Summary:                    Audigy 2 ZS Notebook lacks record capability
+Summary:                    Can't set external input switch for recording.
 Description: 
-According to bug #927, the emu10k1 driver now works with the Audigy 2 ZS
-PCMCIA card for playback, but not capture. The most current is "untested,
-might already work". Are there any plans to figure out recording with this
-card? It would be greatly appreciated.
-
-Even with an untested patch to enable recording, I would be willing to
-test it to see if it works.
-
-Thanks,
-Jacob Lee
-
+I used the patch from bug #1890 and I got an Unknown switch to activate to
+record from external line in instead of internal mic.
+Now with new 1.0.11 drivers, that supports Vaio FE11x Sigmatel audio chip
+I can't get it. No way to record from something different from internal
+mic.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-22-06 21:11 artdent        New Issue                                    
-04-22-06 21:11 artdent        Distribution              => Debian unstable 
-04-22-06 21:11 artdent        Kernel Version            => 2.6.15          
+04-23-06 00:56 fdoffizi01     New Issue                                    
 ======================================================================
 
 
