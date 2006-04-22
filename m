@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001733]: Intel HDA Modem ?
-Date: Sun, 23 Apr 2006 01:06:31 +0200
-Message-ID: <708cb4430574d8d74ff4cba103be12c6@bugtrack.alsa-project.org>
+Date: Sun, 23 Apr 2006 01:12:18 +0200
+Message-ID: <210e7e8c2e6021e007995fe9836d15e7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0395114F
-	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 01:06:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2CF1110
+	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 01:12:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1733> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               SuSE Linux 10.0
 Kernel Version:             2.6.13-15
+Resolution:                 fixed
+Fixed in Version:           1.0.11
 ======================================================================
 Date Submitted:             01-11-2006 07:23 CET
-Last Modified:              04-23-2006 01:06 CEST
+Last Modified:              04-23-2006 01:12 CEST
 ======================================================================
 Summary:                    Intel HDA Modem ?
 Description: 
@@ -63,59 +65,14 @@ where there is only analog telephone.
 ======================================================================
 
 ----------------------------------------------------------------------
- fdoffizi01 - 04-23-06 01:04 
-----------------------------------------------------------------------
-Same question for different hardware.
-
-Here lspci output:
-00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller (rev 02)
-        Subsystem: Sony Corporation Unknown device 81ef
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size 10
-        Interrupt: pin A routed to IRQ 66
-        Region 0: Memory at d2300000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-And as you can see current hda modules can't see modem functions:
-
-aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
-  Subdevices: 0/1
-  Subdevice #0: subdevice #0
-
-Hardware is a Sony Vaio FE11x series notebook
-
-----------------------------------------------------------------------
  rlrevell - 04-23-06 01:06 
 ----------------------------------------------------------------------
 Please open a new bug report for different hardware
+
+----------------------------------------------------------------------
+ rlrevell - 04-23-06 01:12 
+----------------------------------------------------------------------
+Submitter reports this bug is fixed
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -150,6 +107,10 @@ Date Modified  Username       Field                    Change
 03-16-06 19:44 kratz00        Note Added: 0008619                          
 04-23-06 01:04 fdoffizi01     Note Added: 0009436                          
 04-23-06 01:06 rlrevell       Note Added: 0009437                          
+04-23-06 01:12 rlrevell       Status                   assigned => resolved
+04-23-06 01:12 rlrevell       Fixed in Version          => 1.0.11          
+04-23-06 01:12 rlrevell       Resolution               open => fixed       
+04-23-06 01:12 rlrevell       Note Added: 0009438                          
 ======================================================================
 
 
