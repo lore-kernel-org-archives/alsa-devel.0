@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002046]: Driver build fails due to bug in kernel include/asm/dma-mapping.h file.
-Date: Fri, 21 Apr 2006 22:47:38 +0200
-Message-ID: <58859df8dcadf11b6d1e6baee84e5470@bugtrack.alsa-project.org>
+From: "Angelique Schuetz" <schuetzi@pvs.uva.es>
+Subject: Re: PHARbzgMACY
+Date: Fri, 21 Apr 2006 20:44:39 -0400
+Message-ID: <000001c665a5$efe48d20$fb7ca8c0@tyo64>
+Reply-To: "Angelique Schuetz" <schuetzi@pvs.uva.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C66584.68D2ED20"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2EC2162
-	for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2006 22:47:38 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E67C16A
+	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2006 02:44:51 +0200 (MEST)
+Received: from pvs.uva.es (133.Red-83-57-197.dynamicIP.rima-tde.net [83.57.197.133])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 5FB9F99534
+	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2006 02:44:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,93 +25,107 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been REOPENED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2046> 
-======================================================================
-Reported By:                GrueMaster
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2046
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Novell Linux Desktop 9 Service pack 3
-Kernel Version:             2.6.5-7.244 & 2.6.5 stock kernels
-======================================================================
-Date Submitted:             04-20-2006 23:53 CEST
-Last Modified:              04-21-2006 22:47 CEST
-======================================================================
-Summary:                    Driver build fails due to bug in kernel
-include/asm/dma-mapping.h file.
-Description: 
-Compile fails at acore/sgbuf.c.  Multiple define errors in
-include/asm/dma-mapping.h file.  This has also been reproduced againast a
-clean 2.6.5 kernel from kernel.org.
+------=_NextPart_000_0001_01C66584.68D2ED20
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
+C e I k A m L r I k S r $3 , 75=20
+S z O b M h A x=20
+V x A f L z I e U u M x $1 , 21=20
+X p A a N q A r X c=20
+V o I x A r G t R j A z $3 , 33=20
+A b M s B r I w E l N l=20
+M d E u R e I t D x I x A b=20
+=20
+and many other ... <http://www.allsetorte.com>=20
+=20
+=20
+=20
+  _____ =20
 
-======================================================================
+too quickly. ... Order your drinks, Im paying. They did and Bourne did,
+his mind racing, trying to recall the little he knew about the French
+Foreign Legion. A lot has changed in nine years, Maurice. How very
+easily the words came, thought the Chameleon. Why are you enlisting,
+Ralph? Ah figure its the wisest thing I can do-kinda disappear for a few
 
-----------------------------------------------------------------------
- tiwai - 04-21-06 12:42 
-----------------------------------------------------------------------
-Fixed on Hg repo.
+------=_NextPart_000_0001_01C66584.68D2ED20
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- GrueMaster - 04-21-06 22:47 
-----------------------------------------------------------------------
-I modified your patch to add include/linux/mm.h (needed by both Novell &
-stock kernels) and DMA_32BIT_MASK (needed for stock kernel to build ). 
-Here's my version of your patch:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial> <STRONG>C <FONT face=3DArial size=3D2 =
+color=3D#C1E624>e</FONT> I <FONT face=3DArial size=3D2 =
+color=3D#C1E624>k</FONT> A <FONT face=3DArial size=3D2 =
+color=3D#C1E624>m</FONT> L <FONT face=3DArial size=3D2 =
+color=3D#C1E624>r</FONT> I <FONT face=3DArial size=3D2 =
+color=3D#C1E624>k</FONT> S <FONT face=3DArial size=3D2 =
+color=3D#C1E624>r</FONT>  $3 , 75</STRONG> </FONT></DIV>
+<DIV><FONT face=3DArial> S <FONT face=3DArial size=3D2 =
+color=3D#C6F415>z</FONT> O <FONT face=3DArial size=3D2 =
+color=3D#C6F415>b</FONT> M <FONT face=3DArial size=3D2 =
+color=3D#C6F415>h</FONT> A <FONT face=3DArial size=3D2 =
+color=3D#C6F415>x</FONT>  </FONT></DIV>
+<DIV><FONT face=3DArial> <STRONG>V <FONT face=3DArial size=3D2 =
+color=3D#C5F217>x</FONT> A <FONT face=3DArial size=3D2 =
+color=3D#C5F217>f</FONT> L <FONT face=3DArial size=3D2 =
+color=3D#C5F217>z</FONT> I <FONT face=3DArial size=3D2 =
+color=3D#C5F217>e</FONT> U <FONT face=3DArial size=3D2 =
+color=3D#C5F217>u</FONT> M <FONT face=3DArial size=3D2 =
+color=3D#C5F217>x</FONT>  $1 , 21</STRONG> </FONT></DIV>
+<DIV><FONT face=3DArial> X <FONT face=3DArial size=3D2 =
+color=3D#C2E81B>p</FONT> A <FONT face=3DArial size=3D2 =
+color=3D#C2E81B>a</FONT> N <FONT face=3DArial size=3D2 =
+color=3D#C2E81B>q</FONT> A <FONT face=3DArial size=3D2 =
+color=3D#C2E81B>r</FONT> X <FONT face=3DArial size=3D2 =
+color=3D#C2E81B>c</FONT>  </FONT></DIV>
+<DIV><FONT face=3DArial> <STRONG>V <FONT face=3DArial size=3D2 =
+color=3D#B4F21A>o</FONT> I <FONT face=3DArial size=3D2 =
+color=3D#B4F21A>x</FONT> A <FONT face=3DArial size=3D2 =
+color=3D#B4F21A>r</FONT> G <FONT face=3DArial size=3D2 =
+color=3D#B4F21A>t</FONT> R <FONT face=3DArial size=3D2 =
+color=3D#B4F21A>j</FONT> A <FONT face=3DArial size=3D2 =
+color=3D#B4F21A>z</FONT>  $3 , 33</STRONG> </FONT></DIV>
+<DIV><FONT face=3DArial> A <FONT face=3DArial size=3D2 =
+color=3D#B5F221>b</FONT> M <FONT face=3DArial size=3D2 =
+color=3D#B5F221>s</FONT> B <FONT face=3DArial size=3D2 =
+color=3D#B5F221>r</FONT> I <FONT face=3DArial size=3D2 =
+color=3D#B5F221>w</FONT> E <FONT face=3DArial size=3D2 =
+color=3D#B5F221>l</FONT> N <FONT face=3DArial size=3D2 =
+color=3D#B5F221>l</FONT>  </FONT></DIV>
+<DIV><FONT face=3DArial> M <FONT face=3DArial size=3D2 =
+color=3D#BFF823>d</FONT> E <FONT face=3DArial size=3D2 =
+color=3D#BFF823>u</FONT> R <FONT face=3DArial size=3D2 =
+color=3D#BFF823>e</FONT> I <FONT face=3DArial size=3D2 =
+color=3D#BFF823>t</FONT> D <FONT face=3DArial size=3D2 =
+color=3D#BFF823>x</FONT> I <FONT face=3DArial size=3D2 =
+color=3D#BFF823>x</FONT> A <FONT face=3DArial size=3D2 =
+color=3D#BFF823>b</FONT>  </FONT></DIV>
+<DIV>&nbsp;</DIV><DIV><A href=3D"http://www.allsetorte.com">and many =
+other ...</A></DIV>
+<DIV>&nbsp;</DIV><DIV>&nbsp;</DIV><DIV>&nbsp;</DIV>
+<HR>
+<DIV><FONT face=3DArial size=3D2 color=3D#C0EC24>too quickly. ... Order =
+your drinks, Im paying. They did and Bourne
+did, his mind racing, trying to recall the little he knew about the
+French Foreign Legion. A lot has changed in nine years, Maurice. How
+very easily the words came, thought the Chameleon. Why are you
+enlisting, Ralph?
+   Ah figure its the wisest thing I can do-kinda disappear for a =
+few</FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C66584.68D2ED20--
 
---- alsa-driver-1.0.11.orig/include/adriver.h   2006-04-18
-23:24:30.000000000 -0700
-+++ alsa-driver-1.0.11/include/adriver.h        2006-04-21
-10:37:53.559693432 -0700
-@@ -750,7 +750,15 @@
- #endif
-
- #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 17)
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 6)
-+#include <asm/io.h>
-+#include <asm/scatterlist.h>
-+#include <linux/mm.h>
-+#endif
- #include <linux/dma-mapping.h>
-+#ifndef DMA_32BIT_MASK
-+#define DMA_32BIT_MASK  0x00000000ffffffffULL
-+#endif
- #ifndef DMA_31BIT_MASK
- #define DMA_31BIT_MASK 0x000000007fffffffULL
- #endif
-@@ -1175,3 +1183,4 @@
- #define OPL3_HW_OPL3_PC98      0x0305  /* PC9800 */
-
- #endif /* __SOUND_LOCAL_DRIVER_H */
-+
-
-This has been tested on Novell Linux Desktop 9 with Service Pack 3 kernel
-& the stock 2.6.5 kernel from kernel.org.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-20-06 23:53 GrueMaster     New Issue                                    
-04-20-06 23:53 GrueMaster     Distribution              => Novell Linux Desktop
-9 Service pack 3
-04-21-06 12:42 tiwai          Status                   assigned => resolved
-04-21-06 12:42 tiwai          Resolution               open => fixed       
-04-21-06 12:42 tiwai          Note Added: 0009409                          
-04-21-06 22:47 GrueMaster     Kernel Version            => 2.6.5-7.244 & 2.6.5
-stock kernels
-04-21-06 22:47 GrueMaster     Status                   resolved => feedback
-04-21-06 22:47 GrueMaster     Resolution               fixed => reopened   
-04-21-06 22:47 GrueMaster     Note Added: 0009431                          
-======================================================================
 
 
 
