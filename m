@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002008]: No Sound with snd-hda-intel driver Asus P5VDC-MX
-Date: Sat, 22 Apr 2006 18:37:10 +0200
-Message-ID: <f6546eca59dc11ecc088152a113b7147@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002058]: Audigy 2 ZS Notebook lacks record capability
+Date: Sat, 22 Apr 2006 21:11:13 +0200
+Message-ID: <637015ab7efda4b326ce277940b5cb46@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 847EF15D
-	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2006 18:37:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3952F15D
+	for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2006 21:11:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,99 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2008> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2058> 
 ======================================================================
-Reported By:                mborsick
-Assigned To:                tiwai
+Reported By:                artdent
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2008
-Category:                   PCI - hda-intel
+Issue ID:                   2058
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               Redhat/Fedora
-Kernel Version:             2.6.16-1.2080 and with Xen
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             04-07-2006 00:43 CEST
-Last Modified:              04-22-2006 18:37 CEST
+Date Submitted:             04-22-2006 21:11 CEST
+Last Modified:              04-22-2006 21:11 CEST
 ======================================================================
-Summary:                    No Sound with snd-hda-intel driver Asus P5VDC-MX
+Summary:                    Audigy 2 ZS Notebook lacks record capability
 Description: 
-Kernel is up-to-date Xen kernel.
+According to bug #927, the emu10k1 driver now works with the Audigy 2 ZS
+PCMCIA card for playback, but not capture. The most current is "untested,
+might already work". Are there any plans to figure out recording with this
+card? It would be greatly appreciated.
 
-Initial install did not recognize the sound on an ASUS P5VDC-MX
-motherboard.
-Motherboard has southbridge VIA VT8251. CODEC is Realtek ACL653 AC'97 6
-channel
-Audio. Tried the updated drivers in 002404, but was unsuccessful. Also
-tried
-drivers on VIA site and Realltek site. The last couple of tries show no
-errors
-in compiling, make, etc. However, as I am just above novice in
-understanding
-everything about Linux, this has thrown me for a loop.
+Even with an untested patch to enable recording, I would be willing to
+test it to see if it works.
+
+Thanks,
+Jacob Lee
 
 ======================================================================
-
-----------------------------------------------------------------------
- buboleck - 04-09-06 01:21 
-----------------------------------------------------------------------
-:) yes please
-
-----------------------------------------------------------------------
- buboleck - 04-22-06 14:05 
-----------------------------------------------------------------------
-Hi again. I'm glad to report that I got it to work. With kernel
-gentoo-2.6.16-r3 and alsa-driver-1.0.11. Currently is working on x86_64, 2
-chanels (I have to rearange to check for 4 and 6), maybe later I check on
-i386 too. I forgot to mention the module is via82xx.
-
-
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-07-06 00:43 mborsick       New Issue                                    
-04-07-06 00:43 mborsick       Distribution              => Redhat/Fedora   
-04-07-06 00:43 mborsick       Kernel Version            => 2.6.16-1.2080 and
-with Xen
-04-07-06 01:07 rlrevell       Note Added: 0009129                          
-04-07-06 02:13 mborsick       Note Added: 0009130                          
-04-07-06 02:35 rlrevell       Note Added: 0009131                          
-04-07-06 06:38 mborsick       Note Added: 0009135                          
-04-07-06 22:45 buboleck       Note Added: 0009156                          
-04-07-06 22:47 buboleck       Note Edited: 0009156                         
-04-07-06 22:49 buboleck       Note Edited: 0009156                         
-04-07-06 23:06 rlrevell       Note Added: 0009157                          
-04-07-06 23:16 buboleck       Issue Monitored: buboleck                    
-04-07-06 23:26 buboleck       Note Added: 0009158                          
-04-07-06 23:32 rlrevell       Note Added: 0009159                          
-04-07-06 23:39 buboleck       Note Added: 0009160                          
-04-07-06 23:40 buboleck       Note Edited: 0009160                         
-04-07-06 23:43 buboleck       Note Edited: 0009160                         
-04-07-06 23:46 buboleck       Note Edited: 0009160                         
-04-07-06 23:47 rlrevell       Note Added: 0009161                          
-04-07-06 23:52 buboleck       Note Added: 0009162                          
-04-08-06 00:02 rlrevell       Note Added: 0009163                          
-04-08-06 00:16 buboleck       Note Added: 0009164                          
-04-08-06 00:19 buboleck       Note Added: 0009165                          
-04-08-06 00:29 rlrevell       Note Added: 0009166                          
-04-08-06 00:32 buboleck       Note Added: 0009167                          
-04-08-06 00:41 rlrevell       Note Added: 0009168                          
-04-08-06 00:42 buboleck       Note Added: 0009169                          
-04-08-06 00:44 buboleck       Note Edited: 0009169                         
-04-08-06 22:30 mborsick       Note Added: 0009173                          
-04-09-06 01:21 buboleck       Note Added: 0009174                          
-04-22-06 14:02 buboleck       Note Added: 0009434                          
-04-22-06 14:05 buboleck       Note Edited: 0009434                         
-04-22-06 18:37 rlrevell       Status                   assigned => resolved
-04-22-06 18:37 rlrevell       Resolution               open => fixed       
+04-22-06 21:11 artdent        New Issue                                    
+04-22-06 21:11 artdent        Distribution              => Debian unstable 
+04-22-06 21:11 artdent        Kernel Version            => 2.6.15          
 ======================================================================
 
 
