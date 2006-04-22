@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002059]: Can't set external input switch for recording.
-Date: Sun, 23 Apr 2006 00:56:42 +0200
-Message-ID: <483246e0a055825727974580b95e9462@bugtrack.alsa-project.org>
+Date: Sun, 23 Apr 2006 01:03:35 +0200
+Message-ID: <d4418de13119c1bffcc2405b45a89446@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 181AA149
-	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 00:56:43 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7F0514F
+	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 01:03:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+The following issue has been set as RELATED TO issue 0001890.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2059> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             04-23-2006 00:56 CEST
-Last Modified:              04-23-2006 00:56 CEST
+Last Modified:              04-23-2006 01:03 CEST
 ======================================================================
 Summary:                    Can't set external input switch for recording.
 Description: 
@@ -50,11 +50,16 @@ Now with new 1.0.11 drivers, that supports Vaio FE11x Sigmatel audio chip
 I can't get it. No way to record from something different from internal
 mic.
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001890 Only the PCM channel in alsa mixer, unm...
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-23-06 00:56 fdoffizi01     New Issue                                    
+04-23-06 01:03 rlrevell       Relationship added       related to 0001890  
 ======================================================================
 
 
