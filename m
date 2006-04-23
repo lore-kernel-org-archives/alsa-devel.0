@@ -1,10 +1,12 @@
 From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: [PATCH] Add Dreamcast AICA driver to alsa-driver
-Date: Sun, 23 Apr 2006 23:36:26 +0100
-Message-ID: <1145831786.9242.38.camel@localhost.localdomain>
+Subject: Re: [Alsa-devel] [PATCH] Add Dreamcast AICA driver to alsa-driver
+Date: Sun, 23 Apr 2006 23:46:22 +0100
+Message-ID: <1145832383.9242.41.camel@localhost.localdomain>
+References: <1145831786.9242.38.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-W052ZQ2zegnuG/YHsRCD"
+Content-Type: multipart/mixed; boundary="=-kozD5IEzXjX+MWQzTJrv"
 Return-path: <linuxsh-dev-admin@lists.sourceforge.net>
+In-Reply-To: <1145831786.9242.38.camel@localhost.localdomain>
 Sender: linuxsh-dev-admin@lists.sourceforge.net
 Errors-To: linuxsh-dev-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
@@ -19,30 +21,36 @@ Cc: linux-sh <linuxsh-dev@lists.sourceforge.net>, LKML <linux-kernel@vger.kernel
 List-Id: alsa-devel@alsa-project.org
 
 
---=-W052ZQ2zegnuG/YHsRCD
+--=-kozD5IEzXjX+MWQzTJrv
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Here is the third iteration of this patch - I am afraid that the
-suggested patch to Dreamcast/SH G2 DMA that Paul posted last week did
-not work, so this still does not use dma_wait_for_completion ... but it
-does work well on my Dreamcast.
+On Sun, 2006-04-23 at 23:36 +0100, Adrian McMenamin wrote:
+> Here is the third iteration of this patch - I am afraid that the
+> suggested patch to Dreamcast/SH G2 DMA that Paul posted last week did
+> not work, so this still does not use dma_wait_for_completion ... but it
+> does work well on my Dreamcast.
+> 
+> Please apply.
+> 
+> Signed off by Adrian McMenamin <adrian@mcmen.demon.co.uk>
+> 
+> 
 
-Please apply.
+In fact that version contained a redundant function please consider this
+one instead
 
 Signed off by Adrian McMenamin <adrian@mcmen.demon.co.uk>
 
-
-
---=-W052ZQ2zegnuG/YHsRCD
+--=-kozD5IEzXjX+MWQzTJrv
 Content-Disposition: attachment; filename=aica.patch
 Content-Type: text/x-patch; name=aica.patch; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 diff -ruN alsa-driver-1.0.11rc4/sh/aica.c alsa-driver/sh/aica.c
 --- alsa-driver-1.0.11rc4/sh/aica.c	1970-01-01 01:00:00.000000000 +0100
-+++ alsa-driver/sh/aica.c	2006-04-23 23:25:24.000000000 +0100
-@@ -0,0 +1,738 @@
++++ alsa-driver/sh/aica.c	2006-04-23 23:44:35.000000000 +0100
+@@ -0,0 +1,731 @@
 +/*
 +* This code is licenced under 
 +* the General Public Licence
@@ -521,11 +529,6 @@ diff -ruN alsa-driver-1.0.11rc4/sh/aica.c alsa-driver/sh/aica.c
 +	.trigger = snd_aicapcm_pcm_trigger,
 +	.pointer = snd_aicapcm_pcm_pointer,
 +};
-+static void snd_aicapcm_free(void)
-+{
-+	release_mem_region(ARM_RESET_REGISTER, 0x4);
-+	release_mem_region(SPU_MEMORY_BASE, 0x200000);
-+}
 +
 +/* TO DO: set up to handle more than one pcm instance */
 +static int __init snd_aicapcmchip(struct snd_card_aica
@@ -643,7 +646,6 @@ diff -ruN alsa-driver-1.0.11rc4/sh/aica.c alsa-driver/sh/aica.c
 +{
 +	struct snd_card_aica *dreamcastcard =
 +	    dreamcast_device->driver_data;
-+	snd_aicapcm_free();
 +	snd_card_free(dreamcastcard->card);
 +	kfree(dreamcastcard);
 +	return 0;
@@ -741,20 +743,19 @@ diff -ruN alsa-driver-1.0.11rc4/sh/aica.c alsa-driver/sh/aica.c
 +	/* Load the firmware */
 +	err = load_aica_firmware();
 +	if (err < 0)
-+		goto freepcm;
++		goto freedreamcast;
 +	/* Add basic controls */
 +	err = add_aicamixer_controls(dreamcastcard);
 +	if (err < 0)
-+		goto freepcm;
++		goto freedreamcast;
 +	/* Register the card with ALSA subsystem */
 +	err = snd_card_register(dreamcastcard->card);
 +	if (err < 0)
-+		goto freepcm;
++		goto freedreamcast;
 +	snd_printk
 +	    ("ALSA Driver for Yamaha AICA Super Intelligent Sound Processor\n");
 +	return 0;
 +      freepcm:
-+	snd_aicapcm_free();
 +      freedreamcast:
 +	snd_card_free(dreamcastcard->card);
 +	if (pd) {
@@ -886,7 +887,7 @@ diff -ruN alsa-driver-1.0.11rc4/sh/Makefile alsa-driver/sh/Makefile
 +
 +include $(SND_TOPDIR)/Rules.make
 
---=-W052ZQ2zegnuG/YHsRCD--
+--=-kozD5IEzXjX+MWQzTJrv--
 
 
 
