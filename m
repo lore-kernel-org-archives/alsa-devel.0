@@ -1,15 +1,14 @@
-From: "Sylwester Balderas" <sylwobal@bizware.com>
-Subject: Re: PHARMAgjzCY
-Date: Sun, 23 Apr 2006 16:56:17 -0400
-Message-ID: <000001c66718$5d837490$45baa8c0@fye40>
-Reply-To: "Sylwester Balderas" <sylwobal@bizware.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002062]: azx_get_response_timeout -> no sound with hda_intel
+Date: Sun, 23 Apr 2006 23:10:32 +0200
+Message-ID: <d6568e0ab7e275c015dfb3d3a511a34a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C666F6.D671D490"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from itsrecycled.com (ARennes-352-1-43-175.w81-250.abo.wanadoo.fr [81.250.218.175])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 78AE6188
-	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 22:56:39 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 549F4161
+	for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 23:10:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,109 +21,76 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C666F6.D671D490
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2062> 
+======================================================================
+Reported By:                lemzwerg
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2062
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             Linux linux 2.6.16.9-smp #1 SMP Fri Apr 21 11:20:09
+CEST 2006 i686 i686 i386 GNU/Linux
+======================================================================
+Date Submitted:             04-23-2006 14:06 CEST
+Last Modified:              04-23-2006 23:10 CEST
+======================================================================
+Summary:                    azx_get_response_timeout -> no sound with hda_intel
+Description: 
+I have exactly the same problem as reported here (with the same
+hardware, this is, SigmaTel STAC9200 codec, but in an Dell Inspiron
+6400):
 
-M d E j R z I p D j I a A j=20
-S l O u M y A l=20
-X j A b N t A s X h=20
-V h A e L b I n U c M i=20
-C c I m A a L b I r S i=20
-A h M g B l I y E i N o=20
-V g I u A v G k R c A x=20
-=20
-=20
-http://www.diviannore.com
-=20
-=20
-=20
- =20
-  _____ =20
+  http://threebit.net/mail-archive/linux-kernel/msg00690.html
 
-such longings. Randy the Grand never deserved her; perhaps now hell make
-up for all the lost years. Thats very interesting, but whats it got to
-do with your arrangement? Did I mention that Lord Randolph of Gates made
-great sums of money during those lost but productive years? Several
-times. So?
+but I'm using the latest ALSA and Linux kernel versions...
 
-------=_NextPart_000_0001_01C666F6.D671D490
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Any fix available?
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial> M <FONT face=3DArial size=3D2 =
-color=3D#EAE822>d</FONT> E <FONT face=3DArial size=3D2 =
-color=3D#EAE822>j</FONT> R <FONT face=3DArial size=3D2 =
-color=3D#EAE822>z</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#EAE822>p</FONT> D <FONT face=3DArial size=3D2 =
-color=3D#EAE822>j</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#EAE822>a</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#EAE822>j</FONT>  </FONT></DIV>
-<DIV><FONT face=3DArial> S <FONT face=3DArial size=3D2 =
-color=3D#F5F819>l</FONT> O <FONT face=3DArial size=3D2 =
-color=3D#F5F819>u</FONT> M <FONT face=3DArial size=3D2 =
-color=3D#F5F819>y</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#F5F819>l</FONT>  </FONT></DIV>
-<DIV><FONT face=3DArial> X <FONT face=3DArial size=3D2 =
-color=3D#EAEB1A>j</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#EAEB1A>b</FONT> N <FONT face=3DArial size=3D2 =
-color=3D#EAEB1A>t</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#EAEB1A>s</FONT> X <FONT face=3DArial size=3D2 =
-color=3D#EAEB1A>h</FONT>  </FONT></DIV>
-<DIV><FONT face=3DArial> <STRONG> V <FONT face=3DArial size=3D2 =
-color=3D#EBF224>h</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#EBF224>e</FONT> L <FONT face=3DArial size=3D2 =
-color=3D#EBF224>b</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#EBF224>n</FONT> U <FONT face=3DArial size=3D2 =
-color=3D#EBF224>c</FONT> M <FONT face=3DArial size=3D2 =
-color=3D#EBF224>i</FONT>  </STRONG> </FONT></DIV>
-<DIV><FONT face=3DArial> <STRONG> C <FONT face=3DArial size=3D2 =
-color=3D#F2F616>c</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#F2F616>m</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#F2F616>a</FONT> L <FONT face=3DArial size=3D2 =
-color=3D#F2F616>b</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#F2F616>r</FONT> S <FONT face=3DArial size=3D2 =
-color=3D#F2F616>i</FONT>  </STRONG> </FONT></DIV>
-<DIV><FONT face=3DArial> A <FONT face=3DArial size=3D2 =
-color=3D#F9F521>h</FONT> M <FONT face=3DArial size=3D2 =
-color=3D#F9F521>g</FONT> B <FONT face=3DArial size=3D2 =
-color=3D#F9F521>l</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#F9F521>y</FONT> E <FONT face=3DArial size=3D2 =
-color=3D#F9F521>i</FONT> N <FONT face=3DArial size=3D2 =
-color=3D#F9F521>o</FONT>  </FONT></DIV>
-<DIV><FONT face=3DArial> <STRONG> V <FONT face=3DArial size=3D2 =
-color=3D#F7EF26>g</FONT> I <FONT face=3DArial size=3D2 =
-color=3D#F7EF26>u</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#F7EF26>v</FONT> G <FONT face=3DArial size=3D2 =
-color=3D#F7EF26>k</FONT> R <FONT face=3DArial size=3D2 =
-color=3D#F7EF26>c</FONT> A <FONT face=3DArial size=3D2 =
-color=3D#F7EF26>x</FONT>  </STRONG> </FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV><DIV><A =
-href=3D"http://www.diviannore.com">http://www.diviannore.com</A></DIV>
-<DIV>&nbsp;</DIV><DIV>&nbsp;</DIV><DIV>&nbsp;</DIV>
-<DIV>&nbsp; <HR></DIV>
-<DIV><FONT face=3DArial size=3D2>such longings. Randy the Grand never =
-deserved her; perhaps now hell
-make up for all the lost years.
-   Thats very interesting, but whats it got to do with your arrangement?
-   Did I mention that Lord Randolph of Gates made great sums of money
-during those lost but productive years?
-   Several times. So?</FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C666F6.D671D490--
+======================================================================
 
+----------------------------------------------------------------------
+ eivindt - 04-23-06 23:10 
+----------------------------------------------------------------------
+I'm seeing this on my Thinkpad T60p as well, with the latest drivers from
+CVS.
+
+However, if I disable power management, I don't get this error, and I'm
+able to play sound.  Unfortunately, then my wireless card doesn't work,
+but that's another story.
+
+
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+        Subsystem: Lenovo Unknown device 2010
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at ee400000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+
+Eivind
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-23-06 14:06 lemzwerg       New Issue                                    
+04-23-06 14:06 lemzwerg       Kernel Version            => Linux linux
+2.6.16.9-smp #1 SMP Fri Apr 21 11:20:09 CEST 2006 i686 i686 i386 GNU/Linux
+04-23-06 23:10 eivindt        Note Added: 0009445                          
+======================================================================
 
 
 
