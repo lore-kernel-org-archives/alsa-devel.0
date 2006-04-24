@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002021]: No sound from speakers (only headphone) after resume to suspend-to-ram
-Date: Mon, 24 Apr 2006 16:44:44 +0200
-Message-ID: <82f72dbed1fb1dede5ecf604491419e7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002064]: Line-in/mic-in not working
+Date: Mon, 24 Apr 2006 16:44:56 +0200
+Message-ID: <a4712d0ce137bde8b966aa40073385de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA0A116F
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 16:44:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB97916F
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 16:44:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2021> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2064> 
 ======================================================================
-Reported By:                tsaiming
+Reported By:                lwelyn
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2021
-Category:                   PCI - via82xx
+Issue ID:                   2064
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             suspend2-2.6.16-r2
+Status:                     closed
+Distribution:               
+Kernel Version:             2.6.16.1
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-15-2006 13:19 CEST
+Date Submitted:             04-24-2006 15:12 CEST
 Last Modified:              04-24-2006 16:44 CEST
 ======================================================================
-Summary:                    No sound from speakers (only headphone) after resume
-to suspend-to-ram
+Summary:                    Line-in/mic-in not working
 Description: 
-After suspend2-to-ram (but it happens also with the suspend kernel built
-in) I have no more sound from speakers but only from headphones.
-With suspend to disk all works good 
-Also tried to stop alsasound and unload modules before suspending and
-restart service after resume with no change.
-
+This card is very great for laptops under linux because of its size and
+hardware mixing. But i was very shocked after i realized that the input
+dont work. 
+Not the mic in and not the line in.
+I would like to help to fix this ugly thing, if i can. Because lots of my
+friends with linux on their laptop own this card too.
 ======================================================================
 
 ----------------------------------------------------------------------
- mmp - 04-22-06 15:14 
+ rlrevell - 04-24-06 16:43 
 ----------------------------------------------------------------------
-I have made snapshot of register states just before and just after resume;
-attaching diff.
+No, I meant that the only way you can help to get line/mic in supported is
+to contribute patches.
 
 ----------------------------------------------------------------------
- tiwai - 04-24-06 16:44 
+ rlrevell - 04-24-06 16:44 
 ----------------------------------------------------------------------
-Try to restore the values of 0x5a, 0x5e and 0x60 via proc file after
-resume, such as (only by root)
-
-    # echo 5a 8221 > /proc/asound/card0/codec97#0/ac97#0-0+regs
-
-Note that this is available only when the drivers are built with debug
-option.
+Closing, this is just a dupe of #2058
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-15-06 13:19 tsaiming       New Issue                                    
-04-15-06 13:19 tsaiming       File Added: codec97#0.txt                    
-04-15-06 13:19 tsaiming       Distribution              => Gentoo          
-04-15-06 13:19 tsaiming       Kernel Version            => suspend2-2.6.16-r2
-04-22-06 15:12 mmp            Issue Monitored: mmp                         
-04-22-06 15:14 mmp            Note Added: 0009435                          
-04-22-06 15:15 mmp            File Added: regs.diff                        
-04-24-06 16:44 tiwai          Note Added: 0009470                          
+04-24-06 15:12 lwelyn         New Issue                                    
+04-24-06 15:12 lwelyn         Kernel Version            => 2.6.16.1        
+04-24-06 15:50 rlrevell       Note Added: 0009456                          
+04-24-06 15:56 lwelyn         Note Added: 0009459                          
+04-24-06 16:02 jcdutton       Note Added: 0009463                          
+04-24-06 16:05 lwelyn         Note Added: 0009464                          
+04-24-06 16:15 rlrevell       Note Added: 0009465                          
+04-24-06 16:24 lwelyn         Note Added: 0009466                          
+04-24-06 16:43 rlrevell       Note Added: 0009469                          
+04-24-06 16:44 rlrevell       Status                   new => closed       
+04-24-06 16:44 rlrevell       Note Added: 0009471                          
 ======================================================================
 
 
