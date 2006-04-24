@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Mon, 24 Apr 2006 15:47:14 +0200
-Message-ID: <7b7aa7eb7e0359aa4bd6e951e972353b@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
+Date: Mon, 24 Apr 2006 15:48:22 +0200
+Message-ID: <fbb78b16ed502e6f51fc8ad52f847db3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DED1E192
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:47:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4110C192
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:48:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,97 +22,162 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
 ======================================================================
-Reported By:                zanonmark
-Assigned To:                
+Reported By:                Raymond
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
+Project:                    ALSA - utils
+Issue ID:                   1990
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
+Status:                     resolved
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              04-24-2006 15:47 CEST
+Date Submitted:             04-01-2006 04:26 CEST
+Last Modified:              04-24-2006 15:48 CEST
 ======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
+Summary:                    aplay/arecord cannot play/capture A_LAW
 Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
+arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
 
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
+aplay -D hw:0,0 test.au
 
-So, will you please include such a parameter in the next version of the
-driver?
 
-Thanks a lot,
+Try to use -t raw but the quality of A_LAW is very bad when compare with
+MU_LAW
 
-Marco.
+arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
+
+aplay -D hw:0,0 test.raw
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- zanonmark - 04-22-06 13:36 
+ Raymond - 04-24-06 15:07 
 ----------------------------------------------------------------------
-amidi -d -p "hw:0,0"
-does not return anything,
+Do "type oss" plugin support mu-law ?
 
-just one question: why is SUPPORT_JOYSTICK not defined? I mean, is it a
-bug or is the Alsa project missing some information on this card so that
-it is not possible to enable it?
+It is ok to play mu-law using au88xx driver
+http://sourceforge.net/projects/aureal
 
-thanks,
+play mulaw.au 
 
-MZ
+
+au88xx, alsa-lib-1.0.11 and alsa-plugins-1.0.11 ( oss )
+
+pcm.ossdriver {
+	type oss
+	device /dev/dsp
+}
+
+
+aplay -v -Dossdriver test.wav
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Mono
+ALSA <-> OSS PCM I/O Plugin
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 1
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 4096
+  period_time  : 92879
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 4096
+  xfer_align   : 4096
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+
+
+aplay -Dossdriver mulaw.au
+Playing Sparc Audio 'mulaw.au' : Mu-Law, Rate 8000 Hz, Mono
+*** OSS: unsupported format MU_LAW
+aplay: set_params:961: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  MU_LAW
+SUBFORMAT:  STD
+SAMPLE_BITS: 8
+FRAME_BITS: 8
+CHANNELS: 1
+RATE: 8000
+PERIOD_TIME: 128000
+PERIOD_SIZE: 1024
+PERIOD_BYTES: 1024
+PERIODS: 4
+BUFFER_TIME: 512000
+BUFFER_SIZE: 4096
+BUFFER_BYTES: 4096
+TICK_TIME: [0 0]
+
+
+aplay -Dplug:ossdriver mulaw.au
+Playing Sparc Audio 'mulaw.au' : Mu-Law, Rate 8000 Hz, Mono
+*** OSS: unsupported format MU_LAW
+aplay: set_params:961: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  MU_LAW
+SUBFORMAT:  STD
+SAMPLE_BITS: 8
+FRAME_BITS: 8
+CHANNELS: 1
+RATE: 8000
+PERIOD_TIME: 128000
+PERIOD_SIZE: 1024
+PERIOD_BYTES: 1024
+PERIODS: 4
+BUFFER_TIME: 512000
+BUFFER_SIZE: 4096
+BUFFER_BYTES: 4096
+TICK_TIME: 0
 
 ----------------------------------------------------------------------
- Raymond - 04-24-06 15:47 
+ tiwai - 04-24-06 15:48 
 ----------------------------------------------------------------------
-You don't need to enable joystick port to use MIDI.
-
-http://hg-mirror.alsa-project.org/alsa-kernel?fl=d26a933493fe;file=pci/ens1370.c;style=gitweb
-
-gameport module not compiled/installed in the kernel
-
-http://alsa.opensrc.org/Joystick+support
+Not supported properly by oss plugin.  Open another bug if you want to fix
+it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
-04-18-06 13:18 Raymond        Note Edited: 0009328                         
-04-18-06 16:28 Clemens LadischNote Added: 0009338                          
-04-19-06 20:05 zanonmark      Note Added: 0009354                          
-04-19-06 21:49 rlrevell       Note Added: 0009356                          
-04-20-06 03:39 Raymond        Note Added: 0009363                          
-04-22-06 13:36 zanonmark      Note Added: 0009433                          
-04-24-06 15:47 Raymond        Note Added: 0009452                          
+04-01-06 04:26 Raymond        New Issue                                    
+04-03-06 07:16 Raymond        Note Added: 0009085                          
+04-03-06 07:36 Raymond        Note Added: 0009086                          
+04-07-06 19:32 tiwai          Note Added: 0009152                          
+04-08-06 07:47 Raymond        Note Added: 0009171                          
+04-10-06 16:52 tiwai          Note Added: 0009199                          
+04-11-06 07:46 Raymond        Note Added: 0009229                          
+04-11-06 07:55 Raymond        Note Edited: 0009229                         
+04-11-06 09:41 Raymond        Note Edited: 0009229                         
+04-20-06 15:29 tiwai          Status                   new => resolved     
+04-20-06 15:29 tiwai          Resolution               open => not an issue
+04-20-06 15:29 tiwai          Assigned To               => tiwai           
+04-20-06 15:29 tiwai          Note Added: 0009384                          
+04-24-06 15:07 Raymond        Status                   resolved => feedback
+04-24-06 15:07 Raymond        Resolution               not an issue => reopened
+04-24-06 15:07 Raymond        Note Added: 0009451                          
+04-24-06 15:48 tiwai          Status                   feedback => resolved
+04-24-06 15:48 tiwai          Resolution               reopened => not an issue
+04-24-06 15:48 tiwai          Note Added: 0009453                          
 ======================================================================
 
 
