@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002064]: Line-in/mic-in not working
-Date: Mon, 24 Apr 2006 16:15:15 +0200
-Message-ID: <88c103c736dd2a5287da93e2cb62c2ac@bugtrack.alsa-project.org>
+Date: Mon, 24 Apr 2006 16:24:32 +0200
+Message-ID: <a50f01bed18a94252dc62c1fa84b41a8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40938197
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 16:15:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63B5B16F
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 16:24:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.16.1
 ======================================================================
 Date Submitted:             04-24-2006 15:12 CEST
-Last Modified:              04-24-2006 16:15 CEST
+Last Modified:              04-24-2006 16:24 CEST
 ======================================================================
 Summary:                    Line-in/mic-in not working
 Description: 
@@ -53,17 +53,14 @@ friends with linux on their laptop own this card too.
 ======================================================================
 
 ----------------------------------------------------------------------
- lwelyn - 04-24-06 16:05 
-----------------------------------------------------------------------
-Right. So i want to help to remove this "Digital/Analog input does not work
-yet." ugly thing ;-)
-
-If its possible.
-
-----------------------------------------------------------------------
  rlrevell - 04-24-06 16:15 
 ----------------------------------------------------------------------
 OK, so let's see some patches!
+
+----------------------------------------------------------------------
+ lwelyn - 04-24-06 16:24 
+----------------------------------------------------------------------
+You mean update from 1.0.10 to 1.0.11 could help?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -75,6 +72,7 @@ Date Modified  Username       Field                    Change
 04-24-06 16:02 jcdutton       Note Added: 0009463                          
 04-24-06 16:05 lwelyn         Note Added: 0009464                          
 04-24-06 16:15 rlrevell       Note Added: 0009465                          
+04-24-06 16:24 lwelyn         Note Added: 0009466                          
 ======================================================================
 
 
