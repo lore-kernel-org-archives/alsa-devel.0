@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002064]: Line-in/mic-in not working
-Date: Mon, 24 Apr 2006 15:56:31 +0200
-Message-ID: <4b4ef486a6ef6fc078e87ec8c5e7c8de@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002060]: Intel HDA Soft modem
+Date: Mon, 24 Apr 2006 15:56:11 +0200
+Message-ID: <3e674d97372a7136761fadcc3b3e37fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73685192
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:56:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B701192
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:56:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2064> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2060> 
 ======================================================================
-Reported By:                lwelyn
-Assigned To:                
+Reported By:                fdoffizi01
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2064
-Category:                   PCI - emu10k1
+Issue ID:                   2060
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
-Kernel Version:             2.6.16.1
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             04-24-2006 15:12 CEST
+Date Submitted:             04-23-2006 01:29 CEST
 Last Modified:              04-24-2006 15:56 CEST
 ======================================================================
-Summary:                    Line-in/mic-in not working
+Summary:                    Intel HDA Soft modem
 Description: 
-This card is very great for laptops under linux because of its size and
-hardware mixing. But i was very shocked after i realized that the input
-dont work. 
-Not the mic in and not the line in.
-I would like to help to fix this ugly thing, if i can. Because lots of my
-friends with linux on their laptop own this card too.
+I'd like to use my hda softmodem but it's not even recognised from system.
+
+Here lspci output:
+ 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+         Subsystem: Sony Corporation Unknown device 81ef
+         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+         Latency: 0, Cache Line Size 10
+         Interrupt: pin A routed to IRQ 66
+         Region 0: Memory at d2300000 (64-bit, non-prefetchable)
+[size=16K]
+         Capabilities: [50] Power Management version 2
+                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                 Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+         Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                 Address: 0000000000000000 Data: 0000
+         Capabilities: [70] Express Unknown type IRQ 0
+                 Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
+ExtTag-
+                 Device: Latency L0s <64ns, L1 <1us
+                 Device: Errors: Correctable- Non-Fatal- Fatal-
+Unsupported-
+                 Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
+                 Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
+                 Link: Supported Speed unknown, Width x0, ASPM unknown,
+Port 0
+                 Link: Latency L0s <64ns, L1 <1us
+                 Link: ASPM Disabled CommClk- ExtSynch-
+                 Link: Speed unknown, Width x0
+         Capabilities: [100] Virtual Channel
+         Capabilities: [130] Unknown (5)
+ 
+ And as you can see current hda modules can't see modem functions:
+ 
+ aplay -l
+ **** List of PLAYBACK Hardware Devices ****
+ card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
+   Subdevices: 0/1
+   Subdevice #0: subdevice #0
+ 
+ Hardware is a Sony Vaio FE11x series notebook.
+It doesn't even work with linuxant driver (that now should support hda
+softmodems)
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 04-24-06 15:50 
+ tiwai - 04-24-06 15:56 
 ----------------------------------------------------------------------
-What card are you talking about?
-
-----------------------------------------------------------------------
- lwelyn - 04-24-06 15:56 
-----------------------------------------------------------------------
-Oh huh sorry. I thought my profile would be enough.
-Its a
-Sound Blaster Audigy 2 ZS Notebook PCMCIA .
+What modem codec chip is on it?  If not known, please show
+/proc/asound/card0/codec#1 (or bigger number).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-24-06 15:12 lwelyn         New Issue                                    
-04-24-06 15:12 lwelyn         Kernel Version            => 2.6.16.1        
-04-24-06 15:50 rlrevell       Note Added: 0009456                          
-04-24-06 15:56 lwelyn         Note Added: 0009459                          
+04-23-06 01:29 fdoffizi01     New Issue                                    
+04-23-06 01:29 fdoffizi01     Kernel Version            => 2.6.15          
+04-23-06 01:32 fdoffizi01     Issue Monitored: fdoffizi01                    
+04-24-06 15:56 tiwai          Note Added: 0009458                          
 ======================================================================
 
 
