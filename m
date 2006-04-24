@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002062]: azx_get_response_timeout -> no sound with hda_intel
-Date: Mon, 24 Apr 2006 15:54:02 +0200
-Message-ID: <b11321af4ffb9f2c7234b765850f2a74@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002064]: Line-in/mic-in not working
+Date: Mon, 24 Apr 2006 15:56:31 +0200
+Message-ID: <4b4ef486a6ef6fc078e87ec8c5e7c8de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46D86192
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:54:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73685192
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:56:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2062> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2064> 
 ======================================================================
-Reported By:                lemzwerg
-Assigned To:                tiwai
+Reported By:                lwelyn
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2062
-Category:                   PCI - hda-intel
+Issue ID:                   2064
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             Linux linux 2.6.16.9-smp #1 SMP Fri Apr 21 11:20:09
-CEST 2006 i686 i686 i386 GNU/Linux
+Kernel Version:             2.6.16.1
 ======================================================================
-Date Submitted:             04-23-2006 14:06 CEST
-Last Modified:              04-24-2006 15:54 CEST
+Date Submitted:             04-24-2006 15:12 CEST
+Last Modified:              04-24-2006 15:56 CEST
 ======================================================================
-Summary:                    azx_get_response_timeout -> no sound with hda_intel
+Summary:                    Line-in/mic-in not working
 Description: 
-I have exactly the same problem as reported here (with the same
-hardware, this is, SigmaTel STAC9200 codec, but in an Dell Inspiron
-6400):
-
-  http://threebit.net/mail-archive/linux-kernel/msg00690.html
-
-but I'm using the latest ALSA and Linux kernel versions...
-
-Any fix available?
-
+This card is very great for laptops under linux because of its size and
+hardware mixing. But i was very shocked after i realized that the input
+dont work. 
+Not the mic in and not the line in.
+I would like to help to fix this ugly thing, if i can. Because lots of my
+friends with linux on their laptop own this card too.
 ======================================================================
 
 ----------------------------------------------------------------------
- eivindt - 04-23-06 23:10 
+ rlrevell - 04-24-06 15:50 
 ----------------------------------------------------------------------
-I'm seeing this on my Thinkpad T60p as well, with the latest drivers from
-CVS.
-
-However, if I disable power management, I don't get this error, and I'm
-able to play sound.  Unfortunately, then my wireless card doesn't work,
-but that's another story.
-
-
-00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller (rev 02)
-        Subsystem: Lenovo Unknown device 2010
-        Flags: bus master, fast devsel, latency 0, IRQ 11
-        Memory at ee400000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-
-Eivind
+What card are you talking about?
 
 ----------------------------------------------------------------------
- tiwai - 04-24-06 15:54 
+ lwelyn - 04-24-06 15:56 
 ----------------------------------------------------------------------
-Don't use CVS anymore but use Hg repo.
+Oh huh sorry. I thought my profile would be enough.
+Its a
+Sound Blaster Audigy 2 ZS Notebook PCMCIA .
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-23-06 14:06 lemzwerg       New Issue                                    
-04-23-06 14:06 lemzwerg       Kernel Version            => Linux linux
-2.6.16.9-smp #1 SMP Fri Apr 21 11:20:09 CEST 2006 i686 i686 i386 GNU/Linux
-04-23-06 23:10 eivindt        Note Added: 0009445                          
-04-23-06 23:10 eivindt        Issue Monitored: eivindt                     
-04-24-06 15:54 tiwai          Note Added: 0009457                          
+04-24-06 15:12 lwelyn         New Issue                                    
+04-24-06 15:12 lwelyn         Kernel Version            => 2.6.16.1        
+04-24-06 15:50 rlrevell       Note Added: 0009456                          
+04-24-06 15:56 lwelyn         Note Added: 0009459                          
 ======================================================================
 
 
