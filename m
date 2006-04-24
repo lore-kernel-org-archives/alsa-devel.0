@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002059]: Can't set external input switch for recording.
-Date: Mon, 24 Apr 2006 21:00:34 +0200
-Message-ID: <33346012685f8af28ed2276fdd2287e1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002021]: No sound from speakers (only headphone) after resume to suspend-to-ram
+Date: Mon, 24 Apr 2006 21:30:09 +0200
+Message-ID: <c5ac0dc417035f75a14b7d48323a8f68@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A0EE18A
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 21:00:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A87D173
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 21:30:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2059> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2021> 
 ======================================================================
-Reported By:                fdoffizi01
-Assigned To:                tiwai
+Reported By:                tsaiming
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2059
-Category:                   PCI - hda-intel
+Issue ID:                   2021
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             suspend2-2.6.16-r2
 ======================================================================
-Date Submitted:             04-23-2006 00:56 CEST
-Last Modified:              04-24-2006 21:00 CEST
+Date Submitted:             04-15-2006 13:19 CEST
+Last Modified:              04-24-2006 21:30 CEST
 ======================================================================
-Summary:                    Can't set external input switch for recording.
+Summary:                    No sound from speakers (only headphone) after resume
+to suspend-to-ram
 Description: 
-I used the patch from bug #1890 and I got an Unknown switch to activate to
-record from external line in instead of internal mic.
-Now with new 1.0.11 drivers, that supports Vaio FE11x Sigmatel audio chip
-I can't get it. No way to record from something different from internal
-mic.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001890 Only the PCM channel in alsa mixer, unm...
+After suspend2-to-ram (but it happens also with the suspend kernel built
+in) I have no more sound from speakers but only from headphones.
+With suspend to disk all works good 
+Also tried to stop alsasound and unload modules before suspending and
+restart service after resume with no change.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-24-06 16:40 
+ tiwai - 04-24-06 16:44 
 ----------------------------------------------------------------------
-Does the attached patch fix?
-I still don't know which element corresponds what I/O.
+Try to restore the values of 0x5a, 0x5e and 0x60 via proc file after
+resume, such as (only by root)
 
-   Line -> line/mic in jack ??
-   Mic  -> built-in mic ??
+    # echo 5a 8221 > /proc/asound/card0/codec97#0/ac97#0-0+regs
+
+Note that this is available only when the drivers are built with debug
+option.
 
 ----------------------------------------------------------------------
- fdoffizi01 - 04-24-06 21:00 
+ mmp - 04-24-06 21:30 
 ----------------------------------------------------------------------
-Yes, it solves my problem. Good work, hope to see it soon in next release!
-:)
-As you know is there some particular difficulties in having the ability to
-have a instant output switch (as to hear the mic just sent to output) as
-it was with other drivers or it's only a work to do?
+I just tried to modify the ac97 registers; I was able to change all but
+one, which still holds the old value - the '5a' one. And the one changed
+register in card0/via82xx doesn't revert its value after setting any of
+these. I tried to play something, but it is still the same - just
+headphone output works, internal speakers are disabled.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-23-06 00:56 fdoffizi01     New Issue                                    
-04-23-06 01:03 rlrevell       Relationship added       related to 0001890  
-04-24-06 16:40 tiwai          Note Added: 0009467                          
-04-24-06 16:40 tiwai          File Added: stac7661-vaio-line-in-fix.diff        
-           
-04-24-06 21:00 fdoffizi01     Note Added: 0009477                          
+04-15-06 13:19 tsaiming       New Issue                                    
+04-15-06 13:19 tsaiming       File Added: codec97#0.txt                    
+04-15-06 13:19 tsaiming       Distribution              => Gentoo          
+04-15-06 13:19 tsaiming       Kernel Version            => suspend2-2.6.16-r2
+04-22-06 15:12 mmp            Issue Monitored: mmp                         
+04-22-06 15:14 mmp            Note Added: 0009435                          
+04-22-06 15:15 mmp            File Added: regs.diff                        
+04-24-06 16:44 tiwai          Note Added: 0009470                          
+04-24-06 21:30 mmp            Note Added: 0009478                          
 ======================================================================
 
 
