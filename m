@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002044]: How about adding __devinitdata to the PCI-IDs?
-Date: Mon, 24 Apr 2006 16:01:22 +0200
-Message-ID: <876dedd1e29a7e94019ab8fd25518305@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002064]: Line-in/mic-in not working
+Date: Mon, 24 Apr 2006 16:02:54 +0200
+Message-ID: <247c4a9bc5a9496edcd05fd919619bd0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1797192
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 16:01:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6861B192
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 16:02:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2044> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2064> 
 ======================================================================
-Reported By:                Henne
-Assigned To:                tiwai
+Reported By:                lwelyn
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2044
-Category:                   1_OTHERS
+Issue ID:                   2064
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Suse 10.0 x86_64
-Kernel Version:             2.6.17-rc2
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.16.1
 ======================================================================
-Date Submitted:             04-20-2006 17:44 CEST
-Last Modified:              04-24-2006 16:01 CEST
+Date Submitted:             04-24-2006 15:12 CEST
+Last Modified:              04-24-2006 16:02 CEST
 ======================================================================
-Summary:                    How about adding __devinitdata to the PCI-IDs?
+Summary:                    Line-in/mic-in not working
 Description: 
-I found a way to save GBs of Memory. Like in 
-<kernelsources>/Documentation/pci.txt  mentioned, the definiton of PCI
-drivers device-IDs can be marked as __devinitdata.
-
-This can be interesting, cause from 394 definitions of pci_device_ids in
-kernel 2.6.17-rc2, only 37 have it.
-That are 28Bytes/line on 32bit machines and 32Bytes/line on 64 bit
-machines.
-So I found the reason why the kernel is so resoucehungry. ;)
-I'll contact the kerneljanitors to add it in their TODO.
-
-I've added a patch for "writing an alsa driver".
+This card is very great for laptops under linux because of its size and
+hardware mixing. But i was very shocked after i realized that the input
+dont work. 
+Not the mic in and not the line in.
+I would like to help to fix this ugly thing, if i can. Because lots of my
+friends with linux on their laptop own this card too.
 ======================================================================
 
 ----------------------------------------------------------------------
- Henne - 04-24-06 15:49 
+ lwelyn - 04-24-06 15:56 
 ----------------------------------------------------------------------
-You meant CONFIG_HOTPLUG, did you? :)
+Oh huh sorry. I thought my profile would be enough.
+Its a
+Sound Blaster Audigy 2 ZS Notebook PCMCIA .
 
 ----------------------------------------------------------------------
- tiwai - 04-24-06 16:01 
+ jcdutton - 04-24-06 16:02 
 ----------------------------------------------------------------------
-The patches are applied to Hg repo.  Thanks.
-
-The CVS tree is broken and obsoleted now.  Use Hg instead.
-
-And, it's CONFIG_HOTPLUG_PCI, more exactly :)
+It clearly states on the alsa web site "soundcard matrix" that
+"Digital/Analog input does not work yet."
+So, this should not have been a surprise.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-20-06 17:44 Henne          New Issue                                    
-04-20-06 17:44 Henne          File Added: wr.diff                          
-04-20-06 17:44 Henne          Distribution              => Suse 10.0 x86_64
-04-20-06 17:44 Henne          Kernel Version            => 2.6.17-rc2      
-04-20-06 19:00 Henne          Note Added: 0009396                          
-04-20-06 19:00 Henne          File Added: dev.diff                         
-04-21-06 12:50 tiwai          Note Added: 0009411                          
-04-23-06 21:21 Henne          File Added: dev2.diff                        
-04-23-06 21:22 Henne          File Added: wr2.diff                         
-04-23-06 21:26 Henne          Note Added: 0009443                          
-04-24-06 15:49 Henne          Note Added: 0009455                          
-04-24-06 15:51 tiwai          Note View State: private: 9443                    
-04-24-06 15:51 tiwai          Note View State: public: 9443                    
-04-24-06 16:01 tiwai          Status                   new => resolved     
-04-24-06 16:01 tiwai          Resolution               open => fixed       
-04-24-06 16:01 tiwai          Assigned To               => tiwai           
-04-24-06 16:01 tiwai          Note Added: 0009462                          
+04-24-06 15:12 lwelyn         New Issue                                    
+04-24-06 15:12 lwelyn         Kernel Version            => 2.6.16.1        
+04-24-06 15:50 rlrevell       Note Added: 0009456                          
+04-24-06 15:56 lwelyn         Note Added: 0009459                          
+04-24-06 16:02 jcdutton       Note Added: 0009463                          
 ======================================================================
 
 
