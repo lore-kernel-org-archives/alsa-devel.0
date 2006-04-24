@@ -1,18 +1,14 @@
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: Re: Re: ALSA regression: oops on shutdown
-Date: Mon, 24 Apr 2006 19:30:33 +0400
-Message-ID: <20060424153032.GA7747__476.163431494747$1145892859$gmane$org@mipter.zuzino.mipt.ru>
-References: <20060423235730.GA7934@mipter.zuzino.mipt.ru> <20060423185721.39ff4207.akpm@osdl.org> <b6fcc0a0604231937h6f2754f9k68ec76dc19c7ddb9@mail.gmail.com> <1145846360.31507.50.camel@mindpipe> <20060424031142.GA7735@mipter.zuzino.mipt.ru> <20060424035144.GA7750@mipter.zuzino.mipt.ru> <s5hodyr2j2x.wl%tiwai@suse.de> <s5hhd4j2got.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002065]: HELP
+Date: Mon, 24 Apr 2006 17:56:29 +0200
+Message-ID: <39a4039a86cb391429d1b9855a5b1815@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from nproxy.gmail.com (nproxy.gmail.com [64.233.182.184])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC99D174
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 17:33:14 +0200 (MEST)
-Received: by nproxy.gmail.com with SMTP id a4so125585nfc
-        for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 08:33:14 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <s5hhd4j2got.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3836C18A
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 17:56:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,151 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, perex@suse.cz, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 24, 2006 at 04:26:10PM +0200, Takashi Iwai wrote:
-> At Mon, 24 Apr 2006 15:34:30 +0200,
-> I wrote:
-> > 
-> > At Mon, 24 Apr 2006 07:51:44 +0400,
-> > Alexey Dobriyan wrote:
-> > > 
-> > > On Mon, Apr 24, 2006 at 07:11:42AM +0400, Alexey Dobriyan wrote:
-> > > > On Sun, Apr 23, 2006 at 10:39:19PM -0400, Lee Revell wrote:
-> > > >
-> > > > Andrew asked about precise steps of reproduction:
-> > > >
-> > > > 	rmmod snd_pcm_oss
-> > > >
-> > > > which is part of Gentoo install scripts (/etc/init.d/alsasound:134-140, to
-> > > > be precise) (basically lsmod | grep snd | xargs rmmod).
-> > > >
-> > > > BUG: unable to handle kernel paging request at virtual address 6b6b6b6b
-> > > >  printing eip:
-> > > > c016c6a4
-> > > > *pde = 00000000
-> > > > Oops: 0000 [#1]
-> > > > PREEMPT
-> > > > Modules linked in: snd_pcm_oss snd_mixer_oss snd_intel8x0 snd_ac97_codec snd_ac97_bus snd_pcm snd_timer snd soundcore snd_page_alloc ehci_hcd uhci_hcd usbcore
-> > > > CPU:    0
-> > > > EIP:    0060:[<c016c6a4>]    Not tainted VLI
-> > > > EFLAGS: 00010286   (2.6.17-rc2-6b426e785cb81e53dc2fc4dcf997661472b470ef #1)
-> > > > EIP is at remove_proc_entry+0x2c/0x11c
-> > > > eax: 00000000   ebx: deb48b80   ecx: ffffffff   edx: de11ed24
-> > > > esi: de11ed24   edi: 6b6b6b6b   ebp: de4cb000   esp: de4cbf28
-> > > > ds: 007b   es: 007b   ss: 0068
-> > > > Process rmmod (pid: 7735, threadinfo=de4cb000 task=c1487a90)
-> > > > Stack: <0>de11ed24 6b6b6b6b deb48b80 de11ed24 bf8590cc df93603b de4f0e78 00000000
-> > > >        df965fc8 de4f0d84 df967e74 df966184 de4f0d88 df95292d df967f00 00000000
-> > > >        c0125f7a 00000000 5f646e73 5f6d6370 0073736f de85d4a4 b7f27000 c013789d
-> > > > Call Trace:
-> > > >  [<df93603b>] snd_info_unregister+0x2e/0x44 [snd]
-> > > >  [<df965fc8>] snd_pcm_oss_proc_done+0x19/0x30 [snd_pcm_oss]
-> > > >  [<df966184>] snd_pcm_oss_unregister_minor+0x3b/0x3f [snd_pcm_oss]
-> > > >  [<df95292d>] snd_pcm_notify+0x4a/0x91 [snd_pcm]
-> > > >  [<c0125f7a>] sys_delete_module+0x113/0x138
-> > > >  [<c013789d>] do_munmap+0xe2/0xef
-> > > >  [<c010259b>] syscall_call+0x7/0xb
-> > > > Code: 85 d2 56 53 51 51 89 14 24 89 44 24 04 75 13 8d 4c 24 04 89 e2 e8 dd f7 ff ff 85 c0 0f 85 f2 00 00 00 8b 7c 24 04 31 c0 83 c9 ff <f2> ae f7 d1 49 b0 01 89 ce e8 fa 13 fa ff 8b 04 24 8d 58 38 83
-> > > > EIP: [<c016c6a4>] remove_proc_entry+0x2c/0x11c SS:ESP 0068:de4cbf28
-> > > >  BUG: rmmod/7735, lock held at task exit time!
-> > > >  [df960920] {register_mutex}
-> > > > .. held by:             rmmod: 7735 [c1487a90, 118]
-> > > > ... acquired at:               snd_pcm_notify+0x10/0x91 [snd_pcm]
-> > >
-> > > Other symptoms are 6 (six) "prealloc" files, 3 "oss" files and 1 "oss"
-> > > directory (according to highlighting):
-> > >
-> > > $ ls /proc/asound/
-> > > card0  devices  modules  oss  oss  prealloc  prealloc  prealloc  timers
-> > > 			      ^^^
-> > > 			      directory
-> > >
-> > > cards  ICH5     oss      oss  pcm  prealloc  prealloc  prealloc  version
-> > >
-> > > "ls -l" thinks all 4 "oss" files are files (again, according to
-> > > highlighting).
-> >
-> > That's odd.  It implies that the proc file paths are flatten.
->
-> But, not all entries seem flatten (e.g. pcm0p, sub0, etc).
-> Could you show the output of "tree /proc/asound" ?
 
-2.6.16 (good)			2.6.17-rc2-whatever (bad)
----------------------------------------------------------
-/proc/asound/			/proc/asound/
-|-- ICH5 -> card0		|-- ICH5 -> card0
-|-- card0			|-- card0
-|   |-- codec97#0		|   |-- codec97#0
-|   |   |-- ac97#0-0		|   |   |-- ac97#0-0
-|   |   `-- ac97#0-0+regs	|   |   `-- ac97#0-0+regs
-|   |-- id			|   |-- id
-|   |-- intel8x0		|   |-- intel8x0
-|   |-- oss_mixer		|   `-- oss_mixer
-|   |-- pcm0c			|-- cards
-|   |   |-- info		|-- devices
-|   |   |-- oss			|-- modules
-|   |   `-- sub0		|-- oss
-|   |       |-- hw_params	|-- oss
-|   |       |-- info		|-- oss
-|   |       |-- prealloc	|-- oss
-|   |       |-- status		|-- pcm
-|   |       `-- sw_params	|-- prealloc
-|   |-- pcm0p			|-- prealloc
-|   |   |-- info		|-- prealloc
-|   |   |-- oss			|-- prealloc
-|   |   `-- sub0		|-- prealloc
-|   |       |-- hw_params	|-- prealloc
-|   |       |-- info		|-- timers
-|   |       |-- prealloc	`-- version
-|   |       |-- status
-|   |       `-- sw_params	3 directories, 21 files
-|   |-- pcm1c
-|   |   |-- info
-|   |   |-- oss
-|   |   `-- sub0
-|   |       |-- hw_params
-|   |       |-- info
-|   |       |-- prealloc
-|   |       |-- status
-|   |       `-- sw_params
-|   |-- pcm2c
-|   |   |-- info
-|   |   `-- sub0
-|   |       |-- hw_params
-|   |       |-- info
-|   |       |-- prealloc
-|   |       |-- status
-|   |       `-- sw_params
-|   |-- pcm3c
-|   |   |-- info
-|   |   `-- sub0
-|   |       |-- hw_params
-|   |       |-- info
-|   |       |-- prealloc
-|   |       |-- status
-|   |       `-- sw_params
-|   `-- pcm4p
-|       |-- info
-|       `-- sub0
-|           |-- hw_params
-|           |-- info
-|           |-- prealloc
-|           |-- status
-|           `-- sw_params
-|-- cards
-|-- devices
-|-- modules
-|-- oss
-|   |-- devices
-|   `-- sndstat
-|-- pcm
-|-- timers
-`-- version
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2065> 
+======================================================================
+Reported By:                chriscopin
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2065
+Category:                   1_OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               uBUNTU
+Kernel Version:             I686-SMP
+======================================================================
+Date Submitted:             04-24-2006 17:56 CEST
+Last Modified:              04-24-2006 17:56 CEST
+======================================================================
+Summary:                    HELP
+Description: 
+I haven't sound, my cards seems detected but i have no sound
+Two card are detected (see the joint file)
+But no one produce any sound
+(sorry for my english, I'm french)
 
-16 directories, 52 files
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-24-06 17:56 chriscopin     New Issue                                    
+04-24-06 17:56 chriscopin     File Added: Capture-1.png                    
+04-24-06 17:56 chriscopin     Distribution              => uBUNTU          
+04-24-06 17:56 chriscopin     Kernel Version            => I686-SMP        
+======================================================================
+
 
 
 
