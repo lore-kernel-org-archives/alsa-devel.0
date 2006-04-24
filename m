@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002064]: Line-in/mic-in not working
-Date: Mon, 24 Apr 2006 15:50:13 +0200
-Message-ID: <b21cbf826bb82dd2f2fdfd004c417a45@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002044]: How about adding __devinitdata to the PCI-IDs?
+Date: Mon, 24 Apr 2006 15:49:51 +0200
+Message-ID: <421e539696f44e490b8d9615f8f41a1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5D17174
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:50:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76C14147
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:49:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,45 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2064> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2044> 
 ======================================================================
-Reported By:                lwelyn
+Reported By:                Henne
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2064
-Category:                   PCI - emu10k1
+Issue ID:                   2044
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   tweak
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.16.1
+Distribution:               Suse 10.0 x86_64
+Kernel Version:             2.6.17-rc2
 ======================================================================
-Date Submitted:             04-24-2006 15:12 CEST
-Last Modified:              04-24-2006 15:50 CEST
+Date Submitted:             04-20-2006 17:44 CEST
+Last Modified:              04-24-2006 15:49 CEST
 ======================================================================
-Summary:                    Line-in/mic-in not working
+Summary:                    How about adding __devinitdata to the PCI-IDs?
 Description: 
-This card is very great for laptops under linux because of its size and
-hardware mixing. But i was very shocked after i realized that the input
-dont work. 
-Not the mic in and not the line in.
-I would like to help to fix this ugly thing, if i can. Because lots of my
-friends with linux on their laptop own this card too.
+I found a way to save GBs of Memory. Like in 
+<kernelsources>/Documentation/pci.txt  mentioned, the definiton of PCI
+drivers device-IDs can be marked as __devinitdata.
+
+This can be interesting, cause from 394 definitions of pci_device_ids in
+kernel 2.6.17-rc2, only 37 have it.
+That are 28Bytes/line on 32bit machines and 32Bytes/line on 64 bit
+machines.
+So I found the reason why the kernel is so resoucehungry. ;)
+I'll contact the kerneljanitors to add it in their TODO.
+
+I've added a patch for "writing an alsa driver".
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 04-24-06 15:50 
+ Henne - 04-23-06 21:26 
 ----------------------------------------------------------------------
-What card are you talking about?
+Here they are!
+
+Could that be that theres something broken on cvs.sf.net ???
+I have only alsa-*-1.0.10rc4 in my cvs-dir.
+
+Greest,
+Henne
+
+P.S. These patches are made against 1.0.11
+
+----------------------------------------------------------------------
+ Henne - 04-24-06 15:49 
+----------------------------------------------------------------------
+You meant CONFIG_HOTPLUG, did you? :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-24-06 15:12 lwelyn         New Issue                                    
-04-24-06 15:12 lwelyn         Kernel Version            => 2.6.16.1        
-04-24-06 15:50 rlrevell       Note Added: 0009456                          
+04-20-06 17:44 Henne          New Issue                                    
+04-20-06 17:44 Henne          File Added: wr.diff                          
+04-20-06 17:44 Henne          Distribution              => Suse 10.0 x86_64
+04-20-06 17:44 Henne          Kernel Version            => 2.6.17-rc2      
+04-20-06 19:00 Henne          Note Added: 0009396                          
+04-20-06 19:00 Henne          File Added: dev.diff                         
+04-21-06 12:50 tiwai          Note Added: 0009411                          
+04-23-06 21:21 Henne          File Added: dev2.diff                        
+04-23-06 21:22 Henne          File Added: wr2.diff                         
+04-23-06 21:26 Henne          Note Added: 0009443                          
+04-24-06 15:49 Henne          Note Added: 0009455                          
 ======================================================================
 
 
