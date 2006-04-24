@@ -1,18 +1,14 @@
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: Re: Re: ALSA regression: oops on shutdown
-Date: Mon, 24 Apr 2006 07:11:42 +0400
-Message-ID: <20060424031142.GA7735@mipter.zuzino.mipt.ru>
-References: <20060423235730.GA7934@mipter.zuzino.mipt.ru> <20060423185721.39ff4207.akpm@osdl.org> <b6fcc0a0604231937h6f2754f9k68ec76dc19c7ddb9@mail.gmail.com> <1145846360.31507.50.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
+Date: Mon, 24 Apr 2006 05:43:55 +0200
+Message-ID: <a248f711a401c23c1e987efcb7a562c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from nproxy.gmail.com (nproxy.gmail.com [64.233.182.187])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16B5B18E
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 05:14:23 +0200 (MEST)
-Received: by nproxy.gmail.com with SMTP id a4so36603nfc
-        for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 20:14:23 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1145846360.31507.50.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1358E18E
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 05:43:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,276 +18,200 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, perex@suse.cz, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 23, 2006 at 10:39:19PM -0400, Lee Revell wrote:
 
-Andrew asked about precise steps of reproduction:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
+======================================================================
+Reported By:                ponchick
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1833
+Category:                   GENERIC - mpu401
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             gentoo-sources-2.6.15-r4
+======================================================================
+Date Submitted:             02-09-2006 08:33 CET
+Last Modified:              04-24-2006 05:43 CEST
+======================================================================
+Summary:                    oops in snd_mpu401_uart
+Description: 
+I don't know what exactly happend but when I run wine or winecfg it
+segfaulted. dmesg shows following:
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
+snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
+snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
+snd_seq_device snd soundcore nvidia sky2
+Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
+ffff810002178440)
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
+       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
+       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
+       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
+       <ffffffff80397b49>{_spin_lock+27}
+<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
+       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
+       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
+       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
+       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
+       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
+       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
+       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
+       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
+<ffffffff8018075f>{__link_path_walk+3332}
+       <ffffffff80397b0c>{__lock_text_start+20}
+<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
+       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
+<ffffffff8017ab11>{chrdev_open+454}
+       <ffffffff8017a94b>{chrdev_open+0}
+<ffffffff80171031>{__dentry_open+310}
+       <ffffffff8017118d>{nameidata_to_filp+34}
+<ffffffff801711d6>{filp_open+58}
+       <ffffffff801713d4>{get_unused_fd+234}
+<ffffffff80171533>{do_sys_open+81}
+       <ffffffff8011e57f>{sysenter_do_call+27}
 
-	rmmod snd_pcm_oss
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
+CR2: 0000000010228800
+ <6>note: wine-preloader[11110] exited with preempt_count 1
 
-which is part of Gentoo install scripts (/etc/init.d/alsasound:134-140, to
-be precise) (basically lsmod | grep snd | xargs rmmod).
+I use standalone alsa-driver (kernel one is out of date and doesn't
+support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
+gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
+======================================================================
 
-BUG: unable to handle kernel paging request at virtual address 6b6b6b6b
- printing eip:
-c016c6a4
-*pde = 00000000
-Oops: 0000 [#1]
-PREEMPT
-Modules linked in: snd_pcm_oss snd_mixer_oss snd_intel8x0 snd_ac97_codec snd_ac97_bus snd_pcm snd_timer snd soundcore snd_page_alloc ehci_hcd uhci_hcd usbcore
-CPU:    0
-EIP:    0060:[<c016c6a4>]    Not tainted VLI
-EFLAGS: 00010286   (2.6.17-rc2-6b426e785cb81e53dc2fc4dcf997661472b470ef #1)
-EIP is at remove_proc_entry+0x2c/0x11c
-eax: 00000000   ebx: deb48b80   ecx: ffffffff   edx: de11ed24
-esi: de11ed24   edi: 6b6b6b6b   ebp: de4cb000   esp: de4cbf28
-ds: 007b   es: 007b   ss: 0068
-Process rmmod (pid: 7735, threadinfo=de4cb000 task=c1487a90)
-Stack: <0>de11ed24 6b6b6b6b deb48b80 de11ed24 bf8590cc df93603b de4f0e78 00000000
-       df965fc8 de4f0d84 df967e74 df966184 de4f0d88 df95292d df967f00 00000000
-       c0125f7a 00000000 5f646e73 5f6d6370 0073736f de85d4a4 b7f27000 c013789d
-Call Trace:
- [<df93603b>] snd_info_unregister+0x2e/0x44 [snd]
- [<df965fc8>] snd_pcm_oss_proc_done+0x19/0x30 [snd_pcm_oss]
- [<df966184>] snd_pcm_oss_unregister_minor+0x3b/0x3f [snd_pcm_oss]
- [<df95292d>] snd_pcm_notify+0x4a/0x91 [snd_pcm]
- [<c0125f7a>] sys_delete_module+0x113/0x138
- [<c013789d>] do_munmap+0xe2/0xef
- [<c010259b>] syscall_call+0x7/0xb
-Code: 85 d2 56 53 51 51 89 14 24 89 44 24 04 75 13 8d 4c 24 04 89 e2 e8 dd f7 ff ff 85 c0 0f 85 f2 00 00 00 8b 7c 24 04 31 c0 83 c9 ff <f2> ae f7 d1 49 b0 01 89 ce e8 fa 13 fa ff 8b 04 24 8d 58 38 83
-EIP: [<c016c6a4>] remove_proc_entry+0x2c/0x11c SS:ESP 0068:de4cbf28
- BUG: rmmod/7735, lock held at task exit time!
- [df960920] {register_mutex}
-.. held by:             rmmod: 7735 [c1487a90, 118]
-... acquired at:               snd_pcm_notify+0x10/0x91 [snd_pcm]
+----------------------------------------------------------------------
+ Raymond - 04-24-06 03:20 
+----------------------------------------------------------------------
+>> Do you have any other error in system log when the driver is loaded ?
 
-> Do you have procfs disabled?
+> No, I haven't.
 
-No, /proc is on.
+Please note that the message "Vortex : init .... done" in the system log
+is quite misleading, it just mean vortex_core_init() is completed.
 
-> Full config is needed to debug this more.
+It is possible that some au88x0 error message may appear after "done".
 
-# Linux kernel version: 2.6.17-rc2-6b426e785cb81e53dc2fc4dcf997661472b470ef
-CONFIG_X86_32=y
-CONFIG_SEMAPHORE_SLEEPERS=y
-CONFIG_X86=y
-CONFIG_MMU=y
-CONFIG_GENERIC_ISA_DMA=y
-CONFIG_GENERIC_IOMAP=y
-CONFIG_GENERIC_HWEIGHT=y
-CONFIG_ARCH_MAY_HAVE_PC_FDC=y
-CONFIG_DMI=y
-CONFIG_EXPERIMENTAL=y
-CONFIG_BROKEN_ON_SMP=y
-CONFIG_LOCK_KERNEL=y
-CONFIG_INIT_ENV_ARG_LIMIT=32
-CONFIG_LOCALVERSION=""
-CONFIG_SWAP=y
-CONFIG_SYSVIPC=y
-CONFIG_SYSCTL=y
-CONFIG_IKCONFIG=y
-CONFIG_IKCONFIG_PROC=y
-CONFIG_INITRAMFS_SOURCE=""
-CONFIG_VM86=y
-CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-CONFIG_EMBEDDED=y
-CONFIG_KALLSYMS=y
-CONFIG_HOTPLUG=y
-CONFIG_PRINTK=y
-CONFIG_BUG=y
-CONFIG_ELF_CORE=y
-CONFIG_BASE_FULL=y
-CONFIG_FUTEX=y
-CONFIG_EPOLL=y
-CONFIG_SHMEM=y
-CONFIG_SLAB=y
-CONFIG_BASE_SMALL=0
-CONFIG_MODULES=y
-CONFIG_MODULE_UNLOAD=y
-CONFIG_KMOD=y
-CONFIG_IOSCHED_NOOP=y
-CONFIG_IOSCHED_CFQ=y
-CONFIG_DEFAULT_CFQ=y
-CONFIG_DEFAULT_IOSCHED="cfq"
-CONFIG_X86_PC=y
-CONFIG_MPENTIUM4=y
-CONFIG_X86_CMPXCHG=y
-CONFIG_X86_XADD=y
-CONFIG_X86_L1_CACHE_SHIFT=7
-CONFIG_RWSEM_XCHGADD_ALGORITHM=y
-CONFIG_GENERIC_CALIBRATE_DELAY=y
-CONFIG_X86_WP_WORKS_OK=y
-CONFIG_X86_INVLPG=y
-CONFIG_X86_BSWAP=y
-CONFIG_X86_POPAD_OK=y
-CONFIG_X86_CMPXCHG64=y
-CONFIG_X86_GOOD_APIC=y
-CONFIG_X86_INTEL_USERCOPY=y
-CONFIG_X86_USE_PPRO_CHECKSUM=y
-CONFIG_X86_TSC=y
-CONFIG_PREEMPT=y
-CONFIG_PREEMPT_BKL=y
-CONFIG_X86_MCE=y
-CONFIG_NOHIGHMEM=y
-CONFIG_VMSPLIT_3G=y
-CONFIG_PAGE_OFFSET=0xC0000000
-CONFIG_ARCH_FLATMEM_ENABLE=y
-CONFIG_ARCH_SPARSEMEM_ENABLE=y
-CONFIG_ARCH_SELECT_MEMORY_MODEL=y
-CONFIG_SELECT_MEMORY_MODEL=y
-CONFIG_FLATMEM_MANUAL=y
-CONFIG_FLATMEM=y
-CONFIG_FLAT_NODE_MEM_MAP=y
-CONFIG_SPARSEMEM_STATIC=y
-CONFIG_SPLIT_PTLOCK_CPUS=4
-CONFIG_MTRR=y
-CONFIG_REGPARM=y
-CONFIG_HZ_250=y
-CONFIG_HZ=250
-CONFIG_PHYSICAL_START=0x100000
-CONFIG_PM=y
-CONFIG_ACPI=y
-CONFIG_ACPI_PROCESSOR=y
-CONFIG_ACPI_THERMAL=y
-CONFIG_ACPI_BLACKLIST_YEAR=0
-CONFIG_ACPI_EC=y
-CONFIG_ACPI_POWER=y
-CONFIG_ACPI_SYSTEM=y
-CONFIG_PCI=y
-CONFIG_PCI_GOANY=y
-CONFIG_PCI_BIOS=y
-CONFIG_PCI_DIRECT=y
-CONFIG_PCI_MMCONFIG=y
-CONFIG_ISA_DMA_API=y
-CONFIG_BINFMT_ELF=y
-CONFIG_NET=y
-CONFIG_PACKET=y
-CONFIG_UNIX=y
-CONFIG_INET=y
-CONFIG_IP_FIB_HASH=y
-CONFIG_TCP_CONG_BIC=y
-CONFIG_STANDALONE=y
-CONFIG_PREVENT_FIRMWARE_BUILD=y
-CONFIG_PNP=y
-CONFIG_PNPACPI=y
-CONFIG_BLK_DEV_LOOP=m
-CONFIG_IDE=y
-CONFIG_BLK_DEV_IDE=y
-CONFIG_BLK_DEV_IDEDISK=y
-CONFIG_IDEDISK_MULTI_MODE=y
-CONFIG_BLK_DEV_IDECD=m
-CONFIG_IDE_GENERIC=y
-CONFIG_BLK_DEV_IDEPCI=y
-CONFIG_IDEPCI_SHARE_IRQ=y
-CONFIG_BLK_DEV_GENERIC=y
-CONFIG_BLK_DEV_IDEDMA_PCI=y
-CONFIG_IDEDMA_PCI_AUTO=y
-CONFIG_BLK_DEV_PIIX=y
-CONFIG_BLK_DEV_IDEDMA=y
-CONFIG_IDEDMA_AUTO=y
-CONFIG_SCSI=m
-CONFIG_BLK_DEV_SD=m
-CONFIG_NETDEVICES=y
-CONFIG_NET_ETHERNET=y
-CONFIG_MII=y
-CONFIG_NET_PCI=y
-CONFIG_8139TOO=y
-CONFIG_8139TOO_PIO=y
-CONFIG_INPUT=y
-CONFIG_INPUT_MOUSEDEV=y
-CONFIG_INPUT_MOUSEDEV_SCREEN_X=1024
-CONFIG_INPUT_MOUSEDEV_SCREEN_Y=768
-CONFIG_INPUT_KEYBOARD=y
-CONFIG_KEYBOARD_ATKBD=y
-CONFIG_INPUT_MOUSE=y
-CONFIG_MOUSE_PS2=y
-CONFIG_SERIO=y
-CONFIG_SERIO_I8042=y
-CONFIG_SERIO_LIBPS2=y
-CONFIG_VT=y
-CONFIG_VT_CONSOLE=y
-CONFIG_HW_CONSOLE=y
-CONFIG_SERIAL_8250=y
-CONFIG_SERIAL_8250_NR_UARTS=4
-CONFIG_SERIAL_8250_RUNTIME_UARTS=0
-CONFIG_SERIAL_CORE=y
-CONFIG_UNIX98_PTYS=y
-CONFIG_RTC=y
-CONFIG_AGP=y
-CONFIG_AGP_INTEL=y
-CONFIG_DRM=y
-CONFIG_DRM_I915=y
-CONFIG_FB=y
-CONFIG_FB_CFB_FILLRECT=y
-CONFIG_FB_CFB_COPYAREA=y
-CONFIG_FB_CFB_IMAGEBLIT=y
-CONFIG_FB_MODE_HELPERS=y
-CONFIG_FB_INTEL=y
-CONFIG_VGA_CONSOLE=y
-CONFIG_DUMMY_CONSOLE=y
-CONFIG_SOUND=m
-CONFIG_SND=m
-CONFIG_SND_TIMER=m
-CONFIG_SND_PCM=m
-CONFIG_SND_OSSEMUL=y
-CONFIG_SND_MIXER_OSS=m
-CONFIG_SND_PCM_OSS=m
-CONFIG_SND_AC97_CODEC=m
-CONFIG_SND_AC97_BUS=m
-CONFIG_SND_INTEL8X0=m
-CONFIG_USB_ARCH_HAS_HCD=y
-CONFIG_USB_ARCH_HAS_OHCI=y
-CONFIG_USB_ARCH_HAS_EHCI=y
-CONFIG_USB=m
-CONFIG_USB_EHCI_HCD=m
-CONFIG_USB_UHCI_HCD=m
-CONFIG_USB_STORAGE=m
-CONFIG_EXT2_FS=y
-CONFIG_REISERFS_FS=y
-CONFIG_ISO9660_FS=m
-CONFIG_JOLIET=y
-CONFIG_FAT_FS=m
-CONFIG_VFAT_FS=m
-CONFIG_FAT_DEFAULT_CODEPAGE=866
-CONFIG_FAT_DEFAULT_IOCHARSET="koi8-r"
-CONFIG_PROC_FS=y
-CONFIG_SYSFS=y
-CONFIG_TMPFS=y
-CONFIG_RAMFS=y
-CONFIG_UFS_FS=y
-CONFIG_CIFS=m
-CONFIG_PARTITION_ADVANCED=y
-CONFIG_MSDOS_PARTITION=y
-CONFIG_BSD_DISKLABEL=y
-CONFIG_NLS=y
-CONFIG_NLS_DEFAULT="utf8"
-CONFIG_NLS_CODEPAGE_866=m
-CONFIG_NLS_KOI8_R=m
-CONFIG_NLS_UTF8=y
-CONFIG_MAGIC_SYSRQ=y
-CONFIG_DEBUG_KERNEL=y
-CONFIG_LOG_BUF_SHIFT=15
-CONFIG_DETECT_SOFTLOCKUP=y
-CONFIG_DEBUG_SLAB=y
-CONFIG_DEBUG_PREEMPT=y
-CONFIG_DEBUG_MUTEXES=y
-CONFIG_DEBUG_BUGVERBOSE=y
-CONFIG_DEBUG_VM=y
-CONFIG_FORCED_INLINING=y
-CONFIG_DEBUG_STACKOVERFLOW=y
-CONFIG_DEBUG_STACK_USAGE=y
-CONFIG_STACK_BACKTRACE_COLS=1
-CONFIG_DEBUG_RODATA=y
-CONFIG_4KSTACKS=y
-CONFIG_DOUBLEFAULT=y
-CONFIG_CRC32=y
-CONFIG_GENERIC_HARDIRQS=y
-CONFIG_GENERIC_IRQ_PROBE=y
-CONFIG_X86_BIOS_REBOOT=y
-CONFIG_KTIME_SCALAR=y
+----------------------------------------------------------------------
+ ponchick - 04-24-06 05:43 
+----------------------------------------------------------------------
+I can't reproduce these messages. About 10 months they flood my logs and
+now they completly gone. But I update my system including kde and arts.
+Seems to me it was arts.
+
+> Please note that the message "Vortex : init .... done" in the system log
+is quite misleading, it just mean vortex_core_init() is completed.
+> 
+> It is possible that some au88x0 error message may appear after "done".
+No, there was nothing in logs after done.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-09-06 08:33 ponchick       New Issue                                    
+02-09-06 08:33 ponchick       Distribution              => gentoo          
+02-09-06 08:33 ponchick       Kernel Version            =>
+gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
+02-09-06 09:32 Raymond        Note Added: 0007973                          
+02-09-06 11:57 ponchick       Note Added: 0007975                          
+02-09-06 12:32 Raymond        Note Added: 0007976                          
+02-09-06 12:35 Raymond        Note Edited: 0007976                         
+02-10-06 03:06 Raymond        Note Added: 0007982                          
+02-10-06 03:11 rlrevell       Note Added: 0007983                          
+02-10-06 03:49 Raymond        Note Added: 0007984                          
+02-10-06 05:08 ponchick       Note Added: 0007986                          
+02-10-06 05:36 Raymond        Note Added: 0007988                          
+02-10-06 06:03 Raymond        Note Added: 0007990                          
+02-10-06 10:09 ponchick       Note Added: 0007997                          
+02-10-06 11:30 Raymond        Note Added: 0008001                          
+02-12-06 03:32 Raymond        Note Added: 0008024                          
+02-12-06 14:14 Raymond        Note Deleted: 0007990                        
+02-13-06 07:08 Raymond        Note Edited: 0008024                         
+02-13-06 16:44 Raymond        Note Edited: 0008001                         
+02-14-06 10:41 Raymond        Note Edited: 0008024                         
+02-16-06 04:40 Raymond        Note Added: 0008084                          
+02-16-06 06:33 ponchick       Note Added: 0008086                          
+02-16-06 09:57 Raymond        Note Added: 0008089                          
+02-16-06 10:16 ponchick       Note Added: 0008091                          
+02-16-06 10:38 Raymond        Note Added: 0008092                          
+02-16-06 10:40 Raymond        Note Edited: 0008092                         
+02-16-06 13:08 Raymond        Note Edited: 0008089                         
+02-25-06 13:15 Raymond        Note Added: 0008189                          
+03-21-06 18:02 Raymond        Note Edited: 0008089                         
+04-06-06 19:13 Raymond        Note Added: 0009126                          
+04-06-06 19:23 rlrevell       Note Added: 0009127                          
+04-11-06 05:09 Raymond        Note Added: 0009226                          
+04-11-06 06:08 ponchick       Note Added: 0009227                          
+04-11-06 09:06 Raymond        Note Added: 0009230                          
+04-12-06 10:28 Raymond        Note Added: 0009240                          
+04-12-06 11:36 ponchick       Note Added: 0009241                          
+04-12-06 15:16 Raymond        Note Added: 0009243                          
+04-13-06 07:16 Raymond        Note Added: 0009253                          
+04-13-06 10:05 Raymond        Note Added: 0009255                          
+04-13-06 10:37 Raymond        Note Edited: 0009253                         
+04-14-06 03:30 Raymond        Note Added: 0009279                          
+04-17-06 22:57 gineera        Note Added: 0009322                          
+04-18-06 04:53 ponchick       Note Added: 0009323                          
+04-18-06 05:11 ponchick       Note Added: 0009324                          
+04-18-06 05:32 Raymond        Note Added: 0009325                          
+04-18-06 06:04 Raymond        Note Edited: 0009325                         
+04-19-06 05:42 Raymond        Issue Monitored: alien999999999                   
+
+04-19-06 05:42 Raymond        Note Added: 0009349                          
+04-20-06 04:27 Raymond        Issue Monitored: penguinparty                    
+04-20-06 04:27 Raymond        Note Added: 0009364                          
+04-20-06 05:05 Raymond        Note Edited: 0009325                         
+04-20-06 08:55 alien999999999 Note Added: 0009366                          
+04-20-06 09:27 Raymond        Note Added: 0009367                          
+04-20-06 10:25 Raymond        Note Edited: 0009367                         
+04-21-06 08:11 alien999999999 Note Added: 0009408                          
+04-21-06 16:41 rlrevell       Note Added: 0009414                          
+04-21-06 18:00 Raymond        Note Added: 0009420                          
+04-21-06 18:13 Raymond        Note Added: 0009422                          
+04-21-06 18:23 Raymond        Note Added: 0009425                          
+04-21-06 18:28 Raymond        Note Added: 0009426                          
+04-21-06 18:54 rlrevell       Note Added: 0009427                          
+04-22-06 02:56 Raymond        Note Edited: 0009422                         
+04-22-06 02:57 Raymond        Note Edited: 0009425                         
+04-22-06 06:58 Raymond        Note Edited: 0009426                         
+04-24-06 03:20 Raymond        Note Added: 0009447                          
+04-24-06 05:43 ponchick       Note Added: 0009448                          
+======================================================================
+
 
 
 
