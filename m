@@ -1,18 +1,17 @@
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: Re: Re: ALSA regression: oops on shutdown
-Date: Mon, 24 Apr 2006 07:51:44 +0400
-Message-ID: <20060424035144.GA7750@mipter.zuzino.mipt.ru>
-References: <20060423235730.GA7934@mipter.zuzino.mipt.ru> <20060423185721.39ff4207.akpm@osdl.org> <b6fcc0a0604231937h6f2754f9k68ec76dc19c7ddb9@mail.gmail.com> <1145846360.31507.50.camel@mindpipe> <20060424031142.GA7735@mipter.zuzino.mipt.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: "Pre-Listing Package" <PreListingPackage@marketingsystemsolution-mailer.com>
+Subject: Wouldn't It Make A Difference If...
+Date: Mon, 24 Apr 2006 00:59:33 -0500
+Message-ID: <20060424055925.212F89957A@mail.perex.cz>
+Reply-To: PreListingPackage@marketingsystemsolution-mailer.com
+Content-Type: text/html;
+	charset="us-ascii"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from nproxy.gmail.com (nproxy.gmail.com [64.233.182.189])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27AAC192
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 05:54:25 +0200 (MEST)
-Received: by nproxy.gmail.com with SMTP id a4so40086nfc
-        for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2006 20:54:24 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20060424031142.GA7735@mipter.zuzino.mipt.ru>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4376018A
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 07:59:26 +0200 (MEST)
+Received: from marketingsystemsolution-mailer.com (unknown [63.86.220.60])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 212F89957A
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 07:59:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +21,206 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, perex@suse.cz, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 24, 2006 at 07:11:42AM +0400, Alexey Dobriyan wrote:
-> On Sun, Apr 23, 2006 at 10:39:19PM -0400, Lee Revell wrote:
->
-> Andrew asked about precise steps of reproduction:
->
-> 	rmmod snd_pcm_oss
->
-> which is part of Gentoo install scripts (/etc/init.d/alsasound:134-140, to
-> be precise) (basically lsmod | grep snd | xargs rmmod).
->
-> BUG: unable to handle kernel paging request at virtual address 6b6b6b6b
->  printing eip:
-> c016c6a4
-> *pde = 00000000
-> Oops: 0000 [#1]
-> PREEMPT
-> Modules linked in: snd_pcm_oss snd_mixer_oss snd_intel8x0 snd_ac97_codec snd_ac97_bus snd_pcm snd_timer snd soundcore snd_page_alloc ehci_hcd uhci_hcd usbcore
-> CPU:    0
-> EIP:    0060:[<c016c6a4>]    Not tainted VLI
-> EFLAGS: 00010286   (2.6.17-rc2-6b426e785cb81e53dc2fc4dcf997661472b470ef #1)
-> EIP is at remove_proc_entry+0x2c/0x11c
-> eax: 00000000   ebx: deb48b80   ecx: ffffffff   edx: de11ed24
-> esi: de11ed24   edi: 6b6b6b6b   ebp: de4cb000   esp: de4cbf28
-> ds: 007b   es: 007b   ss: 0068
-> Process rmmod (pid: 7735, threadinfo=de4cb000 task=c1487a90)
-> Stack: <0>de11ed24 6b6b6b6b deb48b80 de11ed24 bf8590cc df93603b de4f0e78 00000000
->        df965fc8 de4f0d84 df967e74 df966184 de4f0d88 df95292d df967f00 00000000
->        c0125f7a 00000000 5f646e73 5f6d6370 0073736f de85d4a4 b7f27000 c013789d
-> Call Trace:
->  [<df93603b>] snd_info_unregister+0x2e/0x44 [snd]
->  [<df965fc8>] snd_pcm_oss_proc_done+0x19/0x30 [snd_pcm_oss]
->  [<df966184>] snd_pcm_oss_unregister_minor+0x3b/0x3f [snd_pcm_oss]
->  [<df95292d>] snd_pcm_notify+0x4a/0x91 [snd_pcm]
->  [<c0125f7a>] sys_delete_module+0x113/0x138
->  [<c013789d>] do_munmap+0xe2/0xef
->  [<c010259b>] syscall_call+0x7/0xb
-> Code: 85 d2 56 53 51 51 89 14 24 89 44 24 04 75 13 8d 4c 24 04 89 e2 e8 dd f7 ff ff 85 c0 0f 85 f2 00 00 00 8b 7c 24 04 31 c0 83 c9 ff <f2> ae f7 d1 49 b0 01 89 ce e8 fa 13 fa ff 8b 04 24 8d 58 38 83
-> EIP: [<c016c6a4>] remove_proc_entry+0x2c/0x11c SS:ESP 0068:de4cbf28
->  BUG: rmmod/7735, lock held at task exit time!
->  [df960920] {register_mutex}
-> .. held by:             rmmod: 7735 [c1487a90, 118]
-> ... acquired at:               snd_pcm_notify+0x10/0x91 [snd_pcm]
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:st1="urn:schemas-microsoft-com:office:smarttags"
+xmlns="http://www.w3.org/TR/REC-html40">
 
-Other symptoms are 6 (six) "prealloc" files, 3 "oss" files and 1 "oss"
-directory (according to highlighting):
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 11">
+<meta name=Originator content="Microsoft Word 11">
+<link rel=File-List
+href='http://marketingsystemsolution-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4341414145450E41420E400E4146454B4643450E08.aspx'>
+<title>Do you want to increase your business by 40%or more this year</title>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="City" downloadurl="http://www.5iamas-microsoft-com:office:smarttags"/>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="State" downloadurl="http://www.5iamas-microsoft-com:office:smarttags"/>
+<o:SmartTagType namespaceuri="urn:schemas-microsoft-com:office:smarttags"
+ name="place" downloadurl="http://www.5iantlavalamp.com/"/>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Monica Ryan</o:Author>
+  <o:Template>Normal</o:Template>
+  <o:LastAuthor>Monica Ryan</o:LastAuthor>
+  <o:Revision>7</o:Revision>
+  <o:TotalTime>19</o:TotalTime>
+  <o:Created>2006-03-29T20:42:00Z</o:Created>
+  <o:LastSaved>2006-04-24T01:09:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>175</o:Words>
+  <o:Characters>1003</o:Characters>
+  <o:Lines>8</o:Lines>
+  <o:Paragraphs>2</o:Paragraphs>
+  <o:CharactersWithSpaces>1176</o:CharactersWithSpaces>
+  <o:Version>11.5606</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:DisplayBackgroundShape/>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:PunctuationKerning/>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+   <w:DontGrowAutofit/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" LatentStyleCount="156">
+ </w:LatentStyles>
+</xml><![endif]--><!--[if !mso]><object
+ classid="clsid:38481807-CA0E-42D2-BF39-B33AF135CC4D" id=ieooui></object>
+<style>
+st1:*&#123;behavior:url(#ieooui) &#125;
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	&#123;font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:swiss;
+	mso-font-pitch:variable;
+	mso-font-signature:536871559 0 0 0 415 0;&#125;
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	&#123;mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";&#125;
+a:link, span.MsoHyperlink
+	&#123;color:blue;
+	text-decoration:underline;
+	text-underline:single;&#125;
+a:visited, span.MsoHyperlinkFollowed
+	&#123;color:purple;
+	text-decoration:underline;
+	text-underline:single;&#125;
+span.GramE
+	&#123;mso-style-name:"";
+	mso-gram-e:yes;&#125;
+@page Section1
+	&#123;size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;&#125;
+div.Section1
+	&#123;page:Section1;&#125;
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	&#123;mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;&#125;
+</style>
+<![endif]-->
+</head>
 
-$ ls /proc/asound/
-card0  devices  modules  oss  oss  prealloc  prealloc  prealloc  timers
-			      ^^^
-			      directory
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
 
-cards  ICH5     oss      oss  pcm  prealloc  prealloc  prealloc  version
+<div class=Section1>
 
-"ls -l" thinks all 4 "oss" files are files (again, according to
-highlighting).
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><b
+style='mso-bidi-font-weight:normal'><i style='mso-bidi-font-style:normal'><span
+style='font-family:Verdana;mso-bidi-font-family:"Courier New"'>Wouldn&#146;t It Make
+A Difference If&#133;</span></i></b><b style='mso-bidi-font-weight:normal'><span
+style='font-family:Verdana;mso-bidi-font-family:"Courier New"'>You Increased
+Your Business By 40% Or More This Year?<i style='mso-bidi-font-style:normal'><o:p></o:p></i></span></b></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:6.0pt;font-family:Verdana;mso-bidi-font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:"Courier New"'>The
+testimonials are still flooding in about our new customizable Pre-Listing
+Package.<span style='mso-spacerun:yes'>&#160; </span>Here&#146;s an excerpt from one I
+received recently:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:6.0pt;font-family:Verdana;mso-bidi-font-family:"Courier New"'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:"Courier New"'>&#147;&#133;
+your previous suggestions helped elevate my business in 2005 to the BEST year
+I've ever experienced in Real Estate (40% increase from 2004).<span
+style='mso-spacerun:yes'>&#160; </span>Not to mention the confidence boost and
+increased number of listings I received from using your pre-listing package
+(I'm in the midst of implementing your NEW one which blows away your previous
+one...I'm so excited.<span style='mso-spacerun:yes'>&#160; </span>I've already
+successfully used the mini pre listing pkg.<span style='mso-spacerun:yes'>&#160;
+</span>Marketing System Solutions, thank you so-o-o-o much.&#148;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:Verdana;mso-bidi-font-family:"Courier New"'>L.
+Abrams, <st1:place w:st="on"><st1:City w:st="on">Coldwell Banker</st1:City>, <st1:State
+ w:st="on">PA</st1:State></st1:place><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-family:Verdana'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b style='mso-bidi-font-weight:normal'><span
+style='font-family:Verdana;color:red'><a
+href='http://marketingsystemsolution-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4341414145450E41420E400E4146454B4646420E08.aspx'><span class=GramE><span
+style='color:red'>Click here to learn about our new *KILLER* Pre-Listing
+package.</span></span></a><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span style='font-family:Verdana'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:9.0pt;font-family:Verdana'>If you
+aren&#146;t immediately directed to our webpage, please enter the following into the
+address bar of your Internet browser: <a
+href='http://marketingsystemsolution-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4341414145450E41420E400E4146454B4646420E08.aspx'>www.mssincproducts.com/prelistingpackage.html</a>
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:9.0pt;font-family:Verdana'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Verdana'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;font-family:Verdana'>Please do
+not reply to this message &#150; this mailbox is not monitored.<o:p></o:p></span></p>
+
+</div>
+
+<br><br><table width='500' border='0' align='center' cellpadding='2' cellspacing='3'><tr><td align='center'> <p align='center'>
+<div align='center'><a href='http://marketingsystemsolution-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4341414145450E41420E08.aspx'><img src='http://marketingsystemsolution-mailer.com/img.gif' width='531' height='80' border='0'></a>
+<br><img src='http://marketingsystemsolution-mailer.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E4341414145450E41420E430E420E08.aspx'>
+<font color="#999999" face="arial, verdana" size="2">Marketing System Solutions, Inc. &#183; P.O. Box 266 &#183; Washington, NJ 07882</font></p></td></tr></table></body>
+
+</html>
+
 
 
 
