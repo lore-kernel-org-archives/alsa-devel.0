@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002061]: powermac dosen't build on my powerbook
-Date: Mon, 24 Apr 2006 15:49:44 +0200
-Message-ID: <38753321206022a93d0df1d2d417f14e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002064]: Line-in/mic-in not working
+Date: Mon, 24 Apr 2006 15:50:13 +0200
+Message-ID: <b21cbf826bb82dd2f2fdfd004c417a45@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AE21147
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:49:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5D17174
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:50:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,48 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2061> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2064> 
 ======================================================================
-Reported By:                riesebie
-Assigned To:                perex
+Reported By:                lwelyn
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2061
-Category:                   0_compilation problem_!!!
+Issue ID:                   2064
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     new
 Distribution:               
-Kernel Version:             2.6.16.5
-Resolution:                 fixed
-Fixed in Version:           
+Kernel Version:             2.6.16.1
 ======================================================================
-Date Submitted:             04-23-2006 13:07 CEST
-Last Modified:              04-24-2006 15:49 CEST
+Date Submitted:             04-24-2006 15:12 CEST
+Last Modified:              04-24-2006 15:50 CEST
 ======================================================================
-Summary:                    powermac dosen't build on my powerbook
+Summary:                    Line-in/mic-in not working
 Description: 
-Compiling alsa-driver 1.0.11 stops reading sound/ppc/pmac.c:872
+This card is very great for laptops under linux because of its size and
+hardware mixing. But i was very shocked after i realized that the input
+dont work. 
+Not the mic in and not the line in.
+I would like to help to fix this ugly thing, if i can. Because lots of my
+friends with linux on their laptop own this card too.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-24-06 15:49 
+ rlrevell - 04-24-06 15:50 
 ----------------------------------------------------------------------
-Already fixed on Hg repo.
+What card are you talking about?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-23-06 13:07 riesebie       New Issue                                    
-04-23-06 13:07 riesebie       File Added: 98_pmac.dpatch                    
-04-23-06 13:07 riesebie       Kernel Version            => 2.6.16.5        
-04-23-06 22:32 riesebie       Issue Monitored: riesebie                    
-04-24-06 15:49 tiwai          Status                   assigned => resolved
-04-24-06 15:49 tiwai          Resolution               open => fixed       
-04-24-06 15:49 tiwai          Note Added: 0009454                          
+04-24-06 15:12 lwelyn         New Issue                                    
+04-24-06 15:12 lwelyn         Kernel Version            => 2.6.16.1        
+04-24-06 15:50 rlrevell       Note Added: 0009456                          
 ======================================================================
 
 
