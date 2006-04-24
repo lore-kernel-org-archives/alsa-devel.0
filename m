@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
-Date: Mon, 24 Apr 2006 15:07:32 +0200
-Message-ID: <57204e6e1e71fe55ec56f08cb03b3fae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002064]: Line-in/mic-in not working
+Date: Mon, 24 Apr 2006 15:12:53 +0200
+Message-ID: <1fa8a6e02f21f677ae3f9f28e646e74f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5FDD6192
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:07:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 425C4192
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:12:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,159 +22,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2064> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                tiwai
+Reported By:                lwelyn
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1990
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   2064
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.16.1
 ======================================================================
-Date Submitted:             04-01-2006 04:26 CEST
-Last Modified:              04-24-2006 15:07 CEST
+Date Submitted:             04-24-2006 15:12 CEST
+Last Modified:              04-24-2006 15:12 CEST
 ======================================================================
-Summary:                    aplay/arecord cannot play/capture A_LAW
+Summary:                    Line-in/mic-in not working
 Description: 
-aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
-
-arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
-
-aplay -D hw:0,0 test.au
-
-
-Try to use -t raw but the quality of A_LAW is very bad when compare with
-MU_LAW
-
-arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
-
-aplay -D hw:0,0 test.raw
-
-
+This card is very great for laptops under linux because of its size and
+hardware mixing. But i was very shocked after i realized that the input
+dont work. 
+Not the mic in and not the line in.
+I would like to help to fix this ugly thing, if i can. Because lots of my
+friends with linux on their laptop own this card too.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 04-20-06 15:29 
-----------------------------------------------------------------------
-Yes, _usually_ they are so, but the default status is not strictly
-defined.
-
-I see no real bugs, so let's close this one.
-
-----------------------------------------------------------------------
- Raymond - 04-24-06 15:07 
-----------------------------------------------------------------------
-Do "type oss" plugin support mu-law ?
-
-It is ok to play mu-law using au88xx driver
-http://sourceforge.net/projects/aureal
-
-play mulaw.au 
-
-
-au88xx, alsa-lib-1.0.11 and alsa-plugins-1.0.11 ( oss )
-
-pcm.ossdriver {
-	type oss
-	device /dev/dsp
-}
-
-
-aplay -v -Dossdriver test.wav
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Mono
-ALSA <-> OSS PCM I/O Plugin
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 4096
-  period_time  : 92879
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 4096
-  xfer_align   : 4096
-  start_threshold  : 16384
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-
-
-aplay -Dossdriver mulaw.au
-Playing Sparc Audio 'mulaw.au' : Mu-Law, Rate 8000 Hz, Mono
-*** OSS: unsupported format MU_LAW
-aplay: set_params:961: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  MU_LAW
-SUBFORMAT:  STD
-SAMPLE_BITS: 8
-FRAME_BITS: 8
-CHANNELS: 1
-RATE: 8000
-PERIOD_TIME: 128000
-PERIOD_SIZE: 1024
-PERIOD_BYTES: 1024
-PERIODS: 4
-BUFFER_TIME: 512000
-BUFFER_SIZE: 4096
-BUFFER_BYTES: 4096
-TICK_TIME: [0 0]
-
-
-aplay -Dplug:ossdriver mulaw.au
-Playing Sparc Audio 'mulaw.au' : Mu-Law, Rate 8000 Hz, Mono
-*** OSS: unsupported format MU_LAW
-aplay: set_params:961: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  MU_LAW
-SUBFORMAT:  STD
-SAMPLE_BITS: 8
-FRAME_BITS: 8
-CHANNELS: 1
-RATE: 8000
-PERIOD_TIME: 128000
-PERIOD_SIZE: 1024
-PERIOD_BYTES: 1024
-PERIODS: 4
-BUFFER_TIME: 512000
-BUFFER_SIZE: 4096
-BUFFER_BYTES: 4096
-TICK_TIME: 0
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-01-06 04:26 Raymond        New Issue                                    
-04-03-06 07:16 Raymond        Note Added: 0009085                          
-04-03-06 07:36 Raymond        Note Added: 0009086                          
-04-07-06 19:32 tiwai          Note Added: 0009152                          
-04-08-06 07:47 Raymond        Note Added: 0009171                          
-04-10-06 16:52 tiwai          Note Added: 0009199                          
-04-11-06 07:46 Raymond        Note Added: 0009229                          
-04-11-06 07:55 Raymond        Note Edited: 0009229                         
-04-11-06 09:41 Raymond        Note Edited: 0009229                         
-04-20-06 15:29 tiwai          Status                   new => resolved     
-04-20-06 15:29 tiwai          Resolution               open => not an issue
-04-20-06 15:29 tiwai          Assigned To               => tiwai           
-04-20-06 15:29 tiwai          Note Added: 0009384                          
-04-24-06 15:07 Raymond        Status                   resolved => feedback
-04-24-06 15:07 Raymond        Resolution               not an issue => reopened
-04-24-06 15:07 Raymond        Note Added: 0009451                          
+04-24-06 15:12 lwelyn         New Issue                                    
+04-24-06 15:12 lwelyn         Kernel Version            => 2.6.16.1        
 ======================================================================
 
 
