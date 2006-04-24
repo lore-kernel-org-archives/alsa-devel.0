@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002061]: powermac dosen't build on my powerbook
-Date: Mon, 24 Apr 2006 20:13:59 +0200
-Message-ID: <857e8a27e2ea7943bacae4922bf9471d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002013]: no digital output
+Date: Mon, 24 Apr 2006 20:30:22 +0200
+Message-ID: <5d986414552f75d472de73e7d99d4e89@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46629174
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 20:14:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CB2C1174
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 20:30:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +22,73 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2061> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2013> 
 ======================================================================
-Reported By:                riesebie
-Assigned To:                perex
+Reported By:                SamiH
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2061
-Category:                   0_compilation problem_!!!
+Issue ID:                   2013
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             2.6.16.5
-Resolution:                 reopened
-Fixed in Version:           
+Status:                     new
+Distribution:               BLFS
+Kernel Version:             2.6.15.4
 ======================================================================
-Date Submitted:             04-23-2006 13:07 CEST
-Last Modified:              04-24-2006 20:13 CEST
+Date Submitted:             04-09-2006 11:43 CEST
+Last Modified:              04-24-2006 20:30 CEST
 ======================================================================
-Summary:                    powermac dosen't build on my powerbook
+Summary:                    no digital output
 Description: 
-Compiling alsa-driver 1.0.11 stops reading sound/ppc/pmac.c:872
+Shortly: Digital output doesn't work at all, or I don't know how to use
+it.
+
+This has been my problem quite long time now. I have upgraded my kernel
+from  2.6.8 to 2.6.15.4 with some steps bitween those versions, and the
+problem is still here. I have tried some live-cds with same results as my
+stable system.
+
+Analog stereo output works with no problems. If someone did tell me what I
+should test on my system so that I could give the results to you.
+
+These aren't broken:
+ * my external amplifier
+ * the digital coaxial cable
+ * speakers etc.
+
+Please tell me at least what to do, what to search for, or something...
 ======================================================================
 
 ----------------------------------------------------------------------
- riesebie - 04-24-06 20:09 
+ tiwai - 04-20-06 15:22 
 ----------------------------------------------------------------------
-Could one please explain what "HG repo" means!
+Don't ever use hw unless you know what you're doing.
 
-Dict didn't told me ;)
-
-Thanks
-Elimar
+Try
+   % aplay -Dplug:spdif something.wav
 
 ----------------------------------------------------------------------
- rlrevell - 04-24-06 20:13 
+ SamiH - 04-24-06 20:30 
 ----------------------------------------------------------------------
-http://www.selenic.com/mercurial/wiki/index.cgi
-
-This bug tracker is not a good place for general discussion, if you have
-more questions please ask the alsa-user mailing list
+My computer broked and the motherboard is in repair, so I cannot test that
+now. Thanks anyway, I'll test it when I get my computer working again.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-23-06 13:07 riesebie       New Issue                                    
-04-23-06 13:07 riesebie       File Added: 98_pmac.dpatch                    
-04-23-06 13:07 riesebie       Kernel Version            => 2.6.16.5        
-04-23-06 22:32 riesebie       Issue Monitored: riesebie                    
-04-24-06 15:49 tiwai          Status                   assigned => resolved
-04-24-06 15:49 tiwai          Resolution               open => fixed       
-04-24-06 15:49 tiwai          Note Added: 0009454                          
-04-24-06 20:09 riesebie       Status                   resolved => feedback
-04-24-06 20:09 riesebie       Resolution               fixed => reopened   
-04-24-06 20:09 riesebie       Note Added: 0009474                          
-04-24-06 20:13 rlrevell       Status                   feedback => closed  
-04-24-06 20:13 rlrevell       Note Added: 0009475                          
+04-09-06 11:43 SamiH          New Issue                                    
+04-09-06 11:43 SamiH          Distribution              => BLFS            
+04-09-06 11:43 SamiH          Kernel Version            => 2.6.15.4        
+04-10-06 16:50 tiwai          Note Added: 0009198                          
+04-13-06 21:10 SamiH          File Added: alsa.txt                         
+04-13-06 21:22 SamiH          Note Added: 0009269                          
+04-13-06 21:26 SamiH          Note Edited: 0009269                         
+04-20-06 15:22 tiwai          Note Added: 0009382                          
+04-24-06 20:30 SamiH          Note Added: 0009476                          
 ======================================================================
 
 
