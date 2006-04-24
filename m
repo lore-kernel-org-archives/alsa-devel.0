@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002044]: How about adding __devinitdata to the PCI-IDs?
-Date: Mon, 24 Apr 2006 15:49:51 +0200
-Message-ID: <421e539696f44e490b8d9615f8f41a1a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002062]: azx_get_response_timeout -> no sound with hda_intel
+Date: Mon, 24 Apr 2006 15:54:02 +0200
+Message-ID: <b11321af4ffb9f2c7234b765850f2a74@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76C14147
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:49:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46D86192
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:54:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2044> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2062> 
 ======================================================================
-Reported By:                Henne
-Assigned To:                
+Reported By:                lemzwerg
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2044
-Category:                   1_OTHERS
+Issue ID:                   2062
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Suse 10.0 x86_64
-Kernel Version:             2.6.17-rc2
+Status:                     assigned
+Distribution:               
+Kernel Version:             Linux linux 2.6.16.9-smp #1 SMP Fri Apr 21 11:20:09
+CEST 2006 i686 i686 i386 GNU/Linux
 ======================================================================
-Date Submitted:             04-20-2006 17:44 CEST
-Last Modified:              04-24-2006 15:49 CEST
+Date Submitted:             04-23-2006 14:06 CEST
+Last Modified:              04-24-2006 15:54 CEST
 ======================================================================
-Summary:                    How about adding __devinitdata to the PCI-IDs?
+Summary:                    azx_get_response_timeout -> no sound with hda_intel
 Description: 
-I found a way to save GBs of Memory. Like in 
-<kernelsources>/Documentation/pci.txt  mentioned, the definiton of PCI
-drivers device-IDs can be marked as __devinitdata.
+I have exactly the same problem as reported here (with the same
+hardware, this is, SigmaTel STAC9200 codec, but in an Dell Inspiron
+6400):
 
-This can be interesting, cause from 394 definitions of pci_device_ids in
-kernel 2.6.17-rc2, only 37 have it.
-That are 28Bytes/line on 32bit machines and 32Bytes/line on 64 bit
-machines.
-So I found the reason why the kernel is so resoucehungry. ;)
-I'll contact the kerneljanitors to add it in their TODO.
+  http://threebit.net/mail-archive/linux-kernel/msg00690.html
 
-I've added a patch for "writing an alsa driver".
+but I'm using the latest ALSA and Linux kernel versions...
+
+Any fix available?
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Henne - 04-23-06 21:26 
+ eivindt - 04-23-06 23:10 
 ----------------------------------------------------------------------
-Here they are!
+I'm seeing this on my Thinkpad T60p as well, with the latest drivers from
+CVS.
 
-Could that be that theres something broken on cvs.sf.net ???
-I have only alsa-*-1.0.10rc4 in my cvs-dir.
+However, if I disable power management, I don't get this error, and I'm
+able to play sound.  Unfortunately, then my wireless card doesn't work,
+but that's another story.
 
-Greest,
-Henne
 
-P.S. These patches are made against 1.0.11
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 02)
+        Subsystem: Lenovo Unknown device 2010
+        Flags: bus master, fast devsel, latency 0, IRQ 11
+        Memory at ee400000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+
+Eivind
 
 ----------------------------------------------------------------------
- Henne - 04-24-06 15:49 
+ tiwai - 04-24-06 15:54 
 ----------------------------------------------------------------------
-You meant CONFIG_HOTPLUG, did you? :)
+Don't use CVS anymore but use Hg repo.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-20-06 17:44 Henne          New Issue                                    
-04-20-06 17:44 Henne          File Added: wr.diff                          
-04-20-06 17:44 Henne          Distribution              => Suse 10.0 x86_64
-04-20-06 17:44 Henne          Kernel Version            => 2.6.17-rc2      
-04-20-06 19:00 Henne          Note Added: 0009396                          
-04-20-06 19:00 Henne          File Added: dev.diff                         
-04-21-06 12:50 tiwai          Note Added: 0009411                          
-04-23-06 21:21 Henne          File Added: dev2.diff                        
-04-23-06 21:22 Henne          File Added: wr2.diff                         
-04-23-06 21:26 Henne          Note Added: 0009443                          
-04-24-06 15:49 Henne          Note Added: 0009455                          
+04-23-06 14:06 lemzwerg       New Issue                                    
+04-23-06 14:06 lemzwerg       Kernel Version            => Linux linux
+2.6.16.9-smp #1 SMP Fri Apr 21 11:20:09 CEST 2006 i686 i686 i386 GNU/Linux
+04-23-06 23:10 eivindt        Note Added: 0009445                          
+04-23-06 23:10 eivindt        Issue Monitored: eivindt                     
+04-24-06 15:54 tiwai          Note Added: 0009457                          
 ======================================================================
 
 
