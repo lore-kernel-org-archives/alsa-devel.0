@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
-Date: Mon, 24 Apr 2006 16:50:10 +0200
-Message-ID: <65df18fce2964d00204cb49420ae27c8@bugtrack.alsa-project.org>
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: Re: Re: ALSA regression: oops on shutdown
+Date: Mon, 24 Apr 2006 19:30:33 +0400
+Message-ID: <20060424153032.GA7747__476.163431494747$1145892859$gmane$org@mipter.zuzino.mipt.ru>
+References: <20060423235730.GA7934@mipter.zuzino.mipt.ru> <20060423185721.39ff4207.akpm@osdl.org> <b6fcc0a0604231937h6f2754f9k68ec76dc19c7ddb9@mail.gmail.com> <1145846360.31507.50.camel@mindpipe> <20060424031142.GA7735@mipter.zuzino.mipt.ru> <20060424035144.GA7750@mipter.zuzino.mipt.ru> <s5hodyr2j2x.wl%tiwai@suse.de> <s5hhd4j2got.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D68F0178
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 16:50:10 +0200 (MEST)
+Received: from nproxy.gmail.com (nproxy.gmail.com [64.233.182.184])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AC99D174
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 17:33:14 +0200 (MEST)
+Received: by nproxy.gmail.com with SMTP id a4so125585nfc
+        for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 08:33:14 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <s5hhd4j2got.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,169 +22,151 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, perex@suse.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Apr 24, 2006 at 04:26:10PM +0200, Takashi Iwai wrote:
+> At Mon, 24 Apr 2006 15:34:30 +0200,
+> I wrote:
+> > 
+> > At Mon, 24 Apr 2006 07:51:44 +0400,
+> > Alexey Dobriyan wrote:
+> > > 
+> > > On Mon, Apr 24, 2006 at 07:11:42AM +0400, Alexey Dobriyan wrote:
+> > > > On Sun, Apr 23, 2006 at 10:39:19PM -0400, Lee Revell wrote:
+> > > >
+> > > > Andrew asked about precise steps of reproduction:
+> > > >
+> > > > 	rmmod snd_pcm_oss
+> > > >
+> > > > which is part of Gentoo install scripts (/etc/init.d/alsasound:134-140, to
+> > > > be precise) (basically lsmod | grep snd | xargs rmmod).
+> > > >
+> > > > BUG: unable to handle kernel paging request at virtual address 6b6b6b6b
+> > > >  printing eip:
+> > > > c016c6a4
+> > > > *pde = 00000000
+> > > > Oops: 0000 [#1]
+> > > > PREEMPT
+> > > > Modules linked in: snd_pcm_oss snd_mixer_oss snd_intel8x0 snd_ac97_codec snd_ac97_bus snd_pcm snd_timer snd soundcore snd_page_alloc ehci_hcd uhci_hcd usbcore
+> > > > CPU:    0
+> > > > EIP:    0060:[<c016c6a4>]    Not tainted VLI
+> > > > EFLAGS: 00010286   (2.6.17-rc2-6b426e785cb81e53dc2fc4dcf997661472b470ef #1)
+> > > > EIP is at remove_proc_entry+0x2c/0x11c
+> > > > eax: 00000000   ebx: deb48b80   ecx: ffffffff   edx: de11ed24
+> > > > esi: de11ed24   edi: 6b6b6b6b   ebp: de4cb000   esp: de4cbf28
+> > > > ds: 007b   es: 007b   ss: 0068
+> > > > Process rmmod (pid: 7735, threadinfo=de4cb000 task=c1487a90)
+> > > > Stack: <0>de11ed24 6b6b6b6b deb48b80 de11ed24 bf8590cc df93603b de4f0e78 00000000
+> > > >        df965fc8 de4f0d84 df967e74 df966184 de4f0d88 df95292d df967f00 00000000
+> > > >        c0125f7a 00000000 5f646e73 5f6d6370 0073736f de85d4a4 b7f27000 c013789d
+> > > > Call Trace:
+> > > >  [<df93603b>] snd_info_unregister+0x2e/0x44 [snd]
+> > > >  [<df965fc8>] snd_pcm_oss_proc_done+0x19/0x30 [snd_pcm_oss]
+> > > >  [<df966184>] snd_pcm_oss_unregister_minor+0x3b/0x3f [snd_pcm_oss]
+> > > >  [<df95292d>] snd_pcm_notify+0x4a/0x91 [snd_pcm]
+> > > >  [<c0125f7a>] sys_delete_module+0x113/0x138
+> > > >  [<c013789d>] do_munmap+0xe2/0xef
+> > > >  [<c010259b>] syscall_call+0x7/0xb
+> > > > Code: 85 d2 56 53 51 51 89 14 24 89 44 24 04 75 13 8d 4c 24 04 89 e2 e8 dd f7 ff ff 85 c0 0f 85 f2 00 00 00 8b 7c 24 04 31 c0 83 c9 ff <f2> ae f7 d1 49 b0 01 89 ce e8 fa 13 fa ff 8b 04 24 8d 58 38 83
+> > > > EIP: [<c016c6a4>] remove_proc_entry+0x2c/0x11c SS:ESP 0068:de4cbf28
+> > > >  BUG: rmmod/7735, lock held at task exit time!
+> > > >  [df960920] {register_mutex}
+> > > > .. held by:             rmmod: 7735 [c1487a90, 118]
+> > > > ... acquired at:               snd_pcm_notify+0x10/0x91 [snd_pcm]
+> > >
+> > > Other symptoms are 6 (six) "prealloc" files, 3 "oss" files and 1 "oss"
+> > > directory (according to highlighting):
+> > >
+> > > $ ls /proc/asound/
+> > > card0  devices  modules  oss  oss  prealloc  prealloc  prealloc  timers
+> > > 			      ^^^
+> > > 			      directory
+> > >
+> > > cards  ICH5     oss      oss  pcm  prealloc  prealloc  prealloc  version
+> > >
+> > > "ls -l" thinks all 4 "oss" files are files (again, according to
+> > > highlighting).
+> >
+> > That's odd.  It implies that the proc file paths are flatten.
+>
+> But, not all entries seem flatten (e.g. pcm0p, sub0, etc).
+> Could you show the output of "tree /proc/asound" ?
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1990
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             04-01-2006 04:26 CEST
-Last Modified:              04-24-2006 16:50 CEST
-======================================================================
-Summary:                    aplay/arecord cannot play/capture A_LAW
-Description: 
-aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
+2.6.16 (good)			2.6.17-rc2-whatever (bad)
+---------------------------------------------------------
+/proc/asound/			/proc/asound/
+|-- ICH5 -> card0		|-- ICH5 -> card0
+|-- card0			|-- card0
+|   |-- codec97#0		|   |-- codec97#0
+|   |   |-- ac97#0-0		|   |   |-- ac97#0-0
+|   |   `-- ac97#0-0+regs	|   |   `-- ac97#0-0+regs
+|   |-- id			|   |-- id
+|   |-- intel8x0		|   |-- intel8x0
+|   |-- oss_mixer		|   `-- oss_mixer
+|   |-- pcm0c			|-- cards
+|   |   |-- info		|-- devices
+|   |   |-- oss			|-- modules
+|   |   `-- sub0		|-- oss
+|   |       |-- hw_params	|-- oss
+|   |       |-- info		|-- oss
+|   |       |-- prealloc	|-- oss
+|   |       |-- status		|-- pcm
+|   |       `-- sw_params	|-- prealloc
+|   |-- pcm0p			|-- prealloc
+|   |   |-- info		|-- prealloc
+|   |   |-- oss			|-- prealloc
+|   |   `-- sub0		|-- prealloc
+|   |       |-- hw_params	|-- prealloc
+|   |       |-- info		|-- timers
+|   |       |-- prealloc	`-- version
+|   |       |-- status
+|   |       `-- sw_params	3 directories, 21 files
+|   |-- pcm1c
+|   |   |-- info
+|   |   |-- oss
+|   |   `-- sub0
+|   |       |-- hw_params
+|   |       |-- info
+|   |       |-- prealloc
+|   |       |-- status
+|   |       `-- sw_params
+|   |-- pcm2c
+|   |   |-- info
+|   |   `-- sub0
+|   |       |-- hw_params
+|   |       |-- info
+|   |       |-- prealloc
+|   |       |-- status
+|   |       `-- sw_params
+|   |-- pcm3c
+|   |   |-- info
+|   |   `-- sub0
+|   |       |-- hw_params
+|   |       |-- info
+|   |       |-- prealloc
+|   |       |-- status
+|   |       `-- sw_params
+|   `-- pcm4p
+|       |-- info
+|       `-- sub0
+|           |-- hw_params
+|           |-- info
+|           |-- prealloc
+|           |-- status
+|           `-- sw_params
+|-- cards
+|-- devices
+|-- modules
+|-- oss
+|   |-- devices
+|   `-- sndstat
+|-- pcm
+|-- timers
+`-- version
 
-arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
-
-aplay -D hw:0,0 test.au
-
-
-Try to use -t raw but the quality of A_LAW is very bad when compare with
-MU_LAW
-
-arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
-
-aplay -D hw:0,0 test.raw
-
-
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 04-24-06 16:43 
-----------------------------------------------------------------------
-Oops occur if user mis-use the plugin (OSS) with OSS enumeration.
-
-ALSA API -> ALSA PLUGIN(OSS) -> OSS ENUMERATION -> ALSA DRIVER
-
-aplay -v -Dossdriver test.wav
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Mono
-ALSA <-> OSS PCM I/O Plugin
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 4096
-  period_time  : 92879
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 4096
-  xfer_align   : 4096
-  start_threshold  : 16384
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-
-
-ALSA ../alsa-kernel/core/pcm_lib.c:1839: BUG? ((max >= 0))
-dc3fbe6c e1d05c5f e1d092e1 0000072f e1d092d3 e1d093dc dc3fbe9c e20a35b0
-       00000000 000002aa ffffffea 00000000 ffffffff 00000000 d0da7014
-00000000
-       00000000 dc3fbf34 e20a3c00 daa32394 d0da7014 0000000d 000002aa
-00000000
-Call Trace:   [<e1d05c5f>] snd_pcm_hw_param_near [snd-pcm] 0x25f
-(0xdc3fbe70)
-[<e1d092e1>] .rodata.str1.1 [snd-pcm] 0x6f1 (0xdc3fbe74)
-[<e1d092d3>] .rodata.str1.1 [snd-pcm] 0x6e3 (0xdc3fbe7c)
-[<e1d093dc>] .rodata.str1.1 [snd-pcm] 0x7ec (0xdc3fbe80)
-[<e20a35b0>] snd_pcm_oss_period_size [snd-pcm-oss] 0x280 (0xdc3fbe88)
-[<e20a3c00>] snd_pcm_oss_change_params [snd-pcm-oss] 0x390 (0xdc3fbeb4)
-[<e20a4280>] snd_pcm_oss_get_active_substream [snd-pcm-oss] 0x80
-(0xdc3fbf38)
-[<c0125d66>] update_wall_time [kernel] 0x16 (0xdc3fbf40)
-[<c01262a0>] timer_bh [kernel] 0x370 (0xdc3fbf48)
-[<e20a5208>] snd_pcm_oss_get_channels [snd-pcm-oss] 0x18 (0xdc3fbf5c)
-[<e20a6b38>] snd_pcm_oss_ioctl [snd-pcm-oss] 0x668 (0xdc3fbf70)
-[<c0153719>] sys_ioctl [kernel] 0xc9 (0xdc3fbf94)
-[<c0109747>] system_call [kernel] 0x33 (0xdc3fbfc0)
- 
-ALSA pcm_oss.c:450: BUG? (err >= 0)
-dc3fbeb0 e20a3ff2 e20ab25c 000001c2 e20ab24e e20ab2d5 00000000 dca6d838
-       00000000 00000003 daad4594 dca6d814 c912d414 00000000 00000018
-00000000
-       00000000 00000000 00000000 00000000 00000000 00000000 00300006
-00000000
-Call Trace:   [<e20a3ff2>] snd_pcm_oss_change_params [snd-pcm-oss] 0x782
-(0xdc3fbeb4)
-[<e20ab25c>] .rodata.str1.1 [snd-pcm-oss] 0x24 (0xdc3fbeb8)
-[<e20ab24e>] .rodata.str1.1 [snd-pcm-oss] 0x16 (0xdc3fbec0)
-[<e20ab2d5>] .rodata.str1.1 [snd-pcm-oss] 0x9d (0xdc3fbec4)
-[<e20a4280>] snd_pcm_oss_get_active_substream [snd-pcm-oss] 0x80
-(0xdc3fbf38)
-[<c0125d66>] update_wall_time [kernel] 0x16 (0xdc3fbf40)
-[<c01262a0>] timer_bh [kernel] 0x370 (0xdc3fbf48)
-[<e20a5208>] snd_pcm_oss_get_channels [snd-pcm-oss] 0x18 (0xdc3fbf5c)
-[<e20a6b38>] snd_pcm_oss_ioctl [snd-pcm-oss] 0x668 (0xdc3fbf70)
-[<c0153719>] sys_ioctl [kernel] 0xc9 (0xdc3fbf94)
-[<c0109747>] system_call [kernel] 0x33 (0xdc3fbfc0)
-
-----------------------------------------------------------------------
- tiwai - 04-24-06 16:50 
-----------------------------------------------------------------------
-It's no Oops but the stack trace output from snd_assert().  It's a bug, of
-course, though.
-
-Anyway, PLEASE open another bug.  This is out of the topic of this thread
--- "aplay/arecord cannot play/capture A_LAW".
-
-And please show the ALSA version you're using.  I cannot see the relevant
-assert line found in the message.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-01-06 04:26 Raymond        New Issue                                    
-04-03-06 07:16 Raymond        Note Added: 0009085                          
-04-03-06 07:36 Raymond        Note Added: 0009086                          
-04-07-06 19:32 tiwai          Note Added: 0009152                          
-04-08-06 07:47 Raymond        Note Added: 0009171                          
-04-10-06 16:52 tiwai          Note Added: 0009199                          
-04-11-06 07:46 Raymond        Note Added: 0009229                          
-04-11-06 07:55 Raymond        Note Edited: 0009229                         
-04-11-06 09:41 Raymond        Note Edited: 0009229                         
-04-20-06 15:29 tiwai          Status                   new => resolved     
-04-20-06 15:29 tiwai          Resolution               open => not an issue
-04-20-06 15:29 tiwai          Assigned To               => tiwai           
-04-20-06 15:29 tiwai          Note Added: 0009384                          
-04-24-06 15:07 Raymond        Status                   resolved => feedback
-04-24-06 15:07 Raymond        Resolution               not an issue => reopened
-04-24-06 15:07 Raymond        Note Added: 0009451                          
-04-24-06 15:48 tiwai          Status                   feedback => resolved
-04-24-06 15:48 tiwai          Resolution               reopened => not an issue
-04-24-06 15:48 tiwai          Note Added: 0009453                          
-04-24-06 16:43 Raymond        Status                   resolved => feedback
-04-24-06 16:43 Raymond        Resolution               not an issue => reopened
-04-24-06 16:43 Raymond        Note Added: 0009468                          
-04-24-06 16:50 tiwai          Status                   feedback => resolved
-04-24-06 16:50 tiwai          Resolution               reopened => not an issue
-04-24-06 16:50 tiwai          Note Added: 0009472                          
-======================================================================
-
+16 directories, 52 files
 
 
 
