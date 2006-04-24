@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002060]: Intel HDA Soft modem
-Date: Mon, 24 Apr 2006 15:56:11 +0200
-Message-ID: <3e674d97372a7136761fadcc3b3e37fd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Mon, 24 Apr 2006 15:57:19 +0200
+Message-ID: <c949ab45b6d2bb03e10de8b5f5cdbfff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B701192
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:56:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E438C192
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:57:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,89 +24,101 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2060> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
 ======================================================================
-Reported By:                fdoffizi01
-Assigned To:                tiwai
+Reported By:                zanonmark
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2060
-Category:                   PCI - hda-intel
+Issue ID:                   2023
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.15
+Status:                     new
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
 ======================================================================
-Date Submitted:             04-23-2006 01:29 CEST
-Last Modified:              04-24-2006 15:56 CEST
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              04-24-2006 15:57 CEST
 ======================================================================
-Summary:                    Intel HDA Soft modem
+Summary:                    midi/joystick port disabled and no way to enable it
 Description: 
-I'd like to use my hda softmodem but it's not even recognised from system.
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
 
-Here lspci output:
- 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller (rev 02)
-         Subsystem: Sony Corporation Unknown device 81ef
-         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-         Latency: 0, Cache Line Size 10
-         Interrupt: pin A routed to IRQ 66
-         Region 0: Memory at d2300000 (64-bit, non-prefetchable)
-[size=16K]
-         Capabilities: [50] Power Management version 2
-                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                 Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-         Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                 Address: 0000000000000000 Data: 0000
-         Capabilities: [70] Express Unknown type IRQ 0
-                 Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                 Device: Latency L0s <64ns, L1 <1us
-                 Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                 Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                 Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                 Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                 Link: Latency L0s <64ns, L1 <1us
-                 Link: ASPM Disabled CommClk- ExtSynch-
-                 Link: Speed unknown, Width x0
-         Capabilities: [100] Virtual Channel
-         Capabilities: [130] Unknown (5)
- 
- And as you can see current hda modules can't see modem functions:
- 
- aplay -l
- **** List of PLAYBACK Hardware Devices ****
- card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
-   Subdevices: 0/1
-   Subdevice #0: subdevice #0
- 
- Hardware is a Sony Vaio FE11x series notebook.
-It doesn't even work with linuxant driver (that now should support hda
-softmodems)
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
+
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
+
+So, will you please include such a parameter in the next version of the
+driver?
+
+Thanks a lot,
+
+Marco.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-24-06 15:56 
+ Raymond - 04-24-06 15:47 
 ----------------------------------------------------------------------
-What modem codec chip is on it?  If not known, please show
-/proc/asound/card0/codec#1 (or bigger number).
+You don't need to enable joystick port to use MIDI.
+
+http://hg-mirror.alsa-project.org/alsa-kernel?fl=d26a933493fe;file=pci/ens1370.c;style=gitweb
+
+gameport module not compiled/installed in the kernel
+
+http://alsa.opensrc.org/Joystick+support
+
+----------------------------------------------------------------------
+ zanonmark - 04-24-06 15:57 
+----------------------------------------------------------------------
+I'm sorry Raymond I didn't understand your last note,
+
+actually, you're right: I don't need any joystick module because I'm not
+going to use any joystick, but only the MIDI input/output functionality of
+the card,
+
+but I still can't understand why this kind of i/o is disabled by default,
+and how I can enable it, provided that snd_ens1371 and gameport are
+already loaded,
+well, I don't understand if there's something I can do, or if it is a bug
+and I have to wait for a debugged version... :)
+
+Thanks a lot,
+
+Marco
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-23-06 01:29 fdoffizi01     New Issue                                    
-04-23-06 01:29 fdoffizi01     Kernel Version            => 2.6.15          
-04-23-06 01:32 fdoffizi01     Issue Monitored: fdoffizi01                    
-04-24-06 15:56 tiwai          Note Added: 0009458                          
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
+04-17-06 06:56 rlrevell       Note Added: 0009301                          
+04-17-06 07:19 Raymond        Note Added: 0009303                          
+04-17-06 19:59 zanonmark      Note Added: 0009319                          
+04-18-06 10:54 Raymond        Note Added: 0009328                          
+04-18-06 13:18 Raymond        Note Edited: 0009328                         
+04-18-06 16:28 Clemens LadischNote Added: 0009338                          
+04-19-06 20:05 zanonmark      Note Added: 0009354                          
+04-19-06 21:49 rlrevell       Note Added: 0009356                          
+04-20-06 03:39 Raymond        Note Added: 0009363                          
+04-22-06 13:36 zanonmark      Note Added: 0009433                          
+04-24-06 15:47 Raymond        Note Added: 0009452                          
+04-24-06 15:57 zanonmark      Note Added: 0009460                          
 ======================================================================
 
 
