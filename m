@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002021]: No sound from speakers (only headphone) after resume to suspend-to-ram
-Date: Mon, 24 Apr 2006 21:30:09 +0200
-Message-ID: <c5ac0dc417035f75a14b7d48323a8f68@bugtrack.alsa-project.org>
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: Re: Remove xrun debugging?
+Date: Mon, 24 Apr 2006 11:42:04 +0100
+Message-ID: <20060424104203.GA11683@palantir8>
+References: <1145767405.21377.20.camel@mindpipe> <20060423174534.1dd2cb44@mango.fruits> <1145809115.21377.34.camel@mindpipe> <20060423210329.3725f5c5@mango.fruits> <Pine.LNX.4.61.0604241042280.10174@tm8103.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A87D173
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 21:30:09 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.61.0604241042280.10174@tm8103.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,76 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Apr 24, 2006 at 10:55:02AM +0200, Jaroslav Kysela wrote:
+> On Sun, 23 Apr 2006, Florian Schmidt wrote:
+> 
+> > On Sun, 23 Apr 2006 12:18:34 -0400
+> > Lee Revell <rlrevell@joe-job.com> wrote:
+> > 
+> > > > It still might prove useful for non -rt users. I don't know exactly how
+> > > > useful, but maybe it's really a documentation bug. Put a note in the
+> > > > helpfile that much finer debugging can be done with the -rt kernels.
+> > > 
+> > > I don't think it's useful at all - any bugs that it could have found
+> > > were fixed long ago.  I have not seen useful output from it in a year
+> > > and a half.
+> > 
+> > That doesn't mean it won't prove useful in the future. But i don't know.
+> > Takashi? Jaroslav?
+> 
+> I think that we can make the code optional for now. Patch for review is 
+> attached.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2021> 
-======================================================================
-Reported By:                tsaiming
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2021
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             suspend2-2.6.16-r2
-======================================================================
-Date Submitted:             04-15-2006 13:19 CEST
-Last Modified:              04-24-2006 21:30 CEST
-======================================================================
-Summary:                    No sound from speakers (only headphone) after resume
-to suspend-to-ram
-Description: 
-After suspend2-to-ram (but it happens also with the suspend kernel built
-in) I have no more sound from speakers but only from headphones.
-With suspend to disk all works good 
-Also tried to stop alsasound and unload modules before suspending and
-restart service after resume with no change.
+I think this is a good approach. I do expect there are still bugs out there
+in non-x86 land, and this code would be usefull for that.
 
-======================================================================
+Jaroslav, a small typo in your additions:
+-	  It is no usually required, but if you have trouble with
++	  It is usually not required, but if you have trouble with
 
-----------------------------------------------------------------------
- tiwai - 04-24-06 16:44 
-----------------------------------------------------------------------
-Try to restore the values of 0x5a, 0x5e and 0x60 via proc file after
-resume, such as (only by root)
-
-    # echo 5a 8221 > /proc/asound/card0/codec97#0/ac97#0-0+regs
-
-Note that this is available only when the drivers are built with debug
-option.
-
-----------------------------------------------------------------------
- mmp - 04-24-06 21:30 
-----------------------------------------------------------------------
-I just tried to modify the ac97 registers; I was able to change all but
-one, which still holds the old value - the '5a' one. And the one changed
-register in card0/via82xx doesn't revert its value after setting any of
-these. I tried to play something, but it is still the same - just
-headphone output works, internal speakers are disabled.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-15-06 13:19 tsaiming       New Issue                                    
-04-15-06 13:19 tsaiming       File Added: codec97#0.txt                    
-04-15-06 13:19 tsaiming       Distribution              => Gentoo          
-04-15-06 13:19 tsaiming       Kernel Version            => suspend2-2.6.16-r2
-04-22-06 15:12 mmp            Issue Monitored: mmp                         
-04-22-06 15:14 mmp            Note Added: 0009435                          
-04-22-06 15:15 mmp            File Added: regs.diff                        
-04-24-06 16:44 tiwai          Note Added: 0009470                          
-04-24-06 21:30 mmp            Note Added: 0009478                          
-======================================================================
-
-
+Thanks,
+Martin
 
 
 -------------------------------------------------------
