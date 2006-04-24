@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002059]: Can't set external input switch for recording.
-Date: Mon, 24 Apr 2006 16:40:13 +0200
-Message-ID: <d0e3dc84efbb04683a17de9b789694df@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002064]: Line-in/mic-in not working
+Date: Mon, 24 Apr 2006 16:43:48 +0200
+Message-ID: <16f492c969d6cec71159b71b86f74f7e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32B3B162
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 16:40:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DEAF716F
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 16:43:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2059> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2064> 
 ======================================================================
-Reported By:                fdoffizi01
-Assigned To:                tiwai
+Reported By:                lwelyn
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2059
-Category:                   PCI - hda-intel
+Issue ID:                   2064
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.16.1
 ======================================================================
-Date Submitted:             04-23-2006 00:56 CEST
-Last Modified:              04-24-2006 16:40 CEST
+Date Submitted:             04-24-2006 15:12 CEST
+Last Modified:              04-24-2006 16:43 CEST
 ======================================================================
-Summary:                    Can't set external input switch for recording.
+Summary:                    Line-in/mic-in not working
 Description: 
-I used the patch from bug #1890 and I got an Unknown switch to activate to
-record from external line in instead of internal mic.
-Now with new 1.0.11 drivers, that supports Vaio FE11x Sigmatel audio chip
-I can't get it. No way to record from something different from internal
-mic.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001890 Only the PCM channel in alsa mixer, unm...
+This card is very great for laptops under linux because of its size and
+hardware mixing. But i was very shocked after i realized that the input
+dont work. 
+Not the mic in and not the line in.
+I would like to help to fix this ugly thing, if i can. Because lots of my
+friends with linux on their laptop own this card too.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-24-06 16:40 
+ lwelyn - 04-24-06 16:24 
 ----------------------------------------------------------------------
-Does the attached patch fix?
-I still don't know which element corresponds what I/O.
+You mean update from 1.0.10 to 1.0.11 could help?
 
-   Line -> line/mic in jack ??
-   Mic  -> built-in mic ??
+----------------------------------------------------------------------
+ rlrevell - 04-24-06 16:43 
+----------------------------------------------------------------------
+No, I meant that the only way you can help to get line/mic in supported is
+to contribute patches.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-23-06 00:56 fdoffizi01     New Issue                                    
-04-23-06 01:03 rlrevell       Relationship added       related to 0001890  
-04-24-06 16:40 tiwai          Note Added: 0009467                          
+04-24-06 15:12 lwelyn         New Issue                                    
+04-24-06 15:12 lwelyn         Kernel Version            => 2.6.16.1        
+04-24-06 15:50 rlrevell       Note Added: 0009456                          
+04-24-06 15:56 lwelyn         Note Added: 0009459                          
+04-24-06 16:02 jcdutton       Note Added: 0009463                          
+04-24-06 16:05 lwelyn         Note Added: 0009464                          
+04-24-06 16:15 rlrevell       Note Added: 0009465                          
+04-24-06 16:24 lwelyn         Note Added: 0009466                          
+04-24-06 16:43 rlrevell       Note Added: 0009469                          
 ======================================================================
 
 
