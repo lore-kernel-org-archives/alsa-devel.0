@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Mon, 24 Apr 2006 15:57:19 +0200
-Message-ID: <c949ab45b6d2bb03e10de8b5f5cdbfff@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001520]: Soundchip was not detected
+Date: Mon, 24 Apr 2006 15:59:18 +0200
+Message-ID: <437b5465caee385ee3a273e24b681321@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E438C192
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:57:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 751BA192
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 15:59:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,101 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1520> 
 ======================================================================
-Reported By:                zanonmark
+Reported By:                Henne
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
+Issue ID:                   1520
+Category:                   ISA - cs4236
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
+Distribution:               Slackware 9.0
+Kernel Version:             2.6.14-rc4
 ======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              04-24-2006 15:57 CEST
+Date Submitted:             11-01-2005 10:35 CET
+Last Modified:              04-24-2006 15:59 CEST
 ======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
+Summary:                    Soundchip was not detected
 Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+I have an HP Omnibook 5700 CTX with some CS423x chip onboard, which is not
+detected by alsaconf. I did not find the ids in cs4236.c so I think the
+Pnp ID's
+must added to this file.
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
-
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
-
-So, will you please include such a parameter in the next version of the
-driver?
-
-Thanks a lot,
-
-Marco.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-24-06 15:47 
+ rlrevell - 04-24-06 00:27 
 ----------------------------------------------------------------------
-You don't need to enable joystick port to use MIDI.
-
-http://hg-mirror.alsa-project.org/alsa-kernel?fl=d26a933493fe;file=pci/ens1370.c;style=gitweb
-
-gameport module not compiled/installed in the kernel
-
-http://alsa.opensrc.org/Joystick+support
+Submitter:  have you made any progress solving this problem?
 
 ----------------------------------------------------------------------
- zanonmark - 04-24-06 15:57 
+ Henne - 04-24-06 15:59 
 ----------------------------------------------------------------------
-I'm sorry Raymond I didn't understand your last note,
+I have an idea, but I have not the right idea how to include this thing
+cleanly.
+I'll have more answers at the end of this weak.
 
-actually, you're right: I don't need any joystick module because I'm not
-going to use any joystick, but only the MIDI input/output functionality of
-the card,
-
-but I still can't understand why this kind of i/o is disabled by default,
-and how I can enable it, provided that snd_ens1371 and gameport are
-already loaded,
-well, I don't understand if there's something I can do, or if it is a bug
-and I have to wait for a debugged version... :)
-
-Thanks a lot,
-
-Marco
+On the CS4232 there is a option to set the resources manually on the chip,
+which is the way the oss-driver is using. But this means the driver has to
+write to port 0x297, which can be also the LPT1 status port. This could
+make problems.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
-04-18-06 13:18 Raymond        Note Edited: 0009328                         
-04-18-06 16:28 Clemens LadischNote Added: 0009338                          
-04-19-06 20:05 zanonmark      Note Added: 0009354                          
-04-19-06 21:49 rlrevell       Note Added: 0009356                          
-04-20-06 03:39 Raymond        Note Added: 0009363                          
-04-22-06 13:36 zanonmark      Note Added: 0009433                          
-04-24-06 15:47 Raymond        Note Added: 0009452                          
-04-24-06 15:57 zanonmark      Note Added: 0009460                          
+11-01-05 10:35 Henne          New Issue                                    
+11-01-05 10:35 Henne          Distribution              => Slackware 9.0   
+11-01-05 10:35 Henne          Kernel Version            => 2.6.14-rc4      
+11-08-05 18:48 tiwai          Note Added: 0006637                          
+11-08-05 21:00 Henne          Note Added: 0006643                          
+11-12-05 19:33 Henne          Note Added: 0006688                          
+11-15-05 10:10 Henne          Note Added: 0006729                          
+02-06-06 09:34 Henne          Note Added: 0007944                          
+03-16-06 13:57 Henne          Note Added: 0008602                          
+03-17-06 12:14 tiwai          Note Added: 0008642                          
+03-17-06 18:42 Henne          Note Added: 0008650                          
+04-24-06 00:02 Adrian Bunk    Issue Monitored: Adrian Bunk                    
+04-24-06 00:27 rlrevell       Note Added: 0009446                          
+04-24-06 15:59 Henne          Note Added: 0009461                          
 ======================================================================
 
 
