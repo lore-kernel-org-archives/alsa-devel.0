@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002060]: Intel HDA Soft modem
-Date: Mon, 24 Apr 2006 19:57:08 +0200
-Message-ID: <13c1720e57dd006a83537ac87c49011e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002061]: powermac dosen't build on my powerbook
+Date: Mon, 24 Apr 2006 20:09:33 +0200
+Message-ID: <b344eedd5bced096b8cd0a3d3b67d31e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA036174
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 19:57:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CD35174
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 20:09:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,102 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2060> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2061> 
 ======================================================================
-Reported By:                fdoffizi01
-Assigned To:                tiwai
+Reported By:                riesebie
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2060
-Category:                   PCI - hda-intel
+Issue ID:                   2061
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               
-Kernel Version:             2.6.15
+Kernel Version:             2.6.16.5
 ======================================================================
-Date Submitted:             04-23-2006 01:29 CEST
-Last Modified:              04-24-2006 19:57 CEST
+Date Submitted:             04-23-2006 13:07 CEST
+Last Modified:              04-24-2006 20:09 CEST
 ======================================================================
-Summary:                    Intel HDA Soft modem
+Summary:                    powermac dosen't build on my powerbook
 Description: 
-I'd like to use my hda softmodem but it's not even recognised from system.
-
-Here lspci output:
- 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller (rev 02)
-         Subsystem: Sony Corporation Unknown device 81ef
-         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-         Latency: 0, Cache Line Size 10
-         Interrupt: pin A routed to IRQ 66
-         Region 0: Memory at d2300000 (64-bit, non-prefetchable)
-[size=16K]
-         Capabilities: [50] Power Management version 2
-                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                 Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-         Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                 Address: 0000000000000000 Data: 0000
-         Capabilities: [70] Express Unknown type IRQ 0
-                 Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                 Device: Latency L0s <64ns, L1 <1us
-                 Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                 Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                 Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                 Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                 Link: Latency L0s <64ns, L1 <1us
-                 Link: ASPM Disabled CommClk- ExtSynch-
-                 Link: Speed unknown, Width x0
-         Capabilities: [100] Virtual Channel
-         Capabilities: [130] Unknown (5)
- 
- And as you can see current hda modules can't see modem functions:
- 
- aplay -l
- **** List of PLAYBACK Hardware Devices ****
- card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
-   Subdevices: 0/1
-   Subdevice #0: subdevice #0
- 
- Hardware is a Sony Vaio FE11x series notebook.
-It doesn't even work with linuxant driver (that now should support hda
-softmodems)
+Compiling alsa-driver 1.0.11 stops reading sound/ppc/pmac.c:872
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-24-06 15:56 
+ tiwai - 04-24-06 15:49 
 ----------------------------------------------------------------------
-What modem codec chip is on it?  If not known, please show
-/proc/asound/card0/codec#1 (or bigger number).
+Already fixed on Hg repo.
 
 ----------------------------------------------------------------------
- fdoffizi01 - 04-24-06 19:57 
+ riesebie - 04-24-06 20:09 
 ----------------------------------------------------------------------
-cat /proc/asound/card0/codec#1
-Codec: Generic 14f1 ID 2bfa
-Address: 1
-Vendor Id: 0x14f12bfa
-Subsystem Id: 0x104d0200
-Revision Id: 0x90000
+Could one please explain what "HG repo" means!
+
+Dict didn't told me ;)
+
+Thanks
+Elimar
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-23-06 01:29 fdoffizi01     New Issue                                    
-04-23-06 01:29 fdoffizi01     Kernel Version            => 2.6.15          
-04-23-06 01:32 fdoffizi01     Issue Monitored: fdoffizi01                    
-04-24-06 15:56 tiwai          Note Added: 0009458                          
-04-24-06 19:57 fdoffizi01     Note Added: 0009473                          
+04-23-06 13:07 riesebie       New Issue                                    
+04-23-06 13:07 riesebie       File Added: 98_pmac.dpatch                    
+04-23-06 13:07 riesebie       Kernel Version            => 2.6.16.5        
+04-23-06 22:32 riesebie       Issue Monitored: riesebie                    
+04-24-06 15:49 tiwai          Status                   assigned => resolved
+04-24-06 15:49 tiwai          Resolution               open => fixed       
+04-24-06 15:49 tiwai          Note Added: 0009454                          
+04-24-06 20:09 riesebie       Status                   resolved => feedback
+04-24-06 20:09 riesebie       Resolution               fixed => reopened   
+04-24-06 20:09 riesebie       Note Added: 0009474                          
 ======================================================================
 
 
