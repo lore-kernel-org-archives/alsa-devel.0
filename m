@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002064]: Line-in/mic-in not working
-Date: Mon, 24 Apr 2006 16:05:36 +0200
-Message-ID: <2af65c4b7fbaa3329299e7df767a0c65@bugtrack.alsa-project.org>
+Date: Mon, 24 Apr 2006 16:15:15 +0200
+Message-ID: <88c103c736dd2a5287da93e2cb62c2ac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13F1211E
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 16:05:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40938197
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 16:15:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.16.1
 ======================================================================
 Date Submitted:             04-24-2006 15:12 CEST
-Last Modified:              04-24-2006 16:05 CEST
+Last Modified:              04-24-2006 16:15 CEST
 ======================================================================
 Summary:                    Line-in/mic-in not working
 Description: 
@@ -53,19 +53,17 @@ friends with linux on their laptop own this card too.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 04-24-06 16:02 
-----------------------------------------------------------------------
-It clearly states on the alsa web site "soundcard matrix" that
-"Digital/Analog input does not work yet."
-So, this should not have been a surprise.
-
-----------------------------------------------------------------------
  lwelyn - 04-24-06 16:05 
 ----------------------------------------------------------------------
 Right. So i want to help to remove this "Digital/Analog input does not work
 yet." ugly thing ;-)
 
 If its possible.
+
+----------------------------------------------------------------------
+ rlrevell - 04-24-06 16:15 
+----------------------------------------------------------------------
+OK, so let's see some patches!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -76,6 +74,7 @@ Date Modified  Username       Field                    Change
 04-24-06 15:56 lwelyn         Note Added: 0009459                          
 04-24-06 16:02 jcdutton       Note Added: 0009463                          
 04-24-06 16:05 lwelyn         Note Added: 0009464                          
+04-24-06 16:15 rlrevell       Note Added: 0009465                          
 ======================================================================
 
 
