@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002055]: Sis 7012 - Only get Sound with headPhone on my laptop
-Date: Mon, 24 Apr 2006 21:35:14 +0200
-Message-ID: <c8afd892c5e1f2a5e346af3797ac9f9a@bugtrack.alsa-project.org>
+Date: Mon, 24 Apr 2006 21:51:46 +0200
+Message-ID: <b631ff30be363509664a9d95bf9a79c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C141B173
-	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 21:35:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0CD2A188
+	for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2006 21:51:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             04-21-2006 20:11 CEST
-Last Modified:              04-24-2006 21:35 CEST
+Last Modified:              04-24-2006 21:51 CEST
 ======================================================================
 Summary:                    Sis 7012 - Only get Sound with headPhone on my
 laptop
@@ -268,6 +268,15 @@ Do you need more informations?
 
 Thanks to consider my problem.
 
+----------------------------------------------------------------------
+ rlrevell - 04-24-06 21:51 
+----------------------------------------------------------------------
+Sounds like a bug, I'm not sure there's anything you can do but wait for a
+fix.  It's only been 3 days since you submitted the report and 2 of those
+were weekend days.
+
+Try toggling "External Amplifier"
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -275,6 +284,7 @@ Date Modified  Username       Field                    Change
 04-21-06 20:11 cYrAX          Distribution              => Gentoo          
 04-21-06 20:11 cYrAX          Kernel Version            => 2.6.15          
 04-24-06 21:35 cYrAX          Note Added: 0009479                          
+04-24-06 21:51 rlrevell       Note Added: 0009480                          
 ======================================================================
 
 
