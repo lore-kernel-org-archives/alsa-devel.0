@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002068]: No sound in headphones - A3H ASUS
-Date: Tue, 25 Apr 2006 18:21:08 +0200
-Message-ID: <16ca6e0fbb4ad6811b2d55e15405327a@bugtrack.alsa-project.org>
+From: Benoit Fouet <benoit.fouet@purplelabs.com>
+Subject: Re: missing snd_dlclose in timer.c
+Date: Tue, 25 Apr 2006 18:29:29 +0200
+Message-ID: <444E4E69.9070200@purplelabs.com>
+References: <444DE5E0.9030200@purplelabs.com>	<s5hpsj5zsx7.wl%tiwai@suse.de>	<444E3270.3050203@purplelabs.com>	<s5hlkttzpit.wl%tiwai@suse.de>	<444E3ECF.4060202@purplelabs.com> <s5h3bg1zldj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+ boundary="------------020905030905030100040109"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 805D7178
-	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 18:21:08 +0200 (MEST)
+Received: from athena.purplelabs.com (purple011329-4.clients.easynet.fr [212.11.31.196])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7133015D
+	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 18:29:33 +0200 (MEST)
+In-Reply-To: <s5h3bg1zldj.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,99 +20,183 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2068> 
-======================================================================
-Reported By:                awisniewski
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2068
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             04-25-2006 12:03 CEST
-Last Modified:              04-25-2006 18:21 CEST
-======================================================================
-Summary:                    No sound in headphones - A3H ASUS
-Description: 
-Hello
-
-I have ASUS A3H model laptop. I've just compiled kernel 2.6.16.11 from
-kernel.org (newest). I used CONFIG_SND_HDA_INTEL=y option in kernel config
-and it seems to be working propertly till I'm not trying use headphone
-(internal speaker from laptop is working propertly). When I plug in
-headphones into the jack port in laptop, internal speaker is silent but I
-can not hear anything in headphones. It seems like turned on MUTT option
-in mixer but I can not find option for headphones in my mixer
-application.
- 
-Few facts:
-
-lapek:/proc/asound# cat version 
-Advanced Linux Sound Architecture Driver Version 1.0.11rc2 (Wed Jan 04
-08:57:20 2006 UTC).
-
-andy@lapek:~/moje/instalki/Linux/kernele/linux-2.6.16.11$ uname -a
-Linux lapek 2.6.16.11 #1 Tue Apr 25 10:07:45 CEST 2006 i686 GNU/Linux
-
-lapek:/proc/asound# cat timers 
-G0: system timer : 4000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-P0-0-3: PCM capture 0-0-3 : SLAVE
-P0-1-0: PCM playback 0-1-0 : SLAVE
-
-lapek:/proc/asound# cat pcm 
-00-01: ALC880 Digital : ALC880 Digital : playback 1
-00-00: ALC880 Analog : ALC880 Analog : playback 1 : capture 2
-
-lapek:/proc/asound# cat devices 
-  0: [ 0]   : control
- 16: [ 0- 0]: digital audio playback
- 17: [ 0- 1]: digital audio playback
- 24: [ 0- 0]: digital audio capture
- 33:        : timer
-
-I will add /proc/asound/card0/codec#0 file also (as attachmets).
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 04-25-06 18:16 
-----------------------------------------------------------------------
-Try model=asus module option as written in ALSA-Configuration.txt.
-
-If it doesn't work, you can try model=test (available only when compiled
-with debug option) to check which pin corresponds to the headphone jack.
-
-----------------------------------------------------------------------
- tiwai - 04-25-06 18:21 
-----------------------------------------------------------------------
-Before that, you should upgrade to ALSA-1.0.11 final.  Many fixes have been
-added to 1.0.11-final after 2.6.16 kernel.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-25-06 12:03 awisniewski    New Issue                                    
-04-25-06 12:03 awisniewski    File Added: codec#0                          
-04-25-06 12:08 awisniewski    File Added: codec.zip                        
-04-25-06 18:16 tiwai          Note Added: 0009493                          
-04-25-06 18:21 tiwai          Note Added: 0009494                          
-======================================================================
+This is a multi-part message in MIME format.
+--------------020905030905030100040109
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
 
+Takashi Iwai wrote:
+
+>At Tue, 25 Apr 2006 17:22:55 +0200,
+>Benoit Fouet wrote:
+>  
+>
+>>Takashi Iwai wrote:
+>>
+>>    At Tue, 25 Apr 2006 16:30:08 +0200,
+>>    Benoit Fouet wrote:
+>>
+>>        Takashi Iwai wrote:
+>>        
+>>            At Tue, 25 Apr 2006 11:03:28 +0200,
+>>            Benoit Fouet wrote:
+>>        
+>>                Hi,
+>>                
+>>                I worked on an ARM9E platform with not much memory. We had to
+>>                dynamically link the libraries we needed.
+>>                BTW I found out that there was a dlclose missing in ALSA lib in the
+>>                snd_timer_open_conf function.
+>>                Find below the diff of my file, if you want to add it in th hg repository.
+>>        
+>>            A good catch.
+>>            
+>>            I just wonder whether it's safe to call dlclose() there.
+>>            Can the callback functions dynamically registered by open
+>>            (e.g. snd_timer_hw_open) be still accessed safely after dlclose()?
+>>            
+>>            Or should we keep dl handle and dlclose it in snd_timer_close()?
+>>        
+>>            Takashi
+>>        
+>>        It surely is safer to keep the library opened as long as its symbol are likely to be
+>>        used.
+>>        I'm afraid I'm not aware enough of how it works to answer more clearly.
+>>        btw, the symbols I used were in asound library, and were consequently still reachable
+>>        after dlclose as the library was not really unloaded.
+>>        Keeping the handle must be the best way to guarantee symbols can be reached until
+>>        snd_timer_close.
+>>
+>>    I guess so, too.  alsa-lib has a mechanism to allow users specifying
+>>    an extra shared object to be loaded.  Thus symbols are not always in
+>>    libasound.so that is kept opened.
+>>    
+>>    I'll fix codes to call snd_dlclose() in close.
+>>
+>>Ok, thank you for precision :)
+>>    
+>>
+>
+>I fixed it on Hg repo now.
+>
+>
+>Takashi
+>  
+>
+Seems like I missed some others :-)
+
+Ben
+
+>
+>-------------------------------------------------------
+>Using Tomcat but need to do more? Need to support web services, security?
+>Get stuff done quickly with pre-integrated technology to make your job easier
+>Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+>http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>  
+>
+
+--------------020905030905030100040109
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title></title>
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<br>
+Takashi Iwai wrote:
+<blockquote cite="mids5h3bg1zldj.wl%25tiwai@suse.de" type="cite">
+  <pre wrap="">At Tue, 25 Apr 2006 17:22:55 +0200,
+Benoit Fouet wrote:
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">Takashi Iwai wrote:
+
+    At Tue, 25 Apr 2006 16:30:08 +0200,
+    Benoit Fouet wrote:
+
+        Takashi Iwai wrote:
+        
+            At Tue, 25 Apr 2006 11:03:28 +0200,
+            Benoit Fouet wrote:
+        
+                Hi,
+                
+                I worked on an ARM9E platform with not much memory. We had to
+                dynamically link the libraries we needed.
+                BTW I found out that there was a dlclose missing in ALSA lib in the
+                snd_timer_open_conf function.
+                Find below the diff of my file, if you want to add it in th hg repository.
+        
+            A good catch.
+            
+            I just wonder whether it's safe to call dlclose() there.
+            Can the callback functions dynamically registered by open
+            (e.g. snd_timer_hw_open) be still accessed safely after dlclose()?
+            
+            Or should we keep dl handle and dlclose it in snd_timer_close()?
+        
+            Takashi
+        
+        It surely is safer to keep the library opened as long as its symbol are likely to be
+        used.
+        I'm afraid I'm not aware enough of how it works to answer more clearly.
+        btw, the symbols I used were in asound library, and were consequently still reachable
+        after dlclose as the library was not really unloaded.
+        Keeping the handle must be the best way to guarantee symbols can be reached until
+        snd_timer_close.
+
+    I guess so, too.  alsa-lib has a mechanism to allow users specifying
+    an extra shared object to be loaded.  Thus symbols are not always in
+    libasound.so that is kept opened.
+    
+    I'll fix codes to call snd_dlclose() in close.
+
+Ok, thank you for precision :)
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->
+I fixed it on Hg repo now.
+
+
+Takashi
+  </pre>
+</blockquote>
+Seems like I missed some others <span class="moz-smiley-s1"><span> :-)
+</span></span><br>
+<br>
+Ben<br>
+<blockquote cite="mids5h3bg1zldj.wl%25tiwai@suse.de" type="cite">
+  <pre wrap="">
+
+-------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+<a class="moz-txt-link-freetext" href="http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642">http://sel.as-us.falkag.net/sel?cmd=lnk&amp;kid=120709&amp;bid=263057&amp;dat=121642</a>
+_______________________________________________
+Alsa-devel mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:Alsa-devel@lists.sourceforge.net">Alsa-devel@lists.sourceforge.net</a>
+<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/alsa-devel">https://lists.sourceforge.net/lists/listinfo/alsa-devel</a>
+  </pre>
+</blockquote>
+</body>
+</html>
+
+--------------020905030905030100040109--
 
 
 -------------------------------------------------------
