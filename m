@@ -1,15 +1,14 @@
-From: Allan Klinbail <allan_k@dodo.com.au>
-Subject: Re: [Alsa-user] tip for MOTU  MIDI users  - 64bit lockups
- workaround/fix - playback only
-Date: Tue, 25 Apr 2006 21:13:33 +1000
-Message-ID: <1145963613.9874.14.camel@daw.littlewolf>
-References: <1145953559.9892.7.camel@daw.littlewolf>
-	 <874q0i6m3n.fsf@zebra.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001203]: mtpav driver locks X on 64 bit native system
+Date: Tue, 25 Apr 2006 13:19:24 +0200
+Message-ID: <ec4e9c046862ac4ac9ea8fb49030df90@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <874q0i6m3n.fsf@zebra.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE9FC16B
+	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 13:19:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,59 +18,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Matthias Koenig <list@phasorlab.de>
-Cc: alsa-user@lists.sourceforge.net, Alsa-dev <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-04-25 at 11:27 +0200, Matthias Koenig wrote:
-> Allan Klinbail <allan_k@dodo.com.au> writes:
-> 
-> > I don't know why this works but I thought I better share it. 
-> > Up until today I haven't been able to get my MOTU MTP-AV to work
-> > correctly in 64-bit linux. The entire PC would lock up as soon as it was
-> > accessed... .
-> 
-> Is this the mtpav driver?
-> Maybe this should be filed as bug report?
 
-This was filed as a bug report some time ago.. I'll dig out the number
-and add to it. I have tested the input and can't get a recording.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1203> 
+======================================================================
+Reported By:                sonofzev
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1203
+Category:                   GENERIC - mtpav
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo 2004.3 - 64-bit native
+Kernel Version:             2.6.9 or 2.6.11 or 2.6.12
+======================================================================
+Date Submitted:             06-19-2005 08:51 CEST
+Last Modified:              04-25-2006 13:19 CEST
+======================================================================
+Summary:                    mtpav driver locks X on 64 bit native system
+Description: 
+Locks system completely when loading X if mtpav module is already loaded. 
 
-I guess mine is becoming a standalone patchbay unit again and I have to
-sacrifice 1 input and 1 output to the PC via my keyboard controller
-unit. ... oh well...  
-> 
-> > In the driver options instead of pointing it to IRQ 5, as that is how my
-> > motherboard is set, I pointed it to IRQ 3.This was done out of confusion
-> > between DMA and IRQ number, not deliberately.  Ironically, it now works.
-> >
-> > I haven't completely tested the timing but the  MIDI messages are being
-> > sent to the right port at what seems to be the right time.. 
-> 
-> Transmitting MIDI likely does not depend on interrupts.
-> The question is if you can receive MIDI messages from external devices
+If loading the module after loading X, the system completely lock when
+firing up any sequencer app. 
 
+This does not happen on my 32-bit Pentium 4 
 
+======================================================================
 
-> ?
-> 
+----------------------------------------------------------------------
+ sonofzev - 04-25-06 13:18 
+----------------------------------------------------------------------
+Still not working
 
+have tested settings and was able to achieve successful playback only when
+giving the system an incorrect IRQ (3). 
 
-> Regards,
-> Matthias
-> 
-> 
-> -------------------------------------------------------
-> Using Tomcat but need to do more? Need to support web services, security?
-> Get stuff done quickly with pre-integrated technology to make your job easier
-> Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-> _______________________________________________
-> Alsa-user mailing list
-> Alsa-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-user
--- 
-Allan Klinbail <allan_k@dodo.com.au>
+When pointing to the correct settings the system still locks up.
+
+----------------------------------------------------------------------
+ sonofzev - 04-25-06 13:19 
+----------------------------------------------------------------------
+am currently on 1.10 but I don't think any changes have been made since.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-19-05 08:51 sonofzev       New Issue                                    
+06-19-05 08:51 sonofzev       Distribution              => Gentoo 2004.3 -
+64-bit native
+06-19-05 08:51 sonofzev       Kernel Version            => 2.6.9 or 2.6.11 or
+2.6.12
+06-19-05 16:05 sonofzev       Note Added: 0005089                          
+06-19-05 16:24 sonofzev       Note Deleted: 0005089                        
+06-20-05 13:47 sonofzev       Note Added: 0005097                          
+06-21-05 11:25 tiwai          Note Added: 0005104                          
+06-26-05 10:54 sonofzev       Note Added: 0005261                          
+06-27-05 16:57 tiwai          Note Added: 0005281                          
+06-27-05 19:39 sonofzev       Note Added: 0005286                          
+06-27-05 19:40 sonofzev       Issue Monitored: sonofzev                    
+04-25-06 13:18 sonofzev       Note Added: 0009488                          
+04-25-06 13:19 sonofzev       Note Added: 0009489                          
+======================================================================
+
 
 
 
