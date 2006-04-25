@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
-Date: Tue, 25 Apr 2006 11:46:53 +0200
-Message-ID: <351c6c768b7b7241a36acd0b085576e6@bugtrack.alsa-project.org>
+From: Matthias Koenig <list@phasorlab.de>
+Subject: Re: [PATCH] Support for ESI Miditerminal 4140
+Date: Tue, 25 Apr 2006 11:49:11 +0200
+Message-ID: <87wtde56js.fsf@zebra.localdomain>
+References: <87wtdeevlh.fsf@zebra.localdomain> <s5hbquq266i.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C62D16B
-	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 11:46:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,162 +15,222 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi,
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   1990
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             04-01-2006 04:26 CEST
-Last Modified:              04-25-2006 11:46 CEST
-======================================================================
-Summary:                    aplay/arecord cannot play/capture A_LAW
-Description: 
-aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
+Thank you for review!
 
-arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
+Takashi Iwai <tiwai@suse.de> writes:
+> At Mon, 24 Apr 2006 19:23:22 +0200,
+> Matthias Koenig wrote:
+[...]
+>> +config SND_MTS64
+>> +	tristate "ESI Miditerminal 4140 driver"
+>> +	depends on SND && PARPORT
+>> +	select SND_RAWMIDI
+>> +	help
+>> +	  Say 'Y' or 'M' to include support for Miditerminal 4140.
+>
+> A bit more explanative, please.
 
-aplay -D hw:0,0 test.au
+Ok
+
+>> +static char* id[SNDRV_CARDS]   = SNDRV_DEFAULT_STR;
+>
+> Please use a normal C-style, char *id[].
+
+Ok
+
+>> +	snd_rawmidi_substream_t* midi_input_substream[MTS64_NUM_INPUT_PORTS];
+>
+> We removed xxx_t typedefs.  Use struct instead.
+
+Ok. Sorry, this has been already on my plan, I don't know why forgot 
+about it.
+
+[...]
+>> +	mts->smpte_switch = 0;
+>> +	mts->time[0] = 0;
+>> +	mts->time[1] = 0;
+>> +	mts->time[2] = 0;
+>> +	mts->time[3] = 0;
+>> +	mts->fps = 0;
+>
+> You can omit zero-initializations above.
+
+Ok
+
+[...]
+> Space after 'for' and spaces between '=' are preferred.
+> Keep the coding style found in linux/Documentation/CodingStyle.
+
+Ok
+
+>> +static int mts64_device_init(struct parport* p)
+>> +{
+>> +	int i;
+>> +
+>> +	mts64_write_command(p, MTS64_CMD_RESET);
+>> +
+>> +	for(i=0; i < 64; ++i) {
+>> +		mdelay(100);
+>
+> Such a long delay in local_irq_disable()?
+>
+>> +	/* FIXME: Busy wait really necessary? */
+>> +	mdelay(50);
+>
+> Ditto.  A too long delay in irq_disable context.
+
+Yes, these long delays have caused me some bellyache.
+I got the information about the device from reverse engineering the Windows
+driver and the delay times are exactly taken from there (actually there is a
+function which repeatedly calls KeStallExecutionProcessor with an argument 
+of 50us until the given time is elapsed).
+I will try to find a better solution. Maybe some additional state variable
+which will be triggered by a timer. Also most of the delays are happening
+in process context, so it might be possible to sleep. At least it will be
+possible for the open/close callbacks.
+I'll rework those sections.
+
+[...]
+>> +	} else if(mts->open_count < 0) {
+>> +		mts->open_count = 0;
+>> +	}
+>
+> Should omit braces for a single line after 'if'.
+
+Ok
+
+>> +
+>> +	/* FIXME: Busy wait really necessary? */
+>> +	mdelay(500);
+>
+> A too long delay in irq_disable.
+
+s.a.
+
+[...]
+>> +static unsigned char mts64_map_midi_input(unsigned char c)
+>> +{
+>> +	unsigned char map[] = { 0, 1, 4, 2, 3 };
+>
+> Should be static char array.
+
+Ok
+
+[...]
+>> +static int mts64_probe(struct parport* p)
+>> +{
+>> +	unsigned char c;
+>> +
+>> +	mts64_smpte_stop(p);
+>> +
+>> +	mts64_write_command(p, MTS64_CMD_PROBE);
+>> +
+>> +	/* FIXME */
+>> +	mdelay(50);
+>
+> Possible to replace with msleep()?
+
+This might be an option. 
+
+[...]
+>> +	if(c != MTS64_CMD_PROBE) return 0;
+>> +	else return 1;
+>
+> Break lines.
+
+Ok
+
+>> +static void mts64_smpte_start(struct parport* p,
+>> +			      unsigned char hours, unsigned char minutes,
+>> +			      unsigned char seconds, unsigned char frames,
+>> +			      unsigned char idx)
+>> +{
+>> +	unsigned char fps[5] = { MTS64_CMD_SMPTE_FPS_24, 
+>> +				 MTS64_CMD_SMPTE_FPS_25,
+>> +				 MTS64_CMD_SMPTE_FPS_2997, 
+>> +				 MTS64_CMD_SMPTE_FPS_30D,
+>> +				 MTS64_CMD_SMPTE_FPS_30    };
+>
+> Use a static array.
+
+Ok
+
+[...]
+>> +	/* check current midiport */
+>> +	if(mts->current_midi_output_port != midiport) {
+>> +		mts64_write_command(p, midiport);
+>> +	}
+>
+> Remove braces around a single if line.
+
+OK
 
 
-Try to use -t raw but the quality of A_LAW is very bad when compare with
-MU_LAW
+[...]
+>> +/* SMPTE Switch */
+>> +static int snd_mts64_ctl_smpte_switch_info(snd_kcontrol_t *kctl,
+>> +					   snd_ctl_elem_info_t* uinfo)
+>
+> Use struct snd_kcontrol and struct snd_ctl_elem_info.
+> (For checking the obsolete typedefs, comment out the inclusion of
+> "typedefs.h" in adriver.h.)
 
-arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
+Ok, removed all typedefs
+>
+>> +
+>> +static snd_kcontrol_new_t mts64_ctl_smpte_switch __devinitdata = {
+>
+> Use struct snd_kcontrol_new.
 
-aplay -D hw:0,0 test.raw
+Ok
+>
+>> +	.iface = SNDRV_CTL_ELEM_IFACE_RAWMIDI,
+>> +	.name  = "SMPTE Playback Switch",
+>> +	.index = 0,
+>> +	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
+>> +	.private_value = 0,
+>> +	.info = snd_mts64_ctl_smpte_switch_info,
+>> +	.get  = snd_mts64_ctl_smpte_switch_get,
+>> +	.put  = snd_mts64_ctl_smpte_switch_put
+>> +};
+>> +/* FPS */
+>> +static int snd_mts64_ctl_smpte_fps_info(snd_kcontrol_t* kctl,
+>> +					snd_ctl_elem_info_t* uinfo)
+>> +{
+>> +	char* texts[5] = { "24",
+>> +			   "25",
+>> +			   "29.97",
+>> +			   "30D",
+>> +			   "30"    };
+>
+> Use a static array.
 
+OK
+>
+>> +static void mts64_interrupt(int irq, void* private, struct pt_regs* r)
+>> +{
+>> +	struct mts64* mts = ((struct snd_card*)private)->private_data;
+>> +	unsigned long flags;
+>> +	unsigned short ret;
+>> +	unsigned char status, data;
+>> +	snd_rawmidi_substream_t* substream;
+>> +
+>> +	spin_lock_irqsave(mts->lock, flags);
+>
+> You need to irqsave/restore in the interrupt handler.
 
-======================================================================
+I'm not sure if I understand your point here.
+This is what I already do. Do you mean "you _don't_ need to 
+irqsave/restore ..."?
 
-----------------------------------------------------------------------
- Raymond - 04-25-06 02:59 
-----------------------------------------------------------------------
-au88xx driver also support A-Law and MU-LAW.
-
-aplay -v -f A_LAW -Dossdriver test.raw
-Playing raw data 'test.raw' : A-Law, Rate 8000 Hz, Mono
-aplay: set_params:901: Sample format non available
-
-
-pcm.alawoss {
-        type alaw              
-        slave {
-		pcm ossdriver
-		format S16_LE
-	}
-}
-
-aplay -v -f A_LAW -Dalawoss test.raw
-Playing raw data 'test.raw' : A-Law, Rate 8000 Hz, Mono
-A-Law conversion PCM (S16_LE)
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : A_LAW
-  subformat    : STD
-  channels     : 1
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 8
-  buffer_size  : 4096
-  period_size  : 1024
-  period_time  : 128000
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 4096
-  stop_threshold   : 4096
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Slave: ALSA <-> OSS PCM I/O Plugin
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 16
-  buffer_size  : 4096
-  period_size  : 1024
-  period_time  : 128000
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 4096
-  stop_threshold   : 4096
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-
-----------------------------------------------------------------------
- tiwai - 04-25-06 11:46 
-----------------------------------------------------------------------
-IT IS OFF-TOPIC.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-01-06 04:26 Raymond        New Issue                                    
-04-03-06 07:16 Raymond        Note Added: 0009085                          
-04-03-06 07:36 Raymond        Note Added: 0009086                          
-04-07-06 19:32 tiwai          Note Added: 0009152                          
-04-08-06 07:47 Raymond        Note Added: 0009171                          
-04-10-06 16:52 tiwai          Note Added: 0009199                          
-04-11-06 07:46 Raymond        Note Added: 0009229                          
-04-11-06 07:55 Raymond        Note Edited: 0009229                         
-04-11-06 09:41 Raymond        Note Edited: 0009229                         
-04-20-06 15:29 tiwai          Status                   new => resolved     
-04-20-06 15:29 tiwai          Resolution               open => not an issue
-04-20-06 15:29 tiwai          Assigned To               => tiwai           
-04-20-06 15:29 tiwai          Note Added: 0009384                          
-04-24-06 15:07 Raymond        Status                   resolved => feedback
-04-24-06 15:07 Raymond        Resolution               not an issue => reopened
-04-24-06 15:07 Raymond        Note Added: 0009451                          
-04-24-06 15:48 tiwai          Status                   feedback => resolved
-04-24-06 15:48 tiwai          Resolution               reopened => not an issue
-04-24-06 15:48 tiwai          Note Added: 0009453                          
-04-24-06 16:43 Raymond        Status                   resolved => feedback
-04-24-06 16:43 Raymond        Resolution               not an issue => reopened
-04-24-06 16:43 Raymond        Note Added: 0009468                          
-04-24-06 16:50 tiwai          Status                   feedback => resolved
-04-24-06 16:50 tiwai          Resolution               reopened => not an issue
-04-24-06 16:50 tiwai          Note Added: 0009472                          
-04-25-06 02:59 Raymond        Status                   resolved => feedback
-04-25-06 02:59 Raymond        Resolution               not an issue => reopened
-04-25-06 02:59 Raymond        Note Added: 0009483                          
-04-25-06 11:46 Raymond        File Added: pcm_oss_mulaw_alaw.patch              
-     
-04-25-06 11:46 tiwai          Status                   feedback => resolved
-04-25-06 11:46 tiwai          Resolution               reopened => not an issue
-04-25-06 11:46 tiwai          Note Added: 0009487                          
-======================================================================
-
-
+thanks,
+Matthias
 
 
 -------------------------------------------------------
