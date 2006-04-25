@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002062]: azx_get_response_timeout -> no sound with hda_intel
-Date: Wed, 26 Apr 2006 00:09:59 +0200
-Message-ID: <060432e8c30caa90c839b5b88314c17b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002072]: Module generates error message when loading, and error when trying to play an au-file.
+Date: Wed, 26 Apr 2006 00:17:26 +0200
+Message-ID: <dd1b9e8eee87df8e4bdffa98555dcc3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D1C8159
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 00:09:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D7EE159
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 00:17:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2062> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2072> 
 ======================================================================
-Reported By:                lemzwerg
+Reported By:                eivindt
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2062
+Issue ID:                   2072
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             Linux linux 2.6.16.9-smp #1 SMP Fri Apr 21 11:20:09
-CEST 2006 i686 i686 i386 GNU/Linux
+Distribution:               Gentoo
+Kernel Version:             2.6.17_rc2
 ======================================================================
-Date Submitted:             04-23-2006 14:06 CEST
-Last Modified:              04-26-2006 00:09 CEST
+Date Submitted:             04-26-2006 00:17 CEST
+Last Modified:              04-26-2006 00:17 CEST
 ======================================================================
-Summary:                    azx_get_response_timeout -> no sound with hda_intel
+Summary:                    Module generates error message when loading, and
+error when trying to play an au-file.
 Description: 
-I have exactly the same problem as reported here (with the same
-hardware, this is, SigmaTel STAC9200 codec, but in an Dell Inspiron
-6400):
+When loading the module (snd-hda-intel) i get an error message on the
+console.  The modules still loads and creates the expected devices and
+proc files (as far as I can see).
 
-  http://threebit.net/mail-archive/linux-kernel/msg00690.html
+When trying to use the module, by cat-ing a au-file into /dev/sound/audio,
+I get another error message on the console, and no sound out.
 
-but I'm using the latest ALSA and Linux kernel versions...
-
-Any fix available?
-
+This is compiled with the lates version from hg.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 04-24-06 15:54 
-----------------------------------------------------------------------
-Don't use CVS anymore but use Hg repo.
-
-----------------------------------------------------------------------
- eivindt - 04-26-06 00:09 
-----------------------------------------------------------------------
-Sorry about that.  Still not working though, but I'll report that as a
-separate bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-23-06 14:06 lemzwerg       New Issue                                    
-04-23-06 14:06 lemzwerg       Kernel Version            => Linux linux
-2.6.16.9-smp #1 SMP Fri Apr 21 11:20:09 CEST 2006 i686 i686 i386 GNU/Linux
-04-23-06 23:10 eivindt        Note Added: 0009445                          
-04-23-06 23:10 eivindt        Issue Monitored: eivindt                     
-04-24-06 15:54 tiwai          Note Added: 0009457                          
-04-26-06 00:09 eivindt        Note Added: 0009498                          
+04-26-06 00:17 eivindt        New Issue                                    
+04-26-06 00:17 eivindt        Distribution              => Gentoo          
+04-26-06 00:17 eivindt        Kernel Version            => 2.6.17_rc2      
 ======================================================================
 
 
