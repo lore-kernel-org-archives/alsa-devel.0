@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002072]: Module generates error message when loading, and error when trying to play an au-file.
-Date: Wed, 26 Apr 2006 00:17:26 +0200
-Message-ID: <dd1b9e8eee87df8e4bdffa98555dcc3e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
+Date: Wed, 26 Apr 2006 00:37:07 +0200
+Message-ID: <656cfb1055fbf7d7622f79cb4954310c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D7EE159
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 00:17:27 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9479015E
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 00:37:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,96 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2072> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
 ======================================================================
-Reported By:                eivindt
+Reported By:                vertex
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2072
+Issue ID:                   2035
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.17_rc2
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
-Date Submitted:             04-26-2006 00:17 CEST
-Last Modified:              04-26-2006 00:17 CEST
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              04-26-2006 00:37 CEST
 ======================================================================
-Summary:                    Module generates error message when loading, and
-error when trying to play an au-file.
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
 Description: 
-When loading the module (snd-hda-intel) i get an error message on the
-console.  The modules still loads and creates the expected devices and
-proc files (as far as I can see).
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-When trying to use the module, by cat-ing a au-file into /dev/sound/audio,
-I get another error message on the console, and no sound out.
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-This is compiled with the lates version from hg.
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
+
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
 ======================================================================
+
+----------------------------------------------------------------------
+ vertex - 04-21-06 18:56 
+----------------------------------------------------------------------
+I checked with the system vendor and there are no updates available. This
+is a new Intel system with the new Core Duo. There is only one audio
+output jack, and one audio input jack. 
+
+I compiled the drivers with "--with-debug=full", but I don't see anything
+in /var/log/messages or dmesg about "hda_codec_setup_stream: ....". Please
+advise.
+
+----------------------------------------------------------------------
+ vertex - 04-26-06 00:37 
+----------------------------------------------------------------------
+Just wondering if there was anything I could do to facilitate a fix for
+this?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-26-06 00:17 eivindt        New Issue                                    
-04-26-06 00:17 eivindt        Distribution              => Gentoo          
-04-26-06 00:17 eivindt        Kernel Version            => 2.6.17_rc2      
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
 ======================================================================
 
 
