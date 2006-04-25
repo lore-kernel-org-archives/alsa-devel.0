@@ -1,42 +1,137 @@
-From: Allan Klinbail <allan_k@dodo.com.au>
-Subject: tip for MOTU  MIDI users  - 64bit lockups workaround/fix
-Date: Tue, 25 Apr 2006 18:25:59 +1000
-Message-ID: <1145953559.9892.7.camel@daw.littlewolf>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Tue, 25 Apr 2006 10:55:46 +0200
+Message-ID: <188fa34ffc80dcd06f11c990f03d117b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: alsa-user@lists.sourceforge.net
-Cc: Alsa-dev <alsa-devel@lists.sourceforge.net>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4906918C
+	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 10:55:47 +0200 (MEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi All 
 
-I don't know why this works but I thought I better share it. 
-Up until today I haven't been able to get my MOTU MTP-AV to work
-correctly in 64-bit linux. The entire PC would lock up as soon as it was
-accessed... .
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+======================================================================
+Reported By:                zanonmark
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2023
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
+======================================================================
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              04-25-2006 10:55 CEST
+======================================================================
+Summary:                    midi/joystick port disabled and no way to enable it
+Description: 
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
 
-In the driver options instead of pointing it to IRQ 5, as that is how my
-motherboard is set, I pointed it to IRQ 3.This was done out of confusion
-between DMA and IRQ number, not deliberately.  Ironically, it now works.
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
 
-I haven't completely tested the timing but the  MIDI messages are being
-sent to the right port at what seems to be the right time.. 
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
 
-cheers 	
- 
--- 
-Allan Klinbail <allan_k@dodo.com.au>
+So, will you please include such a parameter in the next version of the
+driver?
+
+Thanks a lot,
+
+Marco.
+
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 04-25-06 03:25 
+----------------------------------------------------------------------
+It seem that your have 3 ALSA cards
+
+Do you enable PNP is BIOS ?
+
+Please post the output of
+
+cat /proc/asound/cards
+
+cat /proc/asound/version
+
+----------------------------------------------------------------------
+ zanonmark - 04-25-06 10:55 
+----------------------------------------------------------------------
+Hi,
+
+my BIOS enables PnP by default: at least, that's what I suppose, since
+there's no PnP option,
+
+these are the output you requested:
+
+root@ubuntu:/home/marco# cat /proc/asound/cards
+0 [AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
+                     Ensoniq AudioPCI ENS1371 at 0xd400, irq 18
+1 [V8237          ]: VIA8237 - VIA 8237
+                     VIA 8237 with CMI9761 at 0xbc00, irq 22
+2 [UART           ]: MPU-401 UART - MPU-401 UART
+                     MPU-401 UART at 0x330, irq 5
+
+root@ubuntu:/home/marco# cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9 (Sun May 29
+07:31:02 2005 UTC).
+
+Thanks,
+
+MZ
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
+04-17-06 06:56 rlrevell       Note Added: 0009301                          
+04-17-06 07:19 Raymond        Note Added: 0009303                          
+04-17-06 19:59 zanonmark      Note Added: 0009319                          
+04-18-06 10:54 Raymond        Note Added: 0009328                          
+04-18-06 13:18 Raymond        Note Edited: 0009328                         
+04-18-06 16:28 Clemens LadischNote Added: 0009338                          
+04-19-06 20:05 zanonmark      Note Added: 0009354                          
+04-19-06 21:49 rlrevell       Note Added: 0009356                          
+04-20-06 03:39 Raymond        Note Added: 0009363                          
+04-22-06 13:36 zanonmark      Note Added: 0009433                          
+04-24-06 15:47 Raymond        Note Added: 0009452                          
+04-24-06 15:57 zanonmark      Note Added: 0009460                          
+04-25-06 03:25 Raymond        Note Added: 0009484                          
+04-25-06 10:55 zanonmark      Note Added: 0009486                          
+======================================================================
+
 
 
 
