@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001203]: mtpav driver locks X on 64 bit native system
-Date: Tue, 25 Apr 2006 13:19:24 +0200
-Message-ID: <ec4e9c046862ac4ac9ea8fb49030df90@bugtrack.alsa-project.org>
+Date: Tue, 25 Apr 2006 13:18:30 +0200
+Message-ID: <7ac0f33f2a6aa357bcf71e33336bcb93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE9FC16B
-	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 13:19:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8247716B
+	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 13:18:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo 2004.3 - 64-bit native
 Kernel Version:             2.6.9 or 2.6.11 or 2.6.12
 ======================================================================
 Date Submitted:             06-19-2005 08:51 CEST
-Last Modified:              04-25-2006 13:19 CEST
+Last Modified:              04-25-2006 13:18 CEST
 ======================================================================
 Summary:                    mtpav driver locks X on 64 bit native system
 Description: 
@@ -54,6 +54,11 @@ This does not happen on my 32-bit Pentium 4
 ======================================================================
 
 ----------------------------------------------------------------------
+ sonofzev - 06-27-05 19:39 
+----------------------------------------------------------------------
+confirmed that I am using IRQ7 for my printer port.
+
+----------------------------------------------------------------------
  sonofzev - 04-25-06 13:18 
 ----------------------------------------------------------------------
 Still not working
@@ -62,11 +67,6 @@ have tested settings and was able to achieve successful playback only when
 giving the system an incorrect IRQ (3). 
 
 When pointing to the correct settings the system still locks up.
-
-----------------------------------------------------------------------
- sonofzev - 04-25-06 13:19 
-----------------------------------------------------------------------
-am currently on 1.10 but I don't think any changes have been made since.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,7 +85,6 @@ Date Modified  Username       Field                    Change
 06-27-05 19:39 sonofzev       Note Added: 0005286                          
 06-27-05 19:40 sonofzev       Issue Monitored: sonofzev                    
 04-25-06 13:18 sonofzev       Note Added: 0009488                          
-04-25-06 13:19 sonofzev       Note Added: 0009489                          
 ======================================================================
 
 
