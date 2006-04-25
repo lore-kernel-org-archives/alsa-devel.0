@@ -1,12 +1,14 @@
 From: Alien <alien999999999@users.sourceforge.net>
-Subject: au8820 card
-Date: Tue, 25 Apr 2006 08:52:29 +0200
-Message-ID: <200604250852.30295.alien999999999@users.sourceforge.net>
+Subject: Re: au8820 card
+Date: Tue, 25 Apr 2006 08:53:16 +0200
+Message-ID: <200604250853.16643.alien999999999@users.sourceforge.net>
+References: <200604241444.38829.alien999999999@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200604241444.38829.alien999999999@users.sourceforge.net>
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,34 +19,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, openvortex-dev@nongnu.org
+To: openvortex-dev@nongnu.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi, guys, i found an au8820 card at work lying around, and i can have it.
+forgot to say it's a turle beach card.
 
-2 options:
-- either i keep it to use it to test it,
-- or either some devel wants it to work on it?
+has  gameport + 3 plugs: (green, red, blue), internal connectors: TSB400 , 
+AUX_IN, TAD, CD_IN and (no connector, but a place for it, LINE_IN and 
+LINEOUT) + WAVETABLE connector
 
-chip:
+On Monday 24 April 2006 14:44, you wrote:
+> hi, guys, i found an au8820 card at work lying around, and i can have it.
+>
+> 2 options:
+> - either i keep it to use it to test it,
+> - or either some devel wants it to work on it?
+>
+> chip:
+>
+> AU8820C0
+> ACPXP
+> 9911-M2811
+>
+> SIGMATEL
+> STAC9701T
+> CD4S02
+> 9848
+>
+> has an internal wavetable connector.
+>
+> If i donate this card to a dev, i want it to be used in a 64bit system for
+> testing.
+>
+> (i have an au8810 card in my 64bit system).
+>
+> mvg,
 
-AU8820C0
-ACPXP
-9911-M2811
-
-SIGMATEL
-STAC9701T
-CD4S02
-9848
-
-has an internal wavetable connector.
-
-If i donate this card to a dev, i want it to be used in a 64bit system for 
-testing.
-
-(i have an au8810 card in my 64bit system).
-
-mvg,
 -- 
 Alien is my name and head-biting is my game
 
