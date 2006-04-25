@@ -1,67 +1,48 @@
-From: Benoit Fouet <benoit.fouet@purplelabs.com>
-Subject: missing snd_dlclose in timer.c
-Date: Tue, 25 Apr 2006 11:03:28 +0200
-Message-ID: <444DE5E0.9030200@purplelabs.com>
+From: Matthias Koenig <list@phasorlab.de>
+Subject: Re: tip for MOTU  MIDI users  - 64bit lockups workaround/fix
+Date: Tue, 25 Apr 2006 11:27:56 +0200
+Message-ID: <874q0i6m3n.fsf@zebra.localdomain>
+References: <1145953559.9892.7.camel@daw.littlewolf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from athena.purplelabs.com (adsl-2-196.adsl.easynet.fr [212.11.31.196])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47969159
-	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 11:03:30 +0200 (MEST)
-Received: from localhost (localhost [127.0.0.1])
-	by athena.purplelabs.com (Postfix) with ESMTP id 3E46541096
-	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 11:03:30 +0200 (CEST)
-Received: from athena.purplelabs.com ([127.0.0.1])
- by localhost (athena.purplelabs.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 23970-12 for <alsa-devel@alsa-project.org>;
- Tue, 25 Apr 2006 11:03:28 +0200 (CEST)
-Received: from [10.1.2.69] (unknown [10.1.2.69])
-	by athena.purplelabs.com (Postfix) with ESMTP id 4221C3D372
-	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 11:03:28 +0200 (CEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <1145953559.9892.7.camel@daw.littlewolf> (Allan Klinbail's
+	message of "Tue, 25 Apr 2006 18:25:59 +1000")
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Allan Klinbail <allan_k@dodo.com.au>
+Cc: alsa-user@lists.sourceforge.net, Alsa-dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Allan Klinbail <allan_k@dodo.com.au> writes:
 
-I worked on an ARM9E platform with not much memory. We had to
-dynamically link the libraries we needed.
-BTW I found out that there was a dlclose missing in ALSA lib in the
-snd_timer_open_conf function.
-Find below the diff of my file, if you want to add it in th hg repository.
+> I don't know why this works but I thought I better share it. 
+> Up until today I haven't been able to get my MOTU MTP-AV to work
+> correctly in 64-bit linux. The entire PC would lock up as soon as it was
+> accessed... .
 
-Cheers,
-Ben
+Is this the mtpav driver?
+Maybe this should be filed as bug report?
 
+> In the driver options instead of pointing it to IRQ 5, as that is how my
+> motherboard is set, I pointed it to IRQ 3.This was done out of confusion
+> between DMA and IRQ number, not deliberately.  Ironically, it now works.
+>
+> I haven't completely tested the timing but the  MIDI messages are being
+> sent to the right port at what seems to be the right time.. 
 
-diff -r 211e55692b5d src/timer/timer.c
---- a/src/timer/timer.c Wed Apr 19 12:29:47 2006 +0200
-+++ b/src/timer/timer.c Tue Apr 25 10:53:04 2006 +0200
-@@ -171,7 +171,10 @@ static int snd_timer_open_conf(snd_timer
-        _err:
-        if (type_conf)
-                snd_config_delete(type_conf);
--       return err >= 0 ? open_func(timer, name, timer_root, timer_conf,
-mode) : err;
-+       err = err >= 0 ? open_func(timer, name, timer_root, timer_conf,
-mode) : err;
-+       if (h)
-+               snd_dlclose(h);
-+       return err;
- }
+Transmitting MIDI likely does not depend on interrupts.
+The question is if you can receive MIDI messages from external devices?
 
- static int snd_timer_open_noupdate(snd_timer_t **timer, snd_config_t
-*root, const char *name, int mode)
-
+Regards,
+Matthias
 
 
 -------------------------------------------------------
