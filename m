@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002021]: No sound from speakers (only headphone) after resume to suspend-to-ram
-Date: Tue, 25 Apr 2006 20:37:29 +0200
-Message-ID: <40c2f2572b432cf55ecb8b0256612ade@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002069]: No sound on via SPDIF out, very low volume on analog out (MSI K8NGM2-FID with ACL880)
+Date: Tue, 25 Apr 2006 20:43:18 +0200
+Message-ID: <831e1457980bc3236008cdb4df11a4d2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0370217E
-	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 20:37:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A185612C
+	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 20:43:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2021> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2069> 
 ======================================================================
-Reported By:                tsaiming
-Assigned To:                
+Reported By:                gtmkramer
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2021
-Category:                   PCI - via82xx
+Issue ID:                   2069
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             suspend2-2.6.16-r2
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.16-1.2069_FC4smp
 ======================================================================
-Date Submitted:             04-15-2006 13:19 CEST
-Last Modified:              04-25-2006 20:37 CEST
+Date Submitted:             04-25-2006 20:43 CEST
+Last Modified:              04-25-2006 20:43 CEST
 ======================================================================
-Summary:                    No sound from speakers (only headphone) after resume
-to suspend-to-ram
+Summary:                    No sound on via SPDIF out, very low volume on analog
+out (MSI K8NGM2-FID with ACL880)
 Description: 
-After suspend2-to-ram (but it happens also with the suspend kernel built
-in) I have no more sound from speakers but only from headphones.
-With suspend to disk all works good 
-Also tried to stop alsasound and unload modules before suspending and
-restart service after resume with no change.
+On my new MSI K8NGM2-FID motherboard with a Realtek ACL880 a get only sound
+from the analog output (although the volume is very low).
 
+The codec is not properly recognized:
+hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+
+I've tried with various model= settings to no avail.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 04-25-06 16:09 
-----------------------------------------------------------------------
-Did you compile drivers with debug option?  Otherwise the values cannot be
-changed via proc file.
-
-----------------------------------------------------------------------
- mmp - 04-25-06 20:37 
-----------------------------------------------------------------------
-Yes, I did everything as you suggested, but one register just remained the
-same; other one (I think it's 5e) used to change its values time to time
-(maybe depending on if it was recently opened).
-I'm sorry, I did not write previous note correctly, it was a bit in hurry
-- I was able to write (and partially change) ac97#0-0+regs, but I wasn't
-able to write via82xx.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-15-06 13:19 tsaiming       New Issue                                    
-04-15-06 13:19 tsaiming       File Added: codec97#0.txt                    
-04-15-06 13:19 tsaiming       Distribution              => Gentoo          
-04-15-06 13:19 tsaiming       Kernel Version            => suspend2-2.6.16-r2
-04-22-06 15:12 mmp            Issue Monitored: mmp                         
-04-22-06 15:14 mmp            Note Added: 0009435                          
-04-22-06 15:15 mmp            File Added: regs.diff                        
-04-24-06 16:44 tiwai          Note Added: 0009470                          
-04-24-06 21:30 mmp            Note Added: 0009478                          
-04-25-06 16:09 tiwai          Note Added: 0009491                          
-04-25-06 20:37 mmp            Note Added: 0009495                          
+04-25-06 20:43 gtmkramer      New Issue                                    
+04-25-06 20:43 gtmkramer      File Added: codec.tar.gz                     
+04-25-06 20:43 gtmkramer      Distribution              => Fedora Core 4   
+04-25-06 20:43 gtmkramer      Kernel Version            => 2.6.16-1.2069_FC4smp
 ======================================================================
 
 
