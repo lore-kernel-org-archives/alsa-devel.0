@@ -1,68 +1,65 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002069]: No sound on via SPDIF out, very low volume on analog out (MSI K8NGM2-FID with ACL880)
-Date: Tue, 25 Apr 2006 20:43:18 +0200
-Message-ID: <831e1457980bc3236008cdb4df11a4d2@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Re: [Alsa-devel] [PATCH] Add Dreamcast
+	AICA	driver to alsa-driver
+Date: Tue, 25 Apr 2006 20:20:12 +0100
+Message-ID: <1145992812.9249.5.camel@localhost.localdomain>
+References: <1145831786.9242.38.camel@localhost.localdomain>
+	 <1145832383.9242.41.camel@localhost.localdomain>
+	 <s5hacab44bw.wl%tiwai@suse.de>
+	 <1145900695.9243.4.camel@localhost.localdomain>
+	 <s5hejzm26x0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A185612C
-	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 20:43:18 +0200 (MEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Return-path: <linuxsh-dev-admin@lists.sourceforge.net>
+In-Reply-To: <s5hejzm26x0.wl%tiwai@suse.de>
+Sender: linuxsh-dev-admin@lists.sourceforge.net
+Errors-To: linuxsh-dev-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
+List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
+	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>, Lee Revell <rlrevell@joe-job.com>, Paul Mundt <lethal@linux-sh.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-04-24 at 19:57 +0200, Takashi Iwai wrote:
+> At Mon, 24 Apr 2006 18:44:55 +0100,
+> Adrian McMenamin wrote:
+> > 
+> > > 
+> > > > +static int stereo_buffer_transfer(struct snd_pcm_substream
+> > > > +				  *substream, int buffer_size, int period)
+> > > > +{
+> > > 
+> > > I feel this transfer-and-wait could be done more efficiently using
+> > > workq than doing it in timer callback.  The trigger(start) and
+> > > aica_period_elapsed() calls queue_work() at each time.
+> > > 
+> > > The most work of spu_begin_dma() should be put in the workq, too.
+> > > 
+> > 
+> > heh. If you remember, a couple of months ago I had this in a kernel
+> > thread - ie much the same - and you or Lee said I should absolutely not
+> > use that mechanism :)
+> 
+> Well, a source code tell you better than hundreds words :)
+> 
+> 
+Unfortunately using the workqueue method bumps up the processor usage
+figure up to 100% or pretty close for high demand samples.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2069> 
-======================================================================
-Reported By:                gtmkramer
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2069
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.16-1.2069_FC4smp
-======================================================================
-Date Submitted:             04-25-2006 20:43 CEST
-Last Modified:              04-25-2006 20:43 CEST
-======================================================================
-Summary:                    No sound on via SPDIF out, very low volume on analog
-out (MSI K8NGM2-FID with ACL880)
-Description: 
-On my new MSI K8NGM2-FID motherboard with a Realtek ACL880 a get only sound
-from the analog output (although the volume is very low).
+So whilst mpg123 might drop from say 42% of CPU time to 36%, the kernel
+thread uses up about 60% of processor time.
 
-The codec is not properly recognized:
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
-
-I've tried with various model= settings to no avail.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-25-06 20:43 gtmkramer      New Issue                                    
-04-25-06 20:43 gtmkramer      File Added: codec.tar.gz                     
-04-25-06 20:43 gtmkramer      Distribution              => Fedora Core 4   
-04-25-06 20:43 gtmkramer      Kernel Version            => 2.6.16-1.2069_FC4smp
-======================================================================
-
+Why do you think using a workqueue/kernel thread is the right way to go?
+Is it because of the global dma lock? That can be dropped, I'd much
+rather have the (theoretical) occasional mess of the samples being
+played rather than have a model that is so vulnerable to other demands
+on the CPU.
 
 
 
