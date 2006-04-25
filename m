@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001918]: No sound when I boot into Linux
-Date: Tue, 25 Apr 2006 02:45:20 +0200
-Message-ID: <61b8dea48d2d2c97224888368b00b613@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0001990]: aplay/arecord cannot play/capture A_LAW
+Date: Tue, 25 Apr 2006 02:59:57 +0200
+Message-ID: <3773a0cd19f1883f070ba74e7b0f2bb5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECF3915D
-	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 02:45:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4114F178
+	for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2006 02:59:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,155 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1918> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1990> 
 ======================================================================
-Reported By:                gordon3913
-Assigned To:                perex
+Reported By:                Raymond
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1918
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - utils
+Issue ID:                   1990
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     feedback
 ======================================================================
-Date Submitted:             03-13-2006 03:04 CET
-Last Modified:              04-25-2006 02:45 CEST
+Date Submitted:             04-01-2006 04:26 CEST
+Last Modified:              04-25-2006 02:59 CEST
 ======================================================================
-Summary:                    No sound when I boot into Linux
+Summary:                    aplay/arecord cannot play/capture A_LAW
 Description: 
-I do not have sound every time that I boot into Linux
-When I run "alsaconf" and follow the prompts in a terminal my sound will
-work.
-Next time I start my computer - no sound.
+aplay/arecord can play MU_LAW and the sound card support MU_LAW and A_LAW
+
+arecord -D hw:0,0 -f MU_LAW -t au -c 1 -r 8000 test.au
+
+aplay -D hw:0,0 test.au
+
+
+Try to use -t raw but the quality of A_LAW is very bad when compare with
+MU_LAW
+
+arecord -D hw:0,0 -f A_LAW -t raw -c 1 -r 8000 test.raw
+
+aplay -D hw:0,0 test.raw
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 03-13-06 03:09 
+ tiwai - 04-24-06 16:50 
 ----------------------------------------------------------------------
-After "alsaconf" gets your sound working try running "alsactl store".  Then
-reboot, and if you don't get sound, run "alsactl restore".
+It's no Oops but the stack trace output from snd_assert().  It's a bug, of
+course, though.
 
-If this works then the bug is in your distro, maybe you don't have all the
-alsa packages installed.
+Anyway, PLEASE open another bug.  This is out of the topic of this thread
+-- "aplay/arecord cannot play/capture A_LAW".
+
+And please show the ALSA version you're using.  I cannot see the relevant
+assert line found in the message.
 
 ----------------------------------------------------------------------
- gordon3913 - 04-25-06 02:45 
+ Raymond - 04-25-06 02:59 
 ----------------------------------------------------------------------
-Tried "alsactl store" & "alsactl restore" but still does not work.
-I am running Suse 10.0 on a Shuttle MV4213(N) motherboard with sound by
-VIA AC'97 enhanced Audio Controller.
-I keep updating my Alsa software through Yast Online Update but still with
-no success.
-Is there something else I could try?
+au88xx driver also support A-Law and MU-LAW.
+
+aplay -v -f A_LAW -Dossdriver test.raw
+Playing raw data 'test.raw' : A-Law, Rate 8000 Hz, Mono
+aplay: set_params:901: Sample format non available
+
+
+pcm.alawoss {
+        type alaw              
+        slave {
+		pcm ossdriver
+		format S16_LE
+	}
+}
+
+aplay -v -f A_LAW -Dalawoss test.raw
+Playing raw data 'test.raw' : A-Law, Rate 8000 Hz, Mono
+A-Law conversion PCM (S16_LE)
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : A_LAW
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 8
+  buffer_size  : 4096
+  period_size  : 1024
+  period_time  : 128000
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 4096
+  stop_threshold   : 4096
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: ALSA <-> OSS PCM I/O Plugin
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 16
+  buffer_size  : 4096
+  period_size  : 1024
+  period_time  : 128000
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 4096
+  stop_threshold   : 4096
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-13-06 03:04 gordon3913     New Issue                                    
-03-13-06 03:09 rlrevell       Note Added: 0008437                          
-04-25-06 02:45 gordon3913     Note Added: 0009482                          
+04-01-06 04:26 Raymond        New Issue                                    
+04-03-06 07:16 Raymond        Note Added: 0009085                          
+04-03-06 07:36 Raymond        Note Added: 0009086                          
+04-07-06 19:32 tiwai          Note Added: 0009152                          
+04-08-06 07:47 Raymond        Note Added: 0009171                          
+04-10-06 16:52 tiwai          Note Added: 0009199                          
+04-11-06 07:46 Raymond        Note Added: 0009229                          
+04-11-06 07:55 Raymond        Note Edited: 0009229                         
+04-11-06 09:41 Raymond        Note Edited: 0009229                         
+04-20-06 15:29 tiwai          Status                   new => resolved     
+04-20-06 15:29 tiwai          Resolution               open => not an issue
+04-20-06 15:29 tiwai          Assigned To               => tiwai           
+04-20-06 15:29 tiwai          Note Added: 0009384                          
+04-24-06 15:07 Raymond        Status                   resolved => feedback
+04-24-06 15:07 Raymond        Resolution               not an issue => reopened
+04-24-06 15:07 Raymond        Note Added: 0009451                          
+04-24-06 15:48 tiwai          Status                   feedback => resolved
+04-24-06 15:48 tiwai          Resolution               reopened => not an issue
+04-24-06 15:48 tiwai          Note Added: 0009453                          
+04-24-06 16:43 Raymond        Status                   resolved => feedback
+04-24-06 16:43 Raymond        Resolution               not an issue => reopened
+04-24-06 16:43 Raymond        Note Added: 0009468                          
+04-24-06 16:50 tiwai          Status                   feedback => resolved
+04-24-06 16:50 tiwai          Resolution               reopened => not an issue
+04-24-06 16:50 tiwai          Note Added: 0009472                          
+04-25-06 02:59 Raymond        Status                   resolved => feedback
+04-25-06 02:59 Raymond        Resolution               not an issue => reopened
+04-25-06 02:59 Raymond        Note Added: 0009483                          
 ======================================================================
 
 
