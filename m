@@ -1,65 +1,63 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Re: [Alsa-devel] [PATCH] Add Dreamcast
-	AICA	driver to alsa-driver
-Date: Tue, 25 Apr 2006 20:20:12 +0100
-Message-ID: <1145992812.9249.5.camel@localhost.localdomain>
-References: <1145831786.9242.38.camel@localhost.localdomain>
-	 <1145832383.9242.41.camel@localhost.localdomain>
-	 <s5hacab44bw.wl%tiwai@suse.de>
-	 <1145900695.9243.4.camel@localhost.localdomain>
-	 <s5hejzm26x0.wl%tiwai@suse.de>
+From: Dave Maley <dmaley@nc.rr.com>
+Subject: Re: [patch] problem w/ arecord "split interleaved
+	files" feature
+Date: Tue, 25 Apr 2006 17:07:35 -0400
+Message-ID: <1145999255.7045.27.camel@flanders>
+References: <1145943804.2670.43.camel@flanders>
+	 <s5hmze9zpnn.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxsh-dev-admin@lists.sourceforge.net>
-In-Reply-To: <s5hejzm26x0.wl%tiwai@suse.de>
-Sender: linuxsh-dev-admin@lists.sourceforge.net
-Errors-To: linuxsh-dev-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
-	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:linuxsh-dev@lists.sourceforge.net>
-List-Help: <mailto:linuxsh-dev-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linuxsh-dev>,
-	<mailto:linuxsh-dev-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linuxsh-dev>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>, linux-sh <linuxsh-dev@lists.sourceforge.net>, Lee Revell <rlrevell@joe-job.com>, Paul Mundt <lethal@linux-sh.org>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hmze9zpnn.wl%tiwai@suse.de>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-04-24 at 19:57 +0200, Takashi Iwai wrote:
-> At Mon, 24 Apr 2006 18:44:55 +0100,
-> Adrian McMenamin wrote:
-> > 
-> > > 
-> > > > +static int stereo_buffer_transfer(struct snd_pcm_substream
-> > > > +				  *substream, int buffer_size, int period)
-> > > > +{
-> > > 
-> > > I feel this transfer-and-wait could be done more efficiently using
-> > > workq than doing it in timer callback.  The trigger(start) and
-> > > aica_period_elapsed() calls queue_work() at each time.
-> > > 
-> > > The most work of spu_begin_dma() should be put in the workq, too.
-> > > 
-> > 
-> > heh. If you remember, a couple of months ago I had this in a kernel
-> > thread - ie much the same - and you or Lee said I should absolutely not
-> > use that mechanism :)
-> 
-> Well, a source code tell you better than hundreds words :)
-> 
-> 
-Unfortunately using the workqueue method bumps up the processor usage
-figure up to 100% or pretty close for high demand samples.
+Thanks for the quick response ...
 
-So whilst mpg123 might drop from say 42% of CPU time to 36%, the kernel
-thread uses up about 60% of processor time.
+> > [dave@flanders ~]$ arecord -q -t wav -f dat -d 10800 | sox -t wav -r
+> > 48000 -c 2 - -t wav -r 44100 -c 2 foo.wav resample
+> > 
+> > 
+> > It seems this new split feature doesn't work properly when writing to a
+> > pipe (or at least when piping to sox).  A quick look at an strace shows
+> > constant write errors, and foo.wav grows in size until the disk is full.
+> 
+> I guess it's rather a bug of sox.  arecord quits when the data size
+> reaches to max_filesize in the case of pipe output (since obviously
+> you cannot split the output).  sox should quits, too, when receiving
+> EPIPE error.
 
-Why do you think using a workqueue/kernel thread is the right way to go?
-Is it because of the global dma lock? That can be dropped, I'd much
-rather have the (theoretical) occasional mess of the samples being
-played rather than have a model that is so vulnerable to other demands
-on the CPU.
+Hmm, this doesn't seem to match the behavior I'm seeing.  It's very
+possible I'm misunderstanding something here, but this is what I see:
+
+Using the above arecord | sox command when the foo.wav file reaches
+2000000000 in size and the split occurs it'll actually be split into
+foo-01.wav and foo-02.wav, and I believe that this rename of foo.wav to
+foo-01.wav is where the problem may be occurring.  I can capture strace
+output at the time of the split, if it's at all helpful.
+
+> > A quick fix for this is to set max_filesize to 2147483648.  Not sure if
+> > this is a "proper" fix however I have tested it and it seems to work
+> > just fine for me.  Please consider the attached patch.
+> 
+> Well, I'm not sure whether exactly 2GB is allowed.
+
+If not then I'd be happy with just increasing this max_filesize to
+2073600044 as that's what my 180 minute 48KHz files end up being ... 8)
+
+Thanks again for your feedback on this.
+
+~Dave
 
 
 
