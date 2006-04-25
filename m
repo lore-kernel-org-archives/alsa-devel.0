@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
-Date: Wed, 26 Apr 2006 00:37:07 +0200
-Message-ID: <656cfb1055fbf7d7622f79cb4954310c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002073]: Balance set to center swallows a part of the sound
+Date: Wed, 26 Apr 2006 00:45:02 +0200
+Message-ID: <467dc10001134e86a27b51d995066baf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9479015E
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 00:37:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5BB2161
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 00:45:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,96 +22,38 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2073> 
 ======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
+Reported By:                j-engel
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
+Issue ID:                   2073
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
+Status:                     new
+Distribution:               SuSE
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              04-26-2006 00:37 CEST
+Date Submitted:             04-26-2006 00:45 CEST
+Last Modified:              04-26-2006 00:45 CEST
 ======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
+Summary:                    Balance set to center swallows a part of the sound
 Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
-
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
-
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
-
-Please let me know if there is something more I can provide.
+When I set the balance swith to the middle position the output gets somehow
+confused: seems to be one channel missing.
 ======================================================================
-
-----------------------------------------------------------------------
- vertex - 04-21-06 18:56 
-----------------------------------------------------------------------
-I checked with the system vendor and there are no updates available. This
-is a new Intel system with the new Core Duo. There is only one audio
-output jack, and one audio input jack. 
-
-I compiled the drivers with "--with-debug=full", but I don't see anything
-in /var/log/messages or dmesg about "hda_codec_setup_stream: ....". Please
-advise.
-
-----------------------------------------------------------------------
- vertex - 04-26-06 00:37 
-----------------------------------------------------------------------
-Just wondering if there was anything I could do to facilitate a fix for
-this?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-04-20-06 14:41 tiwai          Note Added: 0009375                          
-04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
-   
-04-20-06 20:22 vertex         File Added: codec0.during.playback                
-   
-04-20-06 20:23 vertex         Note Added: 0009398                          
-04-21-06 16:50 tiwai          Note Added: 0009416                          
-04-21-06 16:51 tiwai          Note Added: 0009417                          
-04-21-06 16:54 tiwai          Note Added: 0009418                          
-04-21-06 18:56 vertex         Note Added: 0009428                          
-04-26-06 00:37 vertex         Note Added: 0009499                          
+04-26-06 00:45 j-engel        New Issue                                    
+04-26-06 00:45 j-engel        Distribution              => SuSE            
+04-26-06 00:45 j-engel        Kernel Version            => 2.6.16          
 ======================================================================
 
 
