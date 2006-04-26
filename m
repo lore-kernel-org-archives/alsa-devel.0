@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Wed, 26 Apr 2006 08:01:03 +0200
-Message-ID: <68d622cac745f58b5b298ceb98441077@bugtrack.alsa-project.org>
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Subject: bad page when freeing preallocated pages
+Date: Wed, 26 Apr 2006 10:30:30 +0200
+Message-ID: <444F2FA6.7010305@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8883C175
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 08:01:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,135 +15,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
-======================================================================
-Reported By:                kiwi
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1898
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 5 test3
-Kernel Version:             2.6.15-1.2009.4.2_FC5
-======================================================================
-Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              04-26-2006 08:01 CEST
-======================================================================
-Summary:                    no sound from headphones or speakers on asus a6km
-laptop
-Description: 
-The headphone port and the speakers just don't work. Seems like there is
-some control hidden in the mixer which is muted. 
-By setting the master and pcm volume at 100% I can hear just some static
-on song beats only on headphones. Speakers always stay mute.
-I can only get sound by attaching the headphones to line-in and enabling
-"shared" surround mode.
+I'm currently developing an alsa driver for an audio DAC used on an
+embedded platform. I have come upon an issue when I try to free my
+preallocated pages.
 
-Same issues with a knoppix 4.0.2.
+Some code snips from the driver I assume is most relevant:
 
-======================================================================
+static void snd_at73c213_pcm_free(snd_pcm_t *pcm)
+{
+	struct snd_at73c213 *chip = snd_pcm_chip(pcm);
+	if (chip->pcm != 0 ) {
+		snd_pcm_lib_preallocate_free_for_all(chip->pcm);
+		chip->pcm = NULL;
+	}
+}
 
-----------------------------------------------------------------------
- tiwai - 04-20-06 14:57 
-----------------------------------------------------------------------
-Try the attached patch (for 1.0.11).  If it doesn't work, check whether the
-PCI subsytem ID is matching with yours.
+static int __devinit snd_at73c213_new_pcm(struct snd_at73c213 *chip, int
+device)
+{
+	snd_pcm_t *pcm;
+	int retval;
 
-----------------------------------------------------------------------
- lucabelluccini - 04-26-06 08:01 
-----------------------------------------------------------------------
-I am on a A9200Km = A6Km ...
-I am scrambling to make the audio work.
-Finally, upgrading to Kernel 2.6.16, i can hear some CRACKLING and HIGHLY
-DISTURBED signal only from headphones. Nothing from speakers.
-I compiled the Kernel checking as MODULE:
-<M> Sound card support
- <M> Advanced Linux Sound Architecture
-  <M>   Sequencer support  
-  <M>   OSS Mixer API        
-  <M>   OSS PCM (digital audio) API
-<M> Open Sound System (DEPRECATED)
-  <M>   Intel ICH (i8xx) audio support
-  <M>   OSS sound modules
-Then, i added snd-intel8x0 to modules.autoconf.d/kernel2.6
--------------------------------------------------------------------------------
+	retval = snd_pcm_new(chip->card, "AT73C213 on STK1000", device, 1, 0,
+&pcm);
+	if (retval < 0)
+		return retval;
 
-Executing # cat /proc/asound/oss/sndstat
-Sound Driver:3.8.1a-980706 (ALSA v1.0.11rc2 emulation code)
-Kernel: Linux asus_nb 2.6.16-ck6-r1 #3 SMP Tue Apr 25 20:57:43 CEST 2006
-x86_64
-Config options: 0
+	pcm->private_data = chip;
+	pcm->private_free = snd_at73c213_pcm_free;
+	pcm->info_flags = SNDRV_PCM_INFO_BLOCK_TRANSFER;
+	strcpy(pcm->name, "AT73C213 on STK1000");
+	chip->pcm = pcm;
 
-Installed drivers:
-Type 10: ALSA emulation
+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &at73c213_playback_ops);
 
-Card config:
-SiS SI7012 with ALC650F at 0xe400, irq 50
+	snd_pcm_lib_preallocate_pages_for_all(chip->pcm, SNDRV_DMA_TYPE_DEV,
+snd_dma_continuous_data(GFP_KERNEL), 64 * 1024, 64 * 1024);
 
-Audio devices: NOT ENABLED IN CONFIG
+	return 0;
+}
 
-Synth devices: NOT ENABLED IN CONFIG
+When removing the module from the kernel with rmmod I get alot of bad
+pages, because the page is mapped when it's freed. The weird thing is
+that the pages are mapped to address 0x00000000.
 
-Midi devices: NOT ENABLED IN CONFIG
+Example:
+[  141.380000] Bad page state in process 'rmmod'
+[17179650.992000] page:90200600 flags:0x00004000 mapping:00000000
+mapcount:0 count:0
 
-Timers:
-7: system timer
+Sorry if my email is lacking information, I'll gladly provide more
+information.
 
-Mixers: NOT ENABLED IN CONFIG
--------------------------------------------------------------------------------
-Anyone could tell me which modules compile to the kernel and if i have to
-emerge alsa-kernel or not? I hope kiwi or michele26x1 contact me. Thanks
+-- 
+With kind regards,
+Med vennlig hilsen,
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-09-06 00:30 kiwi           New Issue                                    
-03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
-03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
-03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
-03-09-06 16:41 kiwi           Note Added: 0008391                          
-03-09-06 20:09 michele26x1    Note Added: 0008396                          
-03-09-06 21:02 kiwi           Note Added: 0008397                          
-03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
-03-12-06 15:49 kiwi           Note Added: 0008432                          
-03-12-06 16:40 Rollsappletree Note Added: 0008433                          
-03-13-06 10:10 u238           Note Added: 0008439                          
-03-13-06 10:11 u238           Note Edited: 0008439                         
-03-13-06 10:12 u238           Note Edited: 0008439                         
-03-13-06 23:59 lbenini        Note Added: 0008469                          
-03-23-06 13:56 lbenini        Note Added: 0008881                          
-03-23-06 13:59 lbenini        Note Edited: 0008881                         
-03-24-06 19:22 kiwi           Note Added: 0008934                          
-03-26-06 21:56 kiwi           Note Added: 0008975                          
-03-26-06 22:35 kiwi           Note Added: 0008977                          
-03-26-06 22:54 lbenini        Note Added: 0008978                          
-03-26-06 23:11 kiwi           Note Edited: 0008975                         
-03-26-06 23:13 kiwi           Note Added: 0008979                          
-03-27-06 01:06 michele26x1    Note Added: 0008980                          
-03-27-06 01:38 michele26x1    Note Edited: 0008980                         
-03-27-06 07:16 hongqn         Note Added: 0008992                          
-03-30-06 21:42 kiwi           Note Added: 0009040                          
-03-31-06 09:53 kiwi           Note Edited: 0009040                         
-03-31-06 09:54 kiwi           Note Edited: 0008975                         
-04-01-06 15:55 hongqn         Note Added: 0009055                          
-04-15-06 02:04 kiwi           Note Added: 0009291                          
-04-15-06 22:55 tinux          Issue Monitored: tinux                       
-04-20-06 14:57 tiwai          Note Added: 0009379                          
-04-20-06 14:57 tiwai          File Added: asus-a6km-fix.diff                    
-04-26-06 08:01 lucabelluccini Note Added: 0009504                          
-======================================================================
-
-
+Hans-Christian Egtvedt
+Applications Engineer - AVR Applications Lab
+Atmel Norway
 
 
 -------------------------------------------------------
