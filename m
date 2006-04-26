@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002027]: No sound on AD1986A (ASUS Laptop, Z62F)
-Date: Wed, 26 Apr 2006 16:20:41 +0200
-Message-ID: <416b826c77453b5fd016221fba5b8060@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002070]: Hard lockup from aplay with low buffersizes on Tascam us-122 (snd_usb_usx2y)
+Date: Wed, 26 Apr 2006 16:23:03 +0200
+Message-ID: <a0f6f855f969d1fbdbcf0621089b54ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9BB9170
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 16:20:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5254A170
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 16:23:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,69 +24,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2027> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2070> 
 ======================================================================
-Reported By:                jaidormi
-Assigned To:                tiwai
+Reported By:                jaime
+Assigned To:                karsten
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2027
-Category:                   PCI - hda-intel
+Issue ID:                   2070
+Category:                   USB - usb-usx2y
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16-gentoo-r2
+Distribution:               Gentoo ~x86
+Kernel Version:             2.6.17-rc1
 ======================================================================
-Date Submitted:             04-17-2006 08:00 CEST
-Last Modified:              04-26-2006 16:20 CEST
+Date Submitted:             04-25-2006 23:07 CEST
+Last Modified:              04-26-2006 16:23 CEST
 ======================================================================
-Summary:                    No sound on AD1986A (ASUS Laptop, Z62F)
+Summary:                    Hard lockup from aplay with low buffersizes on
+Tascam us-122 (snd_usb_usx2y)
 Description: 
-Actually I am using 1.0.11rc5
+Hi.
 
-I am unable to get any sound output on speakers or headphone jack.  Oddly,
-it seems that the IEC958 output works (shared with headphone jack), based
-on the fact that it lights up when un-muted.
+Here's the original I'm playing (440Hz sine wave):
+www.carbon.eclipse.co.uk/origSine.wav
 
-I have tried a number of model= and position_fix= options with no luck.
+aplay --buffer-size=1024 origSine.wav sounds great:
+www.carbon.eclipse.co.uk/aplay1024.wav
 
-On this machine there is a set of stereo speakers, a line-in, mic, and
-shared sp-dif/headphone jack.
+aplay --buffer-size=512 origSine.wav sounds bad:
+www.carbon.eclipse.co.uk/aplay512.wav
 
-Is there any output or system info I can provide to help?
+aplay --buffer-size=256 origSine.wav sounds very bad:
+www.carbon.eclipse.co.uk/aplay256.wav
+
+aplay --buffer-size=128 origSine.wav gives only a very short click,
+and then locks up the machine completely:
+www.carbon.eclipse.co.uk/aplay128.wav
+
+I've tried this using different usb cards/controllers, and I get the
+same problem, so I think it is an alsa driver problem.
+
+Thank you for any help you can offer.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-26-06 16:19 
+ jaime - 04-26-06 16:23 
 ----------------------------------------------------------------------
-Did you try mdoel=laptop and model=laptop-eapd option?
+Hello again. I've just upgraded to:
+Linux 2.6.17-rc2 with Alsa 1.0.11 and I still get the same problem.
 
-----------------------------------------------------------------------
- tiwai - 04-26-06 16:20 
-----------------------------------------------------------------------
-Also, with model=laptop-eapd, you must have "External Amplifier" mixer
-switch.  Make sure to turn this on.
+Let me know if there is any more info I can provide. :-)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-17-06 08:00 jaidormi       New Issue                                    
-04-17-06 08:00 jaidormi       Distribution              => Gentoo          
-04-17-06 08:00 jaidormi       Kernel Version            => 2.6.16-gentoo-r2
-04-17-06 08:04 rlrevell       Note Added: 0009305                          
-04-17-06 08:08 jaidormi       Note Added: 0009306                          
-04-17-06 08:15 jaidormi       Note Added: 0009307                          
-04-17-06 08:15 jaidormi       Note Deleted: 0009306                        
-04-20-06 14:47 tiwai          Note Added: 0009377                          
-04-20-06 21:38 jaidormi       Note Added: 0009400                          
-04-21-06 12:45 tiwai          Note Added: 0009410                          
-04-26-06 16:02 rcubed         Note Added: 0009511                          
-04-26-06 16:05 rcubed         File Added: codec#0                          
-04-26-06 16:05 rcubed         File Added: codec#1                          
-04-26-06 16:19 tiwai          Note Added: 0009512                          
-04-26-06 16:20 tiwai          Note Added: 0009513                          
+04-25-06 23:07 jaime          New Issue                                    
+04-25-06 23:07 jaime          Distribution              => Gentoo ~x86     
+04-25-06 23:07 jaime          Kernel Version            => 2.6.17-rc1      
+04-26-06 16:23 jaime          Note Added: 0009514                          
 ======================================================================
 
 
