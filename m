@@ -1,13 +1,14 @@
-From: Manuel Jander <manuel.jander@gmail.com>
-Subject: Re: au88x0 Init before create components
-Date: Wed, 26 Apr 2006 20:24:45 +0200
-Message-ID: <1146075886.13706.8.camel@localhost.localdomain>
-References: <200604261414.52173.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002068]: No sound in headphones - A3H ASUS
+Date: Wed, 26 Apr 2006 20:26:51 +0200
+Message-ID: <c4daf6db0adf2b47e0e7c0b969753037@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200604261414.52173.gineera@aspect135.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A94A3167
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 20:26:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,49 +18,126 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-This is my current and hopefuly "for ever" email address.
-(hmm, hopefuly no spammer gets this one: _manuel_._jander_|@_gmail|.|
-com) (remove _ and | characters).
-My address at embedded.cl no longer exists. A am very pleased about that
-someone is posting patches to the au88x0 drivers :)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2068> 
+======================================================================
+Reported By:                awisniewski
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2068
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             04-25-2006 12:03 CEST
+Last Modified:              04-26-2006 20:26 CEST
+======================================================================
+Summary:                    No sound in headphones - A3H ASUS
+Description: 
+Hello
 
-By the way I'm living in Erlangen now, far close to the ALSA guys in
-N=FCrnberg.
+I have ASUS A3H model laptop. I've just compiled kernel 2.6.16.11 from
+kernel.org (newest). I used CONFIG_SND_HDA_INTEL=y option in kernel config
+and it seems to be working propertly till I'm not trying use headphone
+(internal speaker from laptop is working propertly). When I plug in
+headphones into the jack port in laptop, internal speaker is silent but I
+can not hear anything in headphones. It seems like turned on MUTT option
+in mixer but I can not find option for headphones in my mixer
+application.
+ 
+Few facts:
 
-Best Regards,
-Manuel Jander
+lapek:/proc/asound# cat version 
+Advanced Linux Sound Architecture Driver Version 1.0.11rc2 (Wed Jan 04
+08:57:20 2006 UTC).
 
-On Wed, 2006-04-26 at 14:14 +0100, Alan Horstmann wrote:
-> Patch as suggested by Raymond in one of his copious bug-track notes.
->=20
-> Change the order in vortex_probe to init the card details before creati=
-ng the=20
-> components, meaning for example that card->shortname is available when=20
-> registering the midi port.
->=20
-> I have also added extra to card->shortname, and a line to overwrite the=
- midi=20
-> name following snd_mpu401_uart_new, for consideration.
->=20
-> Do I have the correct address to cc mjander?
->=20
-> au88x0-init-before-comps-et-al.patch
->=20
-> Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
+andy@lapek:~/moje/instalki/Linux/kernele/linux-2.6.16.11$ uname -a
+Linux lapek 2.6.16.11 #1 Tue Apr 25 10:07:45 CEST 2006 i686 GNU/Linux
+
+lapek:/proc/asound# cat timers 
+G0: system timer : 4000.000us (10000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+P0-0-1: PCM capture 0-0-1 : SLAVE
+P0-0-3: PCM capture 0-0-3 : SLAVE
+P0-1-0: PCM playback 0-1-0 : SLAVE
+
+lapek:/proc/asound# cat pcm 
+00-01: ALC880 Digital : ALC880 Digital : playback 1
+00-00: ALC880 Analog : ALC880 Analog : playback 1 : capture 2
+
+lapek:/proc/asound# cat devices 
+  0: [ 0]   : control
+ 16: [ 0- 0]: digital audio playback
+ 17: [ 0- 1]: digital audio playback
+ 24: [ 0- 0]: digital audio capture
+ 33:        : timer
+
+I will add /proc/asound/card0/codec#0 file also (as attachmets).
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 04-26-06 14:34 
+----------------------------------------------------------------------
+Oh, don't stop at this point yet!
+
+Could you tell me which mixer elements do influence on the actual I/O, and
+which elements don't?  Then we can create a better initialization table
+for your device to build into the driver.
+
+----------------------------------------------------------------------
+ awisniewski - 04-26-06 20:26 
+----------------------------------------------------------------------
+So. I can use following option in alsamiexr application:
+
+- Front - I can change volume for internal speaker only when headphones
+are out of jack
+- Surround - I can change volume for headphones when they are plugin
+- Front Pin Mode is Line Out
+- Surround Pin Mode is Line Out
+
+************
+It's a little strange because I had these two options before use debug and
+test options in my alsamixer and then it was not working :/ Now, when I
+change volume on Surround option I can hear sounds in my headphones :/
+Maybe Surround Pin Mode was in the other option then Line Out ...
+And sorry but I can't check other items in this moment (microphone, cd,
+etc) :/
+
+I hope there are information which you need. If not please write a comment
+with more info what do you need (i'm not a master of sounds :)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-25-06 12:03 awisniewski    New Issue                                    
+04-25-06 12:03 awisniewski    File Added: codec#0                          
+04-25-06 12:08 awisniewski    File Added: codec.zip                        
+04-25-06 18:16 tiwai          Note Added: 0009493                          
+04-25-06 18:21 tiwai          Note Added: 0009494                          
+04-26-06 12:49 awisniewski    Note Added: 0009506                          
+04-26-06 12:54 awisniewski    File Added: codec_v2.zip                     
+04-26-06 13:01 tiwai          Note Added: 0009507                          
+04-26-06 13:49 awisniewski    Note Added: 0009509                          
+04-26-06 14:34 tiwai          Note Added: 0009510                          
+04-26-06 20:26 awisniewski    Note Added: 0009523                          
+======================================================================
+
 
 
 
 -------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job ea=
-sier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronim=
-o
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D=
-121642
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
