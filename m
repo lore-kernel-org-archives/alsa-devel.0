@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002027]: No sound on AD1986A (ASUS Laptop, Z62F)
-Date: Wed, 26 Apr 2006 17:14:31 +0200
-Message-ID: <fbf5088607583eab596be9ae7f4486a2@bugtrack.alsa-project.org>
+Date: Wed, 26 Apr 2006 17:20:01 +0200
+Message-ID: <e9a0f6d6be658fae3cbfcb6d7766354d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14C37181
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 17:14:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A46D16D
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 17:20:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.16-gentoo-r2
 ======================================================================
 Date Submitted:             04-17-2006 08:00 CEST
-Last Modified:              04-26-2006 17:14 CEST
+Last Modified:              04-26-2006 17:20 CEST
 ======================================================================
 Summary:                    No sound on AD1986A (ASUS Laptop, Z62F)
 Description: 
@@ -59,12 +59,6 @@ Is there any output or system info I can provide to help?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-26-06 16:20 
-----------------------------------------------------------------------
-Also, with model=laptop-eapd, you must have "External Amplifier" mixer
-switch.  Make sure to turn this on.
-
-----------------------------------------------------------------------
  jaidormi - 04-26-06 17:14 
 ----------------------------------------------------------------------
 model=laptop-eapd solves my problem.  Sorry this was listed as a bug when
@@ -72,6 +66,16 @@ really it was user support, although the version of ALSA-Configuration.txt
 that I have (which I think is the one coming with 1.0.11rc5) does not
 mention this model=laptop-eapd option.  Is there some mistake on my end or
 is the documentation simply not up to date yet?
+
+----------------------------------------------------------------------
+ tiwai - 04-26-06 17:20 
+----------------------------------------------------------------------
+Glad to hear that you got it working.  At least, the document contains the
+option in 1.0.11-final, so it was fixed.
+
+Could show the output of lspci -nv (only for class 0403)?  Then I'll add
+the corresponding PCI SSID to the table so that your laptop will work
+without an extra module option.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -92,6 +96,7 @@ Date Modified  Username       Field                    Change
 04-26-06 16:19 tiwai          Note Added: 0009512                          
 04-26-06 16:20 tiwai          Note Added: 0009513                          
 04-26-06 17:14 jaidormi       Note Added: 0009516                          
+04-26-06 17:20 tiwai          Note Added: 0009517                          
 ======================================================================
 
 
