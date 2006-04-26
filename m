@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002077]: emu10k1 will not use S24_LE
-Date: Wed, 26 Apr 2006 22:07:13 +0200
-Message-ID: <e51834fdee91007bb29c90ae2081f7ea@bugtrack.alsa-project.org>
+Date: Wed, 26 Apr 2006 22:20:52 +0200
+Message-ID: <b0bba165869dbf9d5f1e82a50c269c76@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6702B165
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 22:07:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3F22F165
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 22:20:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.16
 ======================================================================
 Date Submitted:             04-26-2006 21:51 CEST
-Last Modified:              04-26-2006 22:07 CEST
+Last Modified:              04-26-2006 22:20 CEST
 ======================================================================
 Summary:                    emu10k1 will not use S24_LE
 Description: 
@@ -58,6 +58,29 @@ In linux Audigy 1 part is used by default (it has more features but only
 because it has less features as Audigy 1 part (only advantage is 24/96
 sound - disadvantage - no hw mixing no dsp).
 
+----------------------------------------------------------------------
+ jcdutton - 04-26-06 22:20 
+----------------------------------------------------------------------
+Please provide output from:
+cat /proc/asound/cards
+cat /proc/asound/version
+
+24bit is not supported on all Audigy cards in linux yet.
+The 24bit is a special mode that bypassed the DSP.
+Unfortunately, the bypass method is different one almost every Audigy
+card, so until all the different methods are supported, it will not work
+on all Audigy cards.
+
+Also 24bit capture on a PC sound card is next to pointless due to computer
+noise introduced and low quality codecs and front end components. You
+might get 18bits of real quality, but I doubt even that.
+
+There are exceptions to that in the really expensive professional sound
+capture devices that also have a PC interface, but very few of them work
+with Linux. E.g. the EMU1212m.
+
+James
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -65,6 +88,7 @@ Date Modified  Username       Field                    Change
 04-26-06 21:51 braininajar    Distribution              => gentoo          
 04-26-06 21:51 braininajar    Kernel Version            => 2.6.16          
 04-26-06 22:07 pzad           Note Added: 0009524                          
+04-26-06 22:20 jcdutton       Note Added: 0009525                          
 ======================================================================
 
 
