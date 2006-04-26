@@ -1,11 +1,14 @@
-From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
-Subject: bad page when freeing preallocated pages
-Date: Wed, 26 Apr 2006 10:30:30 +0200
-Message-ID: <444F2FA6.7010305@atmel.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Wed, 26 Apr 2006 10:54:11 +0200
+Message-ID: <e8c92664263a6a3c37beedbf27740c7d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E79E170
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 10:54:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,70 +18,118 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello
 
-I'm currently developing an alsa driver for an audio DAC used on an
-embedded platform. I have come upon an issue when I try to free my
-preallocated pages.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+======================================================================
+Reported By:                zanonmark
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2023
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
+======================================================================
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              04-26-2006 10:54 CEST
+======================================================================
+Summary:                    midi/joystick port disabled and no way to enable it
+Description: 
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
 
-Some code snips from the driver I assume is most relevant:
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
 
-static void snd_at73c213_pcm_free(snd_pcm_t *pcm)
-{
-	struct snd_at73c213 *chip = snd_pcm_chip(pcm);
-	if (chip->pcm != 0 ) {
-		snd_pcm_lib_preallocate_free_for_all(chip->pcm);
-		chip->pcm = NULL;
-	}
-}
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
 
-static int __devinit snd_at73c213_new_pcm(struct snd_at73c213 *chip, int
-device)
-{
-	snd_pcm_t *pcm;
-	int retval;
+So, will you please include such a parameter in the next version of the
+driver?
 
-	retval = snd_pcm_new(chip->card, "AT73C213 on STK1000", device, 1, 0,
-&pcm);
-	if (retval < 0)
-		return retval;
+Thanks a lot,
 
-	pcm->private_data = chip;
-	pcm->private_free = snd_at73c213_pcm_free;
-	pcm->info_flags = SNDRV_PCM_INFO_BLOCK_TRANSFER;
-	strcpy(pcm->name, "AT73C213 on STK1000");
-	chip->pcm = pcm;
+Marco.
 
-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &at73c213_playback_ops);
+======================================================================
 
-	snd_pcm_lib_preallocate_pages_for_all(chip->pcm, SNDRV_DMA_TYPE_DEV,
-snd_dma_continuous_data(GFP_KERNEL), 64 * 1024, 64 * 1024);
+----------------------------------------------------------------------
+ zanonmark - 04-25-06 10:55 
+----------------------------------------------------------------------
+Hi,
 
-	return 0;
-}
+my BIOS enables PnP by default: at least, that's what I suppose, since
+there's no PnP option,
 
-When removing the module from the kernel with rmmod I get alot of bad
-pages, because the page is mapped when it's freed. The weird thing is
-that the pages are mapped to address 0x00000000.
+these are the output you requested:
 
-Example:
-[  141.380000] Bad page state in process 'rmmod'
-[17179650.992000] page:90200600 flags:0x00004000 mapping:00000000
-mapcount:0 count:0
+root@ubuntu:/home/marco# cat /proc/asound/cards
+0 [AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
+                     Ensoniq AudioPCI ENS1371 at 0xd400, irq 18
+1 [V8237          ]: VIA8237 - VIA 8237
+                     VIA 8237 with CMI9761 at 0xbc00, irq 22
+2 [UART           ]: MPU-401 UART - MPU-401 UART
+                     MPU-401 UART at 0x330, irq 5
 
-Sorry if my email is lacking information, I'll gladly provide more
-information.
+root@ubuntu:/home/marco# cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.9 (Sun May 29
+07:31:02 2005 UTC).
 
--- 
-With kind regards,
-Med vennlig hilsen,
+Thanks,
 
-Hans-Christian Egtvedt
-Applications Engineer - AVR Applications Lab
-Atmel Norway
+MZ
+
+----------------------------------------------------------------------
+ Raymond - 04-26-06 10:54 
+----------------------------------------------------------------------
+I have no idea about the difference between MPU401_UART and RAWMIDI.
+
+BTW, what is the model of your motherobard ?
+
+It seem that you have a mpu401_uart on your motherboard
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
+04-17-06 06:56 rlrevell       Note Added: 0009301                          
+04-17-06 07:19 Raymond        Note Added: 0009303                          
+04-17-06 19:59 zanonmark      Note Added: 0009319                          
+04-18-06 10:54 Raymond        Note Added: 0009328                          
+04-18-06 13:18 Raymond        Note Edited: 0009328                         
+04-18-06 16:28 Clemens LadischNote Added: 0009338                          
+04-19-06 20:05 zanonmark      Note Added: 0009354                          
+04-19-06 21:49 rlrevell       Note Added: 0009356                          
+04-20-06 03:39 Raymond        Note Added: 0009363                          
+04-22-06 13:36 zanonmark      Note Added: 0009433                          
+04-24-06 15:47 Raymond        Note Added: 0009452                          
+04-24-06 15:57 zanonmark      Note Added: 0009460                          
+04-25-06 03:25 Raymond        Note Added: 0009484                          
+04-25-06 10:55 zanonmark      Note Added: 0009486                          
+04-26-06 10:54 Raymond        Note Added: 0009505                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
