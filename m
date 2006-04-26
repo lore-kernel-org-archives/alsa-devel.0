@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Wed, 26 Apr 2006 19:51:28 +0200
-Message-ID: <10f9efd64848000595bb6c7e22fbe1f6@bugtrack.alsa-project.org>
+From: Manuel Jander <manuel.jander@gmail.com>
+Subject: Re: au88x0 Init before create components
+Date: Wed, 26 Apr 2006 20:24:45 +0200
+Message-ID: <1146075886.13706.8.camel@localhost.localdomain>
+References: <200604261414.52173.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D22EC167
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 19:51:28 +0200 (MEST)
+In-Reply-To: <200604261414.52173.gineera@aspect135.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,109 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
-======================================================================
-Reported By:                zanonmark
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
-======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              04-26-2006 19:51 CEST
-======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
-Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+This is my current and hopefuly "for ever" email address.
+(hmm, hopefuly no spammer gets this one: _manuel_._jander_|@_gmail|.|
+com) (remove _ and | characters).
+My address at embedded.cl no longer exists. A am very pleased about that
+someone is posting patches to the au88x0 drivers :)
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
+By the way I'm living in Erlangen now, far close to the ALSA guys in
+N=FCrnberg.
 
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
+Best Regards,
+Manuel Jander
 
-So, will you please include such a parameter in the next version of the
-driver?
-
-Thanks a lot,
-
-Marco.
-
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 04-26-06 10:54 
-----------------------------------------------------------------------
-I have no idea about the difference between MPU401_UART and RAWMIDI.
-
-BTW, what is the model of your motherobard ?
-
-It seem that you have a mpu401_uart on your motherboard
-
-----------------------------------------------------------------------
- zanonmark - 04-26-06 19:51 
-----------------------------------------------------------------------
-my mobo is an Asrock k7vt4a-pro, which has a mpu401 uart onboard (but I
-can't use it because I miss a midi/joystick cable going from the onboard
-controller to the back of the case), and I also have this snd-ens1371
-compatible pci card which should work with midi as well... :)
-
-thanks,
-
-MZ
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
-04-18-06 13:18 Raymond        Note Edited: 0009328                         
-04-18-06 16:28 Clemens LadischNote Added: 0009338                          
-04-19-06 20:05 zanonmark      Note Added: 0009354                          
-04-19-06 21:49 rlrevell       Note Added: 0009356                          
-04-20-06 03:39 Raymond        Note Added: 0009363                          
-04-22-06 13:36 zanonmark      Note Added: 0009433                          
-04-24-06 15:47 Raymond        Note Added: 0009452                          
-04-24-06 15:57 zanonmark      Note Added: 0009460                          
-04-25-06 03:25 Raymond        Note Added: 0009484                          
-04-25-06 10:55 zanonmark      Note Added: 0009486                          
-04-26-06 10:54 Raymond        Note Added: 0009505                          
-04-26-06 19:51 zanonmark      Note Added: 0009522                          
-======================================================================
-
+On Wed, 2006-04-26 at 14:14 +0100, Alan Horstmann wrote:
+> Patch as suggested by Raymond in one of his copious bug-track notes.
+>=20
+> Change the order in vortex_probe to init the card details before creati=
+ng the=20
+> components, meaning for example that card->shortname is available when=20
+> registering the midi port.
+>=20
+> I have also added extra to card->shortname, and a line to overwrite the=
+ midi=20
+> name following snd_mpu401_uart_new, for consideration.
+>=20
+> Do I have the correct address to cc mjander?
+>=20
+> au88x0-init-before-comps-et-al.patch
+>=20
+> Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
 
 
 
 -------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+Get stuff done quickly with pre-integrated technology to make your job ea=
+sier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronim=
+o
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D=
+121642
