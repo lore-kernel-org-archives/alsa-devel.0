@@ -1,11 +1,14 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: au88x0 Init before create components
-Date: Wed, 26 Apr 2006 14:14:52 +0100
-Message-ID: <200604261414.52173.gineera@aspect135.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002027]: No sound on AD1986A (ASUS Laptop, Z62F)
+Date: Wed, 26 Apr 2006 16:02:56 +0200
+Message-ID: <9cd364a1d3bfd867bfb4cafbd7d5bd25@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_MJ3TEskXo3OcLR1"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84134170
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 16:02:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,116 +18,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, mjander@embedded.cl
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-00=_MJ3TEskXo3OcLR1
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2027> 
+======================================================================
+Reported By:                jaidormi
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2027
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.16-gentoo-r2
+======================================================================
+Date Submitted:             04-17-2006 08:00 CEST
+Last Modified:              04-26-2006 16:02 CEST
+======================================================================
+Summary:                    No sound on AD1986A (ASUS Laptop, Z62F)
+Description: 
+Actually I am using 1.0.11rc5
 
-Patch as suggested by Raymond in one of his copious bug-track notes.
+I am unable to get any sound output on speakers or headphone jack.  Oddly,
+it seems that the IEC958 output works (shared with headphone jack), based
+on the fact that it lights up when un-muted.
 
-Change the order in vortex_probe to init the card details before creating the 
-components, meaning for example that card->shortname is available when 
-registering the midi port.
+I have tried a number of model= and position_fix= options with no luck.
 
-I have also added extra to card->shortname, and a line to overwrite the midi 
-name following snd_mpu401_uart_new, for consideration.
+On this machine there is a set of stereo speakers, a line-in, mic, and
+shared sp-dif/headphone jack.
 
-Do I have the correct address to cc mjander?
+Is there any output or system info I can provide to help?
+======================================================================
 
-au88x0-init-before-comps-et-al.patch
+----------------------------------------------------------------------
+ tiwai - 04-21-06 12:45 
+----------------------------------------------------------------------
+Are you sure that the model option is properly passed to the driver?
 
-Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
+With and without model=laptop-eapd, there are significant differences in
+the mixer elements.  The latter has much simpler mixer.
 
---Boundary-00=_MJ3TEskXo3OcLR1
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="au88x0-init-before-comps-et-al.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="au88x0-init-before-comps-et-al.patch"
+The position_fix option is usually irrelevant with the "total silent"
+problem.
 
-diff -ru alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c
---- alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c	2006-01-13 17:16:29.000000000 +0000
-+++ alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c	2006-04-24 08:12:16.000000000 +0100
-@@ -261,7 +261,28 @@
- 		return err;
- 	}
- 	snd_vortex_workaround(pci, pcifix[dev]);
--	// (4) Alloc components.
-+	// (4)
-+	strcpy(card->driver, CARD_NAME_SHORT);
-+	sprintf(card->shortname, "Aureal Vortex %s", CARD_NAME_SHORT);
-+	sprintf(card->longname, "%s at 0x%lx irq %i",
-+		card->shortname, chip->io, chip->irq);
-+
-+	if ((err = pci_read_config_word(pci, PCI_DEVICE_ID,
-+				  &(chip->device))) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
-+	if ((err = pci_read_config_word(pci, PCI_VENDOR_ID,
-+				  &(chip->vendor))) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
-+	if ((err = pci_read_config_byte(pci, PCI_REVISION_ID,
-+				  &(chip->rev))) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
-+	// (5) Alloc components.
- 	// ADB pcm.
- 	if ((err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_ADB)) < 0) {
- 		snd_card_free(card);
-@@ -322,27 +343,6 @@
- 	}
- #endif
- 
--	// (5)
--	strcpy(card->driver, CARD_NAME_SHORT);
--	strcpy(card->shortname, CARD_NAME_SHORT);
--	sprintf(card->longname, "%s at 0x%lx irq %i",
--		card->shortname, chip->io, chip->irq);
--
--	if ((err = pci_read_config_word(pci, PCI_DEVICE_ID,
--				  &(chip->device))) < 0) {
--		snd_card_free(card);
--		return err;
--	}	
--	if ((err = pci_read_config_word(pci, PCI_VENDOR_ID,
--				  &(chip->vendor))) < 0) {
--		snd_card_free(card);
--		return err;
--	}
--	if ((err = pci_read_config_byte(pci, PCI_REVISION_ID,
--				  &(chip->rev))) < 0) {
--		snd_card_free(card);
--		return err;
--	}
- #ifdef CHIP_AU8830
- 	if ((chip->rev) != 0xfe && (chip->rev) != 0xfa) {
- 		printk(KERN_ALERT
-diff -ru alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c
---- alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-01-13 17:16:29.000000000 +0000
-+++ alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-04-24 07:57:51.000000000 +0100
-@@ -107,6 +107,9 @@
- 	mpu = rmidi->private_data;
- 	mpu->cport = (unsigned long)(vortex->mmio + VORTEX_MIDI_CMD);
- #endif
-+	/* Overwrite MIDI name */
-+	snprintf(rmidi->name, sizeof(rmidi->name), "MIDI %s %d", CARD_NAME_SHORT , vortex->card->number);
-+
- 	vortex->rmidi = rmidi;
- 	return 0;
- }
+Anyway, if model=eapd-laptop doesn't work, the device has likely a
+completely different pin assignment.  Please upload (not attach)
+/proc/asound/card0/codec#* files for analysis.
 
---Boundary-00=_MJ3TEskXo3OcLR1--
+----------------------------------------------------------------------
+ rcubed - 04-26-06 16:02 
+----------------------------------------------------------------------
+I have the Z62F with Fedora Core 5 and have the same problems.  I am
+uploading my codec#0 and codec#1 files.  Currently running Advanced Linux
+Sound Architecture Driver Version 1.0.11rc2 (Wed Jan 04 08:57:20 2006
+UTC).
+
+I have recently tried 1.0.11 with same results.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-17-06 08:00 jaidormi       New Issue                                    
+04-17-06 08:00 jaidormi       Distribution              => Gentoo          
+04-17-06 08:00 jaidormi       Kernel Version            => 2.6.16-gentoo-r2
+04-17-06 08:04 rlrevell       Note Added: 0009305                          
+04-17-06 08:08 jaidormi       Note Added: 0009306                          
+04-17-06 08:15 jaidormi       Note Added: 0009307                          
+04-17-06 08:15 jaidormi       Note Deleted: 0009306                        
+04-20-06 14:47 tiwai          Note Added: 0009377                          
+04-20-06 21:38 jaidormi       Note Added: 0009400                          
+04-21-06 12:45 tiwai          Note Added: 0009410                          
+04-26-06 16:02 rcubed         Note Added: 0009511                          
+======================================================================
+
 
 
 
