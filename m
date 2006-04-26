@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Wed, 26 Apr 2006 04:33:21 +0200
-Message-ID: <9ae6ddd018c22179a3d969727020cc37@bugtrack.alsa-project.org>
+Date: Wed, 26 Apr 2006 04:51:00 +0200
+Message-ID: <4c8d67646bbcf7e141778ed4c0764c18@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76C5918E
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 04:33:21 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E927B15E
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 04:51:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              04-26-2006 04:33 CEST
+Last Modified:              04-26-2006 04:50 CEST
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -114,28 +114,7 @@ gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-26-06 04:26 
-----------------------------------------------------------------------
-BTW, there are patches already merged into the -mm tree
-
-http://lkml.org/lkml/2006/3/24/10
-http://lkml.org/lkml/2006/3/24/11
- - Added new field 'bars_enabled' into struct pci_device to
-      remember which BARs already enabled. This new field is
-      initialized at pci_enable_device_bars() time and cleared
-      at pci_disable_device() time.
- - Changed pci_request_regions()/pci_release_regions() to
-      request/release only the regions which have already been
-      enabled.
-http://lkml.org/lkml/2006/3/24/12
-
-Are there any side effect of the above patches on au88x0 ?
- 
-     Region 1: I/O ports at a000 [size=8]
-     Region 2: I/O ports at a400 [size=8]
-
-----------------------------------------------------------------------
- Raymond - 04-26-06 04:33 
+ Raymond - 04-26-06 04:35 
 ----------------------------------------------------------------------
 PGD 6e57067 PUD 0
 Oops: 0002 [1] PREEMPT SMP
@@ -154,11 +133,41 @@ knlGS:00000000556cb920
 CS: 0010 DS: 002b ES: 002b CR0: 000000008005003b
 CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
 
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+
 Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
 
 40    REX prefix
 88 32 MOV mod r/rm
 c3    RET
+
+
+
+----------------------------------------------------------------------
+ Raymond - 04-26-06 04:50 
+----------------------------------------------------------------------
+>> :~> aplaymidi -l
+>> Port Client name Port name
+>> 16:0 TerraTec DMX6Fire TerraTec DMX6Fire MIDI
+>> 16:32 TerraTec DMX6Fire TerraTec DMX6Fire MIDI
+>> 20:0 au8820 MPU-401 MIDI 1-0
+>> :~> arecordmidi -l
+>> Port Client name Port name
+>> 16:0 TerraTec DMX6Fire TerraTec DMX6Fire MIDI
+>> 16:32 TerraTec DMX6Fire TerraTec DMX6Fire MIDI
+>> 20:0 au8820 MPU-401 MIDI 1-0
+
+16:32 is quite strange
+
+http://music.columbia.edu/pipermail/linux-audio-user/2006-April/034782.html
+
+Do your wavetable daugther card work with au8820 ?
+Which wavetable daugther card do you have ?
+How do you use the wavetable daugther card ? ( aplaymidi, amidi, ... )
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -237,6 +246,8 @@ gentoo-sources-2.6.15-r4
 04-25-06 23:30 gineera        Note Added: 0009496                          
 04-26-06 04:26 Raymond        Note Added: 0009500                          
 04-26-06 04:33 Raymond        Note Added: 0009501                          
+04-26-06 04:35 Raymond        Note Edited: 0009501                         
+04-26-06 04:50 Raymond        Note Added: 0009502                          
 ======================================================================
 
 
