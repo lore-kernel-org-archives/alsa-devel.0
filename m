@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002068]: No sound in headphones - A3H ASUS
-Date: Wed, 26 Apr 2006 12:49:44 +0200
-Message-ID: <bc9ebc7dfea07077f185fb68aaf8bad2@bugtrack.alsa-project.org>
+Date: Wed, 26 Apr 2006 13:01:41 +0200
+Message-ID: <a3c5364993eeec19b597e53f7024a156@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D6A4159
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 12:49:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED646162
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 13:01:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             04-25-2006 12:03 CEST
-Last Modified:              04-26-2006 12:49 CEST
+Last Modified:              04-26-2006 13:01 CEST
 ======================================================================
 Summary:                    No sound in headphones - A3H ASUS
 Description: 
@@ -87,12 +87,6 @@ I will add /proc/asound/card0/codec#0 file also (as attachmets).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-25-06 18:21 
-----------------------------------------------------------------------
-Before that, you should upgrade to ALSA-1.0.11 final.  Many fixes have been
-added to 1.0.11-final after 2.6.16 kernel.
-
-----------------------------------------------------------------------
  awisniewski - 04-26-06 12:49 
 ----------------------------------------------------------------------
 :/ model=asus and model=test are not working :/
@@ -115,6 +109,12 @@ hda_codec: model 'asus' is selected
 
 I' attaching new codec file. Do you need any other file(s) ?
 
+----------------------------------------------------------------------
+ tiwai - 04-26-06 13:01 
+----------------------------------------------------------------------
+Using "test" model, you can adjust all possible controls.  If it doesn't
+work with any combinations, there is no hope.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -124,6 +124,8 @@ Date Modified  Username       Field                    Change
 04-25-06 18:16 tiwai          Note Added: 0009493                          
 04-25-06 18:21 tiwai          Note Added: 0009494                          
 04-26-06 12:49 awisniewski    Note Added: 0009506                          
+04-26-06 12:54 awisniewski    File Added: codec_v2.zip                     
+04-26-06 13:01 tiwai          Note Added: 0009507                          
 ======================================================================
 
 
