@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Wed, 26 Apr 2006 04:26:06 +0200
-Message-ID: <c74a3490a7393ed4cc9726269e05492b@bugtrack.alsa-project.org>
+Date: Wed, 26 Apr 2006 04:33:21 +0200
+Message-ID: <9ae6ddd018c22179a3d969727020cc37@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 723E617C
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 04:26:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 76C5918E
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 04:33:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              04-26-2006 04:26 CEST
+Last Modified:              04-26-2006 04:33 CEST
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -114,42 +114,6 @@ gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4.
 ======================================================================
 
 ----------------------------------------------------------------------
- gineera - 04-25-06 23:30 
-----------------------------------------------------------------------
-Raymond
-> Can you post the output with your dmx6fire and au8820 ?
- 
-> aplaymidi -l 
-> arecordmidi -l
-> amidi -l
- 
-I'd rather do this through Alsa-devel ML, though.
-
-With both client-name and fix-hang patches on 1.0.11:
-
-1.0.11 + client-names patch + fix-hang patch
-:~> aplaymidi -l
- Port    Client name                      Port name
- 16:0    TerraTec DMX6Fire                TerraTec DMX6Fire MIDI
- 16:32   TerraTec DMX6Fire                TerraTec DMX6Fire MIDI
- 20:0    au8820                           MPU-401 MIDI 1-0
-:~> arecordmidi -l
- Port    Client name                      Port name
- 16:0    TerraTec DMX6Fire                TerraTec DMX6Fire MIDI
- 16:32   TerraTec DMX6Fire                TerraTec DMX6Fire MIDI
- 20:0    au8820                           MPU-401 MIDI 1-0
-:~> amidi -l
-Device    Name
-hw:0,0    TerraTec DMX6Fire MIDI
-hw:0,1    TerraTec DMX6Fire MIDI
-hw:1,0    MPU-401 MIDI 1-0
-
-I have checked your 'init-before-components' patch on earlier 1.0.11rc3,
-and will post to devel ML soon, unless you want to.
-
-Alan
-
-----------------------------------------------------------------------
  Raymond - 04-26-06 04:26 
 ----------------------------------------------------------------------
 BTW, there are patches already merged into the -mm tree
@@ -169,6 +133,32 @@ Are there any side effect of the above patches on au88x0 ?
  
      Region 1: I/O ports at a000 [size=8]
      Region 2: I/O ports at a400 [size=8]
+
+----------------------------------------------------------------------
+ Raymond - 04-26-06 04:33 
+----------------------------------------------------------------------
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0 EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS: 000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS: 0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+
+40    REX prefix
+88 32 MOV mod r/rm
+c3    RET
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -246,6 +236,7 @@ gentoo-sources-2.6.15-r4
 04-25-06 10:08 Raymond        Note Added: 0009485                          
 04-25-06 23:30 gineera        Note Added: 0009496                          
 04-26-06 04:26 Raymond        Note Added: 0009500                          
+04-26-06 04:33 Raymond        Note Added: 0009501                          
 ======================================================================
 
 
