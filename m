@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002070]: Hard lockup from aplay with low buffersizes on Tascam us-122 (snd_usb_usx2y)
-Date: Wed, 26 Apr 2006 23:19:41 +0200
-Message-ID: <ae86dccc53d1f13d490bd2517fdaef97@bugtrack.alsa-project.org>
+Date: Wed, 26 Apr 2006 23:29:56 +0200
+Message-ID: <56ddbabb6bf4e8036600a35ecce00d86@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 30978166
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 23:19:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 646D0166
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 23:29:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo ~x86
 Kernel Version:             2.6.17-rc1
 ======================================================================
 Date Submitted:             04-25-2006 23:07 CEST
-Last Modified:              04-26-2006 23:19 CEST
+Last Modified:              04-26-2006 23:29 CEST
 ======================================================================
 Summary:                    Hard lockup from aplay with low buffersizes on
 Tascam us-122 (snd_usb_usx2y)
@@ -71,14 +71,6 @@ Thank you for any help you can offer.
 ======================================================================
 
 ----------------------------------------------------------------------
- jaime - 04-26-06 16:23 
-----------------------------------------------------------------------
-Hello again. I've just upgraded to:
-Linux 2.6.17-rc2 with Alsa 1.0.11 and I still get the same problem.
-
-Let me know if there is any more info I can provide. :-)
-
-----------------------------------------------------------------------
  karsten - 04-26-06 23:19 
 ----------------------------------------------------------------------
 $ cat /sys/module/snd_usb_usx2y/nrpacks
@@ -92,6 +84,18 @@ ultimate info would be a stack backtrace of the crash:
 you'd have to set up a serial console or a netconsole for that.
 browse kernel/Documentation or google for "how to"s.
 
+----------------------------------------------------------------------
+ karsten - 04-26-06 23:29 
+----------------------------------------------------------------------
+just red again:
+
+aplay --buffer-size=128 isn't really possible:
+thats 2 period with 64frames each.
+USB1.1 tranfers data at 1ms chunks: that'll be like 44 to 48 frames.
+so jitter is to big.
+
+none the less it shouldn't crash the machine...
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -100,6 +104,7 @@ Date Modified  Username       Field                    Change
 04-25-06 23:07 jaime          Kernel Version            => 2.6.17-rc1      
 04-26-06 16:23 jaime          Note Added: 0009514                          
 04-26-06 23:19 karsten        Note Added: 0009526                          
+04-26-06 23:29 karsten        Note Added: 0009527                          
 ======================================================================
 
 
