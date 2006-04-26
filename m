@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002068]: No sound in headphones - A3H ASUS
-Date: Wed, 26 Apr 2006 13:01:41 +0200
-Message-ID: <a3c5364993eeec19b597e53f7024a156@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001930]: Can`t get timidity woking in soft synth mode
+Date: Wed, 26 Apr 2006 13:48:01 +0200
+Message-ID: <4b645bcb9a6f7d7a3dc0b7b861171c46@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED646162
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 13:01:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E711181
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 13:48:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,108 +24,88 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2068> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1930> 
 ======================================================================
-Reported By:                awisniewski
-Assigned To:                tiwai
+Reported By:                drolyk
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2068
-Category:                   PCI - hda-intel
+Issue ID:                   1930
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15.6
 ======================================================================
-Date Submitted:             04-25-2006 12:03 CEST
-Last Modified:              04-26-2006 13:01 CEST
+Date Submitted:             03-15-2006 23:41 CET
+Last Modified:              04-26-2006 13:48 CEST
 ======================================================================
-Summary:                    No sound in headphones - A3H ASUS
+Summary:                    Can`t get timidity woking in soft synth mode
 Description: 
-Hello
-
-I have ASUS A3H model laptop. I've just compiled kernel 2.6.16.11 from
-kernel.org (newest). I used CONFIG_SND_HDA_INTEL=y option in kernel config
-and it seems to be working propertly till I'm not trying use headphone
-(internal speaker from laptop is working propertly). When I plug in
-headphones into the jack port in laptop, internal speaker is silent but I
-can not hear anything in headphones. It seems like turned on MUTT option
-in mixer but I can not find option for headphones in my mixer
-application.
- 
-Few facts:
-
-lapek:/proc/asound# cat version 
-Advanced Linux Sound Architecture Driver Version 1.0.11rc2 (Wed Jan 04
-08:57:20 2006 UTC).
-
-andy@lapek:~/moje/instalki/Linux/kernele/linux-2.6.16.11$ uname -a
-Linux lapek 2.6.16.11 #1 Tue Apr 25 10:07:45 CEST 2006 i686 GNU/Linux
-
-lapek:/proc/asound# cat timers 
-G0: system timer : 4000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-P0-0-3: PCM capture 0-0-3 : SLAVE
-P0-1-0: PCM playback 0-1-0 : SLAVE
-
-lapek:/proc/asound# cat pcm 
-00-01: ALC880 Digital : ALC880 Digital : playback 1
-00-00: ALC880 Analog : ALC880 Analog : playback 1 : capture 2
-
-lapek:/proc/asound# cat devices 
-  0: [ 0]   : control
- 16: [ 0- 0]: digital audio playback
- 17: [ 0- 1]: digital audio playback
- 24: [ 0- 0]: digital audio capture
- 33:        : timer
-
-I will add /proc/asound/card0/codec#0 file also (as attachmets).
-
+Can`t get timidity woking in "soft synth mode".
 ======================================================================
 
 ----------------------------------------------------------------------
- awisniewski - 04-26-06 12:49 
+ tiwai - 04-20-06 14:37 
 ----------------------------------------------------------------------
-:/ model=asus and model=test are not working :/
-
-Apr 26 12:44:28 lapek kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI
-16 (level, low) -> IRQ 17
-Apr 26 12:44:28 lapek kernel: PCI: Setting latency timer of device
-0000:00:1b.0 to 64
-Apr 26 12:44:28 lapek kernel: ALSA
-/home/andy/moje/instalki/Linux/alsa/alsa-driver-1.0.11/pci/hda/hda_codec.c:1704:
-hda_codec: model 'test' is selected
-
---------
-Apr 26 12:42:17 lapek kernel: PCI: Setting latency timer of device
-0000:00:1b.0 to 64
-Apr 26 12:42:18 lapek kernel: ALSA
-/home/andy/moje/instalki/Linux/alsa/alsa-driver-1.0.11/pci/hda/hda_codec.c:1704:
-hda_codec: model 'asus' is selected
---------
-
-I' attaching new codec file. Do you need any other file(s) ?
+This might have been a bug introduced around 1.0.11rc4.  1.0.11-final
+should work fine.
 
 ----------------------------------------------------------------------
- tiwai - 04-26-06 13:01 
+ Raymond - 04-26-06 13:48 
 ----------------------------------------------------------------------
-Using "test" model, you can adjust all possible controls.  If it doesn't
-work with any combinations, there is no hope.
+If you has only one card intel8x0 or hda-intel, you need to modprobe
+snd-seq since SND_INTEL8X0 or SND_HDA_INTEL is not depend on
+SND_MPU401_UART or SND_RAWMIDI in Kconfig
+
+lsmod
+
+snd-pcm-oss            36160   0  (autoclean)
+snd-mixer-oss          16216   0  (autoclean) [snd-pcm-oss]
+snd-intel8x0           24956   0
+snd-ac97-codec         91072   0  [snd-intel8x0]
+snd-pcm                76124   0  [snd-pcm-oss snd-intel8x0
+snd-ac97-codec]
+snd-timer              19016   0  [snd-pcm]
+snd                    51808   0  [snd-pcm-oss snd-mixer-oss snd-intel8x0
+snd-ac97-codec snd-pcm snd-timer]
+soundcore               6468   4  [snd]
+snd-page-alloc          7648   0  [snd-mixer-oss snd-intel8x0 snd-pcm
+snd-timer snd]
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-25-06 12:03 awisniewski    New Issue                                    
-04-25-06 12:03 awisniewski    File Added: codec#0                          
-04-25-06 12:08 awisniewski    File Added: codec.zip                        
-04-25-06 18:16 tiwai          Note Added: 0009493                          
-04-25-06 18:21 tiwai          Note Added: 0009494                          
-04-26-06 12:49 awisniewski    Note Added: 0009506                          
-04-26-06 12:54 awisniewski    File Added: codec_v2.zip                     
-04-26-06 13:01 tiwai          Note Added: 0009507                          
+03-15-06 23:41 drolyk         New Issue                                    
+03-15-06 23:41 drolyk         Distribution              => Debian          
+03-15-06 23:41 drolyk         Kernel Version            => 2.6.15.6        
+03-19-06 23:55 fdoffizi01     Note Added: 0008700                          
+03-20-06 01:28 rlrevell       Note Added: 0008702                          
+03-20-06 01:42 fdoffizi01     Note Added: 0008703                          
+03-20-06 03:24 rlrevell       Note Added: 0008706                          
+03-20-06 06:08 drolyk         Note Added: 0008709                          
+03-20-06 06:22 rlrevell       Note Added: 0008710                          
+03-20-06 07:19 Raymond        Note Added: 0008711                          
+03-20-06 12:55 fdoffizi01     Note Added: 0008718                          
+03-20-06 15:50 fdoffizi01     Issue Monitored: fdoffizi01                    
+03-20-06 22:19 drolyk         Note Added: 0008726                          
+03-20-06 22:21 drolyk         Note Edited: 0008726                         
+03-20-06 22:36 fdoffizi01     Note Added: 0008727                          
+03-20-06 23:29 rlrevell       Note Added: 0008729                          
+03-20-06 23:40 fdoffizi01     Note Added: 0008730                          
+03-20-06 23:54 rlrevell       Note Added: 0008731                          
+03-21-06 00:14 fdoffizi01     Note Added: 0008732                          
+03-21-06 08:46 Raymond        Note Added: 0008739                          
+03-21-06 09:00 Raymond        Note Edited: 0008739                         
+03-21-06 10:58 fdoffizi01     Note Added: 0008741                          
+04-15-06 10:49 Raymond        Note Added: 0009293                          
+04-19-06 10:05 Raymond        Note Deleted: 0009293                        
+04-19-06 10:08 Raymond        Note Added: 0009350                          
+04-19-06 16:56 fdoffizi01     Note Added: 0009351                          
+04-20-06 14:37 tiwai          Note Added: 0009374                          
+04-26-06 13:48 Raymond        Note Added: 0009508                          
 ======================================================================
 
 
