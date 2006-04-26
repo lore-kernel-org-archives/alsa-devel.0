@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002077]: emu10k1 will not use S24_LE
-Date: Wed, 26 Apr 2006 21:51:23 +0200
-Message-ID: <410aa9654eb9a5a0d89108b88e63050e@bugtrack.alsa-project.org>
+Date: Wed, 26 Apr 2006 22:07:13 +0200
+Message-ID: <e51834fdee91007bb29c90ae2081f7ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0199715A
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 21:51:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6702B165
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 22:07:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2077> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.16
 ======================================================================
 Date Submitted:             04-26-2006 21:51 CEST
-Last Modified:              04-26-2006 21:51 CEST
+Last Modified:              04-26-2006 22:07 CEST
 ======================================================================
 Summary:                    emu10k1 will not use S24_LE
 Description: 
@@ -48,12 +48,23 @@ The Audigy2 is a 24-bit, 96k card. It will handle 24 bit, 96k samples. For
 some reason or other, the emu10k1 driver will not let it
 ======================================================================
 
+----------------------------------------------------------------------
+ pzad - 04-26-06 22:07 
+----------------------------------------------------------------------
+Audigy 2 are two soundcards in one chip (old Audigy 1 and SB live 24 bit).
+In linux Audigy 1 part is used by default (it has more features but only
+48 kHz 16 bi). If you want use 24 bit 96 kHz you have to use device hw:0,4
+(I think it is 4 - I am not sure). Alsa doesn't use it as default device,
+because it has less features as Audigy 1 part (only advantage is 24/96
+sound - disadvantage - no hw mixing no dsp).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-26-06 21:51 braininajar    New Issue                                    
 04-26-06 21:51 braininajar    Distribution              => gentoo          
 04-26-06 21:51 braininajar    Kernel Version            => 2.6.16          
+04-26-06 22:07 pzad           Note Added: 0009524                          
 ======================================================================
 
 
