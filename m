@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Wed, 26 Apr 2006 04:51:00 +0200
-Message-ID: <4c8d67646bbcf7e141778ed4c0764c18@bugtrack.alsa-project.org>
+Date: Wed, 26 Apr 2006 05:06:49 +0200
+Message-ID: <c2ffc0691e142d0a60da75a9e897e910@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E927B15E
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 04:51:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6DC818E
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 05:06:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              04-26-2006 04:50 CEST
+Last Modified:              04-26-2006 05:06 CEST
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -114,40 +114,6 @@ gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-26-06 04:35 
-----------------------------------------------------------------------
-PGD 6e57067 PUD 0
-Oops: 0002 [1] PREEMPT SMP
-CPU 1
-
-RIP: 0010:[<ffffffff884ca00c>]
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-RSP: 0018:ffff81003564f8f0 EFLAGS: 00010046
-RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
-RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
-RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
-R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
-FS: 000000005556c000(006b) GS:ffffffff8057b880(0063)
-knlGS:00000000556cb920
-CS: 0010 DS: 002b ES: 002b CR0: 000000008005003b
-CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
-
-Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
-ff00000000000286
-       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
-ffff81003eb606c0
-       0000000000000000 ffff81003d7c3bd0
-
-Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
-
-40    REX prefix
-88 32 MOV mod r/rm
-c3    RET
-
-
-
-----------------------------------------------------------------------
  Raymond - 04-26-06 04:50 
 ----------------------------------------------------------------------
 >> :~> aplaymidi -l
@@ -168,6 +134,19 @@ http://music.columbia.edu/pipermail/linux-audio-user/2006-April/034782.html
 Do your wavetable daugther card work with au8820 ?
 Which wavetable daugther card do you have ?
 How do you use the wavetable daugther card ? ( aplaymidi, amidi, ... )
+
+----------------------------------------------------------------------
+ Raymond - 04-26-06 05:06 
+----------------------------------------------------------------------
+So far, there are two user have reported wavetable daugther card worked on
+au8830 
+
+http://lists.nongnu.org/archive/html/openvortex-dev/2003-10/msg00025.html
+
+There is a circuit diagram (midi in/out to 15-pin connector) in TerraTec
+Xlerate Pro (au8830) manual.
+
+Can we use midi keyboard with au88x0 ALSA driver ?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -248,6 +227,7 @@ gentoo-sources-2.6.15-r4
 04-26-06 04:33 Raymond        Note Added: 0009501                          
 04-26-06 04:35 Raymond        Note Edited: 0009501                         
 04-26-06 04:50 Raymond        Note Added: 0009502                          
+04-26-06 05:06 Raymond        Note Added: 0009503                          
 ======================================================================
 
 
