@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002027]: No sound on AD1986A (ASUS Laptop, Z62F)
-Date: Wed, 26 Apr 2006 16:19:03 +0200
-Message-ID: <cf97b90204c8a75b9896b03c47c87952@bugtrack.alsa-project.org>
+Date: Wed, 26 Apr 2006 16:20:41 +0200
+Message-ID: <416b826c77453b5fd016221fba5b8060@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 87763170
-	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 16:19:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9BB9170
+	for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2006 16:20:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.16-gentoo-r2
 ======================================================================
 Date Submitted:             04-17-2006 08:00 CEST
-Last Modified:              04-26-2006 16:19 CEST
+Last Modified:              04-26-2006 16:20 CEST
 ======================================================================
 Summary:                    No sound on AD1986A (ASUS Laptop, Z62F)
 Description: 
@@ -59,19 +59,15 @@ Is there any output or system info I can provide to help?
 ======================================================================
 
 ----------------------------------------------------------------------
- rcubed - 04-26-06 16:02 
-----------------------------------------------------------------------
-I have the Z62F with Fedora Core 5 and have the same problems.  I am
-uploading my codec#0 and codec#1 files.  Currently running Advanced Linux
-Sound Architecture Driver Version 1.0.11rc2 (Wed Jan 04 08:57:20 2006
-UTC).
-
-I have recently tried 1.0.11 with same results.
-
-----------------------------------------------------------------------
  tiwai - 04-26-06 16:19 
 ----------------------------------------------------------------------
 Did you try mdoel=laptop and model=laptop-eapd option?
+
+----------------------------------------------------------------------
+ tiwai - 04-26-06 16:20 
+----------------------------------------------------------------------
+Also, with model=laptop-eapd, you must have "External Amplifier" mixer
+switch.  Make sure to turn this on.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -90,6 +86,7 @@ Date Modified  Username       Field                    Change
 04-26-06 16:05 rcubed         File Added: codec#0                          
 04-26-06 16:05 rcubed         File Added: codec#1                          
 04-26-06 16:19 tiwai          Note Added: 0009512                          
+04-26-06 16:20 tiwai          Note Added: 0009513                          
 ======================================================================
 
 
