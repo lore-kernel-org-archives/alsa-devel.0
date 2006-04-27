@@ -1,18 +1,13 @@
-From: "Kaspar Tomasini" <kaspar@bmo.com>
-Subject: Re: good AMBwtEN
-Date: Wed, 26 Apr 2006 22:58:52 -0700
-Message-ID: <000001c669bf$a92c98a0$ee84a8c0@vre36>
-Reply-To: "Kaspar Tomasini" <kaspar@bmo.com>
+From: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
+Subject: Re: bad page when freeing preallocated pages
+Date: Thu, 27 Apr 2006 08:18:20 +0200
+Message-ID: <4450622C.80802@norway.atmel.com>
+References: <444F2FA6.7010305@atmel.com> <s5hslo049f5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C66984.FCCDC0A0"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2013EFE
-	for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2006 07:59:03 +0200 (MEST)
-Received: from ueonline.com (cm-85-152-168-80.telecable.es [85.152.168.80])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 659A3994CD
-	for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2006 07:58:54 +0200 (MEST)
+In-Reply-To: <s5hslo049f5.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,96 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Takashi Iwai wrote:
+> At Wed, 26 Apr 2006 10:30:30 +0200,
+> Hans-Christian Egtvedt wrote:
 
-------=_NextPart_000_0001_01C66984.FCCDC0A0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+<snip>
 
-Hi,
-=20
-V b A a L h I g U n M i=20
- =20
-C v I r A p L q I q S a=20
- =20
-V y I l A d G x R y A x=20
- =20
-X b A w N k A d X j=20
- =20
-http://www.indulersel.com
-bagge
-injec
-overemploymen
-humorou
-apatit
-Holland angrily reached for the recorder, snapping it off. Youre on=20
-your way to Hatteras, you son of a bitch!=20
-Hey, you get your info your way, I give it mine, okay? There was a=20
-map-theres always a map-and each of us has to take those cockamamy back=20
-roads to the joint like we were driving the president or even a don=20
-superiore to an Appalachian meet. ... You gimme that message pad and the
+>> Example:
+>> [  141.380000] Bad page state in process 'rmmod'
+>> [17179650.992000] page:90200600 flags:0x00004000 mapping:00000000
+>> mapcount:0 count:0
+>>
+>> Sorry if my email is lacking information, I'll gladly provide more
+>> information.
+> 
+> It's a new bug I haven't seen yet.
+> 
+> Could you give more detail on your system - the architecture, the
+> linux kernel version, and the ALSA version?
 
-------=_NextPart_000_0001_01C66984.FCCDC0A0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+~ # uname -a
+Linux (none) 2.6.16.11 #3 Wed Apr 26 11:21:06 CEST 2006 avr32 unknown
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial> V<FONT face=3DArial size=3D2 color=3D#e7eb14> b =
-</FONT>A<FONT face=3DArial size=3D2 color=3D#e7eb14> a </FONT>L<FONT =
-face=3DArial size=3D2 color=3D#e7eb14> h </FONT>I<FONT face=3DArial =
-size=3D2 color=3D#e7eb14> g </FONT>U<FONT face=3DArial size=3D2 =
-color=3D#e7eb14> n </FONT>M<FONT face=3DArial size=3D2 color=3D#e7eb14> =
-i </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
-<DIV><FONT face=3DArial> C<FONT face=3DArial size=3D2 color=3D#f4ed22> v =
-</FONT>I<FONT face=3DArial size=3D2 color=3D#f4ed22> r </FONT>A<FONT =
-face=3DArial size=3D2 color=3D#f4ed22> p </FONT>L<FONT face=3DArial =
-size=3D2 color=3D#f4ed22> q </FONT>I<FONT face=3DArial size=3D2 =
-color=3D#f4ed22> q </FONT>S<FONT face=3DArial size=3D2 color=3D#f4ed22> =
-a </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
-<DIV><FONT face=3DArial> V<FONT face=3DArial size=3D2 color=3D#eff927> y =
-</FONT>I<FONT face=3DArial size=3D2 color=3D#eff927> l </FONT>A<FONT =
-face=3DArial size=3D2 color=3D#eff927> d </FONT>G<FONT face=3DArial =
-size=3D2 color=3D#eff927> x </FONT>R<FONT face=3DArial size=3D2 =
-color=3D#eff927> y </FONT>A<FONT face=3DArial size=3D2 color=3D#eff927> =
-x </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
-<DIV><FONT face=3DArial> X<FONT face=3DArial size=3D2 color=3D#f5f925> b =
-</FONT>A<FONT face=3DArial size=3D2 color=3D#f5f925> w </FONT>N<FONT =
-face=3DArial size=3D2 color=3D#f5f925> k </FONT>A<FONT face=3DArial =
-size=3D2 color=3D#f5f925> d </FONT>X<FONT face=3DArial size=3D2 =
-color=3D#f5f925> j </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
-<DIV><A =
-href=3D"http://www.indulersel.com">http://www.indulersel.com</A></DIV>
-<DIV><FONT face=3DArial size=3D2 color=3D#ede615>bagge</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2 color=3D#ede615>injec</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2 =
-color=3D#ede615>overemploymen</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2 color=3D#ede615>humorou</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2 color=3D#ede615>apatit</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>   Holland angrily reached for the =
-recorder, snapping it off. Youre on <BR>your way to Hatteras, you son of =
-a bitch! <BR>   Hey, you get your info your way, I give it mine, okay? =
-There was a <BR>map-theres always a map-and each of us has to take those =
-cockamamy back <BR>roads to the joint like we were driving the president =
-or even a don <BR>superiore to an Appalachian meet. ... You gimme that =
-message pad and the <BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C66984.FCCDC0A0--
+~ # cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.11rc2 (Wed Jan 04
+08:57:20 2006 UTC).
 
+The architecture is the AVR32 processor family from Atmel running on the
+ATSTK1000 development board.
 
+The interessting part is that if I preallocate a small area (4kB), then
+the bad pages go away on rmmod. It could maybe be that we have some
+undiscovered bug in dma_alloc_coherent() or dma_free_coherent(), but we
+use there function calls in other drivers, so i doubt it (but keeping
+the option open;) ).
 
+-- 
+With kind regards,
+Med vennlig hilsen,
+
+Hans-Christian Egtvedt
+Applications Engineer - AVR Applications Lab
+Atmel Norway
 
 
 -------------------------------------------------------
