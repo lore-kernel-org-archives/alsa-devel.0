@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002069]: No sound on via SPDIF out, very low volume on analog out (MSI K8NGM2-FID with ACL880)
-Date: Thu, 27 Apr 2006 18:34:40 +0200
-Message-ID: <e8e57e996f91331b256c899faf8ced3b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002080]: Card driver works incorrectly after resume
+Date: Thu, 27 Apr 2006 18:35:36 +0200
+Message-ID: <bd3c4ac6d3610c11776a9f56686ce208@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 806AF17B
-	for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2006 18:34:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84EFE17B
+	for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2006 18:35:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,85 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2069> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2080> 
 ======================================================================
-Reported By:                gtmkramer
-Assigned To:                tiwai
+Reported By:                Alexey Morozov
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2069
-Category:                   PCI - hda-intel
+Issue ID:                   2080
+Category:                   PCI - au88x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.16-1.2069_FC4smp
+Distribution:               ALT Linux
+Kernel Version:             2.6.16.9 + extra patches
 ======================================================================
-Date Submitted:             04-25-2006 20:43 CEST
-Last Modified:              04-27-2006 18:34 CEST
+Date Submitted:             04-27-2006 18:35 CEST
+Last Modified:              04-27-2006 18:35 CEST
 ======================================================================
-Summary:                    No sound on via SPDIF out, very low volume on analog
-out (MSI K8NGM2-FID with ACL880)
+Summary:                    Card driver works incorrectly after resume
 Description: 
-On my new MSI K8NGM2-FID motherboard with a Realtek ACL880 a get only sound
-from the analog output (although the volume is very low).
+When I resume after hibernating to disk (performed by swsusp-2.2.5) sound
+card driver seems to correctly load up (that is no errors reported) but
+actually audio playback and other card manipulation such as mixer tuning
+is impossible:
 
-The codec is not properly recognized:
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+playback fails like this:
 
-I've tried with various model= settings to no avail.
+alex@localhost ~ $ aplay -v
+/home/archives/Music/Bob_Marley/disk1/track05.cdda.wav
+Playing WAVE '/home/archives/Music/Bob_Marley/disk1/track05.cdda.wav' :
+Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+aplay: pcm_write:1257: write error: Input/output error
+
+after several seconds of silence and manipluating mixer with alsamixer
+becomes really slow.
+
+After reloading just the driver (i.e. 
+
+alex@localhost ~ $ sudo modprobe -r snd_au8830
+alex@localhost ~ $ sudo modprobe snd_au8830
+
+normal playback is restored.
+
+The problem is 100% reproducible and actually it was reproducable in
+previous (e.g. 1.0.10) versions of alsa-driver and previous kernels.
+
+Here's output of lspci -vv for the card:
+
+0000:00:0e.0 Multimedia audio controller: Aureal Semiconductor Vortex 2
+(rev fe)
+        Subsystem: Diamond Multimedia Systems Monster Sound II
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (1000ns min, 3000ns max), cache line size 08
+        Interrupt: pin A routed to IRQ 11
+        Region 0: Memory at de800000 (32-bit, non-prefetchable)
+        Region 1: I/O ports at b800 [size=8]
+        Region 2: I/O ports at b400 [size=8]
+        Capabilities: [dc] Power Management version 1
+                Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+
+I can provide any additional information about host/OS configuration upon
+a request.
 ======================================================================
-
-----------------------------------------------------------------------
- gtmkramer - 04-27-06 18:34 
-----------------------------------------------------------------------
-What do I need to do to get my sound properly working?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-25-06 20:43 gtmkramer      New Issue                                    
-04-25-06 20:43 gtmkramer      File Added: codec.tar.gz                     
-04-25-06 20:43 gtmkramer      Distribution              => Fedora Core 4   
-04-25-06 20:43 gtmkramer      Kernel Version            => 2.6.16-1.2069_FC4smp
-04-27-06 18:34 gtmkramer      Note Added: 0009533                          
+04-27-06 18:35 Alexey Morozov New Issue                                    
+04-27-06 18:35 Alexey Morozov Distribution              => ALT Linux       
+04-27-06 18:35 Alexey Morozov Kernel Version            => 2.6.16.9 + extra
+patches
 ======================================================================
 
 
