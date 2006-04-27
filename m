@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002079]: Kernel Ooops with firefox, xmms and dmix
-Date: Thu, 27 Apr 2006 16:44:09 +0200
-Message-ID: <3e32c5730b1381f0460b95fbd38705a6@bugtrack.alsa-project.org>
+Date: Thu, 27 Apr 2006 16:48:33 +0200
+Message-ID: <64718596900fb57663b6f2b05787188f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B380C172
-	for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2006 16:44:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 949A8172
+	for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2006 16:48:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2079> 
 ======================================================================
 Reported By:                ZaphodB
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   2079
@@ -35,12 +35,14 @@ Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Debain GNU/Linux unstable/experimental current
 Kernel Version:             2.6.17-rc1-mm2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-27-2006 16:40 CEST
-Last Modified:              04-27-2006 16:44 CEST
+Last Modified:              04-27-2006 16:48 CEST
 ======================================================================
 Summary:                    Kernel Ooops with firefox, xmms and dmix
 Description: 
@@ -126,6 +128,11 @@ ff 8b 54 24 18 89 e8 e8 c7 de ff ff 01 f0 89 44 24 14 31 d2 <f7> b7 44 02
 EIP: [<e0204168>] snd_pcm_oss_ioctl+0x9e2/0xa2c [snd_pcm_oss] SS:ESP
 0068:cee11f40
 
+----------------------------------------------------------------------
+ tiwai - 04-27-06 16:48 
+----------------------------------------------------------------------
+It's a known bug in 2.6.17rc1.  Already fixed in the recent rc.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -135,6 +142,11 @@ Date Modified  Username       Field                    Change
 unstable/experimental current
 04-27-06 16:40 ZaphodB        Kernel Version            => 2.6.17-rc1-mm2  
 04-27-06 16:44 ZaphodB        Note Added: 0009531                          
+04-27-06 16:45 ZaphodB        Issue Monitored: ZaphodB                     
+04-27-06 16:48 tiwai          Status                   new => resolved     
+04-27-06 16:48 tiwai          Resolution               open => fixed       
+04-27-06 16:48 tiwai          Assigned To               => tiwai           
+04-27-06 16:48 tiwai          Note Added: 0009532                          
 ======================================================================
 
 
