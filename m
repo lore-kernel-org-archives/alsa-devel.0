@@ -1,13 +1,17 @@
-From: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
-Subject: Re: bad page when freeing preallocated pages
-Date: Thu, 27 Apr 2006 08:18:20 +0200
-Message-ID: <4450622C.80802@norway.atmel.com>
-References: <444F2FA6.7010305@atmel.com> <s5hslo049f5.wl%tiwai@suse.de>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: alsa-plugins 1.0.11 has broken ltmain.sh
+Date: Thu, 27 Apr 2006 08:32:26 +0200
+Message-ID: <4450657A.2010405@cendio.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hslo049f5.wl%tiwai@suse.de>
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A5C0117
+	for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2006 08:32:25 +0200 (MEST)
+Received: from [10.47.1.240] (ossman.lkpg.cendio.se [10.47.1.240])
+	by mail.cendio.se (Postfix) with ESMTP id 6FDC525DA34
+	for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2006 08:32:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,52 +21,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 26 Apr 2006 10:30:30 +0200,
-> Hans-Christian Egtvedt wrote:
+When I compile the alsa-plugins package, the resulting modules lack the 
+.so suffix, causing them to be installed incorrectly. This seems to be a 
+problem with the ltmain.sh shipped in the package as things work 
+perfectly if I re-libtoolize the tree.
 
-<snip>
+I haven't tried any other components of the 1.0.11 release, so there 
+might be more breakage.
 
->> Example:
->> [  141.380000] Bad page state in process 'rmmod'
->> [17179650.992000] page:90200600 flags:0x00004000 mapping:00000000
->> mapcount:0 count:0
->>
->> Sorry if my email is lacking information, I'll gladly provide more
->> information.
-> 
-> It's a new bug I haven't seen yet.
-> 
-> Could you give more detail on your system - the architecture, the
-> linux kernel version, and the ALSA version?
-
-~ # uname -a
-Linux (none) 2.6.16.11 #3 Wed Apr 26 11:21:06 CEST 2006 avr32 unknown
-
-~ # cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 1.0.11rc2 (Wed Jan 04
-08:57:20 2006 UTC).
-
-The architecture is the AVR32 processor family from Atmel running on the
-ATSTK1000 development board.
-
-The interessting part is that if I preallocate a small area (4kB), then
-the bad pages go away on rmmod. It could maybe be that we have some
-undiscovered bug in dma_alloc_coherent() or dma_free_coherent(), but we
-use there function calls in other drivers, so i doubt it (but keeping
-the option open;) ).
-
+Rgds
 -- 
-With kind regards,
-Med vennlig hilsen,
-
-Hans-Christian Egtvedt
-Applications Engineer - AVR Applications Lab
-Atmel Norway
+Pierre Ossman                Telephone: +46-13-21 46 00
+Cendio AB                    Web: http://www.cendio.com
 
 
 -------------------------------------------------------
