@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002080]: Card driver works incorrectly after resume
-Date: Fri, 28 Apr 2006 03:58:59 +0200
-Message-ID: <2f3002a140b658d1cf625a90a94a5ffd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
+Date: Fri, 28 Apr 2006 05:27:49 +0200
+Message-ID: <842e621a608ccb00f6f094656e0f96fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 398FCD8
-	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2006 03:59:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A1DE12C
+	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2006 05:27:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,97 +24,151 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2080> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
 ======================================================================
-Reported By:                Alexey Morozov
+Reported By:                Raymond
 Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2080
+Issue ID:                   1726
 Category:                   PCI - au88x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               ALT Linux
-Kernel Version:             2.6.16.9 + extra patches
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             04-27-2006 18:35 CEST
-Last Modified:              04-28-2006 03:58 CEST
+Date Submitted:             01-08-2006 17:41 CET
+Last Modified:              04-28-2006 05:27 CEST
 ======================================================================
-Summary:                    Card driver works incorrectly after resume
+Summary:                    Front and Rear channels swap after first play when
+playing Surround40 on au8830
 Description: 
-When I resume after hibernating to disk (performed by swsusp-2.2.5) sound
-card driver seems to correctly load up (that is no errors reported) but
-actually audio playback and other card manipulation such as mixer tuning
-is impossible:
+The front and rear channels are correct for playing Surround40 only at the
+first time after the driver is loaded. 
 
-playback fails like this:
+The front and rear channels (Surround40) always swapped afterward using
+speaker-test or xine. 
 
-alex@localhost ~ $ aplay -v
-/home/archives/Music/Bob_Marley/disk1/track05.cdda.wav
-Playing WAVE '/home/archives/Music/Bob_Marley/disk1/track05.cdda.wav' :
-Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-aplay: pcm_write:1257: write error: Input/output error
-
-after several seconds of silence and manipluating mixer with alsamixer
-becomes really slow.
-
-After reloading just the driver (i.e. 
-
-alex@localhost ~ $ sudo modprobe -r snd_au8830
-alex@localhost ~ $ sudo modprobe snd_au8830
-
-normal playback is restored.
-
-The problem is 100% reproducible and actually it was reproducable in
-previous (e.g. 1.0.10) versions of alsa-driver and previous kernels.
-
-Here's output of lspci -vv for the card:
-
-0000:00:0e.0 Multimedia audio controller: Aureal Semiconductor Vortex 2
-(rev fe)
-        Subsystem: Diamond Multimedia Systems Monster Sound II
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32 (1000ns min, 3000ns max), cache line size 08
-        Interrupt: pin A routed to IRQ 11
-        Region 0: Memory at de800000 (32-bit, non-prefetchable)
-        Region 1: I/O ports at b800 [size=8]
-        Region 2: I/O ports at b400 [size=8]
-        Capabilities: [dc] Power Management version 1
-                Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+Playing stereo sound is OK.
 
 
-I can provide any additional information about host/OS configuration upon
-a request.
+ speaker-test -c4 -D hw:0,0
+ 
+speaker-test 1.0.11rc2
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+Using 16 octaves of pink noise
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 8192
+To choose period_size = 2048
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+Time per period = 11.856821
+ 0 - Front Left
+ 1 - Front Right
+ 3 - Rear Right
+ 2 - Rear Left
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-28-06 03:58 
+ Raymond - 04-06-06 16:52 
 ----------------------------------------------------------------------
-Power management is not yet supported by ALSA au88x0 driver
+Using the graphic equalizer and the following plugin which route 2 channels
+to 4-channels.
 
-You need to implement
+pcm.test {
+    type plug
+    slave {
+        pcm "hw:0,0"
+        channels 4
+    }
+    ttable.0.0 0.5
+    ttable.0.1 1.0
+    ttable.1.2 0.75
+    ttable.1.3 0.25
+}
 
-static int snd_vortex_suspend(struct pci_dev *pci, pm_message_t state)
-int snd_vortex_resume(struct pci_dev *pci)
+The left peak is supposed to be always one half of the right peak.
 
+aplay -D test stereo.wav
+mplayer -ao alsa:device=test stereo.wav
+ 
+left peak is 3 times of right peak indicates swap of front/rear channels
 
-http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
+It's interesting that random swapping of channels can be reproduced by
+speaker-test 
+
+speaker-test -D test -c 2 -t sine
+
+----------------------------------------------------------------------
+ Raymond - 04-28-06 05:27 
+----------------------------------------------------------------------
+> When run speaker-test several times in a row it swaps channels in that
+order:
+> Front Left become Front Right
+> Front Right become Rear Left
+> Rear Right become Front Left
+> Rear Left become Rear Right
+> For reproduce this I just run "speaker-test -t wav -c4 -D hw:0,0" for 3
+to 17 
+> times in a row. On next run it restores channel order.
+
+This seem to be an odd behaviour of speaker-test -t wav as described in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2026
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-27-06 18:35 Alexey Morozov New Issue                                    
-04-27-06 18:35 Alexey Morozov Distribution              => ALT Linux       
-04-27-06 18:35 Alexey Morozov Kernel Version            => 2.6.16.9 + extra
-patches
-04-28-06 03:58 Raymond        Note Added: 0009537                          
+01-08-06 17:41 Raymond        New Issue                                    
+01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
+01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
+    
+02-04-06 06:26 Raymond        Note Added: 0007912                          
+02-10-06 05:36 ponchick       Note Added: 0007987                          
+02-10-06 06:32 Raymond        Note Added: 0007991                          
+02-10-06 10:50 ponchick       Note Added: 0007998                          
+02-10-06 11:25 Raymond        Note Added: 0008000                          
+02-10-06 13:49 Raymond        Note Added: 0008003                          
+02-10-06 13:56 Raymond        Note Edited: 0008003                         
+02-12-06 07:48 Raymond        Note Edited: 0008003                         
+02-12-06 10:12 Raymond        Note Edited: 0008000                         
+02-16-06 05:37 ponchick       Note Added: 0008085                          
+02-16-06 08:12 Raymond        Note Added: 0008088                          
+02-16-06 10:12 Raymond        Note Added: 0008090                          
+02-16-06 10:28 Raymond        Note Edited: 0008090                         
+02-16-06 16:07 Raymond        Note Added: 0008097                          
+02-17-06 03:35 ponchick       Note Added: 0008104                          
+02-17-06 04:28 Raymond        Note Added: 0008105                          
+02-17-06 04:35 Raymond        Note Edited: 0008105                         
+02-17-06 05:56 Raymond        Note Edited: 0008105                         
+02-17-06 06:09 Raymond        Note Edited: 0008105                         
+02-26-06 07:22 ponchick       Note Added: 0008198                          
+02-26-06 13:28 Raymond        Note Added: 0008200                          
+02-26-06 14:08 Raymond        Note Edited: 0008200                         
+02-27-06 06:57 ponchick       Note Added: 0008216                          
+02-27-06 14:09 Raymond        Note Added: 0008222                          
+02-28-06 04:42 Raymond        Note Added: 0008239                          
+03-03-06 07:18 Raymond        Note Added: 0008334                          
+03-03-06 09:19 Raymond        Note Edited: 0008334                         
+03-24-06 14:57 Raymond        File Added: AU8830.conf                      
+03-24-06 15:04 Raymond        Note Added: 0008918                          
+03-31-06 10:22 Raymond        Note Added: 0009043                          
+04-03-06 14:24 Raymond        Note Added: 0009096                          
+04-06-06 16:52 Raymond        Note Added: 0009125                          
+04-28-06 05:27 Raymond        Note Added: 0009538                          
 ======================================================================
 
 
