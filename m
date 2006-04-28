@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001726]: Front and Rear channels swap after first play when playing Surround40 on au8830
-Date: Fri, 28 Apr 2006 05:27:49 +0200
-Message-ID: <842e621a608ccb00f6f094656e0f96fd@bugtrack.alsa-project.org>
+From: Kenneth Crudup <kenny@panix.com>
+Subject: Patch for Sony Vaio VGN-A790 laptop for Intel HDA on Realtek Codec
+Date: Thu, 27 Apr 2006 21:32:02 -0700 (PDT)
+Message-ID: <Pine.LNX.4.64.0604272128100.15826@vaio.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="-1463761026-2113583506-1146198722=:15826"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A1DE12C
-	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2006 05:27:49 +0200 (MEST)
+Received: from mail3.panix.com (mail3.panix.com [166.84.1.74])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0149138
+	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2006 06:32:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,159 +18,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
+Cc: kailang@realtek.com.tw, pshou@realtek.com.tw, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1726
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
-======================================================================
-Date Submitted:             01-08-2006 17:41 CET
-Last Modified:              04-28-2006 05:27 CEST
-======================================================================
-Summary:                    Front and Rear channels swap after first play when
-playing Surround40 on au8830
-Description: 
-The front and rear channels are correct for playing Surround40 only at the
-first time after the driver is loaded. 
-
-The front and rear channels (Surround40) always swapped afterward using
-speaker-test or xine. 
-
-Playing stereo sound is OK.
+---1463761026-2113583506-1146198722=:15826
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 
 
- speaker-test -c4 -D hw:0,0
- 
-speaker-test 1.0.11rc2
- 
-Playback device is hw:0,0
-Stream parameters are 48000Hz, S16_LE, 4 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 2 to 8192
-Period size range from 1 to 512
-Periods = 4
-Buffer time size 2525
-To choose buffer_size = 8192
-To choose period_size = 2048
-was set period_size = 512
-was set buffer_size = 8192
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
-Time per period = 11.856821
- 0 - Front Left
- 1 - Front Right
- 3 - Rear Right
- 2 - Rear Left
+Please apply to the current kernel tree at your earliest convienience.
 
-======================================================================
+Thank you,
 
-----------------------------------------------------------------------
- Raymond - 04-06-06 16:52 
-----------------------------------------------------------------------
-Using the graphic equalizer and the following plugin which route 2 channels
-to 4-channels.
+	-Kenny
 
-pcm.test {
-    type plug
-    slave {
-        pcm "hw:0,0"
-        channels 4
-    }
-    ttable.0.0 0.5
-    ttable.0.1 1.0
-    ttable.1.2 0.75
-    ttable.1.3 0.25
-}
+-- 
+Kenneth R. Crudup  Sr. SW Engineer, Scott County Consulting, Los Angeles
+H: 3630 S. Sepulveda Blvd. #138, L.A., CA 90034-6809      (888) 454-8181
+---1463761026-2113583506-1146198722=:15826
+Content-Type: TEXT/PLAIN; charset=US-ASCII; name=hda-sound-patch
+Content-Transfer-Encoding: BASE64
+Content-Description: realtek.c patch
+Content-Disposition: attachment; filename=hda-sound-patch
 
-The left peak is supposed to be always one half of the right peak.
+LS0tIGxpbnV4LTIuNi4xNi4yL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRl
+ay5jLm9yaWcJMjAwNi0wNC0wNyAwOTo1Njo0Ny4wMDAwMDAwMDAgLTA3MDAN
+CisrKyBsaW51eC0yLjYuMTYuMi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0
+ZWsuYwkyMDA2LTA0LTA5IDE5OjM1OjMwLjAwMDAwMDAwMCAtMDcwMA0KQEAg
+LTI5NDgsNiArMjk0OCw4IEBADQogCXsgLm1vZGVsbmFtZSA9ICJiYXNpYyIs
+IC5jb25maWcgPSBBTEMyNjBfQkFTSUMgfSwNCiAJeyAucGNpX3N1YnZlbmRv
+ciA9IDB4MTA0ZCwgLnBjaV9zdWJkZXZpY2UgPSAweDgxYmIsDQogCSAgLmNv
+bmZpZyA9IEFMQzI2MF9CQVNJQyB9LCAvKiBTb255IFZBSU8gKi8NCisJeyAu
+cGNpX3N1YnZlbmRvciA9IDB4MTA0ZCwgLnBjaV9zdWJkZXZpY2UgPSAweDgx
+Y2QsDQorCSAgLmNvbmZpZyA9IEFMQzI2MF9CQVNJQyB9LCAvKiBTb255IFZB
+SU8gKi8NCiAJeyAucGNpX3N1YnZlbmRvciA9IDB4MTUyZCwgLnBjaV9zdWJk
+ZXZpY2UgPSAweDA3MjksDQogCSAgLmNvbmZpZyA9IEFMQzI2MF9CQVNJQyB9
+LCAvKiBDVEwgVHJhdmVsIE1hc3RlciBVNTUzVyAqLw0KIAl7IC5tb2RlbG5h
+bWUgPSAiaHAiLCAuY29uZmlnID0gQUxDMjYwX0hQIH0sDQo=
 
-aplay -D test stereo.wav
-mplayer -ao alsa:device=test stereo.wav
- 
-left peak is 3 times of right peak indicates swap of front/rear channels
-
-It's interesting that random swapping of channels can be reproduced by
-speaker-test 
-
-speaker-test -D test -c 2 -t sine
-
-----------------------------------------------------------------------
- Raymond - 04-28-06 05:27 
-----------------------------------------------------------------------
-> When run speaker-test several times in a row it swaps channels in that
-order:
-> Front Left become Front Right
-> Front Right become Rear Left
-> Rear Right become Front Left
-> Rear Left become Rear Right
-> For reproduce this I just run "speaker-test -t wav -c4 -D hw:0,0" for 3
-to 17 
-> times in a row. On next run it restores channel order.
-
-This seem to be an odd behaviour of speaker-test -t wav as described in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2026
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-08-06 17:41 Raymond        New Issue                                    
-01-08-06 17:41 Raymond        Distribution              => Fedora Core 1   
-01-08-06 17:41 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-01-27-06 16:45 Raymond        File Added: au88x0_surround40.patch               
-    
-02-04-06 06:26 Raymond        Note Added: 0007912                          
-02-10-06 05:36 ponchick       Note Added: 0007987                          
-02-10-06 06:32 Raymond        Note Added: 0007991                          
-02-10-06 10:50 ponchick       Note Added: 0007998                          
-02-10-06 11:25 Raymond        Note Added: 0008000                          
-02-10-06 13:49 Raymond        Note Added: 0008003                          
-02-10-06 13:56 Raymond        Note Edited: 0008003                         
-02-12-06 07:48 Raymond        Note Edited: 0008003                         
-02-12-06 10:12 Raymond        Note Edited: 0008000                         
-02-16-06 05:37 ponchick       Note Added: 0008085                          
-02-16-06 08:12 Raymond        Note Added: 0008088                          
-02-16-06 10:12 Raymond        Note Added: 0008090                          
-02-16-06 10:28 Raymond        Note Edited: 0008090                         
-02-16-06 16:07 Raymond        Note Added: 0008097                          
-02-17-06 03:35 ponchick       Note Added: 0008104                          
-02-17-06 04:28 Raymond        Note Added: 0008105                          
-02-17-06 04:35 Raymond        Note Edited: 0008105                         
-02-17-06 05:56 Raymond        Note Edited: 0008105                         
-02-17-06 06:09 Raymond        Note Edited: 0008105                         
-02-26-06 07:22 ponchick       Note Added: 0008198                          
-02-26-06 13:28 Raymond        Note Added: 0008200                          
-02-26-06 14:08 Raymond        Note Edited: 0008200                         
-02-27-06 06:57 ponchick       Note Added: 0008216                          
-02-27-06 14:09 Raymond        Note Added: 0008222                          
-02-28-06 04:42 Raymond        Note Added: 0008239                          
-03-03-06 07:18 Raymond        Note Added: 0008334                          
-03-03-06 09:19 Raymond        Note Edited: 0008334                         
-03-24-06 14:57 Raymond        File Added: AU8830.conf                      
-03-24-06 15:04 Raymond        Note Added: 0008918                          
-03-31-06 10:22 Raymond        Note Added: 0009043                          
-04-03-06 14:24 Raymond        Note Added: 0009096                          
-04-06-06 16:52 Raymond        Note Added: 0009125                          
-04-28-06 05:27 Raymond        Note Added: 0009538                          
-======================================================================
-
-
+---1463761026-2113583506-1146198722=:15826--
 
 
 -------------------------------------------------------
