@@ -1,12 +1,14 @@
-From: "Bruna Rosenbalm" <rosebruna@iomartdsl.com>
-Subject: Re: good AzMBtEN
-Date: Thu, 27 Apr 2006 22:06:11 -0700
-Message-ID: <000001c66a81$774eb490$e05ba8c0@nzv26>
-Reply-To: "Bruna Rosenbalm" <rosebruna@iomartdsl.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: SB Live! 24-Bit External: remote control support
+Date: Fri, 28 Apr 2006 10:42:00 +0200
+Message-ID: <20060428084200.GA26640@turing.informatik.uni-halle.de>
+References: <44512925.30803@vardes.lv>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C66A46.CAEFDC90"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <44512925.30803@vardes.lv>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,94 +18,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Raimonds Cicans <ray@vardes.lv>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Raimonds Cicans wrote:
+> Attached patch contains support for 'SB Live! 24-Bit External' remote
 
-------=_NextPart_000_0001_01C66A46.CAEFDC90
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+It seems the codes are not compatible with the Extigy/Audigy2NX.
+Are the lower 8 bits unique, or does the LIRC driver need to be updated
+to read 32 bit codes?
 
-Hi,
-=20
-X p A f N y A y X p=20
- =20
-V w I s A n G f R n A y=20
- =20
-C v I v A z L k I z S a=20
- =20
-V x A g L a I q U o M b=20
- =20
-http://www.locateothe.com
-manifol
-servitud
-allopat
-symbiosi
-insincerit
-Is no problem, mon!=20
-Have you got a knife?=20
-Do I have eyes?=20
-Good. Give me your Uzi. Hurry!=20
-The guard scrambled away along the vine-tangled precipice and=20
-disappeared into the dense foliage beyond. The second Royal Commando=20
+Please provide a Signed-off-by line.
 
 
-------=_NextPart_000_0001_01C66A46.CAEFDC90
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial> X<FONT face=3DArial size=3D2 color=3D#f0f616> p =
-</FONT>A<FONT face=3DArial size=3D2 color=3D#f0f616> f </FONT>N<FONT =
-face=3DArial size=3D2 color=3D#f0f616> y </FONT>A<FONT face=3DArial =
-size=3D2 color=3D#f0f616> y </FONT>X<FONT face=3DArial size=3D2 =
-color=3D#f0f616> p </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
-<DIV><FONT face=3DArial> V<FONT face=3DArial size=3D2 color=3D#f6f216> w =
-</FONT>I<FONT face=3DArial size=3D2 color=3D#f6f216> s </FONT>A<FONT =
-face=3DArial size=3D2 color=3D#f6f216> n </FONT>G<FONT face=3DArial =
-size=3D2 color=3D#f6f216> f </FONT>R<FONT face=3DArial size=3D2 =
-color=3D#f6f216> n </FONT>A<FONT face=3DArial size=3D2 color=3D#f6f216> =
-y </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
-<DIV><FONT face=3DArial> C<FONT face=3DArial size=3D2 color=3D#eaf31c> v =
-</FONT>I<FONT face=3DArial size=3D2 color=3D#eaf31c> v </FONT>A<FONT =
-face=3DArial size=3D2 color=3D#eaf31c> z </FONT>L<FONT face=3DArial =
-size=3D2 color=3D#eaf31c> k </FONT>I<FONT face=3DArial size=3D2 =
-color=3D#eaf31c> z </FONT>S<FONT face=3DArial size=3D2 color=3D#eaf31c> =
-a </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
-<DIV><FONT face=3DArial> V<FONT face=3DArial size=3D2 color=3D#efea20> x =
-</FONT>A<FONT face=3DArial size=3D2 color=3D#efea20> g </FONT>L<FONT =
-face=3DArial size=3D2 color=3D#efea20> a </FONT>I<FONT face=3DArial =
-size=3D2 color=3D#efea20> q </FONT>U<FONT face=3DArial size=3D2 =
-color=3D#efea20> o </FONT>M<FONT face=3DArial size=3D2 color=3D#efea20> =
-b </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
-<DIV><A =
-href=3D"http://www.locateothe.com">http://www.locateothe.com</A></DIV>
-<DIV><FONT face=3DArial size=3D2 color=3D#e9f21b>manifol</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2 color=3D#e9f21b>servitud</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2 color=3D#e9f21b>allopat</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2 color=3D#e9f21b>symbiosi</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2 color=3D#e9f21b>insincerit</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>   Is no problem, mon! <BR>   Have you =
-got a knife? <BR>   Do I have eyes? <BR>   Good. Give me your Uzi. =
-Hurry! <BR>   The guard scrambled away along the vine-tangled precipice =
-and <BR>disappeared into the dense foliage beyond. The second Royal =
-Commando <BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C66A46.CAEFDC90--
-
-
-
+Regards,
+Clemens
 
 
 -------------------------------------------------------
