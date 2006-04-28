@@ -1,11 +1,14 @@
-From: Stian Ellingsen <quadduc@quaddux.yi.org>
-Subject: [1.0.10] Alsa on ICH4 does not set 'Capture Source' correctly
-Date: Fri, 28 Apr 2006 01:57:23 +0200
-Message-ID: <1146182244.13226.42.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002080]: Card driver works incorrectly after resume
+Date: Fri, 28 Apr 2006 03:58:59 +0200
+Message-ID: <2f3002a140b658d1cf625a90a94a5ffd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 398FCD8
+	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2006 03:59:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,111 +18,105 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I have Fedora Core 4 with Alsa v 1.0.10rc3 on an Intel Corporation
-82801DB/DBL/DBM (ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 03). If
-I try to set the capture source using 'alsamixer' or 'amixer sset', the
-value of 'Capture Source' will not be set correctly, resulting in wrong
-channels being captured when recording sound:
 
-Example:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2080> 
+======================================================================
+Reported By:                Alexey Morozov
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2080
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               ALT Linux
+Kernel Version:             2.6.16.9 + extra patches
+======================================================================
+Date Submitted:             04-27-2006 18:35 CEST
+Last Modified:              04-28-2006 03:58 CEST
+======================================================================
+Summary:                    Card driver works incorrectly after resume
+Description: 
+When I resume after hibernating to disk (performed by swsusp-2.2.5) sound
+card driver seems to correctly load up (that is no errors reported) but
+actually audio playback and other card manipulation such as mixer tuning
+is impossible:
 
-$ amixer cset numid=24 0
-numid=24,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw---,values=2,items=8
-  ; Item #0 'Mic'
-  ; Item #1 'CD'
-  ; Item #2 'Video'
-  ; Item #3 'Aux'
-  ; Item #4 'Line'
-  ; Item #5 'Mix'
-  ; Item #6 'Mix Mono'
-  ; Item #7 'Phone'
-  : values=0,0
+playback fails like this:
 
-As expected, Mic will now be set to be captured from:
+alex@localhost ~ $ aplay -v
+/home/archives/Music/Bob_Marley/disk1/track05.cdda.wav
+Playing WAVE '/home/archives/Music/Bob_Marley/disk1/track05.cdda.wav' :
+Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+aplay: pcm_write:1257: write error: Input/output error
 
-$ amixer sget Mic
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [on] Capture [on]
-  Front Right: Playback 31 [100%] [on] Capture [on]
+after several seconds of silence and manipluating mixer with alsamixer
+becomes really slow.
 
-Then, if I set another channel to be captured from:
+After reloading just the driver (i.e. 
 
-$ amixer sset Mix cap
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [on]
-  Front Right: Capture [on]
+alex@localhost ~ $ sudo modprobe -r snd_au8830
+alex@localhost ~ $ sudo modprobe snd_au8830
 
-Also as expected, Mic will seemingly not capture:
+normal playback is restored.
 
-$ amixer sget Mic
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [on] Capture [off]
-  Front Right: Playback 31 [100%] [on] Capture [off]
+The problem is 100% reproducible and actually it was reproducable in
+previous (e.g. 1.0.10) versions of alsa-driver and previous kernels.
 
-But if I use cget on 'Capture Source', I will see that it has only set
-the left side of the values, so it will capture from both Mix and Mic:
+Here's output of lspci -vv for the card:
 
-$ amixer cget numid=24
-numid=24,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw---,values=2,items=8
-  ; Item #0 'Mic'
-  ; Item #1 'CD'
-  ; Item #2 'Video'
-  ; Item #3 'Aux'
-  ; Item #4 'Line'
-  ; Item #5 'Mix'
-  ; Item #6 'Mix Mono'
-  ; Item #7 'Phone'
-  : values=5,0
-
-Now, if I try to record a sound, I will hear sound from both Mic and Mix
-when playing the recorded sound.
-
-After 'amixer sset Mix cap', I would expect the values of 'Capture
-Source' to be 5,5 (Mix only), so that when recording a sound, only the
-input from Mix would be captured.
-
-The only workaround that I've found is to use 'amixer cset':
-
-$ amixer cset numid=24 5
-numid=24,iface=MIXER,name='Capture Source'
-  ; type=ENUMERATED,access=rw---,values=2,items=8
-  ; Item #0 'Mic'
-  ; Item #1 'CD'
-  ; Item #2 'Video'
-  ; Item #3 'Aux'
-  ; Item #4 'Line'
-  ; Item #5 'Mix'
-  ; Item #6 'Mix Mono'
-  ; Item #7 'Phone'
-  : values=5,5
-
-Since alsamixer doesn't seem to care about the right side of values, it
-took me several hours to find out what was really going on. I assume
-this is a bug?
+0000:00:0e.0 Multimedia audio controller: Aureal Semiconductor Vortex 2
+(rev fe)
+        Subsystem: Diamond Multimedia Systems Monster Sound II
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32 (1000ns min, 3000ns max), cache line size 08
+        Interrupt: pin A routed to IRQ 11
+        Region 0: Memory at de800000 (32-bit, non-prefetchable)
+        Region 1: I/O ports at b800 [size=8]
+        Region 2: I/O ports at b400 [size=8]
+        Capabilities: [dc] Power Management version 1
+                Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
 
-Sian Ellingsen
+I can provide any additional information about host/OS configuration upon
+a request.
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 04-28-06 03:58 
+----------------------------------------------------------------------
+Power management is not yet supported by ALSA au88x0 driver
+
+You need to implement
+
+static int snd_vortex_suspend(struct pci_dev *pci, pm_message_t state)
+int snd_vortex_resume(struct pci_dev *pci)
+
+
+http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-27-06 18:35 Alexey Morozov New Issue                                    
+04-27-06 18:35 Alexey Morozov Distribution              => ALT Linux       
+04-27-06 18:35 Alexey Morozov Kernel Version            => 2.6.16.9 + extra
+patches
+04-28-06 03:58 Raymond        Note Added: 0009537                          
+======================================================================
+
 
 
 
