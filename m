@@ -1,13 +1,12 @@
-From: Kenneth Crudup <kenny@panix.com>
-Subject: Patch for Sony Vaio VGN-A790 laptop for Intel HDA on Realtek Codec
-Date: Thu, 27 Apr 2006 21:32:02 -0700 (PDT)
-Message-ID: <Pine.LNX.4.64.0604272128100.15826@vaio.localdomain>
+From: "Bruna Rosenbalm" <rosebruna@iomartdsl.com>
+Subject: Re: good AzMBtEN
+Date: Thu, 27 Apr 2006 22:06:11 -0700
+Message-ID: <000001c66a81$774eb490$e05ba8c0@nzv26>
+Reply-To: "Bruna Rosenbalm" <rosebruna@iomartdsl.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-1463761026-2113583506-1146198722=:15826"
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C66A46.CAEFDC90"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail3.panix.com (mail3.panix.com [166.84.1.74])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0149138
-	for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2006 06:32:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,48 +16,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
-Cc: kailang@realtek.com.tw, pshou@realtek.com.tw, tiwai@suse.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+This is a multi-part message in MIME format.
 
----1463761026-2113583506-1146198722=:15826
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+------=_NextPart_000_0001_01C66A46.CAEFDC90
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+=20
+X p A f N y A y X p=20
+ =20
+V w I s A n G f R n A y=20
+ =20
+C v I v A z L k I z S a=20
+ =20
+V x A g L a I q U o M b=20
+ =20
+http://www.locateothe.com
+manifol
+servitud
+allopat
+symbiosi
+insincerit
+Is no problem, mon!=20
+Have you got a knife?=20
+Do I have eyes?=20
+Good. Give me your Uzi. Hurry!=20
+The guard scrambled away along the vine-tangled precipice and=20
+disappeared into the dense foliage beyond. The second Royal Commando=20
 
 
-Please apply to the current kernel tree at your earliest convienience.
+------=_NextPart_000_0001_01C66A46.CAEFDC90
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Thank you,
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hi,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial> X<FONT face=3DArial size=3D2 color=3D#f0f616> p =
+</FONT>A<FONT face=3DArial size=3D2 color=3D#f0f616> f </FONT>N<FONT =
+face=3DArial size=3D2 color=3D#f0f616> y </FONT>A<FONT face=3DArial =
+size=3D2 color=3D#f0f616> y </FONT>X<FONT face=3DArial size=3D2 =
+color=3D#f0f616> p </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
+<DIV><FONT face=3DArial> V<FONT face=3DArial size=3D2 color=3D#f6f216> w =
+</FONT>I<FONT face=3DArial size=3D2 color=3D#f6f216> s </FONT>A<FONT =
+face=3DArial size=3D2 color=3D#f6f216> n </FONT>G<FONT face=3DArial =
+size=3D2 color=3D#f6f216> f </FONT>R<FONT face=3DArial size=3D2 =
+color=3D#f6f216> n </FONT>A<FONT face=3DArial size=3D2 color=3D#f6f216> =
+y </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
+<DIV><FONT face=3DArial> C<FONT face=3DArial size=3D2 color=3D#eaf31c> v =
+</FONT>I<FONT face=3DArial size=3D2 color=3D#eaf31c> v </FONT>A<FONT =
+face=3DArial size=3D2 color=3D#eaf31c> z </FONT>L<FONT face=3DArial =
+size=3D2 color=3D#eaf31c> k </FONT>I<FONT face=3DArial size=3D2 =
+color=3D#eaf31c> z </FONT>S<FONT face=3DArial size=3D2 color=3D#eaf31c> =
+a </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
+<DIV><FONT face=3DArial> V<FONT face=3DArial size=3D2 color=3D#efea20> x =
+</FONT>A<FONT face=3DArial size=3D2 color=3D#efea20> g </FONT>L<FONT =
+face=3DArial size=3D2 color=3D#efea20> a </FONT>I<FONT face=3DArial =
+size=3D2 color=3D#efea20> q </FONT>U<FONT face=3DArial size=3D2 =
+color=3D#efea20> o </FONT>M<FONT face=3DArial size=3D2 color=3D#efea20> =
+b </FONT> </FONT></DIV><DIV> &nbsp; </DIV>
+<DIV><A =
+href=3D"http://www.locateothe.com">http://www.locateothe.com</A></DIV>
+<DIV><FONT face=3DArial size=3D2 color=3D#e9f21b>manifol</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2 color=3D#e9f21b>servitud</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2 color=3D#e9f21b>allopat</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2 color=3D#e9f21b>symbiosi</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2 color=3D#e9f21b>insincerit</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>   Is no problem, mon! <BR>   Have you =
+got a knife? <BR>   Do I have eyes? <BR>   Good. Give me your Uzi. =
+Hurry! <BR>   The guard scrambled away along the vine-tangled precipice =
+and <BR>disappeared into the dense foliage beyond. The second Royal =
+Commando <BR></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C66A46.CAEFDC90--
 
-	-Kenny
 
--- 
-Kenneth R. Crudup  Sr. SW Engineer, Scott County Consulting, Los Angeles
-H: 3630 S. Sepulveda Blvd. #138, L.A., CA 90034-6809      (888) 454-8181
----1463761026-2113583506-1146198722=:15826
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name=hda-sound-patch
-Content-Transfer-Encoding: BASE64
-Content-Description: realtek.c patch
-Content-Disposition: attachment; filename=hda-sound-patch
 
-LS0tIGxpbnV4LTIuNi4xNi4yL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRl
-ay5jLm9yaWcJMjAwNi0wNC0wNyAwOTo1Njo0Ny4wMDAwMDAwMDAgLTA3MDAN
-CisrKyBsaW51eC0yLjYuMTYuMi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0
-ZWsuYwkyMDA2LTA0LTA5IDE5OjM1OjMwLjAwMDAwMDAwMCAtMDcwMA0KQEAg
-LTI5NDgsNiArMjk0OCw4IEBADQogCXsgLm1vZGVsbmFtZSA9ICJiYXNpYyIs
-IC5jb25maWcgPSBBTEMyNjBfQkFTSUMgfSwNCiAJeyAucGNpX3N1YnZlbmRv
-ciA9IDB4MTA0ZCwgLnBjaV9zdWJkZXZpY2UgPSAweDgxYmIsDQogCSAgLmNv
-bmZpZyA9IEFMQzI2MF9CQVNJQyB9LCAvKiBTb255IFZBSU8gKi8NCisJeyAu
-cGNpX3N1YnZlbmRvciA9IDB4MTA0ZCwgLnBjaV9zdWJkZXZpY2UgPSAweDgx
-Y2QsDQorCSAgLmNvbmZpZyA9IEFMQzI2MF9CQVNJQyB9LCAvKiBTb255IFZB
-SU8gKi8NCiAJeyAucGNpX3N1YnZlbmRvciA9IDB4MTUyZCwgLnBjaV9zdWJk
-ZXZpY2UgPSAweDA3MjksDQogCSAgLmNvbmZpZyA9IEFMQzI2MF9CQVNJQyB9
-LCAvKiBDVEwgVHJhdmVsIE1hc3RlciBVNTUzVyAqLw0KIAl7IC5tb2RlbG5h
-bWUgPSAiaHAiLCAuY29uZmlnID0gQUxDMjYwX0hQIH0sDQo=
-
----1463761026-2113583506-1146198722=:15826--
 
 
 -------------------------------------------------------
