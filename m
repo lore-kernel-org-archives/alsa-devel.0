@@ -1,11 +1,14 @@
-From: Alvaro Kuolas <kuolas@gmail.com>
-Subject: What about the VLSI/Philips chips?
-Date: Fri, 28 Apr 2006 22:26:56 -0300
-Message-ID: <4452C0E0.2000203@gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002084]: If the PCM channel is being used and the same time that X is on-screen, ... total hard crash of whole system.
+Date: Sat, 29 Apr 2006 04:40:24 +0200
+Message-ID: <c35c561478b109782df793ea15ebec9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 740AD18E
+	for <alsa-devel@alsa-project.org>; Sat, 29 Apr 2006 04:40:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,28 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, my name is Alvaro Kuolas.
 
-And I have a PHILIPS Sound Card (it's identical to the XWave Thunder
-128, on the FCC page there is a photograph and a block diagram of the
-sound card, yes the FCC ID of this Philips is the same as the XWave).
-The chipset is the infamous Thunderbird 128 QSound from VLSI.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2084> 
+======================================================================
+Reported By:                terrym
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2084
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               ROCK Linux, both 2.0.3 and trunk
+Kernel Version:             2.4.x and 2.6.x, currently running 2.6.16.2
+======================================================================
+Date Submitted:             04-29-2006 04:40 CEST
+Last Modified:              04-29-2006 04:40 CEST
+======================================================================
+Summary:                    If the PCM channel is being used and the same time
+that X is on-screen, ... total hard crash of whole system.
+Description: 
+X can be running as long as it is not on screen, that is, a text console is
+in use. It does not matter if the sound app is console based or GUI (X
+based), the result is the same: the moment sound plays via PCM and X is on
+screen, there is a hard crash that instantly locks up the whole system,
+the kernel it self crashes, as an already issued shutdown w/delay will not
+finish.
+======================================================================
 
-The card, as far as i know, is "undocumented by Philips"(TM). I want to
-ask anyone who can help me with information on this card/chipset, if
-there "is" information of it (I don't know how to reverse engineering
-it, help on this topic would be useful). I know that is an AC97 codec, i
-don't know how difficult is to implement this card.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-29-06 04:40 terrym         New Issue                                    
+04-29-06 04:40 terrym         Distribution              => ROCK Linux, both
+2.0.3 and trunk
+04-29-06 04:40 terrym         Kernel Version            => 2.4.x and 2.6.x,
+currently running 2.6.16.2
+======================================================================
 
-Also, how many of this cards are around?
-(In my country there are a lot of Philips sound cards unsold on their
-boxes).
-Like a pool: Did you ever saw/play with one of the PHILIPS sound cards?
-
-Thanks in advance.
 
 
 
