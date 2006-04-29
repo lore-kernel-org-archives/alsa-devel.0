@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002083]: after upgrade from 1.0.11rc4 to 1.0.11rc5 no more sound on Envy24HT (ICE1724)
-Date: Sat, 29 Apr 2006 00:51:55 +0200
-Message-ID: <542c0c283b5f3225dce200d647d2f73d@bugtrack.alsa-project.org>
+From: Alvaro Kuolas <kuolas@gmail.com>
+Subject: What about the VLSI/Philips chips?
+Date: Fri, 28 Apr 2006 22:26:56 -0300
+Message-ID: <4452C0E0.2000203@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8150C18B
-	for <alsa-devel@alsa-project.org>; Sat, 29 Apr 2006 00:51:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +15,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi, my name is Alvaro Kuolas.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2083> 
-======================================================================
-Reported By:                konczalski
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2083
-Category:                   0_general
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             04-29-2006 00:51 CEST
-Last Modified:              04-29-2006 00:51 CEST
-======================================================================
-Summary:                    after upgrade from 1.0.11rc4 to 1.0.11rc5 no more
-sound on Envy24HT (ICE1724)
-Description: 
-Hello, i use the Terratec Aureon 5.1 Space with Envy24HT (ICE1724) chip
-under GeexBox (http://www.geexbox.org). Since i upgrade from 1.0.11rc4 to
-1.0.11rc5 i get no more sound and folow erors:
+And I have a PHILIPS Sound Card (it's identical to the XWave Thunder
+128, on the FCC page there is a photograph and a block diagram of the
+sound card, yes the FCC ID of this Philips is the same as the XWave).
+The chipset is the infamous Thunderbird 128 QSound from VLSI.
 
-mplayer
-MPlayer interrupted by signal 11 in module: demux_open2
+The card, as far as i know, is "undocumented by Philips"(TM). I want to
+ask anyone who can help me with information on this card/chipset, if
+there "is" information of it (I don't know how to reverse engineering
+it, help on this topic would be useful). I know that is an AC97 codec, i
+don't know how difficult is to implement this card.
 
-aplay
-aplay: main:547: audio open error: Unknown error 16
+Also, how many of this cards are around?
+(In my country there are a lot of Philips sound cards unsold on their
+boxes).
+Like a pool: Did you ever saw/play with one of the PHILIPS sound cards?
 
-pawel
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-29-06 00:51 konczalski     New Issue                                    
-======================================================================
-
+Thanks in advance.
 
 
 
