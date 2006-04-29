@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002028]: cat /proc/asound/timers
-Date: Sat, 29 Apr 2006 11:13:53 +0200
-Message-ID: <2ed38bbda53ecf3273f4133fe574e7fd@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002026]: random swapping of channels when running speaker-test
+Date: Sat, 29 Apr 2006 13:16:09 +0200
+Message-ID: <2e897adbc1aafa839656faad0d4ec429@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4E19189
-	for <alsa-devel@alsa-project.org>; Sat, 29 Apr 2006 11:13:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 52CF8193
+	for <alsa-devel@alsa-project.org>; Sat, 29 Apr 2006 13:16:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,325 +24,408 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2028> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2026> 
 ======================================================================
 Reported By:                Raymond
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2028
-Category:                   CORE - timer
+Project:                    ALSA - utils
+Issue ID:                   2026
+Category:                   speakertest
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2199.nptl
+Status:                     new
 ======================================================================
-Date Submitted:             04-17-2006 12:04 CEST
-Last Modified:              04-29-2006 11:13 CEST
+Date Submitted:             04-17-2006 07:26 CEST
+Last Modified:              04-29-2006 13:16 CEST
 ======================================================================
-Summary:                    cat /proc/asound/timers
+Summary:                    random swapping of channels when running
+speaker-test
 Description: 
-Do all subdevices of cards list in /proc/asound/timers ?
 
-some of 64 playback subdevices of device 3 of card 0 and card 1 'intel8x0'
-is not listed
+values return by read_wav seem strange at end of loop in write_loop.
 
 
-cat /proc/asound/timers
-G0: system timer : 10000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-P0-0-2: PCM playback 0-0-2 : SLAVE
-P0-0-3: PCM capture 0-0-3 : SLAVE
-P0-0-4: PCM playback 0-0-4 : SLAVE
-P0-0-5: PCM capture 0-0-5 : SLAVE
-P0-0-6: PCM playback 0-0-6 : SLAVE
-P0-0-7: PCM capture 0-0-7 : SLAVE
-P0-0-8: PCM playback 0-0-8 : SLAVE
-P0-0-9: PCM capture 0-0-9 : SLAVE
-P0-0-10: PCM playback 0-0-10 : SLAVE
-P0-0-11: PCM capture 0-0-11 : SLAVE
-P0-0-12: PCM playback 0-0-12 : SLAVE
-P0-0-13: PCM capture 0-0-13 : SLAVE
-P0-0-14: PCM playback 0-0-14 : SLAVE
-P0-0-15: PCM capture 0-0-15 : SLAVE
-P0-0-16: PCM playback 0-0-16 : SLAVE
-P0-0-17: PCM capture 0-0-17 : SLAVE
-P0-0-18: PCM playback 0-0-18 : SLAVE
-P0-0-19: PCM capture 0-0-19 : SLAVE
-P0-0-20: PCM playback 0-0-20 : SLAVE
-P0-0-21: PCM capture 0-0-21 : SLAVE
-P0-0-22: PCM playback 0-0-22 : SLAVE
-P0-0-23: PCM capture 0-0-23 : SLAVE
-P0-0-24: PCM playback 0-0-24 : SLAVE
-P0-0-25: PCM capture 0-0-25 : SLAVE
-P0-0-26: PCM playback 0-0-26 : SLAVE
-P0-0-27: PCM capture 0-0-27 : SLAVE
-P0-0-28: PCM playback 0-0-28 : SLAVE
-P0-0-29: PCM capture 0-0-29 : SLAVE
-P0-0-30: PCM playback 0-0-30 : SLAVE
-P0-0-31: PCM capture 0-0-31 : SLAVE
-P0-0-32: PCM playback 0-0-32 : SLAVE
-P0-0-33: PCM capture 0-0-33 : SLAVE
-P0-0-34: PCM playback 0-0-34 : SLAVE
-P0-0-35: PCM capture 0-0-35 : SLAVE
-P0-0-36: PCM playback 0-0-36 : SLAVE
-P0-0-37: PCM capture 0-0-37 : SLAVE
-P0-0-38: PCM playback 0-0-38 : SLAVE
-P0-0-39: PCM capture 0-0-39 : SLAVE
-P0-0-40: PCM playback 0-0-40 : SLAVE
-P0-0-41: PCM capture 0-0-41 : SLAVE
-P0-0-42: PCM playback 0-0-42 : SLAVE
-P0-0-43: PCM capture 0-0-43 : SLAVE
-P0-0-44: PCM playback 0-0-44 : SLAVE
-P0-0-45: PCM capture 0-0-45 : SLAVE
-P0-0-46: PCM playback 0-0-46 : SLAVE
-P0-0-47: PCM capture 0-0-47 : SLAVE
-P0-0-48: PCM playback 0-0-48 : SLAVE
-P0-0-49: PCM capture 0-0-49 : SLAVE
-P0-0-50: PCM playback 0-0-50 : SLAVE
-P0-0-51: PCM capture 0-0-51 : SLAVE
-P0-0-52: PCM playback 0-0-52 : SLAVE
-P0-0-53: PCM capture 0-0-53 : SLAVE
-P0-0-54: PCM playback 0-0-54 : SLAVE
-P0-0-55: PCM capture 0-0-55 : SLAVE
-P0-0-56: PCM playback 0-0-56 : SLAVE
-P0-0-57: PCM capture 0-0-57 : SLAVE
-P0-0-58: PCM playback 0-0-58 : SLAVE
-P0-0-59: PCM capture 0-0-59 : SLAVE
-P0-0-60: PCM playback 0-0-60 : SLAVE
-P0-0-61: PCM capture 0-0-61 : SLAVE
-P0-0-62: PCM playback 0-0-62 : SLAVE
-P0-0-63: PCM capture 0-0-63 : SLAVE
-P0-1-0: PCM playback 0-1-0 : SLAVE
-P0-2-0: PCM playback 0-2-0 : SLAVE
-P0-2-2: PCM playback 0-2-2 : SLAVE
-P0-2-4: PCM playback 0-2-4 : SLAVE
-P0-2-6: PCM playback 0-2-6 : SLAVE
-P0-2-8: PCM playback 0-2-8 : SLAVE
-P0-2-10: PCM playback 0-2-10 : SLAVE
-P0-2-12: PCM playback 0-2-12 : SLAVE
-P0-2-14: PCM playback 0-2-14 : SLAVE
-P0-2-16: PCM playback 0-2-16 : SLAVE
-P0-2-18: PCM playback 0-2-18 : SLAVE
-P0-2-20: PCM playback 0-2-20 : SLAVE
-P0-2-22: PCM playback 0-2-22 : SLAVE
-P0-2-24: PCM playback 0-2-24 : SLAVE
-P0-2-26: PCM playback 0-2-26 : SLAVE
-P0-2-28: PCM playback 0-2-28 : SLAVE
-P0-2-30: PCM playback 0-2-30 : SLAVE
-P0-3-0: PCM playback 0-3-0 : SLAVE
-P0-3-2: PCM playback 0-3-2 : SLAVE
-P0-3-4: PCM playback 0-3-4 : SLAVE
-P0-3-6: PCM playback 0-3-6 : SLAVE
-P0-3-8: PCM playback 0-3-8 : SLAVE
-P0-3-10: PCM playback 0-3-10 : SLAVE
-P0-3-12: PCM playback 0-3-12 : SLAVE
-P0-3-14: PCM playback 0-3-14 : SLAVE
-P0-3-16: PCM playback 0-3-16 : SLAVE
-P0-3-18: PCM playback 0-3-18 : SLAVE
-P0-3-20: PCM playback 0-3-20 : SLAVE
-P0-3-22: PCM playback 0-3-22 : SLAVE
-P0-3-24: PCM playback 0-3-24 : SLAVE
-P0-3-26: PCM playback 0-3-26 : SLAVE
-P0-3-28: PCM playback 0-3-28 : SLAVE
-P0-3-30: PCM playback 0-3-30 : SLAVE
-P0-3-32: PCM playback 0-3-32 : SLAVE
-P0-3-34: PCM playback 0-3-34 : SLAVE
-P0-3-36: PCM playback 0-3-36 : SLAVE
-P0-3-38: PCM playback 0-3-38 : SLAVE
-P0-3-40: PCM playback 0-3-40 : SLAVE
-P0-3-42: PCM playback 0-3-42 : SLAVE
-P0-3-44: PCM playback 0-3-44 : SLAVE
-P0-3-46: PCM playback 0-3-46 : SLAVE
-P0-3-48: PCM playback 0-3-48 : SLAVE
-P0-3-50: PCM playback 0-3-50 : SLAVE
-P0-3-52: PCM playback 0-3-52 : SLAVE
-P0-3-54: PCM playback 0-3-54 : SLAVE
-P0-3-56: PCM playback 0-3-56 : SLAVE
-P0-3-58: PCM playback 0-3-58 : SLAVE
-P0-3-60: 
+speaker-test -c 4 -t wav -D hw:0,0
+ 
+speaker-test 1.0.11rc5
+ 
+Playback device is hw:0,0
+Stream parameters are 48000Hz, S16_LE, 4 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 2 to 8192
+Period size range from 1 to 512
+Using max buffer size 8192
+Periods = 4
+was set period_size = 512
+was set buffer_size = 8192
+ 0 - Front Left
+write_loop - channel=4 periods=281 period_size=512 bufsize=4096
+read_wav n=1024 err=1024
+read_wav n=2048 err=1024
+read_wav n=3072 err=1024
+read_wav n=4096 err=1024
+read_wav n=5120 err=1024
+read_wav n=6144 err=1024
+read_wav n=7168 err=1024
+read_wav n=8192 err=1024
+read_wav n=9216 err=1024
+read_wav n=10240 err=1024
+read_wav n=11264 err=1024
+read_wav n=12288 err=1024
+read_wav n=13312 err=1024
+read_wav n=14336 err=1024
+read_wav n=15360 err=1024
+read_wav n=16384 err=1024
+read_wav n=17408 err=1024
+read_wav n=18432 err=1024
+read_wav n=19456 err=1024
+read_wav n=20480 err=1024
+read_wav n=21504 err=1024
+read_wav n=22528 err=1024
+read_wav n=23552 err=1024
+read_wav n=24576 err=1024
+read_wav n=25600 err=1024
+read_wav n=26624 err=1024
+read_wav n=27648 err=1024
+read_wav n=28672 err=1024
+read_wav n=29696 err=1024
+read_wav n=30720 err=1024
+read_wav n=31744 err=1024
+read_wav n=32768 err=1024
+read_wav n=33792 err=1024
+read_wav n=34816 err=1024
+read_wav n=35840 err=1024
+read_wav n=36864 err=1024
+read_wav n=37888 err=1024
+read_wav n=38912 err=1024
+read_wav n=39936 err=1024
+read_wav n=40960 err=1024
+read_wav n=41984 err=1024
+read_wav n=43008 err=1024
+read_wav n=44032 err=1024
+read_wav n=45056 err=1024
+read_wav n=46080 err=1024
+read_wav n=47104 err=1024
+read_wav n=48128 err=1024
+read_wav n=49152 err=1024
+read_wav n=50176 err=1024
+read_wav n=51200 err=1024
+read_wav n=52224 err=1024
+read_wav n=53248 err=1024
+read_wav n=54272 err=1024
+read_wav n=55296 err=1024
+read_wav n=56320 err=1024
+read_wav n=57344 err=1024
+read_wav n=58368 err=1024
+read_wav n=59392 err=1024
+read_wav n=60416 err=1024
+read_wav n=61440 err=1024
+read_wav n=62464 err=1024
+read_wav n=63488 err=1024
+read_wav n=64512 err=1024
+read_wav n=65536 err=1024
+read_wav n=66560 err=1024
+read_wav n=67584 err=1024
+read_wav n=68608 err=1024
+read_wav n=69632 err=1024
+read_wav n=70656 err=1024
+read_wav n=71680 err=1024
+read_wav n=72704 err=1024
+read_wav n=73728 err=1024
+read_wav n=74752 err=1024
+read_wav n=75776 err=1024
+read_wav n=76800 err=1024
+read_wav n=77824 err=1024
+read_wav n=78848 err=1024
+read_wav n=79872 err=1024
+read_wav n=80896 err=1024
+read_wav n=81920 err=1024
+read_wav n=82944 err=1024
+read_wav n=83968 err=1024
+read_wav n=84992 err=1024
+read_wav n=86016 err=1024
+read_wav n=87040 err=1024
+read_wav n=88064 err=1024
+read_wav n=89088 err=1024
+read_wav n=90112 err=1024
+read_wav n=91136 err=1024
+read_wav n=92160 err=1024
+read_wav n=93184 err=1024
+read_wav n=94208 err=1024
+read_wav n=95232 err=1024
+read_wav n=96256 err=1024
+read_wav n=97280 err=1024
+read_wav n=98304 err=1024
+read_wav n=99328 err=1024
+read_wav n=100352 err=1024
+read_wav n=101376 err=1024
+read_wav n=102400 err=1024
+read_wav n=103424 err=1024
+read_wav n=104448 err=1024
+read_wav n=105472 err=1024
+read_wav n=106496 err=1024
+read_wav n=107520 err=1024
+read_wav n=108544 err=1024
+read_wav n=109568 err=1024
+read_wav n=110592 err=1024
+read_wav n=111616 err=1024
+read_wav n=112640 err=1024
+read_wav n=113664 err=1024
+read_wav n=114688 err=1024
+read_wav n=115712 err=1024
+read_wav n=116736 err=1024
+read_wav n=117760 err=1024
+read_wav n=118784 err=1024
+read_wav n=119808 err=1024
+read_wav n=120832 err=1024
+read_wav n=121856 err=1024
+read_wav n=122880 err=1024
+read_wav n=123904 err=1024
+read_wav n=124928 err=1024
+read_wav n=125952 err=1024
+read_wav n=126976 err=1024
+read_wav n=128000 err=1024
+read_wav n=129024 err=1024
+read_wav n=130048 err=1024
+read_wav n=131072 err=1024
+read_wav n=132096 err=1024
+read_wav n=133120 err=1024
+read_wav n=134144 err=1024
+read_wav n=135168 err=1024
+read_wav n=136192 err=1024
+read_wav n=137216 err=1024
+read_wav n=138240 err=1024
+read_wav n=139202 err=962
+read_wav n=139922 err=720
+read_wav n=140462 err=540
+read_wav n=140868 err=406
+read_wav n=141172 err=304
+read_wav n=141400 err=228
+read_wav n=141572 err=172
+read_wav n=141700 err=128
+read_wav n=141796 err=96
+read_wav n=141868 err=72
+read_wav n=141922 err=54
+read_wav n=141962 err=40
+read_wav n=141992 err=30
+read_wav n=142016 err=24
+read_wav n=142034 err=18
+read_wav n=142046 err=12
+read_wav n=142056 err=10
+read_wav n=142064 err=8
+read_wav n=142070 err=6
+read_wav n=142074 err=4
+read_wav n=142076 err=2
+read_wav n=142078 err=2
+read_wav n=142080 err=2
+read_wav n=142082 err=2
+ 1 - Front Right
+write_loop - channel=4 periods=281 period_size=512 bufsize=4096
+read_wav n=1024 err=1024
+read_wav n=2048 err=1024
+read_wav n=3072 err=1024
+read_wav n=4096 err=1024
+read_wav n=5120 err=1024
+read_wav n=6144 err=1024
+read_wav n=7168 err=1024
+read_wav n=8192 err=1024
+read_wav n=9216 err=1024
+read_wav n=10240 err=1024
+read_wav n=11264 err=1024
+read_wav n=12288 err=1024
+read_wav n=13312 err=1024
+read_wav n=14336 err=1024
+read_wav n=15360 err=1024
+read_wav n=16384 err=1024
+read_wav n=17408 err=1024
+read_wav n=18432 err=1024
+read_wav n=19456 err=1024
+read_wav n=20480 err=1024
+read_wav n=21504 err=1024
+read_wav n=22528 err=1024
+read_wav n=23552 err=1024
+read_wav n=24576 err=1024
+read_wav n=25600 err=1024
+read_wav n=26624 err=1024
+read_wav n=27648 err=1024
+read_wav n=28672 err=1024
+read_wav n=29696 err=1024
+read_wav n=30720 err=1024
+read_wav n=31744 err=1024
+read_wav n=32768 err=1024
+read_wav n=33792 err=1024
+read_wav n=34816 err=1024
+read_wav n=35840 err=1024
+read_wav n=36864 err=1024
+read_wav n=37888 err=1024
+read_wav n=38912 err=1024
+read_wav n=39936 err=1024
+read_wav n=40960 err=1024
+read_wav n=41984 err=1024
+read_wav n=43008 err=1024
+read_wav n=44032 err=1024
+read_wav n=45056 err=1024
+read_wav n=46080 err=1024
+read_wav n=47104 err=1024
+read_wav n=48128 err=1024
+read_wav n=49152 err=1024
+read_wav n=50176 err=1024
+read_wav n=51200 err=1024
+read_wav n=52224 err=1024
+read_wav n=53248 err=1024
+read_wav n=54272 err=1024
+read_wav n=55296 err=1024
+read_wav n=56320 err=1024
+read_wav n=57344 err=1024
+read_wav n=58368 err=1024
+read_wav n=59392 err=1024
+read_wav n=60416 err=1024
+read_wav n=61440 err=1024
+read_wav n=62464 err=1024
+read_wav n=63488 err=1024
+read_wav n=64512 err=1024
+read_wav n=65536 err=1024
+read_wav n=66560 err=1024
+read_wav n=67584 err=1024
+read_wav n=68608 err=1024
+read_wav n=69632 err=1024
+read_wav n=70656 err=1024
+read_wav n=71680 err=1024
+read_wav n=72704 err=1024
+read_wav n=73728 err=1024
+read_wav n=74752 err=1024
+read_wav n=75776 err=1024
+read_wav n=76800 err=1024
+read_wav n=77824 err=1024
+read_wav n=78848 err=1024
+read_wav n=79872 err=1024
+read_wav n=80896 err=1024
+read_wav n=81920 err=1024
+read_wav n=82944 err=1024
+read_wav n=83968 err=1024
+read_wav n=84992 err=1024
+read_wav n=86016 err=1024
+read_wav n=87040 err=1024
+read_wav n=88064 err=1024
+read_wav n=89088 err=1024
+read_wav n=90112 err=1024
+read_wav n=91136 err=1024
+read_wav n=92160 err=1024
+read_wav n=93184 err=1024
+read_wav n=94208 err=1024
+read_wav n=95232 err=1024
+read_wav n=96256 err=1024
+read_wav n=97280 err=1024
+read_wav n=98304 err=1024
+read_wav n=99328 err=1024
+read_wav n=100352 err=1024
+read_wav n=101376 err=1024
+read_wav n=102400 err=1024
+read_wav n=103424 err=1024
+read_wav n=104448 err=1024
+read_wav n=105472 err=1024
+read_wav n=106496 err=1024
+read_wav n=107520 err=1024
+read_wav n=108544 err=1024
+read_wav n=109568 err=1024
+read_wav n=110592 err=1024
+read_wav n=111616 err=1024
+read_wav n=112640 err=1024
+read_wav n=113664 err=1024
+read_wav n=114688 err=1024
+read_wav n=115712 err=1024
+read_wav n=116736 err=1024
+read_wav n=117760 err=1024
+read_wav n=118784 err=1024
+read_wav n=119808 err=1024
+read_wav n=120832 err=1024
+read_wav n=121856 err=1024
+read_wav n=122880 err=1024
+read_wav n=123904 err=1024
+read_wav n=124928 err=1024
+read_wav n=125952 err=1024
+read_wav n=126976 err=1024
+read_wav n=128000 err=1024
+read_wav n=129024 err=1024
+read_wav n=130048 err=1024
+read_wav n=131072 err=1024
+read_wav n=132096 err=1024
+read_wav n=133120 err=1024
+read_wav n=134144 err=1024
+read_wav n=135168 err=1024
+read_wav n=136192 err=1024
+read_wav n=137216 err=1024
+read_wav n=138240 err=1024
+read_wav n=139264 err=1024
+read_wav n=140288 err=1024
+read_wav n=141312 err=1024
+read_wav n=142336 err=1024
+read_wav n=143360 err=1024
+read_wav n=144256 err=896
+read_wav n=144928 err=672
+read_wav n=145432 err=504
+read_wav n=145810 err=378
+read_wav n=146094 err=284
+read_wav n=146308 err=214
+read_wav n=146468 err=160
+read_wav n=146588 err=120
+read_wav n=146678 err=90
+read_wav n=146746 err=68
+read_wav n=146796 err=50
+read_wav n=146834 err=38
+read_wav n=146862 err=28
+read_wav n=146884 err=22
+read_wav n=146900 err=16
+read_wav n=146912 err=12
+read_wav n=146920 err=8
+read_wav n=146926 err=6
+read_wav n=146932 err=6
+read_wav n=146936 err=4
+read_wav n=146938 err=2
+read_wav n=146940 err=2
+read_wav n=146942 err=2
+read_wav n=146944 err=2
+ 3 - Rear Right
+write_loop - channel=4 periods=281 period_size=512 bufsize=4096
+read_wav n=1024 err=1024
+read_wav n=2048 err=1024
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-18-06 10:42 
+ Raymond - 04-28-06 06:16 
 ----------------------------------------------------------------------
-It doesn't work.
-
-I notice that the size of the output (shown as aboce) by
-snd_timer_proc_read() is quite close to 4096 bytes.
+James,
+  speaker-test -t wav has some strange behaviour when writing the last few
+buffers ( it split them to many small fragments ),it seem to be a bug in
+read_wav()
 
 ----------------------------------------------------------------------
- Raymond - 04-29-06 11:13 
+ Raymond - 04-29-06 13:16 
 ----------------------------------------------------------------------
-It is strange that some time ticks double when running
-alsa-lib-1.0.11/test/timer
-
-
-cat /proc/asound/timers
-G0: system timer : 10000.000us (10000000 ticks)
-C0-0: AU8830 timer : 20.833us (32768 ticks)
-
-
-cd /alsa-lib-1.0.11/test
-
-./timer
-Using timer class 1, slave class -1, card 0, device 0, subdevice 0
-Timer info:
-  slave = no
-  card = -1
-  id = 'system'
-  name = 'system timer'
-  average resolution = 10000000
-Using 2 tick(s)
-STATUS:
-  resolution = 10000000
-  lost = 0
-  overrun = 0
-  queue = 0
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 4 <--------
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-TIMER: resolution = 10000000ns, ticks = 2
-STATUS:
-  resolution = 10000000
-  lost = 0
-  overrun = 0
-  queue = 0
-Done
-
-
-
-./timer class=2
-Using timer class 2, slave class -1, card 0, device 0, subdevice 0
-Timer info:
-  slave = no
-  card = 0
-  id = 'AU8830'
-  name = 'AU8830 timer'
-  average resolution = 20833
-Using 960 tick(s)
-STATUS:
-  resolution = 20833
-  lost = 0
-  overrun = 0
-  queue = 0
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-STATUS:
-  resolution = 20833
-  lost = 0
-  overrun = 0
-  queue = 0
-Done
-
- ./timer class=2
-Using timer class 2, slave class -1, card 0, device 0, subdevice 0
-Timer info:
-  slave = no
-  card = 0
-  id = 'AU8830'
-  name = 'AU8830 timer'
-  average resolution = 20833
-Using 960 tick(s)
-STATUS:
-  resolution = 20833
-  lost = 0
-  overrun = 0
-  queue = 0
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 1920 <-----------
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-TIMER: resolution = 20833ns, ticks = 960
-STATUS:
-  resolution = 20833
-  lost = 0
-  overrun = 0
-  queue = 0
-Done
+--- alsa-utils-1.0.11/speaker-test/speaker-test.c.orig	2006-04-07
+01:24:12.000000000 +0800
++++ alsa-utils-1.0.11/speaker-test/speaker-test.c	2006-04-29
+19:10:27.000000000 +0800
+@@ -613,7 +613,6 @@
+   }
+   if (offset + bufsize > wav_file_size[channel])
+     bufsize = wav_file_size[channel] - offset;
+-  bufsize /= channels;
+   for (size = 0; size < bufsize; size += 2) {
+     int chn;
+     for (chn = 0; chn < channels; chn++) {
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-17-06 12:04 Raymond        New Issue                                    
-04-17-06 12:04 Raymond        Distribution              => Fedora Core 1   
-04-17-06 12:04 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
-04-17-06 16:09 rlrevell       Status                   new => closed       
-04-17-06 16:09 rlrevell       Note Added: 0009310                          
-04-17-06 19:45 Raymond        Status                   closed => feedback  
-04-17-06 19:45 Raymond        Resolution               open => reopened    
-04-17-06 19:45 Raymond        Note Added: 0009317                          
-04-17-06 19:47 Raymond        Note Edited: 0009317                         
-04-17-06 19:57 rlrevell       Note Added: 0009318                          
-04-18-06 10:42 Raymond        Note Added: 0009327                          
-04-29-06 11:13 Raymond        Note Added: 0009541                          
+04-17-06 07:26 Raymond        New Issue                                    
+04-18-06 14:33 Raymond        Note Added: 0009334                          
+04-28-06 06:16 Raymond        Issue Monitored: jcdutton                    
+04-28-06 06:16 Raymond        Note Added: 0009539                          
+04-29-06 13:16 Raymond        Note Added: 0009542                          
 ======================================================================
 
 
