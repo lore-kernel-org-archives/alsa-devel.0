@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002086]: Module fails to load
-Date: Sun, 30 Apr 2006 12:53:12 +0200
-Message-ID: <5f61260286828c936ba471f9012cceb2@bugtrack.alsa-project.org>
+Date: Sun, 30 Apr 2006 13:22:04 +0200
+Message-ID: <19546b28de2456e868f77e3e584d6da5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADF3A19F
-	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 12:53:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D3CAC19F
+	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 13:22:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2086> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             04-30-2006 12:53 CEST
-Last Modified:              04-30-2006 12:53 CEST
+Last Modified:              04-30-2006 13:22 CEST
 ======================================================================
 Summary:                    Module fails to load
 Description: 
@@ -88,10 +88,18 @@ pontius:/etc/modprobe.d# cat /proc/asound/cards
 
 ======================================================================
 
+----------------------------------------------------------------------
+ psgood - 04-30-06 13:22 
+----------------------------------------------------------------------
+Further to this, I have discovered that the issue is sporadic. Perhaps one
+time in 10, the issue won't occur and everything comes up as normal.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 04-30-06 12:53 psgood         New Issue                                    
+04-30-06 13:13 psgood         Issue Monitored: psgood                      
+04-30-06 13:22 psgood         Note Added: 0009547                          
 ======================================================================
 
 
