@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001934]: make problem
-Date: Sun, 30 Apr 2006 11:48:15 +0200
-Message-ID: <a0e3d65cf353c0fca30de9b44df3ae44@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001851]: No support for C-Media CMI9761 chip
+Date: Sun, 30 Apr 2006 11:59:53 +0200
+Message-ID: <90d36462668b99d1a00d4a4edacbbb98@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 75D79193
-	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 11:48:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9584019C
+	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 11:59:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,113 +24,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1934> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1851> 
 ======================================================================
-Reported By:                kvo
+Reported By:                duffymcdrew
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1934
+Issue ID:                   1851
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               RHEL4 Update 3
-Kernel Version:             2.6.9-34.EL
+Distribution:               Ubuntu
+Kernel Version:             2.6.12-10-386
 ======================================================================
-Date Submitted:             03-17-2006 12:19 CET
-Last Modified:              04-30-2006 11:48 CEST
+Date Submitted:             02-17-2006 04:55 CET
+Last Modified:              04-30-2006 11:59 CEST
 ======================================================================
-Summary:                    make problem
+Summary:                    No support for C-Media CMI9761 chip
 Description: 
-./configure works OK. running make give error during compilation: module
-'include/asound.h' (line 210) has some 'typedef' that doesn't match with
-(probably) OS include. As a result, compilation stops and driver can not
-be produced.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0002042 Compile error : /usr/local/src/alsa/als...
+Recently installed Ubunut onto a new machine, and the sound is not working
+at all.  I have an ASUS P4V8X-MX motherboard with an onboard VIA 8237 card
+/ C-Media Electronics CMI9761 chip. Finally realized that ALSA soes not
+support the CMI9761 chip.  Requesting a driver for this chipset.
 ======================================================================
 
 ----------------------------------------------------------------------
- mnemotronic - 04-30-06 06:04 
+ nouguisa - 04-30-06 11:59 
 ----------------------------------------------------------------------
-<engage whiney rant>
-I would really like to get a working sound card for my Linux system.  I
-bought a specific card (Creative SB Live 24 bit) that was available (Ok,
-CompUSA ... serves me right), and which is listed as "compatible" with RHL
-E4 (https://hardware.redhat.com/hwcert/show.cgi?id=153338).  Where did I
-go wrong?  Expecting the documentation to be correct?  Mis-interpreting
-"compatible" with "supported"?  Ok.  My mistake.  Fourty lashes for the
-idiot with the expectations.  Fine.  Please.  I just.  Want.  Sound.  I'll
-buy another card if it'll do any good.  I'll wax your car.  I'll wash your
-dog (and vice versa).  Anything.  Now, I haven't done C or C++ for 8
-years, so patching the kernel is right out.  Why can't these pesky drivers
-be written in XML, Perl, or SQL?
+I encounter a similar problem with an ASUS A7N8X-XE board equiped with the
+CMI9761A sound processor and Ubuntu dapper beta 2, Mandriva One beta 3 or
+debian Sarge distributions.
 
-FYI
-$ cat /proc/version
-Linux version 2.6.9-34.ELsmp (buildcentos@build-i386) (gcc version 3.4.5
-20051201 (Red Hat 3.4.5-2)) #1 SMP WedMar 8 00:27:03 CST 2006
+Hardware : ASUS A7N8X-XE with Nforce2 MCP2-RAID, C-Media CMI9761A
+Athlon XP 2000+, 2x256 Mb memory, ASUS A9250 graphic board, broadband
+access.
+Problem :
+Installation of RealPlayer (file
+realplay-10.0.7.785-linux-2.2-libc6-gcc32-i586)
+When listening to the BBC, sound OK but :
+1. sound master level has no effect on the sound level
+2. Firefox reacts very slowly to mouse movements or keyboard actions
 
-----------------------------------------------------------------------
- Raymond - 04-30-06 11:48 
-----------------------------------------------------------------------
-For example, the prototype of kmalloc() has changed to:
+With ubuntu dapper :
+/proc/asound/cards returns :
+0 [CK8 ]: NFORCE - NVidia CK8
+                     NVidia CK8 with CMI9761 at 0xff6ff000, irq 193
 
-    void *kmalloc(size_t size, unsigned int __nocast flags);
+/proc/asound/oss/sndstat returns :
+Sound Driver:3.8.1a-980706 (ALSA v1.0.10rc3 emulation code)
+Kernel: Linux ubuntu 2.6.15-20-386 #1 PREEMPT Tue Apr 4 17:48:51 UTC 2006
+i686
+Config options: 0
+Installed drivers:
+Type 10: ALSA emulation
+Card config:
+NVidia CK8 with CMI9761 at 0xff6ff000, irq 193
+Audio devices:
+0: NVidia CK8 (DUPLEX)
+Synth devices: NOT ENABLED IN CONFIG
+Midi devices: NOT ENABLED IN CONFIG
+Timers:
+7: system timer
+Mixers:
+0: C-Media Electronics CMI9761
 
-For normal compilation, this attribute expands to an empty string; it has
-no effect. 
-
-alsa-driver-1.0.11/include/adriver.h  ( Fedora Core 1 - Kernel 2.4 )
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,12)
-#include <linux/compiler.h>
-...
-#ifndef __nocast
-#define __nocast
-#endif
-...
-#endif
-
-
-When the sparse tool is being used, however, the __nocast attribute
-disables many of the implicit type conversions performed by the compiler.
-In the kmalloc() case, sparse will complain whenever a signed integer
-value is passed as the flags argument.
-
-
-typedef int gfp_t;
-
-in gpf.h
+Sound loaded modules :
+snd_intel8x0 33564 3
+snd_ac97_codec 92704 1 snd_intel8x0
+snd_ac97_bus 2304 1 snd_ac97_codec
+snd_pcm_oss 53664 1
+snd_mixer_oss 18688 2 snd_pcm_oss
+snd_pcm 89736 3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
+snd_timer 25220 1 snd_pcm
+snd 55268 8
+snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore 10208 3 snd
+snd_page_alloc 10632 2 snd_intel8x0,snd_pcm
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-17-06 12:19 kvo            New Issue                                    
-03-17-06 12:19 kvo            Distribution              => RHEL4 Update 3  
-03-17-06 12:19 kvo            Kernel Version            => 2.6.9-34.EL     
-03-17-06 12:25 tiwai          Note Added: 0008643                          
-03-19-06 22:26 kvo            Note Added: 0008697                          
-03-21-06 17:33 tiwai          Note Added: 0008749                          
-03-25-06 20:47 kvo            File Added: config.log                       
-03-25-06 22:19 kvo            Note Added: 0008952                          
-04-09-06 18:47 kvo            File Added: info.zip                         
-04-09-06 18:56 kvo            Note Added: 0009181                          
-04-09-06 19:05 kvo            Issue Monitored: tiwai                       
-04-09-06 19:05 kvo            Note Added: 0009182                          
-04-10-06 16:46 tiwai          Note Added: 0009196                          
-04-10-06 18:38 kvo            Note Added: 0009213                          
-04-10-06 18:43 tiwai          Note Added: 0009214                          
-04-20-06 15:30 tiwai          Relationship added       has duplicate 0002042
-04-20-06 22:04 mnemotronic    Issue Monitored: mnemotronic                    
-04-21-06 00:03 mnemotronic    Note Added: 0009402                          
-04-21-06 05:39 Raymond        Note Added: 0009406                          
-04-30-06 06:04 mnemotronic    Note Added: 0009544                          
-04-30-06 11:48 Raymond        Note Added: 0009545                          
+02-17-06 04:55 duffymcdrew    New Issue                                    
+02-17-06 04:55 duffymcdrew    Distribution              => Ubuntu          
+02-17-06 04:55 duffymcdrew    Kernel Version            => 2.6.12-10-386   
+04-30-06 11:59 nouguisa       Note Added: 0009546                          
 ======================================================================
 
 
