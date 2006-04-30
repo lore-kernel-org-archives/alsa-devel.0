@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002070]: Hard lockup from aplay with low buffersizes on Tascam us-122 (snd_usb_usx2y)
-Date: Sun, 30 Apr 2006 19:35:38 +0200
-Message-ID: <872106bbabafcb36e21de19ef78b6d19@bugtrack.alsa-project.org>
+Date: Sun, 30 Apr 2006 21:12:22 +0200
+Message-ID: <bf413183979000015f06ad873af23ec7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D9240140
-	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 19:35:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB57B171
+	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 21:12:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo ~x86
 Kernel Version:             2.6.17-rc1
 ======================================================================
 Date Submitted:             04-25-2006 23:07 CEST
-Last Modified:              04-30-2006 19:35 CEST
+Last Modified:              04-30-2006 21:12 CEST
 ======================================================================
 Summary:                    Hard lockup from aplay with low buffersizes on
 Tascam us-122 (snd_usb_usx2y)
@@ -71,20 +71,6 @@ Thank you for any help you can offer.
 ======================================================================
 
 ----------------------------------------------------------------------
- karsten - 04-26-06 23:31 
-----------------------------------------------------------------------
-just red again:
-
-aplay --buffer-size=128 isn't really possible:
-thats 2 periods with 64 frames each.
-USB1.1 tranfers data at 1ms chunks: that'll be like 44 to 48 frames.
-so jitter is too big.
-
-none the less it shouldn't crash the machine...
-
-
-
-----------------------------------------------------------------------
  jaime - 04-30-06 19:35 
 ----------------------------------------------------------------------
 Hi Karsten.
@@ -111,6 +97,21 @@ more info out to debug this problem.
 
 Thanks, Jaime
 
+----------------------------------------------------------------------
+ karsten - 04-30-06 21:12 
+----------------------------------------------------------------------
+ah, glad to read nrpacks=1 helps.
+
+I guess its not necessary to further debug this:
+the driver should be changed to only allow buffersizes >= 1024,
+when nrpacks!=1.
+(nrpacks!=1 is a means to make things work in slowish pc anyhow.)
+
+In the meantime,
+just modify your /etc/modprobe.conf so nrpacks=1 will always be applied.
+
+Thanks, Karsten
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -122,6 +123,7 @@ Date Modified  Username       Field                    Change
 04-26-06 23:29 karsten        Note Added: 0009527                          
 04-26-06 23:31 karsten        Note Edited: 0009527                         
 04-30-06 19:35 jaime          Note Added: 0009550                          
+04-30-06 21:12 karsten        Note Added: 0009551                          
 ======================================================================
 
 
