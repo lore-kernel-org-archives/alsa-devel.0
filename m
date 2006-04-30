@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002069]: No sound on via SPDIF out, very low volume on analog out (MSI K8NGM2-FID with ACL880)
-Date: Sun, 30 Apr 2006 15:00:05 +0200
-Message-ID: <d46c61228cd188aee486503efcda9e7d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001327]: Creative X-Fi Support - Do you know anything?
+Date: Sun, 30 Apr 2006 16:58:27 +0200
+Message-ID: <3c9b56ff8db214ef514858ec1d8f004e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA151142
-	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 15:00:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D45A6174
+	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 16:58:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2069> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1327> 
 ======================================================================
-Reported By:                gtmkramer
-Assigned To:                tiwai
+Reported By:                ghost_zero
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2069
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1327
+Category:                   1_OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.16-1.2069_FC4smp
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-25-2006 20:43 CEST
-Last Modified:              04-30-2006 15:00 CEST
+Date Submitted:             08-11-2005 00:11 CEST
+Last Modified:              04-30-2006 16:58 CEST
 ======================================================================
-Summary:                    No sound on via SPDIF out, very low volume on analog
-out (MSI K8NGM2-FID with ACL880)
+Summary:                    Creative X-Fi Support - Do you know anything?
 Description: 
-On my new MSI K8NGM2-FID motherboard with a Realtek ACL880 a get only sound
-from the analog output (although the volume is very low).
+Hi,
 
-The codec is not properly recognized:
-hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+it is more a question than a feature request and that is about the
+Creative X-Fi Cards... do you know if Creative will release Linux drivers
+or specifications of it?
+If not, will you still support that cards in the future?
 
-I've tried with various model= settings to no avail.
+Sorry to contact you for that in this way but I didn't find an
+e-mail-address...
+======================================================================
+Powi±zania          IdentyfikatorPodsumowanie
+----------------------------------------------------------------------
+posiada duplikat %id0001368 Feature request - Support for SoundBlas...
 ======================================================================
 
 ----------------------------------------------------------------------
- gtmkramer - 04-27-06 20:37 
+ ghost_zero - 11-14-05 22:21 
 ----------------------------------------------------------------------
-I just had a crazy idea. I tried to get spdif working through the alsa-oss
-layer and it works! (??). So with mplayer somefile.ts -ao oss -ac hwac3 I
-do get the spdif output to work though not through the alsa driver. Very
-odd.
-
-Any ideas what can cause this?
+In Bug 0001368 I read that there might be something going on - you will get
+a card donated, won't you? And you will try to get support through reverse
+engineering, won't you?
 
 ----------------------------------------------------------------------
- gtmkramer - 04-30-06 15:00 
+ Tomsus - 04-30-06 16:58 
 ----------------------------------------------------------------------
-With this small patch/hack I let the alsa driver properly detect my onboard
-ALC880 and let it autoconfigure (for now). With autoconfigure I do get a
-headphones for which there is no connector. Do I need to make a new
-(mixer)model for this board?
+Hi there,
+would you guys please at least drop any little line if there is any
+progress in development of driver for x-fi?
+Thanks in advance
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-25-06 20:43 gtmkramer      New Issue                                    
-04-25-06 20:43 gtmkramer      File Added: codec.tar.gz                     
-04-25-06 20:43 gtmkramer      Distribution              => Fedora Core 4   
-04-25-06 20:43 gtmkramer      Kernel Version            => 2.6.16-1.2069_FC4smp
-04-27-06 18:34 gtmkramer      Note Added: 0009533                          
-04-27-06 18:40 gtmkramer      Note Added: 0009534                          
-04-27-06 20:37 gtmkramer      Note Added: 0009535                          
-04-30-06 14:57 gtmkramer      File Added: patch-msi-k8ngm2-fid.patch            
-       
-04-30-06 15:00 gtmkramer      Note Added: 0009548                          
+08-11-05 00:11 ghost_zero     New Issue                                    
+08-11-05 00:15 rlrevell       Note Added: 0005751                          
+08-11-05 00:31 ghost_zero     Note Added: 0005753                          
+08-11-05 03:46 rlrevell       Note Added: 0005754                          
+08-13-05 00:32 ghost_zero     Note Added: 0005793                          
+08-13-05 00:37 pzad           Note Added: 0005794                          
+08-25-05 20:09 rlrevell       Relationship added       has duplicate 0001368
+11-14-05 09:01 perex          View Status              private => public   
+11-14-05 22:21 ghost_zero     Note Added: 0006727                          
+01-07-06 17:06 ijuma          Issue Monitored: ijuma                       
+02-20-06 15:55 kasparek       Issue Monitored: kasparek                    
+04-30-06 16:58 Tomsus         Note Added: 0009549                          
 ======================================================================
 
 
