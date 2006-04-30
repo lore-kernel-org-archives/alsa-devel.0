@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001934]: make problem
-Date: Sun, 30 Apr 2006 06:04:22 +0200
-Message-ID: <dfb5305d038b645326a0f77f7963a62b@bugtrack.alsa-project.org>
+Date: Sun, 30 Apr 2006 11:48:15 +0200
+Message-ID: <a0e3d65cf353c0fca30de9b44df3ae44@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A441199
-	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 06:04:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 75D79193
+	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 11:48:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               RHEL4 Update 3
 Kernel Version:             2.6.9-34.EL
 ======================================================================
 Date Submitted:             03-17-2006 12:19 CET
-Last Modified:              04-30-2006 06:04 CEST
+Last Modified:              04-30-2006 11:48 CEST
 ======================================================================
 Summary:                    make problem
 Description: 
@@ -53,18 +53,6 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 has duplicate       0002042 Compile error : /usr/local/src/alsa/als...
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 04-21-06 05:39 
-----------------------------------------------------------------------
-http://lwn.net/Articles/128951/
-
-The __nocast attribute
-
-Since the GFP flags passed to kmalloc() are explicitly defined as unsigned
-values, they will not cause a warning to be issued. Any normal integer
-variable or constant, however, will be flagged. Similarly, the use of an
-integer value where an enumerated type is expected will be caught.
 
 ----------------------------------------------------------------------
  mnemotronic - 04-30-06 06:04 
@@ -86,6 +74,38 @@ FYI
 $ cat /proc/version
 Linux version 2.6.9-34.ELsmp (buildcentos@build-i386) (gcc version 3.4.5
 20051201 (Red Hat 3.4.5-2)) #1 SMP WedMar 8 00:27:03 CST 2006
+
+----------------------------------------------------------------------
+ Raymond - 04-30-06 11:48 
+----------------------------------------------------------------------
+For example, the prototype of kmalloc() has changed to:
+
+    void *kmalloc(size_t size, unsigned int __nocast flags);
+
+For normal compilation, this attribute expands to an empty string; it has
+no effect. 
+
+alsa-driver-1.0.11/include/adriver.h  ( Fedora Core 1 - Kernel 2.4 )
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,12)
+#include <linux/compiler.h>
+...
+#ifndef __nocast
+#define __nocast
+#endif
+...
+#endif
+
+
+When the sparse tool is being used, however, the __nocast attribute
+disables many of the implicit type conversions performed by the compiler.
+In the kmalloc() case, sparse will complain whenever a signed integer
+value is passed as the flags argument.
+
+
+typedef int gfp_t;
+
+in gpf.h
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -110,6 +130,7 @@ Date Modified  Username       Field                    Change
 04-21-06 00:03 mnemotronic    Note Added: 0009402                          
 04-21-06 05:39 Raymond        Note Added: 0009406                          
 04-30-06 06:04 mnemotronic    Note Added: 0009544                          
+04-30-06 11:48 Raymond        Note Added: 0009545                          
 ======================================================================
 
 
