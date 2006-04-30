@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002070]: Hard lockup from aplay with low buffersizes on Tascam us-122 (snd_usb_usx2y)
-Date: Sun, 30 Apr 2006 21:12:22 +0200
-Message-ID: <bf413183979000015f06ad873af23ec7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002087]: Audio still broken for Asus A8V-MX
+Date: Sun, 30 Apr 2006 23:33:07 +0200
+Message-ID: <0e65385b3de01f7f2e0145b4f62525ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB57B171
-	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 21:12:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 72C8F154
+	for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2006 23:33:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,108 +22,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2070> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2087> 
 ======================================================================
-Reported By:                jaime
-Assigned To:                karsten
+Reported By:                myxie
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2070
-Category:                   USB - usb-usx2y
+Issue ID:                   2087
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo ~x86
-Kernel Version:             2.6.17-rc1
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             04-25-2006 23:07 CEST
-Last Modified:              04-30-2006 21:12 CEST
+Date Submitted:             04-30-2006 23:33 CEST
+Last Modified:              04-30-2006 23:33 CEST
 ======================================================================
-Summary:                    Hard lockup from aplay with low buffersizes on
-Tascam us-122 (snd_usb_usx2y)
+Summary:                    Audio still broken for Asus A8V-MX
 Description: 
-Hi.
+The patches integrated (see issue 0001622) into the latest release of ALSA
+make the on-board audio more usuable, but there are still significant
+issues.
 
-Here's the original I'm playing (440Hz sine wave):
-www.carbon.eclipse.co.uk/origSine.wav
+Playing an audio file results in a freeze for 10 seconds, followed by a
+write error and then the audio continues normally. I noticed a second
+write error later on in the stream.
 
-aplay --buffer-size=1024 origSine.wav sounds great:
-www.carbon.eclipse.co.uk/aplay1024.wav
-
-aplay --buffer-size=512 origSine.wav sounds bad:
-www.carbon.eclipse.co.uk/aplay512.wav
-
-aplay --buffer-size=256 origSine.wav sounds very bad:
-www.carbon.eclipse.co.uk/aplay256.wav
-
-aplay --buffer-size=128 origSine.wav gives only a very short click,
-and then locks up the machine completely:
-www.carbon.eclipse.co.uk/aplay128.wav
-
-I've tried this using different usb cards/controllers, and I get the
-same problem, so I think it is an alsa driver problem.
-
-Thank you for any help you can offer.
+I am happy to try patches, turn on debugging flags etc. Let me know.
 
 ======================================================================
-
-----------------------------------------------------------------------
- jaime - 04-30-06 19:35 
-----------------------------------------------------------------------
-Hi Karsten.
-
-Apologies for the delay - I've been trying to learn a little about kernel
-debugging but I'm getting nowhere. :(
-
-Firstly, when I set nrpacks to 1, the problem goes away. Everything then
-works fine, even at low buffersizes (I've tested down to 128, which
-crashed the system before, and now I just get lots of underrun messages
-instead). Also, the audio quality at buffersizes 256 and 512 is now
-perfect.
-
-With regards to debugging the lock-ups with nrpacks=4, I've tried quite a
-few things, but I can't get any useful info out. When the system locks up,
-nothing is written out by the kernel (no oops messages or anything). The
-caps-lock key no longer toggles the keyboard led, and magic-sysreq does
-nothing. I've even tried running the aplay line in gdb, and when I type
-"run" into gdb, my computer instantly reboots (no warnings, no oops
-message, nothing, just an instant reboot!)
-
-I'd really appreciate some more help as to what I could do to get some
-more info out to debug this problem.
-
-Thanks, Jaime
-
-----------------------------------------------------------------------
- karsten - 04-30-06 21:12 
-----------------------------------------------------------------------
-ah, glad to read nrpacks=1 helps.
-
-I guess its not necessary to further debug this:
-the driver should be changed to only allow buffersizes >= 1024,
-when nrpacks!=1.
-(nrpacks!=1 is a means to make things work in slowish pc anyhow.)
-
-In the meantime,
-just modify your /etc/modprobe.conf so nrpacks=1 will always be applied.
-
-Thanks, Karsten
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-25-06 23:07 jaime          New Issue                                    
-04-25-06 23:07 jaime          Distribution              => Gentoo ~x86     
-04-25-06 23:07 jaime          Kernel Version            => 2.6.17-rc1      
-04-26-06 16:23 jaime          Note Added: 0009514                          
-04-26-06 23:19 karsten        Note Added: 0009526                          
-04-26-06 23:29 karsten        Note Added: 0009527                          
-04-26-06 23:31 karsten        Note Edited: 0009527                         
-04-30-06 19:35 jaime          Note Added: 0009550                          
-04-30-06 21:12 karsten        Note Added: 0009551                          
+04-30-06 23:33 myxie          New Issue                                    
+04-30-06 23:33 myxie          Distribution              => Debian          
+04-30-06 23:33 myxie          Kernel Version            => 2.6.16          
 ======================================================================
 
 
