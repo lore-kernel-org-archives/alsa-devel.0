@@ -1,11 +1,11 @@
-From: "Abel Monroe" <xwq@khoo.freeserve.co.uk>
-Subject: uncommonly
-Date: Mon, 1 May 2006 19:32:17 +1300
-Message-ID: <000501c66cea$3a5e8db0$b29798de@fhu>
+From: "Reynold Foley" <ehsyrp@mrsirio.com>
+Subject: unpleasant
+Date: Mon, 1 May 2006 19:36:10 +1300
+Message-ID: <000501c66cea$3cc331a0$ac7a98de@urhkxm>
 Mime-Version: 1.0
 Content-Type: multipart/related;
 	type="multipart/alternative";
-	boundary="----=_NextPart_000_0001_01C66D4E.CF936D70"
+	boundary="----=_NextPart_000_0001_01C66D4E.D1F81160"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,23 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C66D4E.CF936D70
+------=_NextPart_000_0001_01C66D4E.D1F81160
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0002_01C66D4E.CF936D80"
+	boundary="----=_NextPart_001_0002_01C66D4E.D1F81170"
 
 
-------=_NextPart_001_0002_01C66D4E.CF936D80
+------=_NextPart_001_0002_01C66D4E.D1F81170
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-------=_NextPart_001_0002_01C66D4E.CF936D80
+------=_NextPart_001_0002_01C66D4E.D1F81170
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -41,22 +41,22 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2800.1158" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1441" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
 <DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:000001c66cea$3a5e8d70$b29798de@fhu" align=3Dbaseline=20
+src=3D"cid:000001c66cea$3cc33160$ac7a98de@urhkxm" align=3Dbaseline=20
 border=3D0></FONT></DIV>
 </BODY></HTML>
 
-------=_NextPart_001_0002_01C66D4E.CF936D80--
+------=_NextPart_001_0002_01C66D4E.D1F81170--
 
-------=_NextPart_000_0001_01C66D4E.CF936D70
+------=_NextPart_000_0001_01C66D4E.D1F81160
 Content-Type: image/gif;
-	name="ephemeral.gif"
+	name="dandelion.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000001c66cea$3a5e8d70$b29798de@fhu>
+Content-ID: <000001c66cea$3cc33160$ac7a98de@urhkxm>
 
 R0lGODdhEwMZA+cAAOrj9hAPE8nWykdcSRMcDmxsdauupY2QmiIsKXRvdpiWmqugpyUbL2UTu80w
 TWe/qAIwe5CWo4YtYEH+Bq9va2ZqTbwOU7tzZ3ZBmMSpV2yriOc8H4rDTOsES/Gzu1waJanWNP2R
@@ -776,7 +776,7 @@ ed1rX/8a2MEW9rCJXWxjHxvZyVb2spndbGc/G9rRlva0qV1ta18b29nW9ra53W1vfxvc4Rb3uMld
 bnOfG93pVve62d1ud78b3vGW97zpXW973xvf+db3vpXSBn7/G+ABF/jACU7vYRQc4QlX+MIZ3nCH
 PxziEZf4xCke1oAAADs=
 
-------=_NextPart_000_0001_01C66D4E.CF936D70--
+------=_NextPart_000_0001_01C66D4E.D1F81160--
 
 
 
