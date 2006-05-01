@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002089]: Audio capture does not work
-Date: Mon, 1 May 2006 16:42:54 +0200
-Message-ID: <9e3c3372757cef43a174b1687e31ad4f@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: au88x0 Init before create components
+Date: Mon, 1 May 2006 22:17:48 +0100
+Message-ID: <200605012217.48660.gineera@aspect135.co.uk>
+References: <200604261414.52173.gineera@aspect135.co.uk> <s5h8xps5qcv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_8rnVETImgVaX+2K"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B765716A
-	for <alsa-devel@alsa-project.org>; Mon,  1 May 2006 16:42:54 +0200 (MEST)
+In-Reply-To: <s5h8xps5qcv.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +17,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, manuel.jander@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2089> 
-======================================================================
-Reported By:                stepasha
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2089
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Dapper Drake
-Kernel Version:             Linux version 2.6.15-21-386
-======================================================================
-Date Submitted:             05-01-2006 16:42 CEST
-Last Modified:              05-01-2006 16:42 CEST
-======================================================================
-Summary:                    Audio capture does not work
-Description: 
-Audio capture for the Intel ICH6 audio controller (Realtek ALC260 mixer)
-does not work in Dapper Drake (nor in Breezy from my testing).
+--Boundary-00=_8rnVETImgVaX+2K
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-My applications have no problems sharing sound, but I have come across the
-following symptoms:
+On Wednesday 26 April 2006 16:05, you wrote:
+>
+> Anyway, I'd suggest to move the definition of driver, shortname and
+> longname there with a short comment that it's needed for mpu401
+> instance, and keep the rest as it is.
+>
+> Also, I feel "Aureal au8810 MIDI 0" is more intuitive than
+> "MIDI Aureal au8810 0".  It's a matter of taste, though...
 
-1.  I can record using several programs including sound-recorder, but only
-silence is recorded.
-2.  Audacity gives me no option to choose my capture device (mic, etc.)
-======================================================================
+Reduced patch is attached
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-01-06 16:42 stepasha       New Issue                                    
-05-01-06 16:42 stepasha       File Added: dmesg.txt                        
-05-01-06 16:42 stepasha       Distribution              => Ubuntu Dapper Drake
-05-01-06 16:42 stepasha       Kernel Version            => Linux version
-2.6.15-21-386
-======================================================================
+Regards  Alan
 
+Change the order in vortex_probe to set the card details before creating the 
+components, meaning for example that card->shortname is available when 
+registering the midi port.
+
+I have also added extra to card->shortname, and a line to overwrite the midi 
+name following snd_mpu401_uart_new.
+
+au88x0-card-details-midi-name.patch
+
+Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
+
+--Boundary-00=_8rnVETImgVaX+2K
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="au88x0-card-details-midi-name.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="au88x0-card-details-midi-name.patch"
+
+diff -ru alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c
+--- alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c	2006-01-13 17:16:29.000000000 +0000
++++ alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c	2006-04-24 08:12:16.000000000 +0100
+@@ -261,6 +261,13 @@
+ 		return err;
+ 	}
+ 	snd_vortex_workaround(pci, pcifix[dev]);
++
++	// Card details needed in snd_vortex_midi
++	strcpy(card->driver, CARD_NAME_SHORT);
++	sprintf(card->shortname, "Aureal Vortex %s", CARD_NAME_SHORT);
++	sprintf(card->longname, "%s at 0x%lx irq %i",
++		card->shortname, chip->io, chip->irq);
++
+	// (4) Alloc components.
+ 	// ADB pcm.
+ 	if ((err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_ADB)) < 0) {
+@@ -323,11 +330,6 @@
+ #endif
+
+	// (5)
+-	strcpy(card->driver, CARD_NAME_SHORT);
+-	strcpy(card->shortname, CARD_NAME_SHORT);
+-	sprintf(card->longname, "%s at 0x%lx irq %i",
+-		card->shortname, chip->io, chip->irq);
+-
+	if ((err = pci_read_config_word(pci, PCI_DEVICE_ID,
+				  &(chip->device))) < 0) {
+		snd_card_free(card);
+diff -ru alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c
+--- alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-01-13 17:16:29.000000000 +0000
++++ alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-04-24 07:57:51.000000000 +0100
+@@ -107,6 +107,9 @@
+ 	mpu = rmidi->private_data;
+ 	mpu->cport = (unsigned long)(vortex->mmio + VORTEX_MIDI_CMD);
+ #endif
++	/* Overwrite MIDI name */
++	snprintf(rmidi->name, sizeof(rmidi->name), "%s MIDI %d", CARD_NAME_SHORT , vortex->card->number);
++
+ 	vortex->rmidi = rmidi;
+ 	return 0;
+ }
+
+--Boundary-00=_8rnVETImgVaX+2K--
 
 
 
