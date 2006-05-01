@@ -1,13 +1,11 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: au88x0 Init before create components
-Date: Mon, 1 May 2006 22:17:48 +0100
-Message-ID: <200605012217.48660.gineera@aspect135.co.uk>
-References: <200604261414.52173.gineera@aspect135.co.uk> <s5h8xps5qcv.wl%tiwai@suse.de>
+From: lamikr <lamikr@cc.jyu.fi>
+Subject: How to select between mixer route elements?
+Date: Tue, 02 May 2006 01:06:00 +0300
+Message-ID: <44568648.9040902@cc.jyu.fi>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_8rnVETImgVaX+2K"
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8xps5qcv.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,93 +15,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, manuel.jander@gmail.com
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
---Boundary-00=_8rnVETImgVaX+2K
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I am working with the tsc2101 alsa sound driver for the iPAQ h6300 and
+userspace phone application called gomunicator for that.
+For the tsc2101 mixer I have creted an element "Playback Playback Route"
+which is currently initalized to be a enumerated element
+in a following way.
 
-On Wednesday 26 April 2006 16:05, you wrote:
->
-> Anyway, I'd suggest to move the definition of driver, shortname and
-> longname there with a short comment that it's needed for mpu401
-> instance, and keep the rest as it is.
->
-> Also, I feel "Aureal au8810 MIDI 0" is more intuitive than
-> "MIDI Aureal au8810 0".  It's a matter of taste, though...
+    static char *texts[PLAYBACK_TARGET_COUNT] = {
+            "Loudspeaker", "Headphone", "Cellphone"
+    };
+    uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
 
-Reduced patch is attached
+The idea is following. If I/user want to play music or record by using
+normal speaker and mic I need to select "Loudspeaker"
+as a playback target. If I instead want to use headphone for that
+purpose I need to select Headphone. And when I want to have a phone call
+(this iPAQ module has gsm phone) I route tsc2101 to handle gsm module by
+selecting "Cellphone".
 
-Regards  Alan
+The problem is that currently I need to use alsa-mixer before I make the
+phone calls which is kind of not very handy.
+So to get Tux finally a call home properly I should do something like
+this from the userspace:
 
-Change the order in vortex_probe to set the card details before creating the 
-components, meaning for example that card->shortname is available when 
-registering the midi port.
+    old_selection    = get_current_playback_route_selection(),
+    select_playback_route("Cellphone");
+    make_call()
+    end_call()
+    select_playback_route(old_selection)
 
-I have also added extra to card->shortname, and a line to overwrite the midi 
-name following snd_mpu401_uart_new.
+To implement the currently selected route item, I have tried following
 
-au88x0-card-details-midi-name.patch
+    static int *old_playback_item;
+    ...
+    snd_mixer_selem_id_set_name (sid, "Playback");
+    if (elem_playback) {
+        printf("Playback found\n");
+        if (snd_mixer_selem_is_enumerated(elem_playback)) {
+            printf("Playback is enumerated\n");
+            //snd_mixer_selem_get_enum_item(handle, 0, old_playback_item);
+            printf("index fo the selected playback item = %d\n",
+*old_playback_item);
+        }
+    }
 
-Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
+but this fails for me giving a following error to output:
 
---Boundary-00=_8rnVETImgVaX+2K
-Content-Type: text/x-diff;
-  charset="iso-8859-1";
-  name="au88x0-card-details-midi-name.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="au88x0-card-details-midi-name.patch"
+    Playback found
+    Playback is enumerated
+    gomunicator: simple.c:1969: snd_mixer_selem_get_enum_item: Assertion
+`elem->type == SND_MIXER_ELEM_SIMPLE' failed.
 
-diff -ru alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c
---- alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c	2006-01-13 17:16:29.000000000 +0000
-+++ alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0.c	2006-04-24 08:12:16.000000000 +0100
-@@ -261,6 +261,13 @@
- 		return err;
- 	}
- 	snd_vortex_workaround(pci, pcifix[dev]);
-+
-+	// Card details needed in snd_vortex_midi
-+	strcpy(card->driver, CARD_NAME_SHORT);
-+	sprintf(card->shortname, "Aureal Vortex %s", CARD_NAME_SHORT);
-+	sprintf(card->longname, "%s at 0x%lx irq %i",
-+		card->shortname, chip->io, chip->irq);
-+
-	// (4) Alloc components.
- 	// ADB pcm.
- 	if ((err = snd_vortex_new_pcm(chip, VORTEX_PCM_ADB, NR_ADB)) < 0) {
-@@ -323,11 +330,6 @@
- #endif
+Could somebody show how to do that in the alsa-lib? (I have not been
+able to find any documentation/examples how to handle alsa route
+elements when I tried to search from the net)
 
-	// (5)
--	strcpy(card->driver, CARD_NAME_SHORT);
--	strcpy(card->shortname, CARD_NAME_SHORT);
--	sprintf(card->longname, "%s at 0x%lx irq %i",
--		card->shortname, chip->io, chip->irq);
--
-	if ((err = pci_read_config_word(pci, PCI_DEVICE_ID,
-				  &(chip->device))) < 0) {
-		snd_card_free(card);
-diff -ru alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c
---- alsa-driver-orig-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-01-13 17:16:29.000000000 +0000
-+++ alsa-driver-1.0.11rc3/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-04-24 07:57:51.000000000 +0100
-@@ -107,6 +107,9 @@
- 	mpu = rmidi->private_data;
- 	mpu->cport = (unsigned long)(vortex->mmio + VORTEX_MIDI_CMD);
- #endif
-+	/* Overwrite MIDI name */
-+	snprintf(rmidi->name, sizeof(rmidi->name), "%s MIDI %d", CARD_NAME_SHORT , vortex->card->number);
-+
- 	vortex->rmidi = rmidi;
- 	return 0;
- }
-
---Boundary-00=_8rnVETImgVaX+2K--
+Mika
 
 
 
