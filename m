@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002093]: Mute mixer software switch not working
-Date: Tue, 2 May 2006 20:00:10 +0200
-Message-ID: <b79ced076e4e55cfc1ba77dbf2be7e51@bugtrack.alsa-project.org>
+Date: Tue, 2 May 2006 20:01:20 +0200
+Message-ID: <b01937e05a79ff2e725502d3c9d5c56c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4171819F
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 20:00:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02D1619F
+	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 20:01:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0001890.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2093> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-02-2006 19:41 CEST
-Last Modified:              05-02-2006 20:00 CEST
+Last Modified:              05-02-2006 20:01 CEST
 ======================================================================
 Summary:                    Mute mixer software switch not working
 Description: 
@@ -52,11 +52,19 @@ Relationships       ID      Summary
 related to          0001890 Only the PCM channel in alsa mixer, unm...
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 05-02-06 20:01 
+----------------------------------------------------------------------
+Try the uploaded patch.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-02-06 19:41 fdoffizi01     New Issue                                    
 05-02-06 20:00 tiwai          Relationship added       related to 0001890  
+05-02-06 20:01 tiwai          File Added: vaio-master-sw-fix.diff               
+    
+05-02-06 20:01 tiwai          Note Added: 0009575                          
 ======================================================================
 
 
