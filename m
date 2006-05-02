@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002095]: Choppy sound using default dmix config for some applications but not others.
-Date: Wed, 3 May 2006 01:09:23 +0200
-Message-ID: <e7e8aba91b5f40ba0a93180f3f928eaa@bugtrack.alsa-project.org>
+Date: Wed, 3 May 2006 01:27:52 +0200
+Message-ID: <1619e7878bc7ff5903f392b247270d15@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C20E411E
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 01:09:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA0AD155
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 01:27:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2095> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             05-03-2006 01:09 CEST
-Last Modified:              05-03-2006 01:09 CEST
+Last Modified:              05-03-2006 01:27 CEST
 ======================================================================
 Summary:                    Choppy sound using default dmix config for some
 applications but not others.
@@ -64,10 +64,27 @@ On user reports that fiddling with the .asoundrc parameters can lessen the
 problem, but not eliminate the problem.
 ======================================================================
 
+----------------------------------------------------------------------
+ wellwhoopdedooo - 05-03-06 01:27 
+----------------------------------------------------------------------
+I would like to add my own experience with this issue.
+
+I had this problem before, and was able to work around it by increasing
+period_size and buffer_size. As they got larger, skipping reduced, until
+finally there was no skipping at 8192 period_size and 16384 buffer_size.
+
+This time around, there is still choppiness at those values, and I cannot
+make them any larger. Also, it wasn't a very pleasant workaround, as it
+added a lot of latency.
+
+My card is an ess1371. If there's anything I can do to help as far as
+troubleshooting--debug kernels, you name it--please let me know.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-03-06 01:09 BigBaaadBob    New Issue                                    
+05-03-06 01:27 wellwhoopdedoooNote Added: 0009580                          
 ======================================================================
 
 
