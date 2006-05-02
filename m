@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002082]: Mute switch not working
-Date: Tue, 2 May 2006 18:41:49 +0200
-Message-ID: <b5cf62c437871d3cef0bda2c561fee2c@bugtrack.alsa-project.org>
+Date: Tue, 2 May 2006 18:50:07 +0200
+Message-ID: <2214267a939e1a4d018fa38e1cfce272@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BC2E19F
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:41:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4ACD12C
+	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:50:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2082> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-28-2006 14:25 CEST
-Last Modified:              05-02-2006 18:41 CEST
+Last Modified:              05-02-2006 18:50 CEST
 ======================================================================
 Summary:                    Mute switch not working
 Description: 
@@ -51,14 +53,6 @@ that's working of course, under windows the event is caught and replied to
 mixer (and from mixer the button functionality is called). On linux of
 course nothing happends.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 05-02-06 18:09 
-----------------------------------------------------------------------
-It's rather a problem of window manager.
-
-Such an event is handled by an applet (or a daemon) on user-space, not by
-the kernel driver.
 
 ----------------------------------------------------------------------
  fdoffizi01 - 05-02-06 18:41 
@@ -72,6 +66,23 @@ still a userspace task?
 (On another notebook with i8x0 I had a wheel to controll via hw the output
 BUT when I selected mute from kmix green led I got no sound, as expected.)
 
+----------------------------------------------------------------------
+ tiwai - 05-02-06 18:50 
+----------------------------------------------------------------------
+If you access to alsamixer, yes, it's a user-space program.
+
+The button event on your laptop is generated over ACPI, and this should be
+handled via window manager or an applet running on user-space.  That is,
+this event handling has nothing to do with the sound driver.
+
+Then the applet processes the event, e.g. changing the mixer status
+appropriately.    Of course, this is a job of sound driver, but it is
+invoked from the applet -- nothing different from a normal operation over
+control API.
+
+Some laptops have the built-in stuff, but some not.  It pretty depends on
+the hardware.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -82,6 +93,9 @@ Date Modified  Username       Field                    Change
 05-02-06 18:41 fdoffizi01     Status                   resolved => feedback
 05-02-06 18:41 fdoffizi01     Resolution               not an issue => reopened
 05-02-06 18:41 fdoffizi01     Note Added: 0009571                          
+05-02-06 18:50 tiwai          Status                   feedback => resolved
+05-02-06 18:50 tiwai          Resolution               reopened => not an issue
+05-02-06 18:50 tiwai          Note Added: 0009572                          
 ======================================================================
 
 
