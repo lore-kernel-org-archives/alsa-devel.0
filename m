@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0002091]: truncate sound
-Date: Tue, 2 May 2006 18:21:13 +0200
-Message-ID: <eb11af32cdb5e033e02ea78fa70fde21@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002082]: Mute switch not working
+Date: Tue, 2 May 2006 18:41:49 +0200
+Message-ID: <b5cf62c437871d3cef0bda2c561fee2c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCC471A2
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:21:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BC2E19F
+	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:41:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,42 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2091> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2082> 
 ======================================================================
-Reported By:                porducel
-Assigned To:                
+Reported By:                fdoffizi01
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - plugins
-Issue ID:                   2091
-Category:                   Control - oss
+Project:                    ALSA - driver
+Issue ID:                   2082
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     feedback
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-02-2006 18:19 CEST
-Last Modified:              05-02-2006 18:21 CEST
+Date Submitted:             04-28-2006 14:25 CEST
+Last Modified:              05-02-2006 18:41 CEST
 ======================================================================
-Summary:                    truncate sound
+Summary:                    Mute switch not working
 Description: 
-when i playning a game in mozilla the sound is truncate , i have removed
-alsa-sound system and instaled open-sound OSS and game work perfectly, but
-i not like use open-sound becouse not open source 
+Same hw of bug #2059.
+Mute switch has no effect.
+The notebook I'm using has a button to enable/disable in hardware output,
+that's working of course, under windows the event is caught and replied to
+mixer (and from mixer the button functionality is called). On linux of
+course nothing happends.
 ======================================================================
 
 ----------------------------------------------------------------------
- porducel - 05-02-06 18:21 
+ tiwai - 05-02-06 18:09 
 ----------------------------------------------------------------------
-test in www.radicalplay.com 
-need fro madness game
+It's rather a problem of window manager.
+
+Such an event is handled by an applet (or a daemon) on user-space, not by
+the kernel driver.
+
+----------------------------------------------------------------------
+ fdoffizi01 - 05-02-06 18:41 
+----------------------------------------------------------------------
+I think I didn't explain it right way.
+If I use alsamixer to mute some channels output, it's done in userspace?
+It's not asked to kernel/module to turn off output reproduction?
+Of course hardware led and switch it's an userspace daemon work, but
+making sound actually disappear when selecting mute option from mixers is
+still a userspace task?
+(On another notebook with i8x0 I had a wheel to controll via hw the output
+BUT when I selected mute from kmix green led I got no sound, as expected.)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-02-06 18:19 porducel       New Issue                                    
-05-02-06 18:21 porducel       Note Added: 0009570                          
+04-28-06 14:25 fdoffizi01     New Issue                                    
+05-02-06 18:09 tiwai          Status                   assigned => resolved
+05-02-06 18:09 tiwai          Resolution               open => not an issue
+05-02-06 18:09 tiwai          Note Added: 0009566                          
+05-02-06 18:41 fdoffizi01     Status                   resolved => feedback
+05-02-06 18:41 fdoffizi01     Resolution               not an issue => reopened
+05-02-06 18:41 fdoffizi01     Note Added: 0009571                          
 ======================================================================
 
 
