@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002080]: Card driver works incorrectly after resume
-Date: Tue, 2 May 2006 08:18:19 +0200
-Message-ID: <bba8685004f314089284d0a42cff6a6a@bugtrack.alsa-project.org>
+Date: Tue, 2 May 2006 08:28:25 +0200
+Message-ID: <8f3657e7f467df41b1841c7936a22a6c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0A0A1A2
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 08:18:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA3EF1A2
+	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 08:28:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               ALT Linux
 Kernel Version:             2.6.16.9 + extra patches
 ======================================================================
 Date Submitted:             04-27-2006 18:35 CEST
-Last Modified:              05-02-2006 08:18 CEST
+Last Modified:              05-02-2006 08:28 CEST
 ======================================================================
 Summary:                    Card driver works incorrectly after resume
 Description: 
@@ -95,16 +95,6 @@ a request.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 04-30-06 09:36 
-----------------------------------------------------------------------
-http://lists.nongnu.org/archive/html/openvortex-dev/2006-02/msg00012.html
-
-However ALSA only support CONFIG_PM, CONFIG_SOFTWARE_SUSPEND is most
-likely not supported
-
-
-
-----------------------------------------------------------------------
  Alexey Morozov - 05-02-06 08:18 
 ----------------------------------------------------------------------
 Regarding https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726:
@@ -120,6 +110,19 @@ perfectly.
 
 So I guess some additional driver-specific changes are to be implemented.
 
+----------------------------------------------------------------------
+ Alexey Morozov - 05-02-06 08:28 
+----------------------------------------------------------------------
+Hmm, didn't notice that you mentioned my own message to the list :-).
+
+Actually, I don't need a proper suspend/resume. If the card will be reset
+after resume (i.e. zero volume or muted channels etc) but will remain
+functioning without driver reload, of if the driver can be reloaded
+without stopping every application which accesses the card one way or
+another, it's all acceptable for me. I just don't wish to create complex
+and error-prone scripts for resuming the audio subsystem and all audio
+applications being launched upon suspend.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -133,6 +136,7 @@ patches
 04-29-06 05:03 Raymond        Note Added: 0009540                          
 04-30-06 09:36 Raymond        Note Edited: 0009540                         
 05-02-06 08:18 Alexey Morozov Note Added: 0009557                          
+05-02-06 08:28 Alexey Morozov Note Added: 0009558                          
 ======================================================================
 
 
