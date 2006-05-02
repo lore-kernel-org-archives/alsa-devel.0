@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002086]: Module fails to load
-Date: Tue, 2 May 2006 18:05:19 +0200
-Message-ID: <94dabbcbc31ccabcbb6868486cb086da@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002084]: If the PCM channel is being used and the same time that X is on-screen, ... total hard crash of whole system.
+Date: Tue, 2 May 2006 18:06:19 +0200
+Message-ID: <f3b021bc1071fe38dc1dc40639ad0fdb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 78DE219F
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:05:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B453019F
+	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:06:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,90 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2086> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2084> 
 ======================================================================
-Reported By:                psgood
+Reported By:                terrym
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2086
-Category:                   PCI - cs46xx
+Issue ID:                   2084
+Category:                   CORE - pcm
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               ROCK Linux, both 2.0.3 and trunk
+Kernel Version:             2.4.x and 2.6.x, currently running 2.6.16.2
 ======================================================================
-Date Submitted:             04-30-2006 12:53 CEST
-Last Modified:              05-02-2006 18:05 CEST
+Date Submitted:             04-29-2006 04:40 CEST
+Last Modified:              05-02-2006 18:06 CEST
 ======================================================================
-Summary:                    Module fails to load
+Summary:                    If the PCM channel is being used and the same time
+that X is on-screen, ... total hard crash of whole system.
 Description: 
-Have tried this with various kernels now from 2.6.15 to .17-rc3.
-
-The module compiles fine, installs fine, even comes up in lsmod, but I get
-this error on module insertion
-
-ERROR: snd-cs46xx: never read ISV3 & ISV4 from AC'97
-    Try reloading the ALSA driver, if you find something
-    broken or not working on your soundcard upon
-    this message please report to alsa-devel@lists.sourceforge.net
-
-Soundcard is a Gametheater XP 5.1. The last kernel I had on here was
-2.6.13 and it worked fine under that without this error. Have tried with
-kernel drivers, manual download of drivers, with and without the debian
-standard alsa tools. The NEW_DSP code is also enabled in all instances.
-
-I have also tried with and without udev installed, to see if that was
-causing an issue.
-
-This also halts my intel8x0 card from working as well. Whatever is causing
-it virtually causes all the alsactl stuff to die.
-
-Output of lsmod:
-snd_cs46xx             78024  0
-snd_intel8x0           31772  0
-snd_rawmidi            24608  1 snd_cs46xx
-snd_seq_device          8972  1 snd_rawmidi
-snd_ac97_codec         85024  2 snd_cs46xx,snd_intel8x0
-snd_ac97_bus            3328  1 snd_ac97_codec
-snd_pcm                78340  3 snd_cs46xx,snd_intel8x0,snd_ac97_codec
-snd_timer              22916  1 snd_pcm
-snd                    52192  7
-snd_cs46xx,snd_intel8x0,snd_rawmidi,snd_seq_device,snd_ac97_codec,snd_pcm,snd_timer
-snd_page_alloc         10504  3 snd_cs46xx,snd_intel8x0,snd_pcm
-soundcore              10848  1 snd
-
-Output of /proc/asound/cards
-
-pontius:/etc/modprobe.d# cat /proc/asound/cards
---- no soundcards ---
-
-
-
+X can be running as long as it is not on screen, that is, a text console is
+in use. It does not matter if the sound app is console based or GUI (X
+based), the result is the same: the moment sound plays via PCM and X is on
+screen, there is a hard crash that instantly locks up the whole system,
+the kernel it self crashes, as an already issued shutdown w/delay will not
+finish.
 ======================================================================
 
 ----------------------------------------------------------------------
- psgood - 04-30-06 13:22 
+ tiwai - 05-02-06 18:06 
 ----------------------------------------------------------------------
-Further to this, I have discovered that the issue is sporadic. Perhaps one
-time in 10, the issue won't occur and everything comes up as normal.
-
-----------------------------------------------------------------------
- tiwai - 05-02-06 18:05 
-----------------------------------------------------------------------
-The driver code hasn't been changed much since long time ago, so I wonder
-what is broken.  You can try to comment out "return -EIO" in the relevant
-part of snd_cs46xx_chip_init() in cs46xx_lib.c.
+Please elaborate the hardware details.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-30-06 12:53 psgood         New Issue                                    
-04-30-06 13:13 psgood         Issue Monitored: psgood                      
-04-30-06 13:22 psgood         Note Added: 0009547                          
-05-02-06 18:05 tiwai          Note Added: 0009564                          
+04-29-06 04:40 terrym         New Issue                                    
+04-29-06 04:40 terrym         Distribution              => ROCK Linux, both
+2.0.3 and trunk
+04-29-06 04:40 terrym         Kernel Version            => 2.4.x and 2.6.x,
+currently running 2.6.16.2
+05-02-06 18:06 tiwai          Note Added: 0009565                          
 ======================================================================
 
 
