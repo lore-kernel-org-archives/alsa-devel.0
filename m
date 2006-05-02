@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002082]: Mute switch not working
-Date: Tue, 2 May 2006 18:09:06 +0200
-Message-ID: <68d9327eac61b8638412e61148f52f5b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002081]: and-atiixp module does not load into kernel
+Date: Tue, 2 May 2006 18:10:02 +0200
+Message-ID: <e082611f3849e56a2d805ef8b87e694e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AA8619F
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:09:06 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 151471A2
+	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:10:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2082> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2081> 
 ======================================================================
-Reported By:                fdoffizi01
+Reported By:                KaszeL
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2082
-Category:                   PCI - hda-intel
+Issue ID:                   2081
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.16-ck6-r1
 ======================================================================
-Date Submitted:             04-28-2006 14:25 CEST
-Last Modified:              05-02-2006 18:09 CEST
+Date Submitted:             04-28-2006 00:07 CEST
+Last Modified:              05-02-2006 18:10 CEST
 ======================================================================
-Summary:                    Mute switch not working
+Summary:                    and-atiixp module does not load into kernel
 Description: 
-Same hw of bug #2059.
-Mute switch has no effect.
-The notebook I'm using has a button to enable/disable in hardware output,
-that's working of course, under windows the event is caught and replied to
-mixer (and from mixer the button functionality is called). On linux of
-course nothing happends.
+On DFI Infinity RS432 kernel module snd-atiixp does not load into kernel.
+After succesfoul compilation via gentoo portage/emerge i allways get
+errors similar to this:
+
+ALSA
+/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
+atiixp: codec read timeout (reg 0) 
+ALSA
+/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
+atiixp: codec read timeout (reg 3c) 
+ALSA
+/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
+atiixp: codec read timeout (reg 1c) 
+ALSA
+/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/ac97/ac97_codec.c:1910:
+AC'97 2 does not respond - RESET 
+ALSA
+/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/ac97/ac97_codec.c:1919:
+AC'97 2 access is not valid [0xffffffff], removing mixer. 
+ALSA
+/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:1411:
+atiixp: no codec available 
+
+Here is my lspci info:
+00:14.5 Multimedia audio controller: ATI Technologies Inc IXP SB400 AC'97
+Audio Controller (rev 80) 
+        Subsystem: DFI Inc Unknown device 3100 
+        Flags: 66MHz, slow devsel, IRQ 18 
+        Memory at fe02b000 (32-bit, non-prefetchable) [size=256] 
+        Capabilities: [40] Message Signalled Interrupts: 64bit- Queue=0/0
+Enable
+
+I've tried several kernel and alsa-driver versions. I've also tried to
+compile alsa staticly into the kernel but this does not work either.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-02-06 18:09 
+ tiwai - 05-02-06 18:10 
 ----------------------------------------------------------------------
-It's rather a problem of window manager.
-
-Such an event is handled by an applet (or a daemon) on user-space, not by
-the kernel driver.
+ACPI problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-28-06 14:25 fdoffizi01     New Issue                                    
-05-02-06 18:09 tiwai          Status                   assigned => resolved
-05-02-06 18:09 tiwai          Resolution               open => not an issue
-05-02-06 18:09 tiwai          Note Added: 0009566                          
+04-28-06 00:07 KaszeL         New Issue                                    
+04-28-06 00:07 KaszeL         Distribution              => Gentoo          
+04-28-06 00:07 KaszeL         Kernel Version            => 2.6.16-ck6-r1   
+04-28-06 00:08 KaszeL         Issue Monitored: KaszeL                      
+05-02-06 18:10 tiwai          Note Added: 0009567                          
 ======================================================================
 
 
