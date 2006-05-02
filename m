@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002084]: If the PCM channel is being used and the same time that X is on-screen, ... total hard crash of whole system.
-Date: Tue, 2 May 2006 18:06:19 +0200
-Message-ID: <f3b021bc1071fe38dc1dc40639ad0fdb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002082]: Mute switch not working
+Date: Tue, 2 May 2006 18:09:06 +0200
+Message-ID: <68d9327eac61b8638412e61148f52f5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B453019F
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:06:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AA8619F
+	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:09:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2084> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2082> 
 ======================================================================
-Reported By:                terrym
-Assigned To:                
+Reported By:                fdoffizi01
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2084
-Category:                   CORE - pcm
+Issue ID:                   2082
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               ROCK Linux, both 2.0.3 and trunk
-Kernel Version:             2.4.x and 2.6.x, currently running 2.6.16.2
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-29-2006 04:40 CEST
-Last Modified:              05-02-2006 18:06 CEST
+Date Submitted:             04-28-2006 14:25 CEST
+Last Modified:              05-02-2006 18:09 CEST
 ======================================================================
-Summary:                    If the PCM channel is being used and the same time
-that X is on-screen, ... total hard crash of whole system.
+Summary:                    Mute switch not working
 Description: 
-X can be running as long as it is not on screen, that is, a text console is
-in use. It does not matter if the sound app is console based or GUI (X
-based), the result is the same: the moment sound plays via PCM and X is on
-screen, there is a hard crash that instantly locks up the whole system,
-the kernel it self crashes, as an already issued shutdown w/delay will not
-finish.
+Same hw of bug #2059.
+Mute switch has no effect.
+The notebook I'm using has a button to enable/disable in hardware output,
+that's working of course, under windows the event is caught and replied to
+mixer (and from mixer the button functionality is called). On linux of
+course nothing happends.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-02-06 18:06 
+ tiwai - 05-02-06 18:09 
 ----------------------------------------------------------------------
-Please elaborate the hardware details.
+It's rather a problem of window manager.
+
+Such an event is handled by an applet (or a daemon) on user-space, not by
+the kernel driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-06 04:40 terrym         New Issue                                    
-04-29-06 04:40 terrym         Distribution              => ROCK Linux, both
-2.0.3 and trunk
-04-29-06 04:40 terrym         Kernel Version            => 2.4.x and 2.6.x,
-currently running 2.6.16.2
-05-02-06 18:06 tiwai          Note Added: 0009565                          
+04-28-06 14:25 fdoffizi01     New Issue                                    
+05-02-06 18:09 tiwai          Status                   assigned => resolved
+05-02-06 18:09 tiwai          Resolution               open => not an issue
+05-02-06 18:09 tiwai          Note Added: 0009566                          
 ======================================================================
 
 
