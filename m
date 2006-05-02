@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002095]: Choppy sound using default dmix config for some applications but not others.
-Date: Wed, 3 May 2006 01:31:51 +0200
-Message-ID: <687573c26920f41981451320c5cb923d@bugtrack.alsa-project.org>
+From: Nicolas Boullis <nboullis@debian.org>
+Subject: How to deal with cards with a large on-board buffer?
+Date: Wed, 3 May 2006 01:41:25 +0200
+Message-ID: <20060502234125.GC4109@home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43C3419D
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 01:31:51 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,96 +15,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2095> 
-======================================================================
-Reported By:                BigBaaadBob
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2095
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             05-03-2006 01:09 CEST
-Last Modified:              05-03-2006 01:31 CEST
-======================================================================
-Summary:                    Choppy sound using default dmix config for some
-applications but not others.
-Description: 
-As reported in http://forums.gentoo.org/viewtopic-t-457951.html
-alsa 1.0.11 causes skipping sound in some applications but not others.
+I'm trying to write an ALSA interface for the audio part of MPEG2 
+decoder boards Sigma Designs Hollywod+ and Creative Labs DXR3, both 
+based on Sigma Designs EM8300 chip.
 
-Sound skips in rhytymbox and totem, but not xmms, realplayer, or mplayer.
+To make it short, the trouble is that, to get correct working, it seems 
+to require that the audio buffer be kept at some minimal fill level. Is 
+there a way I can enforce this?
 
-This occurs with default dmix setup (i.e. with no .asoundrc).  Creating an
-.asoundrc like this causes the skipping to stop for those applications
-that skip.
+Browsing at the code, I found out the fifo_size element of the 
+snd_pcm_hardware_t type, that is not documented in Takashi Iwai's 
+excellent "Writing an ALSA Driver" guide. Is it something that might be 
+used to enforce this? (I tried, of course, but my test was 
+unsuccessful...)
 
-pcm.!default {
-  type hw
-  card 0
-}
-
-This has been reported using the cmipci driver, the Intel ICH4 driver, the
-i915GM driver, and on a ppc iBook G4.
-
-On user reports that fiddling with the .asoundrc parameters can lessen the
-problem, but not eliminate the problem.
-======================================================================
-
-----------------------------------------------------------------------
- wellwhoopdedooo - 05-03-06 01:29 
-----------------------------------------------------------------------
-I would like to add my own experience with this issue.
-
-I had this problem before with an older alsa/kernel version, and was able
-to work around it by increasing period_size and buffer_size. As they got
-larger, skipping reduced, until finally there was no skipping at 8192
-period_size and 16384 buffer_size.
-
-This time around, there is still choppiness at those values, and I cannot
-make them any larger. Also, it wasn't a very pleasant workaround, as it
-added a lot of latency.
-
-My card is an ess1371. If there's anything I can do to help as far as
-troubleshooting--debug kernels, you name it--please let me know.
+I also discovered the SNDRV_PCM_INFO_DOUBLE, SNDRV_PCM_INFO_BATCH 
+and SNDRV_PCM_INFO_BLOCK_TRANSFER that are give little information, and 
+that sound to me like things that might be useful. Any explanation about 
+those?
 
 
+Now, just in case someone has a better idea how to make things work, 
+here is a more comprehensive explanation about how those cards work, *as 
+far as I could understand* (since I got absolutely no explanation from 
+the manufacturer):
+   - there is a rather large on-chip buffer (0x3c00 bytes), that we can 
+     neither write to or read directly
+   - we can read pointers to the current read and write positions in 
+     this buffer
+   - this buffer is fed by chip-initiated DMA transfers from the main 
+     memory
+   - the buffers for DMA transfers are declared in a FIFO; they mustn't 
+     be too large (8kB is ok; 16kB is not since it's larger that the 
+     on-chip buffer)
+   - if the on-chip buffer is "too empty" (don't know exactly when the 
+     chip decides it is too empty) and no buffer is available for 
+     DMA transfer, it "sends" some junk to the internal buffer
+   - interruptions are not raised when buffers are DMA-transfered, but 
+     at fixed 20.2ms interval (stable experimental value)
+   - it might be required that DMA buffers are aligned on 4kB boundaried 
+     (or page boundaries)
 
-----------------------------------------------------------------------
- BigBaaadBob - 05-03-06 01:31 
-----------------------------------------------------------------------
-Reverting to media-libs/alsa-lib-1.0.10 and leaving everything else the
-same resolves the problem for me.  Currently I'm using the driver in the
-2.6.16-gentoo-r3 kernel and the following alsa lineup:
-
-[I--] [  ] media-libs/alsa-lib-1.0.10 (0)
-[I--] [  ] media-libs/alsa-oss-1.0.11 (0)
-[I--] [  ] media-sound/alsa-headers-1.0.11 (0)
-[I--] [  ] media-sound/alsa-tools-1.0.11 (0.9)
-[I--] [  ] media-sound/alsa-utils-1.0.11 (0.9)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-03-06 01:09 BigBaaadBob    New Issue                                    
-05-03-06 01:27 wellwhoopdedoooNote Added: 0009580                          
-05-03-06 01:28 wellwhoopdedoooIssue Monitored: wellwhoopdedooo                  
- 
-05-03-06 01:29 wellwhoopdedoooNote Edited: 0009580                         
-05-03-06 01:31 BigBaaadBob    Note Added: 0009581                          
-======================================================================
+Any idea how to correctly deal with such a beast? I tried a few ones, 
+but none was really successful...
 
 
+Cheers,
+
+Nicolas Boullis
 
 
 -------------------------------------------------------
