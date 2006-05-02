@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002081]: and-atiixp module does not load into kernel
-Date: Tue, 2 May 2006 20:25:09 +0200
-Message-ID: <1cb91fea1b33694e85093df161518bfa@bugtrack.alsa-project.org>
+From: MConnell <MConnell@triplealdo.com>
+Subject: help with refi
+Date: Tue, 02 May 2006 17:33:29 +0000
+Message-ID: <445797e9@www.aaaaldo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html;
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2A951AC
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 20:25:09 +0200 (MEST)
+Received: from www.aaaaldo.com (aaaaldo.com [66.103.151.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E08AB19F
+	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 20:01:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,117 +17,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Friend <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+<html>
+<head>
+<title>ml_08_00_00</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="10" marginwidth="0" marginheight="0">
+<!-- ImageReady Slices (ml_08_00_00.psd) -->
+<table width="600" height="570" border="0" align="center" cellpadding="0" cellspacing="0" id="Table_01">
+	<tr>
+		<td>
+			<a href="http://tripplealdo.com/ml/ml.htm" target="_blank"><img src="http://www.tripplealdo.com/Money_Nest/08_23/images/ml_08_00_01_01.gif" alt="" width="600" height="114" border="0"></a></td>
+	</tr>
+	<tr>
+		<td>
+			<a href="http://tripplealdo.com/ml/ml.htm" target="_blank"><img src="http://www.tripplealdo.com/Money_Nest/08_23/images/ml_08_00_01_02.gif" alt="" width="600" height="65" border="0"></a></td>
+	</tr>
+	<tr>
+		<td>
+			<a href="http://tripplealdo.com/ml/ml.htm" target="_blank"><img src="http://www.tripplealdo.com/Money_Nest/08_23/images/ml_08_00_01_03.gif" alt="" width="600" height="225" border="0"></a></td>
+	</tr>
+	<tr>
+		<td>
+			<a href="http://tripplealdo.com/ml/ml.htm" target="_blank"><img src="http://www.tripplealdo.com/Money_Nest/08_23/images/ml_08_00_01_04.gif" alt="" width="600" height="113" border="0"></a></td>
+	</tr>
+	<tr>
+		<td>
+			<a href="http://tripplealdo.com/ml/ml.htm" target="_blank"><img src="http://www.tripplealdo.com/Money_Nest/08_23/images/ml_08_00_01_05.gif" alt="" width="600" height="53" border="0"></a></td>
+	</tr>
+</table>
+<!-- End ImageReady Slices -->
+<table width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td><p><font color="#999999" 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2081> 
-======================================================================
-Reported By:                KaszeL
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2081
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16-ck6-r1
-======================================================================
-Date Submitted:             04-28-2006 00:07 CEST
-Last Modified:              05-02-2006 20:25 CEST
-======================================================================
-Summary:                    and-atiixp module does not load into kernel
-Description: 
-On DFI Infinity RS432 kernel module snd-atiixp does not load into kernel.
-After succesfoul compilation via gentoo portage/emerge i allways get
-errors similar to this:
+size="1" face="Arial, Helvetica, sans-serif">www.triplealdo.com is a leading
+          permission-based e-mail marketer for the Human Resources and Recruiting
+          Industry. This message is intended for <strong>them</strong> only.
+          To unsubscribe from triplealdo the fastest way, you may remove your
+          address by &quot;Clicking the Link on the very bottom&quot;</font></p>
+        <p align="right"><font color="#999999" size="1" face="Arial, Helvetica, sans-serif"><span 
 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
-atiixp: codec read timeout (reg 0) 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
-atiixp: codec read timeout (reg 3c) 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
-atiixp: codec read timeout (reg 1c) 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/ac97/ac97_codec.c:1910:
-AC'97 2 does not respond - RESET 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/ac97/ac97_codec.c:1919:
-AC'97 2 access is not valid [0xffffffff], removing mixer. 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:1411:
-atiixp: no codec available 
+DEFANGED_STYLE="FONT-FAMILY: 'Arial'">To advertise your product or service fax
+              or email us for info:<br>
+                      <a href="http://www.triplealdo.com">www.triplealdo.com </a>P.O.
+                      Box 161526 Altamonte Springs, FL 32716 For info about advertising <br>
+        Please Fax 604-608-3104 <a 
 
-Here is my lspci info:
-00:14.5 Multimedia audio controller: ATI Technologies Inc IXP SB400 AC'97
-Audio Controller (rev 80) 
-        Subsystem: DFI Inc Unknown device 3100 
-        Flags: 66MHz, slow devsel, IRQ 18 
-        Memory at fe02b000 (32-bit, non-prefetchable) [size=256] 
-        Capabilities: [40] Message Signalled Interrupts: 64bit- Queue=0/0
-Enable
+href="mailto:Info@triplealdo.com">Info@triplealdo.com</a></span></font><font color="#999999"> </font></p>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
 
-I've tried several kernel and alsa-driver versions. I've also tried to
-compile alsa staticly into the kernel but this does not work either.
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 05-02-06 18:10 
-----------------------------------------------------------------------
-ACPI problem?
-
-----------------------------------------------------------------------
- KaszeL - 05-02-06 20:25 
-----------------------------------------------------------------------
-Here is my kernel .config (APCI section only).
-
-cat .config|grep ACPI
-# ACPI (Advanced Configuration and Power Interface) Support
-CONFIG_ACPI=y
-# CONFIG_ACPI_AC is not set
-# CONFIG_ACPI_BATTERY is not set
-# CONFIG_ACPI_BUTTON is not set
-# CONFIG_ACPI_VIDEO is not set
-# CONFIG_ACPI_HOTKEY is not set
-CONFIG_ACPI_FAN=y
-CONFIG_ACPI_PROCESSOR=y
-CONFIG_ACPI_THERMAL=y
-# CONFIG_ACPI_ASUS is not set
-# CONFIG_ACPI_IBM is not set
-# CONFIG_ACPI_TOSHIBA is not set
-CONFIG_ACPI_BLACKLIST_YEAR=0
-# CONFIG_ACPI_DEBUG is not set
-CONFIG_ACPI_EC=y
-CONFIG_ACPI_POWER=y
-CONFIG_ACPI_SYSTEM=y
-# CONFIG_ACPI_CONTAINER is not set
-CONFIG_X86_POWERNOW_K8_ACPI=y
-# CONFIG_X86_ACPI_CPUFREQ is not set
-# CONFIG_X86_ACPI_CPUFREQ_PROC_INTF is not set
-# CONFIG_SERIAL_8250_ACPI is not set
-
-Should i disable APCI and try again?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-28-06 00:07 KaszeL         New Issue                                    
-04-28-06 00:07 KaszeL         Distribution              => Gentoo          
-04-28-06 00:07 KaszeL         Kernel Version            => 2.6.16-ck6-r1   
-04-28-06 00:08 KaszeL         Issue Monitored: KaszeL                      
-05-02-06 18:10 tiwai          Note Added: 0009567                          
-05-02-06 20:25 KaszeL         Note Added: 0009577                          
-======================================================================
-
-
+<br><br>
+______________________________________________________<br>
+<br>
+To change your subscription details or stop receiving emails, <a href="http://www.aaaaldo.com/c/4/alsa-devel%40alsa-project.org">click here</a>
+<img src="http://www.aaaaldo.com/ctx.pl?m=547"></body></html>
 
 
 -------------------------------------------------------
