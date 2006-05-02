@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002093]: Mute mixer software switch not working
-Date: Tue, 2 May 2006 20:01:20 +0200
-Message-ID: <b01937e05a79ff2e725502d3c9d5c56c@bugtrack.alsa-project.org>
+Date: Tue, 2 May 2006 20:17:51 +0200
+Message-ID: <3a653ae9ad099781b4cd176f8fd20ad2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02D1619F
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 20:01:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFA4D1AC
+	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 20:17:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-02-2006 19:41 CEST
-Last Modified:              05-02-2006 20:01 CEST
+Last Modified:              05-02-2006 20:17 CEST
 ======================================================================
 Summary:                    Mute mixer software switch not working
 Description: 
@@ -57,6 +57,13 @@ related to          0001890 Only the PCM channel in alsa mixer, unm...
 ----------------------------------------------------------------------
 Try the uploaded patch.
 
+----------------------------------------------------------------------
+ fdoffizi01 - 05-02-06 20:17 
+----------------------------------------------------------------------
+It works, now. Great. (I noticed applying this patch it disappear a
+controller I had before (maybe cdrom one if I remember well, not know if
+it worked or was useful, just to tell you about it...)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -65,6 +72,7 @@ Date Modified  Username       Field                    Change
 05-02-06 20:01 tiwai          File Added: vaio-master-sw-fix.diff               
     
 05-02-06 20:01 tiwai          Note Added: 0009575                          
+05-02-06 20:17 fdoffizi01     Note Added: 0009576                          
 ======================================================================
 
 
