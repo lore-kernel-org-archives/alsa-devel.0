@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002081]: and-atiixp module does not load into kernel
-Date: Tue, 2 May 2006 18:10:02 +0200
-Message-ID: <e082611f3849e56a2d805ef8b87e694e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002076]: arecord gives silence
+Date: Tue, 2 May 2006 18:11:03 +0200
+Message-ID: <55e3faecc95c6458efbce12a32cf8838@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 151471A2
-	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:10:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DFDF41A2
+	for <alsa-devel@alsa-project.org>; Tue,  2 May 2006 18:11:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2081> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2076> 
 ======================================================================
-Reported By:                KaszeL
-Assigned To:                tiwai
+Reported By:                jaime
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2081
-Category:                   PCI - atiixp
+Issue ID:                   2076
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16-ck6-r1
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-28-2006 00:07 CEST
-Last Modified:              05-02-2006 18:10 CEST
+Date Submitted:             04-26-2006 16:28 CEST
+Last Modified:              05-02-2006 18:11 CEST
 ======================================================================
-Summary:                    and-atiixp module does not load into kernel
+Summary:                    arecord gives silence
 Description: 
-On DFI Infinity RS432 kernel module snd-atiixp does not load into kernel.
-After succesfoul compilation via gentoo portage/emerge i allways get
-errors similar to this:
+IBM Thinkpad T21 with Cirrus Logic CS 4614/22/24 [CrystalClear SoundFusion
+Audio Accelerator] (rev 01).
 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
-atiixp: codec read timeout (reg 0) 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
-atiixp: codec read timeout (reg 3c) 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
-atiixp: codec read timeout (reg 1c) 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/ac97/ac97_codec.c:1910:
-AC'97 2 does not respond - RESET 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/ac97/ac97_codec.c:1919:
-AC'97 2 access is not valid [0xffffffff], removing mixer. 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:1411:
-atiixp: no codec available 
+alsamixer correctly mixes the inputs over to the line out (I can hear
+microphone in and line in successfully mixed) but arecord gives silence.
 
-Here is my lspci info:
-00:14.5 Multimedia audio controller: ATI Technologies Inc IXP SB400 AC'97
-Audio Controller (rev 80) 
-        Subsystem: DFI Inc Unknown device 3100 
-        Flags: 66MHz, slow devsel, IRQ 18 
-        Memory at fe02b000 (32-bit, non-prefetchable) [size=256] 
-        Capabilities: [40] Message Signalled Interrupts: 64bit- Queue=0/0
-Enable
+I've tried using a usb soundcard on the same machine, and everything works
+fine there, so I think this is only the snd-cs46xx driver.
 
-I've tried several kernel and alsa-driver versions. I've also tried to
-compile alsa staticly into the kernel but this does not work either.
+I'm not sure what other info is useful - please let me know. Thank you.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-02-06 18:10 
+ tiwai - 05-02-06 18:11 
 ----------------------------------------------------------------------
-ACPI problem?
+Make sure that you unmute/raise "ADC Volume".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-28-06 00:07 KaszeL         New Issue                                    
-04-28-06 00:07 KaszeL         Distribution              => Gentoo          
-04-28-06 00:07 KaszeL         Kernel Version            => 2.6.16-ck6-r1   
-04-28-06 00:08 KaszeL         Issue Monitored: KaszeL                      
-05-02-06 18:10 tiwai          Note Added: 0009567                          
+04-26-06 16:28 jaime          New Issue                                    
+05-02-06 18:11 tiwai          Note Added: 0009568                          
 ======================================================================
 
 
