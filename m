@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002092]: Built in subwoofer does not work
-Date: Wed, 3 May 2006 11:51:33 +0200
-Message-ID: <8c7679bf96b0182892bb3d2819992e39@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002093]: Mute mixer software switch not working
+Date: Wed, 3 May 2006 12:00:02 +0200
+Message-ID: <5201cc933f271d9d57cff41a8f1a31e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E01CB223
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 11:51:33 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BED7170
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 12:00:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,157 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2092> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2093> 
 ======================================================================
-Reported By:                fordracerguy
+Reported By:                fdoffizi01
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2092
+Issue ID:                   2093
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.16
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-02-2006 19:35 CEST
-Last Modified:              05-03-2006 11:51 CEST
+Date Submitted:             05-02-2006 19:41 CEST
+Last Modified:              05-03-2006 12:00 CEST
 ======================================================================
-Summary:                    Built in subwoofer does not work
+Summary:                    Mute mixer software switch not working
 Description: 
-I am using kernel 2.6.16 and I have to use Alsa-driver 1.0.11 for the sound
-to even work on this notebook. I cannot, however, get my subwoofer to
-work. Yes, it has a built in subwoofer. 2.1ch.
-
-root:/home/chris# cat /proc/asound/card0/codec#0
-Codec: SigmaTel STAC9200
-Address: 0
-Vendor Id: 0x83847690
-Subsystem Id: 0x102801cd
-Revision Id: 0x102201
-Default PCM: rates 0x7e0, bits 0x0e, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
-Node 0x02 [Audio Output] wcaps 0xd0401: Stereo
-  Power: 0x0
-Node 0x03 [Audio Input] wcaps 0x1d0541: Stereo
-  Power: 0x0
-  Connection: 1
-     0x0a
-Node 0x04 [Audio Input] wcaps 0x140311: Stereo Digital
-  PCM: rates 0x160, bits 0x0e, types 0x5
-  Connection: 1
-     0x08
-Node 0x05 [Audio Output] wcaps 0x40211: Stereo Digital
-  PCM: rates 0x1e0, bits 0x0e, types 0x5
-Node 0x06 [Vendor Defined Widget] wcaps 0xf30201: Stereo Digital
-Node 0x07 [Audio Selector] wcaps 0x300901: Stereo
-  Connection: 3
-     0x02* 0x08 0x0a
-Node 0x08 [Pin Complex] wcaps 0x430681: Stereo Digital
-  Pincap 0x0810024: IN
-  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x00:
-  Power: 0x0
-Node 0x09 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x40f000f1: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x00:
-  Connection: 2
-     0x05* 0x0a
-Node 0x0a [Audio Selector] wcaps 0x30090d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 1
-     0x0c
-Node 0x0b [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x09 0x09]
-  Connection: 1
-     0x07
-Node 0x0c [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 5
-     0x10* 0x0f 0x0e 0x0d 0x12
-Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x083f: IN OUT HP
-  Pin Default 0x0421101f: [Jack] HP Out at Ext Right
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x0b
-Node 0x0e [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x083f: IN OUT HP
-  Pin Default 0x90170310: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0b
-Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0837: IN OUT
-  Pin Default 0x40f000f2: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x0b
-Node 0x10 [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x081737: IN OUT
-  Pin Default 0x04a11020: [Jack] Mic at Ext Right
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x24: IN
-  Connection: 1
-     0x0b
-Node 0x11 [Pin Complex] wcaps 0x400104: Mono Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x00]
-  Pincap 0x0810: OUT
-  Pin Default 0x40f000f3: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x13
-Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0820: IN
-  Pin Default 0x40f000f4: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x20: IN
-Node 0x13 [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x07
-Node 0x14 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=1
-  Amp-Out vals:  [0x00]
-
-
-root:/home/chris# cat /proc/asound/card0/codec#1
-Codec: Generic 14f1 ID 2bfa
-Address: 1
-Vendor Id: 0x14f12bfa
-Subsystem Id: 0x14f100c3
-Revision Id: 0x90000
-
+Trying to mute Master output from mixer (kmix, alsamixer and so on...) I
+got no results, sound continue to be played as if channel is muted.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001890 Only the PCM channel in alsa mixer, unm...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-03-06 11:51 
+ fdoffizi01 - 05-02-06 20:17 
 ----------------------------------------------------------------------
-Strange, according to the codec proc, BIOS didn't give other outputs than a
-HP jack and a stereo speaker.  Other outputs are marked as N/A.
+It works, now. Great. (I noticed applying this patch it disappear a
+controller I had before (maybe cdrom one if I remember well, not know if
+it worked or was useful, just to tell you about it...)
+
+----------------------------------------------------------------------
+ tiwai - 05-03-06 12:00 
+----------------------------------------------------------------------
+Committed to Hg repo.
+
+The CD capture switch had been already removed in 1.0.11 release.  It
+never worked.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-02-06 19:35 fordracerguy   New Issue                                    
-05-02-06 19:35 fordracerguy   Distribution              => Debian          
-05-02-06 19:35 fordracerguy   Kernel Version            => 2.6.16          
-05-03-06 11:51 tiwai          Note Added: 0009590                          
+05-02-06 19:41 fdoffizi01     New Issue                                    
+05-02-06 20:00 tiwai          Relationship added       related to 0001890  
+05-02-06 20:01 tiwai          File Added: vaio-master-sw-fix.diff               
+    
+05-02-06 20:01 tiwai          Note Added: 0009575                          
+05-02-06 20:17 fdoffizi01     Note Added: 0009576                          
+05-03-06 12:00 tiwai          Status                   assigned => resolved
+05-03-06 12:00 tiwai          Resolution               open => fixed       
+05-03-06 12:00 tiwai          Note Added: 0009591                          
 ======================================================================
 
 
