@@ -1,11 +1,14 @@
-From: Nicolas Boullis <nboullis@debian.org>
-Subject: How to deal with cards with a large on-board buffer?
-Date: Wed, 3 May 2006 01:41:25 +0200
-Message-ID: <20060502234125.GC4109@home>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002070]: Hard lockup from aplay with low buffersizes on Tascam us-122 (snd_usb_usx2y)
+Date: Wed, 3 May 2006 02:31:53 +0200
+Message-ID: <30353737a58acc3a5b19fb94fc1edc1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 301AB10A
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 02:31:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,59 +18,134 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I'm trying to write an ALSA interface for the audio part of MPEG2 
-decoder boards Sigma Designs Hollywod+ and Creative Labs DXR3, both 
-based on Sigma Designs EM8300 chip.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2070> 
+======================================================================
+Reported By:                jaime
+Assigned To:                karsten
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2070
+Category:                   USB - usb-usx2y
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo ~x86
+Kernel Version:             2.6.17-rc1
+======================================================================
+Date Submitted:             04-25-2006 23:07 CEST
+Last Modified:              05-03-2006 02:31 CEST
+======================================================================
+Summary:                    Hard lockup from aplay with low buffersizes on
+Tascam us-122 (snd_usb_usx2y)
+Description: 
+Hi.
 
-To make it short, the trouble is that, to get correct working, it seems 
-to require that the audio buffer be kept at some minimal fill level. Is 
-there a way I can enforce this?
+Here's the original I'm playing (440Hz sine wave):
+www.carbon.eclipse.co.uk/origSine.wav
 
-Browsing at the code, I found out the fifo_size element of the 
-snd_pcm_hardware_t type, that is not documented in Takashi Iwai's 
-excellent "Writing an ALSA Driver" guide. Is it something that might be 
-used to enforce this? (I tried, of course, but my test was 
-unsuccessful...)
+aplay --buffer-size=1024 origSine.wav sounds great:
+www.carbon.eclipse.co.uk/aplay1024.wav
 
-I also discovered the SNDRV_PCM_INFO_DOUBLE, SNDRV_PCM_INFO_BATCH 
-and SNDRV_PCM_INFO_BLOCK_TRANSFER that are give little information, and 
-that sound to me like things that might be useful. Any explanation about 
-those?
+aplay --buffer-size=512 origSine.wav sounds bad:
+www.carbon.eclipse.co.uk/aplay512.wav
+
+aplay --buffer-size=256 origSine.wav sounds very bad:
+www.carbon.eclipse.co.uk/aplay256.wav
+
+aplay --buffer-size=128 origSine.wav gives only a very short click,
+and then locks up the machine completely:
+www.carbon.eclipse.co.uk/aplay128.wav
+
+I've tried this using different usb cards/controllers, and I get the
+same problem, so I think it is an alsa driver problem.
+
+Thank you for any help you can offer.
+
+======================================================================
+
+----------------------------------------------------------------------
+ jaime - 05-02-06 21:14 
+----------------------------------------------------------------------
+Hi Karsten.
+
+I know that you said that it's not worth debugging this, but I'm still
+trying to get a stack trace, just to find out what's causing the lockup.
+I'm managed to get a serial console working on another machine, and using
+the nmi_watchdog, I get the following out 5 seconds after I start aplay:
+
+BUG: NMI Watchdog detected LOCKUP on CPU0, eip c03393a4, registers:
+Modules linked in: snd_usb_usx2y snd_usb_lib snd_rawmidi snd_seq_device
+..]&#65533;.u&#65533;.}&#65533;&#65533;...0.
+
+That's all I get, and that was after I'd set the console logging level to
+8 (using /proc/sys/kernel/printk).
+
+I've read a lot in the last few days, but I'm not sure what is the best
+tool to use, to get that elusive stack trace. What do you recommend?
+
+Thanks
+
+----------------------------------------------------------------------
+ karsten - 05-03-06 02:31 
+----------------------------------------------------------------------
+"LOCKUP" sounds like you'll not get a stacktrace, 'cause the cpu just
+circles around in snd_usb_usx2y.ko somewhere.
+this somewhere is about "eip c03393a4".
+
+This bug might be by design:
+With nrpacks=4 driver uses urbs with 4 iso packages; thats 4 ms.
+With a samplerate of 44100 we have 177 pcm frames in 4ms.
+On the other hand you've found out sound is bad for nrpacks=4 and
+buffersize<=512:
+buffersize=512 most likely means periodsize=256 with 2 periods.
+so i think snd_usb_usx2y needs periodsize >= 2* (nrpacks in ms) *
+(pcm-frames/ms).
+
+also if i remember correctly, it always made some clicks when i ran it
+(only a us428 here) with periodsize=128, 2 periods (and nrpacks=1).
+periodsize=64, 4 periods was ok.
+
+also periodsize=128, 2 periods is ok with special rawusb jack mode.
+
+here i'm currently running it (only 44100 sr works) with periodsize=64, 2
+periods.
+but this is only possible with a VIA uhci usb controller set to 10000
+SOFs/s.
+(SOF=Start of frame)
+Thats a custom feature i don't know of any other usb1.1 controller.
+(They run with 1000 SOFs/s. That implies a 2 ms (or is it 3ms?
+measurements suggest this, not shure) latency penalty each direction. with
+10000 SOFs/s thats only 0.2ms)
+this also requires a hacked uhci_hcd.ko and a custom firmware
+((dis)assembled & changed it). good thing is measured latency now is
+nearly as good as with the onboard soundcard.
+
+Thanks, Karsten
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-25-06 23:07 jaime          New Issue                                    
+04-25-06 23:07 jaime          Distribution              => Gentoo ~x86     
+04-25-06 23:07 jaime          Kernel Version            => 2.6.17-rc1      
+04-26-06 16:23 jaime          Note Added: 0009514                          
+04-26-06 23:19 karsten        Note Added: 0009526                          
+04-26-06 23:29 karsten        Note Added: 0009527                          
+04-26-06 23:31 karsten        Note Edited: 0009527                         
+04-30-06 19:35 jaime          Note Added: 0009550                          
+04-30-06 21:12 karsten        Note Added: 0009551                          
+05-02-06 21:14 jaime          Note Added: 0009578                          
+05-03-06 02:31 karsten        Note Added: 0009582                          
+======================================================================
 
 
-Now, just in case someone has a better idea how to make things work, 
-here is a more comprehensive explanation about how those cards work, *as 
-far as I could understand* (since I got absolutely no explanation from 
-the manufacturer):
-   - there is a rather large on-chip buffer (0x3c00 bytes), that we can 
-     neither write to or read directly
-   - we can read pointers to the current read and write positions in 
-     this buffer
-   - this buffer is fed by chip-initiated DMA transfers from the main 
-     memory
-   - the buffers for DMA transfers are declared in a FIFO; they mustn't 
-     be too large (8kB is ok; 16kB is not since it's larger that the 
-     on-chip buffer)
-   - if the on-chip buffer is "too empty" (don't know exactly when the 
-     chip decides it is too empty) and no buffer is available for 
-     DMA transfer, it "sends" some junk to the internal buffer
-   - interruptions are not raised when buffers are DMA-transfered, but 
-     at fixed 20.2ms interval (stable experimental value)
-   - it might be required that DMA buffers are aligned on 4kB boundaried 
-     (or page boundaries)
-
-Any idea how to correctly deal with such a beast? I tried a few ones, 
-but none was really successful...
-
-
-Cheers,
-
-Nicolas Boullis
 
 
 -------------------------------------------------------
