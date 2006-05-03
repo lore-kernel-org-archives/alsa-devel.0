@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Wed, 3 May 2006 11:23:18 +0200
-Message-ID: <357955a4b5c14db4d28cdfa777d80279@bugtrack.alsa-project.org>
+Date: Wed, 3 May 2006 11:29:25 +0200
+Message-ID: <354aa491f87978f056ad6fe849e91972@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91EC0223
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 11:23:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7064223
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 11:29:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              05-03-2006 11:23 CEST
+Last Modified:              05-03-2006 11:29 CEST
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -114,13 +114,6 @@ gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-02-06 17:55 
-----------------------------------------------------------------------
-iounmap() is required if you do iomap manually.
-The name string must be unique.  That's the reason the patch adds the card
-number.  We can omit it if the card = 0.
-
-----------------------------------------------------------------------
  Raymond - 05-03-06 11:23 
 ----------------------------------------------------------------------
 > Yes but there was another one. I found message in one forum about sun or
@@ -135,6 +128,102 @@ cat /proc/iomem
 cat /proc/ioports
 
 cat /proc/asound/cards
+
+----------------------------------------------------------------------
+ ponchick - 05-03-06 11:29 
+----------------------------------------------------------------------
+# cat /proc/iomem
+00000000-0009f7ff : System RAM
+0009f800-0009ffff : reserved
+000a0000-000bffff : Video RAM area
+000c0000-000cedff : Video ROM
+000f0000-000fffff : System ROM
+00100000-3ffeffff : System RAM
+  00100000-003a08b6 : Kernel code
+  003a08b7-00508407 : Kernel data
+3fff0000-3fff2fff : ACPI Non-volatile Storage
+3fff3000-3fffffff : ACPI Tables
+50000000-500fffff : PCI Bus #03
+  50000000-5001ffff : 0000:03:00.0
+c0000000-dfffffff : PCI Bus #01
+  c0000000-dfffffff : 0000:01:00.0
+e0000000-e2ffffff : PCI Bus #01
+  e0000000-e0ffffff : 0000:01:00.0
+    e0000000-e0ffffff : nvidia
+  e1000000-e1ffffff : 0000:01:00.0
+  e2000000-e201ffff : 0000:01:00.0
+e3000000-e4ffffff : PCI Bus #03
+  e4000000-e4003fff : 0000:03:00.0
+    e4000000-e4003fff : sky2
+e5000000-e50fffff : PCI Bus #04
+  e5000000-e503ffff : 0000:04:01.0
+    e5000000-e503ffff : au8830
+  e5040000-e5043fff : 0000:04:07.0
+  e5044000-e50447ff : 0000:04:07.0
+    e5044000-e50447ff : ohci1394
+e5100000-e5103fff : 0000:00:1b.0
+e5104000-e51043ff : 0000:00:1d.7
+  e5104000-e51043ff : ehci_hcd
+f0000000-f3ffffff : reserved
+fec00000-ffffffff : reserved
+
+# cat /proc/ioports
+0000-001f : dma1
+0020-0021 : pic1
+0040-0043 : timer0
+0050-0053 : timer1
+0060-006f : keyboard
+0070-0077 : rtc
+0080-008f : dma page reg
+00a0-00a1 : pic2
+00c0-00df : dma2
+00f0-00ff : fpu
+01f0-01f7 : ide0
+02f8-02ff : serial
+03c0-03df : vga+
+03f6-03f6 : ide0
+03f8-03ff : serial
+0400-0403 : PM1a_EVT_BLK
+0404-0405 : PM1a_CNT_BLK
+0408-040b : PM_TMR
+0410-0415 : ACPI CPU throttle
+0428-042f : GPE0_BLK
+0500-051f : 0000:00:1f.3
+0cf8-0cff : PCI conf1
+8000-8fff : PCI Bus #02
+9000-9fff : PCI Bus #03
+  9000-90ff : 0000:03:00.0
+    9000-90ff : sky2
+a000-afff : PCI Bus #04
+  a000-a007 : 0000:04:01.0
+    a000-a007 : au8830
+  a400-a407 : 0000:04:01.0
+    a400-a407 : au8830
+b000-b01f : 0000:00:1d.1
+  b000-b01f : uhci_hcd
+b400-b41f : 0000:00:1d.2
+  b400-b41f : uhci_hcd
+b800-b81f : 0000:00:1d.3
+  b800-b81f : uhci_hcd
+bc00-bc1f : 0000:00:1d.0
+  bc00-bc1f : uhci_hcd
+d000-d007 : 0000:00:1f.2
+  d000-d007 : libata
+d400-d403 : 0000:00:1f.2
+  d400-d403 : libata
+d800-d807 : 0000:00:1f.2
+  d800-d807 : libata
+dc00-dc03 : 0000:00:1f.2
+  dc00-dc03 : libata
+e000-e00f : 0000:00:1f.2
+  e000-e00f : libata
+f000-f00f : 0000:00:1f.1
+  f000-f007 : ide0
+  f008-f00f : ide1
+
+# cat /proc/asound/cards
+ 0 [au8830         ]: au8830 - au8830
+                      au8830 at 0xe5000000 irq 225
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -231,6 +320,7 @@ gentoo-sources-2.6.15-r4
 05-02-06 06:54 Raymond        Note Edited: 0009556                         
 05-02-06 17:55 tiwai          Note Added: 0009561                          
 05-03-06 11:23 Raymond        Note Added: 0009583                          
+05-03-06 11:29 ponchick       Note Added: 0009584                          
 ======================================================================
 
 
