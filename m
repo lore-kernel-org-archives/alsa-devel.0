@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002096]: Audio Players uses 100% CPU
-Date: Wed, 3 May 2006 12:27:03 +0200
-Message-ID: <764c92f64973bc64586fadf61f493cf3@bugtrack.alsa-project.org>
+From: Nigel Gilbert <norb@dscape.freeserve.co.uk>
+Subject: Hard lock up when using ALSA midi in
+Date: Wed, 03 May 2006 11:33:27 +0100
+Message-ID: <1146652407.7497.4.camel@maltbury3.norbnet.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9644221
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 12:27:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +15,106 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2096> 
-======================================================================
-Reported By:                ksc91u
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2096
-Category:                   PCI - intel8x0
-Reproducibility:            random
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             05-03-2006 12:27 CEST
-Last Modified:              05-03-2006 12:27 CEST
-======================================================================
-Summary:                    Audio Players uses 100% CPU
-Description: 
-MB: Asus K8N4-E BIOS 1006
+  I've been trying to use Rosegarden or Museseq to compose some music
+and have discovered that, when software connects to the MIDI IN on my
+sound card, the machine locks up totally (a reboot is required).
 
-I use xmms or VLC to play internet stream.
-And after a period of time...the player get 100% of my CPU,and the sound
-become shatter.
-I can not even switch to console to kill it.
-The only way is to disconnect my network,let the player stop player,and
-kill it.
-======================================================================
+  I've done the following tests:
+  - Installed vkeybd (virtual midi keyboard) and fluidsynth (virtual
+synth). 
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-03-06 12:27 ksc91u         New Issue                                    
-05-03-06 12:27 ksc91u         File Added: lspci.txt                        
-======================================================================
+  - Initially, aconnect shows the following as input and output MIDI
+ports:
+
+    nige@sully ~ $ aconnect -i -o 
+    client 0: 'System' [type=kernel] 
+        0 'Timer           ' 
+        1 'Announce        ' 
+    client 14: 'Midi Through' [type=kernel] 
+        0 'Midi Through Port-0' 
+    client 16: 'MPU-401 MIDI 0-0' [type=kernel] 
+        0 'MPU-401 MIDI 0-0'
+
+  - After starting vkeybd and fluidsynth:
+    nige@sully ~ $ aconnect -i -o 
+    client 0: 'System' [type=kernel] 
+        0 'Timer           ' 
+        1 'Announce        ' 
+    client 14: 'Midi Through' [type=kernel] 
+
+        0 'Midi Through Port-0' 
+    client 16: 'MPU-401 MIDI 0-0' [type=kernel] 
+        0 'MPU-401 MIDI 0-0' 
+    client 128: 'Virtual Keyboard' [type=user] 
+        0 'Virtual Keyboard' 
+    client 129: 'FLUID Synth (7495)' [type=user] 
+        0 'Synth input port (7495:0)' 
+
+  - Hooking together the keyboard and fluidsynth works (after loading a
+soundfont into fluidsynth). Playing notes on the virtual keyboard makes
+audio from the sound card: 
+    nige@sully ~ $ aconnect 128:0 129:0
+
+  - Disconnect fluidsynth and vkeybd and connect vkeybd to the MIDI port
+(with a hardware synth attached). Playing notes on the virtual keyboard
+makes noises from the external synth: 
+    nige@sully ~ $ aconnect -d 128:0 129:0 
+    nige@sully ~ $ aconnect 128:0 16:0 
+
+  - Trying to connect the MIDI port (with external keyboard attached) to
+fluidsynth causes the system lock up: 
+    nige@sully ~ $ aconnect 16:0 129:0
+
+  An even simpler way to get the system to lock up is to use aseqdump,
+this can be done straight after boot up without having to start X or
+anything: 
+    nige@sully ~ $ aseqdump -p 16:0
+
+  I presume that the system locking up means it's a kernel thing (in
+either a module or the main kernel).
+  Oddly, it has worked in the past. Though possibly using OSS only
+rather than ALSA (it was a while ago).
+
+  I have a C-Media 8378 card and am using cmipci as my sound card in the
+kernel (2.6.16).
+    lspci | grep audio
+    00:0b.0 Multimedia audio controller: C-Media Electronics Inc CM8738
+(rev 10)
+
+  My kernel config:
+
+    Device Drivers
+      Sound
+        <*> Sound card support
+          Advanced Linux Sound Architecture
+            <M> Advanced Linux Sound Architecture
+            <M>   Sequencer support
+            <M>     Sequencer dummy client
+            <M>   OSS Mixer API
+            <M>   OSS PCM (digital audio) API
+            [ ]   OSS Sequencer API
+            [ ]   Support old ALSA API
+            Generic devices
+              <M> Generic MPU-401 UART driver
+            PCI devices
+              <M> C-Media 8738, 8338
+          Open Sound System
+            < > Open Sound System (DEPRECATED)
+
+  Any insight into this problem or help getting it working again would
+be greatly appreciated. I've definitely hit the limit of my
+understanding of how MIDI should work under ALSA!
+
+Thanks in advance, 
+  -Nige
+
+-- 
+Nigel Gilbert <norb@dscape.freeserve.co.uk>
 
 
 
