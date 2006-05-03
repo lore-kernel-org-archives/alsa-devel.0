@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002094]: No sound from subwoofer
-Date: Wed, 3 May 2006 20:28:07 +0200
-Message-ID: <fe53f9158e2b46508fcf578d7e665acd@bugtrack.alsa-project.org>
+Date: Wed, 3 May 2006 20:31:03 +0200
+Message-ID: <38bcf36e8d41b6b2a053126c48febaac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 887DC21D
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 20:28:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B329521D
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 20:31:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian
 Kernel Version:             2.6.15.5
 ======================================================================
 Date Submitted:             05-03-2006 00:02 CEST
-Last Modified:              05-03-2006 20:28 CEST
+Last Modified:              05-03-2006 20:31 CEST
 ======================================================================
 Summary:                    No sound from subwoofer
 Description: 
@@ -54,24 +54,6 @@ I don't know if there is something to do with the new intel-hda patch as
 thats the sound system that the "NEW" asus W1000 uses.
 
 ======================================================================
-
-----------------------------------------------------------------------
- oryn - 05-03-06 20:24 
-----------------------------------------------------------------------
-sorry its a CMI-9739 (submitted bug on friends pc)
-speaker-test -Dsurround51 -c6 -twav results in:
-Playback device is surround51
-Stream parameters are 48000Hz, S16_LE, 6 channels
-WAV file(s)
-Playback open error: -16,Device or resource busy
-Playback open error: -16,Device or resource busy
-Playback open error: -16,Device or resource busy
-Playback open error: -16,Device or resource busy
-Playback open error: -16,Device or resource busy
-Playback open error: -16,Device or resource busy
-Playback open error: -16,Device or resource busy
-Playback open error: -16,Device or resource busy
-Playback open error: -16,Device or resource busy
 
 ----------------------------------------------------------------------
  oryn - 05-03-06 20:28 
@@ -101,6 +83,75 @@ Extended ID      : codec=0 rev=1 LDAC SDAC CDAC DSA=0 SPDIF DRA
 Extended status  : SPCV LDAC SDAC CDAC SPDIF=10/11 SPDIF
 SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
 
+----------------------------------------------------------------------
+ oryn - 05-03-06 20:31 
+----------------------------------------------------------------------
+cat /proc/asound/card0/codec97#0/ac97#0-0+regs 
+0:00 = 0000
+0:02 = 0000
+0:04 = 8000
+0:06 = 0000
+0:08 = 0000
+0:0a = 0006
+0:0c = 801f
+0:0e = 801f
+0:10 = 9f1f
+0:12 = 9f1f
+0:14 = 9f1f
+0:16 = 0000
+0:18 = 0000
+0:1a = 0000
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0000
+0:24 = 0000
+0:26 = 000f
+0:28 = 05c6
+0:2a = 05f4
+0:2c = 0000
+0:2e = 0000
+0:30 = 0000
+0:32 = 0000
+0:34 = 0000
+0:36 = 0000
+0:38 = 0000
+0:3a = 2824
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0000
+0:5e = 0612
+0:60 = 0000
+0:62 = 0000
+0:64 = 6008
+0:66 = 0004
+0:68 = 0000
+0:6a = 0000
+0:6c = 0000
+0:6e = 0000
+0:70 = 0100
+0:72 = 0020
+0:74 = 0000
+0:76 = 0000
+0:78 = 0000
+0:7a = 0000
+0:7c = 434d
+0:7e = 4961
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -112,6 +163,7 @@ Date Modified  Username       Field                    Change
 05-03-06 19:25 tiwai          Note Added: 0009599                          
 05-03-06 20:24 oryn           Note Added: 0009602                          
 05-03-06 20:28 oryn           Note Added: 0009603                          
+05-03-06 20:31 oryn           Note Added: 0009604                          
 ======================================================================
 
 
