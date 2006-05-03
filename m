@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002095]: Choppy sound using default dmix config for some applications but not others.
-Date: Wed, 3 May 2006 19:27:05 +0200
-Message-ID: <787cb897a20d831cdfab50a0ce2695ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002094]: No sound from subwoofer
+Date: Wed, 3 May 2006 20:24:39 +0200
+Message-ID: <8d07cadab4621376ca2e4797d4f640f3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECC5621A
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 19:27:05 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94CB721D
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 20:24:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2095> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2094> 
 ======================================================================
-Reported By:                BigBaaadBob
-Assigned To:                perex
+Reported By:                oryn
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2095
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   2094
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               debian
+Kernel Version:             2.6.15.5
 ======================================================================
-Date Submitted:             05-03-2006 01:09 CEST
-Last Modified:              05-03-2006 19:27 CEST
+Date Submitted:             05-03-2006 00:02 CEST
+Last Modified:              05-03-2006 20:24 CEST
 ======================================================================
-Summary:                    Choppy sound using default dmix config for some
-applications but not others.
+Summary:                    No sound from subwoofer
 Description: 
-As reported in http://forums.gentoo.org/viewtopic-t-457951.html
-alsa 1.0.11 causes skipping sound in some applications but not others.
+The subwoofer has stopped working, it used to work on 1.0.9 as rear-left.
+And before that it even used to be LFE.
+I used a .asoundrc script to funnel L+R > rear-left.
+I have tried removing the .asoundrc script and running speaker-test -c6
+and I only get sound from front-left and front-right.
 
-Sound skips in rhytymbox and totem, but not xmms, realplayer, or mplayer.
+I don't know if there is something to do with the new intel-hda patch as
+thats the sound system that the "NEW" asus W1000 uses.
 
-This occurs with default dmix setup (i.e. with no .asoundrc).  Creating an
-.asoundrc like this causes the skipping to stop for those applications
-that skip.
-
-pcm.!default {
-  type hw
-  card 0
-}
-
-This has been reported using the cmipci driver, the Intel ICH4 driver, the
-i915GM driver, and on a ppc iBook G4.
-
-On user reports that fiddling with the .asoundrc parameters can lessen the
-problem, but not eliminate the problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-03-06 11:45 
+ tiwai - 05-03-06 19:25 
 ----------------------------------------------------------------------
-Try to set
+The codec is unknown.  Is it CM9738 or CM9739?
 
-    defaults.pcm.dmix_max_periods -1
+Upload the contents of /etc/asound.state and
+/proc/asound/card0/codec97#0/* files.
 
-in ~/.asoundrc.  This will take back the old dmix behavior.
+Also, how did you test the surround outputs?  The standard test is
+speaker-test program in alsa-utils package.  Run like below:
+
+    % speaker-test -Dsurround51 -c6 -twav
 
 ----------------------------------------------------------------------
- tiwai - 05-03-06 19:27 
+ oryn - 05-03-06 20:24 
 ----------------------------------------------------------------------
-Now I fixed another bug in rate plugin on HG repo.
-Hopefully this fixes the problems here described, too.  Give it a try.
+sorry its a CMI-9739 (submitted bug on friends pc)
+speaker-test -Dsurround51 -c6 -twav results in:
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+WAV file(s)
+Playback open error: -16,Device or resource busy
+Playback open error: -16,Device or resource busy
+Playback open error: -16,Device or resource busy
+Playback open error: -16,Device or resource busy
+Playback open error: -16,Device or resource busy
+Playback open error: -16,Device or resource busy
+Playback open error: -16,Device or resource busy
+Playback open error: -16,Device or resource busy
+Playback open error: -16,Device or resource busy
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-03-06 01:09 BigBaaadBob    New Issue                                    
-05-03-06 01:27 wellwhoopdedoooNote Added: 0009580                          
-05-03-06 01:28 wellwhoopdedoooIssue Monitored: wellwhoopdedooo                  
- 
-05-03-06 01:29 wellwhoopdedoooNote Edited: 0009580                         
-05-03-06 01:31 BigBaaadBob    Note Added: 0009581                          
-05-03-06 11:45 tiwai          Note Added: 0009586                          
-05-03-06 19:27 tiwai          Note Added: 0009601                          
+05-03-06 00:02 oryn           New Issue                                    
+05-03-06 00:02 oryn           Distribution              => debian          
+05-03-06 00:02 oryn           Kernel Version            => 2.6.15.5        
+05-03-06 11:46 tiwai          Note Added: 0009587                          
+05-03-06 16:45 oryn           Note Added: 0009595                          
+05-03-06 19:25 tiwai          Note Added: 0009599                          
+05-03-06 20:24 oryn           Note Added: 0009602                          
 ======================================================================
 
 
