@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002094]: No sound from subwoofer
-Date: Wed, 3 May 2006 20:33:34 +0200
-Message-ID: <919b2d4491cf0d93c7f031daec5e6e9e@bugtrack.alsa-project.org>
+From: Alvaro Kuolas <kuolas@gmail.com>
+Subject: Re: Re: What about the VLSI/Philips chips?
+Date: Wed, 03 May 2006 15:35:41 -0300
+Message-ID: <4458F7FD.8030502@gmail.com>
+References: <4452C0E0.2000203@gmail.com>	<4457BB60.7050706@gmail.com> <s5hhd47gumz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 519AE21D
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 20:33:34 +0200 (MEST)
+In-Reply-To: <s5hhd47gumz.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,135 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+These are all the cards:
+Can be updated the Sound Card Matrix with these?
+(Note: The VT21702 is different to the SAA7785.)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2094> 
-======================================================================
-Reported By:                oryn
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2094
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.15.5
-======================================================================
-Date Submitted:             05-03-2006 00:02 CEST
-Last Modified:              05-03-2006 20:33 CEST
-======================================================================
-Summary:                    No sound from subwoofer
-Description: 
-The subwoofer has stopped working, it used to work on 1.0.9 as rear-left.
-And before that it even used to be LFE.
-I used a .asoundrc script to funnel L+R > rear-left.
-I have tried removing the .asoundrc script and running speaker-test -c6
-and I only get sound from front-left and front-right.
+   -Model-        -Name Model-           
+-Chipset-                         -Remarks/Capabilities-
+-----------------------------------------------------------------------------------------------------
+Philips PSC602 - Harmonic Edge - Philips SAA7785 Thunderbird Avenger DSP
+- 2-Channel PCI Sound Card
+Philips PSC604 - Dynamic Edge  - Philips SAA7785 Thunderbird Avenger DSP
+- 4.1/4-Channel PCI Sound Card
+Philips PSC605 - Sonic Edge    - Philips SAA7785 Thunderbird Avenger DSP
+- 5.1/6-Channel PCI Sound Card
+--------------
+Philips PSC702 - Rhythmic Edge - VLSI/QSound VT21702 Thunderbird 128 DSP
+- 2-Channel PCI Sound Card
+Philips PSC703 - Rhythmic Edge - Philips SAA7785 Thunderbird Avenger DSP
+- 4-Channel PCI Sound Card (Europe?)
+Philips PSC704 - Seismic Edge  - VLSI/QSound VT21702 Thunderbird 128 DSP
+- 4-Channel PCI Sound Card
+Philips PSC705 - Seismic Edge  - Philips SAA7785 Thunderbird Avenger DSP
+- 6-Channel PCI Sound Card (Europe?)
+Philips PSC706 - Acoustic Edge - Philips SAA7785 Thunderbird Avenger DSP
+- 5.1/6-Channel PCI Sound Card
+Philips PSC724 - Ultimate Edge - VIA Vinyl ENVY24GT DSP - not Philips :)
+- 5.1 24bits 96khz PCI Sound Card
+--------------
+Philips PSC805 - Aurilium      -                                        
+- USB External Sound Processor
 
-I don't know if there is something to do with the new intel-hda patch as
-thats the sound system that the "NEW" asus W1000 uses.
+--
 
-======================================================================
+I have one of the two chipsets to play with, and it's the undocumented one.
 
-----------------------------------------------------------------------
- oryn - 05-03-06 20:31 
-----------------------------------------------------------------------
-cat /proc/asound/card0/codec97#0/ac97#0-0+regs 
-0:00 = 0000
-0:02 = 0000
-0:04 = 8000
-0:06 = 0000
-0:08 = 0000
-0:0a = 0006
-0:0c = 801f
-0:0e = 801f
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 0000
-0:18 = 0000
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 05c6
-0:2a = 05f4
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 2824
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0612
-0:60 = 0000
-0:62 = 0000
-0:64 = 6008
-0:66 = 0004
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0100
-0:72 = 0020
-0:74 = 0000
-0:76 = 0000
-0:78 = 0000
-0:7a = 0000
-0:7c = 434d
-0:7e = 4961
+I said before.
+>
 
-----------------------------------------------------------------------
- oryn - 05-03-06 20:33 
-----------------------------------------------------------------------
-I don't have /etc/asound.state I think debian takes care of that somewhere
-else.
-Sorry for all the notes, my stupid browser doesn't want to brows the /proc
-directory.
+>The card, as far as i know, is "undocumented by Philips"(TM).
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-03-06 00:02 oryn           New Issue                                    
-05-03-06 00:02 oryn           Distribution              => debian          
-05-03-06 00:02 oryn           Kernel Version            => 2.6.15.5        
-05-03-06 11:46 tiwai          Note Added: 0009587                          
-05-03-06 16:45 oryn           Note Added: 0009595                          
-05-03-06 19:25 tiwai          Note Added: 0009599                          
-05-03-06 20:24 oryn           Note Added: 0009602                          
-05-03-06 20:28 oryn           Note Added: 0009603                          
-05-03-06 20:31 oryn           Note Added: 0009604                          
-05-03-06 20:33 oryn           Note Added: 0009605                          
-======================================================================
-
+>
+But on the philips page there are a lot of docs, drivers and more.
+But for VLSI/QSound  VT21702 there's nothing.
+Philips don't be mad with me :).
 
 
 
