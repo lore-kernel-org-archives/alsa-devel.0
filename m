@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001883]: NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804 sound - snd-intel8x0)
-Date: Wed, 3 May 2006 19:14:23 +0200
-Message-ID: <bc301923f9c2c42e6f1600945d7396bd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002094]: No sound from subwoofer
+Date: Wed, 3 May 2006 19:25:06 +0200
+Message-ID: <d65ab4e4f7f685e8f4a433d6cd8b467e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F88C21A
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 19:14:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A5C421A
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 19:25:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,84 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1883> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2094> 
 ======================================================================
-Reported By:                samael
+Reported By:                oryn
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1883
+Issue ID:                   2094
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo / Ubuntu
-Kernel Version:             kernel-2.6.15
+Distribution:               debian
+Kernel Version:             2.6.15.5
 ======================================================================
-Date Submitted:             02-27-2006 09:03 CET
-Last Modified:              05-03-2006 19:14 CEST
+Date Submitted:             05-03-2006 00:02 CEST
+Last Modified:              05-03-2006 19:25 CEST
 ======================================================================
-Summary:                    NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804
-sound - snd-intel8x0)
+Summary:                    No sound from subwoofer
 Description: 
-AMD64 3000+ on K8N4-E Delux motherboard
-(NFORCE-CK804 sound - snd-intel8x0)
+The subwoofer has stopped working, it used to work on 1.0.9 as rear-left.
+And before that it even used to be LFE.
+I used a .asoundrc script to funnel L+R > rear-left.
+I have tried removing the .asoundrc script and running speaker-test -c6
+and I only get sound from front-left and front-right.
 
-ALSA-1.0.2/4 - sound works perfect!! After 1.0.4 - NO SOUND!!
-GSI 21 (level, low) -> IRQ 18
-Feb 12 19:46:31 tux PCI: Setting latency timer of device 0000:00:04.0 to
-64 
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-...............................................
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux AC'97 0 does not respond - RESET
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux AC'97 0 access is not valid [0xffffffff], removing
-mixer. Feb 12 19:46:31 tux Unable to initialize codec #0
-Feb 12 19:46:31 tux ACPI: PCI interrupt for device 0000:00:04.0 disabled
+I don't know if there is something to do with the new intel-hda patch as
+thats the sound system that the "NEW" asus W1000 uses.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- ksc91u - 05-03-06 12:18 
+ oryn - 05-03-06 16:45 
 ----------------------------------------------------------------------
-2.6.15 has some problem with PCI IRQs...
-I can not get network,sound,even usb of K8N4-E to work on 2.6.15
-
-So just use other version of kernel.
+The hardware is Intel ICH4 + CMI9373
 
 ----------------------------------------------------------------------
- samael - 05-03-06 19:14 
+ tiwai - 05-03-06 19:25 
 ----------------------------------------------------------------------
-I resolved this problem by upgrading BIOS to newest one (beta) from
-asus.com.
+The codec is unknown.  Is it CM9738 or CM9739?
 
-By the way, after 2 hard monthes of using ASUS K8N4-E Delux, I replayes it
-on Epox MB :) 
-Much better!!!!! 
+Upload the contents of /etc/asound.state and
+/proc/asound/card0/codec97#0/* files.
 
-All this problems are linked with bad Asus BIOS :(
+Also, how did you test the surround outputs?  The standard test is
+speaker-test program in alsa-utils package.  Run like below:
+
+    % speaker-test -Dsurround51 -c6 -twav
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-27-06 09:03 samael         New Issue                                    
-02-27-06 09:03 samael         Distribution              => Gentoo / Ubuntu 
-02-27-06 09:03 samael         Kernel Version            => kernel-2.6.15   
-02-27-06 09:04 samael         Issue Monitored: samael                      
-03-02-06 15:29 tiwai          Note Added: 0008309                          
-03-07-06 15:15 samael         Note Added: 0008363                          
-03-07-06 15:20 tiwai          Note Added: 0008364                          
-03-07-06 15:30 samael         Note Added: 0008367                          
-05-03-06 12:18 ksc91u         Note Added: 0009592                          
-05-03-06 19:14 samael         Note Added: 0009598                          
+05-03-06 00:02 oryn           New Issue                                    
+05-03-06 00:02 oryn           Distribution              => debian          
+05-03-06 00:02 oryn           Kernel Version            => 2.6.15.5        
+05-03-06 11:46 tiwai          Note Added: 0009587                          
+05-03-06 16:45 oryn           Note Added: 0009595                          
+05-03-06 19:25 tiwai          Note Added: 0009599                          
 ======================================================================
 
 
