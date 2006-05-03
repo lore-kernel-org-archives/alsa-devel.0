@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002070]: Hard lockup from aplay with low buffersizes on Tascam us-122 (snd_usb_usx2y)
-Date: Wed, 3 May 2006 02:31:53 +0200
-Message-ID: <30353737a58acc3a5b19fb94fc1edc1c@bugtrack.alsa-project.org>
+From: Matt Porter <mporter@embeddedalley.com>
+Subject: [PATCH] hda: add sigmatel 9227/9228/9229 ids
+Date: Tue, 2 May 2006 22:53:46 -0700
+Message-ID: <20060502225346.B6803@cox.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 301AB10A
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 02:31:53 +0200 (MEST)
+Received: from fed1rmmtao05.cox.net (fed1rmmtao05.cox.net [68.230.241.34])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DA75223
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 07:53:49 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,134 +18,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Adds support for the 9227/9228/9229 sigmatel hda codecs.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2070> 
-======================================================================
-Reported By:                jaime
-Assigned To:                karsten
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2070
-Category:                   USB - usb-usx2y
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo ~x86
-Kernel Version:             2.6.17-rc1
-======================================================================
-Date Submitted:             04-25-2006 23:07 CEST
-Last Modified:              05-03-2006 02:31 CEST
-======================================================================
-Summary:                    Hard lockup from aplay with low buffersizes on
-Tascam us-122 (snd_usb_usx2y)
-Description: 
-Hi.
+Signed-off-by: Matt Porter <mporter@embeddedalley.com>
 
-Here's the original I'm playing (440Hz sine wave):
-www.carbon.eclipse.co.uk/origSine.wav
-
-aplay --buffer-size=1024 origSine.wav sounds great:
-www.carbon.eclipse.co.uk/aplay1024.wav
-
-aplay --buffer-size=512 origSine.wav sounds bad:
-www.carbon.eclipse.co.uk/aplay512.wav
-
-aplay --buffer-size=256 origSine.wav sounds very bad:
-www.carbon.eclipse.co.uk/aplay256.wav
-
-aplay --buffer-size=128 origSine.wav gives only a very short click,
-and then locks up the machine completely:
-www.carbon.eclipse.co.uk/aplay128.wav
-
-I've tried this using different usb cards/controllers, and I get the
-same problem, so I think it is an alsa driver problem.
-
-Thank you for any help you can offer.
-
-======================================================================
-
-----------------------------------------------------------------------
- jaime - 05-02-06 21:14 
-----------------------------------------------------------------------
-Hi Karsten.
-
-I know that you said that it's not worth debugging this, but I'm still
-trying to get a stack trace, just to find out what's causing the lockup.
-I'm managed to get a serial console working on another machine, and using
-the nmi_watchdog, I get the following out 5 seconds after I start aplay:
-
-BUG: NMI Watchdog detected LOCKUP on CPU0, eip c03393a4, registers:
-Modules linked in: snd_usb_usx2y snd_usb_lib snd_rawmidi snd_seq_device
-..]&#65533;.u&#65533;.}&#65533;&#65533;...0.
-
-That's all I get, and that was after I'd set the console logging level to
-8 (using /proc/sys/kernel/printk).
-
-I've read a lot in the last few days, but I'm not sure what is the best
-tool to use, to get that elusive stack trace. What do you recommend?
-
-Thanks
-
-----------------------------------------------------------------------
- karsten - 05-03-06 02:31 
-----------------------------------------------------------------------
-"LOCKUP" sounds like you'll not get a stacktrace, 'cause the cpu just
-circles around in snd_usb_usx2y.ko somewhere.
-this somewhere is about "eip c03393a4".
-
-This bug might be by design:
-With nrpacks=4 driver uses urbs with 4 iso packages; thats 4 ms.
-With a samplerate of 44100 we have 177 pcm frames in 4ms.
-On the other hand you've found out sound is bad for nrpacks=4 and
-buffersize<=512:
-buffersize=512 most likely means periodsize=256 with 2 periods.
-so i think snd_usb_usx2y needs periodsize >= 2* (nrpacks in ms) *
-(pcm-frames/ms).
-
-also if i remember correctly, it always made some clicks when i ran it
-(only a us428 here) with periodsize=128, 2 periods (and nrpacks=1).
-periodsize=64, 4 periods was ok.
-
-also periodsize=128, 2 periods is ok with special rawusb jack mode.
-
-here i'm currently running it (only 44100 sr works) with periodsize=64, 2
-periods.
-but this is only possible with a VIA uhci usb controller set to 10000
-SOFs/s.
-(SOF=Start of frame)
-Thats a custom feature i don't know of any other usb1.1 controller.
-(They run with 1000 SOFs/s. That implies a 2 ms (or is it 3ms?
-measurements suggest this, not shure) latency penalty each direction. with
-10000 SOFs/s thats only 0.2ms)
-this also requires a hacked uhci_hcd.ko and a custom firmware
-((dis)assembled & changed it). good thing is measured latency now is
-nearly as good as with the onboard soundcard.
-
-Thanks, Karsten
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-25-06 23:07 jaime          New Issue                                    
-04-25-06 23:07 jaime          Distribution              => Gentoo ~x86     
-04-25-06 23:07 jaime          Kernel Version            => 2.6.17-rc1      
-04-26-06 16:23 jaime          Note Added: 0009514                          
-04-26-06 23:19 karsten        Note Added: 0009526                          
-04-26-06 23:29 karsten        Note Added: 0009527                          
-04-26-06 23:31 karsten        Note Edited: 0009527                         
-04-30-06 19:35 jaime          Note Added: 0009550                          
-04-30-06 21:12 karsten        Note Added: 0009551                          
-05-02-06 21:14 jaime          Note Added: 0009578                          
-05-03-06 02:31 karsten        Note Added: 0009582                          
-======================================================================
-
-
+Index: alsa-kernel/pci/hda/patch_sigmatel.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/hda/patch_sigmatel.c,v
+retrieving revision 1.22
+diff -u -r1.22 patch_sigmatel.c
+--- alsa-kernel/pci/hda/patch_sigmatel.c	27 Mar 2006 10:51:52 -0000	1.22
++++ alsa-kernel/pci/hda/patch_sigmatel.c	3 May 2006 05:50:49 -0000
+@@ -1367,6 +1367,12 @@
+  	{ .id = 0x83847681, .name = "STAC9220D/9223D A2", .patch = patch_stac922x },
+  	{ .id = 0x83847682, .name = "STAC9221 A2", .patch = patch_stac922x },
+  	{ .id = 0x83847683, .name = "STAC9221D A2", .patch = patch_stac922x },
++ 	{ .id = 0x83847618, .name = "STAC9227", .patch = patch_stac922x },
++ 	{ .id = 0x83847619, .name = "STAC9227", .patch = patch_stac922x },
++ 	{ .id = 0x83847616, .name = "STAC9228", .patch = patch_stac922x },
++ 	{ .id = 0x83847617, .name = "STAC9228", .patch = patch_stac922x },
++ 	{ .id = 0x83847614, .name = "STAC9229", .patch = patch_stac922x },
++ 	{ .id = 0x83847615, .name = "STAC9229", .patch = patch_stac922x },
+  	{ .id = 0x83847620, .name = "STAC9274", .patch = patch_stac927x },
+  	{ .id = 0x83847621, .name = "STAC9274D", .patch = patch_stac927x },
+  	{ .id = 0x83847622, .name = "STAC9273X", .patch = patch_stac927x },
 
 
 -------------------------------------------------------
