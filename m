@@ -1,13 +1,16 @@
-From: Andrew Morton <akpm@osdl.org>
-Subject: Re: snd_hda_intel on 2.6.16 (or higher)
-Date: Wed, 3 May 2006 05:43:30 -0700
-Message-ID: <20060503054330.9962cbf4.akpm@osdl.org>
-References: <20060426224924.M44901@linuxwireless.org>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: Re: Non-continous channel map?
+Date: Wed, 03 May 2006 14:43:51 +0200
+Message-ID: <4458A587.2010403@cendio.se>
+References: <44505C23.30109@cendio.se> <20060503120653.GA11243@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060426224924.M44901@linuxwireless.org>
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9AFE5185
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 14:43:53 +0200 (MEST)
+In-Reply-To: <20060503120653.GA11243@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,32 +20,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alejandro Bonilla <abonilla@linuxwireless.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 26 Apr 2006 16:55:03 -0600
-"Alejandro Bonilla" <abonilla@linuxwireless.org> wrote:
-
-> Hi,
+Clemens Ladisch wrote:
+> Pierre Ossman wrote:
+>> ALSA uses a rather strict default channel map, just a simple list.
 > 
-> I reported some snd_hda_intel problem a month ago. I have been using 2.6.15-21
-> perfectly, but with 2.6.16 or even git 2.6.17-rc2 it is still going like at
-> 1.2x the speed it should go (1x is ok). You can notice Music will actually go
-> faster and it may sometimes chipmonk.
+> Does it?  AFAIK ALSA devices just have a specific number of channels and
+> leave the interpretation to the application.
 > 
-> Please let me know what exact info is required if interested. This is on a
-> Compaq V2000 Ubuntu Dapper Drake up to date and with 2.6.15-X it has worked
-> perfectly and still is, until 2.6.16 or higher is loaded.
+> The default channel order is just a convention.
 > 
 
-Added alsa-devel to cc.
+A convention that isn't followed is just as bad, if not worse, than no 
+convention at all.
 
-If this doesn't get resolved within a few days, please raise a report at
-bugzilla.kernel.org so we can keep track of it.  Or in the ALSA bug
-tracking system if that's requested.
+So what you're saying is that any application that wants to output more 
+than one channel must have the user inform it of how channels are mapped?
 
-Thanks.
+-- 
+Pierre Ossman                Telephone: +46-13-21 46 00
+Cendio AB                    Web: http://www.cendio.com
 
 
 -------------------------------------------------------
