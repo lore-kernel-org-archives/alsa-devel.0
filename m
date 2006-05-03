@@ -1,16 +1,16 @@
 From: Pierre Ossman <ossman@cendio.se>
-Subject: Re: alsa-plugins 1.0.11 has broken ltmain.sh
-Date: Wed, 03 May 2006 16:01:38 +0200
-Message-ID: <4458B7C2.7030900@cendio.se>
-References: <4450657A.2010405@cendio.se> <s5hbqufgt6h.wl%tiwai@suse.de>
+Subject: Re: Non-continous channel map?
+Date: Wed, 03 May 2006 16:00:55 +0200
+Message-ID: <4458B797.5000103@cendio.se>
+References: <44505C23.30109@cendio.se> <s5hd5evgtbw.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD31F159
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 16:01:40 +0200 (MEST)
-In-Reply-To: <s5hbqufgt6h.wl%tiwai@suse.de>
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73BF4159
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 16:00:56 +0200 (MEST)
+In-Reply-To: <s5hd5evgtbw.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,20 +25,30 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-> At Thu, 27 Apr 2006 08:32:26 +0200,
-> Pierre Ossman wrote:
->> When I compile the alsa-plugins package, the resulting modules lack the 
->> .so suffix, causing them to be installed incorrectly. This seems to be a 
->> problem with the ltmain.sh shipped in the package as things work 
->> perfectly if I re-libtoolize the tree.
 > 
-> Works for me.
-> 
-> Which distro are you using?
-> 
+> I vote for (b).  The method is simple enough.
 
-FC4, fully updated.
+Ok. I'll start implementing that then. :)
 
+> 
+> Does the server-side configuration change on the fly, or the setup is
+> fixed once after the server-client connection is established?
+
+Yes and no. A back end specifies its channel map during creation, so 
+it's static during its lifetime. But we identify the back end using a 
+name, so it is possible that "our" back end could get removed and 
+another loaded with the same name.
+
+It is possible to get notifications when this happens though, so we can 
+handle this gracefully.
+
+> In theory, ALSA controls can dynamically added/removed.  But this may
+> rather confuse some applications that don't support the dynamic change
+> of control elements.
+
+Something that Polypaudio itself is probably guilty of. ;)
+
+Rgds
 -- 
 Pierre Ossman                Telephone: +46-13-21 46 00
 Cendio AB                    Web: http://www.cendio.com
