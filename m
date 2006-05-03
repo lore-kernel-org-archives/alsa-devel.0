@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002080]: Card driver works incorrectly after resume
-Date: Wed, 3 May 2006 18:55:39 +0200
-Message-ID: <e752306b7e4ff8165dadfc29dc929cb9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001883]: NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804 sound - snd-intel8x0)
+Date: Wed, 3 May 2006 19:14:23 +0200
+Message-ID: <bc301923f9c2c42e6f1600945d7396bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1828215D
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 18:55:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F88C21A
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 19:14:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,123 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2080> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1883> 
 ======================================================================
-Reported By:                Alexey Morozov
-Assigned To:                mjander
+Reported By:                samael
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2080
-Category:                   PCI - au88x0
+Issue ID:                   1883
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               ALT Linux
-Kernel Version:             2.6.16.9 + extra patches
+Status:                     new
+Distribution:               Gentoo / Ubuntu
+Kernel Version:             kernel-2.6.15
 ======================================================================
-Date Submitted:             04-27-2006 18:35 CEST
-Last Modified:              05-03-2006 18:55 CEST
+Date Submitted:             02-27-2006 09:03 CET
+Last Modified:              05-03-2006 19:14 CEST
 ======================================================================
-Summary:                    Card driver works incorrectly after resume
+Summary:                    NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804
+sound - snd-intel8x0)
 Description: 
-When I resume after hibernating to disk (performed by swsusp-2.2.5) sound
-card driver seems to correctly load up (that is no errors reported) but
-actually audio playback and other card manipulation such as mixer tuning
-is impossible:
+AMD64 3000+ on K8N4-E Delux motherboard
+(NFORCE-CK804 sound - snd-intel8x0)
 
-playback fails like this:
-
-alex@localhost ~ $ aplay -v
-/home/archives/Music/Bob_Marley/disk1/track05.cdda.wav
-Playing WAVE '/home/archives/Music/Bob_Marley/disk1/track05.cdda.wav' :
-Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-aplay: pcm_write:1257: write error: Input/output error
-
-after several seconds of silence and manipluating mixer with alsamixer
-becomes really slow.
-
-After reloading just the driver (i.e. 
-
-alex@localhost ~ $ sudo modprobe -r snd_au8830
-alex@localhost ~ $ sudo modprobe snd_au8830
-
-normal playback is restored.
-
-The problem is 100% reproducible and actually it was reproducable in
-previous (e.g. 1.0.10) versions of alsa-driver and previous kernels.
-
-Here's output of lspci -vv for the card:
-
-0000:00:0e.0 Multimedia audio controller: Aureal Semiconductor Vortex 2
-(rev fe)
-        Subsystem: Diamond Multimedia Systems Monster Sound II
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32 (1000ns min, 3000ns max), cache line size 08
-        Interrupt: pin A routed to IRQ 11
-        Region 0: Memory at de800000 (32-bit, non-prefetchable)
-        Region 1: I/O ports at b800 [size=8]
-        Region 2: I/O ports at b400 [size=8]
-        Capabilities: [dc] Power Management version 1
-                Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-
-I can provide any additional information about host/OS configuration upon
-a request.
+ALSA-1.0.2/4 - sound works perfect!! After 1.0.4 - NO SOUND!!
+GSI 21 (level, low) -> IRQ 18
+Feb 12 19:46:31 tux PCI: Setting latency timer of device 0000:00:04.0 to
+64 
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+...............................................
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux AC'97 0 does not respond - RESET
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
+[0x1][0x1010101] 
+Feb 12 19:46:31 tux AC'97 0 access is not valid [0xffffffff], removing
+mixer. Feb 12 19:46:31 tux Unable to initialize codec #0
+Feb 12 19:46:31 tux ACPI: PCI interrupt for device 0000:00:04.0 disabled
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 05-02-06 14:14 
+ ksc91u - 05-03-06 12:18 
 ----------------------------------------------------------------------
-> could you explain what I should do to check this issue with my ordinary
-(i.e. 
-> plain stereo) headphones?
+2.6.15 has some problem with PCI IRQs...
+I can not get network,sound,even usb of K8N4-E to work on 2.6.15
 
-Just follow procedure described in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1726#8105
-
-
-ICH5/ICH5R support S4(Suspend to Disk) S5(Soft Off)
-
-For au8810
-
-Capabilities: [dc] Power Management version 2
-Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2+,D3hot+,D3cold-)
-Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-
-http://savannah.nongnu.org/patch/?func=detailitem&item_id=3948#comment209
+So just use other version of kernel.
 
 ----------------------------------------------------------------------
- Raymond - 05-03-06 18:55 
+ samael - 05-03-06 19:14 
 ----------------------------------------------------------------------
-"Writing an ALSA Driver" did not mention how to handle gameport and
-mpu401_uart
+I resolved this problem by upgrading BIOS to newest one (beta) from
+asus.com.
 
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/c1536.htm
+By the way, after 2 hard monthes of using ASUS K8N4-E Delux, I replayes it
+on Epox MB :) 
+Much better!!!!! 
+
+All this problems are linked with bad Asus BIOS :(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-27-06 18:35 Alexey Morozov New Issue                                    
-04-27-06 18:35 Alexey Morozov Distribution              => ALT Linux       
-04-27-06 18:35 Alexey Morozov Kernel Version            => 2.6.16.9 + extra
-patches
-04-28-06 03:58 Raymond        Note Added: 0009537                          
-04-28-06 05:01 Raymond        Note Edited: 0009537                         
-04-28-06 05:05 Raymond        Note Edited: 0009537                         
-04-29-06 05:03 Raymond        Note Added: 0009540                          
-04-30-06 09:36 Raymond        Note Edited: 0009540                         
-05-02-06 08:18 Alexey Morozov Note Added: 0009557                          
-05-02-06 08:28 Alexey Morozov Note Added: 0009558                          
-05-02-06 14:14 Raymond        Note Added: 0009559                          
-05-03-06 18:55 Raymond        Note Added: 0009597                          
+02-27-06 09:03 samael         New Issue                                    
+02-27-06 09:03 samael         Distribution              => Gentoo / Ubuntu 
+02-27-06 09:03 samael         Kernel Version            => kernel-2.6.15   
+02-27-06 09:04 samael         Issue Monitored: samael                      
+03-02-06 15:29 tiwai          Note Added: 0008309                          
+03-07-06 15:15 samael         Note Added: 0008363                          
+03-07-06 15:20 tiwai          Note Added: 0008364                          
+03-07-06 15:30 samael         Note Added: 0008367                          
+05-03-06 12:18 ksc91u         Note Added: 0009592                          
+05-03-06 19:14 samael         Note Added: 0009598                          
 ======================================================================
 
 
