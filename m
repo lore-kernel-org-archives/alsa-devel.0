@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002094]: No sound from subwoofer
-Date: Wed, 3 May 2006 20:31:03 +0200
-Message-ID: <38bcf36e8d41b6b2a053126c48febaac@bugtrack.alsa-project.org>
+Date: Wed, 3 May 2006 20:33:34 +0200
+Message-ID: <919b2d4491cf0d93c7f031daec5e6e9e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B329521D
-	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 20:31:03 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 519AE21D
+	for <alsa-devel@alsa-project.org>; Wed,  3 May 2006 20:33:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian
 Kernel Version:             2.6.15.5
 ======================================================================
 Date Submitted:             05-03-2006 00:02 CEST
-Last Modified:              05-03-2006 20:31 CEST
+Last Modified:              05-03-2006 20:33 CEST
 ======================================================================
 Summary:                    No sound from subwoofer
 Description: 
@@ -54,34 +54,6 @@ I don't know if there is something to do with the new intel-hda patch as
 thats the sound system that the "NEW" asus W1000 uses.
 
 ======================================================================
-
-----------------------------------------------------------------------
- oryn - 05-03-06 20:28 
-----------------------------------------------------------------------
-cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: C-Media Electronics CMI9739
-
-PCI Subsys Vendor: 0x1043
-PCI Subsys Device: 0x1843
-
-Capabilities     :
-DAC resolution   : 16-bit
-ADC resolution   : 16-bit
-3D enhancement   : No 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Double rate slots: 10/11
-Extended ID      : codec=0 rev=1 LDAC SDAC CDAC DSA=0 SPDIF DRA
-Extended status  : SPCV LDAC SDAC CDAC SPDIF=10/11 SPDIF
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
 
 ----------------------------------------------------------------------
  oryn - 05-03-06 20:31 
@@ -152,6 +124,14 @@ cat /proc/asound/card0/codec97#0/ac97#0-0+regs
 0:7c = 434d
 0:7e = 4961
 
+----------------------------------------------------------------------
+ oryn - 05-03-06 20:33 
+----------------------------------------------------------------------
+I don't have /etc/asound.state I think debian takes care of that somewhere
+else.
+Sorry for all the notes, my stupid browser doesn't want to brows the /proc
+directory.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -164,6 +144,7 @@ Date Modified  Username       Field                    Change
 05-03-06 20:24 oryn           Note Added: 0009602                          
 05-03-06 20:28 oryn           Note Added: 0009603                          
 05-03-06 20:31 oryn           Note Added: 0009604                          
+05-03-06 20:33 oryn           Note Added: 0009605                          
 ======================================================================
 
 
