@@ -1,14 +1,13 @@
-From: "Jason Champion" <jchampion@dsci-usa.com>
-Subject: [ALSA-lib] Device Enumeration in Human-Readable Form
-Date: Thu, 4 May 2006 18:50:11 -0400
-Message-ID: <200605042250.k44MoAHV015522@dsci-usa.com>
-References: <20060414015001.9C53A888D2@sc8-sf-spam1.sourceforge.net>
+From: Nicolas Boullis <nboullis@debian.org>
+Subject: Re: How to deal with cards with a large on-board buffer?
+Date: Fri, 5 May 2006 01:36:52 +0200
+Message-ID: <20060504233651.GH4831@home>
+References: <20060502234125.GC4109@home> <20060503122658.GB11243@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060414015001.9C53A888D2@sc8-sf-spam1.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20060503122658.GB11243@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,21 +20,76 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am currently working on a multiplatform audio project that uses wxWidgets
-+ DirectSound on Windows and wxGTK + ALSA on Linux.  I need to be able to
-enumerate the soundcards on the system in Human-readable form, like so:
+On Wed, May 03, 2006 at 02:26:58PM +0200, Clemens Ladisch wrote:
+> > 
+> > To make it short, the trouble is that, to get correct working, it seems 
+> > to require that the audio buffer be kept at some minimal fill level. Is 
+> > there a way I can enforce this?
+> 
+> The card should do this automatically as it initiates the DMA transfers
+> by itself.
 
-http://www.bloodlessmushroom/enumeration.gif
+It does. But then I have problems if the transfered buffer has not been 
+filled by the application...
 
-Is there a standard way to get this enumeration using ALSA?  I haven't been
-able to find any good documentation describing how to do so.  Essentially I
-am looking for how to do something more or less equivalent to
-DirectSoundEnumerate() in order to grab a list of PCM capture and PCM
-playback devices.
 
-Thank you,
-Jason Champion
+> > Now, just in case someone has a better idea how to make things work, 
+> > here is a more comprehensive explanation about how those cards work, *as 
+> > far as I could understand* (since I got absolutely no explanation from 
+> > the manufacturer):
+> >    - there is a rather large on-chip buffer (0x3c00 bytes), that we can 
+> >      neither write to or read directly
+> 
+> So it's just a FIFO that is more or less transparent to the computer?
 
+I guess so.
+
+> >    - we can read pointers to the current read and write positions in 
+> >      this buffer
+> >    - this buffer is fed by chip-initiated DMA transfers from the main 
+> >      memory
+> 
+> How big are these transfers?
+
+In the current code, they are 4kB (1ksample) or 8kB (2ksample). I can 
+specify the size I want, but it does not work with large buffers (8kB is 
+already more than half the size of the on-chip buffer). And it seems 
+that there are problems when the buffers are not 4kB-aligned.
+
+
+> >    - the buffers for DMA transfers are declared in a FIFO;
+> 
+> You mean this chip supports scatter/gather buffers?
+
+I'm not sure what you mean exactly by scatter/gather buffers, but I 
+guess it is something like that.
+
+
+> >    - if the on-chip buffer is "too empty" (don't know exactly when the 
+> >      chip decides it is too empty) and no buffer is available for 
+> >      DMA transfer, it "sends" some junk to the internal buffer
+> 
+> Most sound card FIFOs operate like this.
+
+OK, I did not know.
+
+
+> >    - interruptions are not raised when buffers are DMA-transfered, but 
+> >      at fixed 20.2ms interval (stable experimental value)
+> 
+> The ymfpci and usb drivers deal with a similar problem.
+
+I'll try to give them a look.
+But if I understand things correctly, I must ensure that the periods are 
+large enough to be played in more than 20.2ms, if I want 
+snd_pcm_period_elapsed to be called often enough. Is that right?
+
+
+Cheers,
+
+Nicolas
+
+PS: sorry if I'm being stupid, I'm not used to writing audio drivers...
 
 
 -------------------------------------------------------
