@@ -1,11 +1,16 @@
-From: "techie tone" <techietone@gmail.com>
-Subject: snd_pcm_avail_update return value
-Date: Thu, 4 May 2006 13:59:17 +0100
-Message-ID: <6474b3950605040559n74220964lea0580364639d087@mail.gmail.com>
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: Re: [PATCH] fix building alsa-tools with gtk+-2.x
+Date: Thu, 04 May 2006 15:23:20 +0200
+Message-ID: <m2psitx6t3.fsf@vador2.mandriva.com>
+References: <m24q06x9l2.fsf@vador2.mandriva.com>
+	<s5hd5eugehi.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_1630_21074544.1146747557896"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from office.mandriva.com (ezoffice.mandriva.com [84.14.106.134])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2DAE1227
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 15:24:53 +0200 (MEST)
+In-Reply-To: <s5hd5eugehi.wl%tiwai@suse.de> (Takashi Iwai's message of "Thu, 04 May 2006 14:29:29 +0200")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,37 +20,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_1630_21074544.1146747557896
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Takashi Iwai <tiwai@suse.de> writes:
 
-what is the return value of "snd_pcm_avail_update".
+> > the following patch fixes building with devel packages gtk+-2
+> > devel files and not gtk+-1.2 devel files (a m4 macro was renamed
+> > between gtk+-1.x and gtk+-2.x):
+> 
+> The patch looks wrong.  The relevant parts are in if-block for
+> gtk-1.x, and pkgconfig is used for gtk-2.x.
 
-Is it the no. of bytes available with the driver?
-Is it no. of samples available?
+Indeed.
+I understand the fix i proposed cannot be accepted as it.
+
+Still, it does break running autoconf when gtk+-1 devel files are not
+installed.
+Here's the output of a build bot:
 
 
-I want to know in case of 16-bit PCM whether snd_pcm_avail_update signifies
-the actual no. of bytes (i.e. 2*no. of samples) available or does it signif=
-y
-no. of samples.
+See http://qa.mandriva.com/build/iurt//cooker/x86_64/log/alsa-tools-1.0.11-2mdk.src.rpm/
 
-------=_Part_1630_21074544.1146747557896
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Command failed: TMP=/home/builder/tmp/ sudo chroot /export/home/mandrake//iurt_unionfs/unionfs.1.1 /bin/su builder -c "rpm --rebuild /home/builder/rpm/SRPMS/alsa-tools-1.0.11-2mdk.src.rpm"
+Installing /home/builder/rpm/SRPMS/alsa-tools-1.0.11-2mdk.src.rpm
+Executing(%prep): /bin/sh -e /home/builder/rpm/tmp/rpm-tmp.48611
++ umask 022
++ cd /home/builder/rpm/BUILD
++ '[' 1 -eq 1 ']'
++ '[' 1 -eq 1 ']'
++ '[' 1 -eq 1 ']'
++ cd /home/builder/rpm/BUILD
++ rm -rf alsa-tools-1.0.11
++ /usr/bin/bzip2 -dc /home/builder/rpm/SOURCES/alsa-tools-1.0.11.tar.bz2
++ tar -xf -
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ cd alsa-tools-1.0.11
++ /usr/bin/bzip2 -dc /home/builder/rpm/SOURCES/alsa-firmware-1.0.11.tar.bz2
++ tar -xf -
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ echo 'Patch #0 (alsa-tools-0.9.8-sscape_ctl.c.patch.bz2):'
+Patch #0 (alsa-tools-0.9.8-sscape_ctl.c.patch.bz2):
++ /usr/bin/bzip2 -d
++ patch -p0 -s
+patch unexpectedly ends in middle of line
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ pushd envy24control
+~/rpm/BUILD/alsa-tools-1.0.11/envy24control ~/rpm/BUILD/alsa-tools-1.0.11
++ touch NEWS ChangeLog
++ aclocal
+aclocal:configure.in:17: warning: macro `AM_PATH_GTK' not found in library
++ autoconf
+configure.in:17: error: possibly undefined macro: AM_PATH_GTK
+      If this token and others are legitimate, please use m4_pattern_allow.
+      See the Autoconf documentation.
+error: Bad exit status from /home/builder/rpm/tmp/rpm-tmp.48611 (%prep)
 
-what is the return value of &quot;snd_pcm_avail_update&quot;.<br><br>Is it =
-the no. of bytes available with the driver? <br>Is it no. of samples availa=
-ble?<br><br><br>I want to know in case of 16-bit PCM whether snd_pcm_avail_=
-update signifies the actual no. of bytes (
-i.e. 2*no. of samples) available or does it signify no. of samples.<br>
 
-------=_Part_1630_21074544.1146747557896--
+RPM build errors:
+    Bad exit status from /home/builder/rpm/tmp/rpm-tmp.48611 (%prep)
 
 
 -------------------------------------------------------
