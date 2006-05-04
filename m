@@ -1,10 +1,14 @@
-From: <MAILER-DAEMON@unicam.it>
-Subject: Undeliverable mail: Report
-Date: Thu, 04 May 2006 11:21:32 +0200
-Message-ID: <receipt-10876508@unicam.it>
+From: Nigel Gilbert <norb@dscape.freeserve.co.uk>
+Subject: Re: Hard lock up when using ALSA midi in
+Date: Thu, 04 May 2006 10:01:07 +0100
+Message-ID: <1146733268.8805.13.camel@maltbury3.norbnet.org>
+References: <1146652407.7497.4.camel@maltbury3.norbnet.org>
+	 <s5hodyfgwng.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type="delivery-status"; boundary="_===10876508====unicam.it===_"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hodyfgwng.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,64 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa.jcu.cz
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2006-05-03 at 13:44 +0200, Takashi Iwai wrote:
+> At Wed, 03 May 2006 11:33:27 +0100,
+> Nigel Gilbert wrote:
+> > 
+> > Hi all,
+> > 
+> >   I've been trying to use Rosegarden or Museseq to compose some music
+> > and have discovered that, when software connects to the MIDI IN on my
+> > sound card, the machine locks up totally (a reboot is required).
+> > 
 
---_===10876508====unicam.it===_
-Content-Type: text/plain; charset="utf-8"
+[snip]
 
-Failed to deliver to '<andrea.spiro@unicam.it>'
-Virus(es) found.
-transcript.cmd is infected with W32/Mydoom.o@MM
-Viruses: 1
-Trojans: 0
-Jokes: 0
-Tests: 0
+> It's likely the problem of integrated mpu401 on cmedia chip.
+> In the earlier version, only the legacy mpu port (0x300-0x330) was
+> used, but it was changed to detect the availabilty of the built-in mpu
+> port in the recent version.   It seems that this brings up a problem
+> sometimes (e.g. at rmmod).
 
-Captured by McAfee antivirus plugin running on CommuniGate Pro (TM) mail server <http://www.stalker.com/CommuniGatePro/>
+Out of interest, when you say "earlier version" do you mean earlier
+version of the hardware, or earlier version of the driver?
+
+> 
+> Try the patch below to disable the integrated midi.  You need to pass
+> mpu_port=0x300 or another value to activate the legacy MPU port on
+> this chip.  Or, depending on the hardware implementation, you need to
+> use snd-mpu401 with ACPI PnP as the secondary card, instead.
+
+That patch works a treat. I already had mpu_port=0x320 as a module
+option and it just works.
+
+Cheers,
+  -Nige
+
+> 
+> Takashi
+> 
+> diff -r 0f367ec087bb pci/cmipci.c
+> --- a/pci/cmipci.c	Wed May  3 09:59:03 2006
+> +++ b/pci/cmipci.c	Wed May  3 13:43:23 2006
+> @@ -2931,7 +2931,8 @@
+>  		return err;
+>  	}
+>  
+> -	integrated_midi = snd_cmipci_read_b(cm, CM_REG_MPU_PCI) != 0xff;
+> +	/* integrated_midi = snd_cmipci_read_b(cm, CM_REG_MPU_PCI) != 0xff; */
+> +	integrated_midi = 0;
+>  	if (integrated_midi)
+>  		iomidi = cm->iobase + CM_REG_MPU_PCI;
+>  	else {
+> 
+-- 
+Nigel Gilbert <norb@dscape.freeserve.co.uk>
 
 
-
---_===10876508====unicam.it===_
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; unicam.it
-
-Original-Recipient: rfc822;<andrea.spiro@unicam.it>
-Final-Recipient: system;<andrea.spiro>
-Action: failed
-Status: 5.0.0
-
---_===10876508====unicam.it===_
-Content-Type: text/rfc822-headers
-
-Received: from venere.mat.uniroma1.it ([151.100.50.3] verified)
-  by unicam.it (CommuniGate Pro SMTP 5.0.9)
-  with ESMTP id 10876501 for andrea.spiro@unicam.it; Thu, 04 May 2006 11:21:31 +0200
-Received: from giove.mat.uniroma1.it (giove [151.100.50.7])
-	by venere.mat.uniroma1.it (8.11.7p1+Sun/8.11.7) with ESMTP id k4498Z005142
-	for <andrea.spiro@unicam.it>; Thu, 4 May 2006 11:08:35 +0200 (MET DST)
-Received: from venere.mat.uniroma1.it (venere [151.100.50.3])
-	by giove.mat.uniroma1.it (8.11.7p1+Sun/8.11.7) with ESMTP id k4499xZ14401
-	for <alek05@giove.mat.uniroma1.it>; Thu, 4 May 2006 11:09:59 +0200 (MET DST)
-Received: from alsa.jcu.cz ([213.174.183.233])
-	by venere.mat.uniroma1.it (8.11.7p1+Sun/8.11.7) with ESMTP id k4498Q005135
-	for <alek05@mat.uniroma1.it>; Thu, 4 May 2006 11:08:26 +0200 (MET DST)
-Message-Id: <200605040908.k4498Q005135@venere.mat.uniroma1.it>
-From: alsa-devel@alsa.jcu.cz
-To: alek05@mat.uniroma1.it
-Subject: Report
-Date: Thu, 4 May 2006 11:08:52 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0010_08F9C1B4.48CDDDDC"
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-
---_===10876508====unicam.it===_--
 
 
 -------------------------------------------------------
