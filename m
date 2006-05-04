@@ -1,11 +1,13 @@
-From: =?utf-8?B?TWlsYW4gQXZyYW1vdmnEhw==?= <milan@datagate.net.uk>
-Subject: Help needed with Envy24 based card
-Date: Fri, 05 May 2006 00:46:07 +0100
-Message-ID: <op.s81wa5b9ss8uby@zwer>
+From: Nicolas Boullis <nboullis@debian.org>
+Subject: Re: How to deal with cards with a large on-board buffer?
+Date: Fri, 5 May 2006 01:56:53 +0200
+Message-ID: <20060504235652.GI4831@home>
+References: <20060502234125.GC4109@home> <s5hirongupx.wl%tiwai@suse.de> <20060504011806.GB6067@home> <s5hpsitg7zs.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; delsp=yes; charset=utf-8
-Content-Transfer-Encoding: Quoted-Printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5hpsitg7zs.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,40 +20,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thu, May 04, 2006 at 04:49:43PM +0200, Takashi Iwai wrote:
+> 
+> I'd suggest to leave as it is right now.  If underruns occur too
+> often, something is wrong in another place, e.g. the timing of
+> transfer between HOST and on-chip memories.
 
-I'm trying to get my sound card working. It's Philips PSC 724, bought  =
+Thre certainly is some problem... ;-)
+The trouble is that I don't know how to fix them, and I don't even 
+really understand what happens...
 
-because Alsa supports the Envy24 chip - last time I bought sound card,  =
+Have you tried to give a look to my code?
 
-there was THE chip to support, nowadays cards have become systems unto  =
 
-themselves...
+Regards,
 
-Long story short, I've pilfered some of the code that seemed applicable =
- =
-
- from a few drivers for cards with similar chips; and tried to get it  =
-
-working.
-
-Now it compiles alright, but work seems not on the agenda. I have put up=
- a  =
-
-page with all the info I could gather and sample of what I've done so fa=
-r  =
-
-at
-
-http://chomee-be.datagate.net.uk/psc/psc.html
-
-If anyone familiar with this chip could take a look and send me some  =
-
-hints, I'd be most grateful.
-
-TIA,
-
-Milan
+Nicolas
 
 
 -------------------------------------------------------
