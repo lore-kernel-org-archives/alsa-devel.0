@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002096]: Audio Players uses 100% CPU
-Date: Thu, 4 May 2006 12:45:39 +0200
-Message-ID: <9718e12ef3060bef92582e607fc55ff9@bugtrack.alsa-project.org>
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: [PATCH] fix building alsa-tools with gtk+-2.x
+Date: Thu, 04 May 2006 14:23:21 +0200
+Message-ID: <m24q06x9l2.fsf@vador2.mandriva.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-=-="
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEF9E223
-	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 12:45:39 +0200 (MEST)
+Received: from office.mandriva.com (ezoffice.mandriva.com [84.14.106.134])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2BFC8222
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 14:24:54 +0200 (MEST)
+Received: from vador.mandriva.com (unknown [192.168.100.253])
+	by office.mandriva.com (Postfix) with ESMTP id 9650954633
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 14:24:53 +0200 (CEST)
+Received: from vador2.mandriva.com (vador2.mandriva.com [127.0.0.1])
+	by vador.mandriva.com (Postfix) with ESMTP id 067961BCC1
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 14:23:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,75 +26,53 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--=-=-=
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2096> 
-======================================================================
-Reported By:                ksc91u
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2096
-Category:                   PCI - intel8x0
-Reproducibility:            random
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             05-03-2006 12:27 CEST
-Last Modified:              05-04-2006 12:45 CEST
-======================================================================
-Summary:                    Audio Players uses 100% CPU
-Description: 
-MB: Asus K8N4-E BIOS 1006
-
-I use xmms or VLC to play internet stream.
-And after a period of time...the player get 100% of my CPU,and the sound
-become shatter.
-I can not even switch to console to kill it.
-The only way is to disconnect my network,let the player stop player,and
-kill it.
-======================================================================
-
-----------------------------------------------------------------------
- ksc91u - 05-04-06 12:22 
-----------------------------------------------------------------------
-Ummm...sorry...I meant HG version
-I get the source by this command
-
-rsync -avz rsync://alsa.alsa-project.org/hg ./
-
-Is this correct?
-
-----------------------------------------------------------------------
- tiwai - 05-04-06 12:45 
-----------------------------------------------------------------------
-Yes, that's the right one.
-
-Could you check whether the errors happen also with plughw PCM?
-For overriding everthing, add
-   pcm.!default "plughw"
-in ~/.asoundrc.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-03-06 12:27 ksc91u         New Issue                                    
-05-03-06 12:27 ksc91u         File Added: lspci.txt                        
-05-03-06 19:25 tiwai          Note Added: 0009600                          
-05-04-06 05:15 ksc91u         Note Added: 0009606                          
-05-04-06 05:15 ksc91u         File Added: dmesg                            
-05-04-06 07:18 ksc91u         Note Edited: 0009606                         
-05-04-06 08:14 ksc91u         Note Edited: 0009606                         
-05-04-06 11:41 tiwai          Note Added: 0009610                          
-05-04-06 12:22 ksc91u         Note Added: 0009615                          
-05-04-06 12:45 tiwai          Note Added: 0009616                          
-======================================================================
+the following patch fixes building with devel packages gtk+-2 devel
+files and not gtk+-1.2 devel files (a m4 macro was renamed between
+gtk+-1.x and gtk+-2.x):
 
 
+--=-=-=
+Content-Type: text/x-patch
+Content-Disposition: inline;
+  filename=alsa-tools-1.0.11-gtk-buildfix.patch
+
+--- ./echomixer/configure.in.tv	2006-05-04 12:58:29.000000000 +0200
++++ ./echomixer/configure.in	2006-05-04 12:57:59.000000000 +0200
+@@ -15,7 +15,7 @@
+ 
+ else
+ 
+-AM_PATH_GTK(1.2.0)
++AM_PATH_GTK_2_0(1.2.0)
+ AM_PATH_ALSA(1.0.0)
+ ECHOMIXER_CFLAGS="$CFLAGS $ALSA_CFLAGS $GTK_CFLAGS"
+ ECHOMIXER_LIBS="$LIBS $ALSA_LIBS $GTK_LIBS"
+--- ./envy24control/configure.in.tv	2006-05-04 12:58:29.000000000 +0200
++++ ./envy24control/configure.in	2006-05-04 12:57:59.000000000 +0200
+@@ -14,7 +14,7 @@
+ 
+ else
+ 
+-AM_PATH_GTK(1.0.1)
++AM_PATH_GTK_2_0(1.0.1)
+ AM_PATH_ALSA(1.0.0)
+ ENVY24CONTROL_CFLAGS="$CFLAGS $ALSA_CFLAGS $GTK_CFLAGS"
+ ENVY24CONTROL_LIBS="$LIBS $ALSA_LIBS $GTK_LIBS"
+--- ./rmedigicontrol/configure.in.tv	2006-05-04 12:58:29.000000000 +0200
++++ ./rmedigicontrol/configure.in	2006-05-04 12:57:59.000000000 +0200
+@@ -14,7 +14,7 @@
+ 
+ else
+ 
+-AM_PATH_GTK(1.0.1)
++AM_PATH_GTK_2_0(1.0.1)
+ AM_PATH_ALSA(1.0.0)
+ RMEDIGICONTROL_CFLAGS="$CFLAGS $ALSA_CFLAGS $GTK_CFLAGS"
+ RMEDIGICONTROL_LIBS="$LIBS $ALSA_LIBS $GTK_LIBS"
+
+--=-=-=--
 
 
 -------------------------------------------------------
