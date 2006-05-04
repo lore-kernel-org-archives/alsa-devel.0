@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002094]: No sound from subwoofer
-Date: Thu, 4 May 2006 12:07:24 +0200
-Message-ID: <0ba264c119cab8ed70586ffc1e8f9a37@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002076]: arecord gives silence
+Date: Thu, 4 May 2006 12:11:09 +0200
+Message-ID: <8834874b043c244211b1f5862f5ec989@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4E8B5227
-	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 12:07:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12B42185
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 12:11:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2094> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2076> 
 ======================================================================
-Reported By:                oryn
+Reported By:                jaime
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2094
-Category:                   PCI - intel8x0
+Issue ID:                   2076
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.15.5
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-03-2006 00:02 CEST
-Last Modified:              05-04-2006 12:07 CEST
+Date Submitted:             04-26-2006 16:28 CEST
+Last Modified:              05-04-2006 12:11 CEST
 ======================================================================
-Summary:                    No sound from subwoofer
+Summary:                    arecord gives silence
 Description: 
-The subwoofer has stopped working, it used to work on 1.0.9 as rear-left.
-And before that it even used to be LFE.
-I used a .asoundrc script to funnel L+R > rear-left.
-I have tried removing the .asoundrc script and running speaker-test -c6
-and I only get sound from front-left and front-right.
+IBM Thinkpad T21 with Cirrus Logic CS 4614/22/24 [CrystalClear SoundFusion
+Audio Accelerator] (rev 01).
 
-I don't know if there is something to do with the new intel-hda patch as
-thats the sound system that the "NEW" asus W1000 uses.
+alsamixer correctly mixes the inputs over to the line out (I can hear
+microphone in and line in successfully mixed) but arecord gives silence.
+
+I've tried using a usb soundcard on the same machine, and everything works
+fine there, so I think this is only the snd-cs46xx driver.
+
+I'm not sure what other info is useful - please let me know. Thank you.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- oryn - 05-03-06 20:33 
+ tiwai - 05-02-06 18:11 
 ----------------------------------------------------------------------
-I don't have /etc/asound.state I think debian takes care of that somewhere
-else.
-Sorry for all the notes, my stupid browser doesn't want to brows the /proc
-directory.
+Make sure that you unmute/raise "ADC Volume".
 
 ----------------------------------------------------------------------
- tiwai - 05-04-06 12:07 
+ jaime - 05-04-06 12:11 
 ----------------------------------------------------------------------
-Then run "alsactl -f somefile store" and upload the generated file.
+Takashi.
+
+I've got it working by "toggling capture" (enabling recording) for the ADC
+channel (in addition to making sure that recording is enabled on both the
+Mic channel and the "Capture" channel).
+
+Seeing how alsaconf sets up the volume sliders and unmutes certain
+channels so that users can immediately get sound out of their machines,
+would it also be a good idea to make alsaconf set capture enabled on the
+ADC channel (and perhaps set the levels up a little) so that users can
+also immediately use software that needs audio capture? (I do realize that
+this can all be done using amixer or alsamixer, but I think one of the
+points of alsaconf is to set levels and so make users' lives a little
+easier).
+
+I've also got another qustion: with
+arecord -v -v -Dhw:0,0 -f cd test.wav
+I get a volume meter which works and the wave file is good.
+
+But when I use:
+arecord -v -v -f cd test.wav
+I just get:
+
+Recording WAVE...
+Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
+Its setup is...
+Slave: Direct Snoop PCM
+Its setup is...
+Hardware PCM Card 0 'Sound Fusion CS46xx' device 0 subdevice 0
+Its setup is...
+
+and then everything stops. There's no volume meter (like previously) and
+the wav file is only 44 bytes long.
+
+Would you prefer me to put this new problem into a new bug report?
+
+Thank you.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-03-06 00:02 oryn           New Issue                                    
-05-03-06 00:02 oryn           Distribution              => debian          
-05-03-06 00:02 oryn           Kernel Version            => 2.6.15.5        
-05-03-06 11:46 tiwai          Note Added: 0009587                          
-05-03-06 16:45 oryn           Note Added: 0009595                          
-05-03-06 19:25 tiwai          Note Added: 0009599                          
-05-03-06 20:24 oryn           Note Added: 0009602                          
-05-03-06 20:28 oryn           Note Added: 0009603                          
-05-03-06 20:31 oryn           Note Added: 0009604                          
-05-03-06 20:33 oryn           Note Added: 0009605                          
-05-04-06 12:07 tiwai          Note Added: 0009612                          
+04-26-06 16:28 jaime          New Issue                                    
+05-02-06 18:11 tiwai          Note Added: 0009568                          
+05-04-06 12:11 jaime          Note Added: 0009613                          
 ======================================================================
 
 
