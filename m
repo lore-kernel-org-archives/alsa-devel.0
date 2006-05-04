@@ -1,18 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA 1.0.9rc2 (Linux kernel 2.6.12) and higher you
- don't need to setup Dmix ?
-Date: Thu, 04 May 2006 19:28:50 +0200
-Message-ID: <20060504172850.GC26321@turing.informatik.uni-halle.de>
-References: <20060501103247.07cce99b.sevmek@free.fr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002094]: No sound from subwoofer
+Date: Thu, 4 May 2006 21:22:04 +0200
+Message-ID: <1b7cca00f67d88fac7b1e9dbd7608462@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate2.urz.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65B44239
-	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 19:29:20 +0200 (MEST)
-In-reply-to: <20060501103247.07cce99b.sevmek@free.fr>
-Content-disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D015A22C
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 21:22:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,29 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Yannick-GNU/Linux <sevmek@free.fr>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Yannick-GNU/Linux wrote:
-> I writing a doc to setup alsa and dmix for the Ekiga VoIP software. I
-> read here : http://alsa2.opensrc.org/DmixPlugin
-> quote : "NOTE: For ALSA 1.0.9rc2 and higher you don't need to setup
-> dmix. Dmix is enabled as default for soundcards which don't support hw
-> mixing."
-> But i'm using kernel 2.6.13, ALSA Version 1.0.9b (from kernel.org)
-> with the driver snd_intel8x0 (chip is nforce4 ultra, mother board ASUS
-> a8n-e) and i need to explicitly set dmix via an .asoundrc to get
-> software mixing.
 
-The dmix plugin is part of the alsa-lib package.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2094> 
+======================================================================
+Reported By:                oryn
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2094
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               debian
+Kernel Version:             2.6.15.5
+======================================================================
+Date Submitted:             05-03-2006 00:02 CEST
+Last Modified:              05-04-2006 21:22 CEST
+======================================================================
+Summary:                    No sound from subwoofer
+Description: 
+The subwoofer has stopped working, it used to work on 1.0.9 as rear-left.
+And before that it even used to be LFE.
+I used a .asoundrc script to funnel L+R > rear-left.
+I have tried removing the .asoundrc script and running speaker-test -c6
+and I only get sound from front-left and front-right.
 
-You should always use an alsa-lib that is at least as new as the
-kernel's alsa-driver.
+I don't know if there is something to do with the new intel-hda patch as
+thats the sound system that the "NEW" asus W1000 uses.
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 05-04-06 12:07 
+----------------------------------------------------------------------
+Then run "alsactl -f somefile store" and upload the generated file.
+
+----------------------------------------------------------------------
+ oryn - 05-04-06 21:22 
+----------------------------------------------------------------------
+There you go,
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-03-06 00:02 oryn           New Issue                                    
+05-03-06 00:02 oryn           Distribution              => debian          
+05-03-06 00:02 oryn           Kernel Version            => 2.6.15.5        
+05-03-06 11:46 tiwai          Note Added: 0009587                          
+05-03-06 16:45 oryn           Note Added: 0009595                          
+05-03-06 19:25 tiwai          Note Added: 0009599                          
+05-03-06 20:24 oryn           Note Added: 0009602                          
+05-03-06 20:28 oryn           Note Added: 0009603                          
+05-03-06 20:31 oryn           Note Added: 0009604                          
+05-03-06 20:33 oryn           Note Added: 0009605                          
+05-04-06 12:07 tiwai          Note Added: 0009612                          
+05-04-06 21:21 oryn           File Added: somefile                         
+05-04-06 21:22 oryn           Note Added: 0009620                          
+======================================================================
 
 
-HTH
-Clemens
 
 
 -------------------------------------------------------
