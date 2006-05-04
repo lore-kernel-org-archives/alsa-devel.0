@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002072]: Module generates error message when loading, and error when trying to play an au-file.
-Date: Thu, 4 May 2006 08:08:37 +0200
-Message-ID: <7e5bc36e07c88c14b734e0f05aa98d3d@bugtrack.alsa-project.org>
+From: <MAILER-DAEMON@unicam.it>
+Subject: Undeliverable mail: Report
+Date: Thu, 04 May 2006 11:21:32 +0200
+Message-ID: <receipt-10876508@unicam.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/report; report-type="delivery-status"; boundary="_===10876508====unicam.it===_"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93EB2229
-	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 08:08:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +14,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa.jcu.cz
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2072> 
-======================================================================
-Reported By:                eivindt
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2072
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.17_rc2
-======================================================================
-Date Submitted:             04-26-2006 00:17 CEST
-Last Modified:              05-04-2006 08:08 CEST
-======================================================================
-Summary:                    Module generates error message when loading, and
-error when trying to play an au-file.
-Description: 
-When loading the module (snd-hda-intel) i get an error message on the
-console.  The modules still loads and creates the expected devices and
-proc files (as far as I can see).
+--_===10876508====unicam.it===_
+Content-Type: text/plain; charset="utf-8"
 
-When trying to use the module, by cat-ing a au-file into /dev/sound/audio,
-I get another error message on the console, and no sound out.
+Failed to deliver to '<andrea.spiro@unicam.it>'
+Virus(es) found.
+transcript.cmd is infected with W32/Mydoom.o@MM
+Viruses: 1
+Trojans: 0
+Jokes: 0
+Tests: 0
 
-This is compiled with the lates version from hg.
-======================================================================
-
-----------------------------------------------------------------------
- eivindt - 05-04-06 08:08 
-----------------------------------------------------------------------
-I've added model=thinkpad as a module option, but I still get the same
-error message.  _However_, if I then unload the driver (using modprobe
--r), and the reload it, everything works perfectly!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-26-06 00:17 eivindt        New Issue                                    
-04-26-06 00:17 eivindt        Distribution              => Gentoo          
-04-26-06 00:17 eivindt        Kernel Version            => 2.6.17_rc2      
-05-04-06 08:08 eivindt        Note Added: 0009607                          
-======================================================================
+Captured by McAfee antivirus plugin running on CommuniGate Pro (TM) mail server <http://www.stalker.com/CommuniGatePro/>
 
 
+
+--_===10876508====unicam.it===_
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; unicam.it
+
+Original-Recipient: rfc822;<andrea.spiro@unicam.it>
+Final-Recipient: system;<andrea.spiro>
+Action: failed
+Status: 5.0.0
+
+--_===10876508====unicam.it===_
+Content-Type: text/rfc822-headers
+
+Received: from venere.mat.uniroma1.it ([151.100.50.3] verified)
+  by unicam.it (CommuniGate Pro SMTP 5.0.9)
+  with ESMTP id 10876501 for andrea.spiro@unicam.it; Thu, 04 May 2006 11:21:31 +0200
+Received: from giove.mat.uniroma1.it (giove [151.100.50.7])
+	by venere.mat.uniroma1.it (8.11.7p1+Sun/8.11.7) with ESMTP id k4498Z005142
+	for <andrea.spiro@unicam.it>; Thu, 4 May 2006 11:08:35 +0200 (MET DST)
+Received: from venere.mat.uniroma1.it (venere [151.100.50.3])
+	by giove.mat.uniroma1.it (8.11.7p1+Sun/8.11.7) with ESMTP id k4499xZ14401
+	for <alek05@giove.mat.uniroma1.it>; Thu, 4 May 2006 11:09:59 +0200 (MET DST)
+Received: from alsa.jcu.cz ([213.174.183.233])
+	by venere.mat.uniroma1.it (8.11.7p1+Sun/8.11.7) with ESMTP id k4498Q005135
+	for <alek05@mat.uniroma1.it>; Thu, 4 May 2006 11:08:26 +0200 (MET DST)
+Message-Id: <200605040908.k4498Q005135@venere.mat.uniroma1.it>
+From: alsa-devel@alsa.jcu.cz
+To: alek05@mat.uniroma1.it
+Subject: Report
+Date: Thu, 4 May 2006 11:08:52 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0010_08F9C1B4.48CDDDDC"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+
+--_===10876508====unicam.it===_--
 
 
 -------------------------------------------------------
