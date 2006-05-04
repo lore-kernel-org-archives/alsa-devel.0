@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002094]: No sound from subwoofer
-Date: Thu, 4 May 2006 21:22:04 +0200
-Message-ID: <1b7cca00f67d88fac7b1e9dbd7608462@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002072]: Module generates error message when loading, and error when trying to play an au-file.
+Date: Thu, 4 May 2006 22:15:05 +0200
+Message-ID: <c2b0ac6ed214446dde89c917217eeede@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D015A22C
-	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 21:22:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 74D15232
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 22:15:05 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2094> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2072> 
 ======================================================================
-Reported By:                oryn
-Assigned To:                
+Reported By:                eivindt
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2094
-Category:                   PCI - intel8x0
+Issue ID:                   2072
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.15.5
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.17_rc2
 ======================================================================
-Date Submitted:             05-03-2006 00:02 CEST
-Last Modified:              05-04-2006 21:22 CEST
+Date Submitted:             04-26-2006 00:17 CEST
+Last Modified:              05-04-2006 22:15 CEST
 ======================================================================
-Summary:                    No sound from subwoofer
+Summary:                    Module generates error message when loading, and
+error when trying to play an au-file.
 Description: 
-The subwoofer has stopped working, it used to work on 1.0.9 as rear-left.
-And before that it even used to be LFE.
-I used a .asoundrc script to funnel L+R > rear-left.
-I have tried removing the .asoundrc script and running speaker-test -c6
-and I only get sound from front-left and front-right.
+When loading the module (snd-hda-intel) i get an error message on the
+console.  The modules still loads and creates the expected devices and
+proc files (as far as I can see).
 
-I don't know if there is something to do with the new intel-hda patch as
-thats the sound system that the "NEW" asus W1000 uses.
+When trying to use the module, by cat-ing a au-file into /dev/sound/audio,
+I get another error message on the console, and no sound out.
 
+This is compiled with the lates version from hg.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-04-06 12:07 
+ tiwai - 05-04-06 11:34 
 ----------------------------------------------------------------------
-Then run "alsactl -f somefile store" and upload the generated file.
+Try HG version.  Some tweaks for thinkpad *60 were applied.
 
 ----------------------------------------------------------------------
- oryn - 05-04-06 21:22 
+ eivindt - 05-04-06 22:15 
 ----------------------------------------------------------------------
-There you go,
+I _am_ using the latest HG version...
+
+Please let me know if there's anything I should do to get more debug
+info...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-03-06 00:02 oryn           New Issue                                    
-05-03-06 00:02 oryn           Distribution              => debian          
-05-03-06 00:02 oryn           Kernel Version            => 2.6.15.5        
-05-03-06 11:46 tiwai          Note Added: 0009587                          
-05-03-06 16:45 oryn           Note Added: 0009595                          
-05-03-06 19:25 tiwai          Note Added: 0009599                          
-05-03-06 20:24 oryn           Note Added: 0009602                          
-05-03-06 20:28 oryn           Note Added: 0009603                          
-05-03-06 20:31 oryn           Note Added: 0009604                          
-05-03-06 20:33 oryn           Note Added: 0009605                          
-05-04-06 12:07 tiwai          Note Added: 0009612                          
-05-04-06 21:21 oryn           File Added: somefile                         
-05-04-06 21:22 oryn           Note Added: 0009620                          
+04-26-06 00:17 eivindt        New Issue                                    
+04-26-06 00:17 eivindt        Distribution              => Gentoo          
+04-26-06 00:17 eivindt        Kernel Version            => 2.6.17_rc2      
+05-04-06 08:08 eivindt        Note Added: 0009607                          
+05-04-06 11:34 tiwai          Note Added: 0009609                          
+05-04-06 22:15 eivindt        Note Added: 0009621                          
 ======================================================================
 
 
