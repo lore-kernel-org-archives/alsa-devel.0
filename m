@@ -1,13 +1,13 @@
-From: Alvaro Kuolas <kuolas@gmail.com>
-Subject: Re: Re: What about the VLSI/Philips chips?
-Date: Wed, 03 May 2006 15:35:41 -0300
-Message-ID: <4458F7FD.8030502@gmail.com>
-References: <4452C0E0.2000203@gmail.com>	<4457BB60.7050706@gmail.com> <s5hhd47gumz.wl%tiwai@suse.de>
+From: Nicolas Boullis <nboullis@debian.org>
+Subject: Re: How to deal with cards with a large on-board buffer?
+Date: Thu, 4 May 2006 03:18:06 +0200
+Message-ID: <20060504011806.GB6067@home>
+References: <20060502234125.GC4109@home> <s5hirongupx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhd47gumz.wl%tiwai@suse.de>
+Content-Disposition: inline
+In-Reply-To: <s5hirongupx.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,50 +20,84 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-These are all the cards:
-Can be updated the Sound Card Matrix with these?
-(Note: The VT21702 is different to the SAA7785.)
+Hi,
 
-   -Model-        -Name Model-           
--Chipset-                         -Remarks/Capabilities-
------------------------------------------------------------------------------------------------------
-Philips PSC602 - Harmonic Edge - Philips SAA7785 Thunderbird Avenger DSP
-- 2-Channel PCI Sound Card
-Philips PSC604 - Dynamic Edge  - Philips SAA7785 Thunderbird Avenger DSP
-- 4.1/4-Channel PCI Sound Card
-Philips PSC605 - Sonic Edge    - Philips SAA7785 Thunderbird Avenger DSP
-- 5.1/6-Channel PCI Sound Card
---------------
-Philips PSC702 - Rhythmic Edge - VLSI/QSound VT21702 Thunderbird 128 DSP
-- 2-Channel PCI Sound Card
-Philips PSC703 - Rhythmic Edge - Philips SAA7785 Thunderbird Avenger DSP
-- 4-Channel PCI Sound Card (Europe?)
-Philips PSC704 - Seismic Edge  - VLSI/QSound VT21702 Thunderbird 128 DSP
-- 4-Channel PCI Sound Card
-Philips PSC705 - Seismic Edge  - Philips SAA7785 Thunderbird Avenger DSP
-- 6-Channel PCI Sound Card (Europe?)
-Philips PSC706 - Acoustic Edge - Philips SAA7785 Thunderbird Avenger DSP
-- 5.1/6-Channel PCI Sound Card
-Philips PSC724 - Ultimate Edge - VIA Vinyl ENVY24GT DSP - not Philips :)
-- 5.1 24bits 96khz PCI Sound Card
---------------
-Philips PSC805 - Aurilium      -                                        
-- USB External Sound Processor
+On Wed, May 03, 2006 at 02:26:34PM +0200, Takashi Iwai wrote:
+> At Wed, 3 May 2006 01:41:25 +0200, Nicolas Boullis wrote:
+> > 
+> > To make it short, the trouble is that, to get correct working, it seems 
+> > to require that the audio buffer be kept at some minimal fill level. Is 
+> > there a way I can enforce this?
+>  
+> It's no way because the data is fed from the application.
+> If less than watermark (usually equivalent with period size) is
+> available, it's simply an underrun.
 
---
+Do you mean that userspace applications are expected to always have a 
+period worth of data available? Then I guess I should force the period 
+size to be larger than the buffer size...
 
-I have one of the two chipsets to play with, and it's the undocumented one.
 
-I said before.
->
+> > Browsing at the code, I found out the fifo_size element of the 
+> > snd_pcm_hardware_t type, that is not documented in Takashi Iwai's 
+> > excellent "Writing an ALSA Driver" guide. Is it something that might be 
+> > used to enforce this? (I tried, of course, but my test was 
+> > unsuccessful...)
+> 
+> No, it's an obsoleted field and actually not used in the driver.
 
->The card, as far as i know, is "undocumented by Philips"(TM).
+OK, I see.
 
->
-But on the philips page there are a lot of docs, drivers and more.
-But for VLSI/QSound  VT21702 there's nothing.
-Philips don't be mad with me :).
 
+> > Any idea how to correctly deal with such a beast? I tried a few ones, 
+> > but none was really successful...
+> 
+> Are you using a system timer or any dedicated irq source?
+
+It's a dedicated irq source for the chip.
+
+
+> The first thing to do is to find out the bottleneck.
+
+Sorry, but what bottleneck?
+
+
+> You have two
+> transfers running asynchronously: on the hardware buffer and between
+> memory <-> h/w buffer.  I guess the former is running continuously,
+
+You're right.
+
+
+> but how the latter transfer is implemented?
+
+The CPU-side mmaps some on-chip memory. Within this memory, there is a 
+32-slot circular buffer, used with a "read pointer" and a "write 
+pointer" to implement a FIFO. The CPU-side only updates the write 
+pointer, and writes to the buffer. The elements in the buffer are 
+pointers to and size of buffers that contain the actual data, and that 
+are meant to be trasfered to the hardware buffer. The chip itself 
+decides when to transfer a buffer, and updates the "read pointer".
+
+
+> Anyway, the source code would reveal problems better.
+
+Of course. You can grab the relevant part of the source code at 
+http://dxr3.sourceforge.net/download/em8300_alsa.c but you should be 
+warned that the code is not really clean, and that I'm somewhat ashamed 
+to show it.
+
+If you're willing to help me, feel free to ask any question about my 
+code. Some explanation anyway: I wanted to avoid memory transfers 
+within the driver, so I though I would allocate a large buffer, split it 
+in 32 chunks, and set up the DMA slots each to one of those buffers. 
+Whenever an interrupt is raised, I set the "write pointer" such that it 
+considers the FIFO to be full.
+
+
+Thanks,
+
+Nicolas
 
 
 -------------------------------------------------------
