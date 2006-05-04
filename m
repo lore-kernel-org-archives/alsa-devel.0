@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002096]: Audio Players uses 100% CPU
-Date: Thu, 4 May 2006 05:15:19 +0200
-Message-ID: <31de7f47de83fae94502cc978da91569@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002072]: Module generates error message when loading, and error when trying to play an au-file.
+Date: Thu, 4 May 2006 08:08:37 +0200
+Message-ID: <7e5bc36e07c88c14b734e0f05aa98d3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F894229
-	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 05:15:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 93EB2229
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 08:08:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2096> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2072> 
 ======================================================================
-Reported By:                ksc91u
-Assigned To:                
+Reported By:                eivindt
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2096
-Category:                   PCI - intel8x0
-Reproducibility:            random
-Severity:                   minor
+Issue ID:                   2072
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.17_rc2
 ======================================================================
-Date Submitted:             05-03-2006 12:27 CEST
-Last Modified:              05-04-2006 05:15 CEST
+Date Submitted:             04-26-2006 00:17 CEST
+Last Modified:              05-04-2006 08:08 CEST
 ======================================================================
-Summary:                    Audio Players uses 100% CPU
+Summary:                    Module generates error message when loading, and
+error when trying to play an au-file.
 Description: 
-MB: Asus K8N4-E BIOS 1006
+When loading the module (snd-hda-intel) i get an error message on the
+console.  The modules still loads and creates the expected devices and
+proc files (as far as I can see).
 
-I use xmms or VLC to play internet stream.
-And after a period of time...the player get 100% of my CPU,and the sound
-become shatter.
-I can not even switch to console to kill it.
-The only way is to disconnect my network,let the player stop player,and
-kill it.
+When trying to use the module, by cat-ing a au-file into /dev/sound/audio,
+I get another error message on the console, and no sound out.
+
+This is compiled with the lates version from hg.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-03-06 19:25 
+ eivindt - 05-04-06 08:08 
 ----------------------------------------------------------------------
-Could you try the latest HG version?
-
-----------------------------------------------------------------------
- ksc91u - 05-04-06 05:15 
-----------------------------------------------------------------------
-now using HG(cvs) version.kernel 2.6.16.11
-VLC play ok,and then broken pipe
-main error: no id3 module matched "any"
-alsa error: write failed (Broken pipe)
-alsa error: write failed (Broken pipe)
-
-I found a simalar problem
-http://www.ussg.iu.edu/hypermail/linux/kernel/0411.0/0336.html
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=209
+I've added model=thinkpad as a module option, but I still get the same
+error message.  _However_, if I then unload the driver (using modprobe
+-r), and the reload it, everything works perfectly!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-03-06 12:27 ksc91u         New Issue                                    
-05-03-06 12:27 ksc91u         File Added: lspci.txt                        
-05-03-06 19:25 tiwai          Note Added: 0009600                          
-05-04-06 05:15 ksc91u         Note Added: 0009606                          
+04-26-06 00:17 eivindt        New Issue                                    
+04-26-06 00:17 eivindt        Distribution              => Gentoo          
+04-26-06 00:17 eivindt        Kernel Version            => 2.6.17_rc2      
+05-04-06 08:08 eivindt        Note Added: 0009607                          
 ======================================================================
 
 
