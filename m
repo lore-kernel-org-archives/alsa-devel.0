@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002072]: Module generates error message when loading, and error when trying to play an au-file.
-Date: Thu, 4 May 2006 11:34:02 +0200
-Message-ID: <717a76f02c8fe0d238d4ebc4f4280ee9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002096]: Audio Players uses 100% CPU
+Date: Thu, 4 May 2006 11:41:11 +0200
+Message-ID: <05cdabdafa9f0080ac665cb403b5453c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09080227
-	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 11:34:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5DF9227
+	for <alsa-devel@alsa-project.org>; Thu,  4 May 2006 11:41:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,81 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2072> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2096> 
 ======================================================================
-Reported By:                eivindt
-Assigned To:                tiwai
+Reported By:                ksc91u
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2072
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   2096
+Category:                   PCI - intel8x0
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.17_rc2
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-26-2006 00:17 CEST
-Last Modified:              05-04-2006 11:34 CEST
+Date Submitted:             05-03-2006 12:27 CEST
+Last Modified:              05-04-2006 11:41 CEST
 ======================================================================
-Summary:                    Module generates error message when loading, and
-error when trying to play an au-file.
+Summary:                    Audio Players uses 100% CPU
 Description: 
-When loading the module (snd-hda-intel) i get an error message on the
-console.  The modules still loads and creates the expected devices and
-proc files (as far as I can see).
+MB: Asus K8N4-E BIOS 1006
 
-When trying to use the module, by cat-ing a au-file into /dev/sound/audio,
-I get another error message on the console, and no sound out.
-
-This is compiled with the lates version from hg.
+I use xmms or VLC to play internet stream.
+And after a period of time...the player get 100% of my CPU,and the sound
+become shatter.
+I can not even switch to console to kill it.
+The only way is to disconnect my network,let the player stop player,and
+kill it.
 ======================================================================
 
 ----------------------------------------------------------------------
- eivindt - 05-04-06 08:08 
+ ksc91u - 05-04-06 08:14 
 ----------------------------------------------------------------------
-I've added model=thinkpad as a module option, but I still get the same
-error message.  _However_, if I then unload the driver (using modprobe
--r), and the reload it, everything works perfectly!
+now using HG(cvs) version.kernel 2.6.16.11
+VLC play ok,and then broken pipe
+main error: no id3 module matched "any"
+alsa error: write failed (Broken pipe)
+alsa error: write failed (Broken pipe)
+
+error messege with mplayer
+Player hang CPU @ 100% and produce lots of these messege after CPU load
+get back to normal
+alsa-play: xrun of at least 0.052 msecs. resetting stream
+alsa-play: xrun of at least 0.051 msecs. resetting stream
+alsa-play: xrun of at least 0.051 msecs. resetting stream
+alsa-play: xrun of at least 0.051 msecs. resetting stream
+alsa-play: xrun of at least 0.003 msecs. resetting stream
+alsa-play: xrun of at least 0.051 msecs. resetting stream
+alsa-space: xrun of at least 3.085 msecs. resetting stream
+alsa-play: xrun of at least 0.051 msecs. resetting stream
+alsa-play: xrun of at least 0.051 msecs. resetting stream
+alsa-play: xrun of at least 0.052 msecs. resetting stream
+alsa-play: xrun of at least 0.051 msecs. resetting stream
+alsa-play: xrun of at least 0.051 msecs. resetting stream
+alsa-play: xrun of at least 0.004 msecs. resetting stream
+
+
 
 ----------------------------------------------------------------------
- tiwai - 05-04-06 11:34 
+ tiwai - 05-04-06 11:41 
 ----------------------------------------------------------------------
-Try HG version.  Some tweaks for thinkpad *60 were applied.
+Which did you use, HG or CVS version?  CVS version is dead, and obsoleted
+(even older than 1.0.11-final release).  Use HG version.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-26-06 00:17 eivindt        New Issue                                    
-04-26-06 00:17 eivindt        Distribution              => Gentoo          
-04-26-06 00:17 eivindt        Kernel Version            => 2.6.17_rc2      
-05-04-06 08:08 eivindt        Note Added: 0009607                          
-05-04-06 11:34 tiwai          Note Added: 0009609                          
+05-03-06 12:27 ksc91u         New Issue                                    
+05-03-06 12:27 ksc91u         File Added: lspci.txt                        
+05-03-06 19:25 tiwai          Note Added: 0009600                          
+05-04-06 05:15 ksc91u         Note Added: 0009606                          
+05-04-06 05:15 ksc91u         File Added: dmesg                            
+05-04-06 07:18 ksc91u         Note Edited: 0009606                         
+05-04-06 08:14 ksc91u         Note Edited: 0009606                         
+05-04-06 11:41 tiwai          Note Added: 0009610                          
 ======================================================================
 
 
