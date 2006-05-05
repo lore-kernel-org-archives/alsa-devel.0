@@ -1,15 +1,12 @@
-From: "Matthew Vance" <lcad@fanfiction.it>
-Subject: trademark
-Date: Fri, 5 May 2006 16:26:47 +0000 (UTC)
-Message-ID: <002201c78e71$e9cb939d$2c54c051@bmnxs.vstah>
+From: "Julius Mcclure" <jmr@kent-business-awards.co.uk>
+Subject: worn-out
+Date: Fri, 5 May 2006 16:27:19 +0000 (UTC)
+Message-ID: <002201c78e71$ecede23d$b32ac051@yop.hmld>
 Mime-Version: 1.0
 Content-Type: multipart/related;
 	type="multipart/alternative";
-	boundary="----=_NextPart_000_001E_01C78E71.E9CB9379"
+	boundary="----=_NextPart_000_001E_01C78E71.ECEDE219"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from adsl-108-93-192-81.adsl2.iam.net.ma (adsl-108-93-192-81.adsl2.iam.net.ma [81.192.93.108])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id ED1FA175
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2006 18:25:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,24 +16,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Date: Fri, 4 May 2007 17:26:57 +0000
-To: alsa-devel@alsa-project.org
+Date: Fri, 4 May 2007 17:22:31 +0000
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_001E_01C78E71.E9CB9379
+------=_NextPart_000_001E_01C78E71.ECEDE219
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001F_01C78E71.E9CB9382"
+	boundary="----=_NextPart_001_001F_01C78E71.ECEDE222"
 
 
-------=_NextPart_001_001F_01C78E71.E9CB9382
+------=_NextPart_001_001F_01C78E71.ECEDE222
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-------=_NextPart_001_001F_01C78E71.E9CB9382
+------=_NextPart_001_001F_01C78E71.ECEDE222
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -45,23 +42,22 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2800.1441" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
 <DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001d01c78e71$e9cb9370$2c54c051@bmnxs.vstah"=20
-align=3Dbaseline=20
+src=3D"cid:001d01c78e71$ecede210$b32ac051@yop.hmld" align=3Dbaseline=20
 border=3D0></FONT></DIV>
 </BODY></HTML>
 
-------=_NextPart_001_001F_01C78E71.E9CB9382--
+------=_NextPart_001_001F_01C78E71.ECEDE222--
 
-------=_NextPart_000_001E_01C78E71.E9CB9379
+------=_NextPart_000_001E_01C78E71.ECEDE219
 Content-Type: image/gif;
-	name="monogamous.gif"
+	name="compatibility.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001d01c78e71$e9cb9370$2c54c051@bmnxs.vstah>
+Content-ID: <001d01c78e71$ecede210$b32ac051@yop.hmld>
 
 R0lGODdhywGhBMYAAPXn76CfrwgcGb/ZxxsdHSY7PVRBQXBwcoeMjZmJooeFcCArFwwDBqy1pIfw
 ZVkSbawFWCWBu+sbPFIHRXE4DO5b0M/CgYEmW9auSzsHXqm0YwHZ5L3EAPkXCD+JQEt4mxxIXp3J
@@ -757,7 +753,7 @@ eChI6Pg4KFlpeRlAIEAQeen5CRoqOkpaanqKmqq6ytrq+gobKztLW2t7i5uru8vb6/sLHCw8TFxs
 fIycrLzM3Oz8DB0tPU1dbX2Nna29zd3t/Q0eLj5OXm5+jp6uPb7O3u7+Dh8vP09fb3+Pn6+/z9/v
 /w8woMCBBAsaPIgwocKFDBs6fAgxosSJFCtavIgxo8aNHDt6lNSFVSAAOw==
 
-------=_NextPart_000_001E_01C78E71.E9CB9379--
+------=_NextPart_000_001E_01C78E71.ECEDE219--
 
 
 
