@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002069]: No sound on via SPDIF out, very low volume on analog out (MSI K8NGM2-FID with ACL880)
-Date: Fri, 5 May 2006 16:56:30 +0200
-Message-ID: <ed028be4ad05b4793c5c774338eed999@bugtrack.alsa-project.org>
+Date: Fri, 5 May 2006 17:18:48 +0200
+Message-ID: <a45d694b37da7329c117e57d38c6027f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F25F189
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2006 16:56:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AE0613E
+	for <alsa-devel@alsa-project.org>; Fri,  5 May 2006 17:18:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.16-1.2069_FC4smp
 ======================================================================
 Date Submitted:             04-25-2006 20:43 CEST
-Last Modified:              05-05-2006 16:56 CEST
+Last Modified:              05-05-2006 17:18 CEST
 ======================================================================
 Summary:                    No sound on via SPDIF out, very low volume on analog
 out (MSI K8NGM2-FID with ACL880)
@@ -55,19 +55,22 @@ I've tried with various model= settings to no avail.
 ======================================================================
 
 ----------------------------------------------------------------------
- gtmkramer - 04-30-06 15:00 
-----------------------------------------------------------------------
-With this small patch/hack I let the alsa driver properly detect my onboard
-ALC880 and let it autoconfigure (for now). With autoconfigure I do get a
-headphones for which there is no connector. Do I need to make a new
-(mixer)model for this board?
-
-----------------------------------------------------------------------
  rlrevell - 05-05-06 16:56 
 ----------------------------------------------------------------------
 Yes it would be helpful to make a new model and submit the patch.
 
 How are you testing SPDIF with ALSA?
+
+----------------------------------------------------------------------
+ gtmkramer - 05-05-06 17:18 
+----------------------------------------------------------------------
+I am testing spdif through ALSA with:
+
+mplayer somefile.ts -ao alsa -ac hwac3
+
+That does not work right now, only with -ao oss(??).
+
+I do not know where to start making a new model. Any pointers?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +86,7 @@ Date Modified  Username       Field                    Change
        
 04-30-06 15:00 gtmkramer      Note Added: 0009548                          
 05-05-06 16:56 rlrevell       Note Added: 0009626                          
+05-05-06 17:18 gtmkramer      Note Added: 0009627                          
 ======================================================================
 
 
