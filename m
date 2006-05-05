@@ -1,12 +1,14 @@
-From: "Maude Chan" <ndkh@dawsonbooks.com>
-Subject: gifted goodies
-Date: Fri, 5 May 2006 15:42:36 +0000
-Message-ID: <001a01c6705b$e9e39a4a$8861c051@qbzuee>
+From: lamikr <lamikr@cc.jyu.fi>
+Subject: Re: How to select between mixer route elements?
+Date: Fri, 05 May 2006 19:04:01 +0300
+Message-ID: <445B7771.1030409@cc.jyu.fi>
+References: <44568648.9040902@cc.jyu.fi> <s5h3bfszkkq.wl%tiwai@suse.de>
+Reply-To: lamikr@cc.jyu.fi
 Mime-Version: 1.0
-Content-Type: multipart/related;
-	type="multipart/alternative";
-	boundary="----=_NextPart_000_0016_01C6705B.E9E399C2"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h3bfszkkq.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,741 +18,1115 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Takashi Iwai wrote:
 
-------=_NextPart_000_0016_01C6705B.E9E399C2
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0017_01C6705B.E9E399E4"
+>At Tue, 02 May 2006 01:06:00 +0300,
+>lamikr wrote:
+>  
+>
+>>Hi
+>>
+>>I am working with the tsc2101 alsa sound driver for the iPAQ h6300 and
+>>userspace phone application called gomunicator for that.
+>>For the tsc2101 mixer I have creted an element "Playback Playback Route"
+>>    
+>>
+>
+>The name sounds strange.  Isn't it "Playback Route"?
+>  
+>
+Hmm, did I understood the "Control Names" chapter from the "Writing an
+alsa driver" pdf page 46
+incorrectly? I understood that each name is defined from "SOURCE
+DIRECTION FUNCTION".
+So can the "Source" part just be dropped from the route function names?
+
+Is the route with custom element names the recommend ways to make the
+alsa mixer interface, if the user can select between multiple playback
+targets
+but all of them can not be switched on simultaneously? Or should I just
+make sure in the "Switch" methods that when one control is unmuted, others
+are muted?
+
+>>which is currently initalized to be a enumerated element
+>>in a following way.
+>>
+>>    static char *texts[PLAYBACK_TARGET_COUNT] = {
+>>            "Loudspeaker", "Headphone", "Cellphone"
+>>    };
+>>    uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+>>
+>>The idea is following. If I/user want to play music or record by using
+>>normal speaker and mic I need to select "Loudspeaker"
+>>as a playback target. If I instead want to use headphone for that
+>>purpose I need to select Headphone. And when I want to have a phone call
+>>(this iPAQ module has gsm phone) I route tsc2101 to handle gsm module by
+>>selecting "Cellphone".
+>>
+>>The problem is that currently I need to use alsa-mixer before I make the
+>>phone calls which is kind of not very handy.
+>>So to get Tux finally a call home properly I should do something like
+>>this from the userspace:
+>>
+>>    old_selection    = get_current_playback_route_selection(),
+>>    select_playback_route("Cellphone");
+>>    make_call()
+>>    end_call()
+>>    select_playback_route(old_selection)
+>>    
+>>
+>
+>It can be easily done via PCM hooks plugin.  The hooks plugin can set 
+>up the mixer controls after opening a slave PCM device.
+>For example, "cellphone" PCM below will automatically change "Playback
+>Route" control to "Cellphone" and keep while it's opened, then revert
+>to the old value after closed.
+>
+>	pcm.cellphone {
+>		type hooks
+>		slave.pcm "hw:0"
+>		hooks.0 {
+>			type ctl_elems
+>			hook_args [
+>				{
+>					name "Playback Route"
+>					lock true
+>					preverve true
+>					value "Cellphone"
+>				}
+>			]
+>		}
+>	}
+>  
+>
+Hmm, this looks as a smart option to do it. Any pointers for the example
+code/documentation how to open the slave PCM devices as I am now working
+for a first time with the alsa user space code.
+
+>>To implement the currently selected route item, I have tried following
+>>
+>>    static int *old_playback_item;
+>>    ...
+>>    snd_mixer_selem_id_set_name (sid, "Playback");
+>>    if (elem_playback) {
+>>        printf("Playback found\n");
+>>        if (snd_mixer_selem_is_enumerated(elem_playback)) {
+>>            printf("Playback is enumerated\n");
+>>            snd_mixer_selem_get_enum_item(handle, 0, old_playback_item);
+>>            printf("index fo the selected playback item = %d\n",
+>>*old_playback_item);
+>>        }
+>>    }
+>>
+>>but this fails for me giving a following error to output:
+>>
+>>    Playback found
+>>    Playback is enumerated
+>>    gomunicator: simple.c:1969: snd_mixer_selem_get_enum_item: Assertion
+>>`elem->type == SND_MIXER_ELEM_SIMPLE' failed.
+>>    
+>>
+>
+>This is likely a conflict of name space of "Playback" controls.
+>Do you have other controls with "Playback XXX"?
+>  
+>
+Yes, I have actually many of them as the tsc2101 codec has multiple adc
+and dgc registers to control the volume. I tried to change the "playback
+playback route" to simple be a "Playback Route" but I still got the same
+error from the method snd_mixer_selem_get_enum_item(handle, 0,
+old_playback_item); method.
+
+Below is my whole mixer code I currently have.
+
+/*
+* sound/arm/omap/omap-alsa-tsc2101-mixer.c
+*
+* Alsa Driver for TSC2101 codec for OMAP platform boards.
+*
+* Copyright (C) 2005 Mika Laitio <lamikr@cc.jyu.fi> and
+* Everett Coleman II <gcc80x86@fuzzyneural.net>
+*
+* Board initialization code is based on the code in TSC2101 OSS driver.
+* Copyright (C) 2004 Texas Instruments, Inc.
+* Written by Nishanth Menon and Sriram Kannan
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
+* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
+* NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+* NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+* USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+* ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+* THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 675 Mass Ave, Cambridge, MA 02139, USA.
+*
+* History:
+*
+* 2006-03-01 Mika Laitio - Mixer for the tsc2101 driver used in omap boards.
+* Can switch between headset and loudspeaker playback,
+* mute and unmute dgc, set dgc volume. Record source switch,
+* keyclick, buzzer and headset volume and handset volume control
+* are still missing.
+*
+*/
+
+#include "omap-alsa-tsc2101.h"
+#include "omap-alsa-tsc2101-mixer.h"
+
+#include <linux/types.h>
+#include <sound/initval.h>
+#include <sound/control.h>
+
+//#define M_DPRINTK(ARGS...) printk(KERN_INFO "<%s>:
+",__FUNCTION__);printk(ARGS)
+#define M_DPRINTK(ARGS...) /* nop */
+
+#define CHECK_BIT(INDX, ARG) (((ARG) & TSC2101_BIT(INDX)) >> INDX)
+#define IS_UNMUTED(INDX, ARG) (((CHECK_BIT(INDX, ARG)) == 0))
+
+#define DGC_DALVL_EXTRACT(ARG) ((ARG & 0x7f00) >> 8)
+#define DGC_DARVL_EXTRACT(ARG) ((ARG & 0x007f))
+
+#define HGC_ADPGA_HED_EXTRACT(ARG) ((ARG & 0x7f00) >> 8)
+#define HNGC_ADPGA_HND_EXTRACT(ARG) ((ARG & 0x7f00) >> 8)
+#define BGC_ADPGA_BGC_EXTRACT(ARG) ((ARG & 0x7f00) >> 8)
+
+static int current_playback_target = PLAYBACK_TARGET_LOUDSPEAKER;
+static int current_rec_src = REC_SRC_SINGLE_ENDED_MICIN_HED;
+
+/*
+* Simplified write for the tsc2101 audio registers.
+*/
+inline void omap_tsc2101_audio_write(u8 address, u16 data)
+{
+omap_tsc2101_write(PAGE2_AUDIO_CODEC_REGISTERS, address, data);
+}
+
+/*
+* Simplified read for the tsc2101 audio registers.
+*/
+inline u16 omap_tsc2101_audio_read(u8 address)
+{
+return (omap_tsc2101_read(PAGE2_AUDIO_CODEC_REGISTERS, address));
+}
+
+/*
+* For selecting tsc2101 recourd source.
+*/
+static void set_record_source(int val)
+{
+u16 data;
+
+/* Mute Analog Sidetone
+* Analog sidetone gain db?
+* Cell Phone In not connected to ADC
+* Input selected by MICSEL connected to ADC
+*/
+data = MPC_ASTMU | MPC_ASTG(0x45);
+data &= ~MPC_MICSEL(7); /* clear all MICSEL bits */
+data |= MPC_MICSEL(val);
+data |= MPC_MICADC;
+omap_tsc2101_audio_write(TSC2101_MIXER_PGA_CTRL, data);
+
+current_rec_src = val;
+}
+
+/*
+* Converts the Alsa mixer volume (0 - 100) to real
+* Digital Gain Control (DGC) value that can be written
+* or read from the TSC2101 registry.
+*
+* Note that the number "OUTPUT_VOLUME_MAX" is smaller than OUTPUT_VOLUME_MIN
+* because DGC works as a volume decreaser. (The more bigger value is put
+* to DGC, the more the volume of controlled channel is decreased)
+*
+* In addition the TCS2101 chip would allow the maximum volume reduction
+be 63.5 DB
+* but according to some tests user can not hear anything with this chip
+* when the volume is set to be less than 25 db.
+* Therefore this function will return a value that means 38.5 db (63.5
+db - 25 db)
+* reduction in the channel volume, when mixer is set to 0.
+* For mixer value 100, this will return a value that means 0 db volume
+reduction.
+* ([mute_left_bit]0000000[mute_right_bit]0000000)
+*/
+int get_mixer_volume_as_dac_gain_control_volume(int vol)
+{
+u16 retVal;
+
+/* Convert 0 -> 100 volume to 0x7F(min) -> y(max) volume range */
+retVal = ((vol * OUTPUT_VOLUME_RANGE) / 100) + OUTPUT_VOLUME_MAX;
+/* invert the value for getting the proper range 0 min and 100 max */
+retVal = OUTPUT_VOLUME_MIN - retVal;
+
+return retVal;
+}
+
+/*
+* Converts the Alsa mixer volume (0 - 100) to TSC2101
+* Digital Gain Control (DGC) volume. Alsa mixer volume 0
+* is converted to value meaning the volume reduction of -38.5 db
+* and Alsa mixer volume 100 is converted to value meaning the
+* reduction of 0 db.
+*/
+int set_mixer_volume_as_dac_gain_control_volume(int mixerVolL, int
+mixerVolR)
+{
+u16 val;
+int retVal;
+int volL;
+int volR;
+
+if ((mixerVolL < 0) ||
+(mixerVolL > 100) ||
+(mixerVolR < 0) ||
+(mixerVolR > 100)) {
+printk(KERN_ERR "Trying a bad mixer volume as dac gain control volume
+value, left (%d), right (%d)!\n", mixerVolL, mixerVolR);
+return -EPERM;
+}
+M_DPRINTK("mixer volume left = %d, right = %d\n", mixerVolL, mixerVolR);
+volL = get_mixer_volume_as_dac_gain_control_volume(mixerVolL);
+volR = get_mixer_volume_as_dac_gain_control_volume(mixerVolR);
+
+val = omap_tsc2101_audio_read(TSC2101_DAC_GAIN_CTRL);
+/* keep the old mute bit settings */
+val &= ~(DGC_DALVL(OUTPUT_VOLUME_MIN) | DGC_DARVL(OUTPUT_VOLUME_MIN));
+val |= DGC_DALVL(volL) | DGC_DARVL(volR);
+retVal = 2;
+if (retVal) {
+omap_tsc2101_audio_write(TSC2101_DAC_GAIN_CTRL, val);
+}
+M_DPRINTK("to registry: left = %d, right = %d, total = %d\n",
+DGC_DALVL_EXTRACT(val), DGC_DARVL_EXTRACT(val), val);
+return retVal;
+}
+
+/**
+* If unmuteLeft/unmuteRight == 0 --> mute
+* If unmuteLeft/unmuteRight == 1 --> unmute
+*/
+int dac_gain_control_unmute(int unmuteLeft, int unmuteRight)
+{
+u16 val;
+int count;
+
+count = 0;
+val = omap_tsc2101_audio_read(TSC2101_DAC_GAIN_CTRL);
+/* in alsa mixer 1 --> on, 0 == off. In tsc2101 registry 1 --> off, 0 --> on
+* so if values are same, it's time to change the registry value.
+*/
+if (unmuteLeft != IS_UNMUTED(15, val)) {
+if (unmuteLeft == 0) {
+/* mute --> turn bit on */
+val = val | DGC_DALMU;
+}
+else {
+/* unmute --> turn bit off */
+val = val & ~DGC_DALMU;
+}
+count++;
+} /* L */
+if (unmuteRight != IS_UNMUTED(7, val)) {
+if (unmuteRight == 0) {
+/* mute --> turn bit on */
+val = val | DGC_DARMU;
+}
+else {
+/* unmute --> turn bit off */
+val = val & ~DGC_DARMU;
+}
+count++;
+} /* R */
+if (count) {
+omap_tsc2101_audio_write(TSC2101_DAC_GAIN_CTRL, val);
+M_DPRINTK("changed value, is_unmuted left = %d, right = %d\n",
+IS_UNMUTED(15, val),
+IS_UNMUTED(7, val));
+}
+return count;
+}
+
+/**
+* unmute: 0 --> mute, 1 --> unmute
+* page2RegIndx: Registry index in tsc2101 page2.
+* muteBitIndx: Index number for the bit in registry that indicates
+whether muted or unmuted.
+*/
+int adc_pga_unmute_control(int unmute, int page2regIndx, int muteBitIndx)
+{
+int count;
+u16 val;
+
+count = 0;
+val = omap_tsc2101_audio_read(page2regIndx);
+/* in alsa mixer 1 --> on, 0 == off. In tsc2101 registry 1 --> off, 0 --> on
+* so if the values are same, it's time to change the registry value...
+*/
+if (unmute != IS_UNMUTED(muteBitIndx, val)) {
+if (unmute == 0) {
+/* mute --> turn bit on */
+val = val | TSC2101_BIT(muteBitIndx);
+}
+else {
+/* unmute --> turn bit off */
+val = val & ~TSC2101_BIT(muteBitIndx);
+}
+M_DPRINTK("changed value, is_unmuted = %d\n", IS_UNMUTED(muteBitIndx, val));
+count++;
+}
+if (count) {
+omap_tsc2101_audio_write(page2regIndx, val);
+}
+return count;
+}
+
+/*
+* Converts the DGC registry value read from the TSC2101 registry to
+* Alsa mixer volume format (0 - 100).
+*/
+int get_dac_gain_control_volume_as_mixer_volume(u16 vol)
+{
+u16 retVal;
+
+retVal = OUTPUT_VOLUME_MIN - vol;
+retVal = ((retVal - OUTPUT_VOLUME_MAX) * 100) / OUTPUT_VOLUME_RANGE;
+/* fix scaling error */
+if ((retVal > 0) && (retVal < 100)) {
+retVal++;
+}
+return retVal;
+}
+
+/*
+* Converts the headset gain control volume (0 - 63.5 db)
+* to Alsa mixer volume (0 - 100)
+*/
+int get_headset_gain_control_volume_as_mixer_volume(u16 registerVal)
+{
+u16 retVal;
+
+retVal = ((registerVal * 100) / INPUT_VOLUME_RANGE);
+return retVal;
+}
+
+/*
+* Converts the handset gain control volume (0 - 63.5 db)
+* to Alsa mixer volume (0 - 100)
+*/
+int get_handset_gain_control_volume_as_mixer_volume(u16 registerVal)
+{
+return get_headset_gain_control_volume_as_mixer_volume(registerVal);
+}
+
+/*
+* Converts the Alsa mixer volume (0 - 100) to
+* headset gain control volume (0 - 63.5 db)
+*/
+int get_mixer_volume_as_headset_gain_control_volume(u16 mixerVal)
+{
+u16 retVal;
+
+retVal = ((mixerVal * INPUT_VOLUME_RANGE) / 100) + INPUT_VOLUME_MIN;
+return retVal;
+}
+
+/*
+* Writes Alsa mixer volume (0 - 100) to TSC2101 headset volume registry in
+* a TSC2101 format. (0 - 63.5 db)
+* In TSC2101 OSS driver this functionality was controlled with
+"SET_LINE" parameter.
+*/
+int set_mixer_volume_as_headset_gain_control_volume(int mixerVol)
+{
+int volume;
+int retVal;
+u16 val;
+
+if (mixerVol < 0 || mixerVol > 100) {
+M_DPRINTK("Trying a bad headset mixer volume value(%d)!\n", mixerVol);
+return -EPERM;
+}
+M_DPRINTK("mixer volume = %d\n", mixerVol);
+/* Convert 0 -> 100 volume to 0x0(min) -> 0x7D(max) volume range */
+/* NOTE: 0 is minimum volume and not mute */
+volume = get_mixer_volume_as_headset_gain_control_volume(mixerVol);
+val = omap_tsc2101_audio_read(TSC2101_HEADSET_GAIN_CTRL);
+/* preserve the old mute settings */
+val &= ~(HGC_ADPGA_HED(INPUT_VOLUME_MAX));
+val |= HGC_ADPGA_HED(volume);
+omap_tsc2101_audio_write(TSC2101_HEADSET_GAIN_CTRL, val);
+retVal = 1;
+
+M_DPRINTK("to registry = %d\n", val);
+return retVal;
+}
+
+/*
+* Writes Alsa mixer volume (0 - 100) to TSC2101 handset volume registry in
+* a TSC2101 format. (0 - 63.5 db)
+* In TSC2101 OSS driver this functionality was controlled with "SET_MIC"
+parameter.
+*/
+int set_mixer_volume_as_handset_gain_control_volume(int mixerVol)
+{
+int volume;
+int retVal;
+u16 val;
+
+if (mixerVol < 0 || mixerVol > 100) {
+M_DPRINTK("Trying a bad mic mixer volume value(%d)!\n", mixerVol);
+return -EPERM;
+}
+M_DPRINTK("mixer volume = %d\n", mixerVol);
+/* Convert 0 -> 100 volume to 0x0(min) -> 0x7D(max) volume range
+* NOTE: 0 is minimum volume and not mute
+*/
+volume = get_mixer_volume_as_headset_gain_control_volume(mixerVol);
+val = omap_tsc2101_audio_read(TSC2101_HANDSET_GAIN_CTRL);
+/* preserve the old mute settigns */
+val &= ~(HNGC_ADPGA_HND(INPUT_VOLUME_MAX));
+val |= HNGC_ADPGA_HND(volume);
+omap_tsc2101_audio_write(TSC2101_HANDSET_GAIN_CTRL, val);
+retVal = 1;
+
+M_DPRINTK("to registry = %d\n", val);
+return retVal;
+}
+
+void set_loudspeaker_to_playback_target(void)
+{
+/* power down SPK1, SPK2 and loudspeaker */
+omap_tsc2101_audio_write(TSC2101_CODEC_POWER_CTRL,
+CPC_SP1PWDN | CPC_SP2PWDN | CPC_LDAPWDF);
+/* ADC, DAC, Analog Sidetone, cellphone, buzzer softstepping enabled
+* 1dB AGC hysteresis
+* MICes bias 2V
+*/
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_4, AC4_MB_HED(0));
+
+/* DAC left and right routed to SPK1/SPK2
+* SPK1/SPK2 unmuted
+* Keyclicks routed to SPK1/SPK2 */
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_5,
+AC5_DIFFIN |
+AC5_DAC2SPK1(3) | AC5_AST2SPK1 | AC5_KCL2SPK1 |
+AC5_DAC2SPK2(3) | AC5_AST2SPK2 | AC5_KCL2SPK2);
+
+/* routing selected to SPK1 goes also to OUT8P/OUT8N. (loudspeaker)
+* analog sidetone routed to loudspeaker
+* buzzer pga routed to loudspeaker
+* keyclick routing to loudspeaker
+* cellphone input routed to loudspeaker
+* mic selection (control register 04h/page2) routed to cell phone output
+(CP_OUT)
+* routing selected for SPK1 goes also to cellphone output (CP_OUT)
+* OUT8P/OUT8N (loudspeakers) unmuted (0 = unmuted)
+* Cellphone output is not muted (0 = unmuted)
+* Enable loudspeaker short protection control (0 = enable protection)
+* VGND short protection control (0 = enable protection)
+*/
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_6,
+AC6_SPL2LSK | AC6_AST2LSK | AC6_BUZ2LSK | AC6_KCL2LSK |
+AC6_CPI2LSK | AC6_MIC2CPO | AC6_SPL2CPO);
+current_playback_target = PLAYBACK_TARGET_LOUDSPEAKER;
+}
+
+void set_headphone_to_playback_target(void)
+{
+/* power down SPK1, SPK2 and loudspeaker */
+omap_tsc2101_audio_write(TSC2101_CODEC_POWER_CTRL,
+CPC_SP1PWDN | CPC_SP2PWDN | CPC_LDAPWDF);
+/* ADC, DAC, Analog Sidetone, cellphone, buzzer softstepping enabled */
+/* 1dB AGC hysteresis */
+/* MICes bias 2V */
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_4, AC4_MB_HED(0));
+
+/* DAC left and right routed to SPK1/SPK2
+* SPK1/SPK2 unmuted
+* Keyclicks routed to SPK1/SPK2 */
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_5,
+AC5_DAC2SPK1(3) | AC5_AST2SPK1 | AC5_KCL2SPK1 |
+AC5_DAC2SPK2(3) | AC5_AST2SPK2 | AC5_KCL2SPK2 |
+AC5_HDSCPTC);
+
+/* OUT8P/OUT8N muted, CPOUT muted */
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_6,
+AC6_MUTLSPK | AC6_MUTSPK2 | AC6_LDSCPTC |
+AC6_VGNDSCPTC);
+current_playback_target = PLAYBACK_TARGET_HEADPHONE;
+}
+
+void set_telephone_to_playback_target(void)
+{
+/*
+* 0110 1101 0101 1100
+* power down MICBIAS_HED, Analog sidetone, SPK2, DAC,
+* Driver virtual ground, loudspeaker. Values D2-d5 are flags.
+*/
+omap_tsc2101_audio_write(TSC2101_CODEC_POWER_CTRL,
+CPC_MBIAS_HED | CPC_ASTPWD | CPC_SP2PWDN | CPC_DAPWDN |
+CPC_VGPWDN | CPC_LSPWDN);
+
+/*
+* 0010 1010 0100 0000
+* ADC, DAC, Analog Sidetone, cellphone, buzzer softstepping enabled
+* 1dB AGC hysteresis
+* MICes bias 2V
+*/
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_4,
+AC4_MB_HND | AC4_MB_HED(0) | AC4_AGCHYS(1) |
+AC4_BISTPD | AC4_ASSTPD | AC4_DASTPD);
+
+/*
+* 1110 0010 0000 0010
+* DAC left and right routed to SPK1/SPK2
+* SPK1/SPK2 unmuted
+* keyclicks routed to SPK1/SPK2
+*/
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_5,
+AC5_DIFFIN | AC5_DAC2SPK1(3) |
+AC5_CPI2SPK1 | AC5_MUTSPK2);
+
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_6,
+AC6_MIC2CPO | AC6_MUTLSPK |
+AC6_LDSCPTC | AC6_VGNDSCPTC | AC6_CAPINTF);
+current_playback_target = PLAYBACK_TARGET_CELLPHONE;
+}
+
+/*
+* 1100 0101 1101 0000
+*
+* #define MPC_ASTMU TSC2101_BIT(15)
+* #define MPC_ASTG(ARG) (((ARG) & 0x7F) << 8)
+* #define MPC_MICSEL(ARG) (((ARG) & 0x07) << 5)
+* #define MPC_MICADC TSC2101_BIT(4)
+* #define MPC_CPADC TSC2101_BIT(3)
+* #define MPC_ASTGF (0x01)
+*/
+static void set_telephone_to_record_source(void)
+{
+u16 val;
+
+/*disable handset input (d0)*/
+val = omap_tsc2101_audio_read(TSC2101_HANDSET_GAIN_CTRL);
+val = val & 0xfffe;
+omap_tsc2101_audio_write(TSC2101_HANDSET_GAIN_CTRL, val);
+// set volume (d15-d8 to 0)
+val = val & 0x80ff;
+// increase it
+val = val | 0x3b00;
+omap_tsc2101_audio_write(TSC2101_HANDSET_GAIN_CTRL, val);
+
+val = 0x8000;
+omap_tsc2101_audio_write(TSC2101_HEADSET_GAIN_CTRL, val);
+
+set_record_source(REC_SRC_MICIN_HND_AND_AUX1);
+
+// hacks start
+val = 0x4411;
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_2, val);
+
+val = 0x2a40;
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_4, val);
+
+// cellphone input pga settings volume (TSC2101_BUZZER_GAIN_CTRL, 1fh)
+val = omap_tsc2101_audio_read(TSC2101_BUZZER_GAIN_CTRL);
+val = val & 0x807f;
+val = val | 0x5d00;
+val = val & 0x7fff;
+omap_tsc2101_audio_write(TSC2101_BUZZER_GAIN_CTRL, val);
+
+val = omap_tsc2101_audio_read(TSC2101_DAC_GAIN_CTRL);
+val = val | 0x8189;
+omap_tsc2101_audio_write(TSC2101_DAC_GAIN_CTRL, val);
+
+val = 0x40;
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_7, val);
+// hacks end
+}
+
+/*
+* Checks whether the headset is detected.
+* If headset is detected, the type is returned. Type can be
+* 0x01 = stereo headset detected
+* 0x02 = cellurar headset detected
+* 0x03 = stereo + cellurar headset detected
+* If headset is not detected 0 is returned.
+*/
+u16 get_headset_detected(void)
+{
+u16 curDetected;
+u16 curType;
+u16 curVal;
+
+curType = 0; /* not detected */
+curVal = omap_tsc2101_audio_read(TSC2101_AUDIO_CTRL_7);
+curDetected = curVal & AC7_HDDETFL;
+if (curDetected) {
+printk("headset detected, checking type from %d \n", curVal);
+curType = ((curVal & 0x6000) >> 13);
+printk("headset type detected = %d \n", curType);
+}
+else {
+printk("headset not detected\n");
+}
+return curType;
+}
+
+void init_playback_targets(void)
+{
+u16 val;
+
+set_loudspeaker_to_playback_target();
+/* Left line input volume control
+* = SET_LINE in the OSS driver
+*/
+set_mixer_volume_as_headset_gain_control_volume(DEFAULT_INPUT_VOLUME);
+
+/* Set headset to be controllable by handset mixer
+* AGC enable for handset input
+* Handset input not muted
+*/
+val = omap_tsc2101_audio_read(TSC2101_HANDSET_GAIN_CTRL);
+val = val | HNGC_AGCEN_HND;
+val = val & ~HNGC_ADMUT_HND;
+omap_tsc2101_audio_write(TSC2101_HANDSET_GAIN_CTRL, val);
+
+/* mic input volume control
+* SET_MIC in the OSS driver
+*/
+set_mixer_volume_as_handset_gain_control_volume(DEFAULT_INPUT_VOLUME);
+
+/* Left/Right headphone channel volume control
+* Zero-cross detect on
+*/
+set_mixer_volume_as_dac_gain_control_volume(DEFAULT_OUTPUT_VOLUME,
+DEFAULT_OUTPUT_VOLUME);
+/* unmute */
+dac_gain_control_unmute(1, 1);
+}
+
+/*
+* Initializes tsc2101 recourd source (to line) and playback target (to
+loudspeaker)
+*/
+void snd_omap_init_mixer(void)
+{
+FN_IN;
+
+/* Headset/Hook switch detect enabled */
+omap_tsc2101_audio_write(TSC2101_AUDIO_CTRL_7, AC7_DETECT);
+
+/* Select headset to record source (MIC_INHED)*/
+set_record_source(REC_SRC_SINGLE_ENDED_MICIN_HED);
+/* Init loudspeaker as a default playback target*/
+init_playback_targets();
+
+FN_OUT(0);
+}
+
+static int __pcm_playback_target_info(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_info_t *uinfo)
+{
+static char *texts[PLAYBACK_TARGET_COUNT] = {
+"Loudspeaker", "Headphone", "Cellphone"
+};
+
+uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+uinfo->count = 1;
+uinfo->value.enumerated.items = PLAYBACK_TARGET_COUNT;
+if (uinfo->value.enumerated.item > PLAYBACK_TARGET_COUNT - 1) {
+uinfo->value.enumerated.item = PLAYBACK_TARGET_COUNT - 1;
+}
+strcpy(uinfo->value.enumerated.name,
+texts[uinfo->value.enumerated.item]);
+return 0;
+}
+
+static int __pcm_playback_target_get(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+ucontrol->value.integer.value[0] = current_playback_target;
+return 0;
+}
+
+static int __pcm_playback_target_put(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+int retVal;
+int curVal;
+
+retVal = 0;
+curVal = ucontrol->value.integer.value[0];
+if ((curVal >= 0) &&
+(curVal < PLAYBACK_TARGET_COUNT) &&
+(curVal != current_playback_target)) {
+if (curVal == PLAYBACK_TARGET_LOUDSPEAKER) {
+set_record_source(REC_SRC_SINGLE_ENDED_MICIN_HED);
+set_loudspeaker_to_playback_target();
+}
+else if (curVal == PLAYBACK_TARGET_HEADPHONE) {
+set_record_source(REC_SRC_SINGLE_ENDED_MICIN_HND);
+set_headphone_to_playback_target();
+}
+else if (curVal == PLAYBACK_TARGET_CELLPHONE) {
+set_telephone_to_record_source();
+set_telephone_to_playback_target();
+}
+retVal = 1;
+}
+return retVal;
+}
+
+static int __pcm_playback_volume_info(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_info_t *uinfo)
+{
+uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+uinfo->count = 2;
+uinfo->value.integer.min = 0;
+uinfo->value.integer.max = 100;
+return 0;
+}
+
+/*
+* Alsa mixer interface function for getting the volume read from the DGC
+in a
+* 0 -100 alsa mixer format.
+*/
+static int __pcm_playback_volume_get(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+u16 volL;
+u16 volR;
+u16 val;
+
+val = omap_tsc2101_audio_read(TSC2101_DAC_GAIN_CTRL);
+M_DPRINTK("registry value = %d!\n", val);
+volL = DGC_DALVL_EXTRACT(val);
+volR = DGC_DARVL_EXTRACT(val);
+/* make sure that other bits are not on */
+volL = volL & ~DGC_DALMU;
+volR = volR & ~DGC_DARMU;
+
+volL = get_dac_gain_control_volume_as_mixer_volume(volL);
+volR = get_dac_gain_control_volume_as_mixer_volume(volR);
+
+ucontrol->value.integer.value[0] = volL; /* L */
+ucontrol->value.integer.value[1] = volR; /* R */
+
+M_DPRINTK("mixer volume left = %ld, right = %ld\n",
+ucontrol->value.integer.value[0], ucontrol->value.integer.value[1]);
+return 0;
+}
+
+static int __pcm_playback_volume_put(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+return
+set_mixer_volume_as_dac_gain_control_volume(ucontrol->value.integer.value[0],
+
+ucontrol->value.integer.value[1]);
+}
+
+static int __pcm_playback_switch_info(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_info_t *uinfo)
+{
+uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+uinfo->count = 2;
+uinfo->value.integer.min = 0;
+uinfo->value.integer.max = 1;
+return 0;
+}
+
+/*
+* When DGC_DALMU (bit 15) is 1, the left channel is muted.
+* When DGC_DALMU is 0, left channel is not muted.
+* Same logic apply also for the right channel.
+*/
+static int __pcm_playback_switch_get(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+u16 val = omap_tsc2101_audio_read(TSC2101_DAC_GAIN_CTRL);
+
+ucontrol->value.integer.value[0] = IS_UNMUTED(15, val); // left
+ucontrol->value.integer.value[1] = IS_UNMUTED(7, val); // right
+return 0;
+}
+
+static int __pcm_playback_switch_put(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+return dac_gain_control_unmute(ucontrol->value.integer.value[0],
+ucontrol->value.integer.value[1]);
+}
+
+static int __headset_playback_volume_info(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_info_t *uinfo)
+{
+uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+uinfo->count = 1;
+uinfo->value.integer.min = 0;
+uinfo->value.integer.max = 100;
+return 0;
+}
+
+static int __headset_playback_volume_get(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+u16 val;
+u16 vol;
+
+val = omap_tsc2101_audio_read(TSC2101_HEADSET_GAIN_CTRL);
+M_DPRINTK("registry value = %d\n", val);
+vol = HGC_ADPGA_HED_EXTRACT(val);
+vol = vol & ~HGC_ADMUT_HED;
+
+vol = get_headset_gain_control_volume_as_mixer_volume(vol);
+ucontrol->value.integer.value[0] = vol;
+
+M_DPRINTK("mixer volume returned = %ld\n",
+ucontrol->value.integer.value[0]);
+return 0;
+}
+
+static int __headset_playback_volume_put(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+return
+set_mixer_volume_as_headset_gain_control_volume(ucontrol->value.integer.value[0]);
+
+}
+
+static int __headset_playback_switch_info(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_info_t *uinfo)
+{
+uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+uinfo->count = 1;
+uinfo->value.integer.min = 0;
+uinfo->value.integer.max = 1;
+return 0;
+}
+
+/* When HGC_ADMUT_HED (bit 15) is 1, the headset is muted.
+* When HGC_ADMUT_HED is 0, headset is not muted.
+*/
+static int __headset_playback_switch_get(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+u16 val = omap_tsc2101_audio_read(TSC2101_HEADSET_GAIN_CTRL);
+ucontrol->value.integer.value[0] = IS_UNMUTED(15, val);
+return 0;
+}
+
+static int __headset_playback_switch_put(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+// mute/unmute headset
+return adc_pga_unmute_control(ucontrol->value.integer.value[0],
+TSC2101_HEADSET_GAIN_CTRL,
+15);
+}
+
+static int __handset_playback_volume_info(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_info_t *uinfo)
+{
+uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+uinfo->count = 1;
+uinfo->value.integer.min = 0;
+uinfo->value.integer.max = 100;
+return 0;
+}
+
+static int __handset_playback_volume_get(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+u16 val;
+u16 vol;
+
+val = omap_tsc2101_audio_read(TSC2101_HANDSET_GAIN_CTRL);
+M_DPRINTK("registry value = %d\n", val);
+vol = HNGC_ADPGA_HND_EXTRACT(val);
+vol = vol & ~HNGC_ADMUT_HND;
+vol = get_handset_gain_control_volume_as_mixer_volume(vol);
+ucontrol->value.integer.value[0] = vol;
+
+M_DPRINTK("mixer volume returned = %ld\n",
+ucontrol->value.integer.value[0]);
+return 0;
+}
+
+static int __handset_playback_volume_put(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+return
+set_mixer_volume_as_handset_gain_control_volume(ucontrol->value.integer.value[0]);
+
+}
+
+static int __handset_playback_switch_info(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_info_t *uinfo)
+{
+uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+uinfo->count = 1;
+uinfo->value.integer.min = 0;
+uinfo->value.integer.max = 1;
+return 0;
+}
+
+/* When HNGC_ADMUT_HND (bit 15) is 1, the handset is muted.
+* When HNGC_ADMUT_HND is 0, handset is not muted.
+*/
+static int __handset_playback_switch_get(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+u16 val = omap_tsc2101_audio_read(TSC2101_HANDSET_GAIN_CTRL);
+ucontrol->value.integer.value[0] = IS_UNMUTED(15, val);
+return 0;
+}
+
+static int __handset_playback_switch_put(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_value_t *ucontrol)
+{
+// handset mute/unmute
+return adc_pga_unmute_control(ucontrol->value.integer.value[0],
+TSC2101_HANDSET_GAIN_CTRL,
+15);
+}
+
+#define CELLPHONE_INPUT_VOLUME_RANGE 0x5d
+
+/*
+* Converts the headset gain control volume (0 - 63.5 db)
+* to Alsa mixer volume (0 - 100)
+*/
+int get_cellphone_input_pga_volume_as_mixer_volume(u16 registerVal)
+{
+u16 retVal;
+
+retVal = ((registerVal * 100) / CELLPHONE_INPUT_VOLUME_RANGE);
+return retVal;
+}
+
+/*
+* Writes Alsa mixer volume (0 - 100) to TSC2101 handset volume registry in
+* a TSC2101 format. (0 - 63.5 db)
+* In TSC2101 OSS driver this functionality was controlled with "SET_MIC"
+parameter.
+*/
+int set_mixer_volume_as_cellphone_input_pga_volume(int mixerVol)
+{
+return 1;
+}
+
+static snd_kcontrol_new_t tsc2101_control[] __devinitdata = {
+{
+.name = "Playback Playback Route",
+.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+.index = 0,
+.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+.info = __pcm_playback_target_info,
+.get = __pcm_playback_target_get,
+.put = __pcm_playback_target_put,
+}, {
+.name = "Master Playback Volume",
+.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+.index = 0,
+.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+.info = __pcm_playback_volume_info,
+.get = __pcm_playback_volume_get,
+.put = __pcm_playback_volume_put,
+}, {
+.name = "Master Playback Switch",
+.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+.index = 0,
+.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+.info = __pcm_playback_switch_info,
+.get = __pcm_playback_switch_get,
+.put = __pcm_playback_switch_put,
+}, {
+.name = "Headset Playback Volume",
+.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+.index = 0,
+.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+.info = __headset_playback_volume_info,
+.get = __headset_playback_volume_get,
+.put = __headset_playback_volume_put,
+}, {
+.name = "Headset Playback Switch",
+.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+.index = 0,
+.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+.info = __headset_playback_switch_info,
+.get = __headset_playback_switch_get,
+.put = __headset_playback_switch_put,
+}, {
+.name = "Handset Playback Volume",
+.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+.index = 0,
+.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+.info = __handset_playback_volume_info,
+.get = __handset_playback_volume_get,
+.put = __handset_playback_volume_put,
+}, {
+.name = "Handset Playback Switch",
+.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+.index = 0,
+.access= SNDRV_CTL_ELEM_ACCESS_READWRITE,
+.info = __handset_playback_switch_info,
+.get = __handset_playback_switch_get,
+.put = __handset_playback_switch_put,
+}
+};
+
+#ifdef CONFIG_PM
+
+void snd_omap_suspend_mixer(void)
+{
+}
+
+void snd_omap_resume_mixer(void)
+{
+snd_omap_init_mixer();
+}
+#endif
+
+int snd_omap_mixer(struct snd_card_omap_codec *tsc2101)
+{
+int i=0;
+int err=0;
+
+if (!tsc2101) {
+return -EINVAL;
+}
+for (i=0; i < ARRAY_SIZE(tsc2101_control); i++) {
+if ((err = snd_ctl_add(tsc2101->card,
+snd_ctl_new1(&tsc2101_control[i],
+tsc2101->card))) < 0) {
+return err;
+}
+}
+return 0;
+}
 
 
-------=_NextPart_001_0017_01C6705B.E9E399E4
-Content-Type: text/plain;
-	charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-
-------=_NextPart_001_0017_01C6705B.E9E399E4
-Content-Type: text/html;
-	charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001501c6705b$e9e399a0$8861c051@qbzuee" align=3Dbaseline=20
-border=3D0></FONT></DIV>
-</BODY></HTML>
-
-------=_NextPart_001_0017_01C6705B.E9E399E4--
-
-------=_NextPart_000_0016_01C6705B.E9E399C2
-Content-Type: image/gif;
-	name="fair.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001501c6705b$e9e399a0$8861c051@qbzuee>
-
-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
-/uRf/uZ//uif/uq//uzf/u7//gcSCAA7
-
-------=_NextPart_000_0016_01C6705B.E9E399C2--
-
+Mika
 
 
 -------------------------------------------------------
