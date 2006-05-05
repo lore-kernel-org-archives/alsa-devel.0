@@ -1,15 +1,12 @@
-From: "Peg Franklin" <zhu@ci.savage.mn.us>
-Subject: subscriber salvation
-Date: Fri, 5 May 2006 20:20:34 +0200
-Message-ID: <000f01c67071$45b67b07$6621edd9@kmtwu.jvic>
+From: "Penny Tucker" <bixhvw@centrocaninomiraflores.com>
+Subject: valedictorian maddeningly
+Date: Fri, 5 May 2006 20:21:36 +0200
+Message-ID: <000f01c67071$4a90b2dc$c68dedd9@zxy.pfd>
 Mime-Version: 1.0
 Content-Type: multipart/related;
 	type="multipart/alternative";
-	boundary="----=_NextPart_000_000B_01C67082.093F4A9B"
+	boundary="----=_NextPart_000_000B_01C67082.0E19826C"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from pD9ED7978.dip.t-dialin.net (pD9ED64CD.dip.t-dialin.net [217.237.100.205])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 88F4F18C
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2006 20:25:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,23 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_000B_01C67082.093F4A9B
+------=_NextPart_000_000B_01C67082.0E19826C
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_000C_01C67082.093F4AB6"
+	boundary="----=_NextPart_001_000C_01C67082.0E198288"
 
 
-------=_NextPart_001_000C_01C67082.093F4AB6
+------=_NextPart_001_000C_01C67082.0E198288
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-------=_NextPart_001_000C_01C67082.093F4AB6
+------=_NextPart_001_000C_01C67082.0E198288
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -49,18 +46,17 @@ charset=3Dwindows-1252">
 </HEAD>
 <BODY bgColor=3D#ffffff>
 <DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:000a01c67071$45b67a80$6621edd9@kmtwu.jvic"=20
-align=3Dbaseline=20
+src=3D"cid:000a01c67071$4a90b250$c68dedd9@zxy.pfd" align=3Dbaseline=20
 border=3D0></FONT></DIV>
 </BODY></HTML>
 
-------=_NextPart_001_000C_01C67082.093F4AB6--
+------=_NextPart_001_000C_01C67082.0E198288--
 
-------=_NextPart_000_000B_01C67082.093F4A9B
+------=_NextPart_000_000B_01C67082.0E19826C
 Content-Type: image/gif;
-	name="watermark.gif"
+	name="Oscar.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000a01c67071$45b67a80$6621edd9@kmtwu.jvic>
+Content-ID: <000a01c67071$4a90b250$c68dedd9@zxy.pfd>
 
 R0lGODdh5AI/A+cAAPf93qSiuhwTENfFxwQDFCooNUxGTWNtZIOLmKWPlX5udyUYHwEFCsCporfp
 GmypbwV+A+wa3sa8Cch8lCpqLYQqtv3S4gGl3bhcx9LJcEHO70S6CSOBxixJQsBzre7416X2qYf3
@@ -781,7 +777,7 @@ ed1ru6aUTmR9KZOFN6ZaCk+pXAH2tADqJRAr2i40hehNSYpR9Y2VlM9l41R5OjeSesmiUy1aUn8b
 PxziEZf4xClecYtfHOMZNNf4xjnecY9/HOQhF/nISV5yk58c5SlX+cpZ3nKXvxzmMZf5zGlec5vf
 HOc51/nOeS6QgAAAOw==
 
-------=_NextPart_000_000B_01C67082.093F4A9B--
+------=_NextPart_000_000B_01C67082.0E19826C--
 
 
 
