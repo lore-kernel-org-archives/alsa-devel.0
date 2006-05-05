@@ -1,13 +1,14 @@
-From: Nicolas Boullis <nboullis@debian.org>
-Subject: Re: How to deal with cards with a large on-board buffer?
-Date: Fri, 5 May 2006 01:56:53 +0200
-Message-ID: <20060504235652.GI4831@home>
-References: <20060502234125.GC4109@home> <s5hirongupx.wl%tiwai@suse.de> <20060504011806.GB6067@home> <s5hpsitg7zs.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002096]: Audio Players uses 100% CPU
+Date: Fri, 5 May 2006 03:17:43 +0200
+Message-ID: <a3665ef8dd8fbc1b0acd8fa60d7d39ef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hpsitg7zs.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D54418C
+	for <alsa-devel@alsa-project.org>; Fri,  5 May 2006 03:17:43 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +18,105 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 04, 2006 at 04:49:43PM +0200, Takashi Iwai wrote:
-> 
-> I'd suggest to leave as it is right now.  If underruns occur too
-> often, something is wrong in another place, e.g. the timing of
-> transfer between HOST and on-chip memories.
 
-Thre certainly is some problem... ;-)
-The trouble is that I don't know how to fix them, and I don't even 
-really understand what happens...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2096> 
+======================================================================
+Reported By:                ksc91u
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2096
+Category:                   PCI - intel8x0
+Reproducibility:            random
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             05-03-2006 12:27 CEST
+Last Modified:              05-05-2006 03:17 CEST
+======================================================================
+Summary:                    Audio Players uses 100% CPU
+Description: 
+MB: Asus K8N4-E BIOS 1006
 
-Have you tried to give a look to my code?
+I use xmms or VLC to play internet stream.
+And after a period of time...the player get 100% of my CPU,and the sound
+become shatter.
+I can not even switch to console to kill it.
+The only way is to disconnect my network,let the player stop player,and
+kill it.
+======================================================================
+
+----------------------------------------------------------------------
+ ksc91u - 05-04-06 19:08 
+----------------------------------------------------------------------
+after pcm.!default "plughw"
+
+VLC : Play fine,but GUI become blank and not able to close after a while.
+Can only killall vlc.
+
+XMMS : Can not use AO=ALSA .mixer not working when use esd
+
+Mplayer : ao=alsa block when initializing device.mixer ok with ao=esd
+
+Thanks for your help :)
+
+----------------------------------------------------------------------
+ ksc91u - 05-05-06 03:17 
+----------------------------------------------------------------------
+pcm.!default {
+type plug
+slave.pcm "dmixer"
+}
+pcm.dmixer {
+type dmix
+ipc_key 1024
+slave {
+pcm "hw:0,0"
+period_time 0
+period_size 1024
+buffer_size 16384
+rate 48000
+}
+bindings {
+0 0
+1 1
+}
+}
 
 
-Regards,
+Now I use dmixer again.
+Change buffer_size from 8192 to 16384
+period_size from 2048 to 1024
 
-Nicolas
+Let VLC play for 6 hours while I am asleep.
+VLC takes 03:15:08 of CPU time...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-03-06 12:27 ksc91u         New Issue                                    
+05-03-06 12:27 ksc91u         File Added: lspci.txt                        
+05-03-06 19:25 tiwai          Note Added: 0009600                          
+05-04-06 05:15 ksc91u         Note Added: 0009606                          
+05-04-06 05:15 ksc91u         File Added: dmesg                            
+05-04-06 07:18 ksc91u         Note Edited: 0009606                         
+05-04-06 08:14 ksc91u         Note Edited: 0009606                         
+05-04-06 11:41 tiwai          Note Added: 0009610                          
+05-04-06 12:22 ksc91u         Note Added: 0009615                          
+05-04-06 12:45 tiwai          Note Added: 0009616                          
+05-04-06 19:08 ksc91u         Note Added: 0009619                          
+05-05-06 03:17 ksc91u         Note Added: 0009622                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
