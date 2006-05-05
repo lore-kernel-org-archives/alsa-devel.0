@@ -1,11 +1,10 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Re: mbox archive (Lee Revell)
-Date: Fri, 5 May 2006 09:49:53 -0700 (PDT)
-Message-ID: <20060505164953.81686.qmail@web60824.mail.yahoo.com>
-Reply-To: tsw@johana.com
+From: Tom van Leeuwen <thuis@tomvanleeuwen.nl>
+Subject: No sound with Alsa
+Date: Fri, 05 May 2006 19:21:47 +0200
+Message-ID: <1146849707.11694.22.camel@tom.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -19,38 +18,52 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-With humor intended...
+Hallo all,
 
-> Can someone send me (off-list) the alsa-user and alsa-devel messages
-> from April 28th through today in mbox format?  My POP mail client
-> crashed while I was out of the country causing all mail from 4/28
-> through today to bounce.
+I have a problem with my Alsa drivers, and I was told that this list
+could help me.
+I have an on-board C-Media sound chip and a Creative PCI sound card.
+When I  use either of those cards to play a file with a program that
+uses the Alsa output, it keeps repeating the first second. When I play a
+file with OSS output, it jumps quickly through the file.
+But sometimes it works flawless. I have no clue what causes the driver
+to work or not. I tried rebooting vs cold boot etc. but I can't figure
+out what causes the driver to work.
+When I enable debugging in the kernel, it throws the following error:
 
-> Lee
+Time: 01:02.04 [00:00.00] of 00:00.00 (  0.0%) Output Buffer:
+2.75MALSA sound/core/pcm_lib.c:157: BUG: stream = 0, pos = 0xf7de,
+buffer size = 0x4000, period size = 0x800
 
-Do you want it with the large '.gif' files and other associated spam
-that comes through in the digest form, or not? :-)  :-)
+Running alsaconf doesn't make any difference.
 
-(Please interpret this as a plea to get some filtering on the mailing lis=
-t
-to reduce the files with attachments that come through on the digest
-form of the mailing list.)
+When I enable the on-board sound chip and have the PCI card inserted,
+the audio works fine, but it doesn't always use the same device. I can
+choose the correct device with alssaconf, but when I reboot, it
+sometimes uses the other device. I noticed that both cards have the same
+IRQ.
 
---=20
-Tom Watson
-tsw@johana.com
+I would like to use the on-board sound, and remove the PCI card.
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around=20
-http://mail.yahoo.com=20
+Here is the output of lspci -v
+
+0000:00:05.0 Multimedia audio controller: C-Media Electronics Inc CM8738
+(rev 10)
+        Subsystem: ASUSTeK Computer Inc. CMI8738 6ch-MX
+        Flags: bus master, stepping, medium devsel, latency 32, IRQ 201
+        I/O ports at a800 [size=256]
+        Capabilities: [c0] Power Management version 2
+
+0000:00:09.0 Multimedia audio controller: Ensoniq 5880 AudioPCI (rev 02)
+        Subsystem: Ensoniq Sound Blaster 16PCI 4.1ch
+        Flags: bus master, slow devsel, latency 32, IRQ 201
+        I/O ports at a400 [size=64]
+        Capabilities: [dc] Power Management version 1
+
 
 
 -------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job ea=
-sier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronim=
-o
-http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D=
-121642
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
