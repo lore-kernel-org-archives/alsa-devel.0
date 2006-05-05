@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002097]: ALC850 is 8-channel but intel8x0 only seems to support 6 channels
-Date: Sat, 6 May 2006 00:52:37 +0200
-Message-ID: <f996fde3227ad8000042791ce2fc7aab@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001551]: No mute switch to mixer channel
+Date: Sat, 6 May 2006 01:22:33 +0200
+Message-ID: <091d5f609104a8a1bb5fbc34f0607284@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D59C187
-	for <alsa-devel@alsa-project.org>; Sat,  6 May 2006 00:52:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D529616D
+	for <alsa-devel@alsa-project.org>; Sat,  6 May 2006 01:22:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2097> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1551> 
 ======================================================================
-Reported By:                ellismartinp
+Reported By:                Shogun
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2097
-Category:                   PCI - intel8x0
+Issue ID:                   1551
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.15 (2096)
+Distribution:               Gentoo Linux 2005.1
+Kernel Version:             2.6.13-gentoo-r3
 ======================================================================
-Date Submitted:             05-05-2006 14:17 CEST
-Last Modified:              05-06-2006 00:52 CEST
+Date Submitted:             11-13-2005 13:16 CET
+Last Modified:              05-06-2006 01:22 CEST
 ======================================================================
-Summary:                    ALC850 is 8-channel but intel8x0 only seems to
-support 6 channels
+Summary:                    No mute switch to mixer channel
 Description: 
-I have on-board Nforce4 with AC97 CODEC.  This is feeding a Creative 7.1
-amp & speakers via analogue.  In Windows XP I get all 8 channels and can
-test them individually.
+I have a SoundBlaster Audigy 2 ZS (without LiveDrive)...
+When I load the modules the sound works perfectly, but in the mixer (both
+alsa-mixer and kmix) I can't see any mute switch for the mixer
+channel...The only channel which has the switch is the Headphone...
 
-Under Linux I can get ALSA to play on 6 speakers (not the side ones) by
-duplicating front to rear but I can't see any way of testing if all
-individual channels work and I can't see any way of enabling the remaining
-two speakers.
-
-Help please?!
-
-There must be millions of Nforce4 boards out there running 7.1 sound just
-dying to go to Linux.
+I don't know if previous version worked...
 ======================================================================
 
 ----------------------------------------------------------------------
- ellismartinp - 05-06-06 00:52 
+ Shogun - 11-13-05 14:05 
 ----------------------------------------------------------------------
-OK, so I figured out how to use speaker-test (thanks to another post here)
-and have now got 5.1 surround working fine.
+I forgot to mention that this issue is also present in 1.0.8 and in
+1.0.10rc3...
 
-But I'd like to be able to use 7.1 so an 8-channel intel8x0 driver would
-be very much appreciated.
+----------------------------------------------------------------------
+ Shogun - 05-06-06 01:22 
+----------------------------------------------------------------------
+Still here with kernel 2.6.16 and ALSA 1.0.11...
+What's wrong guys? Why doesn't the mixer works?
 
-** Incidentally, I tried upgrading Alsa to the 1.0.11 suite and
-speaker-test started complaining of buffer issues (buffer too small) and
-broken pipes when run with -Dsurround51 so I reverted to the 1.0.11rc2
-currently shipping with Fedora Core 5. **
+As I read in source code, the master mute has no effect on the card...so I
+think it's not supported...but is there any way to accomplish a standard
+behaviour?
+
+Thanks...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-05-06 14:17 ellismartinp   New Issue                                    
-05-05-06 14:17 ellismartinp   Distribution              => Fedora Core 5   
-05-05-06 14:17 ellismartinp   Kernel Version            => 2.6.15 (2096)   
-05-06-06 00:52 ellismartinp   Note Added: 0009633                          
+11-13-05 13:16 Shogun         New Issue                                    
+11-13-05 13:16 Shogun         Distribution              => Gentoo Linux 2005.1
+11-13-05 13:16 Shogun         Kernel Version            => 2.6.13-gentoo-r3
+11-13-05 14:05 Shogun         Note Added: 0006691                          
+05-06-06 01:22 Shogun         Note Added: 0009634                          
 ======================================================================
 
 
