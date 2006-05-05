@@ -1,11 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: mbox archive
-Date: Fri, 05 May 2006 10:12:48 -0400
-Message-ID: <1146838369.18891.67.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002069]: No sound on via SPDIF out, very low volume on analog out (MSI K8NGM2-FID with ACL880)
+Date: Fri, 5 May 2006 16:56:30 +0200
+Message-ID: <ed028be4ad05b4793c5c774338eed999@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F25F189
+	for <alsa-devel@alsa-project.org>; Fri,  5 May 2006 16:56:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,16 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA user list <alsa-user@lists.sourceforge.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Can someone send me (off-list) the alsa-user and alsa-devel messages
-from April 28th through today in mbox format?  My POP mail client
-crashed while I was out of the country causing all mail from 4/28
-through today to bounce.
 
-Lee
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2069> 
+======================================================================
+Reported By:                gtmkramer
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2069
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.16-1.2069_FC4smp
+======================================================================
+Date Submitted:             04-25-2006 20:43 CEST
+Last Modified:              05-05-2006 16:56 CEST
+======================================================================
+Summary:                    No sound on via SPDIF out, very low volume on analog
+out (MSI K8NGM2-FID with ACL880)
+Description: 
+On my new MSI K8NGM2-FID motherboard with a Realtek ACL880 a get only sound
+from the analog output (although the volume is very low).
 
+The codec is not properly recognized:
+hda_codec: Unknown model for ALC880, trying auto-probe from BIOS...
+
+I've tried with various model= settings to no avail.
+======================================================================
+
+----------------------------------------------------------------------
+ gtmkramer - 04-30-06 15:00 
+----------------------------------------------------------------------
+With this small patch/hack I let the alsa driver properly detect my onboard
+ALC880 and let it autoconfigure (for now). With autoconfigure I do get a
+headphones for which there is no connector. Do I need to make a new
+(mixer)model for this board?
+
+----------------------------------------------------------------------
+ rlrevell - 05-05-06 16:56 
+----------------------------------------------------------------------
+Yes it would be helpful to make a new model and submit the patch.
+
+How are you testing SPDIF with ALSA?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-25-06 20:43 gtmkramer      New Issue                                    
+04-25-06 20:43 gtmkramer      File Added: codec.tar.gz                     
+04-25-06 20:43 gtmkramer      Distribution              => Fedora Core 4   
+04-25-06 20:43 gtmkramer      Kernel Version            => 2.6.16-1.2069_FC4smp
+04-27-06 18:34 gtmkramer      Note Added: 0009533                          
+04-27-06 18:40 gtmkramer      Note Added: 0009534                          
+04-27-06 20:37 gtmkramer      Note Added: 0009535                          
+04-30-06 14:57 gtmkramer      File Added: patch-msi-k8ngm2-fid.patch            
+       
+04-30-06 15:00 gtmkramer      Note Added: 0009548                          
+05-05-06 16:56 rlrevell       Note Added: 0009626                          
+======================================================================
 
 
 
