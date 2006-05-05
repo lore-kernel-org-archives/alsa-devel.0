@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002087]: Audio still broken for Asus A8V-MX
-Date: Fri, 5 May 2006 18:40:19 +0200
-Message-ID: <28e480e870a2576c98a67c39d71a169b@bugtrack.alsa-project.org>
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Re: mbox archive (Lee Revell)
+Date: Fri, 5 May 2006 09:49:53 -0700 (PDT)
+Message-ID: <20060505164953.81686.qmail@web60824.mail.yahoo.com>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C7809183
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2006 18:40:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,94 +16,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+With humor intended...
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2087> 
-======================================================================
-Reported By:                myxie
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2087
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.16
-======================================================================
-Date Submitted:             04-30-2006 23:33 CEST
-Last Modified:              05-05-2006 18:40 CEST
-======================================================================
-Summary:                    Audio still broken for Asus A8V-MX
-Description: 
-The patches integrated (see issue 0001622) into the latest release of ALSA
-make the on-board audio more usuable, but there are still significant
-issues.
+> Can someone send me (off-list) the alsa-user and alsa-devel messages
+> from April 28th through today in mbox format?  My POP mail client
+> crashed while I was out of the country causing all mail from 4/28
+> through today to bounce.
 
-Playing an audio file results in a freeze for 10 seconds, followed by a
-write error and then the audio continues normally. I noticed a second
-write error later on in the stream.
+> Lee
 
-I am happy to try patches, turn on debugging flags etc. Let me know.
+Do you want it with the large '.gif' files and other associated spam
+that comes through in the digest form, or not? :-)  :-)
 
-======================================================================
+(Please interpret this as a plea to get some filtering on the mailing lis=
+t
+to reduce the files with attachments that come through on the digest
+form of the mailing list.)
 
-----------------------------------------------------------------------
- tiwai - 05-02-06 17:57 
-----------------------------------------------------------------------
-It's likely an irq problem.
+--=20
+Tom Watson
+tsw@johana.com
 
-----------------------------------------------------------------------
- myxie - 05-05-06 18:40 
-----------------------------------------------------------------------
-This is my
-
-==> /proc/interrupts <==
-           CPU0       CPU1       
-  0:    1052928  414836302    IO-APIC-edge  timer
-  1:        453     135144    IO-APIC-edge  i8042
-  7:          0          2    IO-APIC-edge  parport0
-  8:       2194     522246    IO-APIC-edge  rtc
-  9:          0          0   IO-APIC-level  acpi
- 12:       1342     402817    IO-APIC-edge  i8042
- 14:          0         67    IO-APIC-edge  ide0
-193:          0          0   IO-APIC-level  uhci_hcd:usb4
-201:   38946417          0         PCI-MSI  libata
-209:       2260    1441848   IO-APIC-level  ehci_hcd:usb1, uhci_hcd:usb3,
-VIA8237
-217:          0          0   IO-APIC-level  uhci_hcd:usb2
-225:      76836  100930699   IO-APIC-level  uhci_hcd:usb5, eth0
-NMI:      55961      63711 
-LOC:  415838586  415838509 
-ERR:          0
-MIS:          0
-
-As soon as I start (ogg123), the interrupt count goes up. During the 10
-second gap the count is static. After the I/O error the count increases
-steadily again. FYI 385 interrupts were generated in the first burst of
-activity.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-30-06 23:33 myxie          New Issue                                    
-04-30-06 23:33 myxie          Distribution              => Debian          
-04-30-06 23:33 myxie          Kernel Version            => 2.6.16          
-05-02-06 17:57 tiwai          Note Added: 0009562                          
-05-05-06 18:40 myxie          Note Added: 0009628                          
-======================================================================
-
-
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around=20
+http://mail.yahoo.com=20
 
 
 -------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+Get stuff done quickly with pre-integrated technology to make your job ea=
+sier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronim=
+o
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D=
+121642
