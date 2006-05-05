@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002097]: ALC850 is 8-channel but intel8x0 only seems to support 6 channels
-Date: Fri, 5 May 2006 14:17:57 +0200
-Message-ID: <f4d842782d481ac3a0be1662725ce1db@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002098]: Volume adjustment not well calibrated
+Date: Fri, 5 May 2006 14:34:58 +0200
+Message-ID: <ec58b1b63ca8b09220314fbdba26870c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 003C5183
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2006 14:17:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DECBC18C
+	for <alsa-devel@alsa-project.org>; Fri,  5 May 2006 14:34:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,39 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2097> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2098> 
 ======================================================================
-Reported By:                ellismartinp
-Assigned To:                
+Reported By:                fdoffizi01
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2097
-Category:                   PCI - intel8x0
+Issue ID:                   2098
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.15 (2096)
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-05-2006 14:17 CEST
-Last Modified:              05-05-2006 14:17 CEST
+Date Submitted:             05-05-2006 14:34 CEST
+Last Modified:              05-05-2006 14:34 CEST
 ======================================================================
-Summary:                    ALC850 is 8-channel but intel8x0 only seems to
-support 6 channels
+Summary:                    Volume adjustment not well calibrated
 Description: 
-I have on-board Nforce4 with AC97 CODEC.  This is feeding a Creative 7.1
-amp & speakers via analogue.  In Windows XP I get all 8 channels and can
-test them individually.
+Volume is just working from 65/70% to 100% causa under 65% there's no sound
+at all, it should be better calibrated to map actual 65% to 0%.
+Of course this could be a issue connected with my specific hardware (Sony
+Vaio FE11M).
+You can find more info on hw on solved bug #2059.
 
-Under Linux I can get ALSA to play on 6 speakers (not the side ones) by
-duplicating front to rear but I can't see any way of testing if all
-individual channels work and I can't see any way of enabling the remaining
-two speakers.
-
-Help please?!
-
-There must be millions of Nforce4 boards out there running 7.1 sound just
-dying to go to Linux.
+Thanks
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-05-06 14:17 ellismartinp   New Issue                                    
-05-05-06 14:17 ellismartinp   Distribution              => Fedora Core 5   
-05-05-06 14:17 ellismartinp   Kernel Version            => 2.6.15 (2096)   
+05-05-06 14:34 fdoffizi01     New Issue                                    
 ======================================================================
 
 
