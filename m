@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002095]: Choppy sound using default dmix config for some applications but not others.
-Date: Fri, 5 May 2006 22:49:40 +0200
-Message-ID: <87802d743fd9168747e872366bb59bbc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002097]: ALC850 is 8-channel but intel8x0 only seems to support 6 channels
+Date: Sat, 6 May 2006 00:52:37 +0200
+Message-ID: <f996fde3227ad8000042791ce2fc7aab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7A0A717A
-	for <alsa-devel@alsa-project.org>; Fri,  5 May 2006 22:49:40 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D59C187
+	for <alsa-devel@alsa-project.org>; Sat,  6 May 2006 00:52:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2095> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2097> 
 ======================================================================
-Reported By:                BigBaaadBob
-Assigned To:                perex
+Reported By:                ellismartinp
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2095
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   2097
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.15 (2096)
 ======================================================================
-Date Submitted:             05-03-2006 01:09 CEST
-Last Modified:              05-05-2006 22:49 CEST
+Date Submitted:             05-05-2006 14:17 CEST
+Last Modified:              05-06-2006 00:52 CEST
 ======================================================================
-Summary:                    Choppy sound using default dmix config for some
-applications but not others.
+Summary:                    ALC850 is 8-channel but intel8x0 only seems to
+support 6 channels
 Description: 
-As reported in http://forums.gentoo.org/viewtopic-t-457951.html
-alsa 1.0.11 causes skipping sound in some applications but not others.
+I have on-board Nforce4 with AC97 CODEC.  This is feeding a Creative 7.1
+amp & speakers via analogue.  In Windows XP I get all 8 channels and can
+test them individually.
 
-Sound skips in rhytymbox and totem, but not xmms, realplayer, or mplayer.
+Under Linux I can get ALSA to play on 6 speakers (not the side ones) by
+duplicating front to rear but I can't see any way of testing if all
+individual channels work and I can't see any way of enabling the remaining
+two speakers.
 
-This occurs with default dmix setup (i.e. with no .asoundrc).  Creating an
-.asoundrc like this causes the skipping to stop for those applications
-that skip.
+Help please?!
 
-pcm.!default {
-  type hw
-  card 0
-}
-
-This has been reported using the cmipci driver, the Intel ICH4 driver, the
-i915GM driver, and on a ppc iBook G4.
-
-On user reports that fiddling with the .asoundrc parameters can lessen the
-problem, but not eliminate the problem.
+There must be millions of Nforce4 boards out there running 7.1 sound just
+dying to go to Linux.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-03-06 19:27 
+ ellismartinp - 05-06-06 00:52 
 ----------------------------------------------------------------------
-Now I fixed another bug in rate plugin on HG repo.
-Hopefully this fixes the problems here described, too.  Give it a try.
+OK, so I figured out how to use speaker-test (thanks to another post here)
+and have now got 5.1 surround working fine.
 
-----------------------------------------------------------------------
- BigBaaadBob - 05-05-06 22:49 
-----------------------------------------------------------------------
-Finally got a chance to try adding:
+But I'd like to be able to use 7.1 so an 8-channel intel8x0 driver would
+be very much appreciated.
 
-   defaults.pcm.dmix_max_periods -1
-
-In my case that fixes the skipping.  Unfortunately, I don't know how to
-build for Gentoo from the "HG Repo" so I'll have to leave that testing to
-someone else.
-
-Thanks!
+** Incidentally, I tried upgrading Alsa to the 1.0.11 suite and
+speaker-test started complaining of buffer issues (buffer too small) and
+broken pipes when run with -Dsurround51 so I reverted to the 1.0.11rc2
+currently shipping with Fedora Core 5. **
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-03-06 01:09 BigBaaadBob    New Issue                                    
-05-03-06 01:27 wellwhoopdedoooNote Added: 0009580                          
-05-03-06 01:28 wellwhoopdedoooIssue Monitored: wellwhoopdedooo                  
- 
-05-03-06 01:29 wellwhoopdedoooNote Edited: 0009580                         
-05-03-06 01:31 BigBaaadBob    Note Added: 0009581                          
-05-03-06 11:45 tiwai          Note Added: 0009586                          
-05-03-06 19:27 tiwai          Note Added: 0009601                          
-05-05-06 22:49 BigBaaadBob    Note Added: 0009632                          
+05-05-06 14:17 ellismartinp   New Issue                                    
+05-05-06 14:17 ellismartinp   Distribution              => Fedora Core 5   
+05-05-06 14:17 ellismartinp   Kernel Version            => 2.6.15 (2096)   
+05-06-06 00:52 ellismartinp   Note Added: 0009633                          
 ======================================================================
 
 
