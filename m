@@ -1,11 +1,11 @@
-From: "Julius Mcclure" <jmr@kent-business-awards.co.uk>
-Subject: worn-out
-Date: Fri, 5 May 2006 16:27:19 +0000 (UTC)
-Message-ID: <002201c78e71$ecede23d$b32ac051@yop.hmld>
+From: "Benjamin Rivera" <rrig@bublitz.de>
+Subject: shook-up
+Date: Fri, 5 May 2006 16:32:17 +0000 (UTC)
+Message-ID: <002201c78e72$a7e8db9c$83d5c051@fyhcka.gh>
 Mime-Version: 1.0
 Content-Type: multipart/related;
 	type="multipart/alternative";
-	boundary="----=_NextPart_000_001E_01C78E71.ECEDE219"
+	boundary="----=_NextPart_000_001E_01C78E72.A7E8DB6C"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,24 +16,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Date: Fri, 4 May 2007 17:22:31 +0000
-To: alsa-devel@lists.sourceforge.net
+Date: Fri, 4 May 2007 17:27:01 +0000
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_001E_01C78E71.ECEDE219
+------=_NextPart_000_001E_01C78E72.A7E8DB6C
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001F_01C78E71.ECEDE222"
+	boundary="----=_NextPart_001_001F_01C78E72.A7E8DB78"
 
 
-------=_NextPart_001_001F_01C78E71.ECEDE222
+------=_NextPart_001_001F_01C78E72.A7E8DB78
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-------=_NextPart_001_001F_01C78E71.ECEDE222
+------=_NextPart_001_001F_01C78E72.A7E8DB78
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -42,22 +42,22 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2600.0000" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
 <DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001d01c78e71$ecede210$b32ac051@yop.hmld" align=3Dbaseline=20
+src=3D"cid:001d01c78e72$a7e8db60$83d5c051@fyhcka.gh" align=3Dbaseline=20
 border=3D0></FONT></DIV>
 </BODY></HTML>
 
-------=_NextPart_001_001F_01C78E71.ECEDE222--
+------=_NextPart_001_001F_01C78E72.A7E8DB78--
 
-------=_NextPart_000_001E_01C78E71.ECEDE219
+------=_NextPart_000_001E_01C78E72.A7E8DB6C
 Content-Type: image/gif;
-	name="compatibility.gif"
+	name="recognizably.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001d01c78e71$ecede210$b32ac051@yop.hmld>
+Content-ID: <001d01c78e72$a7e8db60$83d5c051@fyhcka.gh>
 
 R0lGODdhywGhBMYAAPXn76CfrwgcGb/ZxxsdHSY7PVRBQXBwcoeMjZmJooeFcCArFwwDBqy1pIfw
 ZVkSbawFWCWBu+sbPFIHRXE4DO5b0M/CgYEmW9auSzsHXqm0YwHZ5L3EAPkXCD+JQEt4mxxIXp3J
@@ -753,7 +753,7 @@ eChI6Pg4KFlpeRlAIEAQeen5CRoqOkpaanqKmqq6ytrq+gobKztLW2t7i5uru8vb6/sLHCw8TFxs
 fIycrLzM3Oz8DB0tPU1dbX2Nna29zd3t/Q0eLj5OXm5+jp6uPb7O3u7+Dh8vP09fb3+Pn6+/z9/v
 /w8woMCBBAsaPIgwocKFDBs6fAgxosSJFCtavIgxo8aNHDt6lNSFVSAAOw==
 
-------=_NextPart_000_001E_01C78E71.ECEDE219--
+------=_NextPart_000_001E_01C78E72.A7E8DB6C--
 
 
 
