@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002097]: ALC850 is 8-channel but intel8x0 only seems to support 6 channels
-Date: Sun, 7 May 2006 01:53:00 +0200
-Message-ID: <aca62cd779dd3b5344ab412330725da8@bugtrack.alsa-project.org>
+Date: Sat, 6 May 2006 23:55:38 +0200
+Message-ID: <c84f1c954781224d95d221bc8477f909@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 05ED2169
-	for <alsa-devel@alsa-project.org>; Sun,  7 May 2006 01:53:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFE2D177
+	for <alsa-devel@alsa-project.org>; Sat,  6 May 2006 23:55:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.15 (2096)
 ======================================================================
 Date Submitted:             05-05-2006 14:17 CEST
-Last Modified:              05-07-2006 01:52 CEST
+Last Modified:              05-06-2006 23:55 CEST
 ======================================================================
 Summary:                    ALC850 is 8-channel but intel8x0 only seems to
 support 6 channels
@@ -61,116 +61,40 @@ dying to go to Linux.
 ======================================================================
 
 ----------------------------------------------------------------------
- ellismartinp - 05-07-06 01:41 
+ ellismartinp - 05-06-06 00:52 
 ----------------------------------------------------------------------
-I've uploaded the modded files.  All seems to work fine on my rig so far.
-Not sure if they'll be any use to anyone else - hope so!  All the changes
-have Martin Ellis next to or around them.  Someone who really knows what
-they're doing should take a look, 'cos I'm a noobie and have probably
-broken something :!
+OK, so I figured out how to use speaker-test (thanks to another post here)
+and have now got 5.1 surround working fine.
 
-Maybe someone from Alsa could take a look and see if they could be a basis
-for a future enhancement?
+But I'd like to be able to use 7.1 so an 8-channel intel8x0 driver would
+be very much appreciated.
 
-**** Please don't try this without backing up EVERYTHING etc. first ****
-
-Download Alsa drivers 1.0.11 and unzip
-
-ac97_patch.c goes in alsa-driver-1.0.11/alsa-kernel/pci/ac97/
-intel8x0.c goes in alsa-driver-1.0.11/alsa-kernel/pci/
-
-Open a Terminal session
-cd alsa-driver-1.0.11
-./configure --with-cards=intelx80
-make
-su [enter password]
-make install
-reboot
-
-To correctly run speaker-test you'll need to edit NFORCE.conf in
-/etc/alsa/cards/
-Add the following after the NFORCE.pcm.surround51.0 definition
-
-<confdir:pcm/surround71.conf>
-
-NFORCE.pcm.surround71.0 {
-	@args [ CARD ]
-	@args.CARD {
-		type string
-	}
-	type softvol
-	slave.pcm {
-		type route
-		ttable.0.0 1
-		ttable.1.1 1
-		ttable.2.4 1
-		ttable.3.5 1
-		ttable.4.2 1
-		ttable.5.3 1
-		ttable.6.6 1
-		ttable.7.7 1
-		slave.pcm {
-			type hooks
-			slave.pcm {
-				type hw
-				card $CARD
-				device 0
-			}
-			hooks.0 {
-				type ctl_elems
-				hook_args [
-				{
-					name "Channel Mode"
-					preserve true
-					value "8ch"
-					lock true
-					optional true
-				}
-				# for old drivers
-				{
-					name "Line-In As Surround"
-					preserve true
-					value true
-					optional true
-				}
-				{
-					name "Mic As Center/LFE"
-					preserve true
-					value true
-					optional true
-				}
-				{
-					name "Surround Down Mix"
-					preserve true
-					value off
-					lock true
-					optional true
-				}
-				{
-					name "Center/LFE Down Mix"
-					preserve true
-					value off
-					lock true
-					optional true
-				}
-				]
-			}
-		}
-		slave.channels 8
-	}
-	control {
-		name "PCM Playback Volume"
-		card $CARD
-	}
-}
-
-Martin Ellis
+** Incidentally, I tried upgrading Alsa to the 1.0.11 suite and
+speaker-test started complaining of buffer issues (buffer too small) and
+broken pipes when run with -Dsurround51 so I reverted to the 1.0.11rc2
+currently shipping with Fedora Core 5. **
 
 ----------------------------------------------------------------------
- ellismartinp - 05-07-06 01:52 
+ ellismartinp - 05-06-06 23:55 
 ----------------------------------------------------------------------
-Oops, forgot - in the mixer the Aux slider/mute becomes the Side Surround
-volume/mute - Aux-in gets disabled.
+OK - so I got stuck in and now have a working 8-channel intel8x0 (together
+with a small add-in to ac97_patch.c) - based on the 1.0.11 driver set.
+
+speaker-test -c8 -Dsurround71
+now gives me 8 channels of lovely pink noise, one by one, on the correct
+speakers!
+
+The patch for ac97 is based on a good look at the ALC850 datasheet.
+
+The changes to intel8x0 are based on intelligent guesswork and I have no
+idea what impact they might have on chipsets other than NFORCE4.  All I
+can say is that they work on my Gigabyte K8N-Pro SLI (NFORCE4).
+
+I'll put the modded files up here as soon as I've tidied them up and am
+completely happy with them, together with some notes on how alsamixer
+needs to be set up.
+
+(... now, can't resist ... Woohoo!!!!! I still have the touch).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -180,10 +104,6 @@ Date Modified  Username       Field                    Change
 05-05-06 14:17 ellismartinp   Kernel Version            => 2.6.15 (2096)   
 05-06-06 00:52 ellismartinp   Note Added: 0009633                          
 05-06-06 23:55 ellismartinp   Note Added: 0009638                          
-05-07-06 01:26 ellismartinp   File Added: ac97_patch.c                     
-05-07-06 01:26 ellismartinp   File Added: intel8x0.c                       
-05-07-06 01:41 ellismartinp   Note Added: 0009639                          
-05-07-06 01:52 ellismartinp   Note Added: 0009640                          
 ======================================================================
 
 
