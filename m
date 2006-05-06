@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Sat, 6 May 2006 04:05:51 +0200
-Message-ID: <0c6d0de56686663c55a5ad0bec329b62@bugtrack.alsa-project.org>
+Date: Sat, 6 May 2006 05:10:57 +0200
+Message-ID: <ec943985fd798d365c8abc5258aaf925@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ADD43225
-	for <alsa-devel@alsa-project.org>; Sat,  6 May 2006 04:05:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC903199
+	for <alsa-devel@alsa-project.org>; Sat,  6 May 2006 05:10:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              05-06-2006 04:05 CEST
+Last Modified:              05-06-2006 05:10 CEST
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -114,15 +114,22 @@ gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 05-05-06 15:20 
-----------------------------------------------------------------------
-Refer to the dump in gentoo's bugzilla, it seem that only mpu401_write_mmio
-cause oops , how about mpu401_read_mmio ?
-
-----------------------------------------------------------------------
  ponchick - 05-06-06 04:05 
 ----------------------------------------------------------------------
 How can I test it?
+
+----------------------------------------------------------------------
+ Raymond - 05-06-06 05:10 
+----------------------------------------------------------------------
+Since the oops also occur on untainted kernel
+
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff8802b00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+
+Process aplaymidi (pid: 7419, threadinfo ffff810038c1c000, task
+ffff81003e0d07c0)
+
+You will need to find out the value of vortex->mmio
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -230,6 +237,7 @@ gentoo-sources-2.6.15-r4
 05-05-06 07:10 ponchick       Note Added: 0009623                          
 05-05-06 15:20 Raymond        Note Added: 0009625                          
 05-06-06 04:05 ponchick       Note Added: 0009635                          
+05-06-06 05:10 Raymond        Note Added: 0009636                          
 ======================================================================
 
 
