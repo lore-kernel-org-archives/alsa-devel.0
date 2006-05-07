@@ -1,7 +1,7 @@
 From: "Markus Rechberger" <mrechberger@gmail.com>
-Subject: au600 usb phone bridge development
-Date: Mon, 8 May 2006 20:16:07 +0200
-Message-ID: <d9def9db0605081116q7f88657cyf580bf04bd5cd041@mail.gmail.com>
+Subject: au600 project and hosting
+Date: Sun, 7 May 2006 18:51:16 +0200
+Message-ID: <d9def9db0605070951k6efb73abvfe4ca665b724d977@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
@@ -25,7 +25,8 @@ I started to develop a driver for the au600 usb phone bridge, so far
 capturing the wav stream, ringing the phone, switching from PSTN to
 VoIP mode already works.
 
-There seems to be a small problem with the capturing part:
+I'm still working on the playback part. Though there seems to be a
+small problem with the capturing part:
 arecord -D hw:2,0 --format=3DS16_LE --rate=3D9600 | aplay
 Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 9600 Hz, Mono
 Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 9600 Hz, Mono
@@ -33,12 +34,9 @@ underrun!!! (at least 0,028 ms long)
 underrun!!! (at least 0,008 ms long)
 underrun!!! (at least 0,008 ms long)
 etc.
-What could cause such a problem? - The device works well with windows
-so the machine should be fine.
 
 The project website:
 http://alsa.opensrc.org/au600
-
 Another question is it possible to host the project on alsaproject.org
 like I host my project on linuxtv (http://linuxtv.org/hg/)?
 
