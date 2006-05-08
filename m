@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002102]: Audigy 2 with 6.1 Speakers
-Date: Sun, 7 May 2006 23:25:26 +0200
-Message-ID: <e00e0ad2702f7c49cb7dd965b191b89e@bugtrack.alsa-project.org>
+From: "Alton J Shapiro" <ywulln@adina.co.jp>
+Subject: pr0m0ti0nalmarketing,nursingh0mes,HM0s,D0ct0rs,(525,000 physicians 0n CD-R0m) F0R $247.00
+Date: Mon, 08 May 2006 09:58:11 -0300
+Message-ID: <20060508120409.BA87D184@alsa.jcu.cz>
+Reply-To: "Alton J Shapiro" <ywulln@adina.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="--857E320F6052EAD6B67A"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 392D6186
-	for <alsa-devel@alsa-project.org>; Sun,  7 May 2006 23:25:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,48 +16,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+----857E320F6052EAD6B67A
+Content-Type: text/html;
+	charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2102> 
-======================================================================
-Reported By:                minisori
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2102
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             05-07-2006 23:25 CEST
-Last Modified:              05-07-2006 23:25 CEST
-======================================================================
-Summary:                    Audigy 2 with 6.1 Speakers
-Description: 
-Hi, I wonder if it could be posible to make the 6.1 speakers to
-work/implemented under alsa.
+Direct0ry 525,000 physicians
 
-6.1 speakeres are similar to 5.1 speakers, with the only difference that
-6.1 has another rear speaker in the center.
+During this pr0m0ti0nal c0de 2144, the c0st 0f the new 
+direct0ry (which is available exclusively 0n CD-R0m) 
 
-The only speaker i can't get to work is the rear center one.
-======================================================================
+is $247.00 (reg. $795).
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-07-06 23:25 minisori       New Issue                                    
-======================================================================
+Physicians Guide has just been c0mpleted. Acc0rding t0 many 
+librarians and m0st medical firms, it is 0ne 0f the m0st 
+referenced  and frequently-used database thr0ugh0ut the United 
+States.
+ 
+It is als0 used by m0st healthcare pr0fessi0nals and industry 
+business devel0pment executives.
+ 
+B0nus 0ffer:  New Cust0mer 0ffer. 0rder n0w and receive free 0f charge 
+0ur marketing publicati0n: Build a Successful Healthcare Marketing 
+Campaign.This p0pular publicati0n 0ffers a number 0f strategies 
+relating t0 effective marketing 0f healthcare pr0ducts.  
+ 
+T0 0rder the NEW American E-MAIL Medical Direct0ry & Physicians 
+Guide, please print this e-mail,c0mplete the inf0rmati0n 
+bel0w and fax it t0 206- 202-8049 0r 206- 337-1868
+(0r Leave V0ice Message).
+
+NAME:
+
+TITLE:
+
+0RGANIZATI0N:
+
+ADDRESS:
+
+CITY:
+
+P0STAL:
+
+TEL:
+
+FAX:
+
+E-MAIL:
+
+=3D=3D=3D=3D=3D=3DD0 N0T REPLY T0 THIS EMAIL ADDRESS=3D=3D=3D=3D=3D=3D
+0NLY C0MMUNICATE WITH US BY FAX 0R V0ICE MESSAGE.
+When we receive y0ur message we will get in t0uch with y0u 
+s0metime with in the next 48 h0urs by e-mail 0r by teleph0ne.
 
 
+----857E320F6052EAD6B67A--
 
 
 -------------------------------------------------------
