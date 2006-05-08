@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002105]: Cannot switch sound to internal speakers from headphones jack
-Date: Mon, 8 May 2006 20:36:26 +0200
-Message-ID: <4242f5327d52fb135be0640c0b93fbdb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002106]: Sound card snd-hda-intel emits NO sound
+Date: Mon, 8 May 2006 21:00:49 +0200
+Message-ID: <19fc7913ed2b977aaee1585782d1e9f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBECC15C
-	for <alsa-devel@alsa-project.org>; Mon,  8 May 2006 20:36:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A365917C
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2006 21:00:49 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,43 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2105> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2106> 
 ======================================================================
-Reported By:                Long
+Reported By:                louisvd
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2105
+Issue ID:                   2106
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
 Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2111_FC5
+Kernel Version:             2.6.16-1.2111_FC5smp
 ======================================================================
-Date Submitted:             05-08-2006 20:36 CEST
-Last Modified:              05-08-2006 20:36 CEST
+Date Submitted:             05-08-2006 21:00 CEST
+Last Modified:              05-08-2006 21:00 CEST
 ======================================================================
-Summary:                    Cannot switch sound to internal speakers from
-headphones jack
+Summary:                    Sound card snd-hda-intel emits NO sound
 Description: 
-Hi!
-I have LG LS75 P555 notebook with intel hda/cmedia 9880 sound.
-Unfortunately, I can hear sound only from headphones jack, and dont know,
-how i can switch sound to internal speakers :(
-Alsamixer allows me change volumes in "pcm" and "pc speaker" columns only
-- it doesn't affect on headphones/speakers switching.
+Hi
+
+I was merrily running Fedora Core 4 and after upgrading the kernel to
+2.6.16 my sound no longer worked under Linux (it works under Windows). 
+After a lot of battling I figured I may as well upgrade to FC5 now.  A
+clean install, out of the box, and the sound STILL did not work.  I've
+applied every available patch to date and no luck.  Tonight I installed
+the Alsa 1.0.11 driver, lib and util tarballs -- all installed
+successfully -- but there is STILL no sound produced.
+
+Everything LOOKS normal.  There are no errors that I can detect.  In the X
+and console versions of Alsamixer I have ALL the devices displayed and
+unmuted with the volumes at max. I've removed the sound lines from
+modprobe.conf and am running with alsasound and that didn't help either --
+even though it says the driver has been loaded.
+
+FYI, the OSS Volume control calls it a Realtek ALC260.  lspci refers to it
+as Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller
+(rev 01).
 
 
+Please help.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-08-06 20:36 Long           New Issue                                    
-05-08-06 20:36 Long           Distribution              => Fedora Core 5   
-05-08-06 20:36 Long           Kernel Version            => 2.6.16-1.2111_FC5
+05-08-06 21:00 louisvd        New Issue                                    
+05-08-06 21:00 louisvd        Distribution              => Fedora Core 5   
+05-08-06 21:00 louisvd        Kernel Version            => 2.6.16-1.2111_FC5smp
 ======================================================================
 
 
