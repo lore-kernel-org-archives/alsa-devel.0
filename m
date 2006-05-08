@@ -1,10 +1,12 @@
-From: "Stefano D Angelo" <daste@oneonline.it>
-Subject: Line6 TonePort UX1 driver
-Date: Mon, 8 May 2006 20:16:19 +0300
-Message-ID: <20060508201619.M38508@oneonline.it>
+From: "Markus Rechberger" <mrechberger@gmail.com>
+Subject: au600 usb phone bridge development
+Date: Mon, 8 May 2006 20:16:07 +0200
+Message-ID: <d9def9db0605081116q7f88657cyf580bf04bd5cd041@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,26 +19,31 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello everyone,
-I'm an italian university student and I'm developing an ALSA driver for Line6
-TonePort UX1 USB sound card.
-This is my first driver-writing experience, so maybe this is a dumb question
-for you.
-This soundcard supports 44.1/48 kHz 16/24-bits modes and full-duplex, but only
-in one mode due to USB altesttings.
-To be more precise if you are playing some audio stream at 44.1 kHz, 16-bits,
-you can only capture data at 44.1 kHz and 16-bits, for example.
-The Windows' driver uses some kind of implicit conversion for
-playback/capture, so that it uses only 48 kHz, 24-bit mode (unless you use a
-program to switch).
-Do you think I should use such a compromise too or go on another way?
+Hi all,
 
-Stefano D'Angelo
+I started to develop a driver for the au600 usb phone bridge, so far
+capturing the wav stream, ringing the phone, switching from PSTN to
+VoIP mode already works.
 
------------------
-Registra il tuo nome di dominio su: http://www.oneonline.it/domini
-One On Line ti offre domino + spazio web illimitato + 5 email + 5000 uscite banner + PHP + Link a soli Euro 15 iva compresa
+There seems to be a small problem with the capturing part:
+arecord -D hw:2,0 --format=3DS16_LE --rate=3D9600 | aplay
+Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 9600 Hz, Mono
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 9600 Hz, Mono
+underrun!!! (at least 0,028 ms long)
+underrun!!! (at least 0,008 ms long)
+underrun!!! (at least 0,008 ms long)
+etc.
+What could cause such a problem? - The device works well with windows
+so the machine should be fine.
 
+The project website:
+http://alsa.opensrc.org/au600
+
+Another question is it possible to host the project on alsaproject.org
+like I host my project on linuxtv (http://linuxtv.org/hg/)?
+
+Thanks,
+Markus
 
 
 -------------------------------------------------------
