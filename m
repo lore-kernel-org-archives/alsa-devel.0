@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002087]: Audio still broken for Asus A8V-MX
-Date: Mon, 8 May 2006 18:09:48 +0200
-Message-ID: <66a0355aa8b3c8d4c9844ccfb6c043f3@bugtrack.alsa-project.org>
+From: "Stefano D Angelo" <daste@oneonline.it>
+Subject: Line6 TonePort UX1 driver
+Date: Mon, 8 May 2006 20:16:19 +0300
+Message-ID: <20060508201619.M38508@oneonline.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4EF87181
-	for <alsa-devel@alsa-project.org>; Mon,  8 May 2006 18:09:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,75 +14,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello everyone,
+I'm an italian university student and I'm developing an ALSA driver for Line6
+TonePort UX1 USB sound card.
+This is my first driver-writing experience, so maybe this is a dumb question
+for you.
+This soundcard supports 44.1/48 kHz 16/24-bits modes and full-duplex, but only
+in one mode due to USB altesttings.
+To be more precise if you are playing some audio stream at 44.1 kHz, 16-bits,
+you can only capture data at 44.1 kHz and 16-bits, for example.
+The Windows' driver uses some kind of implicit conversion for
+playback/capture, so that it uses only 48 kHz, 24-bit mode (unless you use a
+program to switch).
+Do you think I should use such a compromise too or go on another way?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2087> 
-======================================================================
-Reported By:                myxie
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2087
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.16
-======================================================================
-Date Submitted:             04-30-2006 23:33 CEST
-Last Modified:              05-08-2006 18:09 CEST
-======================================================================
-Summary:                    Audio still broken for Asus A8V-MX
-Description: 
-The patches integrated (see issue 0001622) into the latest release of ALSA
-make the on-board audio more usuable, but there are still significant
-issues.
+Stefano D'Angelo
 
-Playing an audio file results in a freeze for 10 seconds, followed by a
-write error and then the audio continues normally. I noticed a second
-write error later on in the stream.
-
-I am happy to try patches, turn on debugging flags etc. Let me know.
-
-======================================================================
-
-----------------------------------------------------------------------
- myxie - 05-05-06 21:30 
-----------------------------------------------------------------------
-It's a VT8251.
-
-----------------------------------------------------------------------
- myxie - 05-08-06 18:09 
-----------------------------------------------------------------------
-I'm adding the full aadebug output as well.
-
-Only error was "cat: /proc/asound/hwdep: No such file or directory".
-
-Myxie.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-30-06 23:33 myxie          New Issue                                    
-04-30-06 23:33 myxie          Distribution              => Debian          
-04-30-06 23:33 myxie          Kernel Version            => 2.6.16          
-05-02-06 17:57 tiwai          Note Added: 0009562                          
-05-05-06 18:40 myxie          Note Added: 0009628                          
-05-05-06 19:58 myxie          File Added: lsof.ogg123                      
-05-05-06 19:58 myxie          File Added: lsof.mplayer                     
-05-05-06 19:59 myxie          Note Added: 0009629                          
-05-05-06 20:59 karsten        Note Added: 0009630                          
-05-05-06 21:29 myxie          File Added: lspci.txt                        
-05-05-06 21:30 myxie          Note Added: 0009631                          
-05-08-06 18:09 myxie          Note Added: 0009646                          
-======================================================================
-
+-----------------
+Registra il tuo nome di dominio su: http://www.oneonline.it/domini
+One On Line ti offre domino + spazio web illimitato + 5 email + 5000 uscite banner + PHP + Link a soli Euro 15 iva compresa
 
 
 
