@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002099]: System hangs while booting, and i get flooded by azx_get_response timeout message
-Date: Sat, 6 May 2006 15:24:16 +0200
-Message-ID: <e1fcd14c868644a7c0bbf01f56e4dc0a@bugtrack.alsa-project.org>
+From: lorenzo <lagrespan@gmail.com>
+Subject: crypto layer in alsa
+Date: Mon, 8 May 2006 22:23:50 +0200
+Message-ID: <7c587400605081323g53cae85fudbdf30167b500407@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 072E416D
-	for <alsa-devel@alsa-project.org>; Sat,  6 May 2006 15:24:16 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +16,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Greetings. In those days where the FCC is imposing ISPs to let voip to
+be tapped, I was thinking if there's a way to use my favorite VoIP
+(skype) app in a secure way.
+Let me state it clear: I don't like how skype handles security,
+because I can't *see* how it works. But it's widely spread, everybody
+uses it, and so it's my VoIP app of choice.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2099> 
-======================================================================
-Reported By:                bugmenot
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2099
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.16.11
-======================================================================
-Date Submitted:             05-06-2006 15:24 CEST
-Last Modified:              05-06-2006 15:24 CEST
-======================================================================
-Summary:                    System hangs while booting, and i get flooded by
-azx_get_response timeout message
-Description: 
-While booting, and after loading alsa, the screen gets flooded with
-azx_get_response timeout messages, and my system wont continue to boot. I
-than can only restart.
+Now to the point: would it be difficult to implement some sort of
+crypto layer into alsa? So that what I say in the microphone gets
+encrypted *before* being available to the userland applications?
+Being the naive sort of programmer I am, I was thinking of a kernel
+module (let's call it alsa-crypto) that intercepts the audio stream
+coming from the microphone, encrypts it with a (say) block cipher + a
+user-supplied key, and sends it out as if it was a regular audio
+stream. Same thing on the other end.
+The user-supplied key could be provided by a userland application that
+reads the other part's public key file from a keyring.
 
-I have read that this is a known error, and it should  be fixed in the cvs
-version  of alsa, but i included the cvs version (cvs copy from the
-5.5.2006) into my kernel and i still get the error.
+Other questions are: would this layer add too much complexity and
+delay to the whole audio stream (clicks, delays, white noise) to be
+helpful?
+Might a dedicated co-processor help? Or it's all about CPU horsepower?
+Also, would this make audio-compressing algoritmhs completely useless
+or, worse, could such algorithms make the cipherstream useless? I'm
+thinking about, say, Skype that to make things faster might use some
+algorithm to "compress" the audio stream and make it smaller to send
+to the other end.
 
-This only happens when i inlcude the intel_hda driver into the kernel
-(build into or as modules, its the same)
+begging your perdon if I'm asking a silly question,
 
-without it alsa just claims to find no soundcard, but my system works
-well.
+my best regards to everybody
 
-I have a ibm thinkpad x60s and a hdc7 sound/model card?
-======================================================================
+l.g.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-06-06 15:24 bugmenot       New Issue                                    
-05-06-06 15:24 bugmenot       Distribution              => Debian          
-05-06-06 15:24 bugmenot       Kernel Version            => 2.6.16.11       
-======================================================================
+ps: I've tried to google for it but I couldn't find an already started proj=
+ect.
+ps2: a windows .dll should also be done, but that's anoter game..
 
-
+--
+:lorenzo grespan
+GPG Key fingerprint =3D 5372 1B49 9E61 747C FB9A  4DAE 5D2A A9A0 74B4 8F1A
 
 
 -------------------------------------------------------
