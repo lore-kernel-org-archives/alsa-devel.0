@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002108]: snd-hda-intel: Can only play 48000Hz via digital out.  44100 is garbled.
-Date: Tue, 9 May 2006 00:31:45 +0200
-Message-ID: <70db2f755897211fa96a1f7fff398c9f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002107]: audigy 2 ZS SB0350 gives no sound
+Date: Mon, 8 May 2006 23:36:41 +0200
+Message-ID: <092fc69f319c5c8e930bd14f230e8869@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2DD8B184
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 00:31:46 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2B97181
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2006 23:36:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2108> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2107> 
 ======================================================================
-Reported By:                WhereIsTheCloud
-Assigned To:                tiwai
+Reported By:                peter_scott
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2108
-Category:                   PCI - hda-intel
+Issue ID:                   2107
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.15-1-686-smp
+Status:                     new
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2111
 ======================================================================
-Date Submitted:             05-09-2006 00:28 CEST
-Last Modified:              05-09-2006 00:31 CEST
+Date Submitted:             05-08-2006 23:36 CEST
+Last Modified:              05-08-2006 23:36 CEST
 ======================================================================
-Summary:                    snd-hda-intel: Can only play 48000Hz via digital
-out.  44100 is garbled.
+Summary:                    audigy 2 ZS SB0350 gives no sound
 Description: 
-Hi all.  I am having trouble getting my computer to play 44100Hz with my 
-digital AV reciever.  I have an ECS 945P-A (1.1) motherboard 
-(ICH7), with an onboard Realtek ALC880 8-channel audio CODEC, five 
-miniport(?) jacks, and one fiber optical connector.  I use the fiber
-optical 
-connector to connect the motherboard to my reciever.
+I have an Audigy 2 ZS Model SB0350 card with a chip marked CA0102-ICT,
+installed in a PC running Fedora Core 5 with a 2.6.16-1.2111 kernel.
 
-I cannot get clean 44100 Hz PCM sound outputted.  48000 Hz plays fine. 
-Dmix converts everything to 48000. This is acceptable, but 44100->48000Hz
-upsampling degrades sound quality.
+The already-existing-in-the-kernel emu10k1 sound module provides no sound
+for me (should it?), so I tried downloading and building emu10k1 in the
+alsa-driver and installing it according to the instructions in the
+"INSTALL" file in the source directory.
 
-If I dual boot to MS windows, I can select between 44100, 48000, and 96000
-Hz output, using the realtek drivers.  All work fine and my reciever
-reports getting the correct format, so it is NOT a hardware problem.
+But (of course?) it did not work.  Well, after all, the emu10k1 is already
+in the FC5 kernel.  Is there any way to get this sound card to work?
 
-I'm not sure if this is a driver issue or a libasound issue.
+I try "system-config-soundcard" (alsaconf is not included in alsa-utils
+for FC5) to test the card.
 
+I was led to believe that Audigy 2 ZS cards generally will work on linux
+systems, but I've also since read others write that not all Audigy 2 ZS
+cards run the same hardware.  It's a PCI card.  I am a little suspicious
+of the "CA0102-ICT" text on the chip.
 
-Thank you in advance for your help!
-
-Peter
+Any thoughts or predictions would be most welcome.  Maybe it should have a
+"ca0102" driver?
 ======================================================================
-
-----------------------------------------------------------------------
- WhereIsTheCloud - 05-09-06 00:31 
-----------------------------------------------------------------------
-HOWEVER, if I run:
-aplay -D plug:dmix test-48000.wav
-Playing WAVE 'test-48000.wav' : Signed 16 bit Little Endian, Rate 48000
-Hz, Stereo
-
-should read:
-
-HOWEVER, if I run:
-aplay -D hw:0,1 test-48000.wav
-Playing WAVE 'test-48000.wav' : Signed 16 bit Little Endian, Rate 48000
-Hz, Stereo
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-09-06 00:28 WhereIsTheCloudNew Issue                                    
-05-09-06 00:28 WhereIsTheCloudDistribution              => Debian          
-05-09-06 00:28 WhereIsTheCloudKernel Version            => 2.6.15-1-686-smp
-05-09-06 00:31 WhereIsTheCloudNote Added: 0009649                          
+05-08-06 23:36 peter_scott    New Issue                                    
+05-08-06 23:36 peter_scott    Distribution              => Fedora Core 5   
+05-08-06 23:36 peter_scott    Kernel Version            => 2.6.16-1.2111   
 ======================================================================
 
 
