@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002083]: after upgrade from 1.0.11rc4 to 1.0.11rc5 no more sound on Envy24HT (ICE1724)
-Date: Tue, 9 May 2006 00:48:08 +0200
-Message-ID: <11ed739869c03666fc92d1a41579d4c1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002108]: snd-hda-intel: Can only play 48000Hz via digital out.  44100 is garbled.
+Date: Tue, 9 May 2006 00:31:45 +0200
+Message-ID: <70db2f755897211fa96a1f7fff398c9f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E845185
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 00:48:08 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2DD8B184
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 00:31:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,48 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2083> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2108> 
 ======================================================================
-Reported By:                konczalski
-Assigned To:                
+Reported By:                WhereIsTheCloud
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2083
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   2108
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.15-1-686-smp
 ======================================================================
-Date Submitted:             04-29-2006 00:51 CEST
-Last Modified:              05-09-2006 00:48 CEST
+Date Submitted:             05-09-2006 00:28 CEST
+Last Modified:              05-09-2006 00:31 CEST
 ======================================================================
-Summary:                    after upgrade from 1.0.11rc4 to 1.0.11rc5 no more
-sound on Envy24HT (ICE1724)
+Summary:                    snd-hda-intel: Can only play 48000Hz via digital
+out.  44100 is garbled.
 Description: 
-Hello, i use the Terratec Aureon 5.1 Space with Envy24HT (ICE1724) chip
-under GeexBox (http://www.geexbox.org). Since i upgrade from 1.0.11rc4 to
-1.0.11rc5 i get no more sound and folow erors:
+Hi all.  I am having trouble getting my computer to play 44100Hz with my 
+digital AV reciever.  I have an ECS 945P-A (1.1) motherboard 
+(ICH7), with an onboard Realtek ALC880 8-channel audio CODEC, five 
+miniport(?) jacks, and one fiber optical connector.  I use the fiber
+optical 
+connector to connect the motherboard to my reciever.
 
-mplayer
-MPlayer interrupted by signal 11 in module: demux_open2
+I cannot get clean 44100 Hz PCM sound outputted.  48000 Hz plays fine. 
+Dmix converts everything to 48000. This is acceptable, but 44100->48000Hz
+upsampling degrades sound quality.
 
-aplay
-aplay: main:547: audio open error: Unknown error 16
+If I dual boot to MS windows, I can select between 44100, 48000, and 96000
+Hz output, using the realtek drivers.  All work fine and my reciever
+reports getting the correct format, so it is NOT a hardware problem.
 
-pawel
+I'm not sure if this is a driver issue or a libasound issue.
+
+
+Thank you in advance for your help!
+
+Peter
 ======================================================================
 
 ----------------------------------------------------------------------
- konczalski - 05-09-06 00:48 
+ WhereIsTheCloud - 05-09-06 00:31 
 ----------------------------------------------------------------------
-Sorry! I have written a wrong model. It is the Terratec Aureon 7.1 Space!
+HOWEVER, if I run:
+aplay -D plug:dmix test-48000.wav
+Playing WAVE 'test-48000.wav' : Signed 16 bit Little Endian, Rate 48000
+Hz, Stereo
+
+should read:
+
+HOWEVER, if I run:
+aplay -D hw:0,1 test-48000.wav
+Playing WAVE 'test-48000.wav' : Signed 16 bit Little Endian, Rate 48000
+Hz, Stereo
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-29-06 00:51 konczalski     New Issue                                    
-05-09-06 00:48 konczalski     Note Added: 0009650                          
+05-09-06 00:28 WhereIsTheCloudNew Issue                                    
+05-09-06 00:28 WhereIsTheCloudDistribution              => Debian          
+05-09-06 00:28 WhereIsTheCloudKernel Version            => 2.6.15-1-686-smp
+05-09-06 00:31 WhereIsTheCloudNote Added: 0009649                          
 ======================================================================
 
 
