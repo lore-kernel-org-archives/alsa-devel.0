@@ -1,13 +1,15 @@
-From: "vitton.laforest" <vitton.laforest@free.fr>
-Subject: Re: SB Live! 24-Bit External: remote control support : more details
-Date: Mon, 08 May 2006 19:17:58 +0200
-Message-ID: <445F7D46.6010703@free.fr>
-References: <44512925.30803@vardes.lv> <20060428084200.GA26640@turing.informatik.uni-halle.de> <4451E5C2.7050104@vardes.lv> <20060505075159.GA2171@turing.informatik.uni-halle.de> <pan.2006.05.07.23.29.22.651163@free.fr> <20060508071454.GC11272@turing.informatik.uni-halle.de> <445F052D.5020102@free.fr> <20060508114841.GA23340@turing.informatik.uni-halle.de>
+From: "Artemis Isenberg" <isenartemi@dtol.net>
+Subject: Re: the VApLtUM
+Date: Mon, 8 May 2006 03:40:24 -0700
+Message-ID: <000001c6728b$d0471da0$8aefa8c0@elr53>
+Reply-To: "Artemis Isenberg" <isenartemi@dtol.net>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
- boundary="------------040804030007030004050503"
+	boundary="----=_NextPart_000_0001_01C67251.23EA8F90"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060508114841.GA23340@turing.informatik.uni-halle.de>
+Received: from tycom.com (dslb-082-083-242-068.pools.arcor-ip.net [82.83.242.68])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 78668196
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2006 12:40:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,283 +19,134 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------040804030007030004050503
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Dear all
-
-1) The problem is fixed as i was loading the wrong snd-usb-audio (sorry) 
-: the one coming with the kernel and not the one with the patch (sorry 
-again). Now it works , thanks !!!
-
-2) Then i had problems with lirc, as i have to define a new lircd.conf 
-with my RM1500 remote control, the one delivered with lirc was not 
-working. I did it using irrecord and at the moment defined only few buttons
-
-I have attached the file for those who would be interested. It works 
-with mplayer ( at least vol + and vol-) . I will complete and distribute 
-it in few days.
-
-3) the last problem i have is for recording with the live 24!! but i 
-will post a new mail
-best regards
-JP
+------=_NextPart_000_0001_01C67251.23EA8F90
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0002_01C67251.23EA8F90"
 
 
-#
-# this config file was automatically generated
-# using lirc-0.6.6(serial) on Mon Jan 12 17:28:59 2004
-#
-# contributed by: Michael Plugge <firefox2501@hotmail.com>
-#
-# brand: Creative
-# model no. of remote control: RM-1500
-# devices being controlled by this remote: Audigy 2 NX
-#
-# This remote comes with the SoundBlaster Audigy 2 NX USB sound card. 
-This file
-# was created using a home brew serial receiver. I am not sure if the IR
-# reciever that is built into the Audigy 2 NX will work.
-#
-
-# Please make this file available to others
-# by sending it to <lirc@bartelmus.de>
-#
-# this config file was automatically generated
-# using lirc-0.8.0(alsa_usb) on Mon May 8 18:38:35 2006
-#
-# contributed by
-#
-# brand: toto
-# model no. of remote control:
-# devices being controlled by this remote:
-#
-
-begin remote
-
-name toto
-bits 8
-eps 30
-aeps 100
-
-one 0 0
-zero 0 0
-gap 315848
-min_repeat 1
-toggle_bit 0
+------=_NextPart_001_0002_01C67251.23EA8F90
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
 
-begin codes
-vol- 0x9C
-vol+ 0x9D
-mute 0x91
-up 0x84
-down 0x72
-next 0x8A
-prev 0x78
-end codes
-
-end remote
-
-
-
-
-Clemens Ladisch a e'crit:
-
->(please don't top-post)
->
->vitton.laforest wrote:
->  
->
->>Clemens Ladisch a e'crit:
->>    
->>
->>>jpv wrote:
->>>      
->>>
->>>>Impossible to get the remote control working with my Live 24 external even
->>>>with the patch.
->>>>
->>>>No device corresponding to the remote control.
->>>>and nothing in /proc/asound/hwdep 
->>>>        
->>>>
->>>What are the contents of /proc/asound/cards?
->>>      
->>>
->> 0 [External       ]: USB-Audio - SB Live! 24-bit External
->>                      Creative Technology SB Live! 24-bit External at usb-0000:00:02.3-3, full speed
->> 1 [SI7012         ]: ICH - SiS SI7012
->>                      SiS SI7012 with CMI9738 at 0xdc00, irq 10
->> 2 [ALS4000        ]: ALS4000 - Avance Logic ALS4000
->>                      Avance Logic ALS4000 at 0xd400, irq 11
->>    
->>
->
->So the driver is loaded correctly.
->
->What is the output of lsusb?
->
->Did you unload and reload all sound modules after patching and
->recompiling the driver?
->
->
->Regards,
->Clemens
->
->
->  
->
-
---------------040804030007030004050503
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta content="text/html;charset=us-ascii" http-equiv="Content-Type">
-  <title></title>
-</head>
-<body bgcolor="#ffffff" text="#000000">
-Dear all<br>
-<br>
-1) The problem is fixed as i was loading the wrong snd-usb-audio
-(sorry) : the one coming with the kernel and not the one with the patch
-(sorry again). Now it works , thanks !!!<br>
-<br>
-2) Then i had problems with lirc, as i have to define a new lircd.conf
-with my RM1500 remote control, the one delivered with lirc was not
-working. I did it using irrecord and at the moment defined only few
-buttons <br>
-<br>
-I have attached the file for those who would be interested. It works
-with mplayer ( at least vol + and vol-) . I will complete and
-distribute it in few days.<br>
-<br>
-3) the last problem i have is for recording with the live 24!! but i
-will post a new mail<br>
-best regards<br>
-JP<br>
-<br>
-<br>
-#<br>
-# this config file was automatically generated<br>
-# using lirc-0.6.6(serial) on Mon Jan 12 17:28:59 2004<br>
-#<br>
-# contributed by: Michael Plugge <a class="moz-txt-link-rfc2396E" href="mailto:firefox2501@hotmail.com">&lt;firefox2501@hotmail.com&gt;</a><br>
-#<br>
-# brand:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Creative<br>
-# model no. of remote control: RM-1500<br>
-# devices being controlled by this remote: Audigy 2 NX<br>
-#<br>
-# This remote comes with the SoundBlaster Audigy 2 NX USB sound card.&nbsp;
-This file<br>
-# was created using a home brew serial receiver.&nbsp; I am not sure if the
-IR <br>
-# reciever that is built into the Audigy 2 NX will work.<br>
-#<br>
-<br>
-# Please make this file available to others<br>
-# by sending it to <a class="moz-txt-link-rfc2396E" href="mailto:lirc@bartelmus.de">&lt;lirc@bartelmus.de&gt;</a><br>
-#<br>
-# this config file was automatically generated<br>
-# using lirc-0.8.0(alsa_usb) on Mon May&nbsp; 8 18:38:35 2006<br>
-#<br>
-# contributed by<br>
-#<br>
-# brand:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; toto<br>
-# model no. of remote control:<br>
-# devices being controlled by this remote:<br>
-#<br>
-<br>
-begin remote<br>
-<br>
-&nbsp; name&nbsp; toto<br>
-&nbsp; bits&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8<br>
-&nbsp; eps&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30<br>
-&nbsp; aeps&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 100<br>
-<br>
-&nbsp; one&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0<br>
-&nbsp; zero&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp; 0<br>
-&nbsp; gap&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 315848<br>
-&nbsp; min_repeat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1<br>
-&nbsp; toggle_bit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0<br>
-<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; begin codes<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vol-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x9C<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; vol+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x9D<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mute&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x91<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; up&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x84<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; down&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x72<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; next&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x8A<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; prev&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x78<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; end codes<br>
-<br>
-end remote<br>
-<br>
-<br>
-<br>
-<br>
-Clemens Ladisch a &eacute;crit&nbsp;:
-<blockquote
- cite="mid20060508114841.GA23340@turing.informatik.uni-halle.de"
- type="cite">
-  <pre wrap="">(please don't top-post)
-
-vitton.laforest wrote:
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">Clemens Ladisch a e'crit:
-    </pre>
-    <blockquote type="cite">
-      <pre wrap="">jpv wrote:
-      </pre>
-      <blockquote type="cite">
-        <pre wrap="">Impossible to get the remote control working with my Live 24 external even
-with the patch.
-
-No device corresponding to the remote control.
-and nothing in /proc/asound/hwdep 
-        </pre>
-      </blockquote>
-      <pre wrap="">What are the contents of /proc/asound/cards?
-      </pre>
-    </blockquote>
-    <pre wrap=""> 0 [External       ]: USB-Audio - SB Live! 24-bit External
-                      Creative Technology SB Live! 24-bit External at usb-0000:00:02.3-3, full speed
- 1 [SI7012         ]: ICH - SiS SI7012
-                      SiS SI7012 with CMI9738 at 0xdc00, irq 10
- 2 [ALS4000        ]: ALS4000 - Avance Logic ALS4000
-                      Avance Logic ALS4000 at 0xd400, irq 11
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-So the driver is loaded correctly.
-
-What is the output of lsusb?
-
-Did you unload and reload all sound modules after patching and
-recompiling the driver?
+http://ontaropol.com
+=20
+=20
+=20
+=20
+eyes. These ran forward, as swift as weasels in the dark, and with
+hardly any more noise than bats. That is why neither Bilbo, nor the
+dwarves, nor even Gandalf heard them coming. Nor did they see them. But
+they were seen by the goblins that ran silently up behind, for Gandalf
+was letting his wand give out a faint light to help the dwarves as they
+went along.
+Quite suddenly Dori, now at the back again carrying Bilbo, was
+grabbed from behind in the dark. He shouted and fell; and the hobbit
+rolled off his shoulders into the blackness, bumped his head on hard
+rock, and remembered nothing more.
+Chapter 5
+Riddles in the Dark
+When Bilbo opened his eyes, he wondered if he had; for it was just as
 
 
-Regards,
-Clemens
+------=_NextPart_001_0002_01C67251.23EA8F90
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><IMG src=3D"cid:000101c6728b$d0281f0e$8aefa8c0@elr53"></DIV>
+<DIV><A href=3D"http://ontaropol.com">http://ontaropol.com</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>eyes. These ran forward, as swift as weasels in the dark, and =
+with<BR>
+hardly any more noise than bats. That is why neither Bilbo, nor the<BR>
+dwarves, nor even Gandalf heard them coming. Nor did they see them. =
+But<BR>
+they were seen by the goblins that ran silently up behind, for =
+Gandalf<BR>
+was letting his wand give out a faint light to help the dwarves as =
+they<BR>
+went along.<BR>
+   Quite suddenly Dori, now at the back again carrying Bilbo, was<BR>
+grabbed from behind in the dark. He shouted and fell; and the hobbit<BR>
+rolled off his shoulders into the blackness, bumped his head on hard<BR>
+rock, and remembered nothing more.<BR>
+    Chapter 5<BR>
+    Riddles in the Dark<BR>
+   When Bilbo opened his eyes, he wondered if he had; for it was just =
+as<BR></DIV></BODY></HTML>
+------=_NextPart_001_0002_01C67251.23EA8F90--
+
+------=_NextPart_000_0001_01C67251.23EA8F90
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-ID: <000101c6728b$d0281f0e$8aefa8c0@elr53>
+
+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
+
+------=_NextPart_000_0001_01C67251.23EA8F90--
 
 
-  </pre>
-</blockquote>
-</body>
-</html>
 
---------------040804030007030004050503--
 
 
 -------------------------------------------------------
