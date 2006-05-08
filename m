@@ -1,12 +1,14 @@
-From: "Jean Goodwin" <onkmft@gigant.at>
-Subject: workstation
-Date: Sun, 7 May 2006 18:00:22 -0700
-Message-ID: <002101c6723b$2433d026$87d57047@bjcbb.mqxl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002087]: Audio still broken for Asus A8V-MX
+Date: Mon, 8 May 2006 18:09:48 +0200
+Message-ID: <66a0355aa8b3c8d4c9844ccfb6c043f3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-	type="multipart/alternative";
-	boundary="----=_NextPart_000_001D_01C67200.77D4F7AE"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4EF87181
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2006 18:09:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,216 +18,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_001D_01C67200.77D4F7AE
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001E_01C67200.77D4F7CC"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2087> 
+======================================================================
+Reported By:                myxie
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2087
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             04-30-2006 23:33 CEST
+Last Modified:              05-08-2006 18:09 CEST
+======================================================================
+Summary:                    Audio still broken for Asus A8V-MX
+Description: 
+The patches integrated (see issue 0001622) into the latest release of ALSA
+make the on-board audio more usuable, but there are still significant
+issues.
 
+Playing an audio file results in a freeze for 10 seconds, followed by a
+write error and then the audio continues normally. I noticed a second
+write error later on in the stream.
 
-------=_NextPart_001_001E_01C67200.77D4F7CC
-Content-Type: text/plain;
-	charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+I am happy to try patches, turn on debugging flags etc. Let me know.
 
+======================================================================
 
-------=_NextPart_001_001E_01C67200.77D4F7CC
-Content-Type: text/html;
-	charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ myxie - 05-05-06 21:30 
+----------------------------------------------------------------------
+It's a VT8251.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001c01c6723b$2433cf90$87d57047@bjcbb.mqxl"=20
-align=3Dbaseline=20
-border=3D0></FONT></DIV>
-</BODY></HTML>
+----------------------------------------------------------------------
+ myxie - 05-08-06 18:09 
+----------------------------------------------------------------------
+I'm adding the full aadebug output as well.
 
-------=_NextPart_001_001E_01C67200.77D4F7CC--
+Only error was "cat: /proc/asound/hwdep: No such file or directory".
 
-------=_NextPart_000_001D_01C67200.77D4F7AE
-Content-Type: image/gif;
-	name="event.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001c01c6723b$2433cf90$87d57047@bjcbb.mqxl>
+Myxie.
 
-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
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-30-06 23:33 myxie          New Issue                                    
+04-30-06 23:33 myxie          Distribution              => Debian          
+04-30-06 23:33 myxie          Kernel Version            => 2.6.16          
+05-02-06 17:57 tiwai          Note Added: 0009562                          
+05-05-06 18:40 myxie          Note Added: 0009628                          
+05-05-06 19:58 myxie          File Added: lsof.ogg123                      
+05-05-06 19:58 myxie          File Added: lsof.mplayer                     
+05-05-06 19:59 myxie          Note Added: 0009629                          
+05-05-06 20:59 karsten        Note Added: 0009630                          
+05-05-06 21:29 myxie          File Added: lspci.txt                        
+05-05-06 21:30 myxie          Note Added: 0009631                          
+05-08-06 18:09 myxie          Note Added: 0009646                          
+======================================================================
 
-------=_NextPart_000_001D_01C67200.77D4F7AE--
 
 
 
