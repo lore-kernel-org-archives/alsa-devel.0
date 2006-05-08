@@ -1,12 +1,14 @@
-From: lorenzo <lagrespan@gmail.com>
-Subject: crypto layer in alsa
-Date: Mon, 8 May 2006 22:23:50 +0200
-Message-ID: <7c587400605081323g53cae85fudbdf30167b500407@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002108]: snd-hda-intel: Can only play 48000Hz via digital out.  44100 is garbled.
+Date: Tue, 9 May 2006 00:28:02 +0200
+Message-ID: <25c44da8e6e79b89e87950e01cd0392e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C944B186
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 00:28:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,50 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Greetings. In those days where the FCC is imposing ISPs to let voip to
-be tapped, I was thinking if there's a way to use my favorite VoIP
-(skype) app in a secure way.
-Let me state it clear: I don't like how skype handles security,
-because I can't *see* how it works. But it's widely spread, everybody
-uses it, and so it's my VoIP app of choice.
 
-Now to the point: would it be difficult to implement some sort of
-crypto layer into alsa? So that what I say in the microphone gets
-encrypted *before* being available to the userland applications?
-Being the naive sort of programmer I am, I was thinking of a kernel
-module (let's call it alsa-crypto) that intercepts the audio stream
-coming from the microphone, encrypts it with a (say) block cipher + a
-user-supplied key, and sends it out as if it was a regular audio
-stream. Same thing on the other end.
-The user-supplied key could be provided by a userland application that
-reads the other part's public key file from a keyring.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2108> 
+======================================================================
+Reported By:                WhereIsTheCloud
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2108
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.15-1-686-smp
+======================================================================
+Date Submitted:             05-09-2006 00:28 CEST
+Last Modified:              05-09-2006 00:28 CEST
+======================================================================
+Summary:                    snd-hda-intel: Can only play 48000Hz via digital
+out.  44100 is garbled.
+Description: 
+Hi all.  I am having trouble getting my computer to play 44100Hz with my 
+digital AV reciever.  I have an ECS 945P-A (1.1) motherboard 
+(ICH7), with an onboard Realtek ALC880 8-channel audio CODEC, five 
+miniport(?) jacks, and one fiber optical connector.  I use the fiber
+optical 
+connector to connect the motherboard to my reciever.
 
-Other questions are: would this layer add too much complexity and
-delay to the whole audio stream (clicks, delays, white noise) to be
-helpful?
-Might a dedicated co-processor help? Or it's all about CPU horsepower?
-Also, would this make audio-compressing algoritmhs completely useless
-or, worse, could such algorithms make the cipherstream useless? I'm
-thinking about, say, Skype that to make things faster might use some
-algorithm to "compress" the audio stream and make it smaller to send
-to the other end.
+I cannot get clean 44100 Hz PCM sound outputted.  48000 Hz plays fine. 
+Dmix converts everything to 48000. This is acceptable, but 44100->48000Hz
+upsampling degrades sound quality.
 
-begging your perdon if I'm asking a silly question,
+If I dual boot to MS windows, I can select between 44100, 48000, and 96000
+Hz output, using the realtek drivers.  All work fine and my reciever
+reports getting the correct format, so it is NOT a hardware problem.
 
-my best regards to everybody
+I'm not sure if this is a driver issue or a libasound issue.
 
-l.g.
 
-ps: I've tried to google for it but I couldn't find an already started proj=
-ect.
-ps2: a windows .dll should also be done, but that's anoter game..
+Thank you in advance for your help!
 
---
-:lorenzo grespan
-GPG Key fingerprint =3D 5372 1B49 9E61 747C FB9A  4DAE 5D2A A9A0 74B4 8F1A
+Peter
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-09-06 00:28 WhereIsTheCloudNew Issue                                    
+05-09-06 00:28 WhereIsTheCloudDistribution              => Debian          
+05-09-06 00:28 WhereIsTheCloudKernel Version            => 2.6.15-1-686-smp
+======================================================================
+
+
 
 
 -------------------------------------------------------
