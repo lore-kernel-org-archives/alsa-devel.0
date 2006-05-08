@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002097]: ALC850 is 8-channel but intel8x0 only seems to support 6 channels
-Date: Sat, 6 May 2006 23:55:38 +0200
-Message-ID: <c84f1c954781224d95d221bc8477f909@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002076]: arecord gives silence
+Date: Mon, 8 May 2006 12:14:27 +0200
+Message-ID: <fb079c807d9335e357ed888359ca8367@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFE2D177
-	for <alsa-devel@alsa-project.org>; Sat,  6 May 2006 23:55:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D7AD196
+	for <alsa-devel@alsa-project.org>; Mon,  8 May 2006 12:14:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,86 +24,95 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2097> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2076> 
 ======================================================================
-Reported By:                ellismartinp
+Reported By:                jaime
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2097
-Category:                   PCI - intel8x0
+Issue ID:                   2076
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.15 (2096)
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-05-2006 14:17 CEST
-Last Modified:              05-06-2006 23:55 CEST
+Date Submitted:             04-26-2006 16:28 CEST
+Last Modified:              05-08-2006 12:14 CEST
 ======================================================================
-Summary:                    ALC850 is 8-channel but intel8x0 only seems to
-support 6 channels
+Summary:                    arecord gives silence
 Description: 
-I have on-board Nforce4 with AC97 CODEC.  This is feeding a Creative 7.1
-amp & speakers via analogue.  In Windows XP I get all 8 channels and can
-test them individually.
+IBM Thinkpad T21 with Cirrus Logic CS 4614/22/24 [CrystalClear SoundFusion
+Audio Accelerator] (rev 01).
 
-Under Linux I can get ALSA to play on 6 speakers (not the side ones) by
-duplicating front to rear but I can't see any way of testing if all
-individual channels work and I can't see any way of enabling the remaining
-two speakers.
+alsamixer correctly mixes the inputs over to the line out (I can hear
+microphone in and line in successfully mixed) but arecord gives silence.
 
-Help please?!
+I've tried using a usb soundcard on the same machine, and everything works
+fine there, so I think this is only the snd-cs46xx driver.
 
-There must be millions of Nforce4 boards out there running 7.1 sound just
-dying to go to Linux.
+I'm not sure what other info is useful - please let me know. Thank you.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- ellismartinp - 05-06-06 00:52 
+ jaime - 05-04-06 12:11 
 ----------------------------------------------------------------------
-OK, so I figured out how to use speaker-test (thanks to another post here)
-and have now got 5.1 surround working fine.
+Takashi.
 
-But I'd like to be able to use 7.1 so an 8-channel intel8x0 driver would
-be very much appreciated.
+I've got it working by "toggling capture" (enabling recording) for the ADC
+channel (in addition to making sure that recording is enabled on both the
+Mic channel and the "Capture" channel).
 
-** Incidentally, I tried upgrading Alsa to the 1.0.11 suite and
-speaker-test started complaining of buffer issues (buffer too small) and
-broken pipes when run with -Dsurround51 so I reverted to the 1.0.11rc2
-currently shipping with Fedora Core 5. **
+Seeing how alsaconf sets up the volume sliders and unmutes certain
+channels so that users can immediately get sound out of their machines,
+would it also be a good idea to make alsaconf set capture enabled on the
+ADC channel (and perhaps set the levels up a little) so that users can
+also immediately use software that needs audio capture? (I do realize that
+this can all be done using amixer or alsamixer, but I think one of the
+points of alsaconf is to set levels and so make users' lives a little
+easier).
+
+I've also got another qustion: with
+arecord -v -v -Dhw:0,0 -f cd test.wav
+I get a volume meter which works and the wave file is good.
+
+But when I use:
+arecord -v -v -f cd test.wav
+I just get:
+
+Recording WAVE...
+Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
+Its setup is...
+Slave: Direct Snoop PCM
+Its setup is...
+Hardware PCM Card 0 'Sound Fusion CS46xx' device 0 subdevice 0
+Its setup is...
+
+and then everything stops. There's no volume meter (like previously) and
+the wav file is only 44 bytes long.
+
+Would you prefer me to put this new problem into a new bug report?
+
+Thank you.
 
 ----------------------------------------------------------------------
- ellismartinp - 05-06-06 23:55 
+ atler - 05-08-06 12:14 
 ----------------------------------------------------------------------
-OK - so I got stuck in and now have a working 8-channel intel8x0 (together
-with a small add-in to ac97_patch.c) - based on the 1.0.11 driver set.
+It also seems to be the case in this bugreport:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1822
 
-speaker-test -c8 -Dsurround71
-now gives me 8 channels of lovely pink noise, one by one, on the correct
-speakers!
-
-The patch for ac97 is based on a good look at the ALC850 datasheet.
-
-The changes to intel8x0 are based on intelligent guesswork and I have no
-idea what impact they might have on chipsets other than NFORCE4.  All I
-can say is that they work on my Gigabyte K8N-Pro SLI (NFORCE4).
-
-I'll put the modded files up here as soon as I've tidied them up and am
-completely happy with them, together with some notes on how alsamixer
-needs to be set up.
-
-(... now, can't resist ... Woohoo!!!!! I still have the touch).
+Recording with 'arecord -v -v -Dhw:0,0 -f cd test.wav' works fine.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-05-06 14:17 ellismartinp   New Issue                                    
-05-05-06 14:17 ellismartinp   Distribution              => Fedora Core 5   
-05-05-06 14:17 ellismartinp   Kernel Version            => 2.6.15 (2096)   
-05-06-06 00:52 ellismartinp   Note Added: 0009633                          
-05-06-06 23:55 ellismartinp   Note Added: 0009638                          
+04-26-06 16:28 jaime          New Issue                                    
+05-02-06 18:11 tiwai          Note Added: 0009568                          
+05-04-06 12:11 jaime          Note Added: 0009613                          
+05-08-06 12:14 atler          Note Added: 0009645                          
 ======================================================================
 
 
