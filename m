@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002095]: Choppy sound using default dmix config for some applications but not others.
-Date: Tue, 9 May 2006 06:48:45 +0200
-Message-ID: <d8b0def69c19ddfff22f096170d362e9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002096]: Audio Players uses 100% CPU
+Date: Tue, 9 May 2006 07:15:11 +0200
+Message-ID: <1ae6682b1d0daa9eb33903dfa5971f85@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6B4519A
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 06:48:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D47C19A
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 07:15:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,97 +24,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2095> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2096> 
 ======================================================================
-Reported By:                BigBaaadBob
-Assigned To:                perex
+Reported By:                ksc91u
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2095
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
-Reproducibility:            always
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   2096
+Category:                   PCI - intel8x0
+Reproducibility:            random
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-03-2006 01:09 CEST
-Last Modified:              05-09-2006 06:48 CEST
+Date Submitted:             05-03-2006 12:27 CEST
+Last Modified:              05-09-2006 07:15 CEST
 ======================================================================
-Summary:                    Choppy sound using default dmix config for some
-applications but not others.
+Summary:                    Audio Players uses 100% CPU
 Description: 
-As reported in http://forums.gentoo.org/viewtopic-t-457951.html
-alsa 1.0.11 causes skipping sound in some applications but not others.
+MB: Asus K8N4-E BIOS 1006
 
-Sound skips in rhytymbox and totem, but not xmms, realplayer, or mplayer.
+I use xmms or VLC to play internet stream.
+And after a period of time...the player get 100% of my CPU,and the sound
+become shatter.
+I can not even switch to console to kill it.
+The only way is to disconnect my network,let the player stop player,and
+kill it.
+======================================================================
 
-This occurs with default dmix setup (i.e. with no .asoundrc).  Creating an
-.asoundrc like this causes the skipping to stop for those applications
-that skip.
-
+----------------------------------------------------------------------
+ ksc91u - 05-05-06 03:17 
+----------------------------------------------------------------------
 pcm.!default {
-  type hw
-  card 0
+type plug
+slave.pcm "dmixer"
+}
+pcm.dmixer {
+type dmix
+ipc_key 1024
+slave {
+pcm "hw:0,0"
+period_time 0
+period_size 1024
+buffer_size 16384
+rate 48000
+}
+bindings {
+0 0
+1 1
+}
 }
 
-This has been reported using the cmipci driver, the Intel ICH4 driver, the
-i915GM driver, and on a ppc iBook G4.
 
-On user reports that fiddling with the .asoundrc parameters can lessen the
-problem, but not eliminate the problem.
-======================================================================
+Now I use dmixer again.
+Change buffer_size from 8192 to 16384
+period_size from 2048 to 1024
 
-----------------------------------------------------------------------
- BigBaaadBob - 05-05-06 22:49 
-----------------------------------------------------------------------
-Finally got a chance to try adding:
-
-   defaults.pcm.dmix_max_periods -1
-
-In my case that fixes the skipping.  Unfortunately, I don't know how to
-build for Gentoo from the "HG Repo" so I'll have to leave that testing to
-someone else.
-
-Thanks!
+Let VLC play for 6 hours while I am asleep.
+VLC takes 03:15:08 of CPU time...
 
 ----------------------------------------------------------------------
- razamatan - 05-09-06 06:48 
+ ksc91u - 05-09-06 07:15 
 ----------------------------------------------------------------------
-actually, my experience is similar but different.
-
-i have a abit mobo using the via chipset (via82xx), and i use a 2.6.16-r6
-gentoo-sources kernel and the driver is compiled from the kernel source.
-
-my sound is garbled when i try using ogg123, mpg321, aplay.  however, when
-i use anything backended by xine or madplay everything's fine.
-
-when i use a asoundrc that looks like:
-  pcm.!default {
-    type hw
-    card 0
-  }
-
-things sorta work... nothing is garbled, but things play in roughly 2x
-speed.
-
-using a asoundrc that looks like:
-  defaults.pcm.dmix_max_periods -1
-
-doesn't do anything at all.
+Maybe this is not alsa's problem.
+Now I use a ENS 1370 card with OSS driver,and the same problem happen
+sometimes.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-03-06 01:09 BigBaaadBob    New Issue                                    
-05-03-06 01:27 wellwhoopdedoooNote Added: 0009580                          
-05-03-06 01:28 wellwhoopdedoooIssue Monitored: wellwhoopdedooo                  
- 
-05-03-06 01:29 wellwhoopdedoooNote Edited: 0009580                         
-05-03-06 01:31 BigBaaadBob    Note Added: 0009581                          
-05-03-06 11:45 tiwai          Note Added: 0009586                          
-05-03-06 19:27 tiwai          Note Added: 0009601                          
-05-05-06 22:49 BigBaaadBob    Note Added: 0009632                          
-05-09-06 06:48 razamatan      Note Added: 0009651                          
+05-03-06 12:27 ksc91u         New Issue                                    
+05-03-06 12:27 ksc91u         File Added: lspci.txt                        
+05-03-06 19:25 tiwai          Note Added: 0009600                          
+05-04-06 05:15 ksc91u         Note Added: 0009606                          
+05-04-06 05:15 ksc91u         File Added: dmesg                            
+05-04-06 07:18 ksc91u         Note Edited: 0009606                         
+05-04-06 08:14 ksc91u         Note Edited: 0009606                         
+05-04-06 11:41 tiwai          Note Added: 0009610                          
+05-04-06 12:22 ksc91u         Note Added: 0009615                          
+05-04-06 12:45 tiwai          Note Added: 0009616                          
+05-04-06 19:08 ksc91u         Note Added: 0009619                          
+05-05-06 03:17 ksc91u         Note Added: 0009622                          
+05-09-06 07:15 ksc91u         Note Added: 0009652                          
 ======================================================================
 
 
