@@ -1,16 +1,16 @@
-From: lorenzo <lagrespan@gmail.com>
+From: "Eric Shattow" <lucent@gmail.com>
 Subject: Re: crypto layer in alsa
-Date: Tue, 9 May 2006 04:33:09 +0200
-Message-ID: <7c587400605081933q691492d9i41e364b0a103eb6e@mail.gmail.com>
+Date: Mon, 8 May 2006 21:40:37 -0500
+Message-ID: <2c746f620605081940y6c69c705h2c6ee7619f103616@mail.gmail.com>
 References: <7c587400605081323g53cae85fudbdf30167b500407@mail.gmail.com>
 	 <d9def9db0605081857g2ef2f37cu2aa3c389e1b032f0@mail.gmail.com>
 	 <2c746f620605081922v2084c73bl220fd83d0eb8904a@mail.gmail.com>
+	 <7c587400605081933q691492d9i41e364b0a103eb6e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_Part_6959_11885870.1147142437414"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <2c746f620605081922v2084c73bl220fd83d0eb8904a@mail.gmail.com>
-Content-Disposition: inline
+In-Reply-To: <7c587400605081933q691492d9i41e364b0a103eb6e@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,33 +20,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eric Shattow <lucent@gmail.com>
+To: lorenzo <lagrespan@gmail.com>
 Cc: Markus Rechberger <mrechberger@gmail.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 5/9/06, Eric Shattow <lucent@gmail.com> wrote:
-> Tunnel it through SSH and no one can touch you.
-> On 5/8/06, Markus Rechberger <mrechberger@gmail.com> wrote:
-> > I think this will not really work out. Many applications encode the
-> > data stream in a lossy format I'm sure so does Skype.
-> > That's just what I think about it..
+------=_Part_6959_11885870.1147142437414
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
-This could be a nice test to see the network performances, but I was
-thinking more of a complete solution: linux alsa driver + windows dll,
-thus providing a way to do VoIP without the need to add plugins for
-every VoIP app.
-However, as Markus said, the lossy encodings may be an issue.
+VGhlIHNwYW0gaXMgYSBrbm93biBwcm9ibGVtLgoKT24gNS84LzA2LCBsb3JlbnpvIDxsYWdyZXNw
+YW5AZ21haWwuY29tPiB3cm90ZToKPgo+IE9uIDUvOS8wNiwgRXJpYyBTaGF0dG93IDxsdWNlbnRA
+Z21haWwuY29tPiB3cm90ZToKPiA+IFR1bm5lbCBpdCB0aHJvdWdoIFNTSCBhbmQgbm8gb25lIGNh
+biB0b3VjaCB5b3UuCj4gPiBPbiA1LzgvMDYsIE1hcmt1cyBSZWNoYmVyZ2VyIDxtcmVjaGJlcmdl
+ckBnbWFpbC5jb20+IHdyb3RlOgo+ID4gPiBJIHRoaW5rIHRoaXMgd2lsbCBub3QgcmVhbGx5IHdv
+cmsgb3V0LiBNYW55IGFwcGxpY2F0aW9ucyBlbmNvZGUgdGhlCj4gPiA+IGRhdGEgc3RyZWFtIGlu
+IGEgbG9zc3kgZm9ybWF0IEknbSBzdXJlIHNvIGRvZXMgU2t5cGUuCj4gPiA+IFRoYXQncyBqdXN0
+IHdoYXQgSSB0aGluayBhYm91dCBpdC4uCj4KPiBUaGlzIGNvdWxkIGJlIGEgbmljZSB0ZXN0IHRv
+IHNlZSB0aGUgbmV0d29yayBwZXJmb3JtYW5jZXMsIGJ1dCBJIHdhcwo+IHRoaW5raW5nIG1vcmUg
+b2YgYSBjb21wbGV0ZSBzb2x1dGlvbjogbGludXggYWxzYSBkcml2ZXIgKyB3aW5kb3dzIGRsbCwK
+PiB0aHVzIHByb3ZpZGluZyBhIHdheSB0byBkbyBWb0lQIHdpdGhvdXQgdGhlIG5lZWQgdG8gYWRk
+IHBsdWdpbnMgZm9yCj4gZXZlcnkgVm9JUCBhcHAuCj4gSG93ZXZlciwgYXMgTWFya3VzIHNhaWQs
+IHRoZSBsb3NzeSBlbmNvZGluZ3MgbWF5IGJlIGFuIGlzc3VlLgo+Cj4gVGhhbmtzIHRvIGJvdGgg
+b2YgeW91IGZvciB5b3VyIGFuc3dlci4KPgo+Cj4gcHM6IEknbSBnZXR0aW5nIGEgbG90IG9mIHNw
+YW0gdHJvdWdoIHRoaXMgbGlzdC4uIGlzIHRoaXMgbm9ybWFsIG9yIGlzCj4gdGhlcmUgc29tZXRo
+aW5nIHdyb25nPyBNYXliZSBpdCdzIGxlZnQgYXMgaXQgaXMgbm93IHRvIGxldCB1c2VycyBzZW5k
+Cj4gYXV0b21hdGljIGJ1ZyByZXBvcnRzIHRvIHRoZSBsaXN0Cj4KPiAtLQo+IDpsb3JlbnpvIGdy
+ZXNwYW4KPiBHUEcgS2V5IGZpbmdlcnByaW50ID0gNTM3MiAxQjQ5IDlFNjEgNzQ3QyBGQjlBICA0
+REFFIDVEMkEgQTlBMCA3NEI0IDhGMUEKPgo=
+------=_Part_6959_11885870.1147142437414
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
-Thanks to both of you for your answer.
-
-
-ps: I'm getting a lot of spam trough this list.. is this normal or is
-there something wrong? Maybe it's left as it is now to let users send
-automatic bug reports to the list
-
---
-:lorenzo grespan
-GPG Key fingerprint =3D 5372 1B49 9E61 747C FB9A  4DAE 5D2A A9A0 74B4 8F1A
+VGhlIHNwYW0gaXMgYSBrbm93biBwcm9ibGVtLjxicj48YnI+PGRpdj48c3BhbiBjbGFzcz0iZ21h
+aWxfcXVvdGUiPk9uIDUvOC8wNiwgPGIgY2xhc3M9ImdtYWlsX3NlbmRlcm5hbWUiPmxvcmVuem88
+L2I+ICZsdDs8YSBocmVmPSJtYWlsdG86bGFncmVzcGFuQGdtYWlsLmNvbSI+bGFncmVzcGFuQGdt
+YWlsLmNvbTwvYT4mZ3Q7IHdyb3RlOjwvc3Bhbj48YmxvY2txdW90ZSBjbGFzcz0iZ21haWxfcXVv
+dGUiIHN0eWxlPSJib3JkZXItbGVmdDogMXB4IHNvbGlkIHJnYigyMDQsIDIwNCwgMjA0KTsgbWFy
+Z2luOiAwcHQgMHB0IDBwdCAwLjhleDsgcGFkZGluZy1sZWZ0OiAxZXg7Ij4KT24gNS85LzA2LCBF
+cmljIFNoYXR0b3cgJmx0OzxhIGhyZWY9Im1haWx0bzpsdWNlbnRAZ21haWwuY29tIj5sdWNlbnRA
+Z21haWwuY29tPC9hPiZndDsgd3JvdGU6PGJyPiZndDsgVHVubmVsIGl0IHRocm91Z2ggU1NIIGFu
+ZCBubyBvbmUgY2FuIHRvdWNoIHlvdS48YnI+Jmd0OyBPbiA1LzgvMDYsIE1hcmt1cyBSZWNoYmVy
+Z2VyICZsdDs8YSBocmVmPSJtYWlsdG86bXJlY2hiZXJnZXJAZ21haWwuY29tIj4KbXJlY2hiZXJn
+ZXJAZ21haWwuY29tPC9hPiZndDsgd3JvdGU6PGJyPiZndDsgJmd0OyBJIHRoaW5rIHRoaXMgd2ls
+bCBub3QgcmVhbGx5IHdvcmsgb3V0LiBNYW55IGFwcGxpY2F0aW9ucyBlbmNvZGUgdGhlPGJyPiZn
+dDsgJmd0OyBkYXRhIHN0cmVhbSBpbiBhIGxvc3N5IGZvcm1hdCBJJ20gc3VyZSBzbyBkb2VzIFNr
+eXBlLjxicj4mZ3Q7ICZndDsgVGhhdCdzIGp1c3Qgd2hhdCBJIHRoaW5rIGFib3V0IGl0Li4KPGJy
+Pjxicj5UaGlzIGNvdWxkIGJlIGEgbmljZSB0ZXN0IHRvIHNlZSB0aGUgbmV0d29yayBwZXJmb3Jt
+YW5jZXMsIGJ1dCBJIHdhczxicj50aGlua2luZyBtb3JlIG9mIGEgY29tcGxldGUgc29sdXRpb246
+IGxpbnV4IGFsc2EgZHJpdmVyICsgd2luZG93cyBkbGwsPGJyPnRodXMgcHJvdmlkaW5nIGEgd2F5
+IHRvIGRvIFZvSVAgd2l0aG91dCB0aGUgbmVlZCB0byBhZGQgcGx1Z2lucyBmb3IKPGJyPmV2ZXJ5
+IFZvSVAgYXBwLjxicj5Ib3dldmVyLCBhcyBNYXJrdXMgc2FpZCwgdGhlIGxvc3N5IGVuY29kaW5n
+cyBtYXkgYmUgYW4gaXNzdWUuPGJyPjxicj5UaGFua3MgdG8gYm90aCBvZiB5b3UgZm9yIHlvdXIg
+YW5zd2VyLjxicj48YnI+PGJyPnBzOiBJJ20gZ2V0dGluZyBhIGxvdCBvZiBzcGFtIHRyb3VnaCB0
+aGlzIGxpc3QuLiBpcyB0aGlzIG5vcm1hbCBvciBpczxicj50aGVyZSBzb21ldGhpbmcgd3Jvbmc/
+IE1heWJlIGl0J3MgbGVmdCBhcyBpdCBpcyBub3cgdG8gbGV0IHVzZXJzIHNlbmQKPGJyPmF1dG9t
+YXRpYyBidWcgcmVwb3J0cyB0byB0aGUgbGlzdDxicj48YnI+LS08YnI+OmxvcmVuem8gZ3Jlc3Bh
+bjxicj5HUEcgS2V5IGZpbmdlcnByaW50ID0gNTM3MiAxQjQ5IDlFNjEgNzQ3QyBGQjlBJm5ic3A7
+Jm5ic3A7NERBRSA1RDJBIEE5QTAgNzRCNCA4RjFBPGJyPjwvYmxvY2txdW90ZT48L2Rpdj48YnI+
+Cg==
+------=_Part_6959_11885870.1147142437414--
 
 
 -------------------------------------------------------
