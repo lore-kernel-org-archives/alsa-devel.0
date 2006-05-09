@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Tue, 9 May 2006 16:40:49 +0200
-Message-ID: <286b7116fd15e7bcf9f88c79042dfad6@bugtrack.alsa-project.org>
+Date: Tue, 9 May 2006 17:16:16 +0200
+Message-ID: <b7648c25fcde302116ef3b24e0548a89@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3AFF1A9
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 16:40:49 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A543921A
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 17:16:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-09-2006 16:40 CEST
+Last Modified:              05-09-2006 17:16 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -73,16 +73,17 @@ has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- drseergio - 05-09-06 14:36 
-----------------------------------------------------------------------
-I am also a user of Benq (S53). Is this issue being proccessed, is it
-possible to fix it at all?
-
-----------------------------------------------------------------------
  rlrevell - 05-09-06 16:40 
 ----------------------------------------------------------------------
 As tiwai has explained, more info about the hardware is needed to fix it. 
 This will have to come from Benq.
+
+----------------------------------------------------------------------
+ drseergio - 05-09-06 17:16 
+----------------------------------------------------------------------
+As far as I know BenQ it will never come... Their support is awful... Btw,
+audio chips are not made by Benq, they are generic from other
+manufacturers. Or not?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -159,6 +160,7 @@ Date Modified  Username       Field                    Change
 05-03-06 15:55 fedukoff       Issue Monitored: fedukoff                    
 05-09-06 14:36 drseergio      Note Added: 0009658                          
 05-09-06 16:40 rlrevell       Note Added: 0009661                          
+05-09-06 17:16 drseergio      Note Added: 0009662                          
 ======================================================================
 
 
