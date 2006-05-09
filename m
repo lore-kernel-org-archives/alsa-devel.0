@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Tue, 9 May 2006 13:26:05 +0200
-Message-ID: <0614800a00f14a6d23ca21f989a012e2@bugtrack.alsa-project.org>
+From: Thomas Glanzmann <sithglan@stud.uni-erlangen.de>
+Subject: Re: Intel HDA Mixer on Intel Mac Mini
+Date: Tue, 9 May 2006 13:32:18 +0200
+Message-ID: <20060509113218.GF14107@cip.informatik.uni-erlangen.de>
+References: <20060427135226.GO11777@cip.informatik.uni-erlangen.de> <s5hd5f3xgqr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="k1lZvvs/B4yU6o8G"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D943417A
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 13:26:05 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hd5f3xgqr.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,253 +17,267 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Michael Gernoth <simigern@stud.uni-erlangen.de>
+Cc: alsa-devel@lists.sourceforge.net, Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, Sam Revitch <sam.revitch@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
-======================================================================
-Reported By:                ponchick
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1833
-Category:                   GENERIC - mpu401
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             gentoo-sources-2.6.15-r4
-======================================================================
-Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              05-09-2006 13:26 CEST
-======================================================================
-Summary:                    oops in snd_mpu401_uart
-Description: 
-I don't know what exactly happend but when I run wine or winecfg it
-segfaulted. dmesg shows following:
-Unable to handle kernel paging request at 0000000010228800 RIP:
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-PGD 6e57067 PUD 0
-Oops: 0002 [1] PREEMPT SMP
-CPU 1
-Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
-snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
-snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
-snd_seq_device snd soundcore nvidia sky2
-Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
-RIP: 0010:[<ffffffff884ca00c>]
-<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
-RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
-RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
-RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
-RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
-R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
-FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
-knlGS:00000000556cb920
-CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
-CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
-Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
-ffff810002178440)
-Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
-ff00000000000286
-       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
-ffff81003eb606c0
-       0000000000000000 ffff81003d7c3bd0
-Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
-       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
-       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
-       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
-       <ffffffff80397b49>{_spin_lock+27}
-<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
-       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
-       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
-       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
-       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
-       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
-       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
-       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
-       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
-<ffffffff8018075f>{__link_path_walk+3332}
-       <ffffffff80397b0c>{__lock_text_start+20}
-<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
-       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
-<ffffffff8017ab11>{chrdev_open+454}
-       <ffffffff8017a94b>{chrdev_open+0}
-<ffffffff80171031>{__dentry_open+310}
-       <ffffffff8017118d>{nameidata_to_filp+34}
-<ffffffff801711d6>{filp_open+58}
-       <ffffffff801713d4>{get_unused_fd+234}
-<ffffffff80171533>{do_sys_open+81}
-       <ffffffff8011e57f>{sysenter_do_call+27}
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
-RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
-<ffff81003564f8f0>
-CR2: 0000000010228800
- <6>note: wine-preloader[11110] exited with preempt_count 1
+Hello Takashi,
+another Mac Mini User has workaround for the notworking audio. I
+attached the eMail.
 
-I use standalone alsa-driver (kernel one is out of date and doesn't
-support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
-gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
-======================================================================
+Thanks,
+        Thomas
 
-----------------------------------------------------------------------
- rlrevell - 05-07-06 19:23 
-----------------------------------------------------------------------
-It means "the hardware doesn't have one".  How could it be any clearer?
+--k1lZvvs/B4yU6o8G
+Content-Type: message/rfc822
+Content-Disposition: inline
 
-----------------------------------------------------------------------
- Raymond - 05-09-06 13:26 
-----------------------------------------------------------------------
-> A hacked diff is attached which shows the affected bits of 
-> code, and additional writes and reads in au88x0_mpu401 which demonstrate
-the 
-> behaviour.  Result is: Temp1 0xfe, Temp2 0xfe, Temp3 0xf9, Temp4 0xfe,
-Temp5 
-> 0xf9.
+Return-Path: <mactel-linux-devel-admin@lists.sourceforge.net>
+X-Spam-Checker-Version: SpamAssassin 3.1.1 (2006-03-10) on
+	faui03.informatik.uni-erlangen.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.6 required=5.0 tests=AWL,BAYES_00 autolearn=ham
+	version=3.1.1
+X-Original-To: sithglan@stud.informatik.uni-erlangen.de
+Delivered-To: sithglan@stud.informatik.uni-erlangen.de
+Received: from max72.rrze.uni-erlangen.de (max72.rrze.uni-erlangen.de [131.188.3.69])
+	by faui03.informatik.uni-erlangen.de (Postfix) with ESMTP id EECBB305E6
+	for <sithglan@stud.informatik.uni-erlangen.de>; Tue,  9 May 2006 12:04:06 +0200 (CEST)
+Received: from fau-vscan-2.rrze.uni-erlangen.de ([131.188.3.69] [131.188.3.69]) by faurelaysmart-2.rrze.uni-erlangen.de with ESMTP for sithglan@stud.uni-erlangen.de; Tue, 9 May 2006 12:03:32 +0200
+Received: from max72.rrze.uni-erlangen.de ([131.188.3.69])
+ by fau-vscan-2.rrze.uni-erlangen.de (fau-vscan-2.rrze.uni-erlangen.de [131.188.2.92]) (amavisd-new)
+ with ESMTP id 05773-03-69 for <sithglan@stud.uni-erlangen.de>;
+ Tue,  9 May 2006 12:03:31 +0200 (MEST)
+Received: from lists-outbound.sourceforge.net (lists-outbound.sourceforge.net [66.35.250.225]) by faurelayrz-2.rrze.uni-erlangen.de with ESMTP for sithglan@stud.uni-erlangen.de; Tue, 9 May 2006 12:03:30 +0200
+Received: from sc8-sf-list1-b.sourceforge.net (sc8-sf-list1-b.sourceforge.net [10.3.1.7])
+	by sc8-sf-spam1.sourceforge.net (Postfix) with ESMTP
+	id D9BEB890AF; Tue,  9 May 2006 03:03:05 -0700 (PDT)
+Received: from sc8-sf-mx1-b.sourceforge.net ([10.3.1.91] helo=mail.sourceforge.net)
+	by sc8-sf-list1.sourceforge.net with esmtp (Exim 4.30)
+	id 1FdP2e-0008Hh-A2
+	for mactel-linux-devel@lists.sourceforge.net; Tue, 09 May 2006 03:02:08 -0700
+Received: from wx-out-0102.google.com ([66.249.82.193])
+	by mail.sourceforge.net with esmtp (Exim 4.44)
+	id 1FdP2c-00082h-Vo
+	for mactel-linux-devel@lists.sourceforge.net; Tue, 09 May 2006 03:02:08 -0700
+Received: by wx-out-0102.google.com with SMTP id h26so979217wxd
+        for <mactel-linux-devel@lists.sourceforge.net>; Tue, 09 May 2006 03:02:05 -0700 (PDT)
+DomainKey-Signature: a=rsa-sha1; q=dns; c=nofws;
+        s=beta; d=gmail.com;
+        h=received:message-id:date:from:to:subject:in-reply-to:mime-version:content-type:references;
+        b=YCAN0VseJijwMGQBPSS0zNlc2WaSbAh8onYSh6/jlnXxt0tLUK1ZklSmGbs7NfZ7L7retbGIeE4xnuDMHIRZppSnpaSJnPBRRS9yvhDrLfur/xJpGvBTe9sYynMuBj0xoH3qcFaKMdhriYXiD1w9MgYcHZxiXAOf5yuKAWVlDCc=
+Received: by 10.70.24.6 with SMTP id 6mr3597636wxx;
+        Tue, 09 May 2006 03:02:05 -0700 (PDT)
+Received: by 10.70.130.1 with HTTP; Tue, 9 May 2006 03:02:05 -0700 (PDT)
+Message-Id: <8d4807d50605090302r372c215ct9526da6ee740fa34@mail.gmail.com>
+From: "Sam Revitch" <sam.revitch@gmail.com>
+To: mactel-linux-devel@lists.sourceforge.net
+Subject: Re: [Mactel-linux-devel] Audio on Mac Mini
+In-Reply-To: <20060505044704.GD13966@cip.informatik.uni-erlangen.de>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_Part_87215_22367293.1147168925323"
+References: <8d4807d50605010119l6ad0474o707ed6716dbf7b8f@mail.gmail.com>
+	 <20060501231201.GN1487@cip.informatik.uni-erlangen.de>
+	 <8d4807d50605040228p22d2b519h6f4f827769e5abaf@mail.gmail.com>
+	 <20060505044704.GD13966@cip.informatik.uni-erlangen.de>
+Sender: mactel-linux-devel-admin@lists.sourceforge.net
+Errors-To: mactel-linux-devel-admin@lists.sourceforge.net
+X-BeenThere: mactel-linux-devel@lists.sourceforge.net
+X-Mailman-Version: 2.0.9-sf.net
+Precedence: bulk
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/mactel-linux-devel>,
+	<mailto:mactel-linux-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Id: <mactel-linux-devel.lists.sourceforge.net>
+List-Post: <mailto:mactel-linux-devel@lists.sourceforge.net>
+List-Help: <mailto:mactel-linux-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/mactel-linux-devel>,
+	<mailto:mactel-linux-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=mactel-linux-devel>
+Date: Tue, 9 May 2006 03:02:05 -0700
+X-Virus-Scanned: by amavisd-new-20030616 (RRZE) on max72.rrze.uni-erlangen.de
 
-au8830 (Subsystem 008812eb)
+------=_Part_87215_22367293.1147168925323
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Temp1 0xfe, Temp2 0xfe, Temp3 0xd1, Temp4 0xfe, Temp5 0xd1.
+Hey again,
 
-aplaymidi --port=16:0 test.mid 
+Regarding the audio problem, I spent some time on the issue and came
+up with two changes to make to the HDA driver.
 
-Using alsa-driver-1.0.11, it does not hang even there is no midi keyboard
-or wavetable daugther card
+One, the patch_sigmatel module needs to support mute-via-GPIO.  The
+Mac Mini's internal speaker and line-out jack have two mute switches
+in series, and one of them that the driver is unaware of is controlled
+by a GPIO pin.  There isn't a secondary mute on the line-in jack,
+hence it was usable in line-out mode without driver support for the
+GPIO mute.
 
+Two, if only one usable input is detected, the patch_sigmatel module
+won't switch the mux sources to it, and nothing else seems to do so
+either.  Easy enough to fix.
 
-> I have made up a joystick port MIDI OUT lead for testing.  MIDI sent to
-the 
-> au8820 port shown in aplaymidi -l goes to both the wavetable card and
-the 
-> joystick midi at the same time; the DB50XG is then generating sound at
-the 
-> same time as an external keyboard/synth connected from the joystick 
-> connector.  So it would seem the card has a single port feeding both.
+Still unresolved is the issue of accessing the internal speaker.  The
+driver enumerates it, but this patch doesn't fix the driver to
+actually create a new PCM playback device for it, or do jack detection
+and automatically switch the primary output to the internal speaker
+when nothing is plugged in to the line-out.
 
+This patch should work on an Intel Mac Mini.  It might work on other
+Intel Macs.  It's rough, in need of more testing, and might break the
+driver for other systems with STAC922X codecs.
 
-http://www.3dsoundsurge.com/faq/4.3.html
+If the patch gets filtered out by the mail list, go to:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-09-06 08:33 ponchick       New Issue                                    
-02-09-06 08:33 ponchick       Distribution              => gentoo          
-02-09-06 08:33 ponchick       Kernel Version            =>
-gentoo-sources-2.6.15-r4
-02-09-06 09:12 Raymond        Note Added: 0007971                          
-02-09-06 09:32 Raymond        Note Added: 0007973                          
-02-09-06 11:57 ponchick       Note Added: 0007975                          
-02-09-06 12:32 Raymond        Note Added: 0007976                          
-02-09-06 12:35 Raymond        Note Edited: 0007976                         
-02-10-06 03:06 Raymond        Note Added: 0007982                          
-02-10-06 03:11 rlrevell       Note Added: 0007983                          
-02-10-06 03:49 Raymond        Note Added: 0007984                          
-02-10-06 05:08 ponchick       Note Added: 0007986                          
-02-10-06 05:36 Raymond        Note Added: 0007988                          
-02-10-06 06:03 Raymond        Note Added: 0007990                          
-02-10-06 10:09 ponchick       Note Added: 0007997                          
-02-10-06 11:30 Raymond        Note Added: 0008001                          
-02-12-06 03:32 Raymond        Note Added: 0008024                          
-02-12-06 14:14 Raymond        Note Deleted: 0007990                        
-02-13-06 07:08 Raymond        Note Edited: 0008024                         
-02-13-06 16:44 Raymond        Note Edited: 0008001                         
-02-14-06 10:41 Raymond        Note Edited: 0008024                         
-02-16-06 04:40 Raymond        Note Added: 0008084                          
-02-16-06 06:33 ponchick       Note Added: 0008086                          
-02-16-06 09:57 Raymond        Note Added: 0008089                          
-02-16-06 10:16 ponchick       Note Added: 0008091                          
-02-16-06 10:38 Raymond        Note Added: 0008092                          
-02-16-06 10:40 Raymond        Note Edited: 0008092                         
-02-16-06 13:08 Raymond        Note Edited: 0008089                         
-02-25-06 13:15 Raymond        Note Added: 0008189                          
-03-21-06 18:02 Raymond        Note Edited: 0008089                         
-04-06-06 19:13 Raymond        Note Added: 0009126                          
-04-06-06 19:23 rlrevell       Note Added: 0009127                          
-04-11-06 05:09 Raymond        Note Added: 0009226                          
-04-11-06 06:08 ponchick       Note Added: 0009227                          
-04-11-06 09:06 Raymond        Note Added: 0009230                          
-04-12-06 10:28 Raymond        Note Added: 0009240                          
-04-12-06 11:36 ponchick       Note Added: 0009241                          
-04-12-06 15:16 Raymond        Note Added: 0009243                          
-04-13-06 07:16 Raymond        Note Added: 0009253                          
-04-13-06 10:05 Raymond        Note Added: 0009255                          
-04-13-06 10:37 Raymond        Note Edited: 0009253                         
-04-14-06 03:30 Raymond        Note Added: 0009279                          
-04-17-06 22:57 gineera        Note Added: 0009322                          
-04-18-06 04:53 ponchick       Note Added: 0009323                          
-04-18-06 05:11 ponchick       Note Added: 0009324                          
-04-18-06 05:32 Raymond        Note Added: 0009325                          
-04-18-06 06:04 Raymond        Note Edited: 0009325                         
-04-19-06 05:42 Raymond        Issue Monitored: alien999999999                   
+http://lsb.blogdns.net/files/mini_hda.patch
 
-04-19-06 05:42 Raymond        Note Added: 0009349                          
-04-20-06 04:27 Raymond        Issue Monitored: penguinparty                    
-04-20-06 04:27 Raymond        Note Added: 0009364                          
-04-20-06 05:05 Raymond        Note Edited: 0009325                         
-04-20-06 08:55 alien999999999 Note Added: 0009366                          
-04-20-06 09:27 Raymond        Note Added: 0009367                          
-04-20-06 10:25 Raymond        Note Edited: 0009367                         
-04-21-06 08:11 alien999999999 Note Added: 0009408                          
-04-21-06 16:41 rlrevell       Note Added: 0009414                          
-04-21-06 18:00 Raymond        Note Added: 0009420                          
-04-21-06 18:13 Raymond        Note Added: 0009422                          
-04-21-06 18:23 Raymond        Note Added: 0009425                          
-04-21-06 18:28 Raymond        Note Added: 0009426                          
-04-21-06 18:54 rlrevell       Note Added: 0009427                          
-04-22-06 02:56 Raymond        Note Edited: 0009422                         
-04-22-06 02:57 Raymond        Note Edited: 0009425                         
-04-22-06 06:58 Raymond        Note Edited: 0009426                         
-04-24-06 03:20 Raymond        Note Added: 0009447                          
-04-24-06 05:43 ponchick       Note Added: 0009448                          
-04-24-06 11:34 Raymond        Note Added: 0009450                          
-04-25-06 10:08 Raymond        Note Added: 0009485                          
-04-25-06 23:30 gineera        Note Added: 0009496                          
-04-26-06 04:26 Raymond        Note Added: 0009500                          
-04-26-06 04:33 Raymond        Note Added: 0009501                          
-04-26-06 04:35 Raymond        Note Edited: 0009501                         
-04-26-06 04:50 Raymond        Note Added: 0009502                          
-04-26-06 05:06 Raymond        Note Added: 0009503                          
-04-26-06 07:13 Raymond        Note Edited: 0009501                         
-04-26-06 16:38 Raymond        Note Added: 0009515                          
-04-26-06 17:20 Raymond        Note Added: 0009518                          
-04-26-06 17:34 Raymond        Note Edited: 0009518                         
-04-26-06 18:41 Raymond        Issue Monitored: perex                       
-04-26-06 18:41 Raymond        Note Added: 0009521                          
-04-27-06 13:36 Raymond        Note Added: 0009529                          
-05-01-06 10:58 Raymond        Note Added: 0009554                          
-05-01-06 18:12 Raymond        Note Edited: 0009554                         
-05-02-06 04:38 ponchick       Note Added: 0009555                          
-05-02-06 06:52 Raymond        Issue Monitored: tiwai                       
-05-02-06 06:52 Raymond        Note Added: 0009556                          
-05-02-06 06:54 Raymond        Note Edited: 0009556                         
-05-02-06 17:55 tiwai          Note Added: 0009561                          
-05-03-06 11:23 Raymond        Note Added: 0009583                          
-05-03-06 11:29 ponchick       Note Added: 0009584                          
-05-03-06 15:23 Raymond        Issue Monitored: mjander                     
-05-03-06 15:23 Raymond        Note Added: 0009593                          
-05-03-06 18:31 Raymond        Note Added: 0009596                          
-05-04-06 05:08 Raymond        Note Edited: 0009596                         
-05-04-06 07:11 Raymond        Note Edited: 0009596                         
-05-04-06 12:18 Raymond        Note Added: 0009614                          
-05-05-06 04:35 Raymond        Note Edited: 0009529                         
-05-05-06 07:10 ponchick       Note Added: 0009623                          
-05-05-06 15:20 Raymond        Note Added: 0009625                          
-05-06-06 04:05 ponchick       Note Added: 0009635                          
-05-06-06 05:10 Raymond        Note Added: 0009636                          
-05-06-06 05:22 Raymond        Note Edited: 0009636                         
-05-07-06 19:17 Raymond        Note Added: 0009642                          
-05-07-06 19:21 Raymond        Note Edited: 0009642                         
-05-07-06 19:23 rlrevell       Note Added: 0009643                          
-05-09-06 13:26 Raymond        Note Added: 0009655                          
-======================================================================
+Thanks.
+-Sam Revitch
+
+------=_Part_87215_22367293.1147168925323
+Content-Type: text/x-patch; name=mini_hda.patch; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Attachment-Id: f_en026pp3
+Content-Disposition: attachment; filename="mini_hda.patch"
+
+--- alsa-driver-1.0.11-orig/alsa-kernel/pci/hda/patch_sigmatel.c	2006-04-10 03:31:03.000000000 -0700
++++ alsa-driver-1.0.11/alsa-kernel/pci/hda/patch_sigmatel.c	2006-05-09 02:45:46.000000000 -0700
+@@ -52,6 +52,7 @@
+ 	unsigned int mic_switch: 1;
+ 	unsigned int alt_switch: 1;
+ 	unsigned int hp_detect: 1;
++	unsigned int gpio_mute: 1;
+ 
+ 	/* playback */
+ 	struct hda_multi_out multiout;
+@@ -841,6 +842,19 @@
+ 		}
+ 	}
+ 
++	if (imux->num_items == 1) {
++		/*
++		 * Set the current input for the muxes.
++		 * The STAC9221 has two input muxes with identical source
++		 * NID lists.  Hopefully this won't get confused.
++		 */
++		for (i = 0; i < spec->num_muxes; i++) {
++			snd_hda_codec_write(codec, spec->mux_nids[i], 0,
++					    AC_VERB_SET_CONNECT_SEL,
++					    imux->items[0].index);
++		}
++	}
++
+ 	return 0;
+ }
+ 
+@@ -946,6 +960,46 @@
+ 	return 1;
+ }
+ 
++/*
++ * Early 2006 Intel Macintoshes with STAC9220X5 codecs seem to have a
++ * funky external mute control using GPIO pins.
++ */
++
++static void stac922x_gpio_mute(struct hda_codec *codec, int pin, int muted)
++{
++	unsigned int gpiostate, gpiomask, gpiodir;
++
++	gpiostate = snd_hda_codec_read(codec, codec->afg, 0,
++				       AC_VERB_GET_GPIO_DATA, 0);
++
++	if (!muted) {
++		gpiostate |= (1 << pin);
++	} else {
++		gpiostate &= ~(1 << pin);
++	}
++
++	gpiomask = snd_hda_codec_read(codec, codec->afg, 0,
++				      AC_VERB_GET_GPIO_MASK, 0);
++	gpiomask |= (1 << pin);
++
++	gpiodir = snd_hda_codec_read(codec, codec->afg, 0,
++				     AC_VERB_GET_GPIO_DIRECTION, 0);
++	gpiodir |= (1 << pin);
++
++	/* AppleHDA seems to do this -- WTF is this verb?? */
++	snd_hda_codec_write(codec, codec->afg, 0, 0x7e7, 0);
++
++	snd_hda_codec_write(codec, codec->afg, 0,
++			    AC_VERB_SET_GPIO_MASK, gpiomask);
++	snd_hda_codec_write(codec, codec->afg, 0,
++			    AC_VERB_SET_GPIO_DIRECTION, gpiodir);
++
++	udelay(1000);
++
++	snd_hda_codec_write(codec, codec->afg, 0,
++			    AC_VERB_SET_GPIO_DATA, gpiostate);
++}
++
+ static int stac92xx_init(struct hda_codec *codec)
+ {
+ 	struct sigmatel_spec *spec = codec->spec;
+@@ -982,6 +1036,11 @@
+ 		stac92xx_auto_set_pinctl(codec, cfg->dig_in_pin,
+ 					 AC_PINCTL_IN_EN);
+ 
++	if (spec->gpio_mute) {
++		stac922x_gpio_mute(codec, 0, 0);
++		stac922x_gpio_mute(codec, 1, 0);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -1154,6 +1213,18 @@
+ 		return err;
+ 	}
+ 
++	{
++		u16 subsystem_vendor, subsystem_device;
++		pci_read_config_word(codec->bus->pci, PCI_SUBSYSTEM_VENDOR_ID, &subsystem_vendor);
++		pci_read_config_word(codec->bus->pci, PCI_SUBSYSTEM_ID, &subsystem_device);
++
++		/* Need a better way of detecting an Intel Macintosh */
++		if ((subsystem_vendor == 0x8384) &&
++		    (subsystem_device == 0x7680)) {
++			spec->gpio_mute = 1;
++		}
++	}
++
+ 	codec->patch_ops = stac92xx_patch_ops;
+ 
+ 	return 0;
 
 
+
+
+
+
+
+
+
+------=_Part_87215_22367293.1147168925323--
+
+
+-------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+_______________________________________________
+Mactel-linux-devel mailing list
+Mactel-linux-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/mactel-linux-devel
+
+
+--k1lZvvs/B4yU6o8G--
 
 
 -------------------------------------------------------
