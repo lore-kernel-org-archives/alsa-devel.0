@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002095]: Choppy sound using default dmix config for some applications but not others.
-Date: Tue, 9 May 2006 18:19:41 +0200
-Message-ID: <ffe84d40f7c3c8fceac69560f5fdf33d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
+Date: Tue, 9 May 2006 18:33:57 +0200
+Message-ID: <2d6ba0123cf49356bab6f1af1082b13d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 04FC0151
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 18:19:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F3C551AA
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 18:33:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,99 +24,155 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2095> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
 ======================================================================
-Reported By:                BigBaaadBob
-Assigned To:                perex
+Reported By:                liangalei
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2095
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   1134
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
 ======================================================================
-Date Submitted:             05-03-2006 01:09 CEST
-Last Modified:              05-09-2006 18:19 CEST
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              05-09-2006 18:33 CEST
 ======================================================================
-Summary:                    Choppy sound using default dmix config for some
-applications but not others.
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
 Description: 
-As reported in http://forums.gentoo.org/viewtopic-t-457951.html
-alsa 1.0.11 causes skipping sound in some applications but not others.
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
 
-Sound skips in rhytymbox and totem, but not xmms, realplayer, or mplayer.
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
 
-This occurs with default dmix setup (i.e. with no .asoundrc).  Creating an
-.asoundrc like this causes the skipping to stop for those applications
-that skip.
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
 
-pcm.!default {
-  type hw
-  card 0
-}
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
 
-This has been reported using the cmipci driver, the Intel ICH4 driver, the
-i915GM driver, and on a ppc iBook G4.
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
 
-On user reports that fiddling with the .asoundrc parameters can lessen the
-problem, but not eliminate the problem.
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
+
+thanks
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- dsandras - 05-09-06 13:20 
+ drseergio - 05-09-06 18:00 
 ----------------------------------------------------------------------
-Many Ekiga users are also complaining about this problem. Reverting to an
-older libasound2 makes it disappear.
-
-It also crashes the Ekiga ALSA plugin:
-#3  0xb6376fe5 in free () from /lib/tls/libc.so.6
-#4  0xb58b6f70 in snd_pcm_adpcm_decode () from /usr/lib/libasound.so.2
-#5  0xb58955b9 in snd_pcm_hw_free () from /usr/lib/libasound.so.2
-#6  0xb58bc3ed in _snd_pcm_rate_linear_open () from
-/usr/lib/libasound.so.2
-#7  0xb58955b9 in snd_pcm_hw_free () from /usr/lib/libasound.so.2
-#8  0xb589fc2e in snd_pcm_close () from /usr/lib/libasound.so.2
-
-
-I think that the person who will fix that problem should check everything
-works OK with Ekiga and contact me personally in case of problem.
-
-(The backtrace above is obtained after a export MALLOC_CHECK_=2 to force
-crashes in case of memory allocation problems).
+Yes, I agree. Probably dual-boot is the solution and I will wait until the
+development of the driver becomes reality. I would help but currently I do
+not have enough programming skills.
 
 ----------------------------------------------------------------------
- snark - 05-09-06 18:19 
+ fedukoff - 05-09-06 18:33 
 ----------------------------------------------------------------------
-I must precise that we were about to release ekiga 2.0.2 when our users
-began to report sloppy sound issues... and decided to postpone it, since
-it wasn't acceptable to release a new stable point which breaks so easily.
-:-(
-
-The fact that we have several users showing the issue also means that we
-can probably find beta testers for a real fix :-)
-
-I'll try to have them try the defaults.pcm.dmix_max_periods -1 workaround.
+I have bought this laptop because it was on sale with Linux (CD in a box,
+not preinstalled). It was for me the guarantor, that all is compatible.
+Who knew... Linux referred to Linpus 9.2. Installation of this miracle has
+come to full grief.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-03-06 01:09 BigBaaadBob    New Issue                                    
-05-03-06 01:27 wellwhoopdedoooNote Added: 0009580                          
-05-03-06 01:28 wellwhoopdedoooIssue Monitored: wellwhoopdedooo                  
- 
-05-03-06 01:29 wellwhoopdedoooNote Edited: 0009580                         
-05-03-06 01:31 BigBaaadBob    Note Added: 0009581                          
-05-03-06 11:45 tiwai          Note Added: 0009586                          
-05-03-06 19:27 tiwai          Note Added: 0009601                          
-05-05-06 22:49 BigBaaadBob    Note Added: 0009632                          
-05-09-06 06:48 razamatan      Note Added: 0009651                          
-05-09-06 06:49 razamatan      Issue Monitored: razamatan                    
-05-09-06 06:55 razamatan      Note Edited: 0009651                         
-05-09-06 07:23 razamatan      Note Edited: 0009651                         
-05-09-06 13:20 dsandras       Note Added: 0009654                          
-05-09-06 18:19 snark          Note Added: 0009671                          
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
+05-30-05 03:29 liangalei      Note Added: 0004795                          
+06-01-05 16:58 tiwai          Note Added: 0004863                          
+06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+06-02-05 10:42 liangalei      Note Added: 0004875                          
+06-06-05 09:53 perex          Assigned To              perex =>            
+06-23-05 12:42 tiwai          Note Added: 0005182                          
+06-24-05 03:12 liangalei      File Added: asound.state                     
+06-24-05 03:13 liangalei      File Added: ac97#0-0                         
+06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
+06-24-05 03:18 liangalei      Note Added: 0005202                          
+08-28-05 15:28 ybar           Note Added: 0005962                          
+11-29-05 05:59 derek          Issue Monitored: derek                       
+11-29-05 06:00 derek          Issue End Monitor: derek                     
+11-29-05 06:03 derek          Note Added: 0006870                          
+02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
+02-17-06 22:22 gandhi         Note Added: 0008110                          
+02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
+02-17-06 23:28 gandhi         Note Edited: 0008110                         
+02-17-06 23:43 gandhi         Note Edited: 0008110                         
+02-18-06 02:05 gandhi         Note Added: 0008112                          
+02-18-06 08:13 liangalei      Note Added: 0008116                          
+02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
+02-18-06 15:56 gandhi         Note Added: 0008120                          
+02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
+03-03-06 08:29 robitech       Note Added: 0008336                          
+03-15-06 05:34 JProgrammer    Note Added: 0008526                          
+03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
+03-15-06 06:39 Kooper         Note Added: 0008527                          
+03-15-06 11:40 tiwai          Note Added: 0008531                          
+03-15-06 11:53 Kooper         Note Added: 0008535                          
+03-15-06 12:13 JProgrammer    Note Added: 0008538                          
+03-15-06 12:18 tiwai          Note Added: 0008540                          
+03-15-06 23:48 JProgrammer    Note Added: 0008579                          
+03-16-06 15:04 tiwai          Note Added: 0008606                          
+03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
+   
+03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
+03-17-06 04:10 Kooper         Note Added: 0008633                          
+03-17-06 12:07 tiwai          Note Added: 0008641                          
+03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
+      
+03-17-06 12:35 Kooper         Note Added: 0008644                          
+03-21-06 02:38 JProgrammer    Note Added: 0008736                          
+03-25-06 10:51 alessiodf      Note Added: 0008944                          
+03-26-06 20:12 alessiodf      Note Edited: 0008944                         
+03-26-06 20:15 alessiodf      Note Edited: 0008944                         
+03-30-06 15:47 trava          Note Added: 0009034                          
+04-07-06 13:05 kesiev         Note Added: 0009137                          
+04-07-06 13:06 kesiev         Note Edited: 0009137                         
+04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
+04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
+04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
+04-12-06 16:21 kesiev         Note Added: 0009246                          
+04-12-06 16:21 kesiev         File Added: qta058Ba.inf                     
+04-13-06 14:00 kesiev         Note Added: 0009259                          
+04-13-06 14:00 kesiev         File Added: windows-details.txt                   
+
+04-13-06 14:54 kesiev         Note Edited: 0009259                         
+04-13-06 15:34 kesiev         Issue Monitored: kesiev                      
+04-15-06 12:33 kesiev         Note Edited: 0009259                         
+04-15-06 12:33 kesiev         File Added: alsasound.conf                    
+04-18-06 09:35 fedukoff       Note Added: 0009326                          
+05-01-06 20:24 rawsock        Issue Monitored: rawsock                     
+05-03-06 15:55 fedukoff       Issue Monitored: fedukoff                    
+05-09-06 14:36 drseergio      Note Added: 0009658                          
+05-09-06 16:40 rlrevell       Note Added: 0009661                          
+05-09-06 17:16 drseergio      Note Added: 0009662                          
+05-09-06 17:19 drseergio      Note Edited: 0009662                         
+05-09-06 17:28 rlrevell       Note Added: 0009664                          
+05-09-06 17:31 drseergio      Note Edited: 0009662                         
+05-09-06 17:32 drseergio      Note Added: 0009665                          
+05-09-06 17:41 drseergio      Note Edited: 0009665                         
+05-09-06 17:49 rlrevell       Note Added: 0009667                          
+05-09-06 17:52 drseergio      Note Added: 0009668                          
+05-09-06 17:57 rlrevell       Note Added: 0009669                          
+05-09-06 18:00 drseergio      Note Added: 0009670                          
+05-09-06 18:33 fedukoff       Note Added: 0009672                          
 ======================================================================
 
 
