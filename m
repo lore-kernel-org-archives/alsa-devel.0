@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002109]: SPDIF output of Prodigy 7.1LT doesn't working
-Date: Tue, 9 May 2006 14:08:24 +0200
-Message-ID: <5c8faf8fcd22d2e1c7a69340540670da@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
+Date: Tue, 9 May 2006 14:09:15 +0200
+Message-ID: <035036545fa3f889b496c01feba369ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D72EC185
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 14:08:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8100185
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 14:09:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2109> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
 ======================================================================
-Reported By:                Rivian
+Reported By:                croiset
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2109
-Category:                   PCI - ice1724
+Issue ID:                   758
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian 3.1 Sarge
-Kernel Version:             2.6.8
+Distribution:               Redhat 7.2
+Kernel Version:             2.4.7
 ======================================================================
-Date Submitted:             05-09-2006 02:59 CEST
-Last Modified:              05-09-2006 14:08 CEST
+Date Submitted:             12-29-2004 10:15 CET
+Last Modified:              05-09-2006 14:09 CEST
 ======================================================================
-Summary:                    SPDIF output of Prodigy 7.1LT doesn't working
+Summary:                    Full duplex is not working in OSS emulation.
 Description: 
-Hi.
-I'm using Audiotrak Prodigy 7.1LT soundcard so i'm glad to support for it.
-I've upgraded the driver immediately, well, headphone output(jack number
-7) is working good. But SPDIF doesn't output any signal. I'm using DR.DAC
-multi amplifier also, connected to Prodigy's SPDIF output, but it
-receiving NO signal. Of course, it is working perfectly in Windows XP.
-I've tried several .asoundrc setting but nothing worked. Does anybody
-using SPDIF with Prodigy 7.1LT?
-
+If I play something with one player, I am unable to record something on the
+same device.
+The same thing ispossible with the other cards I have.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000521 Jack + Alsa not working in full duplex,...
 ======================================================================
 
 ----------------------------------------------------------------------
- Demosthenes - 05-09-06 12:57 
+ croiset - 01-02-06 09:12 
 ----------------------------------------------------------------------
-I have not tried using SPDIF with this card but I would encourage you to
-try the patch from this thread
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744 since this
-fixes a number of issues for me (such as getting sound out of the front
-channel).  You may be lucky and this patch will also fix SPDIF out.
+My last test was made with alsa 1.0.10rc1 and it was not working also. I
+didn't try yet with a newer release.
 
-Either way I think that the patch should be added to CVS, since it is a
-definate improvement.
+The same application is working well with all other sound cards I tested.
 
 ----------------------------------------------------------------------
- Rivian - 05-09-06 14:08 
+ croiset - 05-09-06 14:09 
 ----------------------------------------------------------------------
-Wow, it works! Thank you very much, Demosthenes. There's some problems in
-volume control, but anyway it works! :D
+I do the same test with alsa driver 1.0.11.
+
+I am able to record if I am not playing at the same time. If I am playing
+I obtain the open error at the same place as before.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-09-06 02:59 Rivian         New Issue                                    
-05-09-06 02:59 Rivian         Distribution              => Debian 3.1 Sarge
-05-09-06 02:59 Rivian         Kernel Version            => 2.6.8           
-05-09-06 12:57 Demosthenes    Note Added: 0009653                          
-05-09-06 12:57 Demosthenes    Issue Monitored: Demosthenes                    
-05-09-06 14:08 Rivian         Note Added: 0009656                          
+12-29-04 10:15 croiset        New Issue                                    
+12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
+12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
+12-29-04 14:17 tiwai          Note Added: 0002998                          
+12-29-04 14:54 croiset        Note Added: 0003000                          
+12-29-04 17:39 tiwai          Note Added: 0003004                          
+12-29-04 17:56 croiset        Note Added: 0003005                          
+12-29-04 17:59 croiset        Note Added: 0003006                          
+12-29-04 18:05 croiset        Note Edited: 0003006                         
+12-29-04 18:18 croiset        Note Edited: 0003006                         
+01-03-05 16:30 croiset        Note Added: 0003067                          
+09-14-05 16:16 jdthood        Relationship added       related to 0000521  
+12-30-05 23:08 rlrevell       Note Added: 0007278                          
+01-02-06 09:12 croiset        Note Added: 0007368                          
+05-09-06 14:09 croiset        Note Added: 0009657                          
 ======================================================================
 
 
