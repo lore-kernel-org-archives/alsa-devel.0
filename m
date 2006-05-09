@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Tue, 9 May 2006 18:00:18 +0200
-Message-ID: <e0fc098211528fafef42048dd5b36632@bugtrack.alsa-project.org>
+From: "Massimiliano Caulkins" <caulkins@y00.kobe-u.ac.jp>
+Subject: Re: the VALtUgM
+Date: Tue, 9 May 2006 09:10:26 -0700
+Message-ID: <000001c67383$158e38b0$6414a8c0@vhs76>
+Reply-To: "Massimiliano Caulkins" <caulkins@y00.kobe-u.ac.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C67348.692F60B0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9EBDD229
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 18:00:18 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27A3614E
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 18:10:27 +0200 (MEST)
+Received: from utravel.nl (85-18-14-4.fastres.net [85.18.14.4])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 1D18B99494
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 18:10:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,157 +25,126 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
-======================================================================
-Reported By:                liangalei
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
-======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-09-2006 18:00 CEST
-======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
-Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+------=_NextPart_000_0001_01C67348.692F60B0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0002_01C67348.692F60B0"
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
+------=_NextPart_001_0002_01C67348.692F60B0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
 
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
+web site <http://citliodone.com>=20
+=20
+=20
+=20
+=20
+trees he began to sing a song to infuriate them and bring them all after
+him,and also to let the dwarves hear his voice.
+This is what he sang:
+Old fat spider spinning in a tree!
+Old fat spider cant see me!
+Attercop! Attercop!
+Wont you stop,
+Stop your spinning and look for me!
+Old Tomnoddy, all big body,
+Old Tomnoddy cant spy me!
+Attercop! Attercop!
+Down you drop!
+Youll never catch me up your tree!
 
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
 
-thanks
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001931 Unknown AC97 codec, digital sound works
-======================================================================
+------=_NextPart_001_0002_01C67348.692F60B0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- rlrevell - 05-09-06 17:57 
-----------------------------------------------------------------------
-Sorry, I don't know what to tell you.  When you buy a laptop with the
-intent of running linux on it it's important to check with other users
-that the hardware is supported and the vendor not hostile to Linux.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><IMG src=3D"cid:000101c67383$158bf884$6414a8c0@vhs76"></DIV>
+<DIV><A href=3D"http://citliodone.com">web site</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>trees he began to sing a song to infuriate them and bring them all =
+after<BR>
+him,and also to let the dwarves hear his voice.<BR>
+   This is what he sang:<BR>
+   Old fat spider spinning in a tree!<BR>
+   Old fat spider cant see me!<BR>
+   Attercop! Attercop!<BR>
+   Wont you stop,<BR>
+   Stop your spinning and look for me!<BR>
+   Old Tomnoddy, all big body,<BR>
+   Old Tomnoddy cant spy me!<BR>
+   Attercop! Attercop!<BR>
+   Down you drop!<BR>
+   Youll never catch me up your tree!<BR></DIV></BODY></HTML>
+------=_NextPart_001_0002_01C67348.692F60B0--
 
-----------------------------------------------------------------------
- drseergio - 05-09-06 18:00 
-----------------------------------------------------------------------
-Yes, I agree. Probably dual-boot is the solution and I will wait until the
-development of the driver becomes reality. I would help but currently I do
-not have enough programming skills.
+------=_NextPart_000_0001_01C67348.692F60B0
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-ID: <000101c67383$158bf884$6414a8c0@vhs76>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
-03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
-   
-03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
-03-17-06 04:10 Kooper         Note Added: 0008633                          
-03-17-06 12:07 tiwai          Note Added: 0008641                          
-03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
-      
-03-17-06 12:35 Kooper         Note Added: 0008644                          
-03-21-06 02:38 JProgrammer    Note Added: 0008736                          
-03-25-06 10:51 alessiodf      Note Added: 0008944                          
-03-26-06 20:12 alessiodf      Note Edited: 0008944                         
-03-26-06 20:15 alessiodf      Note Edited: 0008944                         
-03-30-06 15:47 trava          Note Added: 0009034                          
-04-07-06 13:05 kesiev         Note Added: 0009137                          
-04-07-06 13:06 kesiev         Note Edited: 0009137                         
-04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
-04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
-04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
-04-12-06 16:21 kesiev         Note Added: 0009246                          
-04-12-06 16:21 kesiev         File Added: qta058Ba.inf                     
-04-13-06 14:00 kesiev         Note Added: 0009259                          
-04-13-06 14:00 kesiev         File Added: windows-details.txt                   
+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
+7X2k2Pd+JZFvWN08B/xU+Z53jvguAQA7
 
-04-13-06 14:54 kesiev         Note Edited: 0009259                         
-04-13-06 15:34 kesiev         Issue Monitored: kesiev                      
-04-15-06 12:33 kesiev         Note Edited: 0009259                         
-04-15-06 12:33 kesiev         File Added: alsasound.conf                    
-04-18-06 09:35 fedukoff       Note Added: 0009326                          
-05-01-06 20:24 rawsock        Issue Monitored: rawsock                     
-05-03-06 15:55 fedukoff       Issue Monitored: fedukoff                    
-05-09-06 14:36 drseergio      Note Added: 0009658                          
-05-09-06 16:40 rlrevell       Note Added: 0009661                          
-05-09-06 17:16 drseergio      Note Added: 0009662                          
-05-09-06 17:19 drseergio      Note Edited: 0009662                         
-05-09-06 17:28 rlrevell       Note Added: 0009664                          
-05-09-06 17:31 drseergio      Note Edited: 0009662                         
-05-09-06 17:32 drseergio      Note Added: 0009665                          
-05-09-06 17:41 drseergio      Note Edited: 0009665                         
-05-09-06 17:49 rlrevell       Note Added: 0009667                          
-05-09-06 17:52 drseergio      Note Added: 0009668                          
-05-09-06 17:57 rlrevell       Note Added: 0009669                          
-05-09-06 18:00 drseergio      Note Added: 0009670                          
-======================================================================
+------=_NextPart_000_0001_01C67348.692F60B0--
+
 
 
 
