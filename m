@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002110]: idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
-Date: Tue, 9 May 2006 22:28:48 +0200
-Message-ID: <a6f91ac591dadce9a605ed122ab267b6@bugtrack.alsa-project.org>
+Date: Tue, 9 May 2006 22:37:08 +0200
+Message-ID: <2b31ff745c5c4ee4d041a0bb385e0166@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD5A524B
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 22:28:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B68024F
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 22:37:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-09-2006 21:48 CEST
-Last Modified:              05-09-2006 22:28 CEST
+Last Modified:              05-09-2006 22:37 CEST
 ======================================================================
 Summary:                    idAudioHardwareALSA::Write: 4096 frames overflowed
 and dropped
@@ -75,16 +75,17 @@ so whats wrong using alsa directly instead of the oss emu
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-09-06 22:22 
-----------------------------------------------------------------------
-Sounds like those apps' ALSA support is buggy.  Nothing we can do about it,
-unless you can reproduce the problem with an open source app.
-
-----------------------------------------------------------------------
  kratz00 - 05-09-06 22:28 
 ----------------------------------------------------------------------
 i just wonder why it works with oss emulation and on my other computer with
 a emu10k1 chip
+
+----------------------------------------------------------------------
+ rlrevell - 05-09-06 22:37 
+----------------------------------------------------------------------
+Maybe they didn't test their code on a wide range of hardware?  It's hard
+to say.  Unless you can reproduce it with an open source app it's
+impossible to debug.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -93,6 +94,7 @@ Date Modified  Username       Field                    Change
 05-09-06 21:48 kratz00        File Added: codec#0                          
 05-09-06 22:22 rlrevell       Note Added: 0009692                          
 05-09-06 22:28 kratz00        Note Added: 0009693                          
+05-09-06 22:37 rlrevell       Note Added: 0009694                          
 ======================================================================
 
 
