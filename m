@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Tue, 9 May 2006 17:49:50 +0200
-Message-ID: <7ffa8b2ee89209748fc608d464c73f6c@bugtrack.alsa-project.org>
+Date: Tue, 9 May 2006 17:52:13 +0200
+Message-ID: <3868fd0405fffec9832316e81eebeeab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E882621B
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 17:49:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A634221D
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 17:52:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-09-2006 17:49 CEST
+Last Modified:              05-09-2006 17:52 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -73,20 +73,17 @@ has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- drseergio - 05-09-06 17:41 
-----------------------------------------------------------------------
-Conexant does not provide information too? You mean reverse engineer the
-windows drivers? The chip is conexant for sure as it is obvious from
-windows inf file. Toshiba P100 uses this chip as well maybe it is possible
-to contact them? At least I will try.
-
-
-
-----------------------------------------------------------------------
  rlrevell - 05-09-06 17:49 
 ----------------------------------------------------------------------
 Yes exactly, if Benq won't provide the hardware information needed to get
 it working someone must reverse engineer the Windows drivers.
+
+----------------------------------------------------------------------
+ drseergio - 05-09-06 17:52 
+----------------------------------------------------------------------
+But probably no one will do this because it seems that this problem only
+occurs on this notebook and there aren't so many benq s53 linux users ;/.
+This is really disappointing as I wanted to use this machine on gentoo.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -170,6 +167,7 @@ Date Modified  Username       Field                    Change
 05-09-06 17:32 drseergio      Note Added: 0009665                          
 05-09-06 17:41 drseergio      Note Edited: 0009665                         
 05-09-06 17:49 rlrevell       Note Added: 0009667                          
+05-09-06 17:52 drseergio      Note Added: 0009668                          
 ======================================================================
 
 
