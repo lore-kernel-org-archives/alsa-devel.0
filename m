@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Tue, 9 May 2006 17:29:00 +0200
-Message-ID: <927b63dad20d167707d68fc31ebe350c@bugtrack.alsa-project.org>
+Date: Tue, 9 May 2006 17:32:51 +0200
+Message-ID: <9174f5eee9d95ade2ead7ed51b55e2ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A77A521C
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 17:29:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C75721E
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 17:32:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-09-2006 17:28 CEST
+Last Modified:              05-09-2006 17:32 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -73,15 +73,6 @@ has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- drseergio - 05-09-06 17:19 
-----------------------------------------------------------------------
-Benq will never reply :(, I know them. Their support is awful... Btw, audio
-chips are not made by Benq, they are generic from other manufacturers. Or
-not?
-
-
-
-----------------------------------------------------------------------
  rlrevell - 05-09-06 17:28 
 ----------------------------------------------------------------------
 Yeah but the vendors modify them.  snd-hda-intel is a real pain - it's so
@@ -89,6 +80,12 @@ flexible that we get lots of bugs that only affect a specific laptop.
 
 If there's no chance of Benq helping someone will have to reverse engineer
 it
+
+----------------------------------------------------------------------
+ drseergio - 05-09-06 17:32 
+----------------------------------------------------------------------
+Conexant does not provide information too? You mean reverse engineer the
+windows drivers?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -168,6 +165,8 @@ Date Modified  Username       Field                    Change
 05-09-06 17:16 drseergio      Note Added: 0009662                          
 05-09-06 17:19 drseergio      Note Edited: 0009662                         
 05-09-06 17:28 rlrevell       Note Added: 0009664                          
+05-09-06 17:31 drseergio      Note Edited: 0009662                         
+05-09-06 17:32 drseergio      Note Added: 0009665                          
 ======================================================================
 
 
