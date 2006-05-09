@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Tue, 9 May 2006 19:11:35 +0200
-Message-ID: <d61cb5956137122bf673735d4b691cd0@bugtrack.alsa-project.org>
+Date: Tue, 9 May 2006 19:12:20 +0200
+Message-ID: <a314d7ca8a7d7613de733dd0625d390d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BF6E715A
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 19:11:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2EB9222
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 19:12:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-09-2006 19:11 CEST
+Last Modified:              05-09-2006 19:12 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -73,14 +73,6 @@ has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- drseergio - 05-09-06 18:44 
-----------------------------------------------------------------------
-Mine came with linpus too, strange, isn't it? Ships with linux but not
-supported. Btw, found this
-http://www.ubuntuforums.org/showthread.php?t=120070 . Can it be related to
-our S52/S53 as well? Or that guy has some other codec?
-
-----------------------------------------------------------------------
  fedukoff - 05-09-06 19:11 
 ----------------------------------------------------------------------
 Have you Linpus Linux installed on your laptop? 
@@ -88,6 +80,14 @@ Look at http://www.linpus.com/PDF/HW_compalibility_list_LL92.pdf and
 http://www.linpus.com/PDF/HW_compalibility_list_LL93.pdf
 It is very interesting. Linpus 9.3 has row "INTEL 82801FB/FBM/FR/FW/FRW
 (ICH6 Fam ily) AC'97 Audio Co" in their compatibility list, but 9.2 not.
+
+----------------------------------------------------------------------
+ rlrevell - 05-09-06 19:12 
+----------------------------------------------------------------------
+Yes it's probably related - it seems that sound does not work on any Benq
+notebook.
+
+You could try the OSS i810_audio module
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -177,6 +177,7 @@ Date Modified  Username       Field                    Change
 05-09-06 18:33 fedukoff       Note Added: 0009672                          
 05-09-06 18:44 drseergio      Note Added: 0009673                          
 05-09-06 19:11 fedukoff       Note Added: 0009674                          
+05-09-06 19:12 rlrevell       Note Added: 0009675                          
 ======================================================================
 
 
