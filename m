@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Tue, 9 May 2006 20:29:27 +0200
-Message-ID: <2b12dc0944c81a8e72da24b928bbca2e@bugtrack.alsa-project.org>
+Date: Tue, 9 May 2006 20:34:03 +0200
+Message-ID: <3dc93b2138cf66dc85b584083454d4ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10445246
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 20:29:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B4E3247
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 20:34:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-09-2006 20:29 CEST
+Last Modified:              05-09-2006 20:34 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -73,11 +73,6 @@ has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- drseergio - 05-09-06 20:28 
-----------------------------------------------------------------------
-So, does the OSS work?
-
-----------------------------------------------------------------------
  fedukoff - 05-09-06 20:29 
 ----------------------------------------------------------------------
 I have some problems with it... (I'm on Linpus)
@@ -95,6 +90,14 @@ i810_audio failed
 
 no any messages in /var/log/messages, but dmesg show one new line: 
 Intel 810 + AC97 Audio, version 0.24, 17:47:13 Apr 21 2004
+
+----------------------------------------------------------------------
+ rlrevell - 05-09-06 20:34 
+----------------------------------------------------------------------
+I think that's a "no" - it seems that the OSS driver does not support the
+device.
+
+You did make sure to unload all snd-* modules first right?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -197,6 +200,7 @@ Date Modified  Username       Field                    Change
 05-09-06 20:19 rlrevell       Note Added: 0009685                          
 05-09-06 20:28 drseergio      Note Added: 0009686                          
 05-09-06 20:29 fedukoff       Note Added: 0009687                          
+05-09-06 20:34 rlrevell       Note Added: 0009688                          
 ======================================================================
 
 
