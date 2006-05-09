@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Tue, 9 May 2006 20:16:24 +0200
-Message-ID: <b1000e8abf7a6cee52097b3a530aff05@bugtrack.alsa-project.org>
+Date: Tue, 9 May 2006 20:17:14 +0200
+Message-ID: <95f05dbc91b8c828f0a8a54a8578ca75@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 585B923C
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 20:16:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 51F8C23D
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 20:17:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-09-2006 20:16 CEST
+Last Modified:              05-09-2006 20:17 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -73,16 +73,18 @@ has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- drseergio - 05-09-06 19:50 
-----------------------------------------------------------------------
-i810 audio is the driver for the same chip?
-http://www.ubuntuforums.org/showthread.php?t=111870 found this... Looks
-like people have many problems with HDA codec.
-
-----------------------------------------------------------------------
  fedukoff - 05-09-06 20:16 
 ----------------------------------------------------------------------
 hmm. how to configure oss? (I want to try)
+
+----------------------------------------------------------------------
+ rlrevell - 05-09-06 20:17 
+----------------------------------------------------------------------
+Sorry my previous post was incorrect - these systems do not have HDA codec,
+they use the older AC97 codec.
+
+And yes, snd_intel8x0 and i810_audio are drivers for the same chip.  It's
+a long shot that i810_audio would work
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -181,6 +183,7 @@ Date Modified  Username       Field                    Change
 05-09-06 19:42 rlrevell       Note Added: 0009681                          
 05-09-06 19:50 drseergio      Note Added: 0009682                          
 05-09-06 20:16 fedukoff       Note Added: 0009683                          
+05-09-06 20:17 rlrevell       Note Added: 0009684                          
 ======================================================================
 
 
