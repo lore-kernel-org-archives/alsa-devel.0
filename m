@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Tue, 9 May 2006 20:34:03 +0200
-Message-ID: <3dc93b2138cf66dc85b584083454d4ea@bugtrack.alsa-project.org>
+From: Saqib bin Sohail <Saqib.Sohail@colorado.edu>
+Subject: CS4281 AC 97 format
+Date: Tue, 09 May 2006 12:34:47 -0600
+Message-ID: <1147199687.4460e0c7aa733@webmail.colorado.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B4E3247
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 20:34:03 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,196 +15,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
-======================================================================
-Reported By:                liangalei
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
-======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-09-2006 20:34 CEST
-======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
-Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+I am trying to implement cs4281.c driver in VxWorks, and seem to have it
+working reasonably, but I can't understand the format of ADC_BUFFER. (Har=
+dware
+is not my thing and have never played with a sound card before the past o=
+ne
+month)
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
+I recorded almost 10 seconds of data (128000 samples at 11025 samples per
+second with 8 bit mono) and dumped into a file. (see attached file) the f=
+ile
+was obviously in hex format and i converted it. Now if I pass that hex fi=
+le to
+playback, it sort of plays back nicely, but the problem is I am not sure =
+how to
+interpret the data. I am taking the file and doing the following:
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
+-> i convert the hex into decimal and the data ranges from -128 to 127
+-> i load that into matlab y =3D ('c:\song.dat');
+-> i divide each sample by 255 so the data ranges from -1 to 1 (approxima=
+tely)
+-> i use wavwrite(y,11025,8,'c:\song.wav');
 
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+I can sort of recognize the song but its so distorted. I am pretty sure t=
+hat I
+am getting the right data out of the ADC_Buffer when I record but I am un=
+able
+to understand how to right interpret the data. It would be great if someo=
+ne
+could reply.
 
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
+Both hex and int files are available below.
 
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001931 Unknown AC97 codec, digital sound works
-======================================================================
-
-----------------------------------------------------------------------
- fedukoff - 05-09-06 20:29 
-----------------------------------------------------------------------
-I have some problems with it... (I'm on Linpus)
-
-# modprobe i810_audio
-/lib/modules/2.4.20-8lp/kernel/drivers/sound/i810_audio.o: init_module: No
-such device
-Hint: insmod errors can be caused by incorrect module parameters,
-including invalid IO or IRQ parameters.
-      You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.20-8lp/kernel/drivers/sound/i810_audio.o: insmod
-/lib/modules/2.4.20-8lp/kernel/drivers/sound/i810_audio.o failed
-/lib/modules/2.4.20-8lp/kernel/drivers/sound/i810_audio.o: insmod
-i810_audio failed
-
-no any messages in /var/log/messages, but dmesg show one new line: 
-Intel 810 + AC97 Audio, version 0.24, 17:47:13 Apr 21 2004
-
-----------------------------------------------------------------------
- rlrevell - 05-09-06 20:34 
-----------------------------------------------------------------------
-I think that's a "no" - it seems that the OSS driver does not support the
-device.
-
-You did make sure to unload all snd-* modules first right?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
-03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
-   
-03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
-03-17-06 04:10 Kooper         Note Added: 0008633                          
-03-17-06 12:07 tiwai          Note Added: 0008641                          
-03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
-      
-03-17-06 12:35 Kooper         Note Added: 0008644                          
-03-21-06 02:38 JProgrammer    Note Added: 0008736                          
-03-25-06 10:51 alessiodf      Note Added: 0008944                          
-03-26-06 20:12 alessiodf      Note Edited: 0008944                         
-03-26-06 20:15 alessiodf      Note Edited: 0008944                         
-03-30-06 15:47 trava          Note Added: 0009034                          
-04-07-06 13:05 kesiev         Note Added: 0009137                          
-04-07-06 13:06 kesiev         Note Edited: 0009137                         
-04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
-04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
-04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
-04-12-06 16:21 kesiev         Note Added: 0009246                          
-04-12-06 16:21 kesiev         File Added: qta058Ba.inf                     
-04-13-06 14:00 kesiev         Note Added: 0009259                          
-04-13-06 14:00 kesiev         File Added: windows-details.txt                   
-
-04-13-06 14:54 kesiev         Note Edited: 0009259                         
-04-13-06 15:34 kesiev         Issue Monitored: kesiev                      
-04-15-06 12:33 kesiev         Note Edited: 0009259                         
-04-15-06 12:33 kesiev         File Added: alsasound.conf                    
-04-18-06 09:35 fedukoff       Note Added: 0009326                          
-05-01-06 20:24 rawsock        Issue Monitored: rawsock                     
-05-03-06 15:55 fedukoff       Issue Monitored: fedukoff                    
-05-09-06 14:36 drseergio      Note Added: 0009658                          
-05-09-06 16:40 rlrevell       Note Added: 0009661                          
-05-09-06 17:16 drseergio      Note Added: 0009662                          
-05-09-06 17:19 drseergio      Note Edited: 0009662                         
-05-09-06 17:28 rlrevell       Note Added: 0009664                          
-05-09-06 17:31 drseergio      Note Edited: 0009662                         
-05-09-06 17:32 drseergio      Note Added: 0009665                          
-05-09-06 17:41 drseergio      Note Edited: 0009665                         
-05-09-06 17:49 rlrevell       Note Added: 0009667                          
-05-09-06 17:52 drseergio      Note Added: 0009668                          
-05-09-06 17:57 rlrevell       Note Added: 0009669                          
-05-09-06 18:00 drseergio      Note Added: 0009670                          
-05-09-06 18:33 fedukoff       Note Added: 0009672                          
-05-09-06 18:44 drseergio      Note Added: 0009673                          
-05-09-06 19:11 fedukoff       Note Added: 0009674                          
-05-09-06 19:12 rlrevell       Note Added: 0009675                          
-05-09-06 19:21 drseergio      Note Added: 0009676                          
-05-09-06 19:27 fedukoff       Note Added: 0009677                          
-05-09-06 19:28 rlrevell       Note Added: 0009678                          
-05-09-06 19:30 drseergio      Note Added: 0009679                          
-05-09-06 19:39 fedukoff       Note Added: 0009680                          
-05-09-06 19:42 rlrevell       Note Added: 0009681                          
-05-09-06 19:50 drseergio      Note Added: 0009682                          
-05-09-06 20:16 fedukoff       Note Added: 0009683                          
-05-09-06 20:17 rlrevell       Note Added: 0009684                          
-05-09-06 20:19 rlrevell       Note Added: 0009685                          
-05-09-06 20:28 drseergio      Note Added: 0009686                          
-05-09-06 20:29 fedukoff       Note Added: 0009687                          
-05-09-06 20:34 rlrevell       Note Added: 0009688                          
-======================================================================
+http://jobim.colorado.edu/~sohail/song.dat
+http://jobim.colorado.edu/~sohail/song.text
 
 
+
+--
+Saqib bin Sohail
+PhD ECE
+University of Colorado at Boulder
+Res: (303) 786 0636
+http://ucsu.colorado.edu/~sohail/index.html
 
 
 -------------------------------------------------------
 Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+Get stuff done quickly with pre-integrated technology to make your job ea=
+sier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronim=
+o
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D120709&bid=3D263057&dat=3D=
+121642
