@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002110]: idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
-Date: Tue, 9 May 2006 22:22:02 +0200
-Message-ID: <fbf4035375be6029765f700c33db470a@bugtrack.alsa-project.org>
+Date: Tue, 9 May 2006 22:28:48 +0200
+Message-ID: <a6f91ac591dadce9a605ed122ab267b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3676024B
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 22:22:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD5A524B
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 22:28:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-09-2006 21:48 CEST
-Last Modified:              05-09-2006 22:22 CEST
+Last Modified:              05-09-2006 22:28 CEST
 ======================================================================
 Summary:                    idAudioHardwareALSA::Write: 4096 frames overflowed
 and dropped
@@ -80,12 +80,19 @@ so whats wrong using alsa directly instead of the oss emu
 Sounds like those apps' ALSA support is buggy.  Nothing we can do about it,
 unless you can reproduce the problem with an open source app.
 
+----------------------------------------------------------------------
+ kratz00 - 05-09-06 22:28 
+----------------------------------------------------------------------
+i just wonder why it works with oss emulation and on my other computer with
+a emu10k1 chip
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-09-06 21:48 kratz00        New Issue                                    
 05-09-06 21:48 kratz00        File Added: codec#0                          
 05-09-06 22:22 rlrevell       Note Added: 0009692                          
+05-09-06 22:28 kratz00        Note Added: 0009693                          
 ======================================================================
 
 
