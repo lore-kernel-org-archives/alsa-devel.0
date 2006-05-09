@@ -1,18 +1,14 @@
-From: "Garth Schuler" <schuleru@happyjackinc.com>
-Subject: Re: the AMBjtEN
-Date: Tue, 9 May 2006 14:41:50 -0700
-Message-ID: <000001c673b1$61283b30$cfd2a8c0@dxr49>
-Reply-To: "Garth Schuler" <schuleru@happyjackinc.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002104]: No sound on Acer Travelmate 3012WTMI
+Date: Tue, 9 May 2006 23:48:00 +0200
+Message-ID: <5ff94242e5f95318910e62d247c64836@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C67376.B4CBD430"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9A1F252
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 23:41:44 +0200 (MEST)
-Received: from ahafilm.org (unknown [213.174.165.135])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id B1B859947A
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 23:41:43 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AB03252
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 23:48:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,135 +21,149 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C67376.B4CBD430
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0002_01C67376.B4CBD430"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2104> 
+======================================================================
+Reported By:                mcosta
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2104
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             05-08-2006 16:08 CEST
+Last Modified:              05-09-2006 23:47 CEST
+======================================================================
+Summary:                    No sound on Acer Travelmate 3012WTMI
+Description: 
+Hello, I have a TM3012WTMI laptop and I can not hear any sound. I am
+running 2.6.1.6-11-smp kernel. I have compiled serveral versions of alsa
+drivers and I am in the same situation: no sound at all.
+
+I attach some information:
+lspci
+00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub (rev
+03)
+00:02.0 VGA compatible controller: Intel Corporation Mobile Integrated
+Graphics Controller (rev 03)
+00:02.1 Display controller: Intel Corporation Mobile Integrated Graphics
+Controller (rev 03)
+00:1b.0 Class 0403: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 02)
+00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 1 (rev 02)
+00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 2 (rev 02)
+00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 3 (rev 02)
+00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 4 (rev 02)
+00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #1
+(rev 02)
+00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #2
+(rev 02)
+00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #3
+(rev 02)
+00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #4
+(rev 02)
+00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI
+Controller (rev 02)
+00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev e2)
+00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
+Bridge (rev 02)
+00:1f.2 IDE interface: Intel Corporation 82801GBM/GHM (ICH7 Family) Serial
+ATA Storage Controllers cc=IDE (rev 02)
+00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus Controller
+(rev 02)
+02:00.0 Network controller: Intel Corporation: Unknown device 4222 (rev
+02)
+03:00.0 Ethernet controller: Broadcom Corporation NetLink BCM5789 Gigabit
+Ethernet PCI Express (rev 11)
+0a:09.0 CardBus bridge: Texas Instruments: Unknown device 8039
+0a:09.1 FireWire (IEEE 1394): Texas Instruments: Unknown device 803a
+0a:09.2 Unknown mass storage controller: Texas Instruments: Unknown device
+803b
+
+hwinfo --sound:
+13: PCI 1b.0: 0403 Multimedia controller
+  [Created at pci.277]
+  UDI: /org/freedesktop/Hal/devices/pci_8086_27d8
+  Unique ID: u1Nb.NLLhYZ867B4
+  SysFS ID: /devices/pci0000:00/0000:00:1b.0
+  SysFS BusID: 0000:00:1b.0
+  Hardware Class: sound
+  Model: "Acer Incorporated [ALI] 82801G (ICH7 Family) High Definition
+Audio Controller"
+  Vendor: pci 0x8086 "Intel Corporation"
+  Device: pci 0x27d8 "82801G (ICH7 Family) High Definition Audio
+Controller"
+  SubVendor: pci 0x1025 "Acer Incorporated [ALI]"
+  SubDevice: pci 0x0098
+  Revision: 0x02
+  Driver: "HDA Intel"
+  Memory Range: 0xb0000000-0xb0003fff (rw,non-prefetchable)
+  IRQ: 66 (138 events)
+  Module Alias: "pci:v00008086d000027D8sv00001025sd00000098bc04sc03i00"
+  Driver Info #0:
+    Driver Status: snd_hda_intel is active
+    Driver Activation Cmd: "modprobe snd_hda_intel"
+  Config Status: cfg=no, avail=yes, need=no, active=unknown
+
+When the driver is loaded I get on /var/log/messages:
+
+ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 66
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2115: autoconfig:
+line_outs=0 (0x0/0x0/0x0/0x0/0x0)
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2119:    speaker_outs=0
+(0x0/0x0/0x0/0x0/0x0)
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2121:    hp=0x14,
+dig_out=0x1e, din_in=0x0
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2129:    inputs:
+mic=0x1a, fmic=0x0, line=0x0, fline=0x0, cd=0x0, aux=0x0
+
+Best regards.
 
 
-------=_NextPart_001_0002_01C67376.B4CBD430
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+
+======================================================================
+
+----------------------------------------------------------------------
+ useidel - 05-09-06 23:29 
+----------------------------------------------------------------------
+I own the same notebook. Battery status was always working, but I replaced
+the original DSDT (actually the link provided by lrupn refers to "my"
+repaired DSDT) to get the ACPI S4 working.
+Unfortunately, the DSDT replacement does not help regarding this sound
+issue. There is no sound even with the new DSDT. :-(
 
 
-web site <http://stulasetom.com>=20
-=20
-=20
-=20
-=20
-If they have a fault it is distrust of strangers. Though their magic was
-strong, even in those days they were wary. They differed from the High
-Elves of the West, and were more dangerous and less wise. For most of
-them (together with their scattered relations in the hills and
-mountains) were descended from the ancient tribes that never went to
-Faerie in the West. There the Light-elves and the Deep-elves and the
-Sea-elves went and lived for ages, and grew fairer and wiser and more
-learned, and invented their magic and their cunning craft, in the making
-of beautiful and marvellous things, before some came back into the Wide
-World. In the Wide World the Wood-elves lingered in the twilight of our
-Sun and Moon but loved best the stars; and they wandered in the great
-forests that grew tall in lands that are now lost. They dwelt most often
-by the edges of the woods, from which they could escape at times to
 
+----------------------------------------------------------------------
+ rlrevell - 05-09-06 23:47 
+----------------------------------------------------------------------
+Try the various model=* options to "modprobe snd-hda-intel" as described in
+ALSA-Configuration.txt
 
-------=_NextPart_001_0002_01C67376.B4CBD430
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><IMG src=3D"cid:000101c673b1$612849d6$cfd2a8c0@dxr49"></DIV>
-<DIV><A href=3D"http://stulasetom.com">web site</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>If they have a fault it is distrust of strangers. Though their =
-magic was<BR>
-strong, even in those days they were wary. They differed from the =
-High<BR>
-Elves of the West, and were more dangerous and less wise. For most =
-of<BR>
-them (together with their scattered relations in the hills and<BR>
-mountains) were descended from the ancient tribes that never went to<BR>
-Faerie in the West. There the Light-elves and the Deep-elves and the<BR>
-Sea-elves went and lived for ages, and grew fairer and wiser and =
-more<BR>
-learned, and invented their magic and their cunning craft, in the =
-making<BR>
-of beautiful and marvellous things, before some came back into the =
-Wide<BR>
-World. In the Wide World the Wood-elves lingered in the twilight of =
-our<BR>
-Sun and Moon but loved best the stars; and they wandered in the =
-great<BR>
-forests that grew tall in lands that are now lost. They dwelt most =
-often<BR>
-by the edges of the woods, from which they could escape at times =
-to<BR></DIV></BODY></HTML>
-------=_NextPart_001_0002_01C67376.B4CBD430--
-
-------=_NextPart_000_0001_01C67376.B4CBD430
-Content-Type: image/gif
-Content-Transfer-Encoding: base64
-Content-ID: <000101c673b1$612849d6$cfd2a8c0@dxr49>
-
-R0lGODdhywDMAMIAAAAAAAAAAP///wAA//8AAK3idQAAAAAAACwAAAAAywDMAAAD/ii63P6wlUjh
-VPNWvKXtjgaOnViZZKquIeu+XITCdG3f24zvPKX3rB9JeAIuiMakEohs7ZogEXRJ5U1zVaazEug2
-uoGsWJbSXAXnsQN89H6OabXv6NLF5dywwo1f3rF9NyYFbGw1d384iXOBK2B8e48MXpKTlZACmFWL
-jXKGkY98oYajbqJ6nTacqRCfmaivC6SmsKITmkFluqxFQK6Wp5Zrn6G5iiVbL6tKlLWhGpCnxbK4
-NMu8mxSFtLTUwq/d1LB0T9jmHcTN37He7JEX0+fH8iOYlNDB3oSo6e705quu/CoVYF+7W3oIvovE
-YNm1hvOsGfkFStKsdRYrtYvx/g9Nx4/ZyCV56BHGBZIPhKB8A7KkvJUtk3WCGUWmsogxeyCSQzMg
-TkC8aKbcgOlONT8qhK6wM+Tml4Is0SUsoJTMSGQ5IxwF+rRR1awutrIQu9SpB7CMcBx9BE9P21jT
-1FUcJ0hVya9NfdGdK9dbs1ldbu3TyFXJyUNmxeDq5y5ctHwM0do01mnxuL6OnbWiKLnmz6iT/Ykb
-1Tih6XV89+KZQTVx0DwPCJ62Fbk2uNOdjVQd1HUNa7j8cGPQvDErXqwQOZbZmy44cS9vD3IWk+jP
-tQxq2XIj7Gq7bYVXtSDX2WMUodGXoW4siLvtX6S5y/U6Poa+RPIyd8uPH76u/u7P/GFDn32sLEIg
-QJus1FpLZngV4GqdkVbHffwdWJ55obm2y4MAvsBeG2RxKOA5moQoYn+GiUSDWIMFd1tFT/1CoIUb
-muRhNaWkdtt2gyXn0kxpMZhIPOCIU+SLRz52ImUxxZWeP0rGqBqToFk14Qg0IoPCNl1FWVuOMfnU
-h1Fu4SMaVF6yU8l51oi5ZA0U9cVQmuHYpiEVWY7RHSE9ggLlc25N16GKb1Y5FHoa5WhQcabwSdhZ
-/jXF20vjqRDYQOy5yKhzYRgCRZ70uEnhg0wV+s8Ukxb2H4fYeZbFGRaiBCqQyexkapC43tqLrj9S
-mYKgPqImLK/BEuogUSbG/qZaYGqkmtSJZxBJQrKHqkodscqKVo96kaL1G1jbuHhJP4k6Qy6wrlY7
-KIQwQJajhOBJM66ExbJ7qwjusjmvn35y0w5gz44YZrZG/inMon4JNydx2PqKJQiyfQdol6a9iwrC
-AZt6XMQG/wuLQdsVk6Zy4tUK6Z31ofYWnQoDZyc1ZvaaIQazBtKaFLAN03FkzanpRo8jZyyziA9F
-pyzLqQkHJrfaIgifFTkfzbDP4MQ816ZMHJaKffqd3BCqDeNZabdQIya0BLLmylPNYdvVtqEPU/pm
-dcZaW2DcbV8zZbrGkbgmOz9AlteOUmoD3j591j02VmxLWS4Rglv5RYv8/rSoVbz0Nnil5B0xi0bi
-Jew97aVFAqzuHkaX1TB0wGwbpBCm9PbyDP7azPnicC4mMWOlAeteJoaL/qXwH+ElVsie5wNe8MtO
-d9i51JLcbBVHISTx8Ncj++Fd0hKc9NN2KXU8XeP+y6alnsYYdeLoku21w0PDLrq8bCBM/69H6nw5
-S9GL7b5UzAmDvi5SmsKdbg8vS6AskNA/FL3Kex5D3TdoM4z5JWRhk5MepmQnPclwojuZKZjypnY0
-4IWrYBBcCL/eBjEwsK9iTloPvYYGph0hrYKPwhuFRLWiRyXvhILr3mYwtUF94HBKjSsZWojXmU+9
-xnaTMBDuBueta9Vr/mbnuM4TWXilJGLBIfYaExd/pR0maux9ApvI8s62rgPabYxnauD0hlYo7HCC
-geRj2gPh6DedYaZc9OpeDsP4vzm6jmIutGGgSLO8Fp3vdiiDGxVb4jk0nNBPCMljpxhmOgRpTnVN
-wpywHlOiTzxyilucJCuWNzJ5AaNcapMkH3u4v+L4LD116h8RcBYDsIESlWy8US3tdB5TZs8dn+Il
-IW30RpOYYC3mQpT3KtlJBoUKjVIZpo4itsZL/QwFXlymGrU5HMBICGikNCMdVzXL/fAtnDqko62w
-yBO5tXNrc7unPfVJJZh80o2/LNkPfIkfK4FxnbtSTDDFKUZyvtKK/kO0B0WeGaf2IbSe2bmcHHng
-TfrtbYYz3GPcwMk3DtqyEYUoXe18UzF+yYiFlonkWC6IGhxN7KSpTCj6cPmnSsKoG/fTHvA0CsAQ
-TLSDS0od1RTJqXn9RYg4jKj2NKlOxUWKoI5wC88UttJOBi2iVLUgETdayBpltZwnLd8Em0etQeYv
-eCXUCTy9dz6PtqxOOqpH1VLoUAXuc3MlcRcMt9qbdPo1NpGhaAs3c4K5ZjRKkH2SPx65FesNVU7I
-tCVmK1vWWF6oYz/zKl6lwRt8dEqlzklOz3qmzyKycmnmgqrj7Lqgugayo83M7RDolgfJvqg5m7RT
-RognreLGFpdk/pUprX6ZXK0A84qeLd6BSEko3kISoPF020V1S70aKrdhsPKbWxcqRpVUKEXU+y5g
-sTuqdk1pK3ilAlu2JFablq0ENIKm4QSjmJDGQgfexWlJG7qgxeqvrxcdEiXyR7ohohBJoXEs+vhq
-0g0JhKavVA3iMDJeMgjlK6Bj8Aux5zHLQRiueWzaMDFrLQkbrrAuJGAQ3TNci2qkwCpmbIXnFjjJ
-RpbEWx1s/uTHGRNh7CBIzeINIgej/wbxNKlra0XTYl+MqtIGT47hf0FbC3wJMMkILGLUDsxelM1I
-sOEYINZ2luNe3VV48K3qdpcYXLRGsIB3PmYt3zzmbPkTfGGp/rMEXaq02t0QxW/N8ZEpzN025g65
-arWrAA9NxwDHMWkpBnRIQlfKYsrFsN2IMhOFKFFMk7mJhkzLLq87VOjy0cVW5cotnivL7LJzwPl0
-2hid2N40LvfW/CyzA119TSUHG9f3Iu/XYr2FnrDq2NAGJtvCC2Z6VlvY6jXbnG0dXVlD9NpXxiax
-c8LrbSM72mGzY0Fzbexg/5kkV+DaesF93+IxU9Pozje9ldg4Z4e71jrdtzt7rUR8D/y87dVaPKuD
-YxfDGuDrphn8/toRxz5c37iWorhZcvG7jdt/GCfaxOfQ8ZzWG4ob1zW5PZ6ygge0s8qOeKNDXi8k
-kJTmJn81cs5p7cGPs1xXHVd4sbktUp3rs+QvB0uW5jnsh8n7dN+Co3WGvk5nGV3bO6e4zxvKbE9m
-XeQC97XSUz2wTYs9Pv/Urr27DfKUE3zkxwr4z+UeAhB/ve2/tnK004BVLiLdrOgG1d9lHnbAH9zR
-WDd73EmQAAA7
-
-------=_NextPart_000_0001_01C67376.B4CBD430--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-08-06 16:08 mcosta         New Issue                                    
+05-09-06 17:35 lrupn          Note Added: 0009666                          
+05-09-06 23:28 useidel        Note Added: 0009695                          
+05-09-06 23:29 useidel        Note Edited: 0009695                         
+05-09-06 23:47 rlrevell       Note Added: 0009696                          
+======================================================================
 
 
 
