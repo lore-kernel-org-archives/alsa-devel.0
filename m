@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Tue, 9 May 2006 19:30:10 +0200
-Message-ID: <6eb3083043b99e71f1c75f44e48577e3@bugtrack.alsa-project.org>
+Date: Tue, 9 May 2006 19:39:27 +0200
+Message-ID: <211e35155dfa20968a0b83407d231b34@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 441B3232
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 19:30:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 327BE22D
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 19:39:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-09-2006 19:30 CEST
+Last Modified:              05-09-2006 19:39 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -73,15 +73,15 @@ has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-09-06 19:28 
-----------------------------------------------------------------------
-If it does not work with the latest ALSA release then changing distros is
-not going to help
-
-----------------------------------------------------------------------
  drseergio - 05-09-06 19:30 
 ----------------------------------------------------------------------
 rlrevell, do you think this distro may be using OSS?
+
+----------------------------------------------------------------------
+ fedukoff - 05-09-06 19:39 
+----------------------------------------------------------------------
+I now have installed Linpus 9.2
+I hear system beeps. I need to play a little to try listen the music.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -176,6 +176,7 @@ Date Modified  Username       Field                    Change
 05-09-06 19:27 fedukoff       Note Added: 0009677                          
 05-09-06 19:28 rlrevell       Note Added: 0009678                          
 05-09-06 19:30 drseergio      Note Added: 0009679                          
+05-09-06 19:39 fedukoff       Note Added: 0009680                          
 ======================================================================
 
 
