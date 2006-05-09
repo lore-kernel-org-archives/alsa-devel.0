@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002104]: No sound on Acer Travelmate 3012WTMI
-Date: Tue, 9 May 2006 23:48:00 +0200
-Message-ID: <5ff94242e5f95318910e62d247c64836@bugtrack.alsa-project.org>
+Date: Tue, 9 May 2006 23:56:48 +0200
+Message-ID: <f30a5c3c41c5ce60be813609c562d97a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8AB03252
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 23:48:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0202B24D
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 23:56:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-08-2006 16:08 CEST
-Last Modified:              05-09-2006 23:47 CEST
+Last Modified:              05-09-2006 23:56 CEST
 ======================================================================
 Summary:                    No sound on Acer Travelmate 3012WTMI
 Description: 
@@ -139,21 +139,16 @@ Best regards.
 ======================================================================
 
 ----------------------------------------------------------------------
- useidel - 05-09-06 23:29 
-----------------------------------------------------------------------
-I own the same notebook. Battery status was always working, but I replaced
-the original DSDT (actually the link provided by lrupn refers to "my"
-repaired DSDT) to get the ACPI S4 working.
-Unfortunately, the DSDT replacement does not help regarding this sound
-issue. There is no sound even with the new DSDT. :-(
-
-
-
-----------------------------------------------------------------------
  rlrevell - 05-09-06 23:47 
 ----------------------------------------------------------------------
 Try the various model=* options to "modprobe snd-hda-intel" as described in
 ALSA-Configuration.txt
+
+----------------------------------------------------------------------
+ useidel - 05-09-06 23:56 
+----------------------------------------------------------------------
+Done already (laptop, laptop-eapd, 6stck-dig, 3stack-dig), didn't help. I
+also tried the "position_fix" option with the values 0, 1 and 2.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -163,6 +158,7 @@ Date Modified  Username       Field                    Change
 05-09-06 23:28 useidel        Note Added: 0009695                          
 05-09-06 23:29 useidel        Note Edited: 0009695                         
 05-09-06 23:47 rlrevell       Note Added: 0009696                          
+05-09-06 23:56 useidel        Note Added: 0009697                          
 ======================================================================
 
 
