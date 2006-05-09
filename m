@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Tue, 9 May 2006 17:16:16 +0200
-Message-ID: <b7648c25fcde302116ef3b24e0548a89@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
+Date: Tue, 9 May 2006 17:24:20 +0200
+Message-ID: <98dacf195d2502e4d394847dc922f0c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A543921A
-	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 17:16:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5C5B21C
+	for <alsa-devel@alsa-project.org>; Tue,  9 May 2006 17:24:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,143 +24,247 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
 ======================================================================
-Reported By:                liangalei
+Reported By:                ponchick
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Issue ID:                   1833
+Category:                   GENERIC - mpu401
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             gentoo-sources-2.6.15-r4
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-09-2006 17:16 CEST
+Date Submitted:             02-09-2006 08:33 CET
+Last Modified:              05-09-2006 17:24 CEST
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    oops in snd_mpu401_uart
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+I don't know what exactly happend but when I run wine or winecfg it
+segfaulted. dmesg shows following:
+Unable to handle kernel paging request at 0000000010228800 RIP:
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+PGD 6e57067 PUD 0
+Oops: 0002 [1] PREEMPT SMP
+CPU 1
+Modules linked in: snd_rtctimer snd_seq_midi snd_pcm_oss snd_mixer_oss
+snd_seq_oss snd_seq_midi_event snd_seq snd_au8830 snd_ac97_codec snd_pcm
+snd_timer snd_page_alloc snd_ac97_bus snd_mpu401_uart snd_rawmidi
+snd_seq_device snd soundcore nvidia sky2
+Pid: 11110, comm: wine-preloader Tainted: P      2.6.15-gentoo-r4 #1
+RIP: 0010:[<ffffffff884ca00c>]
+<ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0}
+RSP: 0018:ffff81003564f8f0  EFLAGS: 00010046
+RAX: 0000000000000013 RBX: ffff81003cb4e580 RCX: 0000000000000000
+RDX: 0000000010228800 RSI: 0000000000000000 RDI: ffff81003cb4e580
+RBP: ffff81003eb60740 R08: 0000000000000000 R09: ffff8100279794c0
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff81003cb4fe00
+R13: 0000000000000001 R14: ffff81003cb4e5f8 R15: 0000000000000246
+FS:  000000005556c000(006b) GS:ffffffff8057b880(0063)
+knlGS:00000000556cb920
+CS:  0010 DS: 002b ES: 002b CR0: 000000008005003b
+CR2: 0000000010228800 CR3: 00000000375ad000 CR4: 00000000000006e0
+Process wine-preloader (pid: 11110, threadinfo ffff81003564e000, task
+ffff810002178440)
+Stack: ffffffff884ca19f ffff81003ffef500 0000000000000046
+ff00000000000286
+       ffff81003cb4e580 ffff81003eb60740 ffff81003cb4fe00
+ffff81003eb606c0
+       0000000000000000 ffff81003d7c3bd0
+Call Trace:<ffffffff884ca19f>{:snd_mpu401_uart:snd_mpu401_uart_cmd+65}
+       <ffffffff884ca2f4>{:snd_mpu401_uart:snd_mpu401_uart_input_open+73}
+       <ffffffff884c36b3>{:snd_rawmidi:snd_rawmidi_kernel_open+644}
+       <ffffffff885471f0>{:snd_seq_midi:midisynth_subscribe+53}
+       <ffffffff80397b49>{_spin_lock+27}
+<ffffffff8851fcc2>{:snd_seq:subscribe_port+214}
+       <ffffffff8851ff8f>{:snd_seq:snd_seq_port_connect+433}
+       <ffffffff8851a9c8>{:snd_seq:snd_seq_ioctl_subscribe_port+226}
+       <ffffffff8851c19a>{:snd_seq:snd_seq_kernel_client_ctl+92}
+       <ffffffff8852eb1b>{:snd_seq_oss:snd_seq_oss_midi_open+267}
+       <ffffffff8852eb83>{:snd_seq_oss:snd_seq_oss_midi_open_all+35}
+       <ffffffff8852b89a>{:snd_seq_oss:snd_seq_oss_open+1152}
+       <ffffffff8852d20c>{:snd_seq_oss:snd_seq_oss_event_input+0}
+       <ffffffff8852b90a>{:snd_seq_oss:free_devinfo+0}
+<ffffffff8018075f>{__link_path_walk+3332}
+       <ffffffff80397b0c>{__lock_text_start+20}
+<ffffffff8852b034>{:snd_seq_oss:odev_open+52}
+       <ffffffff884ac6e4>{:soundcore:soundcore_open+513}
+<ffffffff8017ab11>{chrdev_open+454}
+       <ffffffff8017a94b>{chrdev_open+0}
+<ffffffff80171031>{__dentry_open+310}
+       <ffffffff8017118d>{nameidata_to_filp+34}
+<ffffffff801711d6>{filp_open+58}
+       <ffffffff801713d4>{get_unused_fd+234}
+<ffffffff80171533>{do_sys_open+81}
+       <ffffffff8011e57f>{sysenter_do_call+27}
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
+Code: 40 88 32 c3 0f b6 06 0f b6 c0 c3 48 83 ec 28 4c 89 64 24 10
+RIP <ffffffff884ca00c>{:snd_mpu401_uart:mpu401_write_mmio+0} RSP
+<ffff81003564f8f0>
+CR2: 0000000010228800
+ <6>note: wine-preloader[11110] exited with preempt_count 1
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
-
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
-
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
-
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
+I use standalone alsa-driver (kernel one is out of date and doesn't
+support au8830 on 64-bit platforms) with gentoo-sources-2.6.14-r5,
+gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4. 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001931 Unknown AC97 codec, digital sound works
-======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-09-06 16:40 
+ Raymond - 05-09-06 13:26 
 ----------------------------------------------------------------------
-As tiwai has explained, more info about the hardware is needed to fix it. 
-This will have to come from Benq.
+> A hacked diff is attached which shows the affected bits of 
+> code, and additional writes and reads in au88x0_mpu401 which demonstrate
+the 
+> behaviour.  Result is: Temp1 0xfe, Temp2 0xfe, Temp3 0xf9, Temp4 0xfe,
+Temp5 
+> 0xf9.
+
+au8830 (Subsystem 008812eb)
+
+Temp1 0xfe, Temp2 0xfe, Temp3 0xd1, Temp4 0xfe, Temp5 0xd1.
+
+aplaymidi --port=16:0 test.mid 
+
+Using alsa-driver-1.0.11, it does not hang even there is no midi keyboard
+or wavetable daugther card
+
+
+> I have made up a joystick port MIDI OUT lead for testing.  MIDI sent to
+the 
+> au8820 port shown in aplaymidi -l goes to both the wavetable card and
+the 
+> joystick midi at the same time; the DB50XG is then generating sound at
+the 
+> same time as an external keyboard/synth connected from the joystick 
+> connector.  So it would seem the card has a single port feeding both.
+
+
+http://www.3dsoundsurge.com/faq/4.3.html
 
 ----------------------------------------------------------------------
- drseergio - 05-09-06 17:16 
+ Raymond - 05-09-06 17:24 
 ----------------------------------------------------------------------
-As far as I know BenQ it will never come... Their support is awful... Btw,
-audio chips are not made by Benq, they are generic from other
-manufacturers. Or not?
+Are you using the correct cflags to compile for EM64T processor ?
+
+http://www.gentoo.org/doc/en/gentoo-amd64-faq.xml#cflags
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
-03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
-   
-03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
-03-17-06 04:10 Kooper         Note Added: 0008633                          
-03-17-06 12:07 tiwai          Note Added: 0008641                          
-03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
-      
-03-17-06 12:35 Kooper         Note Added: 0008644                          
-03-21-06 02:38 JProgrammer    Note Added: 0008736                          
-03-25-06 10:51 alessiodf      Note Added: 0008944                          
-03-26-06 20:12 alessiodf      Note Edited: 0008944                         
-03-26-06 20:15 alessiodf      Note Edited: 0008944                         
-03-30-06 15:47 trava          Note Added: 0009034                          
-04-07-06 13:05 kesiev         Note Added: 0009137                          
-04-07-06 13:06 kesiev         Note Edited: 0009137                         
-04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
-04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
-04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
-04-12-06 16:21 kesiev         Note Added: 0009246                          
-04-12-06 16:21 kesiev         File Added: qta058Ba.inf                     
-04-13-06 14:00 kesiev         Note Added: 0009259                          
-04-13-06 14:00 kesiev         File Added: windows-details.txt                   
+02-09-06 08:33 ponchick       New Issue                                    
+02-09-06 08:33 ponchick       Distribution              => gentoo          
+02-09-06 08:33 ponchick       Kernel Version            =>
+gentoo-sources-2.6.15-r4
+02-09-06 09:12 Raymond        Note Added: 0007971                          
+02-09-06 09:32 Raymond        Note Added: 0007973                          
+02-09-06 11:57 ponchick       Note Added: 0007975                          
+02-09-06 12:32 Raymond        Note Added: 0007976                          
+02-09-06 12:35 Raymond        Note Edited: 0007976                         
+02-10-06 03:06 Raymond        Note Added: 0007982                          
+02-10-06 03:11 rlrevell       Note Added: 0007983                          
+02-10-06 03:49 Raymond        Note Added: 0007984                          
+02-10-06 05:08 ponchick       Note Added: 0007986                          
+02-10-06 05:36 Raymond        Note Added: 0007988                          
+02-10-06 06:03 Raymond        Note Added: 0007990                          
+02-10-06 10:09 ponchick       Note Added: 0007997                          
+02-10-06 11:30 Raymond        Note Added: 0008001                          
+02-12-06 03:32 Raymond        Note Added: 0008024                          
+02-12-06 14:14 Raymond        Note Deleted: 0007990                        
+02-13-06 07:08 Raymond        Note Edited: 0008024                         
+02-13-06 16:44 Raymond        Note Edited: 0008001                         
+02-14-06 10:41 Raymond        Note Edited: 0008024                         
+02-16-06 04:40 Raymond        Note Added: 0008084                          
+02-16-06 06:33 ponchick       Note Added: 0008086                          
+02-16-06 09:57 Raymond        Note Added: 0008089                          
+02-16-06 10:16 ponchick       Note Added: 0008091                          
+02-16-06 10:38 Raymond        Note Added: 0008092                          
+02-16-06 10:40 Raymond        Note Edited: 0008092                         
+02-16-06 13:08 Raymond        Note Edited: 0008089                         
+02-25-06 13:15 Raymond        Note Added: 0008189                          
+03-21-06 18:02 Raymond        Note Edited: 0008089                         
+04-06-06 19:13 Raymond        Note Added: 0009126                          
+04-06-06 19:23 rlrevell       Note Added: 0009127                          
+04-11-06 05:09 Raymond        Note Added: 0009226                          
+04-11-06 06:08 ponchick       Note Added: 0009227                          
+04-11-06 09:06 Raymond        Note Added: 0009230                          
+04-12-06 10:28 Raymond        Note Added: 0009240                          
+04-12-06 11:36 ponchick       Note Added: 0009241                          
+04-12-06 15:16 Raymond        Note Added: 0009243                          
+04-13-06 07:16 Raymond        Note Added: 0009253                          
+04-13-06 10:05 Raymond        Note Added: 0009255                          
+04-13-06 10:37 Raymond        Note Edited: 0009253                         
+04-14-06 03:30 Raymond        Note Added: 0009279                          
+04-17-06 22:57 gineera        Note Added: 0009322                          
+04-18-06 04:53 ponchick       Note Added: 0009323                          
+04-18-06 05:11 ponchick       Note Added: 0009324                          
+04-18-06 05:32 Raymond        Note Added: 0009325                          
+04-18-06 06:04 Raymond        Note Edited: 0009325                         
+04-19-06 05:42 Raymond        Issue Monitored: alien999999999                   
 
-04-13-06 14:54 kesiev         Note Edited: 0009259                         
-04-13-06 15:34 kesiev         Issue Monitored: kesiev                      
-04-15-06 12:33 kesiev         Note Edited: 0009259                         
-04-15-06 12:33 kesiev         File Added: alsasound.conf                    
-04-18-06 09:35 fedukoff       Note Added: 0009326                          
-05-01-06 20:24 rawsock        Issue Monitored: rawsock                     
-05-03-06 15:55 fedukoff       Issue Monitored: fedukoff                    
-05-09-06 14:36 drseergio      Note Added: 0009658                          
-05-09-06 16:40 rlrevell       Note Added: 0009661                          
-05-09-06 17:16 drseergio      Note Added: 0009662                          
+04-19-06 05:42 Raymond        Note Added: 0009349                          
+04-20-06 04:27 Raymond        Issue Monitored: penguinparty                    
+04-20-06 04:27 Raymond        Note Added: 0009364                          
+04-20-06 05:05 Raymond        Note Edited: 0009325                         
+04-20-06 08:55 alien999999999 Note Added: 0009366                          
+04-20-06 09:27 Raymond        Note Added: 0009367                          
+04-20-06 10:25 Raymond        Note Edited: 0009367                         
+04-21-06 08:11 alien999999999 Note Added: 0009408                          
+04-21-06 16:41 rlrevell       Note Added: 0009414                          
+04-21-06 18:00 Raymond        Note Added: 0009420                          
+04-21-06 18:13 Raymond        Note Added: 0009422                          
+04-21-06 18:23 Raymond        Note Added: 0009425                          
+04-21-06 18:28 Raymond        Note Added: 0009426                          
+04-21-06 18:54 rlrevell       Note Added: 0009427                          
+04-22-06 02:56 Raymond        Note Edited: 0009422                         
+04-22-06 02:57 Raymond        Note Edited: 0009425                         
+04-22-06 06:58 Raymond        Note Edited: 0009426                         
+04-24-06 03:20 Raymond        Note Added: 0009447                          
+04-24-06 05:43 ponchick       Note Added: 0009448                          
+04-24-06 11:34 Raymond        Note Added: 0009450                          
+04-25-06 10:08 Raymond        Note Added: 0009485                          
+04-25-06 23:30 gineera        Note Added: 0009496                          
+04-26-06 04:26 Raymond        Note Added: 0009500                          
+04-26-06 04:33 Raymond        Note Added: 0009501                          
+04-26-06 04:35 Raymond        Note Edited: 0009501                         
+04-26-06 04:50 Raymond        Note Added: 0009502                          
+04-26-06 05:06 Raymond        Note Added: 0009503                          
+04-26-06 07:13 Raymond        Note Edited: 0009501                         
+04-26-06 16:38 Raymond        Note Added: 0009515                          
+04-26-06 17:20 Raymond        Note Added: 0009518                          
+04-26-06 17:34 Raymond        Note Edited: 0009518                         
+04-26-06 18:41 Raymond        Issue Monitored: perex                       
+04-26-06 18:41 Raymond        Note Added: 0009521                          
+04-27-06 13:36 Raymond        Note Added: 0009529                          
+05-01-06 10:58 Raymond        Note Added: 0009554                          
+05-01-06 18:12 Raymond        Note Edited: 0009554                         
+05-02-06 04:38 ponchick       Note Added: 0009555                          
+05-02-06 06:52 Raymond        Issue Monitored: tiwai                       
+05-02-06 06:52 Raymond        Note Added: 0009556                          
+05-02-06 06:54 Raymond        Note Edited: 0009556                         
+05-02-06 17:55 tiwai          Note Added: 0009561                          
+05-03-06 11:23 Raymond        Note Added: 0009583                          
+05-03-06 11:29 ponchick       Note Added: 0009584                          
+05-03-06 15:23 Raymond        Issue Monitored: mjander                     
+05-03-06 15:23 Raymond        Note Added: 0009593                          
+05-03-06 18:31 Raymond        Note Added: 0009596                          
+05-04-06 05:08 Raymond        Note Edited: 0009596                         
+05-04-06 07:11 Raymond        Note Edited: 0009596                         
+05-04-06 12:18 Raymond        Note Added: 0009614                          
+05-05-06 04:35 Raymond        Note Edited: 0009529                         
+05-05-06 07:10 ponchick       Note Added: 0009623                          
+05-05-06 15:20 Raymond        Note Added: 0009625                          
+05-06-06 04:05 ponchick       Note Added: 0009635                          
+05-06-06 05:10 Raymond        Note Added: 0009636                          
+05-06-06 05:22 Raymond        Note Edited: 0009636                         
+05-07-06 19:17 Raymond        Note Added: 0009642                          
+05-07-06 19:21 Raymond        Note Edited: 0009642                         
+05-07-06 19:23 rlrevell       Note Added: 0009643                          
+05-09-06 13:26 Raymond        Note Added: 0009655                          
+05-09-06 17:24 Raymond        Note Added: 0009663                          
 ======================================================================
 
 
