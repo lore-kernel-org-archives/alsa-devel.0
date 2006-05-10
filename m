@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002068]: No sound in headphones - A3H ASUS
-Date: Wed, 10 May 2006 08:15:52 +0200
-Message-ID: <f5deac82fec25eb812e77dd8bb8cb288@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002051]: USB control failure
+Date: Wed, 10 May 2006 09:05:02 +0200
+Message-ID: <01a9ed2132ce576f4bc4e73327a35542@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE2F115E
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 08:15:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88B7A132
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 09:05:02 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,125 +24,107 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2068> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2051> 
 ======================================================================
-Reported By:                awisniewski
-Assigned To:                tiwai
+Reported By:                xatt
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2068
-Category:                   PCI - hda-intel
+Issue ID:                   2051
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             04-25-2006 12:03 CEST
-Last Modified:              05-10-2006 08:15 CEST
+Date Submitted:             04-21-2006 14:55 CEST
+Last Modified:              05-10-2006 09:05 CEST
 ======================================================================
-Summary:                    No sound in headphones - A3H ASUS
+Summary:                    USB control failure
 Description: 
-Hello
+  Hi!
+  I have Audigy 2 NX USB sound card and was trying to install it on my
+Fedora Core5. The version of my kernel is 2.6.15. Recompiled it hundred
+times :). All work with sound card ends up with message from kernel:
 
-I have ASUS A3H model laptop. I've just compiled kernel 2.6.16.11 from
-kernel.org (newest). I used CONFIG_SND_HDA_INTEL=y option in kernel config
-and it seems to be working propertly till I'm not trying use headphone
-(internal speaker from laptop is working propertly). When I plug in
-headphones into the jack port in laptop, internal speaker is silent but I
-can not hear anything in headphones. It seems like turned on MUTT option
-in mixer but I can not find option for headphones in my mixer
-application.
- 
-Few facts:
+ALSA /root/ALSA/alsa-driver-1.0.11/usb/usbaudio.c:1330: 2:1:3:
+usb_set_interface failed
 
-lapek:/proc/asound# cat version 
-Advanced Linux Sound Architecture Driver Version 1.0.11rc2 (Wed Jan 04
-08:57:20 2006 UTC).
+  I thought that it was some other module blocking the USB control and
+turned off all unnecessary options in kernel, but that doesn't seem to
+help.
+  I checked 'aplay -l' and /proc/asound, 
 
-andy@lapek:~/moje/instalki/Linux/kernele/linux-2.6.16.11$ uname -a
-Linux lapek 2.6.16.11 #1 Tue Apr 25 10:07:45 CEST 2006 i686 GNU/Linux
+[root@ghostchaser ~]# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: NX [SB Audigy 2 NX], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-lapek:/proc/asound# cat timers 
-G0: system timer : 4000.000us (10000000 ticks)
-P0-0-0: PCM playback 0-0-0 : SLAVE
-P0-0-1: PCM capture 0-0-1 : SLAVE
-P0-0-3: PCM capture 0-0-3 : SLAVE
-P0-1-0: PCM playback 0-1-0 : SLAVE
+   Soundcard also detected in /proc/asound.
 
-lapek:/proc/asound# cat pcm 
-00-01: ALC880 Digital : ALC880 Digital : playback 1
-00-00: ALC880 Analog : ALC880 Analog : playback 1 : capture 2
-
-lapek:/proc/asound# cat devices 
-  0: [ 0]   : control
- 16: [ 0- 0]: digital audio playback
- 17: [ 0- 1]: digital audio playback
- 24: [ 0- 0]: digital audio capture
- 33:        : timer
-
-I will add /proc/asound/card0/codec#0 file also (as attachmets).
-
+   I'm stumped around this problem and submit some additional
+files.(kernel config, modprobe.conf, asound.conf)
 ======================================================================
 
 ----------------------------------------------------------------------
- awisniewski - 04-26-06 20:26 
+ Clemens Ladisch - 04-21-06 17:13 
 ----------------------------------------------------------------------
-So. I can use following option in alsamiexr application:
+What are the contents of /proc/asound/card0/stream0?
 
-- Front - I can change volume for internal speaker only when headphones
-are out of jack
-- Surround - I can change volume for headphones when they are plugin
-- Front Pin Mode is Line Out
-- Surround Pin Mode is Line Out
-
-************
-It's a little strange because I had these two options before use debug and
-test options in my alsamixer and then it was not working :/ Now, when I
-change volume on Surround option I can hear sounds in my headphones :/
-Maybe Surround Pin Mode was in the other option then Line Out ...
-And sorry but I can't check other items in this moment (microphone, cd,
-etc) :/
-
-I hope there are information which you need. If not please write a comment
-with more info what do you need (i'm not a master of sounds :)
+Does "aplay -D plughw:0 something.wav" work?
 
 ----------------------------------------------------------------------
- awisniewski - 05-10-06 08:15 
+ xatt - 05-10-06 09:05 
 ----------------------------------------------------------------------
-Because I had to recompile kernel and in this case alsa drivers also I can
-be 100% sure that I must go into test mode (in assus mode I can not do
-anything with headphones) and :
+Sorry for too late answer, was training and just couldn't get to my working
+place.
+  File /proc/asound/card0/stream0   does not exist
+  
+  /proc/asound/card0 exists and has some info on sound card, but file
+  /proc/asound/card0/audigy2nx has the following contents:
 
-- Front must have some volume level
-- Front pi must be Line Out
-- Surround must have some volume level (with this option I can chanege
-volume in my headphones)
-- Surround pi must be Line Out  
+SB Audigy 2 NX jacks
 
-When I used asus or default model option in my alsa driver I can not
-change volume for headphones even if I had Surround option in my
-alsamixer.
+dig in : ?
+line in: ?
+spk out: ?
+hph out: ?
 
-I think it's all what you need :)
-Tx again ...
+Tried:
+[root@ghostchaser ~]# aplay -D plughw:0 /mnt/winD/mp3/cc/i_am.wav
+Playing WAVE '/mnt/winD/mp3/cc/i_am.wav' : Signed 16 bit Little Endian,
+Rate 22050 Hz, Mono
+aplay: set_params:961: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 16
+CHANNELS: 1
+RATE: 22050
+PERIOD_TIME: 125000
+PERIOD_SIZE: (2756 2757)
+PERIOD_BYTES: (5512 5514)
+PERIODS: (3 5)
+BUFFER_TIME: 500000
+BUFFER_SIZE: 11025
+BUFFER_BYTES: 22050
+TICK_TIME: 4000
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-25-06 12:03 awisniewski    New Issue                                    
-04-25-06 12:03 awisniewski    File Added: codec#0                          
-04-25-06 12:08 awisniewski    File Added: codec.zip                        
-04-25-06 18:16 tiwai          Note Added: 0009493                          
-04-25-06 18:21 tiwai          Note Added: 0009494                          
-04-26-06 12:49 awisniewski    Note Added: 0009506                          
-04-26-06 12:54 awisniewski    File Added: codec_v2.zip                     
-04-26-06 13:01 tiwai          Note Added: 0009507                          
-04-26-06 13:49 awisniewski    Note Added: 0009509                          
-04-26-06 14:34 tiwai          Note Added: 0009510                          
-04-26-06 20:26 awisniewski    Note Added: 0009523                          
-05-10-06 08:15 awisniewski    Note Added: 0009702                          
+04-21-06 14:55 xatt           New Issue                                    
+04-21-06 14:55 xatt           File Added: config                           
+04-21-06 14:55 xatt           Kernel Version            => 2.6.15          
+04-21-06 15:17 xatt           Note Added: 0009412                          
+04-21-06 17:09 Clemens LadischCategory                 CORE - control => USB -
+usb-audio
+04-21-06 17:13 Clemens LadischNote Added: 0009419                          
+05-10-06 09:05 xatt           Note Added: 0009703                          
 ======================================================================
 
 
