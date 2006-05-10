@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002101]: Sony Vaio VGN-S3HP internal speakers stopped working (+fix)
-Date: Wed, 10 May 2006 16:34:01 +0200
-Message-ID: <92373f6797ca59870ef42a3bf605d1c7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002099]: System hangs while booting, and i get flooded by azx_get_response timeout message
+Date: Wed, 10 May 2006 16:42:18 +0200
+Message-ID: <958d31498571f2ccaef59de6390c2fec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8C70185
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 16:34:01 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E9AD8185
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 16:42:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2101> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2099> 
 ======================================================================
-Reported By:                rjb
+Reported By:                bugmenot
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2101
+Issue ID:                   2099
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.17-rc3
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.16.11
 ======================================================================
-Date Submitted:             05-07-2006 14:07 CEST
-Last Modified:              05-10-2006 16:34 CEST
+Date Submitted:             05-06-2006 15:24 CEST
+Last Modified:              05-10-2006 16:42 CEST
 ======================================================================
-Summary:                    Sony Vaio VGN-S3HP internal speakers stopped working
-(+fix)
+Summary:                    System hangs while booting, and i get flooded by
+azx_get_response timeout message
 Description: 
-On the Sony Vaio VGN-S3HP the internal speakers stopped working
-since kernel 2.6.16. The headphones do work. The alsamixer shows
-that the Front slider is missing. On 2.6.15-rc7 everything was ok.
-The problem is still there on ALSA driver 1.0.11.
+While booting, and after loading alsa, the screen gets flooded with
+azx_get_response timeout messages, and my system wont continue to boot. I
+than can only restart.
 
-I inserted an additional entry for the Vaio in alc260_cfg_tbl of
-alsa-kernel/pci/hda/patch_realtek.c. This solves the problem for me.
-Now, everything works as expected. The speakers work unless headphones
-are plugged in, and the volume of the speakers and headphones can be
-adjusted individually.
+I have read that this is a known error, and it should  be fixed in the cvs
+version  of alsa, but i included the cvs version (cvs copy from the
+5.5.2006) into my kernel and i still get the error.
 
-Patch attached.
+This only happens when i inlcude the intel_hda driver into the kernel
+(build into or as modules, its the same)
 
-Cheers,
-Ronald
+without it alsa just claims to find no soundcard, but my system works
+well.
+
+I have a ibm thinkpad x60s and a hdc7 sound/model card?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-10-06 16:34 
+ bugmenot - 05-08-06 09:43 
 ----------------------------------------------------------------------
-The patch is committed to HG repo.  Thanks.
+I dont want to race you, but when do you probably find the time to have a
+look at the report i made. Cause i have been trying to fix this for a week
+now, and have realy no idea what else to try.
+
+thx
+
+----------------------------------------------------------------------
+ tiwai - 05-10-06 16:42 
+----------------------------------------------------------------------
+The CVS is dead.  Try HG version.
+
+There is a known BIOS problem of X60.  Try to update your BIOS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-07-06 14:07 rjb            New Issue                                    
-05-07-06 14:07 rjb            File Added: patch_for_vaio_vgn_s3hp.txt           
-        
-05-07-06 14:07 rjb            Distribution              => Gentoo          
-05-07-06 14:07 rjb            Kernel Version            => 2.6.17-rc3      
-05-10-06 16:34 tiwai          Status                   assigned => resolved
-05-10-06 16:34 tiwai          Resolution               open => fixed       
-05-10-06 16:34 tiwai          Note Added: 0009725                          
+05-06-06 15:24 bugmenot       New Issue                                    
+05-06-06 15:24 bugmenot       Distribution              => Debian          
+05-06-06 15:24 bugmenot       Kernel Version            => 2.6.16.11       
+05-06-06 18:35 bugmenot       Note Added: 0009637                          
+05-08-06 09:43 bugmenot       Note Added: 0009644                          
+05-10-06 16:42 tiwai          Note Added: 0009726                          
 ======================================================================
 
 
