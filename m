@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002087]: Audio still broken for Asus A8V-MX
-Date: Wed, 10 May 2006 16:14:10 +0200
-Message-ID: <f5394cad68292195183b486bd3e450ae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002106]: Sound card snd-hda-intel emits NO sound
+Date: Wed, 10 May 2006 16:16:06 +0200
+Message-ID: <69f97824ea4a0f329dd0196029cd2159@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 87096185
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 16:14:10 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 66F26185
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 16:16:06 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,94 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2087> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2106> 
 ======================================================================
-Reported By:                myxie
-Assigned To:                
+Reported By:                louisvd
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2087
-Category:                   PCI - via82xx
+Issue ID:                   2106
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.16
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2111_FC5smp
 ======================================================================
-Date Submitted:             04-30-2006 23:33 CEST
-Last Modified:              05-10-2006 16:14 CEST
+Date Submitted:             05-08-2006 21:00 CEST
+Last Modified:              05-10-2006 16:16 CEST
 ======================================================================
-Summary:                    Audio still broken for Asus A8V-MX
+Summary:                    Sound card snd-hda-intel emits NO sound
 Description: 
-The patches integrated (see issue 0001622) into the latest release of ALSA
-make the on-board audio more usuable, but there are still significant
-issues.
+Hi
 
-Playing an audio file results in a freeze for 10 seconds, followed by a
-write error and then the audio continues normally. I noticed a second
-write error later on in the stream.
+I was merrily running Fedora Core 4 and after upgrading the kernel to
+2.6.16 my sound no longer worked under Linux (it works under Windows). 
+After a lot of battling I figured I may as well upgrade to FC5 now.  A
+clean install, out of the box, and the sound STILL did not work.  I've
+applied every available patch to date and no luck.  Tonight I installed
+the Alsa 1.0.11 driver, lib and util tarballs -- all installed
+successfully -- but there is STILL no sound produced.
 
-I am happy to try patches, turn on debugging flags etc. Let me know.
+Everything LOOKS normal.  There are no errors that I can detect.  In the X
+and console versions of Alsamixer I have ALL the devices displayed and
+unmuted with the volumes at max. I've removed the sound lines from
+modprobe.conf and am running with alsasound and that didn't help either --
+even though it says the driver has been loaded.
 
+FYI, the OSS Volume control calls it a Realtek ALC260.  lspci refers to it
+as Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller
+(rev 01).
+
+
+Please help.
 ======================================================================
 
 ----------------------------------------------------------------------
- myxie - 05-08-06 21:31 
+ tiwai - 05-10-06 16:16 
 ----------------------------------------------------------------------
-A new kernel.
-
-CONFIG_SND_VERBOSE_PROCFS=y
-CONFIG_SND_VERBOSE_PRINTK=y
-CONFIG_SND_DEBUG=y
-
-Nothing terribly interesting in the logs (dmesg) after switching
-xrun_debug to 2.
-
-If I let ogg123 get to the point of the write error, I see (dmesg):
-
-ALSA sound/core/pcm_lib.c:2231: playback write error (DMA or IRQ
-trouble?)
-
-More interesting, opening (not evening reading) from
-/proc/asound/card0/pcm0p/sub0/status is enough to get things flowing again
-with no write error.
-
-So all I need to do now is run "while true; do :
-</proc/asound/card0/pcm0p/sub0/status; done" in the background somewhere.
-:-)
-
-----------------------------------------------------------------------
- tiwai - 05-10-06 16:14 
-----------------------------------------------------------------------
-As I mentioned, it's likely an IRQ problem.  The driver isn't woken up at
-the right time.  Usually it's a problem in more deeper point, often in
-ACPI.
-
-The workaround via access to the proc file is a pure side-effect.  When
-the proc file is accessed, the driver tries to update the status, and
-eventually updates the hw pointer that should have been done via
-interrupts.
+What is the machine (laptop) model?  There are some pre-defined model
+options available for ALC260 codec.  See ALSA-Configuration.txt for
+details.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-30-06 23:33 myxie          New Issue                                    
-04-30-06 23:33 myxie          Distribution              => Debian          
-04-30-06 23:33 myxie          Kernel Version            => 2.6.16          
-05-02-06 17:57 tiwai          Note Added: 0009562                          
-05-05-06 18:40 myxie          Note Added: 0009628                          
-05-05-06 19:58 myxie          File Added: lsof.ogg123                      
-05-05-06 19:58 myxie          File Added: lsof.mplayer                     
-05-05-06 19:59 myxie          Note Added: 0009629                          
-05-05-06 20:59 karsten        Note Added: 0009630                          
-05-05-06 21:29 myxie          File Added: lspci.txt                        
-05-05-06 21:30 myxie          Note Added: 0009631                          
-05-08-06 18:09 myxie          Note Added: 0009646                          
-05-08-06 18:10 myxie          File Added: aadebug.txt                      
-05-08-06 18:31 myxie          Note Added: 0009647                          
-05-08-06 21:31 myxie          Note Added: 0009648                          
-05-10-06 16:14 tiwai          Note Added: 0009721                          
+05-08-06 21:00 louisvd        New Issue                                    
+05-08-06 21:00 louisvd        Distribution              => Fedora Core 5   
+05-08-06 21:00 louisvd        Kernel Version            => 2.6.16-1.2111_FC5smp
+05-10-06 16:16 tiwai          Note Added: 0009722                          
 ======================================================================
 
 
