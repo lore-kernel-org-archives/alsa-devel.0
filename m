@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002106]: Sound card snd-hda-intel emits NO sound
-Date: Wed, 10 May 2006 16:52:54 +0200
-Message-ID: <b331b78a3b62a9e6bfdcac83c0d4ab15@bugtrack.alsa-project.org>
+Date: Wed, 10 May 2006 16:55:47 +0200
+Message-ID: <f21d8a644cc9c85c4790f001c6e26b55@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2FCEA17A
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 16:52:54 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C08B17A
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 16:55:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2111_FC5smp
 ======================================================================
 Date Submitted:             05-08-2006 21:00 CEST
-Last Modified:              05-10-2006 16:52 CEST
+Last Modified:              05-10-2006 16:55 CEST
 ======================================================================
 Summary:                    Sound card snd-hda-intel emits NO sound
 Description: 
@@ -69,17 +69,15 @@ Please help.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-10-06 16:16 
-----------------------------------------------------------------------
-What is the machine (laptop) model?  There are some pre-defined model
-options available for ALC260 codec.  See ALSA-Configuration.txt for
-details.
-
-----------------------------------------------------------------------
  louisvd - 05-10-06 16:52 
 ----------------------------------------------------------------------
 The PC is an HP Deskpro DC7600 Small Form Factor.  According to the
 ALSA-Configuration.txt file, the model is 'hp'.
+
+----------------------------------------------------------------------
+ tiwai - 05-10-06 16:55 
+----------------------------------------------------------------------
+No, the default model option value is "auto".
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -89,6 +87,7 @@ Date Modified  Username       Field                    Change
 05-08-06 21:00 louisvd        Kernel Version            => 2.6.16-1.2111_FC5smp
 05-10-06 16:16 tiwai          Note Added: 0009722                          
 05-10-06 16:52 louisvd        Note Added: 0009731                          
+05-10-06 16:55 tiwai          Note Added: 0009732                          
 ======================================================================
 
 
