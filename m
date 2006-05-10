@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Wed, 10 May 2006 15:58:59 +0200
-Message-ID: <fdd72ee03174dfafab93254d9f190781@bugtrack.alsa-project.org>
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Subject: Re: Request to change enums to int in alsa-lib
+Date: Wed, 10 May 2006 15:59:19 +0200
+Message-ID: <4461F1B7.5070401@atmel.com>
+References: <4461E0C5.3040305@atmel.com>	<s5h1wv29fy3.wl%tiwai@suse.de>	<4461EA69.1040108@atmel.com> <s5hvese80pv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------090208080909090906030307"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B2C216A
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 15:59:00 +0200 (MEST)
+In-Reply-To: <s5hvese80pv.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,179 +17,274 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------090208080909090906030307
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
-======================================================================
-Reported By:                liangalei
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
-======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-10-2006 15:58 CEST
-======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
-Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+Takashi Iwai wrote:
+> At Wed, 10 May 2006 15:28:09 +0200,
+> Hans-Christian Egtvedt wrote:
+>> Takashi Iwai wrote:
+>>> At Wed, 10 May 2006 14:47:01 +0200,
+>>> Hans-Christian Egtvedt wrote:
+>> <snip>
+>>
+>>>> I have attached a patch which changes all enums into ints, and the
+>>>> library now works for me. I have no idea if I have broken something
+>>>> else. I have another issue, but I'll post that in a separate email.
+>>> The change to include/sound/*.h looks OK.  Actually, the kernel side
+>>> was already fixed to use int.  I was too lazy to update the alsa-lib
+>>> side.
+>>>
+>>> But, are other changes really necessary?  They are local in alsa-lib,
+>>> so the size shouldn't matter.
+>> I don't have the complete insight of which structs are being used
+>> towards the kernel and which are just internal, so I did the "easy" way
+>> of search and replace the entire library. If you, or somebody else with
+>> good knowledge of the alsa library, redo my patch to those only used for
+>> communication towards the kernel I can give it a go and see if it's
+>> still good.
+> 
+> The files in include/sound/* are kernel API.
+> 
+> Some files in include/*.h are public (you can find in
+> include/Makefile.am), so you should be careful to change them.
+> Other files are internal in alsa-lib.
+> 
+> So, just take a hunk to change include/sound/*.h from the original
+> patch, and drop the rest.
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
+I've stripped the patch to do what you say now, and alsamixer and amixer
+works fine. I have an issue with aplay and arecord, will post in another
+email.
 
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
+New patch attached.
 
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+-- 
+With kind regards,
+Med vennlig hilsen,
 
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
+Hans-Christian Egtvedt
+Applications Engineer - AVR Applications Lab
+Atmel Norway
 
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
+--------------090208080909090906030307
+Content-Type: text/x-patch;
+ name="alsa-lib-1.0.11-convert-enums-to-int.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa-lib-1.0.11-convert-enums-to-int.patch"
 
-thanks
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001931 Unknown AC97 codec, digital sound works
-======================================================================
+--- alsa-lib-1.0.11.orig/include/local.h	2006-02-20 20:32:53.000000000 +0100
++++ alsa-lib-1.0.11/include/local.h	2006-05-10 13:32:03.000000000 +0200
+@@ -134,13 +134,15 @@
+ #define SND_BIG_ENDIAN
+ #endif
+ 
+-struct _snd_async_handler {
+-	enum {
++enum _snd_async_handler_type {
+ 		SND_ASYNC_HANDLER_GENERIC,
+ 		SND_ASYNC_HANDLER_CTL,
+ 		SND_ASYNC_HANDLER_PCM,
+ 		SND_ASYNC_HANDLER_TIMER,
+-	} type;
++};
++
++struct _snd_async_handler {
++	int type;
+ 	int fd;
+ 	union {
+ 		snd_ctl_t *ctl;
+--- alsa-lib-1.0.11.orig/include/mixer.h	2005-08-24 12:41:16.000000000 +0200
++++ alsa-lib-1.0.11/include/mixer.h	2006-05-10 13:30:44.000000000 +0200
+@@ -208,7 +208,7 @@
+ 	/** structure version */
+ 	int ver;
+ 	/** v1: abstract layer selection */
+-	enum snd_mixer_selem_regopt_abstract abstract;
++	int abstract;
+ 	/** v1: device name (must be NULL when playback_pcm or capture_pcm != NULL) */
+ 	const char *device;
+ 	/** v1: playback PCM connected to mixer device (NULL == none) */
+--- alsa-lib-1.0.11.orig/include/sound/asequencer.h	2005-12-12 10:36:02.000000000 +0100
++++ alsa-lib-1.0.11/include/sound/asequencer.h	2006-05-10 13:33:38.000000000 +0200
+@@ -317,7 +317,7 @@
+ 		struct sndrv_seq_ev_sample sample;
+ 		struct sndrv_seq_ev_cluster cluster;
+ 		sndrv_seq_position_t position;
+-		enum sndrv_seq_stop_mode stop_mode;
++		int stop_mode;
+ 		sndrv_seq_frequency_t frequency;
+ 		struct sndrv_seq_ev_volume volume;
+ 		struct sndrv_seq_ev_loop loop;
+@@ -521,7 +521,7 @@
+ 
+ struct sndrv_seq_client_info {
+ 	int client;			/* client number to inquire */
+-	enum sndrv_seq_client_type type;	/* client type */
++	int type;			/* client type */
+ 	char name[64];			/* client name */
+ 	unsigned int filter;		/* filter flags */
+ 	unsigned char multicast_filter[8]; /* multicast filter bitmap */
+--- alsa-lib-1.0.11.orig/include/sound/asound.h	2005-08-16 14:19:15.000000000 +0200
++++ alsa-lib-1.0.11/include/sound/asound.h	2006-05-10 13:35:21.000000000 +0200
+@@ -122,7 +122,7 @@
+ 	int card;			/* R: card number */
+ 	unsigned char id[64];		/* ID (user selectable) */
+ 	unsigned char name[80];		/* hwdep name */
+-	enum sndrv_hwdep_iface iface;	/* hwdep interface */
++	int iface;			/* hwdep interface */
+ 	unsigned char reserved[64];	/* reserved for future */
+ };
+ 
+@@ -306,13 +306,13 @@
+ struct sndrv_pcm_info {
+ 	unsigned int device;		/* RO/WR (control): device number */
+ 	unsigned int subdevice;		/* RO/WR (control): subdevice number */
+-	enum sndrv_pcm_stream stream;	/* RO/WR (control): stream number */
++	int stream;			/* RO/WR (control): stream number */
+ 	int card;			/* R: card number */
+ 	unsigned char id[64];		/* ID (user selectable) */
+ 	unsigned char name[80];		/* name of this device */
+ 	unsigned char subname[32];	/* subdevice name */
+-	enum sndrv_pcm_class dev_class;	/* SNDRV_PCM_CLASS_* */
+-	enum sndrv_pcm_subclass dev_subclass; /* SNDRV_PCM_SUBCLASS_* */
++	int dev_class;			/* SNDRV_PCM_CLASS_* */
++	int dev_subclass;		/* SNDRV_PCM_SUBCLASS_* */
+ 	unsigned int subdevices_count;
+ 	unsigned int subdevices_avail;
+ 	union sndrv_pcm_sync_id sync;	/* hardware synchronization ID */
+@@ -385,7 +385,7 @@
+ };
+ 
+ struct sndrv_pcm_sw_params {
+-	enum sndrv_pcm_tstamp tstamp_mode;	/* timestamp mode */
++	int tstamp_mode;			/* timestamp mode */
+ 	unsigned int period_step;
+ 	unsigned int sleep_min;			/* min ticks to sleep */
+ 	sndrv_pcm_uframes_t avail_min;		/* min avail frames for wakeup */
+@@ -406,7 +406,7 @@
+ };
+ 
+ struct sndrv_pcm_status {
+-	enum sndrv_pcm_state state;	/* stream state */
++	int state;			/* stream state */
+ 	struct timespec trigger_tstamp;	/* time when stream was started/stopped/paused */
+ 	struct timespec tstamp;		/* reference timestamp */
+ 	sndrv_pcm_uframes_t appl_ptr;	/* appl ptr */
+@@ -415,16 +415,16 @@
+ 	sndrv_pcm_uframes_t avail;	/* number of frames available */
+ 	sndrv_pcm_uframes_t avail_max;	/* max frames available on hw since last status */
+ 	sndrv_pcm_uframes_t overrange;	/* count of ADC (capture) overrange detections from last status */
+-	enum sndrv_pcm_state suspended_state; /* suspended stream state */
++	int suspended_state;		/* suspended stream state */
+ 	unsigned char reserved[60];	/* must be filled with zero */
+ };
+ 
+ struct sndrv_pcm_mmap_status {
+-	enum sndrv_pcm_state state;	/* RO: state - SNDRV_PCM_STATE_XXXX */
++	int state;			/* RO: state - SNDRV_PCM_STATE_XXXX */
+ 	int pad1;			/* Needed for 64 bit alignment */
+ 	sndrv_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
+ 	struct timespec tstamp;		/* Timestamp */
+-	enum sndrv_pcm_state suspended_state; /* RO: suspended stream state */
++	int suspended_state;		/* RO: suspended stream state */
+ };
+ 
+ struct sndrv_pcm_mmap_control {
+@@ -519,7 +519,7 @@
+ struct sndrv_rawmidi_info {
+ 	unsigned int device;		/* RO/WR (control): device number */
+ 	unsigned int subdevice;		/* RO/WR (control): subdevice number */
+-	enum sndrv_rawmidi_stream stream; /* WR: stream */
++	int stream;			/* WR: stream */
+ 	int card;			/* R: card number */
+ 	unsigned int flags;		/* SNDRV_RAWMIDI_INFO_XXXX */
+ 	unsigned char id[64];		/* ID (user selectable) */
+@@ -531,7 +531,7 @@
+ };
+ 
+ struct sndrv_rawmidi_params {
+-	enum sndrv_rawmidi_stream stream;
++	int stream;
+ 	size_t buffer_size;		/* queue size in bytes */
+ 	size_t avail_min;		/* minimum avail bytes for wakeup */
+ 	unsigned int no_active_sensing: 1; /* do not send active sensing byte in close() */
+@@ -539,7 +539,7 @@
+ };
+ 
+ struct sndrv_rawmidi_status {
+-	enum sndrv_rawmidi_stream stream;
++	int stream;
+ 	struct timespec tstamp;		/* Timestamp */
+ 	size_t avail;			/* available bytes */
+ 	size_t xruns;			/* count of overruns since last status (in bytes) */
+@@ -588,8 +588,8 @@
+ #define SNDRV_TIMER_FLG_SLAVE		(1<<0)	/* cannot be controlled */
+ 
+ struct sndrv_timer_id {
+-	enum sndrv_timer_class dev_class;	
+-	enum sndrv_timer_slave_class dev_sclass;
++	int dev_class;
++	int dev_sclass;
+ 	int card;
+ 	int device;
+ 	int subdevice;
+@@ -704,7 +704,7 @@
+ };
+ 
+ struct sndrv_timer_tread {
+-	enum sndrv_timer_event event;
++	int event;
+ 	struct timespec tstamp;
+ 	unsigned int val;
+ };
+@@ -774,7 +774,7 @@
+ 
+ struct sndrv_ctl_elem_id {
+ 	unsigned int numid;		/* numeric identifier, zero = invalid */
+-	enum sndrv_ctl_elem_iface iface; /* interface identifier */
++	int iface;			/* interface identifier */
+ 	unsigned int device;		/* device/client number */
+ 	unsigned int subdevice;		/* subdevice (substream) number */
+         unsigned char name[44];		/* ASCII name of item */
+@@ -792,7 +792,7 @@
+ 
+ struct sndrv_ctl_elem_info {
+ 	struct sndrv_ctl_elem_id id;	/* W: element ID */
+-	enum sndrv_ctl_elem_type type;	/* R: value type - SNDRV_CTL_ELEM_TYPE_* */
++	int type;			/* R: value type - SNDRV_CTL_ELEM_TYPE_* */
+ 	unsigned int access;		/* R: value access (bitmask) - SNDRV_CTL_ELEM_ACCESS_* */
+ 	unsigned int count;		/* count of values */
+ 	pid_t owner;			/* owner's PID of this control */
+@@ -887,7 +887,7 @@
+ #define SNDRV_CTL_EVENT_MASK_REMOVE	(~0U)	/* element was removed */
+ 
+ struct sndrv_ctl_event {
+-	enum sndrv_ctl_event_type type;	/* event type - SNDRV_CTL_EVENT_* */
++	int type;				/* event type - SNDRV_CTL_EVENT_* */
+ 	union {
+ 		struct {
+ 			unsigned int mask;
+--- alsa-lib-1.0.11.orig/include/sound/emu10k1.h	2005-04-02 16:21:59.000000000 +0200
++++ alsa-lib-1.0.11/include/sound/emu10k1.h	2006-05-10 13:35:40.000000000 +0200
+@@ -264,7 +264,7 @@
+ 
+ typedef struct {
+ 	unsigned int pad;		/* don't use */
+-	enum emu10k1_ctl_elem_iface iface;/* interface identifier */
++	int iface;			/* interface identifier */
+ 	unsigned int device;		/* device/client number */
+ 	unsigned int subdevice;		/* subdevice (substream) number */
+ 	unsigned char name[44];		/* ASCII name of item */ 
 
-----------------------------------------------------------------------
- fedukoff - 05-09-06 22:07 
-----------------------------------------------------------------------
-I found oss not loads without alsa on kernel 2.6.16. But with alsa
-i810-audio loads without problem... But no sound...
-
-----------------------------------------------------------------------
- fedukoff - 05-10-06 15:58 
-----------------------------------------------------------------------
-Bad news:
-http://www.4front-tech.com/forum/viewtopic.php?t=743&highlight=benq
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
-03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
-   
-03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
-03-17-06 04:10 Kooper         Note Added: 0008633                          
-03-17-06 12:07 tiwai          Note Added: 0008641                          
-03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
-      
-03-17-06 12:35 Kooper         Note Added: 0008644                          
-03-21-06 02:38 JProgrammer    Note Added: 0008736                          
-03-25-06 10:51 alessiodf      Note Added: 0008944                          
-03-26-06 20:12 alessiodf      Note Edited: 0008944                         
-03-26-06 20:15 alessiodf      Note Edited: 0008944                         
-03-30-06 15:47 trava          Note Added: 0009034                          
-04-07-06 13:05 kesiev         Note Added: 0009137                          
-04-07-06 13:06 kesiev         Note Edited: 0009137                         
-04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
-04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
-04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
-04-12-06 16:21 kesiev         Note Added: 0009246                          
-04-12-06 16:21 kesiev         File Added: qta058Ba.inf                     
-04-13-06 14:00 kesiev         Note Added: 0009259                          
-04-13-06 14:00 kesiev         File Added: windows-details.txt                   
-
-04-13-06 14:54 kesiev         Note Edited: 0009259                         
-04-13-06 15:34 kesiev         Issue Monitored: kesiev                      
-04-15-06 12:33 kesiev         Note Edited: 0009259                         
-04-15-06 12:33 kesiev         File Added: alsasound.conf                    
-04-18-06 09:35 fedukoff       Note Added: 0009326                          
-05-01-06 20:24 rawsock        Issue Monitored: rawsock                     
-05-03-06 15:55 fedukoff       Issue Monitored: fedukoff                    
-05-09-06 14:36 drseergio      Note Added: 0009658                          
-05-09-06 16:40 rlrevell       Note Added: 0009661                          
-05-09-06 17:16 drseergio      Note Added: 0009662                          
-05-09-06 17:19 drseergio      Note Edited: 0009662                         
-05-09-06 17:28 rlrevell       Note Added: 0009664                          
-05-09-06 17:31 drseergio      Note Edited: 0009662                         
-05-09-06 17:32 drseergio      Note Added: 0009665                          
-05-09-06 17:41 drseergio      Note Edited: 0009665                         
-05-09-06 17:49 rlrevell       Note Added: 0009667                          
-05-09-06 17:52 drseergio      Note Added: 0009668                          
-05-09-06 17:57 rlrevell       Note Added: 0009669                          
-05-09-06 18:00 drseergio      Note Added: 0009670                          
-05-09-06 18:33 fedukoff       Note Added: 0009672                          
-05-09-06 18:44 drseergio      Note Added: 0009673                          
-05-09-06 19:11 fedukoff       Note Added: 0009674                          
-05-09-06 19:12 rlrevell       Note Added: 0009675                          
-05-09-06 19:21 drseergio      Note Added: 0009676                          
-05-09-06 19:27 fedukoff       Note Added: 0009677                          
-05-09-06 19:28 rlrevell       Note Added: 0009678                          
-05-09-06 19:30 drseergio      Note Added: 0009679                          
-05-09-06 19:39 fedukoff       Note Added: 0009680                          
-05-09-06 19:42 rlrevell       Note Added: 0009681                          
-05-09-06 19:50 drseergio      Note Added: 0009682                          
-05-09-06 20:16 fedukoff       Note Added: 0009683                          
-05-09-06 20:17 rlrevell       Note Added: 0009684                          
-05-09-06 20:19 rlrevell       Note Added: 0009685                          
-05-09-06 20:28 drseergio      Note Added: 0009686                          
-05-09-06 20:29 fedukoff       Note Added: 0009687                          
-05-09-06 20:34 rlrevell       Note Added: 0009688                          
-05-09-06 22:07 fedukoff       Note Added: 0009691                          
-05-10-06 15:58 fedukoff       Note Added: 0009719                          
-======================================================================
-
-
+--------------090208080909090906030307--
 
 
 -------------------------------------------------------
