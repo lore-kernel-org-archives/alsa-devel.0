@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Wed, 10 May 2006 18:20:18 +0200
-Message-ID: <0acea14746724cf40070a9b494f13338@bugtrack.alsa-project.org>
+Date: Wed, 10 May 2006 18:34:30 +0200
+Message-ID: <5b2144aacc386124d2b39a0d71e192a8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31C2E1A7
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 18:20:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E1B8921D
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 18:34:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-10-2006 18:20 CEST
+Last Modified:              05-10-2006 18:34 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -73,23 +73,26 @@ has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- fedukoff - 05-10-06 18:03 
-----------------------------------------------------------------------
-I have received an automatic email from BenQ:
-Thank you for choosing BenQ!  In order to serve your inquiry more
-effectively, please 
-link to BenQ Contact Center http://Support.BenQ.com for assistance
-regarding any 
-product and service inquiry, our BenQ Technical Expert will be glad to
-serve you. 
-
-And when ask status of my enquiry
-(http://bcc.benq.com/BCCFRONTUI/process/querycase.aspx) it is SOLVED!
-
-----------------------------------------------------------------------
  trava - 05-10-06 18:20 
 ----------------------------------------------------------------------
 the same :(
+
+----------------------------------------------------------------------
+ fedukoff - 05-10-06 18:34 
+----------------------------------------------------------------------
+I have received one more answer from BenQ
+Dear Sir,
+ 
+Please consider that we not support Linux operation system.
+For us as BenQ Support we are not able to help you on this,because is
+more related to Marketing and sales issue.
+ 
+I will forward your request to the factory, but I cant guratee that you
+will get answer on this , since this is more related to other vendor (
+connexant) product.
+ 
+Regards,
+BenQ Europe Support.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -202,6 +205,7 @@ Date Modified  Username       Field                    Change
 05-10-06 17:41 fedukoff       Note Added: 0009743                          
 05-10-06 18:03 fedukoff       Note Added: 0009745                          
 05-10-06 18:20 trava          Note Added: 0009746                          
+05-10-06 18:34 fedukoff       Note Added: 0009748                          
 ======================================================================
 
 
