@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002051]: USB control failure
-Date: Wed, 10 May 2006 19:19:27 +0200
-Message-ID: <b810d56daf1b88d9ffc8393e49f88cc3@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: (no subject)
+Date: Wed, 10 May 2006 19:26:46 +0200
+Message-ID: <20060510172646.GD6013@turing.informatik.uni-halle.de>
+References: <1429.61.5.113.68.1146793047.squirrel@mail.mumufarm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 49B70220
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 19:19:27 +0200 (MEST)
+In-reply-to: <1429.61.5.113.68.1146793047.squirrel@mail.mumufarm.com>
+Content-disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,86 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: OcHe <oche@mumufarm.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+OcHe wrote:
+> I'm working for my final thesis project, it's something about MIDI over
+> IP, i'm planning to use aseqnet for the demonstration purpose, my main
+> focus is about performance, how to calculate elapsed time (event data
+> traveled between Yamaha PSRA to Host A to Host B to Yamaha PSRB) (vice
+> versa). I'm running Fedora Core 4 (ALSA seems to work great with my
+> device) and C as the programming language.
+> 
+> Host A - Local LAN - Host B
+>   |                  |
+> Yamaha             Yamaha
+> Keyboard           Keyboard
+> 
+> My questions are:
+> 
+> 1. How to calculate elapsed time data traverse from Yamaha to Computer ?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2051> 
-======================================================================
-Reported By:                xatt
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2051
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             04-21-2006 14:55 CEST
-Last Modified:              05-10-2006 19:19 CEST
-======================================================================
-Summary:                    USB control failure
-Description: 
-  Hi!
-  I have Audigy 2 NX USB sound card and was trying to install it on my
-Fedora Core5. The version of my kernel is 2.6.15. Recompiled it hundred
-times :). All work with sound card ends up with message from kernel:
+The time for the actual transmission of MIDI commands is easily
+calculated, knowing that the bit rate is 31250 Hz and each byte (plus
+start and stop bits) needs 10 bits.
 
-ALSA /root/ALSA/alsa-driver-1.0.11/usb/usbaudio.c:1330: 2:1:3:
-usb_set_interface failed
+More interesting might be the times from the key press to the actual
+transmission of the command, and from the arrival of the command at the
+computer until the software actually deals with it.  But these are not
+related to the IP transmission.
 
-  I thought that it was some other module blocking the USB control and
-turned off all unnecessary options in kernel, but that doesn't seem to
-help.
-  I checked 'aplay -l' and /proc/asound, 
+> 2. How to calculate elapsed time  data traverse from Host A to Host B (i'm
+> just guessing maybe i could use ping to show RTT?? is this the correct
+> answer?)
 
-[root@ghostchaser ~]# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: NX [SB Audigy 2 NX], device 0: USB Audio [USB Audio]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+Different network protocols might have different latencies (ping uses
+ICMP, aseqnet uses TCP).
 
-   Soundcard also detected in /proc/asound.
+You might want to send the data back to host A and divide the time by
+two.
 
-   I'm stumped around this problem and submit some additional
-files.(kernel config, modprobe.conf, asound.conf)
-======================================================================
+Another approach would be to run some soft synth (or better some
+hardware synth) on both computers, and record the output of both on the
+left/right channels of a stereo sound card, so that the delay between
+them can easily be measured.
 
-----------------------------------------------------------------------
- tiwai - 05-10-06 14:40 
-----------------------------------------------------------------------
-Why not trying ALSA 1.0.11?
+> 5. How long (in millisecond / second ??) should the total elapsed time be,
+> to make the realtime playing feasible?
 
-----------------------------------------------------------------------
- xatt - 05-10-06 19:19 
-----------------------------------------------------------------------
-I used 1.0.11 along with 2.6.15 kernel. Now will switch to it tomorrow on
-2.6.16.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-21-06 14:55 xatt           New Issue                                    
-04-21-06 14:55 xatt           File Added: config                           
-04-21-06 14:55 xatt           Kernel Version            => 2.6.15          
-04-21-06 15:17 xatt           Note Added: 0009412                          
-04-21-06 17:09 Clemens LadischCategory                 CORE - control => USB -
-usb-audio
-04-21-06 17:13 Clemens LadischNote Added: 0009419                          
-05-10-06 09:05 xatt           Note Added: 0009703                          
-05-10-06 09:14 xatt           Note Added: 0009704                          
-05-10-06 11:04 xatt           Note Added: 0009708                          
-05-10-06 14:40 tiwai          Note Added: 0009712                          
-05-10-06 19:19 xatt           Note Added: 0009750                          
-======================================================================
+A value usually mentioned is ten milliseconds.
+(Real organists deal with latencies of about one second.)
 
 
+HTH
+Clemens
 
 
 -------------------------------------------------------
