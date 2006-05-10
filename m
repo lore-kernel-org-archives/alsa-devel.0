@@ -1,11 +1,14 @@
-From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
-Subject: aplay and arecord can't set sw params
-Date: Wed, 10 May 2006 16:18:24 +0200
-Message-ID: <4461F630.2060707@atmel.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
+Date: Wed, 10 May 2006 16:22:07 +0200
+Message-ID: <553dceffeadebf094e474e90dde9515e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 548A7174
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 16:22:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,49 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Does this output give any signs of where the error is?
 
-~ # aplay /stk1000/gorillaz.wav
-Playing WAVE '/stk1000/gorillaz.wav' : Signed 16 bit Little Endian, Rate
-48000 Hz, Stereo
-aplay: set_params:1012: unable to install sw params:
-start_mode: DATA
-xrun_mode: STOP
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 0
-xfer_align: 0
-silence_threshold: 0
-silence_size: 0
-boundary: 1231028224
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
+======================================================================
+Reported By:                croiset
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   758
+Category:                   PCI - RME 96
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Redhat 7.2
+Kernel Version:             2.4.7
+======================================================================
+Date Submitted:             12-29-2004 10:15 CET
+Last Modified:              05-10-2006 16:22 CEST
+======================================================================
+Summary:                    Full duplex is not working in OSS emulation.
+Description: 
+If I play something with one player, I am unable to record something on the
+same device.
+The same thing ispossible with the other cards I have.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000521 Jack + Alsa not working in full duplex,...
+======================================================================
 
-~ # arecord -f S16_BE /stk1000/rec.wav
-Recording WAVE '/stk1000/rec.wav' : Signed 16 bit Big Endian, Rate 8000
-Hz, Mono
-arecord: set_params:1012: unable to install sw params:
-start_mode: DATA
-xrun_mode: STOP
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 0
-xfer_align: 0
-silence_threshold: 0
-silence_size: 0
-boundary: 1073741824
+----------------------------------------------------------------------
+ tiwai - 05-10-06 16:00 
+----------------------------------------------------------------------
+How about the uploaded patch?
+
+----------------------------------------------------------------------
+ croiset - 05-10-06 16:22 
+----------------------------------------------------------------------
+It Works !!!
+
+Thanks a lot !
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-29-04 10:15 croiset        New Issue                                    
+12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
+12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
+12-29-04 14:17 tiwai          Note Added: 0002998                          
+12-29-04 14:54 croiset        Note Added: 0003000                          
+12-29-04 17:39 tiwai          Note Added: 0003004                          
+12-29-04 17:56 croiset        Note Added: 0003005                          
+12-29-04 17:59 croiset        Note Added: 0003006                          
+12-29-04 18:05 croiset        Note Edited: 0003006                         
+12-29-04 18:18 croiset        Note Edited: 0003006                         
+01-03-05 16:30 croiset        Note Added: 0003067                          
+09-14-05 16:16 jdthood        Relationship added       related to 0000521  
+12-30-05 23:08 rlrevell       Note Added: 0007278                          
+01-02-06 09:12 croiset        Note Added: 0007368                          
+05-09-06 14:09 croiset        Note Added: 0009657                          
+05-09-06 15:49 croiset        Note Added: 0009659                          
+05-10-06 14:56 tiwai          Note Added: 0009717                          
+05-10-06 15:48 croiset        Note Added: 0009718                          
+05-10-06 15:59 tiwai          File Added: rme96-oss-fullduplex-fix.diff         
+          
+05-10-06 16:00 tiwai          Note Added: 0009720                          
+05-10-06 16:22 croiset        Note Added: 0009723                          
+======================================================================
 
 
--- 
-With kind regards,
-Med vennlig hilsen,
-
-Hans-Christian Egtvedt
-Applications Engineer - AVR Applications Lab
-Atmel Norway
 
 
 -------------------------------------------------------
