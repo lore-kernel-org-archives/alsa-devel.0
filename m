@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002087]: Audio still broken for Asus A8V-MX
-Date: Thu, 11 May 2006 00:11:00 +0200
-Message-ID: <5892d20aaaf13cc0d5ac429ad9d56add@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002035]: Realtek 861 card not functional using included alsa drivers
+Date: Thu, 11 May 2006 00:44:14 +0200
+Message-ID: <c0dbdae8efcdd4de25e6942a5c010ae7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5F9021A9
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 00:11:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D1649219
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 00:44:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,97 +24,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2087> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
 ======================================================================
-Reported By:                myxie
-Assigned To:                
+Reported By:                vertex
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2087
-Category:                   PCI - via82xx
+Issue ID:                   2035
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.16
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
-Date Submitted:             04-30-2006 23:33 CEST
-Last Modified:              05-11-2006 00:10 CEST
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              05-11-2006 00:44 CEST
 ======================================================================
-Summary:                    Audio still broken for Asus A8V-MX
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
 Description: 
-The patches integrated (see issue 0001622) into the latest release of ALSA
-make the on-board audio more usuable, but there are still significant
-issues.
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-Playing an audio file results in a freeze for 10 seconds, followed by a
-write error and then the audio continues normally. I noticed a second
-write error later on in the stream.
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-I am happy to try patches, turn on debugging flags etc. Let me know.
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
 
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- myxie - 05-10-06 23:55 
+ vertex - 04-26-06 00:37 
 ----------------------------------------------------------------------
-I'm attaching a series of register dumps gathered with
-
-i=0; while true; do { date '+%Y%m%dT%H%M%S.%N'; cat
-/proc/asound/card0/via82xx; } >/tmp/regdump_$(printf %06d $i); i=$[$i+1];
-done
-
-starting before and ending after an ogg123 run. I let this play for a
-little while after the 10 second pause.
-
-regdumps
-
-0000-0499 silence
-0500-0576 first burst of playback
-0577-2668 10 seconds silence
-2669-3193 continuous audio
-3193-3656 silence
-
-regdumps in a compressed tar archive.
-
-Myxie.
+Just wondering if there was anything I could do to facilitate a fix for
+this?
 
 ----------------------------------------------------------------------
- myxie - 05-11-06 00:10 
+ vertex - 05-11-06 00:44 
 ----------------------------------------------------------------------
-Use this to look at file deltas.
+The motherboard vendor released a bios update. I am attaching the contents
+of /proc/asound/card0/codec#0 and the bits of debug that I found in dmesg
 
-i=0; while x=regdump_$(printf %06d $i); y=regdump_$(printf %06d $[$i+1]);
-[ -f $y ]; do grep -v ^2006 $x > a; grep -v ^2006 $y > b; cmp -s a b || {
-echo "$i -> $[$i+1]"; diff -u $x $y; }; i=$[$i+1]; done
+When I inserted the snd-hda-intel module with model=3stack, it shows a
+functional PCM channel, but still no sound on built-in speakers or
+headphones.
+
+Using auto, 6stack, and 6stack dig leaves me with unusable mixer
+controls.
+
+Please let me know if I can provide any other information.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-30-06 23:33 myxie          New Issue                                    
-04-30-06 23:33 myxie          Distribution              => Debian          
-04-30-06 23:33 myxie          Kernel Version            => 2.6.16          
-05-02-06 17:57 tiwai          Note Added: 0009562                          
-05-05-06 18:40 myxie          Note Added: 0009628                          
-05-05-06 19:58 myxie          File Added: lsof.ogg123                      
-05-05-06 19:58 myxie          File Added: lsof.mplayer                     
-05-05-06 19:59 myxie          Note Added: 0009629                          
-05-05-06 20:59 karsten        Note Added: 0009630                          
-05-05-06 21:29 myxie          File Added: lspci.txt                        
-05-05-06 21:30 myxie          Note Added: 0009631                          
-05-08-06 18:09 myxie          Note Added: 0009646                          
-05-08-06 18:10 myxie          File Added: aadebug.txt                      
-05-08-06 18:31 myxie          Note Added: 0009647                          
-05-08-06 21:31 myxie          Note Added: 0009648                          
-05-10-06 16:14 tiwai          Note Added: 0009721                          
-05-10-06 17:13 myxie          Note Added: 0009736                          
-05-10-06 17:18 tiwai          Note Added: 0009737                          
-05-10-06 17:38 myxie          Note Added: 0009742                          
-05-10-06 18:20 tiwai          Note Added: 0009747                          
-05-10-06 23:55 myxie          Note Added: 0009752                          
-05-10-06 23:56 myxie          File Added: regdumps.tgz                     
-05-11-06 00:10 myxie          Note Added: 0009754                          
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
+05-11-06 00:44 vertex         Note Added: 0009755                          
 ======================================================================
 
 
