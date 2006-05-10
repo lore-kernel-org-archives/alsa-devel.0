@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002087]: Audio still broken for Asus A8V-MX
-Date: Wed, 10 May 2006 17:13:44 +0200
-Message-ID: <adc6eac7c8f0aa6581fa423f0a977115@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002104]: No sound on Acer Travelmate 3012WTMI
+Date: Wed, 10 May 2006 17:19:31 +0200
+Message-ID: <5a40dc5cb40d7303ac5572b930c4ff2d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D997188
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 17:13:44 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB50518B
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 17:19:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,92 +24,156 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2087> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2104> 
 ======================================================================
-Reported By:                myxie
-Assigned To:                
+Reported By:                mcosta
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2087
-Category:                   PCI - via82xx
+Issue ID:                   2104
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.16
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-30-2006 23:33 CEST
-Last Modified:              05-10-2006 17:13 CEST
+Date Submitted:             05-08-2006 16:08 CEST
+Last Modified:              05-10-2006 17:19 CEST
 ======================================================================
-Summary:                    Audio still broken for Asus A8V-MX
+Summary:                    No sound on Acer Travelmate 3012WTMI
 Description: 
-The patches integrated (see issue 0001622) into the latest release of ALSA
-make the on-board audio more usuable, but there are still significant
-issues.
+Hello, I have a TM3012WTMI laptop and I can not hear any sound. I am
+running 2.6.1.6-11-smp kernel. I have compiled serveral versions of alsa
+drivers and I am in the same situation: no sound at all.
 
-Playing an audio file results in a freeze for 10 seconds, followed by a
-write error and then the audio continues normally. I noticed a second
-write error later on in the stream.
+I attach some information:
+lspci
+00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub (rev
+03)
+00:02.0 VGA compatible controller: Intel Corporation Mobile Integrated
+Graphics Controller (rev 03)
+00:02.1 Display controller: Intel Corporation Mobile Integrated Graphics
+Controller (rev 03)
+00:1b.0 Class 0403: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 02)
+00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 1 (rev 02)
+00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 2 (rev 02)
+00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 3 (rev 02)
+00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 4 (rev 02)
+00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #1
+(rev 02)
+00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #2
+(rev 02)
+00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #3
+(rev 02)
+00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #4
+(rev 02)
+00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI
+Controller (rev 02)
+00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev e2)
+00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
+Bridge (rev 02)
+00:1f.2 IDE interface: Intel Corporation 82801GBM/GHM (ICH7 Family) Serial
+ATA Storage Controllers cc=IDE (rev 02)
+00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus Controller
+(rev 02)
+02:00.0 Network controller: Intel Corporation: Unknown device 4222 (rev
+02)
+03:00.0 Ethernet controller: Broadcom Corporation NetLink BCM5789 Gigabit
+Ethernet PCI Express (rev 11)
+0a:09.0 CardBus bridge: Texas Instruments: Unknown device 8039
+0a:09.1 FireWire (IEEE 1394): Texas Instruments: Unknown device 803a
+0a:09.2 Unknown mass storage controller: Texas Instruments: Unknown device
+803b
 
-I am happy to try patches, turn on debugging flags etc. Let me know.
+hwinfo --sound:
+13: PCI 1b.0: 0403 Multimedia controller
+  [Created at pci.277]
+  UDI: /org/freedesktop/Hal/devices/pci_8086_27d8
+  Unique ID: u1Nb.NLLhYZ867B4
+  SysFS ID: /devices/pci0000:00/0000:00:1b.0
+  SysFS BusID: 0000:00:1b.0
+  Hardware Class: sound
+  Model: "Acer Incorporated [ALI] 82801G (ICH7 Family) High Definition
+Audio Controller"
+  Vendor: pci 0x8086 "Intel Corporation"
+  Device: pci 0x27d8 "82801G (ICH7 Family) High Definition Audio
+Controller"
+  SubVendor: pci 0x1025 "Acer Incorporated [ALI]"
+  SubDevice: pci 0x0098
+  Revision: 0x02
+  Driver: "HDA Intel"
+  Memory Range: 0xb0000000-0xb0003fff (rw,non-prefetchable)
+  IRQ: 66 (138 events)
+  Module Alias: "pci:v00008086d000027D8sv00001025sd00000098bc04sc03i00"
+  Driver Info #0:
+    Driver Status: snd_hda_intel is active
+    Driver Activation Cmd: "modprobe snd_hda_intel"
+  Config Status: cfg=no, avail=yes, need=no, active=unknown
+
+When the driver is loaded I get on /var/log/messages:
+
+ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 66
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2115: autoconfig:
+line_outs=0 (0x0/0x0/0x0/0x0/0x0)
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2119:    speaker_outs=0
+(0x0/0x0/0x0/0x0/0x0)
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2121:    hp=0x14,
+dig_out=0x1e, din_in=0x0
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2129:    inputs:
+mic=0x1a, fmic=0x0, line=0x0, fline=0x0, cd=0x0, aux=0x0
+
+Best regards.
+
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-10-06 16:14 
+ mcosta - 05-10-06 17:03 
 ----------------------------------------------------------------------
-As I mentioned, it's likely an IRQ problem.  The driver isn't woken up at
-the right time.  Usually it's a problem in more deeper point, often in
-ACPI.
+I have put the file for the result of --> alsactl -f somefile store.
 
-The workaround via access to the proc file is a pure side-effect.  When
-the proc file is accessed, the driver tries to update the status, and
-eventually updates the hw pointer that should have been done via
-interrupts.
+When I load the driver with model=3stack-dig, this message appear in
+dmesg:
+
+/alsa-driver-1.0.11/pci/hda/hda_codec.c:1704: hda_codec: model
+'3stack-dig' is selected
+hda_codec: num_steps = 0 for NID=0x7
+
+ When I try to start alsamixer I get this error:
+amixer: Mixer default load error: Invalid argument
 
 ----------------------------------------------------------------------
- myxie - 05-10-06 17:13 
+ tiwai - 05-10-06 17:19 
 ----------------------------------------------------------------------
-Tried restarting with pci=routeirq. Relevant bits of dmesg diff:
-
-+ACPI: PCI Interrupt 0000:00:11.5[C] -> GSI 22 (level, low) -> IRQ 185
--ACPI: PCI Interrupt 0000:00:11.5[C] -> GSI 22 (level, low) -> IRQ 201
-+ACPI: PCI Interrupt 0000:00:11.5[C] -> GSI 22 (level, low) -> IRQ 185
-
-So it looks like the driver does call pci_enable_device (as the output
-appears twice).
-
-I can also try nosmp, pci=noacpi and acpi=noirq (with increasing risk of
-not having the machine come up).
-
-Anyway, the pci=routeirq option had no effect on the 10 second hang.
-
-Could this problem not be related to the VT8251 problem that was
-supposedly fixed in 0001622?
-
-Myxie.
+The NID 0x07 problem should be fixed with the uploaded patch.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-30-06 23:33 myxie          New Issue                                    
-04-30-06 23:33 myxie          Distribution              => Debian          
-04-30-06 23:33 myxie          Kernel Version            => 2.6.16          
-05-02-06 17:57 tiwai          Note Added: 0009562                          
-05-05-06 18:40 myxie          Note Added: 0009628                          
-05-05-06 19:58 myxie          File Added: lsof.ogg123                      
-05-05-06 19:58 myxie          File Added: lsof.mplayer                     
-05-05-06 19:59 myxie          Note Added: 0009629                          
-05-05-06 20:59 karsten        Note Added: 0009630                          
-05-05-06 21:29 myxie          File Added: lspci.txt                        
-05-05-06 21:30 myxie          Note Added: 0009631                          
-05-08-06 18:09 myxie          Note Added: 0009646                          
-05-08-06 18:10 myxie          File Added: aadebug.txt                      
-05-08-06 18:31 myxie          Note Added: 0009647                          
-05-08-06 21:31 myxie          Note Added: 0009648                          
-05-10-06 16:14 tiwai          Note Added: 0009721                          
-05-10-06 17:13 myxie          Note Added: 0009736                          
+05-08-06 16:08 mcosta         New Issue                                    
+05-09-06 17:35 lrupn          Note Added: 0009666                          
+05-09-06 23:28 useidel        Note Added: 0009695                          
+05-09-06 23:29 useidel        Note Edited: 0009695                         
+05-09-06 23:47 rlrevell       Note Added: 0009696                          
+05-09-06 23:56 useidel        Note Added: 0009697                          
+05-10-06 14:48 tiwai          Note Added: 0009715                          
+05-10-06 16:43 useidel        Note Added: 0009727                          
+05-10-06 16:50 tiwai          Note Added: 0009729                          
+05-10-06 16:52 mcosta         Note Added: 0009730                          
+05-10-06 17:00 mcosta         File Added: tm3012sound.txt                    
+05-10-06 17:03 mcosta         Note Added: 0009733                          
+05-10-06 17:19 tiwai          Note Added: 0009739                          
 ======================================================================
 
 
