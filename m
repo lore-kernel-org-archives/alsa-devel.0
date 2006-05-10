@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001898]: no sound from headphones or speakers on asus a6km laptop
-Date: Wed, 10 May 2006 14:51:12 +0200
-Message-ID: <8c2f6a2f5b298d0cdfedac677518c8bb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
+Date: Wed, 10 May 2006 14:56:37 +0200
+Message-ID: <d2132ce0a8d992ac765b3b9b783989dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3D2C15A
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 14:51:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33A7815A
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 14:56:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,101 +22,92 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
 ======================================================================
-Reported By:                kiwi
-Assigned To:                tiwai
+Reported By:                croiset
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1898
-Category:                   PCI - intel8x0
+Issue ID:                   758
+Category:                   PCI - RME 96
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 5 test3
-Kernel Version:             2.6.15-1.2009.4.2_FC5
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Redhat 7.2
+Kernel Version:             2.4.7
 ======================================================================
-Date Submitted:             03-09-2006 00:30 CET
-Last Modified:              05-10-2006 14:51 CEST
+Date Submitted:             12-29-2004 10:15 CET
+Last Modified:              05-10-2006 14:56 CEST
 ======================================================================
-Summary:                    no sound from headphones or speakers on asus a6km
-laptop
+Summary:                    Full duplex is not working in OSS emulation.
 Description: 
-The headphone port and the speakers just don't work. Seems like there is
-some control hidden in the mixer which is muted. 
-By setting the master and pcm volume at 100% I can hear just some static
-on song beats only on headphones. Speakers always stay mute.
-I can only get sound by attaching the headphones to line-in and enabling
-"shared" surround mode.
-
-Same issues with a knoppix 4.0.2.
-
+If I play something with one player, I am unable to record something on the
+same device.
+The same thing ispossible with the other cards I have.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000521 Jack + Alsa not working in full duplex,...
 ======================================================================
 
 ----------------------------------------------------------------------
- kiwi - 05-09-06 22:00 
+ croiset - 05-09-06 15:49 
 ----------------------------------------------------------------------
->Try the attached patch (for 1.0.11). If it doesn't work, check whether the
-PCI subsytem ID is matching with yours.
+We put some logs in rme96.c for debugging the problem.
 
-I tried the patch and works.
+We obtain this :
 
-thank you :)
+The function snd_rme96_capture_hw_params returns -EBUSY when we open the
+analog capture device when the analog output device is already opened in
+play mode because :
+
+rme96->playback_periodsize = 2048
+rme96->capture_frlog = 2
+params_period_size(params)=2048
+
+then the tsst in line 1052 (alsa 1.0.11) is valid and then returns -EBUSY
+
+If the analog output device is not opened, when we capture, the values are
+:
+rme96->playback_periodsize = 0
+rme96->capture_frlog = 2
+params_period_size(params)=2048
+
+then the test is not valid and the device is working.
 
 ----------------------------------------------------------------------
- tiwai - 05-10-06 14:51 
+ tiwai - 05-10-06 14:56 
 ----------------------------------------------------------------------
-It's on HG repo.  Thanks.
+That makes sense.  RME96 requests exactly the same condition for playback
+and capture sides.
+When you use OSS, each ioctl tries to change one parameter, and at some
+stage, it results in an incompatible state.  Usually this should be
+restricted via hw_constraint settings, but rme96.c has no proper code for
+that.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-09-06 00:30 kiwi           New Issue                                    
-03-09-06 00:30 kiwi           Distribution              => Fedora Core 5 test3
-03-09-06 00:30 kiwi           Kernel Version            => 2.6.15-1.2009.4.2_FC5
-03-09-06 16:26 kiwi           Issue Monitored: kiwi                        
-03-09-06 16:41 kiwi           Note Added: 0008391                          
-03-09-06 20:09 michele26x1    Note Added: 0008396                          
-03-09-06 21:02 kiwi           Note Added: 0008397                          
-03-11-06 14:35 hongqn         Issue Monitored: hongqn                      
-03-12-06 15:49 kiwi           Note Added: 0008432                          
-03-12-06 16:40 Rollsappletree Note Added: 0008433                          
-03-13-06 10:10 u238           Note Added: 0008439                          
-03-13-06 10:11 u238           Note Edited: 0008439                         
-03-13-06 10:12 u238           Note Edited: 0008439                         
-03-13-06 23:59 lbenini        Note Added: 0008469                          
-03-23-06 13:56 lbenini        Note Added: 0008881                          
-03-23-06 13:59 lbenini        Note Edited: 0008881                         
-03-24-06 19:22 kiwi           Note Added: 0008934                          
-03-26-06 21:56 kiwi           Note Added: 0008975                          
-03-26-06 22:35 kiwi           Note Added: 0008977                          
-03-26-06 22:54 lbenini        Note Added: 0008978                          
-03-26-06 23:11 kiwi           Note Edited: 0008975                         
-03-26-06 23:13 kiwi           Note Added: 0008979                          
-03-27-06 01:06 michele26x1    Note Added: 0008980                          
-03-27-06 01:38 michele26x1    Note Edited: 0008980                         
-03-27-06 07:16 hongqn         Note Added: 0008992                          
-03-30-06 21:42 kiwi           Note Added: 0009040                          
-03-31-06 09:53 kiwi           Note Edited: 0009040                         
-03-31-06 09:54 kiwi           Note Edited: 0008975                         
-04-01-06 15:55 hongqn         Note Added: 0009055                          
-04-15-06 02:04 kiwi           Note Added: 0009291                          
-04-15-06 22:55 tinux          Issue Monitored: tinux                       
-04-20-06 14:57 tiwai          Note Added: 0009379                          
-04-20-06 14:57 tiwai          File Added: asus-a6km-fix.diff                    
-04-26-06 08:01 lucabelluccini Note Added: 0009504                          
-04-26-06 08:01 lucabelluccini Issue Monitored: lucabelluccini                   
-
-05-09-06 22:00 kiwi           Note Added: 0009690                          
-05-10-06 14:51 tiwai          Status                   new => resolved     
-05-10-06 14:51 tiwai          Resolution               open => fixed       
-05-10-06 14:51 tiwai          Assigned To               => tiwai           
-05-10-06 14:51 tiwai          Note Added: 0009716                          
+12-29-04 10:15 croiset        New Issue                                    
+12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
+12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
+12-29-04 14:17 tiwai          Note Added: 0002998                          
+12-29-04 14:54 croiset        Note Added: 0003000                          
+12-29-04 17:39 tiwai          Note Added: 0003004                          
+12-29-04 17:56 croiset        Note Added: 0003005                          
+12-29-04 17:59 croiset        Note Added: 0003006                          
+12-29-04 18:05 croiset        Note Edited: 0003006                         
+12-29-04 18:18 croiset        Note Edited: 0003006                         
+01-03-05 16:30 croiset        Note Added: 0003067                          
+09-14-05 16:16 jdthood        Relationship added       related to 0000521  
+12-30-05 23:08 rlrevell       Note Added: 0007278                          
+01-02-06 09:12 croiset        Note Added: 0007368                          
+05-09-06 14:09 croiset        Note Added: 0009657                          
+05-09-06 15:49 croiset        Note Added: 0009659                          
+05-10-06 14:56 tiwai          Note Added: 0009717                          
 ======================================================================
 
 
