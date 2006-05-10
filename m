@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001808]: Line 6 Toneport UX1 driver
-Date: Wed, 10 May 2006 14:39:15 +0200
-Message-ID: <e00e4cac0b58e6d9fd8143e1ece6a7e5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002051]: USB control failure
+Date: Wed, 10 May 2006 14:40:20 +0200
+Message-ID: <ac9207799f70cf7a906ba32d372b0a3b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1712D15A
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 14:39:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E63C15A
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 14:40:20 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,95 +24,217 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1808> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2051> 
 ======================================================================
-Reported By:                daste
-Assigned To:                Clemens Ladisch
+Reported By:                xatt
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1808
-Category:                   1_OTHERS
+Issue ID:                   2051
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             02-02-2006 00:49 CET
-Last Modified:              05-10-2006 14:39 CEST
+Date Submitted:             04-21-2006 14:55 CEST
+Last Modified:              05-10-2006 14:40 CEST
 ======================================================================
-Summary:                    Line 6 Toneport UX1 driver
+Summary:                    USB control failure
 Description: 
-I recently bought a Line 6 Toneport UX1 USB sound card, but I can't use it
-under Linux, since it's not supported by ALSA.
-So I'd like to ask you what can I do: altough I'm quite capable of
-programming in C, I never developed any kind of driver either for Linux or
-any other OS.
-I thought that maybe it was my turn to learn, so I wrote an e-mail to Line
-6 asking them if they had plans on a Linux driver for such soundcard, or
-otherwise, if they would have sent me infos, so that I could have tried to
-spend some time trying to develop a driver. They haven't answered yet.
-I do want to use that unbelivable sound card under Linux, so I think I'm
-going to code, but I don't know where to start: can you give me any
-suggestions?
-And since I think I have to do some reverse engineering on Microsoft
-Windows drivers, can you give some other advice on such topic too?
-Otherwise, I'd like to ask you whether you're already developing a
-solution for such a problem or not. Thanks in advance.
+  Hi!
+  I have Audigy 2 NX USB sound card and was trying to install it on my
+Fedora Core5. The version of my kernel is 2.6.15. Recompiled it hundred
+times :). All work with sound card ends up with message from kernel:
+
+ALSA /root/ALSA/alsa-driver-1.0.11/usb/usbaudio.c:1330: 2:1:3:
+usb_set_interface failed
+
+  I thought that it was some other module blocking the USB control and
+turned off all unnecessary options in kernel, but that doesn't seem to
+help.
+  I checked 'aplay -l' and /proc/asound, 
+
+[root@ghostchaser ~]# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: NX [SB Audigy 2 NX], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+   Soundcard also detected in /proc/asound.
+
+   I'm stumped around this problem and submit some additional
+files.(kernel config, modprobe.conf, asound.conf)
 ======================================================================
 
 ----------------------------------------------------------------------
- daste - 05-10-06 10:49 
+ xatt - 05-10-06 11:04 
 ----------------------------------------------------------------------
-The source files I uploaded are outdated. Actually the card supports
-44.1/48 kHz, 16/24 bits, but however if you are using 44.1 kHz 16-bits for
-playback, for example, you can only use the same format for capture.
-So I asked on alsa-dev ML (without any response) whether I should only
-support 48 kHz, 24-bits capture/playback and let ALSA do the work of
-conversion, or support all rates.
-However I decided to do like the Windows' driver do: 48kHz, 24-bits only.
-.formats          = SNDRV_PCM_FMTBIT_S24_3LE,
-.rates            = SNDRV_PCM_RATE_48000,
-The problem is that when using aplay, also with plughw:x, that error is
-returned to me. So I am asking if it could be that my version of ALSA
-still does not support S24_3LE 48 kHz stereo conversion from other formats
-(S16_LE 44.1 kHz stereo in particular), or maybe I did something wrong
-inside the driver!
-48kHz 24-bits stereo playback works!
+Have just compiled new 2.6.16.14 kernel, and /proc/asound/card0/stream0
+appeared:
+
+Creative Technology Ltd SB Audigy 2 NX at usb-0000:00:1d.7-1, high speed :
+USB Audio
+
+Playback:
+  Status: Stop
+  Interface 1
+    Altset 3
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 4
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 5
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 6
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 7
+    Format: S16_LE
+    Channels: 4
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 8
+    Format: S24_3LE
+    Channels: 4
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 9
+    Format: S16_LE
+    Channels: 4
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 10
+    Format: S24_3LE
+    Channels: 4
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 11
+    Format: S16_LE
+    Channels: 6
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 12
+    Format: S24_3LE
+    Channels: 6
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 13
+    Format: S16_LE
+    Channels: 6
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 14
+    Format: S24_3LE
+    Channels: 6
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 15
+    Format: S16_LE
+    Channels: 8
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 16
+    Format: S24_3LE
+    Channels: 8
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 17
+    Format: S16_LE
+    Channels: 8
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 18
+    Format: S24_3LE
+    Channels: 8
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+
+Capture:
+  Status: Stop
+  Interface 2
+    Altset 5
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 48000
+  Interface 2
+    Altset 6
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 48000
+  Interface 2
+    Altset 7
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 96000
+  Interface 2
+    Altset 8
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 96000
+
+
+/proc/asound/card0/audigy2nx has the same contents:
+SB Audigy 2 NX jacks
+
+dig in : ?
+line in: ?
+spk out: ?
+hph out: ?
+
+
+The version of alsa in 2.6.16.14 is 1.0.11rc2
 
 ----------------------------------------------------------------------
- tiwai - 05-10-06 14:39 
+ tiwai - 05-10-06 14:40 
 ----------------------------------------------------------------------
-The post without pathes is almost useless.  Please post together with your
-latest patches including fixes I suggested.  Then we can review and
-discuss about it.
+Why not trying ALSA 1.0.11?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-02-06 00:49 daste          New Issue                                    
-02-02-06 01:31 rlrevell       Note Added: 0007866                          
-02-02-06 08:58 Clemens LadischNote Added: 0007870                          
-02-02-06 12:47 daste          File Added: lsusb                            
-02-02-06 12:47 daste          Note Added: 0007875                          
-02-02-06 16:29 daste          Issue Monitored: daste                       
-02-03-06 08:37 Clemens LadischNote Added: 0007892                          
-02-03-06 08:37 Clemens LadischAssigned To               => Clemens Ladisch 
-02-03-06 08:37 Clemens LadischReproducibility          N/A => always       
-02-03-06 08:37 Clemens LadischStatus                   new => assigned     
-02-03-06 10:57 daste          Note Added: 0007895                          
-03-03-06 10:46 daste          Note Added: 0008339                          
-03-26-06 00:33 suamor         Note Added: 0008955                          
-03-26-06 09:23 daste          Note Added: 0008966                          
-04-19-06 19:16 daste          File Added: line6_tp_ux1.c                    
-04-19-06 19:17 daste          File Added: line6_tp_ux1.h                    
-04-19-06 19:21 daste          Note Added: 0009353                          
-04-20-06 13:19 tiwai          Note Added: 0009372                          
-05-10-06 02:58 daste          Note Added: 0009698                          
-05-10-06 03:12 rlrevell       Note Added: 0009699                          
-05-10-06 10:49 daste          Note Added: 0009706                          
-05-10-06 14:39 tiwai          Note Added: 0009711                          
+04-21-06 14:55 xatt           New Issue                                    
+04-21-06 14:55 xatt           File Added: config                           
+04-21-06 14:55 xatt           Kernel Version            => 2.6.15          
+04-21-06 15:17 xatt           Note Added: 0009412                          
+04-21-06 17:09 Clemens LadischCategory                 CORE - control => USB -
+usb-audio
+04-21-06 17:13 Clemens LadischNote Added: 0009419                          
+05-10-06 09:05 xatt           Note Added: 0009703                          
+05-10-06 09:14 xatt           Note Added: 0009704                          
+05-10-06 11:04 xatt           Note Added: 0009708                          
+05-10-06 14:40 tiwai          Note Added: 0009712                          
 ======================================================================
 
 
