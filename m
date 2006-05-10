@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002104]: No sound on Acer Travelmate 3012WTMI
-Date: Wed, 10 May 2006 16:50:13 +0200
-Message-ID: <75f3c6e22b675ac930c45e3da7a8653f@bugtrack.alsa-project.org>
+Date: Wed, 10 May 2006 16:52:17 +0200
+Message-ID: <2fc94777959a3771d40e4e75905b45f7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2B72185
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 16:50:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46B8C116
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 16:52:17 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-08-2006 16:08 CEST
-Last Modified:              05-10-2006 16:50 CEST
+Last Modified:              05-10-2006 16:52 CEST
 ======================================================================
 Summary:                    No sound on Acer Travelmate 3012WTMI
 Description: 
@@ -139,16 +139,6 @@ Best regards.
 ======================================================================
 
 ----------------------------------------------------------------------
- useidel - 05-10-06 16:43 
-----------------------------------------------------------------------
-I tried the final version 1.0.11, but no sound output. I'll provide the
-requested information later, when I have access to my notebook.
-Are more information/log files/... needed?
-
-Thanks in advance,
-Udo
-
-----------------------------------------------------------------------
  tiwai - 05-10-06 16:50 
 ----------------------------------------------------------------------
 Run "alsactl -f somefile store" and upload the generated file, too.  It
@@ -156,6 +146,245 @@ contains the whole mixer status.
 
 Also, try model=3stack-dig option, and make sure that you unmute/adjust
 "Front" volume.
+
+----------------------------------------------------------------------
+ mcosta - 05-10-06 16:52 
+----------------------------------------------------------------------
+Hello, I have also tried the 1.0.11-final release and I have no sound.
+
+I have /proc/asound/card0/codec#0
+cat /proc/asound/card0/codec#0
+Codec: Realtek ALC883
+Address: 0
+Vendor Id: 0x10ec0883
+Subsystem Id: 0x1025160d
+Revision Id: 0x100002
+Default PCM: rates 0x560, bits 0x0e, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x02 [Audio Output] wcaps 0x11: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x03 [Audio Output] wcaps 0x11: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x04 [Audio Output] wcaps 0x11: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x05 [Audio Output] wcaps 0x11: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
+  PCM: rates 0x560, bits 0x1e, types 0x1
+Node 0x07 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x1f 0x1f]
+  PCM: rates 0x160, bits 0x06, types 0x1
+  Connection: 1
+     0x23
+Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x1f 0x1f]
+  PCM: rates 0x160, bits 0x06, types 0x1
+  Connection: 1
+     0x22
+Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
+  PCM: rates 0x560, bits 0x1e, types 0x1
+  Connection: 1
+     0x1f
+Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x1f 0x1f] [0x00 0x00] [0x00
+0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+  Connection: 10
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17
+Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x1f 0x1f]
+  Connection: 2
+     0x02 0x0b
+Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 2
+     0x03 0x0b
+Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 2
+     0x04 0x0b
+Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 2
+     0x05 0x0b
+Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x083e: IN OUT HP
+  Pin Default 0x0121411f: [Jack] HP Out at Ext Rear
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0x40: OUT
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x15 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x083e: IN OUT HP
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Connection: 5
+     0x0c 0x0d* 0x0e 0x0f 0x26
+Node 0x16 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x083e: IN OUT HP
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Connection: 5
+     0x0c 0x0d 0x0e* 0x0f 0x26
+Node 0x17 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x083e: IN OUT HP
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Connection: 5
+     0x0c 0x0d 0x0e 0x0f* 0x26
+Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x08173e: IN OUT HP
+  Pin Default 0x41a19830: [N/A] Mic at Ext Rear
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x21: IN
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x08173e: IN OUT HP
+  Pin Default 0x99a30130: [Fixed] Mic at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x20: IN
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x08173e: IN OUT HP
+  Pin Default 0x01a19c3f: [Jack] Mic at Ext Rear
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x24: IN
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x08173e: IN OUT HP
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Connection: 5
+     0x0c* 0x0d 0x0e 0x0f 0x26
+Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x00:
+Node 0x1d [Pin Complex] wcaps 0x400000: Mono
+  Pincap 0x0820: IN
+  Pin Default 0xb71111f0: [Fixed] Speaker at Oth Mobile-In
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x00:
+Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x01451120: [Jack] SPDIF Out at Ext Rear
+    Conn = Optical, Color = Black
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x06
+Node 0x1f [Pin Complex] wcaps 0x400200: Mono Digital
+  Pincap 0x0820: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x00:
+Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x22 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
+0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
+0x80]
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 11
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+Node 0x23 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
+0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
+0x80]
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 11
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+Node 0x24 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x25 [Audio Output] wcaps 0x11: Stereo
+  PCM: rates 0x560, bits 0x0e, types 0x1
+Node 0x26 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 2
+     0x25 0x0b
+
+
+cat /proc/asound/card0/codec#1
+Codec: Generic 14f1 ID 2bfa
+Address: 1
+Vendor Id: 0x14f12bfa
+Subsystem Id: 0x10250098
+Revision Id: 0x90000
+
+Thank you for your help.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -169,6 +398,7 @@ Date Modified  Username       Field                    Change
 05-10-06 14:48 tiwai          Note Added: 0009715                          
 05-10-06 16:43 useidel        Note Added: 0009727                          
 05-10-06 16:50 tiwai          Note Added: 0009729                          
+05-10-06 16:52 mcosta         Note Added: 0009730                          
 ======================================================================
 
 
