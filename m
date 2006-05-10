@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002051]: USB control failure
-Date: Wed, 10 May 2006 09:05:02 +0200
-Message-ID: <01a9ed2132ce576f4bc4e73327a35542@bugtrack.alsa-project.org>
+Date: Wed, 10 May 2006 09:14:27 +0200
+Message-ID: <c1402bc5e1341637cb436b1dfb6932b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88B7A132
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 09:05:02 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29D6816D
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 09:14:27 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             04-21-2006 14:55 CEST
-Last Modified:              05-10-2006 09:05 CEST
+Last Modified:              05-10-2006 09:14 CEST
 ======================================================================
 Summary:                    USB control failure
 Description: 
@@ -68,13 +68,6 @@ card 0: NX [SB Audigy 2 NX], device 0: USB Audio [USB Audio]
    I'm stumped around this problem and submit some additional
 files.(kernel config, modprobe.conf, asound.conf)
 ======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 04-21-06 17:13 
-----------------------------------------------------------------------
-What are the contents of /proc/asound/card0/stream0?
-
-Does "aplay -D plughw:0 something.wav" work?
 
 ----------------------------------------------------------------------
  xatt - 05-10-06 09:05 
@@ -114,6 +107,26 @@ BUFFER_SIZE: 11025
 BUFFER_BYTES: 22050
 TICK_TIME: 4000
 
+----------------------------------------------------------------------
+ xatt - 05-10-06 09:14 
+----------------------------------------------------------------------
+I put error return in usbaudio.c
+
+        int my_res;
+        /* set interface */
+        if (subs->interface != fmt->iface || subs->format !=
+fmt->altset_idx) {
+                if ((my_res = usb_set_interface(dev, fmt->iface,
+fmt->altsetting)) < 0) {
+                        snd_printk(KERN_ERR "%d:%d:%d: usb_set_interface
+failed,err = %d\n",
+                                   dev->devnum, fmt->iface,
+fmt->altsetting,my_res);
+
+
+
+This returns -71, now trying to identify error
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -125,6 +138,7 @@ Date Modified  Username       Field                    Change
 usb-audio
 04-21-06 17:13 Clemens LadischNote Added: 0009419                          
 05-10-06 09:05 xatt           Note Added: 0009703                          
+05-10-06 09:14 xatt           Note Added: 0009704                          
 ======================================================================
 
 
