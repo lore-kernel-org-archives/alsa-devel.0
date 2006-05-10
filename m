@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001808]: Line 6 Toneport UX1 driver
-Date: Wed, 10 May 2006 02:58:15 +0200
-Message-ID: <b01f3d7f73087a4719ae1bd404e5a1fb@bugtrack.alsa-project.org>
+Date: Wed, 10 May 2006 03:12:16 +0200
+Message-ID: <f0918ac0bf064059f8ef5aa8e222191d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5A7318F
-	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 02:58:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4A8B0249
+	for <alsa-devel@alsa-project.org>; Wed, 10 May 2006 03:12:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-02-2006 00:49 CET
-Last Modified:              05-10-2006 02:58 CEST
+Last Modified:              05-10-2006 03:12 CEST
 ======================================================================
 Summary:                    Line 6 Toneport UX1 driver
 Description: 
@@ -63,18 +63,6 @@ solution for such a problem or not. Thanks in advance.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-20-06 13:19 
-----------------------------------------------------------------------
-Looks fine as a first start.  It could be merged in alsa-driver tree for
-testing after a few tunings/fixes (missing error path, etc).
-
-First of all, please follow the coding style described in
-linux/Documentation/CodingStyle.
-
-Then post the patches to alsa-devel ML.  The BTS isn't suitable for
-discussing about the patches.
-
-----------------------------------------------------------------------
  daste - 05-10-06 02:58 
 ----------------------------------------------------------------------
 ok, this is not the place to talk about these things, but I posted to
@@ -87,6 +75,15 @@ aplay: set_params:896: Sample format non available
 
 Could it be that I'm using S24_3LE and not S24_LE for hw params, or it is
 due to something else? (kernel used: 2.6.15-gentoo-r7)
+
+----------------------------------------------------------------------
+ rlrevell - 05-10-06 03:12 
+----------------------------------------------------------------------
+.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
+
+Are you sure the device supports exactly those formats?  If the file you
+are trying to play back does not match a supported format you must use
+plughw:x or you will get an error.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -110,6 +107,7 @@ Date Modified  Username       Field                    Change
 04-19-06 19:21 daste          Note Added: 0009353                          
 04-20-06 13:19 tiwai          Note Added: 0009372                          
 05-10-06 02:58 daste          Note Added: 0009698                          
+05-10-06 03:12 rlrevell       Note Added: 0009699                          
 ======================================================================
 
 
