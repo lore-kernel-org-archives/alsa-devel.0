@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002115]: No Sound, No Error Message, Unmuted
-Date: Thu, 11 May 2006 23:12:01 +0200
-Message-ID: <80df7b4fdb3a1734772d01406c1c1805@bugtrack.alsa-project.org>
+From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
+Subject: Want to hack a new feature into pcm/pcm_file.c
+Date: Thu, 11 May 2006 18:23:02 -0300
+Message-ID: <4463AB36.9030204@instant.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 603D4191
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 23:12:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,120 +15,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello. I'd like very much to be able to specify an existing raw audio 
+file and have it be a "virtual microphone", i.e. recording applications 
+using this PCM would get the sound that's stored in that file. That's 
+the exact opposite of the "virtual speakers" thing the file plugin does now.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2115> 
-======================================================================
-Reported By:                bthomas
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2115
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian/GNU Linux (Sarge) 3.1r2
-Kernel Version:             2.6.16.13 or 2.6.16.15 or 2.6.15.7
-======================================================================
-Date Submitted:             05-11-2006 23:12 CEST
-Last Modified:              05-11-2006 23:12 CEST
-======================================================================
-Summary:                    No Sound, No Error Message, Unmuted
-Description: 
-No application is able to produce any sound on Dell Inspiron 9400 using
-Debian GNU Linux (Sarge) 3.1r2 with Kernel 2.6.16.15 (or 2.6.16.13 or
-2.6.15.7). Alsa drivers have been build into the kernel. Listed below is
-some of the relevant information (Do let me know if anything else is
-required).
+How hard would it be to do such a thing, and where should I begin 
+studying? I am an experienced C programmer but know precious little 
+about the ALSA architecture. If it's already possible to do the above 
+with existing features, please don't beat me -- I asked around in 
+alsa-user and got no answer, so I'm assuming hacking alsa-lib will be 
+necessary.
 
-lspci :
---------
-0000:00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller (rev 01)
-
-cat /proc/asound/cards :
--------------------------
- 0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xdfffc000 irq 20
-
-cat /proc/asound/oss/sndstat :
--------------------------------
-Sound Driver:3.8.1a-980706 (ALSA v1.0.11rc2 emulation code)
-Kernel: Linux darwin 2.6.16.13 #1 SMP PREEMPT Sat May 6 00:52:39 EDT 2006
-i686
-Config options: 0
-
-Installed drivers: 
-Type 10: ALSA emulation
-
-Card config: 
-HDA Intel at 0xdfffc000 irq 20
-
-Audio devices:
-0: STAC92xx Analog (DUPLEX)
-
-Synth devices: NOT ENABLED IN CONFIG
-
-Midi devices: NOT ENABLED IN CONFIG
-
-Timers:
-7: system timer
-
-Mixers:
-0: SigmaTel STAC9200
-
-dmesg :
---------
-ALSA device list:
-  #0: HDA Intel at 0xdfffc000 irq 20
-
-Kernel Config (cat .config | grep SND) :
------------------------------------------
-
-CONFIG_SND=y
-CONFIG_SND_TIMER=y
-CONFIG_SND_PCM=y
-CONFIG_SND_SEQUENCER=y
-# CONFIG_SND_SEQ_DUMMY is not set
-CONFIG_SND_OSSEMUL=y
-CONFIG_SND_MIXER_OSS=y
-CONFIG_SND_PCM_OSS=y
-CONFIG_SND_SEQUENCER_OSS=y
-# CONFIG_SND_DYNAMIC_MINORS is not set
-CONFIG_SND_SUPPORT_OLD_API=y
-# CONFIG_SND_VERBOSE_PRINTK is not set
-# CONFIG_SND_DEBUG is not set
-CONFIG_SND_AC97_CODEC=y
-CONFIG_SND_AC97_BUS=y
-CONFIG_SND_HDA_INTEL=y
-CONFIG_SND_INTEL8X0=y
-CONFIG_SND_INTEL8X0M=m
-
-I have tried playing around with alsamixer but it was of no help. I can
-confirm that it is not muted. I did try muting IEC958 too. It may be
-pertinent that I have built the alsa drivers into the kernel and not as a
-module.
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-11-06 23:12 bthomas        New Issue                                    
-05-11-06 23:12 bthomas        Distribution              => Debian/GNU Linux
-(Sarge) 3.1r2
-05-11-06 23:12 bthomas        Kernel Version            => 2.6.16.13 or
-2.6.16.15 or 2.6.15.7
-======================================================================
-
-
+Cheers,
+Juan
 
 
 -------------------------------------------------------
