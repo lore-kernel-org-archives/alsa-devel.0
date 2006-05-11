@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Thu, 11 May 2006 08:42:16 +0200
-Message-ID: <39d3976e3d98a63c0dd7cd269a724e73@bugtrack.alsa-project.org>
+Date: Thu, 11 May 2006 08:45:09 +0200
+Message-ID: <24473a227edf0780a99fb10fd719779a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6225513F
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 08:42:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E433170
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 08:45:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-11-2006 08:42 CEST
+Last Modified:              05-11-2006 08:45 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -73,18 +73,15 @@ has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- fedukoff - 05-11-06 08:15 
-----------------------------------------------------------------------
-Please, read the latest post on OSS forum:
-http://4front-tech.com/forum/viewtopic.php?p=3300#3300
-
-I'll try it today...
-
-----------------------------------------------------------------------
  JProgrammer - 05-11-06 08:42 
 ----------------------------------------------------------------------
 Sounds like the external amplifier setting in alsa and like all the other
 settings nothing seems to change
+
+----------------------------------------------------------------------
+ fedukoff - 05-11-06 08:45 
+----------------------------------------------------------------------
+Yes, but in OSS?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -200,6 +197,7 @@ Date Modified  Username       Field                    Change
 05-10-06 18:34 fedukoff       Note Added: 0009748                          
 05-11-06 08:15 fedukoff       Note Added: 0009759                          
 05-11-06 08:42 JProgrammer    Note Added: 0009760                          
+05-11-06 08:45 fedukoff       Note Added: 0009761                          
 ======================================================================
 
 
