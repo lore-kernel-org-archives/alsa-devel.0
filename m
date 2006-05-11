@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002087]: Audio still broken for Asus A8V-MX
-Date: Thu, 11 May 2006 18:51:52 +0200
-Message-ID: <986474094c5b4cd7f56674a1be1b86c2@bugtrack.alsa-project.org>
+Date: Thu, 11 May 2006 19:53:40 +0200
+Message-ID: <795af256d38a0fab97c781e4cddb21f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2495D1A0
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 18:51:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F065E226
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 19:53:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.16
 ======================================================================
 Date Submitted:             04-30-2006 23:33 CEST
-Last Modified:              05-11-2006 18:51 CEST
+Last Modified:              05-11-2006 19:53 CEST
 ======================================================================
 Summary:                    Audio still broken for Asus A8V-MX
 Description: 
@@ -57,46 +57,28 @@ I am happy to try patches, turn on debugging flags etc. Let me know.
 ======================================================================
 
 ----------------------------------------------------------------------
- myxie - 05-11-06 18:47 
-----------------------------------------------------------------------
-That patch did not apply cleanly. I had:
-
-        if (!(status & VIA_REG_STAT_ACTIVE)) {
-                /* An apparent bug in the 8251 is worked around by
-sending
-                 * a REG_CTRL_START. */
-                if (chip->revision == VIA_REV_8251)
-                        snd_via82xx_pcm_trigger(substream,
-                                                SNDRV_PCM_TRIGGER_START);
-                else {
-                        res = 0;
-                        goto unlock;
-                }
-        }
-
-You had:
-
--
--       /* An apparent bug in the 8251 is worked around by sending a
--        * REG_CTRL_START. */
--       if (chip->revision == VIA_REV_8251 && (status &
-VIA_REG_STAT_EOL))
--               snd_via82xx_pcm_trigger(substream,
-SNDRV_PCM_TRIGGER_START);
-
-        if (!(status & VIA_REG_STAT_ACTIVE)) {
-                res = 0;
-
-I'll check the CVS and try both the HEAD version of the driver and this
-latest patch.
-
-----------------------------------------------------------------------
  tiwai - 05-11-06 18:51 
 ----------------------------------------------------------------------
 Of course, the development is always on HG repo.  If you want to debug your
 stuff, use HG version.  Don't stick with the old release.
 
 (BTW, CVS is dead.  Use mercurial.)
+
+----------------------------------------------------------------------
+ myxie - 05-11-06 19:53 
+----------------------------------------------------------------------
+HG latest seems to work fine. I'm a bit too for away to hear anything, but
+there are no 10 second pauses with aplay, ogg123 (or mplayer).
+
+I could not find much on the patch that referred to "some ALSA clients"
+but it looks like someone else (Andrew Daviel?) ran into the same problem
+and determined the fix.
+
+I'll confirm whether the audio is fine in a couple of hours.
+
+Sorry for the wild goose chase.
+
+Myxie.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -129,6 +111,7 @@ Date Modified  Username       Field                    Change
   
 05-11-06 18:47 myxie          Note Added: 0009766                          
 05-11-06 18:51 tiwai          Note Added: 0009767                          
+05-11-06 19:53 myxie          Note Added: 0009768                          
 ======================================================================
 
 
