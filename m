@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002080]: Card driver works incorrectly after resume
-Date: Thu, 11 May 2006 03:45:56 +0200
-Message-ID: <5dae048dd5c30d79d6a2945644b699b1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
+Date: Thu, 11 May 2006 08:15:21 +0200
+Message-ID: <65b45523a4cc930185b38448ff5b189e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 26E5C1A9
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 03:45:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13CA1228
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 08:15:22 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,138 +24,192 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2080> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
 ======================================================================
-Reported By:                Alexey Morozov
-Assigned To:                mjander
+Reported By:                liangalei
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2080
-Category:                   PCI - au88x0
+Issue ID:                   1134
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               ALT Linux
-Kernel Version:             2.6.16.9 + extra patches
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
 ======================================================================
-Date Submitted:             04-27-2006 18:35 CEST
-Last Modified:              05-11-2006 03:45 CEST
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              05-11-2006 08:15 CEST
 ======================================================================
-Summary:                    Card driver works incorrectly after resume
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
 Description: 
-When I resume after hibernating to disk (performed by swsusp-2.2.5) sound
-card driver seems to correctly load up (that is no errors reported) but
-actually audio playback and other card manipulation such as mixer tuning
-is impossible:
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
 
-playback fails like this:
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
 
-alex@localhost ~ $ aplay -v
-/home/archives/Music/Bob_Marley/disk1/track05.cdda.wav
-Playing WAVE '/home/archives/Music/Bob_Marley/disk1/track05.cdda.wav' :
-Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-aplay: pcm_write:1257: write error: Input/output error
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
 
-after several seconds of silence and manipluating mixer with alsamixer
-becomes really slow.
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
 
-After reloading just the driver (i.e. 
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
 
-alex@localhost ~ $ sudo modprobe -r snd_au8830
-alex@localhost ~ $ sudo modprobe snd_au8830
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
 
-normal playback is restored.
-
-The problem is 100% reproducible and actually it was reproducable in
-previous (e.g. 1.0.10) versions of alsa-driver and previous kernels.
-
-Here's output of lspci -vv for the card:
-
-0000:00:0e.0 Multimedia audio controller: Aureal Semiconductor Vortex 2
-(rev fe)
-        Subsystem: Diamond Multimedia Systems Monster Sound II
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32 (1000ns min, 3000ns max), cache line size 08
-        Interrupt: pin A routed to IRQ 11
-        Region 0: Memory at de800000 (32-bit, non-prefetchable)
-        Region 1: I/O ports at b800 [size=8]
-        Region 2: I/O ports at b400 [size=8]
-        Capabilities: [dc] Power Management version 1
-                Flags: PMEClk- DSI+ D1- D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-
-I can provide any additional information about host/OS configuration upon
-a request.
+thanks
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 05-04-06 11:20 
+ fedukoff - 05-10-06 18:34 
 ----------------------------------------------------------------------
-fix typo in doc
-
----
-alsa-driver-1.0.11/alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl.orig	2006-05-04
-12:46:33.000000000 +0800
-+++
-alsa-driver-1.0.11/alsa-kernel/Documentation/DocBook/writing-an-alsa-driver.tmpl	2006-05-04
-12:47:43.000000000 +0800
-@@ -5562,7 +5562,7 @@
- 	  power status.</para></listitem>
-         <listitem><para>Call <function>snd_pcm_suspend_all()</function>
-to suspend the running PCM streams.</para></listitem>
- 	<listitem><para>If AC97 codecs are used, call
--	<function>snd_ac97_resume()</function> for each
-codec.</para></listitem>
-+	<function>snd_ac97_suspend()</function> for each
-codec.</para></listitem>
-         <listitem><para>Save the register values if
-necessary.</para></listitem>
-         <listitem><para>Stop the hardware if
-necessary.</para></listitem>
-         <listitem><para>Disable the PCI device by calling
-
+I have received one more answer from BenQ
+Dear Sir,
+ 
+Please consider that we not support Linux operation system.
+For us as BenQ Support we are not able to help you on this,because is
+more related to Marketing and sales issue.
+ 
+I will forward your request to the factory, but I cant guratee that you
+will get answer on this , since this is more related to other vendor (
+connexant) product.
+ 
+Regards,
+BenQ Europe Support.
 
 ----------------------------------------------------------------------
- Raymond - 05-11-06 03:45 
+ fedukoff - 05-11-06 08:15 
 ----------------------------------------------------------------------
-> Actually, I don't need a proper suspend/resume. If the card will be reset
-after 
-> resume (i.e. zero volume or muted channels etc) but will remain
-functioning 
-> without driver reload, of if the driver can be reloaded without stopping
-every 
-> application which accesses the card one way or another, it's all
-acceptable for me.
+Please, read the latest post on OSS forum:
+http://4front-tech.com/forum/viewtopic.php?p=3300#3300
 
-Refer to the above URL, Vortex 1 and Vortex 2 only passed the test of
-S3(Suspend to Ram), you should not expect it support S4(Suspend to Disk)
+I'll try it today...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-27-06 18:35 Alexey Morozov New Issue                                    
-04-27-06 18:35 Alexey Morozov Distribution              => ALT Linux       
-04-27-06 18:35 Alexey Morozov Kernel Version            => 2.6.16.9 + extra
-patches
-04-28-06 03:58 Raymond        Note Added: 0009537                          
-04-28-06 05:01 Raymond        Note Edited: 0009537                         
-04-28-06 05:05 Raymond        Note Edited: 0009537                         
-04-29-06 05:03 Raymond        Note Added: 0009540                          
-04-30-06 09:36 Raymond        Note Edited: 0009540                         
-05-02-06 08:18 Alexey Morozov Note Added: 0009557                          
-05-02-06 08:28 Alexey Morozov Note Added: 0009558                          
-05-02-06 14:14 Raymond        Note Added: 0009559                          
-05-03-06 18:55 Raymond        Note Added: 0009597                          
-05-04-06 11:18 Raymond        Note Deleted: 0009597                        
-05-04-06 11:20 Raymond        Issue Monitored: tiwai                       
-05-04-06 11:20 Raymond        Note Added: 0009608                          
-05-11-06 03:45 Raymond        Note Added: 0009757                          
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
+05-30-05 03:29 liangalei      Note Added: 0004795                          
+06-01-05 16:58 tiwai          Note Added: 0004863                          
+06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+06-02-05 10:42 liangalei      Note Added: 0004875                          
+06-06-05 09:53 perex          Assigned To              perex =>            
+06-23-05 12:42 tiwai          Note Added: 0005182                          
+06-24-05 03:12 liangalei      File Added: asound.state                     
+06-24-05 03:13 liangalei      File Added: ac97#0-0                         
+06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
+06-24-05 03:18 liangalei      Note Added: 0005202                          
+08-28-05 15:28 ybar           Note Added: 0005962                          
+11-29-05 05:59 derek          Issue Monitored: derek                       
+11-29-05 06:00 derek          Issue End Monitor: derek                     
+11-29-05 06:03 derek          Note Added: 0006870                          
+02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
+02-17-06 22:22 gandhi         Note Added: 0008110                          
+02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
+02-17-06 23:28 gandhi         Note Edited: 0008110                         
+02-17-06 23:43 gandhi         Note Edited: 0008110                         
+02-18-06 02:05 gandhi         Note Added: 0008112                          
+02-18-06 08:13 liangalei      Note Added: 0008116                          
+02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
+02-18-06 15:56 gandhi         Note Added: 0008120                          
+02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
+03-03-06 08:29 robitech       Note Added: 0008336                          
+03-15-06 05:34 JProgrammer    Note Added: 0008526                          
+03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
+03-15-06 06:39 Kooper         Note Added: 0008527                          
+03-15-06 11:40 tiwai          Note Added: 0008531                          
+03-15-06 11:53 Kooper         Note Added: 0008535                          
+03-15-06 12:13 JProgrammer    Note Added: 0008538                          
+03-15-06 12:18 tiwai          Note Added: 0008540                          
+03-15-06 23:48 JProgrammer    Note Added: 0008579                          
+03-16-06 15:04 tiwai          Note Added: 0008606                          
+03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
+   
+03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
+03-17-06 04:10 Kooper         Note Added: 0008633                          
+03-17-06 12:07 tiwai          Note Added: 0008641                          
+03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
+      
+03-17-06 12:35 Kooper         Note Added: 0008644                          
+03-21-06 02:38 JProgrammer    Note Added: 0008736                          
+03-25-06 10:51 alessiodf      Note Added: 0008944                          
+03-26-06 20:12 alessiodf      Note Edited: 0008944                         
+03-26-06 20:15 alessiodf      Note Edited: 0008944                         
+03-30-06 15:47 trava          Note Added: 0009034                          
+04-07-06 13:05 kesiev         Note Added: 0009137                          
+04-07-06 13:06 kesiev         Note Edited: 0009137                         
+04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
+04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
+04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
+04-12-06 16:21 kesiev         Note Added: 0009246                          
+04-12-06 16:21 kesiev         File Added: qta058Ba.inf                     
+04-13-06 14:00 kesiev         Note Added: 0009259                          
+04-13-06 14:00 kesiev         File Added: windows-details.txt                   
+
+04-13-06 14:54 kesiev         Note Edited: 0009259                         
+04-13-06 15:34 kesiev         Issue Monitored: kesiev                      
+04-15-06 12:33 kesiev         Note Edited: 0009259                         
+04-15-06 12:33 kesiev         File Added: alsasound.conf                    
+04-18-06 09:35 fedukoff       Note Added: 0009326                          
+05-01-06 20:24 rawsock        Issue Monitored: rawsock                     
+05-03-06 15:55 fedukoff       Issue Monitored: fedukoff                    
+05-09-06 14:36 drseergio      Note Added: 0009658                          
+05-09-06 16:40 rlrevell       Note Added: 0009661                          
+05-09-06 17:16 drseergio      Note Added: 0009662                          
+05-09-06 17:19 drseergio      Note Edited: 0009662                         
+05-09-06 17:28 rlrevell       Note Added: 0009664                          
+05-09-06 17:31 drseergio      Note Edited: 0009662                         
+05-09-06 17:32 drseergio      Note Added: 0009665                          
+05-09-06 17:41 drseergio      Note Edited: 0009665                         
+05-09-06 17:49 rlrevell       Note Added: 0009667                          
+05-09-06 17:52 drseergio      Note Added: 0009668                          
+05-09-06 17:57 rlrevell       Note Added: 0009669                          
+05-09-06 18:00 drseergio      Note Added: 0009670                          
+05-09-06 18:33 fedukoff       Note Added: 0009672                          
+05-09-06 18:44 drseergio      Note Added: 0009673                          
+05-09-06 19:11 fedukoff       Note Added: 0009674                          
+05-09-06 19:12 rlrevell       Note Added: 0009675                          
+05-09-06 19:21 drseergio      Note Added: 0009676                          
+05-09-06 19:27 fedukoff       Note Added: 0009677                          
+05-09-06 19:28 rlrevell       Note Added: 0009678                          
+05-09-06 19:30 drseergio      Note Added: 0009679                          
+05-09-06 19:39 fedukoff       Note Added: 0009680                          
+05-09-06 19:42 rlrevell       Note Added: 0009681                          
+05-09-06 19:50 drseergio      Note Added: 0009682                          
+05-09-06 20:16 fedukoff       Note Added: 0009683                          
+05-09-06 20:17 rlrevell       Note Added: 0009684                          
+05-09-06 20:19 rlrevell       Note Added: 0009685                          
+05-09-06 20:28 drseergio      Note Added: 0009686                          
+05-09-06 20:29 fedukoff       Note Added: 0009687                          
+05-09-06 20:34 rlrevell       Note Added: 0009688                          
+05-09-06 22:07 fedukoff       Note Added: 0009691                          
+05-10-06 15:58 fedukoff       Note Added: 0009719                          
+05-10-06 17:10 rlrevell       Note Added: 0009735                          
+05-10-06 17:19 kesiev         Note Added: 0009738                          
+05-10-06 17:21 trava          Note Added: 0009740                          
+05-10-06 17:25 trava          Note Added: 0009741                          
+05-10-06 17:41 fedukoff       Note Added: 0009743                          
+05-10-06 18:03 fedukoff       Note Added: 0009745                          
+05-10-06 18:20 trava          Note Added: 0009746                          
+05-10-06 18:34 fedukoff       Note Added: 0009748                          
+05-11-06 08:15 fedukoff       Note Added: 0009759                          
 ======================================================================
 
 
