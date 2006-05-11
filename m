@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002087]: Audio still broken for Asus A8V-MX
-Date: Thu, 11 May 2006 20:47:28 +0200
-Message-ID: <7923455d7da700939507c38d57f97163@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002114]: Unnable to conect with sound server. Crash signal  6 SIGSEGV.  No sounds in sistem!
+Date: Thu, 11 May 2006 21:56:32 +0200
+Message-ID: <5e2b8a3b39057bb15e549b5c09ea979a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCF60198
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 20:47:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8BA71A0
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 21:56:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,98 +22,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2087> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2114> 
 ======================================================================
-Reported By:                myxie
+Reported By:                caroldaza
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2087
-Category:                   PCI - via82xx
+Project:                    ALSA - lib
+Issue ID:                   2114
+Category:                   0_general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             04-30-2006 23:33 CEST
-Last Modified:              05-11-2006 20:47 CEST
+Date Submitted:             05-11-2006 21:56 CEST
+Last Modified:              05-11-2006 21:56 CEST
 ======================================================================
-Summary:                    Audio still broken for Asus A8V-MX
+Summary:                    Unnable to conect with sound server. Crash signal  6
+SIGSEGV.  No sounds in sistem!
 Description: 
-The patches integrated (see issue 0001622) into the latest release of ALSA
-make the on-board audio more usuable, but there are still significant
-issues.
-
-Playing an audio file results in a freeze for 10 seconds, followed by a
-write error and then the audio continues normally. I noticed a second
-write error later on in the stream.
-
-I am happy to try patches, turn on debugging flags etc. Let me know.
+(no debugging symbols found)
+Using host libthread_db library "/lib/libthread_db.so.1".
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+[Thread debugging using libthread_db enabled]
+[New Thread 16384 (LWP 5886)]
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+[KCrash handler]
+#41 0x407b0ef1 in kill () from /lib/libc.so.6
+#42 0x40648bb1 in pthread_kill () from /lib/libpthread.so.0
+#43 0x40648f2b in raise () from /lib/libpthread.so.0
+#44 0x407b0b24 in raise () from /lib/libc.so.6
+#45 0x407b23fd in abort () from /lib/libc.so.6
+#46 0x407aa00f in __assert_fail () from /lib/libc.so.6
+#47 0x40333cd4 in snd_pcm_close () from /usr/lib/./libasound.so.2
+#48 0x4014fa02 in Arts::AudioIOALSA::open ()
+   from /opt/kde/lib/libartsflow.so.1
+#49 0x4012aef8 in Arts::AudioSubSystem::open ()
+   from /opt/kde/lib/libartsflow.so.1
+#50 0x4012ad92 in Arts::AudioSubSystem::check ()
+   from /opt/kde/lib/libartsflow.so.1
+#51 0x08062980 in Arts::SoundServer_skel::~SoundServer_skel ()
+#52 0x4079d469 in __libc_start_main () from /lib/libc.so.6
+#53 0x08053dd1 in ?? ()
 
 ======================================================================
-
-----------------------------------------------------------------------
- myxie - 05-11-06 19:53 
-----------------------------------------------------------------------
-HG latest seems to work fine. I'm a bit too for away to hear anything, but
-there are no 10 second pauses with aplay, ogg123 (or mplayer).
-
-I could not find much on the patch that referred to "some ALSA clients"
-but it looks like someone else (Andrew Daviel?) ran into the same problem
-and determined the fix.
-
-I'll confirm whether the audio is fine in a couple of hours.
-
-Sorry for the wild goose chase.
-
-Myxie.
-
-----------------------------------------------------------------------
- myxie - 05-11-06 20:47 
-----------------------------------------------------------------------
-Audio is fine with this patch.
-
-http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=915a0d954915;style=gitweb
-
-Myxie.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-30-06 23:33 myxie          New Issue                                    
-04-30-06 23:33 myxie          Distribution              => Debian          
-04-30-06 23:33 myxie          Kernel Version            => 2.6.16          
-05-02-06 17:57 tiwai          Note Added: 0009562                          
-05-05-06 18:40 myxie          Note Added: 0009628                          
-05-05-06 19:58 myxie          File Added: lsof.ogg123                      
-05-05-06 19:58 myxie          File Added: lsof.mplayer                     
-05-05-06 19:59 myxie          Note Added: 0009629                          
-05-05-06 20:59 karsten        Note Added: 0009630                          
-05-05-06 21:29 myxie          File Added: lspci.txt                        
-05-05-06 21:30 myxie          Note Added: 0009631                          
-05-08-06 18:09 myxie          Note Added: 0009646                          
-05-08-06 18:10 myxie          File Added: aadebug.txt                      
-05-08-06 18:31 myxie          Note Added: 0009647                          
-05-08-06 21:31 myxie          Note Added: 0009648                          
-05-10-06 16:14 tiwai          Note Added: 0009721                          
-05-10-06 17:13 myxie          Note Added: 0009736                          
-05-10-06 17:18 tiwai          Note Added: 0009737                          
-05-10-06 17:38 myxie          Note Added: 0009742                          
-05-10-06 18:20 tiwai          Note Added: 0009747                          
-05-10-06 23:55 myxie          Note Added: 0009752                          
-05-10-06 23:56 myxie          File Added: regdumps.tgz                     
-05-11-06 00:10 myxie          Note Added: 0009754                          
-05-11-06 18:31 tiwai          Note Added: 0009765                          
-05-11-06 18:32 tiwai          File Added: via8251-more-fix.diff                 
-  
-05-11-06 18:47 myxie          Note Added: 0009766                          
-05-11-06 18:51 tiwai          Note Added: 0009767                          
-05-11-06 19:53 myxie          Note Added: 0009768                          
-05-11-06 20:47 myxie          Note Added: 0009769                          
+05-11-06 21:56 caroldaza      New Issue                                    
 ======================================================================
 
 
