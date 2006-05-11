@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002114]: Unnable to conect with sound server. Crash signal  6 SIGSEGV.  No sounds in sistem!
-Date: Thu, 11 May 2006 21:56:32 +0200
-Message-ID: <5e2b8a3b39057bb15e549b5c09ea979a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002115]: No Sound, No Error Message, Unmuted
+Date: Thu, 11 May 2006 23:12:01 +0200
+Message-ID: <80df7b4fdb3a1734772d01406c1c1805@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8BA71A0
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 21:56:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 603D4191
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 23:12:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,111 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2114> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2115> 
 ======================================================================
-Reported By:                caroldaza
-Assigned To:                
+Reported By:                bthomas
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2114
-Category:                   0_general
+Project:                    ALSA - driver
+Issue ID:                   2115
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian/GNU Linux (Sarge) 3.1r2
+Kernel Version:             2.6.16.13 or 2.6.16.15 or 2.6.15.7
 ======================================================================
-Date Submitted:             05-11-2006 21:56 CEST
-Last Modified:              05-11-2006 21:56 CEST
+Date Submitted:             05-11-2006 23:12 CEST
+Last Modified:              05-11-2006 23:12 CEST
 ======================================================================
-Summary:                    Unnable to conect with sound server. Crash signal  6
-SIGSEGV.  No sounds in sistem!
+Summary:                    No Sound, No Error Message, Unmuted
 Description: 
-(no debugging symbols found)
-Using host libthread_db library "/lib/libthread_db.so.1".
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-[Thread debugging using libthread_db enabled]
-[New Thread 16384 (LWP 5886)]
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-[KCrash handler]
-#41 0x407b0ef1 in kill () from /lib/libc.so.6
-#42 0x40648bb1 in pthread_kill () from /lib/libpthread.so.0
-#43 0x40648f2b in raise () from /lib/libpthread.so.0
-#44 0x407b0b24 in raise () from /lib/libc.so.6
-#45 0x407b23fd in abort () from /lib/libc.so.6
-#46 0x407aa00f in __assert_fail () from /lib/libc.so.6
-#47 0x40333cd4 in snd_pcm_close () from /usr/lib/./libasound.so.2
-#48 0x4014fa02 in Arts::AudioIOALSA::open ()
-   from /opt/kde/lib/libartsflow.so.1
-#49 0x4012aef8 in Arts::AudioSubSystem::open ()
-   from /opt/kde/lib/libartsflow.so.1
-#50 0x4012ad92 in Arts::AudioSubSystem::check ()
-   from /opt/kde/lib/libartsflow.so.1
-#51 0x08062980 in Arts::SoundServer_skel::~SoundServer_skel ()
-#52 0x4079d469 in __libc_start_main () from /lib/libc.so.6
-#53 0x08053dd1 in ?? ()
+No application is able to produce any sound on Dell Inspiron 9400 using
+Debian GNU Linux (Sarge) 3.1r2 with Kernel 2.6.16.15 (or 2.6.16.13 or
+2.6.15.7). Alsa drivers have been build into the kernel. Listed below is
+some of the relevant information (Do let me know if anything else is
+required).
+
+lspci :
+--------
+0000:00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 01)
+
+cat /proc/asound/cards :
+-------------------------
+ 0 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xdfffc000 irq 20
+
+cat /proc/asound/oss/sndstat :
+-------------------------------
+Sound Driver:3.8.1a-980706 (ALSA v1.0.11rc2 emulation code)
+Kernel: Linux darwin 2.6.16.13 #1 SMP PREEMPT Sat May 6 00:52:39 EDT 2006
+i686
+Config options: 0
+
+Installed drivers: 
+Type 10: ALSA emulation
+
+Card config: 
+HDA Intel at 0xdfffc000 irq 20
+
+Audio devices:
+0: STAC92xx Analog (DUPLEX)
+
+Synth devices: NOT ENABLED IN CONFIG
+
+Midi devices: NOT ENABLED IN CONFIG
+
+Timers:
+7: system timer
+
+Mixers:
+0: SigmaTel STAC9200
+
+dmesg :
+--------
+ALSA device list:
+  #0: HDA Intel at 0xdfffc000 irq 20
+
+Kernel Config (cat .config | grep SND) :
+-----------------------------------------
+
+CONFIG_SND=y
+CONFIG_SND_TIMER=y
+CONFIG_SND_PCM=y
+CONFIG_SND_SEQUENCER=y
+# CONFIG_SND_SEQ_DUMMY is not set
+CONFIG_SND_OSSEMUL=y
+CONFIG_SND_MIXER_OSS=y
+CONFIG_SND_PCM_OSS=y
+CONFIG_SND_SEQUENCER_OSS=y
+# CONFIG_SND_DYNAMIC_MINORS is not set
+CONFIG_SND_SUPPORT_OLD_API=y
+# CONFIG_SND_VERBOSE_PRINTK is not set
+# CONFIG_SND_DEBUG is not set
+CONFIG_SND_AC97_CODEC=y
+CONFIG_SND_AC97_BUS=y
+CONFIG_SND_HDA_INTEL=y
+CONFIG_SND_INTEL8X0=y
+CONFIG_SND_INTEL8X0M=m
+
+I have tried playing around with alsamixer but it was of no help. I can
+confirm that it is not muted. I did try muting IEC958 too. It may be
+pertinent that I have built the alsa drivers into the kernel and not as a
+module.
+
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-11-06 21:56 caroldaza      New Issue                                    
+05-11-06 23:12 bthomas        New Issue                                    
+05-11-06 23:12 bthomas        Distribution              => Debian/GNU Linux
+(Sarge) 3.1r2
+05-11-06 23:12 bthomas        Kernel Version            => 2.6.16.13 or
+2.6.16.15 or 2.6.15.7
 ======================================================================
 
 
