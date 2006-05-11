@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002087]: Audio still broken for Asus A8V-MX
-Date: Thu, 11 May 2006 18:31:20 +0200
-Message-ID: <2951ca02f0f75cb345996c41a763a6f7@bugtrack.alsa-project.org>
+Date: Thu, 11 May 2006 18:47:39 +0200
+Message-ID: <eab212361f77b6395c7d8b73493f227f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3DE0229
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 18:31:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 59CD01A0
+	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 18:47:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.16
 ======================================================================
 Date Submitted:             04-30-2006 23:33 CEST
-Last Modified:              05-11-2006 18:31 CEST
+Last Modified:              05-11-2006 18:47 CEST
 ======================================================================
 Summary:                    Audio still broken for Asus A8V-MX
 Description: 
@@ -57,19 +57,44 @@ I am happy to try patches, turn on debugging flags etc. Let me know.
 ======================================================================
 
 ----------------------------------------------------------------------
- myxie - 05-11-06 00:10 
-----------------------------------------------------------------------
-Use this to look at file deltas.
-
-i=0; while x=regdump_$(printf %06d $i); y=regdump_$(printf %06d $[$i+1]);
-[ -f $y ]; do grep -v ^2006 $x > a; grep -v ^2006 $y > b; cmp -s a b || {
-echo "$i -> $[$i+1]"; diff -u $x $y; }; i=$[$i+1]; done
-
-----------------------------------------------------------------------
  tiwai - 05-11-06 18:31 
 ----------------------------------------------------------------------
 It seems that the DMA is really stopped at the middle by some reason.
 What happens with the uploaded patch?
+
+----------------------------------------------------------------------
+ myxie - 05-11-06 18:47 
+----------------------------------------------------------------------
+That patch did not apply cleanly. I had:
+
+        if (!(status & VIA_REG_STAT_ACTIVE)) {
+                /* An apparent bug in the 8251 is worked around by
+sending
+                 * a REG_CTRL_START. */
+                if (chip->revision == VIA_REV_8251)
+                        snd_via82xx_pcm_trigger(substream,
+                                                SNDRV_PCM_TRIGGER_START);
+                else {
+                        res = 0;
+                        goto unlock;
+                }
+        }
+
+You had:
+
+-
+-       /* An apparent bug in the 8251 is worked around by sending a
+-        * REG_CTRL_START. */
+-       if (chip->revision == VIA_REV_8251 && (status &
+VIA_REG_STAT_EOL))
+-               snd_via82xx_pcm_trigger(substream,
+SNDRV_PCM_TRIGGER_START);
+
+        if (!(status & VIA_REG_STAT_ACTIVE)) {
+                res = 0;
+
+I'll check the CVS and try both the HEAD version of the driver and this
+latest patch.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -98,6 +123,9 @@ Date Modified  Username       Field                    Change
 05-10-06 23:56 myxie          File Added: regdumps.tgz                     
 05-11-06 00:10 myxie          Note Added: 0009754                          
 05-11-06 18:31 tiwai          Note Added: 0009765                          
+05-11-06 18:32 tiwai          File Added: via8251-more-fix.diff                 
+  
+05-11-06 18:47 myxie          Note Added: 0009766                          
 ======================================================================
 
 
