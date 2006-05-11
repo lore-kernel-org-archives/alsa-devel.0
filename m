@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002099]: System hangs while booting, and i get flooded by azx_get_response timeout message
-Date: Thu, 11 May 2006 17:08:13 +0200
-Message-ID: <b2dd0826e5a3faa40ef5fcf413a883d8@bugtrack.alsa-project.org>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: alsamixer foo
+Date: Thu, 11 May 2006 17:07:35 +0200
+Message-ID: <1147360060.4692.14.camel@johannes>
+References: <1146822715.1137.59.camel@localhost>
+	 <s5hbqu43avm.wl%tiwai@suse.de> <1147357824.9630.41.camel@johannes>
+	 <s5h64kc39qz.wl%tiwai@suse.de> <1147358865.4692.0.camel@johannes>
+	 <s5hzmho1ulx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ej+qHGy1b0FjslU69b21"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1BDF2226
-	for <alsa-devel@alsa-project.org>; Thu, 11 May 2006 17:08:14 +0200 (MEST)
+In-Reply-To: <s5hzmho1ulx.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,86 +19,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2099> 
-======================================================================
-Reported By:                bugmenot
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2099
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.16.11
-======================================================================
-Date Submitted:             05-06-2006 15:24 CEST
-Last Modified:              05-11-2006 17:08 CEST
-======================================================================
-Summary:                    System hangs while booting, and i get flooded by
-azx_get_response timeout message
-Description: 
-While booting, and after loading alsa, the screen gets flooded with
-azx_get_response timeout messages, and my system wont continue to boot. I
-than can only restart.
+--=-ej+qHGy1b0FjslU69b21
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I have read that this is a known error, and it should  be fixed in the cvs
-version  of alsa, but i included the cvs version (cvs copy from the
-5.5.2006) into my kernel and i still get the error.
+On Thu, 2006-05-11 at 16:52 +0200, Takashi Iwai wrote:
 
-This only happens when i inlcude the intel_hda driver into the kernel
-(build into or as modules, its the same)
+> There was no enum control at that time.
 
-without it alsa just claims to find no soundcard, but my system works
-well.
+Any way to have newer programs tell the alsa lib to not "fix" it for
+them?
 
-I have a ibm thinkpad x60s and a hdc7 sound/model card?
-======================================================================
+johannes
 
-----------------------------------------------------------------------
- bugmenot - 05-10-06 23:59 
-----------------------------------------------------------------------
-Upgrading my bios could get tricky, cause i removed windows completely, and
-the X60 has no cddrive, but i would like to try the HG Version.
+--=-ej+qHGy1b0FjslU69b21
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-and thats my problem.
-i downloaded the aktual hg tree, with hg clone http....
+-----BEGIN PGP SIGNATURE-----
 
-cause there was no ./configure file, i did a automake, so got the
-./configure file
-but when i try to build the alsa, i get some error messages about missing
-direcotries, and missing build rules.
+iQIVAwUARGNTNaVg1VMiehFYAQLWvhAAngxO9ZFlzQ8Fd4LUy5HJxKtAEeHc+uuX
+3c6q4lqu3sWnMsi5giCNQESGuA2h4N+0wRGFnTrF0bVZFrE6hAQeA6RtEh7/akis
+FRw/YI6/UnbH74Zlde3t1H48mXkoyiEFxkH3LWcOjVnqjSncOFmL4iLy7ECoY2b7
+yBsn+v0CwWG+GZP9enMir/LmAKu6/iBoqRW29ugpjGCXOrBQEwfqJCX7CHxQcDIF
+6aeqVxbki83dATe8W/qY9Z6ZY3NlRFsCHz9AJOHZbgQvegWDKo/3K7nACzvoQz+I
+Dt+QugKEtgJQvP8X61Vn9u7U1ycoysvmbHnhQh6sM8QYZ7RaiqpnBJtw6Y9xpwU/
+uSrobVS4y8XE2m/aEM3PFgqINi+Xmbu/DldFwDGflOohN3BqdAHJJ6qoFiUlvbmB
+n9I1xO+0jmQ1wn+vdRHSGE78pdyOi2RnGLarDOwWWBn8myJfiQVpZ3PYwm9Pby1O
+2m9ycjLyzsR9RUqmCNd01Q4rdI2xV4JMZkAGWwUS/6UDoIfi6DLsyHPpHBy/MER1
+SPvNip06Vkb3UtMdDsgK2rJCfYAP29IyiWJQ7/DPtgVm/QKG1NSK27yL9NZiPGMH
+nUy8yg2weEv0VYCorRYt0MsNxgxI9HQcTljegnP4SLr6HYRxM1bmbhgM4xDVUk+1
+Cx3LvLKnx2o=
+=k8Tf
+-----END PGP SIGNATURE-----
 
-is there some guide explainging how to build alsa from hg source?
-
-thx for your help
-
-----------------------------------------------------------------------
- tiwai - 05-11-06 17:08 
-----------------------------------------------------------------------
-Use cvscompile script.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-06-06 15:24 bugmenot       New Issue                                    
-05-06-06 15:24 bugmenot       Distribution              => Debian          
-05-06-06 15:24 bugmenot       Kernel Version            => 2.6.16.11       
-05-06-06 18:35 bugmenot       Note Added: 0009637                          
-05-08-06 09:43 bugmenot       Note Added: 0009644                          
-05-10-06 16:42 tiwai          Note Added: 0009726                          
-05-10-06 23:59 bugmenot       Note Added: 0009753                          
-05-11-06 17:08 tiwai          Note Added: 0009763                          
-======================================================================
-
+--=-ej+qHGy1b0FjslU69b21--
 
 
 
