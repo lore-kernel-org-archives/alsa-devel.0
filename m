@@ -1,14 +1,14 @@
-From: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
-Subject: Re: Best way of adding temporary limits to capture or
- playback
-Date: Tue, 16 May 2006 12:43:55 +0200
-Message-ID: <4469ACEB.4090705@norway.atmel.com>
-References: <44696908.4070208@atmel.com> <s5hfyja45x9.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002106]: Sound card snd-hda-intel emits NO sound
+Date: Fri, 12 May 2006 17:18:10 +0200
+Message-ID: <223c248099d8f87e82009ed071d16f16@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfyja45x9.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BBB7175
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 17:18:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +18,107 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Hans-Christian Egtvedt <hcegtvedt@atmel.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 16 May 2006 07:54:16 +0200,
-> Hans-Christian Egtvedt wrote:
 
-<snip helper functions wish>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2106> 
+======================================================================
+Reported By:                louisvd
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2106
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2111_FC5smp
+======================================================================
+Date Submitted:             05-08-2006 21:00 CEST
+Last Modified:              05-12-2006 17:18 CEST
+======================================================================
+Summary:                    Sound card snd-hda-intel emits NO sound
+Description: 
+Hi
 
->> My current plan is to change the hardware parameters in the playback
->> open and capture open callbacks if there is an active playback or
->> capture already present. And then reset this hardware limit when the
->> close callback is called.
-> 
-> Right, that's what other drivers do, too.
+I was merrily running Fedora Core 4 and after upgrading the kernel to
+2.6.16 my sound no longer worked under Linux (it works under Windows). 
+After a lot of battling I figured I may as well upgrade to FC5 now.  A
+clean install, out of the box, and the sound STILL did not work.  I've
+applied every available patch to date and no luck.  Tonight I installed
+the Alsa 1.0.11 driver, lib and util tarballs -- all installed
+successfully -- but there is STILL no sound produced.
 
-I've added restrictions to format and rate in the open callback. Is it
-safe to just do changes here and ignore them in the close callback?
+Everything LOOKS normal.  There are no errors that I can detect.  In the X
+and console versions of Alsamixer I have ALL the devices displayed and
+unmuted with the volumes at max. I've removed the sound lines from
+modprobe.conf and am running with alsasound and that didn't help either --
+even though it says the driver has been loaded.
 
-AFAIK when the open callback is called again, for a later stream the
-original driver formats and rates will be loaded?
+FYI, the OSS Volume control calls it a Realtek ALC260.  lspci refers to it
+as Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller
+(rev 01).
 
-I.e. the driver does not remember that sometime in the past it was
-limited to a certain hardware setup?
 
->> I would of course enjoy just setting a flag in the driver telling it
->> that capture and playback rates/endianess is related, and is locked if
->> one of the streams is opened.
-> 
-> We have SNDRV_PCM_INFO_JOINT_DUPLEX flag, but it's only a referrence
-> to user-space and not really used in the driver.
+Please help.
+======================================================================
 
-Added, should be present anyway so user-space is aware of the dependencies.
+----------------------------------------------------------------------
+ tiwai - 05-12-06 16:11 
+----------------------------------------------------------------------
+It's not alsasound script but somewhere else to set up the module option. 
+Usually /etc/modprobe.d/* or /etc/modprobe.conf* file.
 
->> PS! I'm having some sort of problems getting my emails from this lists,
->> seems like I don't get a copy anymore :/ I've checked the settings in
->> mailman, and they seem good.
->>
->> PPS! Sorry if this is received twice, but I didn't receive a copy or
->> find a copy in an online repository (twice).
-> 
-> I saw your post only once.
+The enable option is a place holder for snd-hda-intel driver just for
+compatibility.  It's anyway ignored.
 
-Seems like I'm not getting all emails for some reason, I've subscribed
-with another account too for verifying my emails are getting through.
-Could be a local, short time problem for this address.
+----------------------------------------------------------------------
+ louisvd - 05-12-06 17:18 
+----------------------------------------------------------------------
+Ah, thanks.  ALMOST there now.
 
--- 
-With kind regards,
-Med vennlig hilsen,
+I updated my /etc/modprobe.conf file to this:
+alias eth0 tg3
+alias scsi_hostadapter ata_piix
+alias snd-card-0 snd-hda-intel
+options snd-card-0 index=0
+options snd-hda-intel index=0
+options snd-hda-intel model=auto
+remove snd-hda-intel { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-hda-intel
 
-Hans-Christian Egtvedt
-Applications Engineer - AVR Applications Lab
-Atmel Norway
+I now get sound out of the "Front" slider.  This is the Internal Mono
+speaker inside the PC.  
+
+I have external PC speakers plugged into the sound out plug at the rear of
+the PC.  This channel is NOT playing any sound.  
+
+Help me fix that and we can close the call.
+
+Thanks for the help so far.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-08-06 21:00 louisvd        New Issue                                    
+05-08-06 21:00 louisvd        Distribution              => Fedora Core 5   
+05-08-06 21:00 louisvd        Kernel Version            => 2.6.16-1.2111_FC5smp
+05-10-06 16:16 tiwai          Note Added: 0009722                          
+05-10-06 16:52 louisvd        Note Added: 0009731                          
+05-10-06 16:55 tiwai          Note Added: 0009732                          
+05-10-06 20:02 louisvd        Note Added: 0009751                          
+05-12-06 00:40 louisvd        Note Added: 0009770                          
+05-12-06 10:31 UMMO           Issue Monitored: UMMO                        
+05-12-06 16:11 tiwai          Note Added: 0009778                          
+05-12-06 17:18 louisvd        Note Added: 0009782                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
