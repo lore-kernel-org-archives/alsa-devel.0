@@ -1,12 +1,11 @@
-From: Juan Zapatero <jazc@gmvsistemas.es>
-Subject: Mix audio at different frequencies
-Date: Fri, 12 May 2006 12:25:41 +0200
-Message-ID: <1147429541.26309.3.camel@jazc.fedora>
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Subject: How is buffer size, periode size and periods determined?
+Date: Fri, 12 May 2006 15:55:38 +0200
+Message-ID: <446493DA.407@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,33 +18,41 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I need to mix in playback two different audio streams, one coming from
-an ogg player, which is at 44100Hz, and the other one, coming out of a
-VoIP application, in this case, at 8000Hz. As I am using the dmix plugin
-for mixing, I can't find out how to implement the resampling operations
-needed.
+Hi
 
-Thanks. 
+I'm experiencing that my aplay/arecord (1.0.11) is setting up a bit
+weird values for buffer size, period size and periods.
 
+For example when trying to record S16_LE 44100 Hz Mono I get the
+following parameters:
+buffer size: 44100
+period size: 4094
+periods    : 10
 
-______________________
-Este mensaje, y en su caso, cualquier fichero anexo al mismo,
- puede contener informacion clasificada por su emisor como confidencial
- en el marco de su Sistema de Gestion de Seguridad de la 
-Informacion siendo para uso exclusivo del destinatario, quedando 
-prohibida su divulgacion copia o distribucion a terceros sin la 
-autorizacion expresa del remitente. Si Vd. ha recibido este mensaje 
- erroneamente, se ruega lo notifique al remitente y proceda a su borrado. 
-Gracias por su colaboracion.
-______________________
-This message including any attachments may contain confidential 
-information, according to our Information Security Management System,
- and intended solely for a specific individual to whom they are addressed.
- Any unauthorised copy, disclosure or distribution of this message
- is strictly forbidden. If you have received this transmission in error,
- please notify the sender immediately and delete it.
-______________________
+10 * 4094 = 40940 != 44100, the player asks for a bigger buffer than needed.
+
+Other example, S16_LE 32000 Hz Mono:
+buffer size: 32752
+period size: 4094
+periods    : 8
+
+8 * 4094 = 32752 == 32752, which is a correct buffer size.
+
+How come the alsa-lib/aplay behaves like this? I would like to see the
+last behaviour all the time. Does this point to a bug on my platform, or
+is this the way alsa-lib can calculate the buffers?
+
+The reason I'm asking is that it wastes some memory and the DMA
+controller currently in the Linux for my platform doesn't like the
+buffersize to be greater than periode size * periods.
+
+-- 
+With kind regards,
+Med vennlig hilsen,
+
+Hans-Christian Egtvedt
+Applications Engineer - AVR Applications Lab
+Atmel Norway
 
 
 -------------------------------------------------------
