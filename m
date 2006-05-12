@@ -1,9 +1,10 @@
-From: Matthias Koenig <mk@phasorlab.de>
-Subject: Hg mirror out of sync
-Date: Sun, 14 May 2006 22:47:26 +0200
-Message-ID: <87mzdk9vvl.fsf@zebra.localdomain>
+From: Manuel Lauss <mano@roarinelk.homelinux.net>
+Subject: AC97 Codec Rate Problem
+Date: Fri, 12 May 2006 19:15:45 +0200
+Message-ID: <4464C2C1.4030908@roarinelk.homelinux.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,13 +18,25 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello folks,
 
-The Hg mirror http://hg-mirror.alsa-project.org/
-seems to be out of sync with the master server.
-It did not get any updates since almost two weeks.
+I've developed an ALSA driver for the Renesas SH7760 (a SH-4 SoC)
+AC97 component, following Takashi Iwai's howto document.
 
-Matthias
+Right now, I call snd_ac97_set_rate() in the drivers' prepare() callback;
+but since I don't know which rates the attached codec actually supports,
+I thought maybe there is a way to let ALSA itself handle setting
+the rates?
+
+If anyone wants to have a look at the source, I've put it up at
+http://140.78.4.77/~mano/camelot-ac97.c
+
+(The driver works pretty well on my devel platform, LM4549 codec)
+
+Thanks!
+
+-- 
+ Manuel Lauss
 
 
 -------------------------------------------------------
