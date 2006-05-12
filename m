@@ -1,13 +1,11 @@
-From: =?ISO-8859-15?Q?Petter_Sundl=F6f?= <petter.sundlof@findus.dhs.org>
-Subject: Re: question about closed source alsa driver
-Date: Tue, 16 May 2006 15:05:22 +0200
-Message-ID: <4469CE12.6090701@findus.dhs.org>
-References: <d39e2e70605160318meac7c91g40bb9cd7a85c0665@mail.gmail.com>
+From: Kaz Sasayama <kazssym@vx68k.org>
+Subject: I have a problem with ALi M5451 rev 01
+Date: Fri, 12 May 2006 21:35:16 +0900
+Message-ID: <44648104.2010207@vx68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Type: text/plain; charset=ISO-2022-JP
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <d39e2e70605160318meac7c91g40bb9cd7a85c0665@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,18 +15,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sergey Kolosov <freeserj@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Question is, in my mind: Should you?
+My system includes ALi M5451 rev 01 device, but I have a problem it
+working with ALSA. The driver cannot get any information from the AC97
+codec. Has anybody got a success with a similar configuration?
 
-Sergey Kolosov wrote:
-> Can i  write closed source alsa-driver? If it possible what rules I must 
-> succeed(etc. can I use alsa function or I must implement it anew?).
-> 
-> P.S.
-> It is not my initiative, but license agreement.
+
+FYI, the older OSS trident driver seemed to work with the save hardware.
+Could anybody tell me how to get the reference documentation for the
+device from ULi?
+
 
 
 -------------------------------------------------------
