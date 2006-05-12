@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Fri, 12 May 2006 03:58:53 +0200
-Message-ID: <3049ebc2e11a92b1c91b9421da665eef@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001025]: kernel panic when trying to load module snd-au8830
+Date: Fri, 12 May 2006 04:46:44 +0200
+Message-ID: <e229743fd37fcb6e12ee0404f2e511c8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B11B018F
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 03:58:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3892418F
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 04:46:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,115 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1025> 
 ======================================================================
-Reported By:                zanonmark
-Assigned To:                
+Reported By:                Osiris
+Assigned To:                mjander
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
+Issue ID:                   1025
+Category:                   PCI - au88x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.11.6
 ======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              05-12-2006 03:58 CEST
+Date Submitted:             03-30-2005 22:50 CEST
+Last Modified:              05-12-2006 04:46 CEST
 ======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
+Summary:                    kernel panic when trying to load module snd-au8830
 Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
-
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
-
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
-
-So, will you please include such a parameter in the next version of the
-driver?
-
-Thanks a lot,
-
-Marco.
+kernel panic occurs on boot when system tries to load kernel module for
+Aureal Vortex 2. The same thing happens when driver is compiled into
+kernel, not module
 
 ======================================================================
 
 ----------------------------------------------------------------------
- zanonmark - 05-07-06 13:33 
+ ponchick - 12-21-05 04:18 
 ----------------------------------------------------------------------
-entering:
- amidi -d
- cat /proc/asound/card0/midi0
-and playing returns nothing;
-
-entering:
- cat /proc/asound/card0/midi0
-returns:
-
-root@ubuntu:/home/marco# cat /proc/asound/card0/midi0
-ES1371
-
-Output 0
-  Tx bytes     : 0
-Input 0
-  Rx bytes     : 0
-  Buffer size  : 4096
-  Avail        : 0
-  Overruns     : 0
-
-even if I keep on playing and re-entering that command...
-
-Thanks,
-
-MZ
+I try diff11.diff on alsa-driver-1.0.10 with minor changes in it. It works
+for me. I use it for 2 weeks now and it works fine. I use mixer/equalizer
+but don't even touch gameport, mpu and oss emulation. 
+My configuration:
+P4 631 (em64t)
+Aureal Vortex 2
+Gentoo Linux 2005.1 
+Kernel 2.6.14-gentoo-r2 and 2.6.13-gentoo-r5 (vanilla sources + some
+gentoo patches)
+alsa-drivers 1.0.10 (not kernel one!)
 
 ----------------------------------------------------------------------
- Raymond - 05-12-06 03:58 
+ Raymond - 05-12-06 04:46 
 ----------------------------------------------------------------------
-If you are not intend to use the onboard midi, you may need to disable it
-in BIOS setup
+http://lkml.org/lkml/2006/5/10/308
 
-BTW, what is the model of your ens1371 ?  lspci -vvn
+Zoltan get oops with MX300 on his SMP X86_64 , 2.6.16-1.2111_FC5.
+
+It's rather strange that the oops occur during initiaization of
+card->longname
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
-04-18-06 13:18 Raymond        Note Edited: 0009328                         
-04-18-06 16:28 Clemens LadischNote Added: 0009338                          
-04-19-06 20:05 zanonmark      Note Added: 0009354                          
-04-19-06 21:49 rlrevell       Note Added: 0009356                          
-04-20-06 03:39 Raymond        Note Added: 0009363                          
-04-22-06 13:36 zanonmark      Note Added: 0009433                          
-04-24-06 15:47 Raymond        Note Added: 0009452                          
-04-24-06 15:57 zanonmark      Note Added: 0009460                          
-04-25-06 03:25 Raymond        Note Added: 0009484                          
-04-25-06 10:55 zanonmark      Note Added: 0009486                          
-04-26-06 10:54 Raymond        Note Added: 0009505                          
-04-26-06 19:51 zanonmark      Note Added: 0009522                          
-05-01-06 10:38 Raymond        Note Added: 0009553                          
-05-07-06 13:33 zanonmark      Note Added: 0009641                          
-05-12-06 03:58 Raymond        Note Added: 0009771                          
+03-30-05 22:50 Osiris         New Issue                                    
+03-30-05 22:50 Osiris         Distribution              => Debian          
+03-30-05 22:50 Osiris         Kernel Version            => 2.6.11.6        
+03-31-05 11:34 mjander        Note Added: 0004278                          
+04-03-05 21:16 Osiris         Note Added: 0004320                          
+04-04-05 10:19 alien999999999 Issue Monitored: alien999999999                   
+
+04-04-05 11:00 alien999999999 File Added: alsa-changes.tar.bz2                  
+ 
+04-04-05 11:00 alien999999999 Note Added: 0004325                          
+08-24-05 11:04 Raymond        Note Added: 0005927                          
+11-25-05 08:22 Raymond        Note Added: 0006848                          
+12-21-05 04:05 ponchick       Issue Monitored: ponchick                    
+12-21-05 04:18 ponchick       Note Added: 0007107                          
+12-21-05 04:19 ponchick       File Added: diff11.diff.bz2                    
+12-22-05 13:01 Raymond        Note Added: 0007123                          
+01-02-06 09:57 Raymond        Note Deleted: 0007123                        
+01-05-06 08:28 Raymond        Note Added: 0007463                          
+01-18-06 16:07 Raymond        Note Added: 0007712                          
+02-21-06 18:32 Raymond        Note Added: 0008153                          
+05-12-06 04:27 Raymond        Note Deleted: 0008153                        
+05-12-06 04:27 Raymond        Note Deleted: 0007712                        
+05-12-06 04:28 Raymond        Note Deleted: 0007463                        
+05-12-06 04:46 Raymond        Note Added: 0009772                          
 ======================================================================
 
 
