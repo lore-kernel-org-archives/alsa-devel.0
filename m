@@ -1,13 +1,21 @@
-From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
-Subject: Re: Want to hack a new feature into pcm/pcm_file.c
-Date: Thu, 11 May 2006 21:35:19 -0300
-Message-ID: <4463D847.4020801@instant.com.br>
-References: <4463AB36.9030204@instant.com.br>
+From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
+Subject: Hg repo usage notes.
+Date: Fri, 12 May 2006 13:07:40 +1200
+Message-ID: <200605121307.41000.linux@blennerhassett.gen.nz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4463AB36.9030204@instant.com.br>
+Received: from mta01.xtra.co.nz (mta01.xtra.co.nz [210.54.141.254])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2723162
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 03:11:12 +0200 (MEST)
+Received: from [192.168.1.1] (really [222.154.85.13]) by fep02.xtra.co.nz
+          with ESMTP
+          id <20060512010744.OZTX15142.fep02.xtra.co.nz@[192.168.1.1]>
+          for <alsa-devel@alsa-project.org>;
+          Fri, 12 May 2006 13:07:44 +1200
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,49 +25,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I guess I'd have to change snd_pcm_file_readi() and snd_pcm_file_readn() 
--- right now they write to a file, just like snd_pcm_file_writei() and 
-snd_pcm_file_writen(). Instead, they'd have to read data from a file and 
-return that. Subject, of course, to the existence of a new configuration 
-pareameter -- say, "filein".
+Hi all,
 
-Makes sense?
+I have been trying to get my head around how to use Hg repo e.g. get latest 
+code, fix something, make a patch etc.  Perhaps something like the following 
+would be useful on the download page?  I'm a total newbie to Hg, so please 
+step in and set me right about the correct/desirable/easier ways to do this.
 
-Juan Carlos Castro y Castro wrote:
+# Get a copy of the repository
+cd alsa-hg
 
-> Hello. I'd like very much to be able to specify an existing raw audio 
-> file and have it be a "virtual microphone", i.e. recording 
-> applications using this PCM would get the sound that's stored in that 
-> file. That's the exact opposite of the "virtual speakers" thing the 
-> file plugin does now.
->
-> How hard would it be to do such a thing, and where should I begin 
-> studying? I am an experienced C programmer but know precious little 
-> about the ALSA architecture. If it's already possible to do the above 
-> with existing features, please don't beat me -- I asked around in 
-> alsa-user and got no answer, so I'm assuming hacking alsa-lib will be 
-> necessary.
->
-> Cheers,
-> Juan
->
->
-> -------------------------------------------------------
-> Using Tomcat but need to do more? Need to support web services, security?
-> Get stuff done quickly with pre-integrated technology to make your job 
-> easier
-> Download IBM WebSphere Application Server v.1.0.1 based on Apache 
-> Geronimo
-> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
+hg clone http://hg-mirror.alsa-project.org/alsa-driver alsa-driver
+hg clone http://hg-mirror.alsa-project.org/alsa-kernel alsa-kernel
 
+# Get latest
+hg pull -u
+
+# Create a working copy
+hg clone alsa-driver alsa-driver-fixbug1
+cd alsa-driver-fixbug1
+./cvscompile
+do { code; test;} until finished;
+hg commit -m"Fixed the foo in bar"
+
+# What to do about sending the changes back ?
+hg outgoing ../alsa-driver
+hg outgoing -p ../alsa-driver > foobar.patch
+#OR bundle (which is preferred)
+hg bundle foobar.hg ../alsa-driver
+#OR
+hg export (?what?) > foobar.patch
+
+# email foobar.[hg,patch] to alsa-devel?
+
+# Other notes
+add to .hg/hgrc to avoid having to spec the path for hg 
+[incoming,outgoing,bundle]:
+
+default-push= /path/to/alsa-driver 
+
+cheers
+--
+Eliot
 
 
 -------------------------------------------------------
