@@ -1,21 +1,14 @@
-From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
-Subject: Hg repo usage notes.
-Date: Fri, 12 May 2006 13:07:40 +1200
-Message-ID: <200605121307.41000.linux@blennerhassett.gen.nz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Fri, 12 May 2006 03:58:53 +0200
+Message-ID: <3049ebc2e11a92b1c91b9421da665eef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mta01.xtra.co.nz (mta01.xtra.co.nz [210.54.141.254])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2723162
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 03:11:12 +0200 (MEST)
-Received: from [192.168.1.1] (really [222.154.85.13]) by fep02.xtra.co.nz
-          with ESMTP
-          id <20060512010744.OZTX15142.fep02.xtra.co.nz@[192.168.1.1]>
-          for <alsa-devel@alsa-project.org>;
-          Fri, 12 May 2006 13:07:44 +1200
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B11B018F
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 03:58:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -28,48 +21,121 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-I have been trying to get my head around how to use Hg repo e.g. get latest 
-code, fix something, make a patch etc.  Perhaps something like the following 
-would be useful on the download page?  I'm a total newbie to Hg, so please 
-step in and set me right about the correct/desirable/easier ways to do this.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+======================================================================
+Reported By:                zanonmark
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2023
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
+======================================================================
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              05-12-2006 03:58 CEST
+======================================================================
+Summary:                    midi/joystick port disabled and no way to enable it
+Description: 
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
 
-# Get a copy of the repository
-cd alsa-hg
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
 
-hg clone http://hg-mirror.alsa-project.org/alsa-driver alsa-driver
-hg clone http://hg-mirror.alsa-project.org/alsa-kernel alsa-kernel
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
 
-# Get latest
-hg pull -u
+So, will you please include such a parameter in the next version of the
+driver?
 
-# Create a working copy
-hg clone alsa-driver alsa-driver-fixbug1
-cd alsa-driver-fixbug1
-./cvscompile
-do { code; test;} until finished;
-hg commit -m"Fixed the foo in bar"
+Thanks a lot,
 
-# What to do about sending the changes back ?
-hg outgoing ../alsa-driver
-hg outgoing -p ../alsa-driver > foobar.patch
-#OR bundle (which is preferred)
-hg bundle foobar.hg ../alsa-driver
-#OR
-hg export (?what?) > foobar.patch
+Marco.
 
-# email foobar.[hg,patch] to alsa-devel?
+======================================================================
 
-# Other notes
-add to .hg/hgrc to avoid having to spec the path for hg 
-[incoming,outgoing,bundle]:
+----------------------------------------------------------------------
+ zanonmark - 05-07-06 13:33 
+----------------------------------------------------------------------
+entering:
+ amidi -d
+ cat /proc/asound/card0/midi0
+and playing returns nothing;
 
-default-push= /path/to/alsa-driver 
+entering:
+ cat /proc/asound/card0/midi0
+returns:
 
-cheers
---
-Eliot
+root@ubuntu:/home/marco# cat /proc/asound/card0/midi0
+ES1371
+
+Output 0
+  Tx bytes     : 0
+Input 0
+  Rx bytes     : 0
+  Buffer size  : 4096
+  Avail        : 0
+  Overruns     : 0
+
+even if I keep on playing and re-entering that command...
+
+Thanks,
+
+MZ
+
+----------------------------------------------------------------------
+ Raymond - 05-12-06 03:58 
+----------------------------------------------------------------------
+If you are not intend to use the onboard midi, you may need to disable it
+in BIOS setup
+
+BTW, what is the model of your ens1371 ?  lspci -vvn
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
+04-17-06 06:56 rlrevell       Note Added: 0009301                          
+04-17-06 07:19 Raymond        Note Added: 0009303                          
+04-17-06 19:59 zanonmark      Note Added: 0009319                          
+04-18-06 10:54 Raymond        Note Added: 0009328                          
+04-18-06 13:18 Raymond        Note Edited: 0009328                         
+04-18-06 16:28 Clemens LadischNote Added: 0009338                          
+04-19-06 20:05 zanonmark      Note Added: 0009354                          
+04-19-06 21:49 rlrevell       Note Added: 0009356                          
+04-20-06 03:39 Raymond        Note Added: 0009363                          
+04-22-06 13:36 zanonmark      Note Added: 0009433                          
+04-24-06 15:47 Raymond        Note Added: 0009452                          
+04-24-06 15:57 zanonmark      Note Added: 0009460                          
+04-25-06 03:25 Raymond        Note Added: 0009484                          
+04-25-06 10:55 zanonmark      Note Added: 0009486                          
+04-26-06 10:54 Raymond        Note Added: 0009505                          
+04-26-06 19:51 zanonmark      Note Added: 0009522                          
+05-01-06 10:38 Raymond        Note Added: 0009553                          
+05-07-06 13:33 zanonmark      Note Added: 0009641                          
+05-12-06 03:58 Raymond        Note Added: 0009771                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
