@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002118]: no sound, just craking in headphones
-Date: Sat, 13 May 2006 00:24:31 +0200
-Message-ID: <153c8c23b9a6b051afc91a845fd203d2@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002116]: no sound in kernel 2.6.16-1-686
+Date: Fri, 12 May 2006 20:30:12 +0200
+Message-ID: <828e6f65bbdd2cc128b4c9cab49461c8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 56680130
-	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 00:24:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEF51175
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 20:30:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,43 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2118> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2116> 
 ======================================================================
-Reported By:                jobo
+Reported By:                mramirez
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2118
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   2116
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               FC%
-Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
-Date Submitted:             05-13-2006 00:24 CEST
-Last Modified:              05-13-2006 00:24 CEST
+Date Submitted:             05-12-2006 01:07 CEST
+Last Modified:              05-12-2006 20:30 CEST
 ======================================================================
-Summary:                    no sound, just craking in headphones
+Summary:                    no sound in kernel 2.6.16-1-686
 Description: 
-hey guys i have a asus a6km laptop,  i cannot get any sound out of it, i
-tried installing the new alsa driver and utils and lib, but how can i tell
-which version i have installed, it has a sis chipset, please help me get
-sound on this so i can never go back to windows,   thanks alot guys
+I have updated my kernel from 2.6.15-1-486 to 2.6.16-1-686, and now the
+sound not work. 
+
+I run alsaconf, but not solve the problem. 
+
+if i boot on kernel 2.6.15-1-486 the sound work. (only in this version)
+
+somebody help me?
 
 
-Joe
+
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 05-12-06 18:37 
+----------------------------------------------------------------------
+Then how about to begin with more detailed descriptions of your hardware
+and problems?
+
+----------------------------------------------------------------------
+ mramirez - 05-12-06 20:30 
+----------------------------------------------------------------------
+Laptop model:DELL INSPIRON 6400
+Procesor: Intel dual core t2200
+Chipset: Intel&#174;  945GM
+Sound card: HDA Intel, SigmatelStac9200 <- this information is from
+alsamixer
+
+i updated my kernel with #apt-get install linux-headers-2.6.16-1-686 and
+restart my computer in this kernel version,  and the sound not work.
+
+but, if i boot on 2.6.15 version, the sound work.
+
+that another information you need?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 00:24 jobo           New Issue                                    
-05-13-06 00:24 jobo           Distribution              => FC%             
-05-13-06 00:24 jobo           Kernel Version            => 2.6.16-1.2111_FC5
+05-12-06 01:07 mramirez       New Issue                                    
+05-12-06 16:07 tiwai          Note Added: 0009777                          
+05-12-06 18:34 mramirez       Note Added: 0009785                          
+05-12-06 18:37 tiwai          Note Added: 0009787                          
+05-12-06 20:30 mramirez       Note Added: 0009790                          
 ======================================================================
 
 
