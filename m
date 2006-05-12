@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Mon, 15 May 2006 22:33:22 +0200
-Message-ID: <9da72d90cab658fa222ef190695faced@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002115]: No Sound, No Error Message, Unmuted
+Date: Fri, 12 May 2006 16:12:56 +0200
+Message-ID: <100865ae5014431c9c1b7ee4821006b5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C3110229
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 22:33:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 33A5A175
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 16:12:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,117 +22,123 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2115> 
 ======================================================================
-Reported By:                dsandras
-Assigned To:                perex
+Reported By:                bthomas
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2122
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   2115
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
+Distribution:               Debian/GNU Linux (Sarge) 3.1r2
+Kernel Version:             2.6.16.13 or 2.6.16.15 or 2.6.15.7
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-15-2006 22:33 CEST
+Date Submitted:             05-11-2006 23:12 CEST
+Last Modified:              05-12-2006 16:12 CEST
 ======================================================================
-Summary:                    DMIX crashes Ekiga
+Summary:                    No Sound, No Error Message, Unmuted
 Description: 
-This problem is probably related to problem #2095 that was closed. 
-Unfortunately, I can not reopen it, so I'm posting a new bug report.
+No application is able to produce any sound on Dell Inspiron 9400 using
+Debian GNU Linux (Sarge) 3.1r2 with Kernel 2.6.16.15 (or 2.6.16.13 or
+2.6.15.7). Alsa drivers have been build into the kernel. Listed below is
+some of the relevant information (Do let me know if anything else is
+required).
 
-When using DMIX, Ekiga crashes. This problem was not present with earlier
-versions of libasound2. I applied all patches from CVS.
+lspci :
+--------
+0000:00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Audio Controller (rev 01)
+
+cat /proc/asound/cards :
+-------------------------
+ 0 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xdfffc000 irq 20
+
+cat /proc/asound/oss/sndstat :
+-------------------------------
+Sound Driver:3.8.1a-980706 (ALSA v1.0.11rc2 emulation code)
+Kernel: Linux darwin 2.6.16.13 #1 SMP PREEMPT Sat May 6 00:52:39 EDT 2006
+i686
+Config options: 0
+
+Installed drivers: 
+Type 10: ALSA emulation
+
+Card config: 
+HDA Intel at 0xdfffc000 irq 20
+
+Audio devices:
+0: STAC92xx Analog (DUPLEX)
+
+Synth devices: NOT ENABLED IN CONFIG
+
+Midi devices: NOT ENABLED IN CONFIG
+
+Timers:
+7: system timer
+
+Mixers:
+0: SigmaTel STAC9200
+
+dmesg :
+--------
+ALSA device list:
+  #0: HDA Intel at 0xdfffc000 irq 20
+
+Kernel Config (cat .config | grep SND) :
+-----------------------------------------
+
+CONFIG_SND=y
+CONFIG_SND_TIMER=y
+CONFIG_SND_PCM=y
+CONFIG_SND_SEQUENCER=y
+# CONFIG_SND_SEQ_DUMMY is not set
+CONFIG_SND_OSSEMUL=y
+CONFIG_SND_MIXER_OSS=y
+CONFIG_SND_PCM_OSS=y
+CONFIG_SND_SEQUENCER_OSS=y
+# CONFIG_SND_DYNAMIC_MINORS is not set
+CONFIG_SND_SUPPORT_OLD_API=y
+# CONFIG_SND_VERBOSE_PRINTK is not set
+# CONFIG_SND_DEBUG is not set
+CONFIG_SND_AC97_CODEC=y
+CONFIG_SND_AC97_BUS=y
+CONFIG_SND_HDA_INTEL=y
+CONFIG_SND_INTEL8X0=y
+CONFIG_SND_INTEL8X0M=m
+
+I have tried playing around with alsamixer but it was of no help. I can
+confirm that it is not muted. I did try muting IEC958 too. It may be
+pertinent that I have built the alsa drivers into the kernel and not as a
+module.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-15-06 11:07 
+ tiwai - 05-12-06 16:12 
 ----------------------------------------------------------------------
-Are you using the latest HG repo?
-hg-mirror looks out of sync for a long time.  Try HG repo from rsync, or
-http://hg.alsa-project.org/alsa-lib.
-
-The fix is SHA1 ID: 8c310c3277b78a6c53af86939fb5dd6a7db509ea.
-
-----------------------------------------------------------------------
- dsandras - 05-15-06 22:33 
-----------------------------------------------------------------------
-I applied this patch:
-http://hg.alsa-project.org/alsa-lib?cs=8c310c3277b7
-
-And it solves the problem.
-
-However, using the "default" device (and thus implicitely dmix) gives a
-very bad result with Ekiga.
-
-If I defined a .asoundrc file like this one :
-pcm.snd_card {
-        type hw
-        card 0
-}
-
-pcm.dmixer {
-        type dmix
-        ipc_key 1024
-        slave.pcm "snd_card"
-        slave {
-                period_size 256
-                buffer_size 2048
-                rate 44100
-        }
-}
-
-pcm.dsnooper {
-        type dsnoop
-        ipc_key 2048
-        slave.pcm "snd_card"
-
-        slave {
-                period_size 256
-                buffer_size 2048
-                rate 44100
-        }
-}
-
-pcm.duplex {
-        type asym
-        playback.pcm "dmixer"
-        capture.pcm "dsnooper"
-}
-
-pcm.!default {
-        type plug
-        slave.pcm "duplex"
-}
-
-Then the sound quality becomes correct, except if the machine is loaded.
-If the machine is loaded, then the latency increases.
-
-Is there any sane explanation to that problem?
-
-I'm asking because Ekiga users will complain.
+Already fixed in 2.6.17rc4 kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 17:35 dsandras       New Issue                                    
-05-13-06 17:39 dsandras       Note Added: 0009795                          
-05-13-06 17:41 dsandras       Note Added: 0009796                          
-05-13-06 18:29 rlrevell       Note Added: 0009799                          
-05-13-06 18:36 dsandras       Note Added: 0009800                          
-05-13-06 18:37 dsandras       File Added: busytone.wav                     
-05-15-06 10:35 tiwai          Status                   assigned => resolved
-05-15-06 10:35 tiwai          Resolution               open => fixed       
-05-15-06 10:35 tiwai          Note Added: 0009814                          
-05-15-06 11:01 dsandras       Status                   resolved => feedback
-05-15-06 11:01 dsandras       Resolution               fixed => reopened   
-05-15-06 11:01 dsandras       Note Added: 0009816                          
-05-15-06 11:07 tiwai          Note Added: 0009818                          
-05-15-06 22:33 dsandras       Note Added: 0009828                          
+05-11-06 23:12 bthomas        New Issue                                    
+05-11-06 23:12 bthomas        Distribution              => Debian/GNU Linux
+(Sarge) 3.1r2
+05-11-06 23:12 bthomas        Kernel Version            => 2.6.16.13 or
+2.6.16.15 or 2.6.15.7
+05-12-06 16:12 tiwai          Status                   assigned => resolved
+05-12-06 16:12 tiwai          Resolution               open => fixed       
+05-12-06 16:12 tiwai          Note Added: 0009779                          
 ======================================================================
 
 
