@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002106]: Sound card snd-hda-intel emits NO sound
-Date: Fri, 12 May 2006 16:11:55 +0200
-Message-ID: <91eecf8179117c67f757a989cd633585@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002114]: Unnable to conect with sound server. Crash signal  6 SIGSEGV.  No sounds in sistem!
+Date: Fri, 12 May 2006 16:13:53 +0200
+Message-ID: <d584db913ab26509459f6aadcbcb47be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C962C175
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 16:11:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71A3C175
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 16:13:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,109 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2106> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2114> 
 ======================================================================
-Reported By:                louisvd
+Reported By:                caroldaza
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2106
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   2114
+Category:                   0_general
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2111_FC5smp
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-08-2006 21:00 CEST
-Last Modified:              05-12-2006 16:11 CEST
+Date Submitted:             05-11-2006 21:56 CEST
+Last Modified:              05-12-2006 16:13 CEST
 ======================================================================
-Summary:                    Sound card snd-hda-intel emits NO sound
+Summary:                    Unnable to conect with sound server. Crash signal  6
+SIGSEGV.  No sounds in sistem!
 Description: 
-Hi
+(no debugging symbols found)
+Using host libthread_db library "/lib/libthread_db.so.1".
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+[Thread debugging using libthread_db enabled]
+[New Thread 16384 (LWP 5886)]
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+(no debugging symbols found)
+[KCrash handler]
+#41 0x407b0ef1 in kill () from /lib/libc.so.6
+#42 0x40648bb1 in pthread_kill () from /lib/libpthread.so.0
+#43 0x40648f2b in raise () from /lib/libpthread.so.0
+#44 0x407b0b24 in raise () from /lib/libc.so.6
+#45 0x407b23fd in abort () from /lib/libc.so.6
+#46 0x407aa00f in __assert_fail () from /lib/libc.so.6
+#47 0x40333cd4 in snd_pcm_close () from /usr/lib/./libasound.so.2
+#48 0x4014fa02 in Arts::AudioIOALSA::open ()
+   from /opt/kde/lib/libartsflow.so.1
+#49 0x4012aef8 in Arts::AudioSubSystem::open ()
+   from /opt/kde/lib/libartsflow.so.1
+#50 0x4012ad92 in Arts::AudioSubSystem::check ()
+   from /opt/kde/lib/libartsflow.so.1
+#51 0x08062980 in Arts::SoundServer_skel::~SoundServer_skel ()
+#52 0x4079d469 in __libc_start_main () from /lib/libc.so.6
+#53 0x08053dd1 in ?? ()
 
-I was merrily running Fedora Core 4 and after upgrading the kernel to
-2.6.16 my sound no longer worked under Linux (it works under Windows). 
-After a lot of battling I figured I may as well upgrade to FC5 now.  A
-clean install, out of the box, and the sound STILL did not work.  I've
-applied every available patch to date and no luck.  Tonight I installed
-the Alsa 1.0.11 driver, lib and util tarballs -- all installed
-successfully -- but there is STILL no sound produced.
-
-Everything LOOKS normal.  There are no errors that I can detect.  In the X
-and console versions of Alsamixer I have ALL the devices displayed and
-unmuted with the volumes at max. I've removed the sound lines from
-modprobe.conf and am running with alsasound and that didn't help either --
-even though it says the driver has been loaded.
-
-FYI, the OSS Volume control calls it a Realtek ALC260.  lspci refers to it
-as Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller
-(rev 01).
-
-
-Please help.
 ======================================================================
 
 ----------------------------------------------------------------------
- louisvd - 05-12-06 00:40 
+ tiwai - 05-12-06 16:13 
 ----------------------------------------------------------------------
-I see from below that the model is set to NULL and enable is set to N.
-
-1.  How do I make alsasound script set the model=auto?
-2.  Should enable=N?  How do I make it set to Y?
-3.  I get no errors.  The OS thinks the card had loaded.  However,
-regardless of where the volume controls are, no sound plays.
-
-[root@vandyl init.d]# ls -l /sys/module/snd_hda_intel/parameters/
-total 0
--r--r--r-- 1 root root 4096 May 12 00:37 enable
--r--r--r-- 1 root root 4096 May 12 00:37 id
--r--r--r-- 1 root root 4096 May 12 00:37 index
--r--r--r-- 1 root root 4096 May 12 00:36 model
--r--r--r-- 1 root root 4096 May 12 00:37 position_fix
--r--r--r-- 1 root root 4096 May 12 00:37 probe_mask
--r--r--r-- 1 root root 4096 May 12 00:37 single_cmd
-[root@vandyl init.d]# cat /sys/module/snd_hda_intel/parameters/enable
-N
-[root@vandyl init.d]# cat /sys/module/snd_hda_intel/parameters/id
-<NULL>
-[root@vandyl init.d]# cat /sys/module/snd_hda_intel/parameters/index
--1
-[root@vandyl init.d]# cat /sys/module/snd_hda_intel/parameters/model
-<NULL>
-[root@vandyl init.d]# cat
-/sys/module/snd_hda_intel/parameters/position_fix
-0
-[root@vandyl init.d]# cat /sys/module/snd_hda_intel/parameters/probe_mask
--1
-[root@vandyl init.d]# cat /sys/module/snd_hda_intel/parameters/single_cmd
-N
-
-----------------------------------------------------------------------
- tiwai - 05-12-06 16:11 
-----------------------------------------------------------------------
-It's not alsasound script but somewhere else to set up the module option. 
-Usually /etc/modprobe.d/* or /etc/modprobe.conf* file.
-
-The enable option is a place holder for snd-hda-intel driver just for
-compatibility.  It's anyway ignored.
+A known problem of arts.  Should be fixed with the latest version of
+alsa-lib and arts.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-08-06 21:00 louisvd        New Issue                                    
-05-08-06 21:00 louisvd        Distribution              => Fedora Core 5   
-05-08-06 21:00 louisvd        Kernel Version            => 2.6.16-1.2111_FC5smp
-05-10-06 16:16 tiwai          Note Added: 0009722                          
-05-10-06 16:52 louisvd        Note Added: 0009731                          
-05-10-06 16:55 tiwai          Note Added: 0009732                          
-05-10-06 20:02 louisvd        Note Added: 0009751                          
-05-12-06 00:40 louisvd        Note Added: 0009770                          
-05-12-06 10:31 UMMO           Issue Monitored: UMMO                        
-05-12-06 16:11 tiwai          Note Added: 0009778                          
+05-11-06 21:56 caroldaza      New Issue                                    
+05-12-06 16:13 tiwai          Status                   new => resolved     
+05-12-06 16:13 tiwai          Resolution               open => fixed       
+05-12-06 16:13 tiwai          Assigned To               => tiwai           
+05-12-06 16:13 tiwai          Note Added: 0009780                          
 ======================================================================
 
 
