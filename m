@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002106]: Sound card snd-hda-intel emits NO sound
-Date: Fri, 12 May 2006 17:36:45 +0200
-Message-ID: <d1f6a42ca242b0ffaeafef1411c198a5@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002116]: no sound in kernel 2.6.16-1-686
+Date: Fri, 12 May 2006 22:43:41 +0200
+Message-ID: <e01865457202f56dac64caef39623610@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 94AF6175
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 17:36:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8783176
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 22:43:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,105 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2106> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2116> 
 ======================================================================
-Reported By:                louisvd
-Assigned To:                tiwai
+Reported By:                mramirez
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2106
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   2116
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2111_FC5smp
+Status:                     new
 ======================================================================
-Date Submitted:             05-08-2006 21:00 CEST
-Last Modified:              05-12-2006 17:36 CEST
+Date Submitted:             05-12-2006 01:07 CEST
+Last Modified:              05-12-2006 22:43 CEST
 ======================================================================
-Summary:                    Sound card snd-hda-intel emits NO sound
+Summary:                    no sound in kernel 2.6.16-1-686
 Description: 
-Hi
+I have updated my kernel from 2.6.15-1-486 to 2.6.16-1-686, and now the
+sound not work. 
 
-I was merrily running Fedora Core 4 and after upgrading the kernel to
-2.6.16 my sound no longer worked under Linux (it works under Windows). 
-After a lot of battling I figured I may as well upgrade to FC5 now.  A
-clean install, out of the box, and the sound STILL did not work.  I've
-applied every available patch to date and no luck.  Tonight I installed
-the Alsa 1.0.11 driver, lib and util tarballs -- all installed
-successfully -- but there is STILL no sound produced.
+I run alsaconf, but not solve the problem. 
 
-Everything LOOKS normal.  There are no errors that I can detect.  In the X
-and console versions of Alsamixer I have ALL the devices displayed and
-unmuted with the volumes at max. I've removed the sound lines from
-modprobe.conf and am running with alsasound and that didn't help either --
-even though it says the driver has been loaded.
+if i boot on kernel 2.6.15-1-486 the sound work. (only in this version)
 
-FYI, the OSS Volume control calls it a Realtek ALC260.  lspci refers to it
-as Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller
-(rev 01).
+somebody help me?
 
 
-Please help.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- louisvd - 05-12-06 17:18 
+ mramirez - 05-12-06 21:35 
 ----------------------------------------------------------------------
-Ah, thanks.  ALMOST there now.
+-i execute alsamixer and set the master volume to 100%,
+-i try to play music in mplayer and totem, and both the sound not work.
+-i try to play a avi file in totem, but the sound not word.
+-i don't have sound on both, phones and laptopspeaker.
 
-I updated my /etc/modprobe.conf file to this:
-alias eth0 tg3
-alias scsi_hostadapter ata_piix
-alias snd-card-0 snd-hda-intel
-options snd-card-0 index=0
-options snd-hda-intel index=0
-options snd-hda-intel model=auto
-remove snd-hda-intel { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-hda-intel
+my alsmamixer driver version is v1.0.11
 
-I now get sound out of the "Front" slider.  This is the Internal Mono
-speaker inside the PC.  
 
-I have external PC speakers plugged into the sound out plug at the rear of
-the PC.  This channel is NOT playing any sound.  
-
-Help me fix that and we can close the call.
-
-Thanks for the help so far.
 
 ----------------------------------------------------------------------
- tiwai - 05-12-06 17:36 
+ rlrevell - 05-12-06 22:43 
 ----------------------------------------------------------------------
-You should write only one "options snd-hda-intel" line.  The first one is
-overridden.
+Try raising the PCM and Front volume and make sure all controls are
+unmuted.
 
-As mentioned, try different model option values as found in
-ALSA-Configuration.txt.  For example, model=hp.  If none of them matches
-properly with yours, we'll need to create another model.
+Don't use kmix, it's terribly buggy.  Test with alsamixer.
 
-In the case of ALC260, you can use model=test when the drivers are
-compiled with debug option (--with-debug=full configure option).  It will
-allow you to tune almost everything on the codec chip.  Figure out which
-pin and configuration matches with the actual I/O by trial-and-error.
+If it still does not work post the output of "amixer"
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-08-06 21:00 louisvd        New Issue                                    
-05-08-06 21:00 louisvd        Distribution              => Fedora Core 5   
-05-08-06 21:00 louisvd        Kernel Version            => 2.6.16-1.2111_FC5smp
-05-10-06 16:16 tiwai          Note Added: 0009722                          
-05-10-06 16:52 louisvd        Note Added: 0009731                          
-05-10-06 16:55 tiwai          Note Added: 0009732                          
-05-10-06 20:02 louisvd        Note Added: 0009751                          
-05-12-06 00:40 louisvd        Note Added: 0009770                          
-05-12-06 10:31 UMMO           Issue Monitored: UMMO                        
-05-12-06 16:11 tiwai          Note Added: 0009778                          
-05-12-06 17:18 louisvd        Note Added: 0009782                          
-05-12-06 17:36 tiwai          Note Added: 0009783                          
+05-12-06 01:07 mramirez       New Issue                                    
+05-12-06 16:07 tiwai          Note Added: 0009777                          
+05-12-06 18:34 mramirez       Note Added: 0009785                          
+05-12-06 18:37 tiwai          Note Added: 0009787                          
+05-12-06 20:30 mramirez       Note Added: 0009790                          
+05-12-06 20:34 tiwai          Note Added: 0009791                          
+05-12-06 21:29 mramirez       Note Added: 0009792                          
+05-12-06 21:35 mramirez       Note Edited: 0009792                         
+05-12-06 22:43 rlrevell       Note Added: 0009793                          
 ======================================================================
 
 
