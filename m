@@ -1,16 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [RFC] alsa integer control ranges
-Date: Tue, 16 May 2006 10:53:05 -0400
-Message-ID: <1147791186.13948.109.camel@mindpipe>
-References: <1147780945.29795.110.camel@johannes>
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Subject: Correction for fixing alsa-lib static build (patch attached)
+Date: Fri, 12 May 2006 14:09:09 +0200
+Message-ID: <44647AE5.9060202@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------010300020102050707040105"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E7964238
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 16:53:10 +0200 (MEST)
-In-Reply-To: <1147780945.29795.110.camel@johannes>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,30 +15,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: ALSA development <alsa-devel@alsa-project.org>, linuxppc-dev list <linuxppc-dev@ozlabs.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Benjamin Berg <benjamin@sipsolutions.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-05-16 at 14:02 +0200, Johannes Berg wrote:
-> Apparently all alsa userspace programs including alsamixer suck. Hence,
-> this patch is required to make them work properly. Why is it so hard to
-> do these additions/subtractions in the program or maybe even in the alsa
-> library? The alsa libraries already think they know better and mess up
-> all kinds of things.
-> 
-> What are your opinions on this? Should this be required? And if so, why
-> do we even have the value.integer.min when we can't use it anyway? 
-> 
-> The code this patch applies against is in
-> http://johannes.sipsolutions.net/snd-aoa.git/ but that isn't all too
-> relevant, the patch serves just as an illustration of what is wrong
-> here.
-> 
+This is a multi-part message in MIME format.
+--------------010300020102050707040105
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Ummm... what problem is this patch fixing?
+Hi!
 
-Lee
+While trying to compile the alsa library static, without dynamic lib at
+all, I encountered an error with two symbols being unresolved.
 
+The attached patch corrects the compile errors when doing a standard
+configure and build. I haven't disabled or enabled anything else than
+what is compiled in by default.
+
+Please comment if my patch breaks the library or similar.
+
+-- 
+With kind regards,
+Med vennlig hilsen,
+
+Hans-Christian Egtvedt
+Applications Engineer - AVR Applications Lab
+Atmel Norway
+
+--------------010300020102050707040105
+Content-Type: text/x-patch;
+ name="alsa-lib-1.0.11-fix-static-linking.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa-lib-1.0.11-fix-static-linking.patch"
+
+--- alsa-lib-1.0.11.orig/src/pcm/pcm_ioplug.c	2005-06-28 12:24:45.000000000 +0200
++++ alsa-lib-1.0.11/src/pcm/pcm_ioplug.c	2006-05-12 10:53:00.000000000 +0200
+@@ -30,6 +30,9 @@
+ #include "pcm_ioplug.h"
+ #include "pcm_ext_parm.h"
+ 
++/* entry for static linking */
++const char *_snd_module_pcm_ioplug = "";
++
+ #ifndef DOC_HIDDEN
+ 
+ /* hw_params */
+--- alsa-lib-1.0.11.orig/src/pcm/pcm_extplug.c	2006-03-21 11:30:44.000000000 +0100
++++ alsa-lib-1.0.11/src/pcm/pcm_extplug.c	2006-05-12 10:53:23.000000000 +0200
+@@ -31,6 +31,9 @@
+ #include "pcm_extplug.h"
+ #include "pcm_ext_parm.h"
+ 
++/* entry for static linking */
++const char *_snd_module_pcm_extplug = "";
++
+ #ifndef DOC_HIDDEN
+ 
+ typedef struct snd_pcm_extplug_priv {
+
+--------------010300020102050707040105--
 
 
 -------------------------------------------------------
