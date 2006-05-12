@@ -1,14 +1,15 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [RFC] alsa integer control ranges
-Date: Tue, 16 May 2006 14:02:20 +0200
-Message-ID: <1147780945.29795.110.camel__24741.7113431313$1147781257$gmane$org@johannes>
+From: bugtrack@alsa-project.org
+Subject: =?iso-8859-1?Q?[ALSA_-_driver_0002117]:_No_5.1-support_f=FCr_VIA8237x/161?=
+ =?iso-8859-1?Q?7_based_soundsystems_(i.e._VIA_EPIA_SP8000-Board)?=
+Date: Fri, 12 May 2006 09:42:47 +0200
+Message-ID: <bcfed83e83e4a043f16b75104b670f32@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BB4222D
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 14:03:42 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EAD418F
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 09:42:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,91 +19,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: linuxppc-dev list <linuxppc-dev@ozlabs.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Benjamin Berg <benjamin@sipsolutions.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Apparently all alsa userspace programs including alsamixer suck. Hence,
-this patch is required to make them work properly. Why is it so hard to
-do these additions/subtractions in the program or maybe even in the alsa
-library? The alsa libraries already think they know better and mess up
-all kinds of things.
 
-What are your opinions on this? Should this be required? And if so, why
-do we even have the value.integer.min when we can't use it anyway? 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2117> 
+======================================================================
+Reported By:                Flipsen1977
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2117
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             05-12-2006 09:42 CEST
+Last Modified:              05-12-2006 09:42 CEST
+======================================================================
+Summary:                    No 5.1-support für VIA8237x/1617 based soundsystems
+(i.e. VIA EPIA SP8000-Board)
+Description: 
+I've installed the latest via82xx-module, 2-channel works fine, but
+6-channel isn't available at all.
 
-The code this patch applies against is in
-http://johannes.sipsolutions.net/snd-aoa.git/ but that isn't all too
-relevant, the patch serves just as an illustration of what is wrong
-here.
+alsamixer shows all the channels, they are unmuted und up at 90-100%, but
+center/lfe und rear speakers don't work. I've been missing an opportunity
+to switch the line-in and mic-in to output. As I read in some articles
+there isn't yet support for this chipset.
 
-Thanks,
-johannes
+Is there already something done?
+======================================================================
 
---- snd-aoa.orig/aoa/codecs/onyx/snd-aoa-codec-onyx.c	2006-05-16 12:13:39.663950213 +0200
-+++ snd-aoa/aoa/codecs/onyx/snd-aoa-codec-onyx.c	2006-05-16 12:14:13.698643898 +0200
-@@ -102,8 +102,8 @@ static int onyx_snd_vol_info(struct snd_
- {
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
- 	uinfo->count = 2;
--	uinfo->value.integer.min = -128;
--	uinfo->value.integer.max = -1;
-+	uinfo->value.integer.min = -128+128;
-+	uinfo->value.integer.max = -1+128;
- 	return 0;
- }
- 
-@@ -115,8 +115,8 @@ static int onyx_snd_vol_get(struct snd_k
- 
- 	onyx_read_register(onyx, ONYX_REG_DAC_ATTEN_LEFT, &l);
- 	onyx_read_register(onyx, ONYX_REG_DAC_ATTEN_RIGHT, &r);
--	ucontrol->value.integer.value[0] = l;
--	ucontrol->value.integer.value[1] = r;
-+	ucontrol->value.integer.value[0] = l+128;
-+	ucontrol->value.integer.value[1] = r+128;
- 	return 0;
- }
- 
-@@ -125,8 +125,8 @@ static int onyx_snd_vol_put(struct snd_k
- {
- 	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
- 
--	onyx_write_register(onyx, ONYX_REG_DAC_ATTEN_LEFT, ucontrol->value.integer.value[0]);
--	onyx_write_register(onyx, ONYX_REG_DAC_ATTEN_RIGHT, ucontrol->value.integer.value[1]);
-+	onyx_write_register(onyx, ONYX_REG_DAC_ATTEN_LEFT, ucontrol->value.integer.value[0]-128);
-+	onyx_write_register(onyx, ONYX_REG_DAC_ATTEN_RIGHT, ucontrol->value.integer.value[1]-128);
- 	/* FIXME: we could be checking if anything changed */
- 	return 1;
- }
-@@ -145,8 +145,8 @@ static int onyx_snd_inputgain_info(struc
- {
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
- 	uinfo->count = 1;
--	uinfo->value.integer.min = 3;
--	uinfo->value.integer.max = 28;
-+	uinfo->value.integer.min = 3-3;
-+	uinfo->value.integer.max = 28-3;
- 	return 0;
- }
- 
-@@ -157,7 +157,7 @@ static int onyx_snd_inputgain_get(struct
- 	u8 ig;
- 
- 	onyx_read_register(onyx, ONYX_REG_ADC_CONTROL, &ig);
--	ucontrol->value.integer.value[0] = ig & ONYX_ADC_PGA_GAIN_MASK;
-+	ucontrol->value.integer.value[0] = (ig & ONYX_ADC_PGA_GAIN_MASK)-3;
- 	return 0;
- }
- 
-@@ -169,7 +169,7 @@ static int onyx_snd_inputgain_put(struct
- 
- 	onyx_read_register(onyx, ONYX_REG_ADC_CONTROL, &val);
- 	val &= ~ONYX_ADC_PGA_GAIN_MASK;
--	val |= ucontrol->value.integer.value[0] & ONYX_ADC_PGA_GAIN_MASK;
-+	val |= (ucontrol->value.integer.value[0]+3) & ONYX_ADC_PGA_GAIN_MASK;
- 	onyx_write_register(onyx, ONYX_REG_ADC_CONTROL, val);
- 	return 1;
- }
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-12-06 09:42 Flipsen1977    New Issue                                    
+05-12-06 09:42 Flipsen1977    Distribution              => Debian          
+05-12-06 09:42 Flipsen1977    Kernel Version            => 2.6.15          
+======================================================================
 
 
 
