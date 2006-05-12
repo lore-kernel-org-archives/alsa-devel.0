@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002106]: Sound card snd-hda-intel emits NO sound
-Date: Fri, 12 May 2006 17:58:34 +0200
-Message-ID: <502ee9e0c47dccb26e94e7de6a5a37d8@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002116]: no sound in kernel 2.6.16-1-686
+Date: Fri, 12 May 2006 18:37:01 +0200
+Message-ID: <b6135c15fa4b4c766269d8580e759b09@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE319175
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 17:58:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E7AF175
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 18:37:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,101 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2106> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2116> 
 ======================================================================
-Reported By:                louisvd
-Assigned To:                tiwai
+Reported By:                mramirez
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2106
-Category:                   PCI - hda-intel
+Project:                    ALSA - utils
+Issue ID:                   2116
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2111_FC5smp
+Status:                     new
 ======================================================================
-Date Submitted:             05-08-2006 21:00 CEST
-Last Modified:              05-12-2006 17:58 CEST
+Date Submitted:             05-12-2006 01:07 CEST
+Last Modified:              05-12-2006 18:37 CEST
 ======================================================================
-Summary:                    Sound card snd-hda-intel emits NO sound
+Summary:                    no sound in kernel 2.6.16-1-686
 Description: 
-Hi
+I have updated my kernel from 2.6.15-1-486 to 2.6.16-1-686, and now the
+sound not work. 
 
-I was merrily running Fedora Core 4 and after upgrading the kernel to
-2.6.16 my sound no longer worked under Linux (it works under Windows). 
-After a lot of battling I figured I may as well upgrade to FC5 now.  A
-clean install, out of the box, and the sound STILL did not work.  I've
-applied every available patch to date and no luck.  Tonight I installed
-the Alsa 1.0.11 driver, lib and util tarballs -- all installed
-successfully -- but there is STILL no sound produced.
+I run alsaconf, but not solve the problem. 
 
-Everything LOOKS normal.  There are no errors that I can detect.  In the X
-and console versions of Alsamixer I have ALL the devices displayed and
-unmuted with the volumes at max. I've removed the sound lines from
-modprobe.conf and am running with alsasound and that didn't help either --
-even though it says the driver has been loaded.
+if i boot on kernel 2.6.15-1-486 the sound work. (only in this version)
 
-FYI, the OSS Volume control calls it a Realtek ALC260.  lspci refers to it
-as Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller
-(rev 01).
+somebody help me?
 
 
-Please help.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-12-06 17:36 
+ mramirez - 05-12-06 18:34 
 ----------------------------------------------------------------------
-You should write only one "options snd-hda-intel" line.  The first one is
-overridden.
-
-As mentioned, try different model option values as found in
-ALSA-Configuration.txt.  For example, model=hp.  If none of them matches
-properly with yours, we'll need to create another model.
-
-In the case of ALC260, you can use model=test when the drivers are
-compiled with debug option (--with-debug=full configure option).  It will
-allow you to tune almost everything on the codec chip.  Figure out which
-pin and configuration matches with the actual I/O by trial-and-error.
+i try this but the sound don't work
 
 ----------------------------------------------------------------------
- louisvd - 05-12-06 17:58 
+ tiwai - 05-12-06 18:37 
 ----------------------------------------------------------------------
-SUCCESS!!
-
-I changed the model to 'basic' and that worked.
-
-Here is my modprobe.conf
-alias eth0 tg3
-alias scsi_hostadapter ata_piix
-alias snd-card-0 snd-hda-intel
-options snd-card-0 index=0
-options snd-hda-intel index=0 model=basic
-remove snd-hda-intel { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-hda-intel
-
-
-Thank you VERY MUCH for your assistance.  You may close this call.
+Then how about to begin with more detailed descriptions of your hardware
+and problems?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-08-06 21:00 louisvd        New Issue                                    
-05-08-06 21:00 louisvd        Distribution              => Fedora Core 5   
-05-08-06 21:00 louisvd        Kernel Version            => 2.6.16-1.2111_FC5smp
-05-10-06 16:16 tiwai          Note Added: 0009722                          
-05-10-06 16:52 louisvd        Note Added: 0009731                          
-05-10-06 16:55 tiwai          Note Added: 0009732                          
-05-10-06 20:02 louisvd        Note Added: 0009751                          
-05-12-06 00:40 louisvd        Note Added: 0009770                          
-05-12-06 10:31 UMMO           Issue Monitored: UMMO                        
-05-12-06 16:11 tiwai          Note Added: 0009778                          
-05-12-06 17:18 louisvd        Note Added: 0009782                          
-05-12-06 17:36 tiwai          Note Added: 0009783                          
-05-12-06 17:54 UMMO           Issue End Monitor: UMMO                      
-05-12-06 17:58 louisvd        Note Added: 0009784                          
+05-12-06 01:07 mramirez       New Issue                                    
+05-12-06 16:07 tiwai          Note Added: 0009777                          
+05-12-06 18:34 mramirez       Note Added: 0009785                          
+05-12-06 18:37 tiwai          Note Added: 0009787                          
 ======================================================================
 
 
