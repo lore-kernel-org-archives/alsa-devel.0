@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002114]: Unnable to conect with sound server. Crash signal  6 SIGSEGV.  No sounds in sistem!
-Date: Fri, 12 May 2006 16:13:53 +0200
-Message-ID: <d584db913ab26509459f6aadcbcb47be@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002116]: no sound in kernel 2.6.16-1-686
+Date: Fri, 12 May 2006 21:29:54 +0200
+Message-ID: <1874fc184f1a14a04d692fe2cab0e28b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71A3C175
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 16:13:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0997161
+	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 21:29:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2114> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2116> 
 ======================================================================
-Reported By:                caroldaza
-Assigned To:                tiwai
+Reported By:                mramirez
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2114
-Category:                   0_general
+Project:                    ALSA - utils
+Issue ID:                   2116
+Category:                   speakertest
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             05-11-2006 21:56 CEST
-Last Modified:              05-12-2006 16:13 CEST
+Date Submitted:             05-12-2006 01:07 CEST
+Last Modified:              05-12-2006 21:29 CEST
 ======================================================================
-Summary:                    Unnable to conect with sound server. Crash signal  6
-SIGSEGV.  No sounds in sistem!
+Summary:                    no sound in kernel 2.6.16-1-686
 Description: 
-(no debugging symbols found)
-Using host libthread_db library "/lib/libthread_db.so.1".
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-[Thread debugging using libthread_db enabled]
-[New Thread 16384 (LWP 5886)]
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-(no debugging symbols found)
-[KCrash handler]
-#41 0x407b0ef1 in kill () from /lib/libc.so.6
-#42 0x40648bb1 in pthread_kill () from /lib/libpthread.so.0
-#43 0x40648f2b in raise () from /lib/libpthread.so.0
-#44 0x407b0b24 in raise () from /lib/libc.so.6
-#45 0x407b23fd in abort () from /lib/libc.so.6
-#46 0x407aa00f in __assert_fail () from /lib/libc.so.6
-#47 0x40333cd4 in snd_pcm_close () from /usr/lib/./libasound.so.2
-#48 0x4014fa02 in Arts::AudioIOALSA::open ()
-   from /opt/kde/lib/libartsflow.so.1
-#49 0x4012aef8 in Arts::AudioSubSystem::open ()
-   from /opt/kde/lib/libartsflow.so.1
-#50 0x4012ad92 in Arts::AudioSubSystem::check ()
-   from /opt/kde/lib/libartsflow.so.1
-#51 0x08062980 in Arts::SoundServer_skel::~SoundServer_skel ()
-#52 0x4079d469 in __libc_start_main () from /lib/libc.so.6
-#53 0x08053dd1 in ?? ()
+I have updated my kernel from 2.6.15-1-486 to 2.6.16-1-686, and now the
+sound not work. 
+
+I run alsaconf, but not solve the problem. 
+
+if i boot on kernel 2.6.15-1-486 the sound work. (only in this version)
+
+somebody help me?
+
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-12-06 16:13 
+ tiwai - 05-12-06 20:34 
 ----------------------------------------------------------------------
-A known problem of arts.  Should be fixed with the latest version of
-alsa-lib and arts.
+"sound not work" is too ambiguous.  Please elaborate what you tested.
+
+The fix for STAC92xx codecs are not included in 2.6.16.x kernels but only
+2.6.17rc kernel.  I've heard reports that Dell laptop works with 2.6.17
+kernels.
+
+Or, try ALSA 1.0.11 driver.  This should work as well as 2.6.17rc kernel,
+too.
+
+----------------------------------------------------------------------
+ mramirez - 05-12-06 21:29 
+----------------------------------------------------------------------
+-i execute alsamixer and set the master volume to 100%,
+-i try to play music in mplayer and totem, and both the sound not work.
+-i try to play a avi file in totem, but the sound not word.
+-i don't have sound on both, phones and laptopspeaker.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-11-06 21:56 caroldaza      New Issue                                    
-05-12-06 16:13 tiwai          Status                   new => resolved     
-05-12-06 16:13 tiwai          Resolution               open => fixed       
-05-12-06 16:13 tiwai          Assigned To               => tiwai           
-05-12-06 16:13 tiwai          Note Added: 0009780                          
+05-12-06 01:07 mramirez       New Issue                                    
+05-12-06 16:07 tiwai          Note Added: 0009777                          
+05-12-06 18:34 mramirez       Note Added: 0009785                          
+05-12-06 18:37 tiwai          Note Added: 0009787                          
+05-12-06 20:30 mramirez       Note Added: 0009790                          
+05-12-06 20:34 tiwai          Note Added: 0009791                          
+05-12-06 21:29 mramirez       Note Added: 0009792                          
 ======================================================================
 
 
