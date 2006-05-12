@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002103]: Sound goes off when adjusting volume from alsa-mixer
-Date: Fri, 12 May 2006 10:42:39 +0200
-Message-ID: <f71d2b2121e6b08e34dc1e281ecd9e99@bugtrack.alsa-project.org>
+From: Juan Zapatero <jazc@gmvsistemas.es>
+Subject: Mix audio at different frequencies
+Date: Fri, 12 May 2006 12:25:41 +0200
+Message-ID: <1147429541.26309.3.camel@jazc.fedora>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6425219
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 10:42:39 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +16,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
+I need to mix in playback two different audio streams, one coming from
+an ogg player, which is at 44100Hz, and the other one, coming out of a
+VoIP application, in this case, at 8000Hz. As I am using the dmix plugin
+for mixing, I can't find out how to implement the resampling operations
+needed.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2103> 
-======================================================================
-Reported By:                raddy
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2103
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Suse
-Kernel Version:             2.6.13-15
-======================================================================
-Date Submitted:             05-08-2006 11:28 CEST
-Last Modified:              05-12-2006 10:42 CEST
-======================================================================
-Summary:                    Sound goes off when adjusting volume from alsa-mixer
-Description: 
-i have an Asus P5RD2-VM motherboard equipped with Uli M5461 integrated 
-sound card supporting HD-Audio,
-it uses snd_hda_intel driver,
-it was detected fine,
-Alsa played a test sound that itself produced no sound from speakers,
-sound is going off in many curcomstance,
-they are,
-1 > when adjusting volume,
-2 > switching to several songs intermittently.
-
-======================================================================
-
-----------------------------------------------------------------------
- UMMO - 05-12-06 10:42 
-----------------------------------------------------------------------
-I'm having the same issue on my Lenovo 3000 N100 using the Intel ICH7 rev
-02 chipset. Alsamixer reports the audio chip as an Analog Devices AD1986A.
-Using ALSA 1.0.11 drivers compiled separately, and a 2.6.16 kernel.
-
-After loading the ALSA modules, sound works fine until trying to adjust
-the mixer in any way while an audio stream is playing, after which it just
-cuts off completely. If I close all playing audio streams and tweak the
-headphone and PCM mixers up and down a bit using alsamixer, it comes back
-and new streams will play until I adjust the mixer again.
-
-Also, there's no sound on the internal speakers, only the headphone jack.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-08-06 11:28 raddy          New Issue                                    
-05-08-06 11:28 raddy          Distribution              => Suse            
-05-08-06 11:28 raddy          Kernel Version            => 2.6.13-15       
-05-10-06 07:54 raddy          Issue Monitored: raddy                       
-05-12-06 10:42 UMMO           Note Added: 0009774                          
-======================================================================
+Thanks. 
 
 
+______________________
+Este mensaje, y en su caso, cualquier fichero anexo al mismo,
+ puede contener informacion clasificada por su emisor como confidencial
+ en el marco de su Sistema de Gestion de Seguridad de la 
+Informacion siendo para uso exclusivo del destinatario, quedando 
+prohibida su divulgacion copia o distribucion a terceros sin la 
+autorizacion expresa del remitente. Si Vd. ha recibido este mensaje 
+ erroneamente, se ruega lo notifique al remitente y proceda a su borrado. 
+Gracias por su colaboracion.
+______________________
+This message including any attachments may contain confidential 
+information, according to our Information Security Management System,
+ and intended solely for a specific individual to whom they are addressed.
+ Any unauthorised copy, disclosure or distribution of this message
+ is strictly forbidden. If you have received this transmission in error,
+ please notify the sender immediately and delete it.
+______________________
 
 
 -------------------------------------------------------
