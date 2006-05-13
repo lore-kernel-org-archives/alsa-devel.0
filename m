@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002123]: Power Management is broken following changes from 1.0.10 to 1.0.11.x versions
-Date: Sat, 13 May 2006 17:37:31 +0200
-Message-ID: <f37454f44f81506485a3614deb2d1364@bugtrack.alsa-project.org>
+Date: Sat, 13 May 2006 17:41:29 +0200
+Message-ID: <8d5bdf83bb7d3426d1d6bce1488b67f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CF6D9195
-	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 17:37:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3582A195
+	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 17:41:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2123> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.16
 ======================================================================
 Date Submitted:             05-13-2006 17:37 CEST
-Last Modified:              05-13-2006 17:37 CEST
+Last Modified:              05-13-2006 17:41 CEST
 ======================================================================
 Summary:                    Power Management is broken following changes from
 1.0.10 to 1.0.11.x versions
@@ -56,12 +56,19 @@ basically, i have to restart the alsasound service after resume to have
 any sound again.
 ======================================================================
 
+----------------------------------------------------------------------
+ jovial - 05-13-06 17:41 
+----------------------------------------------------------------------
+i forgot to mention my chipset.
+Chip: Realtek ALC260
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-13-06 17:37 jovial         New Issue                                    
 05-13-06 17:37 jovial         Distribution              => gentoo          
 05-13-06 17:37 jovial         Kernel Version            => 2.6.16          
+05-13-06 17:41 jovial         Note Added: 0009797                          
 ======================================================================
 
 
