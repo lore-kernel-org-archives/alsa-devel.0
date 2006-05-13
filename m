@@ -1,11 +1,11 @@
-From: "Aubrey Molina" <fqn@godsleadingladies.com>
-Subject: icing wicket
-Date: Sat, 13 May 2006 14:39:01 +0200
-Message-ID: <000801c6768a$dbf26cb0$7ec57153@pqlq>
+From: "Israel Jacobson" <nzscow@kaupper.de>
+Subject: shyster dwarves
+Date: Sat, 13 May 2006 14:41:10 +0200
+Message-ID: <000801c6768a$dcb60ad0$48e87153@nfjyzo>
 Mime-Version: 1.0
 Content-Type: multipart/related;
 	type="multipart/alternative";
-	boundary="----=_NextPart_000_0004_01C6769B.9F7B3C70"
+	boundary="----=_NextPart_000_0004_01C6769B.A03EDA90"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,23 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sf.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0004_01C6769B.9F7B3C70
+------=_NextPart_000_0004_01C6769B.A03EDA90
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0005_01C6769B.9F7B3C80"
+	boundary="----=_NextPart_001_0005_01C6769B.A03EDAA0"
 
 
-------=_NextPart_001_0005_01C6769B.9F7B3C80
+------=_NextPart_001_0005_01C6769B.A03EDAA0
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-------=_NextPart_001_0005_01C6769B.9F7B3C80
+------=_NextPart_001_0005_01C6769B.A03EDAA0
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -41,22 +41,22 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2600.0000" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
 <DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:000301c6768a$dbf26c60$7ec57153@pqlq" align=3Dbaseline=20
+src=3D"cid:000301c6768a$dcb60a80$48e87153@nfjyzo" align=3Dbaseline=20
 border=3D0></FONT></DIV>
 </BODY></HTML>
 
-------=_NextPart_001_0005_01C6769B.9F7B3C80--
+------=_NextPart_001_0005_01C6769B.A03EDAA0--
 
-------=_NextPart_000_0004_01C6769B.9F7B3C70
+------=_NextPart_000_0004_01C6769B.A03EDA90
 Content-Type: image/gif;
-	name="petty cash.gif"
+	name="implicit.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000301c6768a$dbf26c60$7ec57153@pqlq>
+Content-ID: <000301c6768a$dcb60a80$48e87153@nfjyzo>
 
 R0lGODdhJAM6A8YAAP///wERCuvg7zErKxYCHo1/l3Nrc7C3ptTI0lpBVY2TlXt7ijFJNSgkKk40
 SHc1htyz71K1waotM9gMjK16JkvyT0MNKsWgnPOC+DH6LbjX4acpl2jUxZys0ShaS06lPp7oS8iu
@@ -766,7 +766,7 @@ Ou/Mc88+/wx00EIPTXTRRh+NdNJKL810004/DXXUUk9NddVWX4111lpvzXXXXn8Ndthij0122Waf
 jXbaNWqvzXbbbr8Nd9xyz0133XbfjXfeeu/Nd99+/w240BcETnjhhh+OeOKKL854444/DnnkXgcC
 ADs=
 
-------=_NextPart_000_0004_01C6769B.9F7B3C70--
+------=_NextPart_000_0004_01C6769B.A03EDA90--
 
 
 
