@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002119]: sound playback disables networking
-Date: Sat, 13 May 2006 07:54:04 +0200
-Message-ID: <62c125d335c124ac198916967229dc1c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002099]: System hangs while booting, and i get flooded by azx_get_response timeout message
+Date: Sun, 14 May 2006 01:44:45 +0200
+Message-ID: <e788483e42b0c357fe68ca32486b1e9d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F99A18E
-	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 07:54:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8E34115D
+	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 01:44:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,36 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2119> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2099> 
 ======================================================================
-Reported By:                frink
-Assigned To:                jcdutton
+Reported By:                bugmenot
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2119
-Category:                   PCI - ca0106
+Issue ID:                   2099
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Debian
+Kernel Version:             2.6.16.11
 ======================================================================
-Date Submitted:             05-13-2006 07:54 CEST
-Last Modified:              05-13-2006 07:54 CEST
+Date Submitted:             05-06-2006 15:24 CEST
+Last Modified:              05-14-2006 01:44 CEST
 ======================================================================
-Summary:                    sound playback disables networking
+Summary:                    System hangs while booting, and i get flooded by
+azx_get_response timeout message
 Description: 
-Attempts to play music or video with sound result in the player locking up
-and the system's networking going away.
+While booting, and after loading alsa, the screen gets flooded with
+azx_get_response timeout messages, and my system wont continue to boot. I
+than can only restart.
+
+I have read that this is a known error, and it should  be fixed in the cvs
+version  of alsa, but i included the cvs version (cvs copy from the
+5.5.2006) into my kernel and i still get the error.
+
+This only happens when i inlcude the intel_hda driver into the kernel
+(build into or as modules, its the same)
+
+without it alsa just claims to find no soundcard, but my system works
+well.
+
+I have a ibm thinkpad x60s and a hdc7 sound/model card?
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 05-11-06 17:08 
+----------------------------------------------------------------------
+Use cvscompile script.
+
+----------------------------------------------------------------------
+ bugmenot - 05-14-06 01:44 
+----------------------------------------------------------------------
+jea, compiling the HG version, and setting the module option
+index=0 module=thinkpad
+
+setting chmod 666 /dev/dsp
+so that normal users have sound too,
+workd!
+
+thx for your help!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 07:54 frink          New Issue                                    
+05-06-06 15:24 bugmenot       New Issue                                    
+05-06-06 15:24 bugmenot       Distribution              => Debian          
+05-06-06 15:24 bugmenot       Kernel Version            => 2.6.16.11       
+05-06-06 18:35 bugmenot       Note Added: 0009637                          
+05-08-06 09:43 bugmenot       Note Added: 0009644                          
+05-10-06 16:42 tiwai          Note Added: 0009726                          
+05-10-06 23:59 bugmenot       Note Added: 0009753                          
+05-11-06 17:08 tiwai          Note Added: 0009763                          
+05-14-06 01:44 bugmenot       Note Added: 0009803                          
 ======================================================================
 
 
