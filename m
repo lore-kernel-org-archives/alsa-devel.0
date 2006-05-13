@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002123]: Power Management is broken following changes from 1.0.10 to 1.0.11.x versions
-Date: Sun, 14 May 2006 00:11:41 +0200
-Message-ID: <86f3e55ddde5d96633dd380b902e6d12@bugtrack.alsa-project.org>
+Date: Sun, 14 May 2006 00:27:59 +0200
+Message-ID: <3ed240604ed0534136b53bfc0a1bf7b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7450316A
-	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 00:11:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA87D193
+	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 00:27:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.16
 ======================================================================
 Date Submitted:             05-13-2006 17:37 CEST
-Last Modified:              05-14-2006 00:11 CEST
+Last Modified:              05-14-2006 00:27 CEST
 ======================================================================
 Summary:                    Power Management is broken following changes from
 1.0.10 to 1.0.11.x versions
@@ -57,16 +57,17 @@ any sound again.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-13-06 18:27 
-----------------------------------------------------------------------
-Try 2.6.17-rc4
-
-----------------------------------------------------------------------
  jovial - 05-14-06 00:11 
 ----------------------------------------------------------------------
 I installed kernel 2.6.17-rc4, but now my standby feature is broken.
 is there anyway to test the alsa driver's power management scheme without
 actually doing the standby procedure??
+
+----------------------------------------------------------------------
+ rlrevell - 05-14-06 00:27 
+----------------------------------------------------------------------
+It sounds like an upstream kernel bug.  What are the exact symptoms (dmesg
+output, etc) when you try to suspend?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -77,6 +78,7 @@ Date Modified  Username       Field                    Change
 05-13-06 17:41 jovial         Note Added: 0009797                          
 05-13-06 18:27 rlrevell       Note Added: 0009798                          
 05-14-06 00:11 jovial         Note Added: 0009801                          
+05-14-06 00:27 rlrevell       Note Added: 0009802                          
 ======================================================================
 
 
