@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Sat, 13 May 2006 18:36:33 +0200
-Message-ID: <685df4145f29c796dc2f9fea5a293eae@bugtrack.alsa-project.org>
+From: "Mette Worman" <mette@centerworld.com>
+Subject: Re: your VtAGmRA
+Date: Sat, 13 May 2006 13:51:57 -0700
+Message-ID: <000001c676cf$13329df0$8f50a8c0@ycv83>
+Reply-To: "Mette Worman" <mette@centerworld.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C67694.66D3C5F0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 253C5198
-	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 18:36:34 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 562A4140
+	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 22:55:41 +0200 (MEST)
+Received: from tightrope.it (unknown [62.156.208.138])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 074039938D
+	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 22:55:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,67 +25,193 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
-======================================================================
-Reported By:                dsandras
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2122
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-13-2006 18:36 CEST
-======================================================================
-Summary:                    DMIX crashes Ekiga
-Description: 
-This problem is probably related to problem #2095 that was closed. 
-Unfortunately, I can not reopen it, so I'm posting a new bug report.
+------=_NextPart_000_0001_01C67694.66D3C5F0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-When using DMIX, Ekiga crashes. This problem was not present with earlier
-versions of libasound2. I applied all patches from CVS.
-======================================================================
+Hi
+=20
+V
+V
+X
+P
+C
+A
+L
+A
+I
+a
+r
+I
+m
+e
+L
+A
+n
+o
+A
+b
+v
+I
+G
+a
+z
+L
+i
+i
+U
+R
+x
+a
+I
+e
+t
+M
+A
 
-----------------------------------------------------------------------
- rlrevell - 05-13-06 18:29 
-----------------------------------------------------------------------
-Why are you using an .asoundrc - dmix has been enabled by default for
-several releases.
+c
+S
+n
+ra
+=20
+=20
 
-Also try the latest HG sources - CVS is dead and has not been updated for
-a while
 
-----------------------------------------------------------------------
- dsandras - 05-13-06 18:36 
-----------------------------------------------------------------------
-When I tell that I'm using latest CVS, I mean latest HG, sorry for the
-confusion.
-I'm using that .asoundrc because I have been using it for years. It allows
-refining DMIX parameters for a better latency. 
+=20
 
-Without .asoundrc, I get choppy sound again.
+=20
+http://www.mubuiterfu.com
+=20
+=20
+=20
+=20
+=20
+spiders were close behind. Every now and then they had to turn and fight
+the creatures that were overtaking them and already some spiders were in
+the trees above them and throwing down their long clinging threads.=20
+Things were looking pretty bad again, when suddenly Bilbo appeared=20
+and charged into the astonished spiders unexpectedly from the side. Go=20
+on! Go on! he shouted. I will do the stinging! And he did. He darted=20
 
-I just uploaded a file that gives choppy sound here with this command :
-aplay -D default /usr/share/sounds/ekiga/busytone.wav
-and not with this command :
-aplay -D plughw:0 /usr/share/sounds/ekiga/busytone.wav
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-13-06 17:35 dsandras       New Issue                                    
-05-13-06 17:39 dsandras       Note Added: 0009795                          
-05-13-06 17:41 dsandras       Note Added: 0009796                          
-05-13-06 18:29 rlrevell       Note Added: 0009799                          
-05-13-06 18:36 dsandras       Note Added: 0009800                          
-======================================================================
+------=_NextPart_000_0001_01C67694.66D3C5F0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hi</DIV>
+<DIV>&nbsp;</DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> <STRONG> V</STRONG></DIV> <DIV> <STRONG> V</STRONG></DIV> <DIV> =
+X</DIV> <DIV> P</DIV> <DIV> <STRONG> C</STRONG></DIV> <DIV> A</DIV> =
+<DIV> L</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> <STRONG> A</STRONG></DIV> <DIV> <STRONG> I</STRONG></DIV> <DIV> =
+a</DIV> <DIV> r</DIV> <DIV> <STRONG> I</STRONG></DIV> <DIV> m</DIV> =
+<DIV> e</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> <STRONG> L</STRONG></DIV> <DIV> <STRONG> A</STRONG></DIV> <DIV> =
+n</DIV> <DIV> o</DIV> <DIV> <STRONG> A</STRONG></DIV> <DIV> b</DIV> =
+<DIV> v</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> <STRONG> I</STRONG></DIV> <DIV> <STRONG> G</STRONG></DIV> <DIV> =
+a</DIV> <DIV> z</DIV> <DIV> <STRONG> L</STRONG></DIV> <DIV> i</DIV> =
+<DIV> i</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> <STRONG> U</STRONG></DIV> <DIV> <STRONG> R</STRONG></DIV> <DIV> =
+x</DIV> <DIV> a</DIV> <DIV> <STRONG> I</STRONG></DIV> <DIV> e</DIV> =
+<DIV> t</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> <STRONG> M</STRONG></DIV> <DIV> <STRONG> A</STRONG></DIV> <DIV> =
+<BR></DIV> <DIV> c</DIV> <DIV> <STRONG> S</STRONG></DIV> <DIV> n</DIV> =
+<DIV> ra</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> &nbsp;</DIV> <DIV> &nbsp;</DIV> <DIV> <BR></DIV> <DIV> =
+<BR></DIV> <DIV> &nbsp;</DIV> <DIV> <BR></DIV> <DIV> </DIV> </DIV>
+<DIV style=3D"CLEAR: both">&nbsp;</DIV>
+<DIV><A =
+href=3D"http://www.mubuiterfu.com">http://www.mubuiterfu.com</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>spiders were close behind. Every now and then they had to turn and =
+fight <BR>the creatures that were overtaking them and already some =
+spiders were in <BR>the trees above them and throwing down their long =
+clinging threads. <BR>   Things were looking pretty bad again, when =
+suddenly Bilbo appeared <BR>and charged into the astonished spiders =
+unexpectedly from the side. Go <BR>on! Go on! he shouted. I will do the =
+stinging! And he did. He darted <BR></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C67694.66D3C5F0--
+
 
 
 
