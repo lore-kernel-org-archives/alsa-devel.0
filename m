@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Multiple reports of hard lockups with alsa MPU in
-Date: Sat, 13 May 2006 18:00:11 -0400
-Message-ID: <1147557612.6535.322.camel@mindpipe>
-References: <1147554990.6535.317.camel@mindpipe>
-	 <1147556731.25313.10.camel@johannes.berg>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002123]: Power Management is broken following changes from 1.0.10 to 1.0.11.x versions
+Date: Sun, 14 May 2006 00:11:41 +0200
+Message-ID: <86f3e55ddde5d96633dd380b902e6d12@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1147556731.25313.10.camel@johannes.berg>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7450316A
+	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 00:11:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,31 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-05-13 at 23:45 +0200, Johannes Berg wrote:
-> On Sat, 2006-05-13 at 17:16 -0400, Lee Revell wrote:
-> 
-> > Two independent reports in a month - there definitely seems to be
-> > something weird going on.  What can these users do to debug it?
-> 
-> From experience with softmac lockups I'd say enable serial console
-> logging or at least switch to a real vc before doing whatever locks up
-> the machine.
-> 
 
-Switching to a real VC was tried and the problem persisted.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2123> 
+======================================================================
+Reported By:                jovial
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2123
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             05-13-2006 17:37 CEST
+Last Modified:              05-14-2006 00:11 CEST
+======================================================================
+Summary:                    Power Management is broken following changes from
+1.0.10 to 1.0.11.x versions
+Description: 
+I had linux kernel 2.6.15 on my machine (with alsa version 1.0.10).
+I could place my laptop on standby while playing music, and onced resumed
+the playback would also continue..... proper functionality and power
+management.
 
-> This usually means some weird hardware problem or a kernel fault in an
-> interrupt handler or something similar.
-> 
+following an upgrade to kernel 2.6.16 with latest patches (includes alsa
+1.0.11-rc4), the power management does not function correctly.
+basically, i have to restart the alsasound service after resume to have
+any sound again.
+======================================================================
 
-I don't think it could be a hardware problem - two independent reports
-in the space of a week or two is just too much of a coincidence.
+----------------------------------------------------------------------
+ rlrevell - 05-13-06 18:27 
+----------------------------------------------------------------------
+Try 2.6.17-rc4
 
-> johannes
+----------------------------------------------------------------------
+ jovial - 05-14-06 00:11 
+----------------------------------------------------------------------
+I installed kernel 2.6.17-rc4, but now my standby feature is broken.
+is there anyway to test the alsa driver's power management scheme without
+actually doing the standby procedure??
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-13-06 17:37 jovial         New Issue                                    
+05-13-06 17:37 jovial         Distribution              => gentoo          
+05-13-06 17:37 jovial         Kernel Version            => 2.6.16          
+05-13-06 17:41 jovial         Note Added: 0009797                          
+05-13-06 18:27 rlrevell       Note Added: 0009798                          
+05-14-06 00:11 jovial         Note Added: 0009801                          
+======================================================================
+
 
 
 
