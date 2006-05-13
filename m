@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Sat, 13 May 2006 17:41:23 +0200
-Message-ID: <da4bb3c3f608b3012bf2cdd9c9b1110b@bugtrack.alsa-project.org>
+Date: Sat, 13 May 2006 17:39:23 +0200
+Message-ID: <7a09ce36f464f2ae18db2cf121f8a99c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A22E0195
-	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 17:41:23 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7D26A195
+	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 17:39:23 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-13-2006 17:41 CEST
+Last Modified:              05-13-2006 17:39 CEST
 ======================================================================
 Summary:                    DMIX crashes Ekiga
 Description: 
@@ -55,38 +55,11 @@ versions of libasound2. I applied all patches from CVS.
 Notice that playing a sound that is long enough with aplay -D default and
 the above DMIX configuration also breaks.
 
-----------------------------------------------------------------------
- dsandras - 05-13-06 17:41 
-----------------------------------------------------------------------
-If I comment out the period_time, period_size, buffer_size in the above
-configuration and play some sound with aplay, I get the same backtrace :
-*** glibc detected *** free(): invalid pointer: 0x0806dd80 ***
-
-Program received signal SIGABRT, Aborted.
-[Switching to Thread -1210476320 (LWP 29600)]
-0xb7dc37c7 in raise () from /lib/tls/libc.so.6
-(gdb) bt
-#0  0xb7dc37c7 in raise () from /lib/tls/libc.so.6
-#1  0xb7dc506b in abort () from /lib/tls/libc.so.6
-#2  0xb7dfa545 in __libc_message () from /lib/tls/libc.so.6
-#3  0xb7e00b97 in _int_free () from /lib/tls/libc.so.6
-#4  0xb7e01032 in free () from /lib/tls/libc.so.6
-#5  0xb7f6ffd0 in snd_pcm_adpcm_decode () from /usr/lib/libasound.so.2
-#6  0xb7f4e609 in snd_pcm_hw_free () from /usr/lib/libasound.so.2
-#7  0xb7f7561d in _snd_pcm_rate_linear_open () from
-/usr/lib/libasound.so.2
-#8  0xb7f4e609 in snd_pcm_hw_free () from /usr/lib/libasound.so.2
-#9  0xb7f58c7e in snd_pcm_close () from /usr/lib/libasound.so.2
-#10 0x0804ff7b in ?? ()
-#11 0x0805ba08 in ?? ()
-#12 0x00000000 in ?? ()
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-13-06 17:35 dsandras       New Issue                                    
 05-13-06 17:39 dsandras       Note Added: 0009795                          
-05-13-06 17:41 dsandras       Note Added: 0009796                          
 ======================================================================
 
 
