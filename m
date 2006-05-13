@@ -1,13 +1,18 @@
-From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
-Subject: Re: Doubt on implementing .readi and .readn methods
-Date: Tue, 16 May 2006 18:17:14 -0300
-Message-ID: <446A415A.5070505@instant.com.br>
-References: <4464E1B7.6070601@instant.com.br> <s5hac9jws8q.wl%tiwai@suse.de>
+From: "Fulvia Ours" <oursfulvia@goarmstrong.com>
+Subject: Re: your VtAGRgA
+Date: Sat, 13 May 2006 00:46:36 -0700
+Message-ID: <000001c67661$5ca7bd80$592fa8c0@fmr45>
+Reply-To: "Fulvia Ours" <oursfulvia@goarmstrong.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C67626.B048E580"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hac9jws8q.wl%tiwai@suse.de>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25A21189
+	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 09:48:50 +0200 (MEST)
+Received: from knetco.com (unknown [201.121.36.91])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 9DAA799461
+	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 09:48:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,57 +22,196 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+This is a multi-part message in MIME format.
 
->"area" refers to snd_pcm_channel_area_t.  It's an exported struct
->defined in pcm.h:
->
->/** PCM area specification */
->typedef struct _snd_pcm_channel_area {
->	/** base address of channel samples */
->	void *addr;
->	/** offset to first sample in bits */
->	unsigned int first;
->	/** samples distance in bits */
->	unsigned int step;
->} snd_pcm_channel_area_t;
->
->An area array is used for a stream with multiple channels.  Each
->element of the array contains the area information for one channel.
->For example, in the case of 16bit 4-channel interleaved format,
->
->	area[*].addr = base_addr
->	area[0].first = 0
->	area[1].first = 16
->	area[2].first = 32
->	area[3].first = 48
->	area[*].step = 64
->
->"frame" is the unit of samples, and 1 frame = sample-width * chanenels.
->e.g. for 16bit 4-channel format, 1 frame = 2 * 4 = 8 bytes.
->  
->
-OK, let me see if I get this straight. My main concern here is how I 
-have to do the implementation of _readn(). Let's suppose the raw file 
-has the following 16-bit words in it: A, B, C, D, E, F, G, H, I...
+------=_NextPart_000_0001_01C67626.B048E580
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-After performing the _readn(), the memory ponted to by buf[0] to buf[3] 
-(four channels) will have to contain the following 16-bit words:
+Hi
+=20
+A
+X
+V
+L
+C
+V
+P
+m
+a
+I
+e
+I
+A
+r
+b
+n
+A
+v
+A
+L
+o
+i
+a
+G
+i
+L
+I
+z
+e
+x
+R
+t
+I
+U
+a
+n
 
-buf[0] -> A, E, I, ...
-buf[1] -> B, F, J, ...
-buf[2] -> C, G, K, ...
-buf[3] -> D, H, L, ...
+A
+ra
+S
+M
+c
 
-So, I'll have to read from the file to a temporary buffer and do the 
-juggling of the words (each consisting of (pcm->sample_bits >> 3) 
-bytes). Check?
 
-Juan
+=20
+=20
+=20
+
+=20
+http://www.earsxumins.com
+=20
+=20
+=20
+=20
+=20
+inwards. It seemed as if darkness flowed out like a vapour from the hole
+in the mountain-side, and deep darkness in which nothing could be seen=20
+lay before their eyes mouth leading in and down.=20
+Chapter 12=20
+Inside Information=20
+For a long time the dwarves stood in the dark before the door and=20
+
+
+------=_NextPart_000_0001_01C67626.B048E580
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hi</DIV>
+<DIV>&nbsp;</DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> A</DIV> <DIV> X</DIV> <DIV> <STRONG> V</STRONG></DIV> <DIV> =
+L</DIV> <DIV> <STRONG> C</STRONG></DIV> <DIV> <STRONG> V</STRONG></DIV> =
+<DIV> P</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> m</DIV> <DIV> a</DIV> <DIV> <STRONG> I</STRONG></DIV> <DIV> =
+e</DIV> <DIV> <STRONG> I</STRONG></DIV> <DIV> <STRONG> A</STRONG></DIV> =
+<DIV> r</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> b</DIV> <DIV> n</DIV> <DIV> <STRONG> A</STRONG></DIV> <DIV> =
+v</DIV> <DIV> <STRONG> A</STRONG></DIV> <DIV> <STRONG> L</STRONG></DIV> =
+<DIV> o</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> i</DIV> <DIV> a</DIV> <DIV> <STRONG> G</STRONG></DIV> <DIV> =
+i</DIV> <DIV> <STRONG> L</STRONG></DIV> <DIV> <STRONG> I</STRONG></DIV> =
+<DIV> z</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> e</DIV> <DIV> x</DIV> <DIV> <STRONG> R</STRONG></DIV> <DIV> =
+t</DIV> <DIV> <STRONG> I</STRONG></DIV> <DIV> <STRONG> U</STRONG></DIV> =
+<DIV> a</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> n</DIV> <DIV> <BR></DIV> <DIV> <STRONG> A</STRONG></DIV> <DIV> =
+ra</DIV> <DIV> <STRONG> S</STRONG></DIV> <DIV> <STRONG> M</STRONG></DIV> =
+<DIV> c</DIV> </DIV>
+<DIV
+
+style=3D"
+
+FLOAT
+
+
+:
+left
+"> <DIV> <BR></DIV> <DIV> <BR></DIV> <DIV> &nbsp;</DIV> <DIV> </DIV> =
+<DIV> &nbsp;</DIV> <DIV> &nbsp;</DIV> <DIV> <BR></DIV> </DIV>
+<DIV style=3D"CLEAR: both">&nbsp;</DIV>
+<DIV><A =
+href=3D"http://www.earsxumins.com">http://www.earsxumins.com</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>inwards. It seemed as if darkness flowed out like a vapour from the =
+hole <BR>in the mountain-side, and deep darkness in which nothing could =
+be seen <BR>lay before their eyes mouth leading in and down. <BR>    =
+Chapter 12 <BR>    Inside Information <BR>   For a long time the dwarves =
+stood in the dark before the door and <BR></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C67626.B048E580--
+
+
+
 
 
 -------------------------------------------------------
