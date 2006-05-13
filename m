@@ -1,11 +1,15 @@
-From: Gerald Grabner <gerald.grabner@gmx.net>
-Subject: quit snd_pcm_readi, retrieve pending frames
-Date: Sat, 13 May 2006 13:06:51 +0200
-Message-ID: <4465BDCB.7010900@gmx.net>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: re.Fix hang in mpu401_uart.c patch
+Date: Sat, 13 May 2006 13:04:49 +0100
+Message-ID: <200605131304.49711.gineera@aspect135.co.uk>
+References: <200605101556.50928.gineera@aspect135.co.uk> <s5hejz03baa.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hejz03baa.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,38 +19,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thursday 11 May 2006 15:07, you wrote:
+> At Wed, 10 May 2006 16:10:41 +0100,
+>
+> Alan Horstmann wrote:
+> > This patch since 1.0.11 throws up an underlying problem with au88x0
+> > (separate posting refers), but I also noticed that the 4th hunk applys
+> > changes to snd_mpu401_uart_input_close and snd_mpu401_uart_output_close.
+> >
+> > However, as the 3rd augument is '0' ie don't check ACK, OK is always true
+> > in snd_mpu401_uart_cmd and there is surely no point to the extra check
+> > lines?
+> >
+> > (As my separate posting 'au88x0_mpu401 init / fail first open' mentions,
+> > ACK is not returned from the RESET during the close, either with ice1712
+> > or au8820, so can't be checked for.)
+>
+> Which patch are you referring to??
 
-I'm experimenting with the ALSA PCM API and was wondering whether
-there is a simple way to exit a record loop by stopping the pcm, but
-without loosing pending frames.
+The one titled  'Fix hang in mpu401_uart.c',  on repo about 2 weeks ago, by 
+Jon Masters.
 
-Initially, I was thinking of something like this, where I would call
-snd_pcm_drop(pcm) from some other thread:
+Alan
 
-   while ( true )
-     {
-       r = snd_pcm_readi (pcm, data, frames);
-       fwrite (data, 2, 2*r, file);
-       if ( r != frames )
-         break;
-     }
-
-However, snd_pcm_drain(pcm) doesn't work here; the loop continues.
-snd_pcm_drop(pcm) breaks the loop, but pending frames are lost, and
-r=-EBADFD.
-
-Is there an easy way to stop snd_pcm_readi in a way that I can
-retrieve the residual frames? Do I need to set any parameters for
-that purpose?
-
-Many thanks,
-Gerald
-
-BTW: I'm using alsa 1.0.11 on gentoo.
 
 
 -------------------------------------------------------
