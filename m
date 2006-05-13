@@ -1,18 +1,12 @@
-From: Jesper Juhl <jesper.juhl@gmail.com>
-Subject: [PATCH] Fix a memory leak in pdaudiocf
-Date: Sat, 13 May 2006 23:44:25 +0200
-Message-ID: <200605132344.25862.jesper.juhl__17975.9902916432$1147557542$gmane$org@gmail.com>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: Multiple reports of hard lockups with alsa MPU in
+Date: Sat, 13 May 2006 23:45:31 +0200
+Message-ID: <1147556731.25313.10.camel@johannes.berg>
+References: <1147554990.6535.317.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-2YisexIeahn3nfxRjT46"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from nf-out-0910.google.com (nf-out-0910.google.com [64.233.182.186])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99454193
-	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 23:43:29 +0200 (MEST)
-Received: by nf-out-0910.google.com with SMTP id l35so185177nfa
-        for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 14:43:28 -0700 (PDT)
-Content-Disposition: inline
+In-Reply-To: <1147554990.6535.317.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,64 +16,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Jesper Juhl <jesper.juhl@gmail.com>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-There's a potential memory leak in 
-sound/pcmcia/pdaudiocf/pdaudiocf.c::pdacf_config()
 
-If we leave via one of the *failed: labels we may leak 'parse', so add a 
-kfree(parse) to the end of the function and also make sure to set 'parse' 
-to NULL after the kfree() call a little further up so we don't do a 
-double-free of the pointer if we hit one of the *failed: labels after the 
-first kfree().
+--=-2YisexIeahn3nfxRjT46
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Since I don't have the hardware I can't test the patch beyond making sure 
-it compiles cleanly, but I feel pretty confident that it is correct.
+On Sat, 2006-05-13 at 17:16 -0400, Lee Revell wrote:
 
-Please consider for inclusion.
+> Two independent reports in a month - there definitely seems to be
+> something weird going on.  What can these users do to debug it?
 
+=46rom experience with softmac lockups I'd say enable serial console
+logging or at least switch to a real vc before doing whatever locks up
+the machine.
 
-Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
----
+This usually means some weird hardware problem or a kernel fault in an
+interrupt handler or something similar.
 
- sound/pcmcia/pdaudiocf/pdaudiocf.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletion(-)
+johannes
 
---- linux-2.6.17-rc4-git2-orig/sound/pcmcia/pdaudiocf/pdaudiocf.c	2006-05-13 21:28:55.000000000 +0200
-+++ linux-2.6.17-rc4-git2/sound/pcmcia/pdaudiocf/pdaudiocf.c	2006-05-13 23:27:46.000000000 +0200
-@@ -226,7 +226,7 @@ static int pdacf_config(struct pcmcia_de
- 
- 	snd_printdd(KERN_DEBUG "pdacf_config called\n");
- 	parse = kmalloc(sizeof(*parse), GFP_KERNEL);
--	if (! parse) {
-+	if (!parse) {
- 		snd_printk(KERN_ERR "pdacf_config: cannot allocate\n");
- 		return -ENOMEM;
- 	}
-@@ -242,6 +242,7 @@ static int pdacf_config(struct pcmcia_de
- 	link->conf.ConfigBase = parse->config.base;
- 	link->conf.ConfigIndex = 0x5;
- 	kfree(parse);
-+	parse = NULL;
- 
- 	CS_CHECK(RequestIO, pcmcia_request_io(link, &link->io));
- 	CS_CHECK(RequestIRQ, pcmcia_request_irq(link, &link->irq));
-@@ -257,6 +258,7 @@ cs_failed:
- 	cs_error(link, last_fn, last_ret);
- failed:
- 	pcmcia_disable_device(link);
-+	kfree(parse);
- 	return -ENODEV;
- }
- 
+--=-2YisexIeahn3nfxRjT46
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
 
+iQIVAwUARGZTeaVg1VMiehFYAQLDng//T/fdNvajgzVW6TqLo02yL6/mEIhIu7GK
+3Mp5Epe6lj5oDHKdC/THmwRhXPxCkmOt+Nfwu8WCc6WFflzTsXbsmYEMjzo66r3M
+VF9iigFJkQz/GE9NgrjsY14upzLcJsEmsaT2kXMePIR4wvXmItXi8UFxIad3stv2
+JQtBKQS+8DN55HtrGrBH6bzCMn/XB20l39yaMhOts136iB0/VX39eDT7pskJHDim
+9BWrhu49++SI5PX1bWwmvL6E3xxM89Lj7IVol6UwL0R7hIlBNfLZc/h4vdhxu577
+DiBrSN23eH35O0z9RoW9mHhid5Own1m0Pqr3HPF5A9pduIVEBxannQ6Qg5EYdE7e
+Lp0MKPpH2hZtg4RtdmdNhAtGpgmlcM7rYLr3GuR6TBl2I+dcnlHS07OLNhMV2Uy/
+2IN4JF78axbj5D7tQqPkhLG8iHlNwKTEYSwn+APLCO020MmnL4mfrQPG2R9PFC05
+t+YK+vk956iHSAPxKrHPVwSI6rlURpJx9W4LMIhjrcRyPqcevhCpw6QbEpWXNxvt
+yq/yMhl2GoqkO6SXNLlHq5HaBb+1EDgLJzjhjFGuO2db/yJ5Blrgb7PQHUZ4LD2A
+7EsLM2BopK1hEqyT3kc9PRYqfxXP8ABz6aBEEORxwMMa1arzvb7OAVAkXMFwQhr3
+oE5cv8+7Rsw=
+=bQVj
+-----END PGP SIGNATURE-----
 
-
-
-PS. Please keep me on Cc when replying since I'm not subscribed to alsa-devel.
+--=-2YisexIeahn3nfxRjT46--
 
 
 
