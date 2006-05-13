@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002120]: pmac.c doesn't compile
-Date: Sat, 13 May 2006 14:13:24 +0200
-Message-ID: <23a670f8e268d284d7b955229b2a391d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002123]: Power Management is broken following changes from 1.0.10 to 1.0.11.x versions
+Date: Sat, 13 May 2006 18:27:46 +0200
+Message-ID: <7471217c2e4b9dec38238265624176cb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58AB118E
-	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 14:13:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 676E4141
+	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 18:27:46 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,43 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2120> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2123> 
 ======================================================================
-Reported By:                riesebie
-Assigned To:                perex
+Reported By:                jovial
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2120
-Category:                   0_compilation problem_!!!
+Issue ID:                   2123
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.17rc4
+Distribution:               gentoo
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             05-13-2006 14:13 CEST
-Last Modified:              05-13-2006 14:13 CEST
+Date Submitted:             05-13-2006 17:37 CEST
+Last Modified:              05-13-2006 18:27 CEST
 ======================================================================
-Summary:                    pmac.c doesn't compile
+Summary:                    Power Management is broken following changes from
+1.0.10 to 1.0.11.x versions
 Description: 
-ppc/pmac.c: In function '_machine_is':
-ppc/pmac.c:14: error: '_machine' undeclared (first use in this function)
-ppc/pmac.c:14: error: (Each undeclared identifier is reported only once
-ppc/pmac.c:14: error: for each function it appears in.)
-ppc/pmac.c:14: error: '_MACH_Pmac' undeclared (first use in this
-function)
+I had linux kernel 2.6.15 on my machine (with alsa version 1.0.10).
+I could place my laptop on standby while playing music, and onced resumed
+the playback would also continue..... proper functionality and power
+management.
 
+following an upgrade to kernel 2.6.16 with latest patches (includes alsa
+1.0.11-rc4), the power management does not function correctly.
+basically, i have to restart the alsasound service after resume to have
+any sound again.
 ======================================================================
+
+----------------------------------------------------------------------
+ jovial - 05-13-06 17:41 
+----------------------------------------------------------------------
+i forgot to mention my chipset.
+Chip: Realtek ALC260
+
+----------------------------------------------------------------------
+ rlrevell - 05-13-06 18:27 
+----------------------------------------------------------------------
+Try 2.6.17-rc4
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 14:13 riesebie       New Issue                                    
-05-13-06 14:13 riesebie       Distribution              => Debian          
-05-13-06 14:13 riesebie       Kernel Version            => 2.6.17rc4       
+05-13-06 17:37 jovial         New Issue                                    
+05-13-06 17:37 jovial         Distribution              => gentoo          
+05-13-06 17:37 jovial         Kernel Version            => 2.6.16          
+05-13-06 17:41 jovial         Note Added: 0009797                          
+05-13-06 18:27 rlrevell       Note Added: 0009798                          
 ======================================================================
 
 
