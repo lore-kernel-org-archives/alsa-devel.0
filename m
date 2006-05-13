@@ -1,12 +1,14 @@
-From: Johannes Berg <johannes@sipsolutions.net>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Multiple reports of hard lockups with alsa MPU in
-Date: Sat, 13 May 2006 23:45:31 +0200
-Message-ID: <1147556731.25313.10.camel@johannes.berg>
+Date: Sat, 13 May 2006 18:00:11 -0400
+Message-ID: <1147557612.6535.322.camel@mindpipe>
 References: <1147554990.6535.317.camel@mindpipe>
+	 <1147556731.25313.10.camel@johannes.berg>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-2YisexIeahn3nfxRjT46"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1147554990.6535.317.camel@mindpipe>
+In-Reply-To: <1147556731.25313.10.camel@johannes.berg>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,51 +18,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2006-05-13 at 23:45 +0200, Johannes Berg wrote:
+> On Sat, 2006-05-13 at 17:16 -0400, Lee Revell wrote:
+> 
+> > Two independent reports in a month - there definitely seems to be
+> > something weird going on.  What can these users do to debug it?
+> 
+> From experience with softmac lockups I'd say enable serial console
+> logging or at least switch to a real vc before doing whatever locks up
+> the machine.
+> 
 
---=-2YisexIeahn3nfxRjT46
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Switching to a real VC was tried and the problem persisted.
 
-On Sat, 2006-05-13 at 17:16 -0400, Lee Revell wrote:
+> This usually means some weird hardware problem or a kernel fault in an
+> interrupt handler or something similar.
+> 
 
-> Two independent reports in a month - there definitely seems to be
-> something weird going on.  What can these users do to debug it?
+I don't think it could be a hardware problem - two independent reports
+in the space of a week or two is just too much of a coincidence.
 
-=46rom experience with softmac lockups I'd say enable serial console
-logging or at least switch to a real vc before doing whatever locks up
-the machine.
-
-This usually means some weird hardware problem or a kernel fault in an
-interrupt handler or something similar.
-
-johannes
-
---=-2YisexIeahn3nfxRjT46
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIVAwUARGZTeaVg1VMiehFYAQLDng//T/fdNvajgzVW6TqLo02yL6/mEIhIu7GK
-3Mp5Epe6lj5oDHKdC/THmwRhXPxCkmOt+Nfwu8WCc6WFflzTsXbsmYEMjzo66r3M
-VF9iigFJkQz/GE9NgrjsY14upzLcJsEmsaT2kXMePIR4wvXmItXi8UFxIad3stv2
-JQtBKQS+8DN55HtrGrBH6bzCMn/XB20l39yaMhOts136iB0/VX39eDT7pskJHDim
-9BWrhu49++SI5PX1bWwmvL6E3xxM89Lj7IVol6UwL0R7hIlBNfLZc/h4vdhxu577
-DiBrSN23eH35O0z9RoW9mHhid5Own1m0Pqr3HPF5A9pduIVEBxannQ6Qg5EYdE7e
-Lp0MKPpH2hZtg4RtdmdNhAtGpgmlcM7rYLr3GuR6TBl2I+dcnlHS07OLNhMV2Uy/
-2IN4JF78axbj5D7tQqPkhLG8iHlNwKTEYSwn+APLCO020MmnL4mfrQPG2R9PFC05
-t+YK+vk956iHSAPxKrHPVwSI6rlURpJx9W4LMIhjrcRyPqcevhCpw6QbEpWXNxvt
-yq/yMhl2GoqkO6SXNLlHq5HaBb+1EDgLJzjhjFGuO2db/yJ5Blrgb7PQHUZ4LD2A
-7EsLM2BopK1hEqyT3kc9PRYqfxXP8ABz6aBEEORxwMMa1arzvb7OAVAkXMFwQhr3
-oE5cv8+7Rsw=
-=bQVj
------END PGP SIGNATURE-----
-
---=-2YisexIeahn3nfxRjT46--
+> johannes
 
 
 
