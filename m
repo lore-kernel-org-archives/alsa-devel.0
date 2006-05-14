@@ -1,15 +1,14 @@
-From: "As Ricker" <rickeu@textrol.com>
-Subject: Re: your VALtxUM
-Date: Fri, 12 May 2006 19:31:52 -0700
-Message-ID: <000001c67635$64aef650$6fa0a8c0@nzm60>
-Reply-To: "As Ricker" <rickeu@textrol.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002123]: Power Management is broken following changes from 1.0.10 to 1.0.11.x versions
+Date: Sun, 14 May 2006 02:32:42 +0200
+Message-ID: <d729e50c930ff21d1cfd5b0f95487d81@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C675FA.B8526840"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from lu.unisi.ch (bzq-84-109-36-237.red.bezeqint.net [84.109.36.237])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 9976717E
-	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 04:33:03 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90DB8173
+	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 02:32:42 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,192 +21,75 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C675FA.B8526840
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2123> 
+======================================================================
+Reported By:                jovial
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2123
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             05-13-2006 17:37 CEST
+Last Modified:              05-14-2006 02:32 CEST
+======================================================================
+Summary:                    Power Management is broken following changes from
+1.0.10 to 1.0.11.x versions
+Description: 
+I had linux kernel 2.6.15 on my machine (with alsa version 1.0.10).
+I could place my laptop on standby while playing music, and onced resumed
+the playback would also continue..... proper functionality and power
+management.
 
-Hi
-=20
-X
-V
-A
-C
-P
-V
-L
-a
-I
-m
-I
-r
-A
-e
-n
-A
-b
-A
-o
-L
-v
-a
-G
-i
-L
-z
-I
-i
-x
-R
-e
-I
-a
-U
-t
+following an upgrade to kernel 2.6.16 with latest patches (includes alsa
+1.0.11-rc4), the power management does not function correctly.
+basically, i have to restart the alsasound service after resume to have
+any sound again.
+======================================================================
 
-A
-n
-S
-c
-M
-ra
+----------------------------------------------------------------------
+ rlrevell - 05-14-06 00:27 
+----------------------------------------------------------------------
+It sounds like an upstream kernel bug.  What are the exact symptoms (dmesg
+output, etc) when you try to suspend?
 
-=20
+----------------------------------------------------------------------
+ jovial - 05-14-06 02:32 
+----------------------------------------------------------------------
+2.6.17-rc4 is too unstable for my system.
+the kernels 2.6.15 and 2.6.16 (which i have) are heavily patched to enable
+suspend-to-ram and other features working on my system.
 
-=20
+if you feel a newer version of alsa is the solution to this problem,
+i can try compiling cvs snapshot of alsa-kernel module (from alsa-project
+cvs tree) and integrating it with kernel 2.6.16; unless you feel 2.6.16 is
+too old for that...
 
-=20
-=20
-http://www.acuallede.com
-=20
-=20
-=20
-=20
-=20
-chicken and pickles!=20
-Seems to know as much about the inside of my larders as I do=20
-myself! thought Mr. Baggins, who was feeling positively flummoxed, and=20
-was beginning to wonder whether a most wretched adventure had not come=20
-right into his house. By the time he had got all the bottles and dishes=20
-and knives and forks and glasses and plates and spoons and things piled=20
+alternatively, if you think my problem is kernel related and the 2.6.17 is
+the solution, i'll go after fixing my suspend feature... that'll take some
+time, and i don't want to hassle you with kernel bugs/etc....
 
-
-------=_NextPart_000_0001_01C675FA.B8526840
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi</DIV>
-<DIV>&nbsp;</DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> X</DIV> <DIV> <STRONG> V</STRONG></DIV> <DIV> A</DIV> <DIV> =
-<STRONG> C</STRONG></DIV> <DIV> P</DIV> <DIV> <STRONG> V</STRONG></DIV> =
-<DIV> L</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> a</DIV> <DIV> <STRONG> I</STRONG></DIV> <DIV> m</DIV> <DIV> =
-<STRONG> I</STRONG></DIV> <DIV> r</DIV> <DIV> <STRONG> A</STRONG></DIV> =
-<DIV> e</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> n</DIV> <DIV> <STRONG> A</STRONG></DIV> <DIV> b</DIV> <DIV> =
-<STRONG> A</STRONG></DIV> <DIV> o</DIV> <DIV> <STRONG> L</STRONG></DIV> =
-<DIV> v</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> a</DIV> <DIV> <STRONG> G</STRONG></DIV> <DIV> i</DIV> <DIV> =
-<STRONG> L</STRONG></DIV> <DIV> z</DIV> <DIV> <STRONG> I</STRONG></DIV> =
-<DIV> i</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> x</DIV> <DIV> <STRONG> R</STRONG></DIV> <DIV> e</DIV> <DIV> =
-<STRONG> I</STRONG></DIV> <DIV> a</DIV> <DIV> <STRONG> U</STRONG></DIV> =
-<DIV> t</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> <BR></DIV> <DIV> <STRONG> A</STRONG></DIV> <DIV> n</DIV> <DIV> =
-<STRONG> S</STRONG></DIV> <DIV> c</DIV> <DIV> <STRONG> M</STRONG></DIV> =
-<DIV> ra</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> <BR></DIV> <DIV> &nbsp;</DIV> <DIV> <BR></DIV> <DIV> =
-&nbsp;</DIV> <DIV> <BR></DIV> <DIV> &nbsp;</DIV> <DIV> </DIV> </DIV>
-<DIV style=3D"CLEAR: both">&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.acuallede.com">http://www.acuallede.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>chicken and pickles! <BR>   Seems to know as much about the inside =
-of my larders as I do <BR>myself! thought Mr. Baggins, who was feeling =
-positively flummoxed, and <BR>was beginning to wonder whether a most =
-wretched adventure had not come <BR>right into his house. By the time he =
-had got all the bottles and dishes <BR>and knives and forks and glasses =
-and plates and spoons and things piled <BR></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C675FA.B8526840--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-13-06 17:37 jovial         New Issue                                    
+05-13-06 17:37 jovial         Distribution              => gentoo          
+05-13-06 17:37 jovial         Kernel Version            => 2.6.16          
+05-13-06 17:41 jovial         Note Added: 0009797                          
+05-13-06 18:27 rlrevell       Note Added: 0009798                          
+05-14-06 00:11 jovial         Note Added: 0009801                          
+05-14-06 00:27 rlrevell       Note Added: 0009802                          
+05-14-06 02:32 jovial         Note Added: 0009804                          
+======================================================================
 
 
 
