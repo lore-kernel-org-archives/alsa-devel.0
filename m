@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002124]: snd_config_update_free_global kills applications using user space alsa plugins
-Date: Sun, 14 May 2006 19:10:55 +0200
-Message-ID: <c9f99019935be2a62626dde08a57717e@bugtrack.alsa-project.org>
+From: Matthias Koenig <mk@phasorlab.de>
+Subject: Re: ICC driver compiler fails - alsa-driver-1.0.11
+Date: Sun, 14 May 2006 19:11:49 +0200
+Message-ID: <87slncbkfe.fsf@zebra.localdomain>
+References: <ac06b020605140707h7a8f870dm80da9c2ccc8ecfe9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AEC9C7
-	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 19:10:55 +0200 (MEST)
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.126.187])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F6C912B
+	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 19:11:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +18,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Thomas Sullivan <metafunk@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+"Thomas Sullivan" <metafunk@gmail.com> writes:
+> when compiling alsa driver with ICC 9.0, the configure program reports a
+> mismatch between the kernel compiler version and the compiler used for this
+> compilation.
+> however, the kernel was compiled with the same compiler ICC 9.0
+> attached are the ./configure output and the config.log file
+> the commandline run was CC=icc CXX=icpc ./configure
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2124> 
-======================================================================
-Reported By:                fchevalier
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2124
-Category:                   0_general
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             05-14-2006 19:10 CEST
-Last Modified:              05-14-2006 19:10 CEST
-======================================================================
-Summary:                    snd_config_update_free_global kills applications
-using user space alsa plugins
-Description: 
+Btw, it is safer to put the Variable assignments as parameters to configure:
+./configure CC=icc CXX=icpc 
 
-Calling snd_config_update_free_global will make applications using user
-space alsa plugins SIGSEGV in hard to disover way.
+> This file contains any messages produced by compilers while
+> running configure, to aid debugging if configure makes a mistake.
+>
+> configure:3639: icc -o conftest -g -O2 -I/lib/modules/2.6.16.16-genuineintel/build/include -I/lib/modules/2.6.16.16-genuineintel/source/include    conftest.c  >&5
+> configure:3642: $? = 0
+> configure:3644: ./conftest
+> configure:3647: $? = 0
+> configure:3752: result: Kernel compiler: gcc 3.4.6 Used compiler: icc (ICC) 9.0  20051201
+> KERNEL_INC='-I/lib/modules/2.6.16.16-genuineintel/build/include -I/lib/modules/2.6.16.16-genuineintel/source/include'
 
-This is due due the fact that snd_config_update_free_global calls
-snd_dlobj_cache_cleanup, which in turns unloads the user space plugins,
-even if symbols are still in use.
-The result is that the next call to *any* alsa function is likely to crash
-if it ends up calling a plugin function.
+Hmm, the configure test for the kernel comiler just scans the compile.h 
+header of the kernel sources. Could you please post the contents of
+/lib/modules/2.6.16.16-genuineintel/source/include/linux/compile.h ?
+Especially the makro LINUX_COMPILER.
 
-It took me a whole day to troubleshoot the issue in ekiga 2.0.1 :-)
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-14-06 19:10 fchevalier     New Issue                                    
-======================================================================
-
-
+Regards,
+Matthias
 
 
 -------------------------------------------------------
