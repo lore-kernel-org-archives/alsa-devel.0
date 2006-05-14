@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002123]: Power Management is broken following changes from 1.0.10 to 1.0.11.x versions
-Date: Sun, 14 May 2006 02:32:42 +0200
-Message-ID: <d729e50c930ff21d1cfd5b0f95487d81@bugtrack.alsa-project.org>
+Date: Sun, 14 May 2006 02:42:36 +0200
+Message-ID: <b5bd95375e098b7852d6a6d636dcd41a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 90DB8173
-	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 02:32:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1201B173
+	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 02:42:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.16
 ======================================================================
 Date Submitted:             05-13-2006 17:37 CEST
-Last Modified:              05-14-2006 02:32 CEST
+Last Modified:              05-14-2006 02:42 CEST
 ======================================================================
 Summary:                    Power Management is broken following changes from
 1.0.10 to 1.0.11.x versions
@@ -55,12 +55,6 @@ following an upgrade to kernel 2.6.16 with latest patches (includes alsa
 basically, i have to restart the alsasound service after resume to have
 any sound again.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 05-14-06 00:27 
-----------------------------------------------------------------------
-It sounds like an upstream kernel bug.  What are the exact symptoms (dmesg
-output, etc) when you try to suspend?
 
 ----------------------------------------------------------------------
  jovial - 05-14-06 02:32 
@@ -78,6 +72,15 @@ alternatively, if you think my problem is kernel related and the 2.6.17 is
 the solution, i'll go after fixing my suspend feature... that'll take some
 time, and i don't want to hassle you with kernel bugs/etc....
 
+----------------------------------------------------------------------
+ rlrevell - 05-14-06 02:42 
+----------------------------------------------------------------------
+Umm... you should really have mentioned that your kernel was heavily
+patched.  How can we be expected to support such a random configuration?
+
+You really need to get the suspend issues resolved before you conclude
+it's an ALSA bug.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -89,6 +92,7 @@ Date Modified  Username       Field                    Change
 05-14-06 00:11 jovial         Note Added: 0009801                          
 05-14-06 00:27 rlrevell       Note Added: 0009802                          
 05-14-06 02:32 jovial         Note Added: 0009804                          
+05-14-06 02:42 rlrevell       Note Added: 0009805                          
 ======================================================================
 
 
