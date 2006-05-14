@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002116]: no sound in kernel 2.6.16-1-686
-Date: Fri, 12 May 2006 18:34:07 +0200
-Message-ID: <47d712a612797f934b902494bd83a149@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002013]: no digital output
+Date: Sun, 14 May 2006 16:46:25 +0200
+Message-ID: <04a34dc0190e8f13ad864f1f0303d4b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9FC48175
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 18:34:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD09419F
+	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 16:46:25 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2116> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2013> 
 ======================================================================
-Reported By:                mramirez
+Reported By:                SamiH
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2116
-Category:                   speakertest
+Project:                    ALSA - driver
+Issue ID:                   2013
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               BLFS
+Kernel Version:             2.6.15.4
 ======================================================================
-Date Submitted:             05-12-2006 01:07 CEST
-Last Modified:              05-12-2006 18:34 CEST
+Date Submitted:             04-09-2006 11:43 CEST
+Last Modified:              05-14-2006 16:46 CEST
 ======================================================================
-Summary:                    no sound in kernel 2.6.16-1-686
+Summary:                    no digital output
 Description: 
-I have updated my kernel from 2.6.15-1-486 to 2.6.16-1-686, and now the
-sound not work. 
+Shortly: Digital output doesn't work at all, or I don't know how to use
+it.
 
-I run alsaconf, but not solve the problem. 
+This has been my problem quite long time now. I have upgraded my kernel
+from  2.6.8 to 2.6.15.4 with some steps bitween those versions, and the
+problem is still here. I have tried some live-cds with same results as my
+stable system.
 
-if i boot on kernel 2.6.15-1-486 the sound work. (only in this version)
+Analog stereo output works with no problems. If someone did tell me what I
+should test on my system so that I could give the results to you.
 
-somebody help me?
+These aren't broken:
+ * my external amplifier
+ * the digital coaxial cable
+ * speakers etc.
 
-
-
+Please tell me at least what to do, what to search for, or something...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-12-06 16:07 
+ SamiH - 04-24-06 20:30 
 ----------------------------------------------------------------------
-Try 2.6.17rc4.
+My computer broked and the motherboard is in repair, so I cannot test that
+now. Thanks anyway, I'll test it when I get my computer working again.
 
 ----------------------------------------------------------------------
- mramirez - 05-12-06 18:34 
+ SamiH - 05-14-06 16:46 
 ----------------------------------------------------------------------
-i try this but the sound don't work
+I tested this aplay -Dplug:spdif something.wav, and it starts to play, but
+I can't hear anything.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-12-06 01:07 mramirez       New Issue                                    
-05-12-06 16:07 tiwai          Note Added: 0009777                          
-05-12-06 18:34 mramirez       Note Added: 0009785                          
+04-09-06 11:43 SamiH          New Issue                                    
+04-09-06 11:43 SamiH          Distribution              => BLFS            
+04-09-06 11:43 SamiH          Kernel Version            => 2.6.15.4        
+04-10-06 16:50 tiwai          Note Added: 0009198                          
+04-13-06 21:10 SamiH          File Added: alsa.txt                         
+04-13-06 21:22 SamiH          Note Added: 0009269                          
+04-13-06 21:26 SamiH          Note Edited: 0009269                         
+04-20-06 15:22 tiwai          Note Added: 0009382                          
+04-24-06 20:30 SamiH          Note Added: 0009476                          
+05-14-06 16:46 SamiH          Note Added: 0009809                          
 ======================================================================
 
 
