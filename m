@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002123]: Power Management is broken following changes from 1.0.10 to 1.0.11.x versions
-Date: Sun, 14 May 2006 05:16:22 +0200
-Message-ID: <b4e27c69a3ea6a5ef66077482cd209af@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002016]: Choppy/skippy sound on onboard SiS SI7012-controller
+Date: Mon, 15 May 2006 00:07:11 +0200
+Message-ID: <abdc1b699cbbd89456974d9b1cefb0d5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B00CC179
-	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 05:16:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A2AC218E
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 00:07:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2123> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2016> 
 ======================================================================
-Reported By:                jovial
-Assigned To:                tiwai
+Reported By:                Ensnared
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2123
-Category:                   PCI - hda-intel
+Issue ID:                   2016
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             2.6.16
+Status:                     new
+Distribution:               Ubuntu 5.10 "Breezy Badger"
+Kernel Version:             2.6.x
 ======================================================================
-Date Submitted:             05-13-2006 17:37 CEST
-Last Modified:              05-14-2006 05:16 CEST
+Date Submitted:             04-12-2006 04:40 CEST
+Last Modified:              05-15-2006 00:07 CEST
 ======================================================================
-Summary:                    Power Management is broken following changes from
-1.0.10 to 1.0.11.x versions
+Summary:                    Choppy/skippy sound on onboard SiS SI7012-controller
 Description: 
-I had linux kernel 2.6.15 on my machine (with alsa version 1.0.10).
-I could place my laptop on standby while playing music, and onced resumed
-the playback would also continue..... proper functionality and power
-management.
+The sound on my specific sound controller is very bad. The times it even
+plays, the quality is very choppy and it skips almost like a scratched CD,
+which makes it pretty much unusable.
 
-following an upgrade to kernel 2.6.16 with latest patches (includes alsa
-1.0.11-rc4), the power management does not function correctly.
-basically, i have to restart the alsasound service after resume to have
-any sound again.
+I suspect this might be specific for my model laptop as I'm having a hard
+time finding anyone else with the same problem, but I've tried several
+distros and kernel versions, and the card works in Windows.
+
+The laptop is an Elite Group G732, which has a SiS mainboard chipset with
+the SI7012 onboard controller (Realtek ALC202 chip).
+
+I've tried messing with the buffer_size and period_size in asound.conf,
+which seem to have some impact on the "pattern" of the chopping and
+skipping, but there are no values that I've found that will get rid of
+them entirely.
+
+I'm assuming this is an incompatibility with the driver and this specific
+hardware, but I could obviously be wrong.
+
+I've tried using the version of ALSA in the 2.6.10, 2.6.12 and 2.6.16.2
+kernels, as well as compiled the latest stable and developement releases
+of ALSA myself. The result is the same for them all.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-14-06 02:42 
+ Ensnared - 04-27-06 22:04 
 ----------------------------------------------------------------------
-Umm... you should really have mentioned that your kernel was heavily
-patched.  How can we be expected to support such a random configuration?
-
-You really need to get the suspend issues resolved before you conclude
-it's an ALSA bug.
+Maybe it's a compatibility-issue with the BIOS or something - I really
+don't know. If any driver-developers could help figure it out that would
+be great though. I'd hate to have to go back to Windows on my laptop now
+that I've finally tossed it out, but if I'm stuck with no sound (which
+this effectively is), I really don't have any choice.
 
 ----------------------------------------------------------------------
- jovial - 05-14-06 05:16 
+ Ensnared - 05-15-06 00:07 
 ----------------------------------------------------------------------
-i think you have a very valid point.
-i made the assumption that since my random configuration is compatible
-with alsa-1.0.10, it should also work with alsa-1.0.11.
+Just installed Alsa 1.0.11 and there's no change, same problem as already
+described.
 
-i guess the right thing for me to do, is to find a _new_ configuration for
-my system that would be compatible with the new version of alsa
-(alsa-1.0.11)
-
-thanks for your time, and sorry for undermining this piece of information
-at start.
-please consider this matter closed.
+Is there some kind of module parameter that can have some impact? I can't
+find these documented anywhere so I've no idea what to try.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 17:37 jovial         New Issue                                    
-05-13-06 17:37 jovial         Distribution              => gentoo          
-05-13-06 17:37 jovial         Kernel Version            => 2.6.16          
-05-13-06 17:41 jovial         Note Added: 0009797                          
-05-13-06 18:27 rlrevell       Note Added: 0009798                          
-05-14-06 00:11 jovial         Note Added: 0009801                          
-05-14-06 00:27 rlrevell       Note Added: 0009802                          
-05-14-06 02:32 jovial         Note Added: 0009804                          
-05-14-06 02:42 rlrevell       Note Added: 0009805                          
-05-14-06 05:16 jovial         Note Added: 0009806                          
+04-12-06 04:40 Ensnared       New Issue                                    
+04-12-06 04:40 Ensnared       Distribution              => Ubuntu 5.10 "Breezy
+Badger"
+04-12-06 04:40 Ensnared       Kernel Version            => 2.6.x           
+04-12-06 06:57 razorbroom     Note Added: 0009239                          
+04-13-06 21:47 Ensnared       Note Added: 0009271                          
+04-13-06 22:06 Ensnared       Note Added: 0009276                          
+04-23-06 06:31 razorbroom     Note Added: 0009440                          
+04-23-06 06:32 razorbroom     Issue Monitored: razorbroom                    
+04-27-06 22:04 Ensnared       Note Added: 0009536                          
+05-15-06 00:07 Ensnared       Note Added: 0009811                          
 ======================================================================
 
 
