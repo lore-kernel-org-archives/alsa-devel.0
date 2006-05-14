@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002123]: Power Management is broken following changes from 1.0.10 to 1.0.11.x versions
-Date: Sun, 14 May 2006 02:42:36 +0200
-Message-ID: <b5bd95375e098b7852d6a6d636dcd41a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002121]: No Sound, No error message,
+Date: Sun, 14 May 2006 06:57:36 +0200
+Message-ID: <fcc3b500f56551da5f9bb8b02112a0cb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1201B173
-	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 02:42:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1998AD4
+	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 06:57:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2123> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2121> 
 ======================================================================
-Reported By:                jovial
-Assigned To:                tiwai
+Reported By:                bringha
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2123
-Category:                   PCI - hda-intel
+Issue ID:                   2121
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             2.6.16
+Status:                     new
+Distribution:               Suse 9.1. (modified)
+Kernel Version:             2.6.16.9
 ======================================================================
-Date Submitted:             05-13-2006 17:37 CEST
-Last Modified:              05-14-2006 02:42 CEST
+Date Submitted:             05-13-2006 16:11 CEST
+Last Modified:              05-14-2006 06:57 CEST
 ======================================================================
-Summary:                    Power Management is broken following changes from
-1.0.10 to 1.0.11.x versions
+Summary:                    No Sound, No error message,
 Description: 
-I had linux kernel 2.6.15 on my machine (with alsa version 1.0.10).
-I could place my laptop on standby while playing music, and onced resumed
-the playback would also continue..... proper functionality and power
-management.
+Installed new Kernel 2.6.16.9 and put ALSA 1.0.11 (compiled from source) on
+it. Made alsalib and alsautils to the same version 1.0.11. No error
+messages, no error in alsaconf, all rulers in alsamixer on full, but no
+sound. Even cat <something> > /dev/sound/pcm... causes no noise (otherwise
+I would assume that something is wrong with my KDE artsd). Sound HW OK
+because it is perfectly running under Windows and Solaris on the same
+machine. See attached aadebug output.
 
-following an upgrade to kernel 2.6.16 with latest patches (includes alsa
-1.0.11-rc4), the power management does not function correctly.
-basically, i have to restart the alsasound service after resume to have
-any sound again.
+Question: How to analyse further
+
+Thanks for ur support 
 ======================================================================
 
 ----------------------------------------------------------------------
- jovial - 05-14-06 02:32 
+ thubble - 05-14-06 06:57 
 ----------------------------------------------------------------------
-2.6.17-rc4 is too unstable for my system.
-the kernels 2.6.15 and 2.6.16 (which i have) are heavily patched to enable
-suspend-to-ram and other features working on my system.
-
-if you feel a newer version of alsa is the solution to this problem,
-i can try compiling cvs snapshot of alsa-kernel module (from alsa-project
-cvs tree) and integrating it with kernel 2.6.16; unless you feel 2.6.16 is
-too old for that...
-
-alternatively, if you think my problem is kernel related and the 2.6.17 is
-the solution, i'll go after fixing my suspend feature... that'll take some
-time, and i don't want to hassle you with kernel bugs/etc....
-
-----------------------------------------------------------------------
- rlrevell - 05-14-06 02:42 
-----------------------------------------------------------------------
-Umm... you should really have mentioned that your kernel was heavily
-patched.  How can we be expected to support such a random configuration?
-
-You really need to get the suspend issues resolved before you conclude
-it's an ALSA bug.
+I have the exact same problem. Occurs on 2.6.17-rc3 with -mm1 patch, but
+not with 2.6.16. aadebug output attached with name "aadebug-output"
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 17:37 jovial         New Issue                                    
-05-13-06 17:37 jovial         Distribution              => gentoo          
-05-13-06 17:37 jovial         Kernel Version            => 2.6.16          
-05-13-06 17:41 jovial         Note Added: 0009797                          
-05-13-06 18:27 rlrevell       Note Added: 0009798                          
-05-14-06 00:11 jovial         Note Added: 0009801                          
-05-14-06 00:27 rlrevell       Note Added: 0009802                          
-05-14-06 02:32 jovial         Note Added: 0009804                          
-05-14-06 02:42 rlrevell       Note Added: 0009805                          
+05-13-06 16:11 bringha        New Issue                                    
+05-13-06 16:11 bringha        File Added: xxx                              
+05-13-06 16:11 bringha        Distribution              => Suse 9.1. (modified)
+05-13-06 16:11 bringha        Kernel Version            => 2.6.16.9        
+05-14-06 06:56 thubble        File Added: aadebug-output                    
+05-14-06 06:57 thubble        Note Added: 0009807                          
 ======================================================================
 
 
