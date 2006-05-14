@@ -1,14 +1,14 @@
-From: Matthias Koenig <mk@phasorlab.de>
-Subject: Re: ICC driver compiler fails - alsa-driver-1.0.11
-Date: Sun, 14 May 2006 19:11:49 +0200
-Message-ID: <87slncbkfe.fsf@zebra.localdomain>
-References: <ac06b020605140707h7a8f870dm80da9c2ccc8ecfe9@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002121]: No Sound, No error message,
+Date: Sun, 14 May 2006 19:56:55 +0200
+Message-ID: <fec1eb13914a64920f3678386153e5be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.126.187])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F6C912B
-	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 19:11:51 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 003F6219
+	for <alsa-devel@alsa-project.org>; Sun, 14 May 2006 19:56:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,38 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Sullivan <metafunk@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-"Thomas Sullivan" <metafunk@gmail.com> writes:
-> when compiling alsa driver with ICC 9.0, the configure program reports a
-> mismatch between the kernel compiler version and the compiler used for this
-> compilation.
-> however, the kernel was compiled with the same compiler ICC 9.0
-> attached are the ./configure output and the config.log file
-> the commandline run was CC=icc CXX=icpc ./configure
 
-Btw, it is safer to put the Variable assignments as parameters to configure:
-./configure CC=icc CXX=icpc 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2121> 
+======================================================================
+Reported By:                bringha
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2121
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Suse 9.1. (modified)
+Kernel Version:             2.6.16.9
+======================================================================
+Date Submitted:             05-13-2006 16:11 CEST
+Last Modified:              05-14-2006 19:56 CEST
+======================================================================
+Summary:                    No Sound, No error message,
+Description: 
+Installed new Kernel 2.6.16.9 and put ALSA 1.0.11 (compiled from source) on
+it. Made alsalib and alsautils to the same version 1.0.11. No error
+messages, no error in alsaconf, all rulers in alsamixer on full, but no
+sound. Even cat <something> > /dev/sound/pcm... causes no noise (otherwise
+I would assume that something is wrong with my KDE artsd). Sound HW OK
+because it is perfectly running under Windows and Solaris on the same
+machine. See attached aadebug output.
 
-> This file contains any messages produced by compilers while
-> running configure, to aid debugging if configure makes a mistake.
->
-> configure:3639: icc -o conftest -g -O2 -I/lib/modules/2.6.16.16-genuineintel/build/include -I/lib/modules/2.6.16.16-genuineintel/source/include    conftest.c  >&5
-> configure:3642: $? = 0
-> configure:3644: ./conftest
-> configure:3647: $? = 0
-> configure:3752: result: Kernel compiler: gcc 3.4.6 Used compiler: icc (ICC) 9.0  20051201
-> KERNEL_INC='-I/lib/modules/2.6.16.16-genuineintel/build/include -I/lib/modules/2.6.16.16-genuineintel/source/include'
+Question: How to analyse further
 
-Hmm, the configure test for the kernel comiler just scans the compile.h 
-header of the kernel sources. Could you please post the contents of
-/lib/modules/2.6.16.16-genuineintel/source/include/linux/compile.h ?
-Especially the makro LINUX_COMPILER.
+Thanks for ur support 
+======================================================================
 
-Regards,
-Matthias
+----------------------------------------------------------------------
+ thubble - 05-14-06 06:57 
+----------------------------------------------------------------------
+I have the exact same problem. Occurs on 2.6.17-rc3 with -mm1 patch, but
+not with 2.6.16. aadebug output attached with name "aadebug-output"
+
+----------------------------------------------------------------------
+ thubble - 05-14-06 19:56 
+----------------------------------------------------------------------
+Actually, on further investigation, it turns out I was forgetting to unmute
+the PCM. I was just turning the volume up to 100, and didn't realize that
+it was still muted. I unmuted the PCM and it works fine now.
+
+To the original reporter, try this:
+# amixer set PCM 100 unmute
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-13-06 16:11 bringha        New Issue                                    
+05-13-06 16:11 bringha        File Added: xxx                              
+05-13-06 16:11 bringha        Distribution              => Suse 9.1. (modified)
+05-13-06 16:11 bringha        Kernel Version            => 2.6.16.9        
+05-14-06 06:56 thubble        File Added: aadebug-output                    
+05-14-06 06:57 thubble        Note Added: 0009807                          
+05-14-06 19:56 thubble        Note Added: 0009810                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
