@@ -1,13 +1,14 @@
-From: Matthias Koenig <list@phasorlab.de>
-Subject: Re: ICC driver compiler fails - alsa-driver-1.0.11
-Date: Mon, 15 May 2006 12:59:39 +0200
-Message-ID: <871wuvy2n8.fsf@zebra.localdomain>
-References: <ac06b020605140707h7a8f870dm80da9c2ccc8ecfe9@mail.gmail.com>
-	<87slncbkfe.fsf@zebra.localdomain>
-	<ac06b020605150125g589a5e0code9fdfb01c94a656@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002123]: Power Management is broken following changes from 1.0.10 to 1.0.11.x versions
+Date: Mon, 15 May 2006 13:15:09 +0200
+Message-ID: <6d1e63551cc1a2ccfa7c10a9eb4688a6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46D05120
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 13:15:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,56 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Sullivan <metafunk@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-"Thomas Sullivan" <metafunk@gmail.com> writes:
->> Could you please post the contents of
->> /lib/modules/2.6.16.16-genuine> intel/source/include/linux/compile.h ?
->> Especially the makro LINUX_COMPILER
->
-> /lib/modules/2.6.16.16-genuineintel/source/include/linux/compile.h:
->
-> #define LINUX_COMPILER "gcc version 3.4.6"
->
-> Well, evidently ICC must be acting in some sort of compatibility mode when
-> compiling the kernel. I wouldn't have thought it would be the default. Ah
-> well, thanks for looking anyway.
 
-Hmm, are you really sure that you did compile the kernel with icc?
-What was the exact commandline you compiled the kernel?
-I'm just asking, because recently I noticed, that doing a
-CC=my-gcc make
-for the kernel tree does not work as expected, because the 
-Variable definitions in the Makefile have precedence over the 
-environment Variables. If you want to override Makefile variables
-you should use
-make CC=my-gcc
-or explicitly instruct make to give environment variables precedence
-with the -e option.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2123> 
+======================================================================
+Reported By:                jovial
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2123
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.16
+======================================================================
+Date Submitted:             05-13-2006 17:37 CEST
+Last Modified:              05-15-2006 13:15 CEST
+======================================================================
+Summary:                    Power Management is broken following changes from
+1.0.10 to 1.0.11.x versions
+Description: 
+I had linux kernel 2.6.15 on my machine (with alsa version 1.0.10).
+I could place my laptop on standby while playing music, and onced resumed
+the playback would also continue..... proper functionality and power
+management.
 
-> PS Oh yeah, how come it's safer to pass CC & CXX as parameters than
-> otherwise? I would have thought it was pretty much equivalent
+following an upgrade to kernel 2.6.16 with latest patches (includes alsa
+1.0.11-rc4), the power management does not function correctly.
+basically, i have to restart the alsasound service after resume to have
+any sound again.
+======================================================================
 
-I can't remember exactly where I've read this, but there might be some
-problems with passing variables by environment to configure.
-In the autoconf manual is just a short note:
+----------------------------------------------------------------------
+ tiwai - 05-15-06 12:11 
+----------------------------------------------------------------------
+ALSA CVS repo is dead and the code there is pretty outdated.
+Use HG repo (better from rsync) instead.
 
-"Variables not defined in a site shell script can be set in the
-environment passed to `configure'.  However, some packages may run
-configure again during the build, and the customized values of these
-variables may be lost.  In order to avoid this problem, you should set
-them in the `configure' command line, using `VAR=value'.  For example:
+----------------------------------------------------------------------
+ jovial - 05-15-06 13:15 
+----------------------------------------------------------------------
+OMG, i have no idea how i got mislead into CVS sources...
+the good news is that the HG sources have resolved my issue...
+I couldn't get the alsa in kernel-2.6.17-rc4 working, but alsa-driver is
+working fine, so i've disabled alsa in kernel.
 
-     ./configure CC=/usr/local2/bin/gcc
+i'm surprised how much your latest alsa-kernel files differ from the alsa
+files on kernel-2.6.17-rc4 source tree. i guess once your latest
+alsa-kernel files make it into kernel source, the alsa in kernel would be
+fixed too.
 
-will cause the specified gcc to be used as the C compiler (unless it is
-overridden in the site shell script)."
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-13-06 17:37 jovial         New Issue                                    
+05-13-06 17:37 jovial         Distribution              => gentoo          
+05-13-06 17:37 jovial         Kernel Version            => 2.6.16          
+05-13-06 17:41 jovial         Note Added: 0009797                          
+05-13-06 18:27 rlrevell       Note Added: 0009798                          
+05-14-06 00:11 jovial         Note Added: 0009801                          
+05-14-06 00:27 rlrevell       Note Added: 0009802                          
+05-14-06 02:32 jovial         Note Added: 0009804                          
+05-14-06 02:42 rlrevell       Note Added: 0009805                          
+05-14-06 05:16 jovial         Note Added: 0009806                          
+05-15-06 12:11 tiwai          Note Added: 0009819                          
+05-15-06 13:15 jovial         Note Added: 0009821                          
+======================================================================
 
-Matthias
 
-PS: I added alsa-devel again to CC (and posting from my subscription address)
 
 
 -------------------------------------------------------
