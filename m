@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002106]: Sound card snd-hda-intel emits NO sound
-Date: Fri, 12 May 2006 17:18:10 +0200
-Message-ID: <223c248099d8f87e82009ed071d16f16@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002120]: pmac.c doesn't compile
+Date: Mon, 15 May 2006 10:49:03 +0200
+Message-ID: <a5d2310041b79a219a87445d68a5e0c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3BBB7175
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 17:18:11 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3321B223
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 10:49:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,100 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2106> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2120> 
 ======================================================================
-Reported By:                louisvd
-Assigned To:                tiwai
+Reported By:                riesebie
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2106
-Category:                   PCI - hda-intel
+Issue ID:                   2120
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2111_FC5smp
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             2.6.17rc4
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-08-2006 21:00 CEST
-Last Modified:              05-12-2006 17:18 CEST
+Date Submitted:             05-13-2006 14:13 CEST
+Last Modified:              05-15-2006 10:49 CEST
 ======================================================================
-Summary:                    Sound card snd-hda-intel emits NO sound
+Summary:                    pmac.c doesn't compile
 Description: 
-Hi
+ppc/pmac.c: In function '_machine_is':
+ppc/pmac.c:14: error: '_machine' undeclared (first use in this function)
+ppc/pmac.c:14: error: (Each undeclared identifier is reported only once
+ppc/pmac.c:14: error: for each function it appears in.)
+ppc/pmac.c:14: error: '_MACH_Pmac' undeclared (first use in this
+function)
 
-I was merrily running Fedora Core 4 and after upgrading the kernel to
-2.6.16 my sound no longer worked under Linux (it works under Windows). 
-After a lot of battling I figured I may as well upgrade to FC5 now.  A
-clean install, out of the box, and the sound STILL did not work.  I've
-applied every available patch to date and no luck.  Tonight I installed
-the Alsa 1.0.11 driver, lib and util tarballs -- all installed
-successfully -- but there is STILL no sound produced.
-
-Everything LOOKS normal.  There are no errors that I can detect.  In the X
-and console versions of Alsamixer I have ALL the devices displayed and
-unmuted with the volumes at max. I've removed the sound lines from
-modprobe.conf and am running with alsasound and that didn't help either --
-even though it says the driver has been loaded.
-
-FYI, the OSS Volume control calls it a Realtek ALC260.  lspci refers to it
-as Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller
-(rev 01).
-
-
-Please help.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-12-06 16:11 
+ tiwai - 05-15-06 10:49 
 ----------------------------------------------------------------------
-It's not alsasound script but somewhere else to set up the module option. 
-Usually /etc/modprobe.d/* or /etc/modprobe.conf* file.
-
-The enable option is a place holder for snd-hda-intel driver just for
-compatibility.  It's anyway ignored.
-
-----------------------------------------------------------------------
- louisvd - 05-12-06 17:18 
-----------------------------------------------------------------------
-Ah, thanks.  ALMOST there now.
-
-I updated my /etc/modprobe.conf file to this:
-alias eth0 tg3
-alias scsi_hostadapter ata_piix
-alias snd-card-0 snd-hda-intel
-options snd-card-0 index=0
-options snd-hda-intel index=0
-options snd-hda-intel model=auto
-remove snd-hda-intel { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-hda-intel
-
-I now get sound out of the "Front" slider.  This is the Internal Mono
-speaker inside the PC.  
-
-I have external PC speakers plugged into the sound out plug at the rear of
-the PC.  This channel is NOT playing any sound.  
-
-Help me fix that and we can close the call.
-
-Thanks for the help so far.
+Fixed on HG now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-08-06 21:00 louisvd        New Issue                                    
-05-08-06 21:00 louisvd        Distribution              => Fedora Core 5   
-05-08-06 21:00 louisvd        Kernel Version            => 2.6.16-1.2111_FC5smp
-05-10-06 16:16 tiwai          Note Added: 0009722                          
-05-10-06 16:52 louisvd        Note Added: 0009731                          
-05-10-06 16:55 tiwai          Note Added: 0009732                          
-05-10-06 20:02 louisvd        Note Added: 0009751                          
-05-12-06 00:40 louisvd        Note Added: 0009770                          
-05-12-06 10:31 UMMO           Issue Monitored: UMMO                        
-05-12-06 16:11 tiwai          Note Added: 0009778                          
-05-12-06 17:18 louisvd        Note Added: 0009782                          
+05-13-06 14:13 riesebie       New Issue                                    
+05-13-06 14:13 riesebie       Distribution              => Debian          
+05-13-06 14:13 riesebie       Kernel Version            => 2.6.17rc4       
+05-13-06 20:01 riesebie       Issue Monitored: riesebie                    
+05-15-06 10:49 tiwai          Status                   assigned => resolved
+05-15-06 10:49 tiwai          Resolution               open => fixed       
+05-15-06 10:49 tiwai          Note Added: 0009815                          
 ======================================================================
 
 
