@@ -1,14 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Mon, 15 May 2006 22:46:12 +0200
-Message-ID: <7ccefb55cc12030acd3475d2fc0b4cc4@bugtrack.alsa-project.org>
+From: "Michal Piotrowski" <michal.k.k.piotrowski@gmail.com>
+Subject: Re: 2.6.17-rc4-mm1
+Date: Mon, 15 May 2006 20:50:32 +0200
+Message-ID: <6bffcb0e0605151150y11002c0co7e8f1ea54a3ceb2b__40015.4892508455$1147787163$gmane$org@mail.gmail.com>
+References: <20060515005637.00b54560.akpm@osdl.org>
+	 <6bffcb0e0605150940l647273f0jf4e1b9d5737bbd2@mail.gmail.com>
+	 <20060515100429.5069f6ca.akpm@osdl.org> <s5h3bfb5h73.wl%tiwai@suse.de>
+	 <s5hy7x341f8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 35FC623C
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 22:46:12 +0200 (MEST)
+Received: from nz-out-0102.google.com (nz-out-0102.google.com [64.233.162.196])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5FC0194
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 20:50:33 +0200 (MEST)
+Received: by nz-out-0102.google.com with SMTP id 4so39466nzn
+        for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 11:50:32 -0700 (PDT)
+In-Reply-To: <s5hy7x341f8.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,126 +26,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Andrew Morton <akpm@osdl.org>, perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
-======================================================================
-Reported By:                dsandras
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2122
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     feedback
-======================================================================
-Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-15-2006 22:46 CEST
-======================================================================
-Summary:                    DMIX crashes Ekiga
-Description: 
-This problem is probably related to problem #2095 that was closed. 
-Unfortunately, I can not reopen it, so I'm posting a new bug report.
+On 15/05/06, Takashi Iwai <tiwai@suse.de> wrote:
+> At Mon, 15 May 2006 19:30:24 +0200,
+> I wrote:
+> >
+> > At Mon, 15 May 2006 10:04:29 -0700,
+> > Andrew Morton wrote:
+> > >
+> > > "Michal Piotrowski" <michal.k.k.piotrowski@gmail.com> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > On 15/05/06, Andrew Morton <akpm@osdl.org> wrote:
+> > > > >
+> > > > > ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6=
+.17-rc4/2.6.17-rc4-mm1/
+> > > > >
+> > > > > - This tree contains a large number of new bugs^H^H^H^Hpatches.
+> > > > [snip]
+> > > > >  git-alsa.patch
+> > > >
+> > > > BUG: sleeping function called from invalid context at
+> > > > /usr/src/linux-mm/sound/core/info.c:117
+> > > > in_atomic():1, irqs_disabled():0
+> > > >  <c1003ef9> show_trace+0xd/0xf   <c100440c> dump_stack+0x17/0x19
+> > > >   <c10178ce> __might_sleep+0x93/0x9d   <f988eeb5> snd_iprintf+0x1b/=
+0x84 [snd]
+> > > >   <f988d808> snd_card_module_info_read+0x34/0x4e [snd]   <f988f197>
+> > > > snd_info_entry_open+0x20f/0x2cc [snd]
+> > > >  <c1067a17> __dentry_open+0x133/0x260   <c1067bb7> nameidata_to_fil=
+p+0x1c/0x2e
+> > > >  <c1067bf7> do_filp_open+0x2e/0x35   <c1068bf2> do_sys_open+0x54/0x=
+d7
+> > > >  <c1068ca1> sys_open+0x16/0x18   <c11dab67> sysenter_past_esp+0x54/=
+0x75
+> > > > Non-volatile memory driver v1.2
+> > > >
+> > > > Here is dmesg http://www.stardust.webpages.pl/files/mm/2.6.17-rc4-m=
+m1/mm-dmesg
+> > > > Here is config http://www.stardust.webpages.pl/files/mm/2.6.17-rc4-=
+mm1/mm-config
+> > >
+> > > heh, yes, Takashi baited his hook and pulled in a big one.
+> > >
+> > > snd_card_module_info_read() calls snd_iprintf() under read_lock()..
+> >
+> > Ouch, I checked only spinlocks but forgot rwlocks.  Will fix them.
+>
+> The patch below should fix them (already merged in ALSA HG repo).
+>
+>
 
-When using DMIX, Ekiga crashes. This problem was not present with earlier
-versions of libasound2. I applied all patches from CVS.
-======================================================================
+Problem fixed. Thanks!
 
-----------------------------------------------------------------------
- rlrevell - 05-15-06 22:42 
-----------------------------------------------------------------------
-What are the contents of:
+Regards,
+Michal
 
-/proc/asound/cardX/pcmXp/subX/hw_params and
-/proc/asound/cardX/pcmXp/subX/status
-
-(replace X with the card/stream in use)
-
-for the non-working (default) and working configs?
-
-You have the latest alsa-lib and alsa-driver installed?
-
-----------------------------------------------------------------------
- dsandras - 05-15-06 22:46 
-----------------------------------------------------------------------
-Not working:
-
-cat /proc/asound/card0/pcm0p/sub0/hw_params
-access: MMAP_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 48000 (48000/1)
-period_size: 1024
-buffer_size: 16384
-tick_time: 1000
-
-cat /proc/asound/card0/pcm0p/sub0/status
-state: RUNNING
-trigger_time: 1147725878.542749000
-tstamp      : 1147725923.490961000
-delay       : -2149046
-avail       : 2165430
-avail_max   : 2165430
------
-hw_ptr      : 2149046
-appl_ptr    : 0
-
-
-Working :
-cat /proc/asound/card0/pcm0p/sub0/hw_params
-access: MMAP_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 44100 (44100/1)
-period_size: 256
-buffer_size: 2048
-tick_time: 1000
-
-cat /proc/asound/card0/pcm0p/sub0/status
-state: RUNNING
-trigger_time: 1147725951.007094000
-tstamp      : 1147725977.194283000
-delay       : -1151388
-avail       : 1153436
-avail_max   : 1153436
------
-hw_ptr      : 1151388
-appl_ptr    : 0
-
-libasound 1.0.11 patches to fix the problems with latest "HG".
-But not the latest drivers, but we can not impose our users to use latest
-drivers anyway.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-13-06 17:35 dsandras       New Issue                                    
-05-13-06 17:39 dsandras       Note Added: 0009795                          
-05-13-06 17:41 dsandras       Note Added: 0009796                          
-05-13-06 18:29 rlrevell       Note Added: 0009799                          
-05-13-06 18:36 dsandras       Note Added: 0009800                          
-05-13-06 18:37 dsandras       File Added: busytone.wav                     
-05-15-06 10:35 tiwai          Status                   assigned => resolved
-05-15-06 10:35 tiwai          Resolution               open => fixed       
-05-15-06 10:35 tiwai          Note Added: 0009814                          
-05-15-06 11:01 dsandras       Status                   resolved => feedback
-05-15-06 11:01 dsandras       Resolution               fixed => reopened   
-05-15-06 11:01 dsandras       Note Added: 0009816                          
-05-15-06 11:07 tiwai          Note Added: 0009818                          
-05-15-06 22:33 dsandras       Note Added: 0009828                          
-05-15-06 22:42 rlrevell       Note Added: 0009829                          
-05-15-06 22:46 dsandras       Note Added: 0009830                          
-======================================================================
-
-
+--=20
+Michal K. K. Piotrowski
+LTG - Linux Testers Group
+(http://www.stardust.webpages.pl/ltg/wiki/)
 
 
 -------------------------------------------------------
