@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002106]: Sound card snd-hda-intel emits NO sound
-Date: Fri, 12 May 2006 20:05:32 +0200
-Message-ID: <8cceb83a8c33234fb9047f856fdc80c5@bugtrack.alsa-project.org>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: alsamixer and short slider
+Date: Tue, 16 May 2006 01:43:58 +0200
+Message-ID: <1147736638.29795.77.camel@johannes>
+References: <1147358935.4692.2.camel@johannes>
+	 <s5hvesc1u3j.wl%tiwai@suse.de> <1147360673.4692.17.camel@johannes>
+	 <s5hlkt81t50.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-J1fNb1zZFZN5LAK2C5md"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 88ABC175
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 20:05:32 +0200 (MEST)
+In-Reply-To: <s5hlkt81t50.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,124 +18,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2106> 
-======================================================================
-Reported By:                louisvd
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2106
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2111_FC5smp
-======================================================================
-Date Submitted:             05-08-2006 21:00 CEST
-Last Modified:              05-12-2006 20:05 CEST
-======================================================================
-Summary:                    Sound card snd-hda-intel emits NO sound
-Description: 
-Hi
+--=-J1fNb1zZFZN5LAK2C5md
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I was merrily running Fedora Core 4 and after upgrading the kernel to
-2.6.16 my sound no longer worked under Linux (it works under Windows). 
-After a lot of battling I figured I may as well upgrade to FC5 now.  A
-clean install, out of the box, and the sound STILL did not work.  I've
-applied every available patch to date and no luck.  Tonight I installed
-the Alsa 1.0.11 driver, lib and util tarballs -- all installed
-successfully -- but there is STILL no sound produced.
+On Thu, 2006-05-11 at 17:24 +0200, Takashi Iwai wrote:
+> > Well, it tries to, but like I said, I cannot select anything but 0, 4,
+> > 7, 11 and 14, but for a range of 3..28 it should be selecting
+> > approximately every 4 items from 0 to 100.
+>=20
+> Sounds like the minimum value 3 isn't handled properly but assumed the
+> range 0-28.
 
-Everything LOOKS normal.  There are no errors that I can detect.  In the X
-and console versions of Alsamixer I have ALL the devices displayed and
-unmuted with the volumes at max. I've removed the sound lines from
-modprobe.conf and am running with alsasound and that didn't help either --
-even though it says the driver has been loaded.
+Not sure, but if I actually translate the range from 3..28 to 0..25 in
+the kernel module, it works well. But that's not how it should be.
 
-FYI, the OSS Volume control calls it a Realtek ALC260.  lspci refers to it
-as Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller
-(rev 01).
+> Does amixer work as expected?
 
+As I said before, yes, it does indeed.
 
-Please help.
-======================================================================
+Side note: most programs I've tried don't handle ranges where the start
+or both start and end are negatiive ... I feel like I'm going to have to
+educate dozens of alsa software writers or just cave in and translate
+the ranges in the kernel...
 
-----------------------------------------------------------------------
- tiwai - 05-12-06 18:34 
-----------------------------------------------------------------------
-Hm, your device is listed to the model "hp", but it looks like that the
-model hp doesn't work properly as expected.  So, the case isn't closed
-yet.
+johannes
 
-Could you check whether the uploaded patch fixes the problem (please
-remove model option if you test)?
+--=-J1fNb1zZFZN5LAK2C5md
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-----------------------------------------------------------------------
- jstraw - 05-12-06 20:05 
-----------------------------------------------------------------------
-I have been having the same problem.
+-----BEGIN PGP SIGNATURE-----
 
-I applied the patch and installed the new alsa driver:
+iQIVAwUARGkSPKVg1VMiehFYAQJgRA//cbsuM4K9rb1Ov1rdrxRXTRFrjWkBihi/
+YeR8rVuX5TF0BHVENlSonCHlScv17XPx/0vCCSRIckwiHTAc6vUUqRF/pW5YzJYS
+viPwQWjd0Ysbv5HLuT5t4ma+1yB/ZMkb37FZDzI/PDt9Zg7stV9cSILZvKu7+gjz
+KWS8t3/wu2ntDP03bk0nCLYniI27/k2/BHLZW/MNjnVtsiranYVjORibA/sC/ypb
+XWRjfw5bLu+jf1GLeIOJmlrEPiP8LWaKAKhfdJYJAMXEsHTnhrqNbw80y8Wo94p9
+5V16erqRxn62BHscw97IeBLp4vgaWj6DqOW7CpS7taVvmrHaB5L9ISxjDkNWWK8Q
+o8I80n1H9FCqz7u4CqBPFseXEssDEV2Zas6IG6iDdX49/Ai+KUhluGBwO/qw0RiF
+Oxo3O31VIaJ+1kwJokLUkD7lXDMgNClKdEkZrII2XMREmV9GV6ArxryilCrmoquL
+OivYCYfFQYMEtAB6iyVtwhpdnFMSFvx8oCQJTCNyAJWQCAZU50EednRyw5cqr8o7
+Za1+iWmu8dkMxHplUx9CRb8+tnm3c057cWVpGMXXPeDWLDmCNe1RluPavAbMpYjG
+jqfFkfSYqfo45Gi+fGpmbLWkfLHtqTcOaq331h4mlIUczNmNcz+xpyADaO/JrpAO
+bDWyyGpiD9o=
+=c6Xf
+-----END PGP SIGNATURE-----
 
-$ cat /proc/asound/version 
-Advanced Linux Sound Architecture Driver Version 1.0.11.
-Compiled on May 12 2006 for kernel 2.6.16-1.2111_FC5smp (SMP).
-
-$ cat /etc/modprobe.conf
-alias eth0 tg3
-alias scsi_hostadapter ata_piix
-alias snd-card-0 snd-hda-intel
-options snd-card-0 index=0
-options snd-hda-intel index=0
-remove snd-hda-intel { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-hda-intel
-
-
-The model doesn't get set:
-
-$ cat /sys/module/snd_hda_intel/parameters/*
-N
-<NULL>
-0
-<NULL>
-0
--1
-N
-
-But I do get sound!
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-08-06 21:00 louisvd        New Issue                                    
-05-08-06 21:00 louisvd        Distribution              => Fedora Core 5   
-05-08-06 21:00 louisvd        Kernel Version            => 2.6.16-1.2111_FC5smp
-05-10-06 16:16 tiwai          Note Added: 0009722                          
-05-10-06 16:52 louisvd        Note Added: 0009731                          
-05-10-06 16:55 tiwai          Note Added: 0009732                          
-05-10-06 20:02 louisvd        Note Added: 0009751                          
-05-12-06 00:40 louisvd        Note Added: 0009770                          
-05-12-06 10:31 UMMO           Issue Monitored: UMMO                        
-05-12-06 16:11 tiwai          Note Added: 0009778                          
-05-12-06 17:18 louisvd        Note Added: 0009782                          
-05-12-06 17:36 tiwai          Note Added: 0009783                          
-05-12-06 17:54 UMMO           Issue End Monitor: UMMO                      
-05-12-06 17:58 louisvd        Note Added: 0009784                          
-05-12-06 18:34 tiwai          Note Added: 0009786                          
-05-12-06 18:34 tiwai          File Added: alc260-hp-init-fix.diff               
-    
-05-12-06 19:46 jstraw         Issue Monitored: jstraw                      
-05-12-06 20:05 jstraw         Note Added: 0009789                          
-======================================================================
-
+--=-J1fNb1zZFZN5LAK2C5md--
 
 
 
