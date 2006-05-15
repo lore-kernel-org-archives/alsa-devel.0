@@ -1,11 +1,13 @@
-From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
-Subject: Best way of adding temporary limits to capture or playback
-Date: Mon, 15 May 2006 14:51:27 +0200
-Message-ID: <4468794F.70508@atmel.com>
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Re: mailing list filters?
+Date: Mon, 15 May 2006 11:24:58 -0600
+Message-ID: <4468B96A.7030707@redfish-solutions.com>
+References: <4465DCA6.2020205@gmail.com> <s5h8xp3wrxm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h8xp3wrxm.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,39 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alvaro Kuolas <kuolas@gmail.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello
+Takashi Iwai wrote:
+> At Sat, 13 May 2006 10:18:30 -0300,
+> Alvaro Kuolas wrote:
+>   
+>> Hello all.
+>>
+>> Searching a little bit about the spam problems. On the "[Alsa-devel]
+>> crypto layer in alsa" thread says that this is a know problem.
+>>
+>> Why not filter all except for text and patch (goodbye HTML, JPG, etc)?
+>> Or just receive email only from subscribers?
+>>     
+>
+> We did the latter one but no longer now since non-subscribers often
+> need to post to alsa-devel ML, too, especially Cc'ed from LKML posts.
+>
+>   
+>> Why not both?
+>>
+>> These are "whys", I'm just asking.
+>>     
+>
+> The problem seems in the redirection from *@alsa-project.org to SF's
+> address.  The spams tend to go through in this route.
+> Maybe an additional filtering in this route would be efficient.
+>
+> Jaroslav, what do you think?
+>
+>
+> Takashi
+>   
 
-My AC97 controller has a limit when doing capture/playback in full
-duplex, the bitrate and endianess has to be the same for both streams
-(playback/capture). Is there a nice and easy way to set this limit?
 
-My current plan is to change the hardware parameters in the playback
-open and capture open callbacks if there is an active playback or
-capture already present. And then reset this hardware limit when the
-close callback is called.
+I offered to help out with that (I'm also a mimedefang and spamassassin 
+developer)
+but didn't  hear back.
 
-I would of course enjoy just setting a flag in the driver telling it
-that capture and playback rates/endianess is related, and is locked if
-one of the streams is opened.
+-Philip
 
-PS! I'm having some sort of problems getting my emails from this lists,
-seems like I don't get a copy anymore :/ I've checked the settings in
-mailman, and they seem good.
-
-PPS! Sorry if this is received twice, but I didn't receive a copy or
-find a copy in an online repository.
-
--- 
-With kind regards,
-Med vennlig hilsen,
-
-Hans-Christian Egtvedt
-Applications Engineer - AVR Applications Lab
-Atmel Norway
 
 
 -------------------------------------------------------
