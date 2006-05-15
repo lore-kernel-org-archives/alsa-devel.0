@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Mon, 15 May 2006 23:41:53 +0200
-Message-ID: <d73d2d95952a504a3dd83eb524649420@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: re.Fix hang in mpu401_uart.c patch
+Date: Mon, 15 May 2006 22:45:45 +0100
+Message-ID: <200605152245.45507.gineera@aspect135.co.uk>
+References: <200605101556.50928.gineera@aspect135.co.uk> <s5hejz03baa.wl%tiwai@suse.de> <200605131304.49711.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 649C723A
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 23:41:53 +0200 (MEST)
+In-Reply-To: <200605131304.49711.gineera@aspect135.co.uk>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,93 +19,83 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, jcm@jonmasters.org
 List-Id: alsa-devel@alsa-project.org
 
+On Saturday 13 May 2006 13:04, I wrote:
+> On Thursday 11 May 2006 15:07, you wrote:
+> > At Wed, 10 May 2006 16:10:41 +0100,
+> >
+> > Alan Horstmann wrote:
+> > > This patch since 1.0.11 throws up an underlying problem with au88x0
+> > > (separate posting refers), but I also noticed that the 4th hunk applys
+> > > changes to snd_mpu401_uart_input_close and
+> > > snd_mpu401_uart_output_close.
+> > >
+> > > However, as the 3rd augument is '0' ie don't check ACK, OK is always
+> > > true in snd_mpu401_uart_cmd and there is surely no point to the extra
+> > > check lines?
+> > >
+> > > (As my separate posting 'au88x0_mpu401 init / fail first open'
+> > > mentions, ACK is not returned from the RESET during the close, either
+> > > with ice1712 or au8820, so can't be checked for.)
+> >
+> > Which patch are you referring to??
+>
+> The one titled  'Fix hang in mpu401_uart.c',  on repo about 2 weeks ago, by
+> Jon Masters.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
-======================================================================
-Reported By:                dsandras
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2122
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     feedback
-======================================================================
-Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-15-2006 23:41 CEST
-======================================================================
-Summary:                    DMIX crashes Ekiga
-Description: 
-This problem is probably related to problem #2095 that was closed. 
-Unfortunately, I can not reopen it, so I'm posting a new bug report.
+Specifically, chunks below:-
 
-When using DMIX, Ekiga crashes. This problem was not present with earlier
-versions of libasound2. I applied all patches from CVS.
-======================================================================
+Alan
 
-----------------------------------------------------------------------
- rlrevell - 05-15-06 23:28 
-----------------------------------------------------------------------
-I cannot test here as I do not have a hardware mixing sound card, and the
-problem varies by device.
+ static int snd_mpu401_uart_input_close(struct snd_rawmidi_substream 
+*substream)
+ {
+ 	struct snd_mpu401 *mpu;
++	int err = 0;
 
-If you set the period and buffer sizes in your .asoundrc to the values
-from the non-working config do you get the same results?
+ 	mpu = substream->rmidi->private_data;
+ 	clear_bit(MPU401_MODE_BIT_INPUT, &mpu->mode);
+ 	mpu->substream_input = NULL;
+ 	if (! test_bit(MPU401_MODE_BIT_OUTPUT, &mpu->mode))
+-		snd_mpu401_uart_cmd(mpu, MPU401_RESET, 0);
++		err = snd_mpu401_uart_cmd(mpu, MPU401_RESET, 0);
+ 	if (mpu->close_input)
+ 		mpu->close_input(mpu);
++	if (err)
++		return -EIO;
+ 	return 0;
+ }
 
-What if you try changing Ekiga to set the period and buffer to 256/2048,
-as you have done in your .asoundrc?
+ static int snd_mpu401_uart_output_close(struct snd_rawmidi_substream 
+*substream)
+ {
+ 	struct snd_mpu401 *mpu;
++	int err = 0;
 
-----------------------------------------------------------------------
- dsandras - 05-15-06 23:41 
-----------------------------------------------------------------------
-"I cannot test here as I do not have a hardware mixing sound card, and the
-problem varies by device."
+ 	mpu = substream->rmidi->private_data;
+ 	clear_bit(MPU401_MODE_BIT_OUTPUT, &mpu->mode);
+ 	mpu->substream_output = NULL;
+ 	if (! test_bit(MPU401_MODE_BIT_INPUT, &mpu->mode))
+-		snd_mpu401_uart_cmd(mpu, MPU401_RESET, 0);
++		err = snd_mpu401_uart_cmd(mpu, MPU401_RESET, 0);
+ 	if (mpu->close_output)
+ 		mpu->close_output(mpu);
++	if (err)
++		return -EIO;
+ 	return 0;
+ }
 
-Me neither. Simply use DMIX.
+@@ -316,6 +339,7 @@ static void snd_mpu401_uart_input_trigge
+ 			snd_mpu401_uart_remove_timer(mpu, 1);
+ 		clear_bit(MPU401_MODE_BIT_INPUT_TRIGGER, &mpu->mode);
+ 	}
++
+ }
 
-"If you set the period and buffer sizes in your .asoundrc to the values
-from the non-working config do you get the same results?"
-
-Yes.
-
-"What if you try changing Ekiga to set the period and buffer to 256/2048,
-as you have done in your .asoundrc?"
-
-I do not know how to do that. Advice from an ALSA developer would be
-welcome. Ekiga is really a widespread VoIP softphone, and getting help
-from an ALSA developer to improve DMIX support would be more than welcome.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-13-06 17:35 dsandras       New Issue                                    
-05-13-06 17:39 dsandras       Note Added: 0009795                          
-05-13-06 17:41 dsandras       Note Added: 0009796                          
-05-13-06 18:29 rlrevell       Note Added: 0009799                          
-05-13-06 18:36 dsandras       Note Added: 0009800                          
-05-13-06 18:37 dsandras       File Added: busytone.wav                     
-05-15-06 10:35 tiwai          Status                   assigned => resolved
-05-15-06 10:35 tiwai          Resolution               open => fixed       
-05-15-06 10:35 tiwai          Note Added: 0009814                          
-05-15-06 11:01 dsandras       Status                   resolved => feedback
-05-15-06 11:01 dsandras       Resolution               fixed => reopened   
-05-15-06 11:01 dsandras       Note Added: 0009816                          
-05-15-06 11:07 tiwai          Note Added: 0009818                          
-05-15-06 22:33 dsandras       Note Added: 0009828                          
-05-15-06 22:42 rlrevell       Note Added: 0009829                          
-05-15-06 22:46 dsandras       Note Added: 0009830                          
-05-15-06 22:58 rlrevell       Note Added: 0009831                          
-05-15-06 22:59 dsandras       Note Added: 0009832                          
-05-15-06 23:28 rlrevell       Note Added: 0009833                          
-05-15-06 23:41 dsandras       Note Added: 0009834                          
-======================================================================
+ /*
 
 
 
