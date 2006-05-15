@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002124]: snd_config_update_free_global kills applications using user space alsa plugins
-Date: Mon, 15 May 2006 11:01:36 +0200
-Message-ID: <621761692f7e2f66c4a927e819341320@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
+Date: Mon, 15 May 2006 11:01:04 +0200
+Message-ID: <a6d9f7b0da7edfc77f46afe583d583f7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69BD711B
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 11:01:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00910D4
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 11:01:04 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,51 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2124> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
 ======================================================================
-Reported By:                fchevalier
-Assigned To:                
+Reported By:                dsandras
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   2124
-Category:                   0_general
+Issue ID:                   2122
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
 Reproducibility:            always
-Severity:                   crash
+Severity:                   block
 Priority:                   normal
-Status:                     new
+Status:                     feedback
 ======================================================================
-Date Submitted:             05-14-2006 19:10 CEST
+Date Submitted:             05-13-2006 17:35 CEST
 Last Modified:              05-15-2006 11:01 CEST
 ======================================================================
-Summary:                    snd_config_update_free_global kills applications
-using user space alsa plugins
+Summary:                    DMIX crashes Ekiga
 Description: 
+This problem is probably related to problem #2095 that was closed. 
+Unfortunately, I can not reopen it, so I'm posting a new bug report.
 
-Calling snd_config_update_free_global will make applications using user
-space alsa plugins SIGSEGV in hard to disover way.
-
-This is due due the fact that snd_config_update_free_global calls
-snd_dlobj_cache_cleanup, which in turns unloads the user space plugins,
-even if symbols are still in use.
-The result is that the next call to *any* alsa function is likely to crash
-if it ends up calling a plugin function.
-
-It took me a whole day to troubleshoot the issue in ekiga 2.0.1 :-)
+When using DMIX, Ekiga crashes. This problem was not present with earlier
+versions of libasound2. I applied all patches from CVS.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-15-06 11:01 
+ tiwai - 05-15-06 10:35 
 ----------------------------------------------------------------------
-Maybe we should add a refcount so that the objects won't be released when
-used.
+Already fixed on HG repo.
+
+----------------------------------------------------------------------
+ dsandras - 05-15-06 11:01 
+----------------------------------------------------------------------
+That is the second time that you tell me that it is fixed and close the bug
+report.
+That is the second time that I tell you that it is NOT fixed. I'm using
+the latest version of HG repository and all those problems are not fixed
+at all.
+
+Could you please put a little bit more consideration into this bug
+report?
+
+Thank you.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-14-06 19:10 fchevalier     New Issue                                    
-05-15-06 11:01 tiwai          Note Added: 0009817                          
+05-13-06 17:35 dsandras       New Issue                                    
+05-13-06 17:39 dsandras       Note Added: 0009795                          
+05-13-06 17:41 dsandras       Note Added: 0009796                          
+05-13-06 18:29 rlrevell       Note Added: 0009799                          
+05-13-06 18:36 dsandras       Note Added: 0009800                          
+05-13-06 18:37 dsandras       File Added: busytone.wav                     
+05-15-06 10:35 tiwai          Status                   assigned => resolved
+05-15-06 10:35 tiwai          Resolution               open => fixed       
+05-15-06 10:35 tiwai          Note Added: 0009814                          
+05-15-06 11:01 dsandras       Status                   resolved => feedback
+05-15-06 11:01 dsandras       Resolution               fixed => reopened   
+05-15-06 11:01 dsandras       Note Added: 0009816                          
 ======================================================================
 
 
