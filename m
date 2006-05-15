@@ -1,15 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Doubt on implementing .readi and .readn methods
-Date: Mon, 15 May 2006 17:19:18 -0400
-Message-ID: <1147727959.13948.40.camel@mindpipe>
-References: <4464E1B7.6070601@instant.com.br> <s5hac9jws8q.wl%tiwai@suse.de>
-	 <4468DF11.4000000@instant.com.br> <1147725511.13948.29.camel@mindpipe>
-	 <4468EB0C.6030909@instant.com.br>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
+Date: Mon, 15 May 2006 23:41:53 +0200
+Message-ID: <d73d2d95952a504a3dd83eb524649420@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4468EB0C.6030909@instant.com.br>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 649C723A
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 23:41:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,40 +18,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Juan Carlos Castro y Castro <jcastro@instant.com.br>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-05-15 at 17:56 -0300, Juan Carlos Castro y Castro wrote:
-> Lee Revell wrote:
-> 
-> >On Mon, 2006-05-15 at 17:05 -0300, Juan Carlos Castro y Castro wrote:
-> >  
-> >
-> >>Cheers,
-> >>Juan
-> >>P.S.: By the way, how many people here would find this functionality a nice thing to have? (Besides me of course)
-> >>    
-> >>
-> >What will it give us that JACK doesn't?
-> >  
-> >
-> Erm... (does a quick search of what JACK does) not having to recode the app?
-> 
 
-Yes, that's the main difference ;-)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
+======================================================================
+Reported By:                dsandras
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2122
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     feedback
+======================================================================
+Date Submitted:             05-13-2006 17:35 CEST
+Last Modified:              05-15-2006 23:41 CEST
+======================================================================
+Summary:                    DMIX crashes Ekiga
+Description: 
+This problem is probably related to problem #2095 that was closed. 
+Unfortunately, I can not reopen it, so I'm posting a new bug report.
 
-> OK, but anyway you got me curious. If one of my apps wasn't proprietary, 
-> and I decided to alter both to use JACK instead of ALSA, you say I could 
-> do acoustic coupling?
-> 
+When using DMIX, Ekiga crashes. This problem was not present with earlier
+versions of libasound2. I applied all patches from CVS.
+======================================================================
 
-Yes, it's exactly what JACK was designed for.
+----------------------------------------------------------------------
+ rlrevell - 05-15-06 23:28 
+----------------------------------------------------------------------
+I cannot test here as I do not have a hardware mixing sound card, and the
+problem varies by device.
 
-There are some things JACK isn't suitable for (like VOIP due to the lack
-of resampling).
+If you set the period and buffer sizes in your .asoundrc to the values
+from the non-working config do you get the same results?
 
-Lee
+What if you try changing Ekiga to set the period and buffer to 256/2048,
+as you have done in your .asoundrc?
+
+----------------------------------------------------------------------
+ dsandras - 05-15-06 23:41 
+----------------------------------------------------------------------
+"I cannot test here as I do not have a hardware mixing sound card, and the
+problem varies by device."
+
+Me neither. Simply use DMIX.
+
+"If you set the period and buffer sizes in your .asoundrc to the values
+from the non-working config do you get the same results?"
+
+Yes.
+
+"What if you try changing Ekiga to set the period and buffer to 256/2048,
+as you have done in your .asoundrc?"
+
+I do not know how to do that. Advice from an ALSA developer would be
+welcome. Ekiga is really a widespread VoIP softphone, and getting help
+from an ALSA developer to improve DMIX support would be more than welcome.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-13-06 17:35 dsandras       New Issue                                    
+05-13-06 17:39 dsandras       Note Added: 0009795                          
+05-13-06 17:41 dsandras       Note Added: 0009796                          
+05-13-06 18:29 rlrevell       Note Added: 0009799                          
+05-13-06 18:36 dsandras       Note Added: 0009800                          
+05-13-06 18:37 dsandras       File Added: busytone.wav                     
+05-15-06 10:35 tiwai          Status                   assigned => resolved
+05-15-06 10:35 tiwai          Resolution               open => fixed       
+05-15-06 10:35 tiwai          Note Added: 0009814                          
+05-15-06 11:01 dsandras       Status                   resolved => feedback
+05-15-06 11:01 dsandras       Resolution               fixed => reopened   
+05-15-06 11:01 dsandras       Note Added: 0009816                          
+05-15-06 11:07 tiwai          Note Added: 0009818                          
+05-15-06 22:33 dsandras       Note Added: 0009828                          
+05-15-06 22:42 rlrevell       Note Added: 0009829                          
+05-15-06 22:46 dsandras       Note Added: 0009830                          
+05-15-06 22:58 rlrevell       Note Added: 0009831                          
+05-15-06 22:59 dsandras       Note Added: 0009832                          
+05-15-06 23:28 rlrevell       Note Added: 0009833                          
+05-15-06 23:41 dsandras       Note Added: 0009834                          
+======================================================================
+
 
 
 
