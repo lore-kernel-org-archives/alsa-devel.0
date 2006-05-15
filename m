@@ -1,13 +1,14 @@
-From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
-Subject: Re: Doubt on implementing .readi and .readn methods
-Date: Mon, 15 May 2006 17:56:44 -0300
-Message-ID: <4468EB0C.6030909@instant.com.br>
-References: <4464E1B7.6070601@instant.com.br> <s5hac9jws8q.wl%tiwai@suse.de>	 <4468DF11.4000000@instant.com.br> <1147725511.13948.29.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002124]: snd_config_update_free_global kills applications using user space alsa plugins
+Date: Mon, 15 May 2006 11:01:36 +0200
+Message-ID: <621761692f7e2f66c4a927e819341320@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1147725511.13948.29.camel@mindpipe>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 69BD711B
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 11:01:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,28 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
 
->On Mon, 2006-05-15 at 17:05 -0300, Juan Carlos Castro y Castro wrote:
->  
->
->>Cheers,
->>Juan
->>P.S.: By the way, how many people here would find this functionality a nice thing to have? (Besides me of course)
->>    
->>
->What will it give us that JACK doesn't?
->  
->
-Erm... (does a quick search of what JACK does) not having to recode the app?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2124> 
+======================================================================
+Reported By:                fchevalier
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2124
+Category:                   0_general
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             05-14-2006 19:10 CEST
+Last Modified:              05-15-2006 11:01 CEST
+======================================================================
+Summary:                    snd_config_update_free_global kills applications
+using user space alsa plugins
+Description: 
 
-OK, but anyway you got me curious. If one of my apps wasn't proprietary, 
-and I decided to alter both to use JACK instead of ALSA, you say I could 
-do acoustic coupling?
+Calling snd_config_update_free_global will make applications using user
+space alsa plugins SIGSEGV in hard to disover way.
+
+This is due due the fact that snd_config_update_free_global calls
+snd_dlobj_cache_cleanup, which in turns unloads the user space plugins,
+even if symbols are still in use.
+The result is that the next call to *any* alsa function is likely to crash
+if it ends up calling a plugin function.
+
+It took me a whole day to troubleshoot the issue in ekiga 2.0.1 :-)
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 05-15-06 11:01 
+----------------------------------------------------------------------
+Maybe we should add a refcount so that the objects won't be released when
+used.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-14-06 19:10 fchevalier     New Issue                                    
+05-15-06 11:01 tiwai          Note Added: 0009817                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
