@@ -1,15 +1,13 @@
 From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: re.Fix hang in mpu401_uart.c patch
-Date: Mon, 15 May 2006 22:45:45 +0100
-Message-ID: <200605152245.45507.gineera@aspect135.co.uk>
-References: <200605101556.50928.gineera@aspect135.co.uk> <s5hejz03baa.wl%tiwai@suse.de> <200605131304.49711.gineera@aspect135.co.uk>
+Subject: Re: Re: au88x0_mpu401 init / fail first open
+Date: Mon, 15 May 2006 22:50:45 +0100
+Message-ID: <200605152250.45709.gineera@aspect135.co.uk>
+References: <200605051139.34432.gineera@aspect135.co.uk> <200605111552.15560.gineera@aspect135.co.uk> <s5hwtcs1u7i.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_1ePaEuzu/t2W54U"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200605131304.49711.gineera@aspect135.co.uk>
-Content-Disposition: inline
+In-Reply-To: <s5hwtcs1u7i.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,83 +18,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, jcm@jonmasters.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday 13 May 2006 13:04, I wrote:
-> On Thursday 11 May 2006 15:07, you wrote:
-> > At Wed, 10 May 2006 16:10:41 +0100,
-> >
-> > Alan Horstmann wrote:
-> > > This patch since 1.0.11 throws up an underlying problem with au88x0
-> > > (separate posting refers), but I also noticed that the 4th hunk applys
-> > > changes to snd_mpu401_uart_input_close and
-> > > snd_mpu401_uart_output_close.
-> > >
-> > > However, as the 3rd augument is '0' ie don't check ACK, OK is always
-> > > true in snd_mpu401_uart_cmd and there is surely no point to the extra
-> > > check lines?
-> > >
-> > > (As my separate posting 'au88x0_mpu401 init / fail first open'
-> > > mentions, ACK is not returned from the RESET during the close, either
-> > > with ice1712 or au8820, so can't be checked for.)
-> >
-> > Which patch are you referring to??
->
-> The one titled  'Fix hang in mpu401_uart.c',  on repo about 2 weeks ago, by
-> Jon Masters.
 
-Specifically, chunks below:-
+--Boundary-00=_1ePaEuzu/t2W54U
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+On Thursday 11 May 2006 16:01, you wrote:
+> At Thu, 11 May 2006 15:52:15 +0100,
+>
+> Alan Horstmann wrote:
+> > On Thursday 11 May 2006 15:09, you wrote:
+> > > At Wed, 10 May 2006 16:53:21 +0100,
+> > >
+> > > Alan Horstmann wrote:
+> > > > It seems that the behaviour of ENTER_UART is the same with other
+> > > > cards. What is different is that au88x0_mpu401 sends it during init,
+> > > > which for example ice1712 doesn't.  The extra ENTER_UART then fouls
+> > > > up the first output_open in mpu401_uart.  Removing it as per attached
+> > > > diff is successful.  Is this a reasonable thing to do?
+> > >
+> > > Actually, both RESET and ENTER_UART are issued at open in
+> > > mpu401_uart.c, so they are basically unnecessary to be called here...
+> >
+> > Thanks for the confirmation.  The au88x0 init uses the ACK received to
+> > check the port is functioning OK so it seemed best to leave RESET as it
+> > caused no problems.
+> >
+> > In the diff I attached, the lines are just //out so it can be seen what
+> > has been taken out in case of breaking something else.  Is it preferable
+> > to remove them altogether instead?
+>
+> Yes but only if the patched code is confirmed to work :)
+
+It works fine for me; perhaps another au88x0 user could confirm also by 
+applying the diff (attached again)?
 
 Alan
 
- static int snd_mpu401_uart_input_close(struct snd_rawmidi_substream 
-*substream)
- {
- 	struct snd_mpu401 *mpu;
-+	int err = 0;
+--Boundary-00=_1ePaEuzu/t2W54U
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="au88x0_mpu401.c-remove-enter_uart.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="au88x0_mpu401.c-remove-enter_uart.diff"
 
- 	mpu = substream->rmidi->private_data;
- 	clear_bit(MPU401_MODE_BIT_INPUT, &mpu->mode);
- 	mpu->substream_input = NULL;
- 	if (! test_bit(MPU401_MODE_BIT_OUTPUT, &mpu->mode))
--		snd_mpu401_uart_cmd(mpu, MPU401_RESET, 0);
-+		err = snd_mpu401_uart_cmd(mpu, MPU401_RESET, 0);
- 	if (mpu->close_input)
- 		mpu->close_input(mpu);
-+	if (err)
-+		return -EIO;
- 	return 0;
- }
+--- alsa-driver-1.0.11-orig/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-01-13 17:16:29.000000000 +0000
++++ alsa-driver-1.0.11/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-05-10 16:17:10.000000000 +0100
+@@ -70,9 +70,9 @@
+ 	temp |= (MIDI_CLOCK_DIV << 8) | ((mode >> 24) & 0xff) << 4;
+ 	hwwrite(vortex->mmio, VORTEX_CTRL2, temp);
+ 	hwwrite(vortex->mmio, VORTEX_MIDI_CMD, MPU401_RESET);
+-	/* Set some kind of mode */
+-	if (mode)
+-		hwwrite(vortex->mmio, VORTEX_MIDI_CMD, MPU401_ENTER_UART);
++//	/* Set some kind of mode */
++//	if (mode)                    Removed as fouls mpu401_uart.c: snd_mpu401_uart_output_open
++//		hwwrite(vortex->mmio, VORTEX_MIDI_CMD, MPU401_ENTER_UART);
+ 
+ 	/* Check if anything is OK. */
+ 	temp = hwread(vortex->mmio, VORTEX_MIDI_DATA);
 
- static int snd_mpu401_uart_output_close(struct snd_rawmidi_substream 
-*substream)
- {
- 	struct snd_mpu401 *mpu;
-+	int err = 0;
-
- 	mpu = substream->rmidi->private_data;
- 	clear_bit(MPU401_MODE_BIT_OUTPUT, &mpu->mode);
- 	mpu->substream_output = NULL;
- 	if (! test_bit(MPU401_MODE_BIT_INPUT, &mpu->mode))
--		snd_mpu401_uart_cmd(mpu, MPU401_RESET, 0);
-+		err = snd_mpu401_uart_cmd(mpu, MPU401_RESET, 0);
- 	if (mpu->close_output)
- 		mpu->close_output(mpu);
-+	if (err)
-+		return -EIO;
- 	return 0;
- }
-
-@@ -316,6 +339,7 @@ static void snd_mpu401_uart_input_trigge
- 			snd_mpu401_uart_remove_timer(mpu, 1);
- 		clear_bit(MPU401_MODE_BIT_INPUT_TRIGGER, &mpu->mode);
- 	}
-+
- }
-
- /*
-
+--Boundary-00=_1ePaEuzu/t2W54U--
 
 
 
