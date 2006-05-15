@@ -1,9 +1,9 @@
-From: Patrick Strasser <patrick.strasser@tugraz.at>
-Subject: Everything You Could Ever Need to Know About ALSA - ALSA docs
-Date: Sun, 14 May 2006 15:45:00 +0200
-Message-ID: <e47c8v$gn0$2@sea.gmane.org>
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Subject: Best way of adding temporary limits to capture or playback
+Date: Mon, 15 May 2006 14:51:27 +0200
+Message-ID: <4468794F.70508@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -16,53 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+Hello
 
-Before I get to the point (see next paragraph) I want to say some words 
-about ALSA documentation: I can't say more than: I'm confused and 
-frustrated. That's incidentally the best description of the current 
-documentation. I've looked into the archives, and it was the same state 
-about 2 or 3 years before.
+My AC97 controller has a limit when doing capture/playback in full
+duplex, the bitrate and endianess has to be the same for both streams
+(playback/capture). Is there a nice and easy way to set this limit?
 
-I need ALSA, so i need to know ALSA, what it can do, what it can't do, 
-and how to get it doing what I want. For now I can't see through all the 
-fog of incomplete, not helpful or not existent documentation at all. 
-I've dug through the wiki and came to AlsaComplaint page [0].
+My current plan is to change the hardware parameters in the playback
+open and capture open callbacks if there is an active playback or
+capture already present. And then reset this hardware limit when the
+close callback is called.
 
-I've come to the result that I want to understand ALSA and want to share
-my knowledge. I want to write the famous but nevertheless not yet 
-existing "Everything You Could Ever Need to Know About ALSA"-document.
+I would of course enjoy just setting a flag in the driver telling it
+that capture and playback rates/endianess is related, and is locked if
+one of the streams is opened.
 
-I need some help for this. I think I'm quite qualified for this task as 
-I don't know much about ALSA, so I can ask the right questions. But I 
-need people answering my questions.
+PS! I'm having some sort of problems getting my emails from this lists,
+seems like I don't get a copy anymore :/ I've checked the settings in
+mailman, and they seem good.
 
-Let's get into it:
+PPS! Sorry if this is received twice, but I didn't receive a copy or
+find a copy in an online repository.
 
-What is this thing about the device?
-
-First the most important question:
-I know for now that in a standard configuration "hw:0,0" is quite fine. 
-For the second card "hw:1,0" is hopefully working. What exactly does 
-that mean?
-Sometimes I see "plughw:0,0". What's the difference to "hw:0,0"?
-How can I find out which device strings are valid (except for guessing?)
-
-Next: How can I find out which device is the device my speakers are 
-connected to?
-
-More will follow...
-
-Patrick
-
-[0] http://alsa.opensrc.org/AlsaComplaint
 -- 
-Engineers motto: cheap, good, fast: choose any two
-Patrick Strasser <patrick dot strasser at  tugraz dot at>
-Student of Telematik, Techn. University Graz, Austria
+With kind regards,
+Med vennlig hilsen,
 
+Hans-Christian Egtvedt
+Applications Engineer - AVR Applications Lab
+Atmel Norway
 
 
 -------------------------------------------------------
