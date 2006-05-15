@@ -1,22 +1,14 @@
-From: "Michal Piotrowski" <michal.k.k.piotrowski@gmail.com>
-Subject: Re: 2.6.17-rc4-mm1
-Date: Mon, 15 May 2006 20:50:32 +0200
-Message-ID: <6bffcb0e0605151150y11002c0co7e8f1ea54a3ceb2b__40015.4892508455$1147787163$gmane$org@mail.gmail.com>
-References: <20060515005637.00b54560.akpm@osdl.org>
-	 <6bffcb0e0605150940l647273f0jf4e1b9d5737bbd2@mail.gmail.com>
-	 <20060515100429.5069f6ca.akpm@osdl.org> <s5h3bfb5h73.wl%tiwai@suse.de>
-	 <s5hy7x341f8.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000014]: No sound from headphone jack on Acer27* laptops
+Date: Mon, 15 May 2006 17:55:54 +0200
+Message-ID: <1d84cd8db3adba39dfd7306d083cc064@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from nz-out-0102.google.com (nz-out-0102.google.com [64.233.162.196])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5FC0194
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 20:50:33 +0200 (MEST)
-Received: by nz-out-0102.google.com with SMTP id 4so39466nzn
-        for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 11:50:32 -0700 (PDT)
-In-Reply-To: <s5hy7x341f8.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7B9AF236
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 17:55:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,72 +18,126 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Andrew Morton <akpm@osdl.org>, perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14> 
+======================================================================
+Reported By:                -VoltagE-
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   14
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     confirmed
+Distribution:               Debian Sid updated
+Kernel Version:             2.4.24-ck1
+======================================================================
+Date Submitted:             01-29-2004 20:15 CET
+Last Modified:              05-15-2006 17:55 CEST
+======================================================================
+Summary:                    No sound from headphone jack on Acer27* laptops
+Description: 
+On my laptop (acer272xv) I can't use external output with my Creative 2.1,
+because I can't hear anything.
+I've tryied with other external speaker and with other releases of
+alsa-driver, but there's no difference.
+
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000664 ac97_quirk with SIS 7012 [ALC202] don't...
+======================================================================
+
+----------------------------------------------------------------------
+ dale - 05-09-06 21:48 
+----------------------------------------------------------------------
 Hi,
 
-On 15/05/06, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 15 May 2006 19:30:24 +0200,
-> I wrote:
-> >
-> > At Mon, 15 May 2006 10:04:29 -0700,
-> > Andrew Morton wrote:
-> > >
-> > > "Michal Piotrowski" <michal.k.k.piotrowski@gmail.com> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > On 15/05/06, Andrew Morton <akpm@osdl.org> wrote:
-> > > > >
-> > > > > ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6=
-.17-rc4/2.6.17-rc4-mm1/
-> > > > >
-> > > > > - This tree contains a large number of new bugs^H^H^H^Hpatches.
-> > > > [snip]
-> > > > >  git-alsa.patch
-> > > >
-> > > > BUG: sleeping function called from invalid context at
-> > > > /usr/src/linux-mm/sound/core/info.c:117
-> > > > in_atomic():1, irqs_disabled():0
-> > > >  <c1003ef9> show_trace+0xd/0xf   <c100440c> dump_stack+0x17/0x19
-> > > >   <c10178ce> __might_sleep+0x93/0x9d   <f988eeb5> snd_iprintf+0x1b/=
-0x84 [snd]
-> > > >   <f988d808> snd_card_module_info_read+0x34/0x4e [snd]   <f988f197>
-> > > > snd_info_entry_open+0x20f/0x2cc [snd]
-> > > >  <c1067a17> __dentry_open+0x133/0x260   <c1067bb7> nameidata_to_fil=
-p+0x1c/0x2e
-> > > >  <c1067bf7> do_filp_open+0x2e/0x35   <c1068bf2> do_sys_open+0x54/0x=
-d7
-> > > >  <c1068ca1> sys_open+0x16/0x18   <c11dab67> sysenter_past_esp+0x54/=
-0x75
-> > > > Non-volatile memory driver v1.2
-> > > >
-> > > > Here is dmesg http://www.stardust.webpages.pl/files/mm/2.6.17-rc4-m=
-m1/mm-dmesg
-> > > > Here is config http://www.stardust.webpages.pl/files/mm/2.6.17-rc4-=
-mm1/mm-config
-> > >
-> > > heh, yes, Takashi baited his hook and pulled in a big one.
-> > >
-> > > snd_card_module_info_read() calls snd_iprintf() under read_lock()..
-> >
-> > Ouch, I checked only spinlocks but forgot rwlocks.  Will fix them.
->
-> The patch below should fix them (already merged in ALSA HG repo).
->
->
+I just tested this with the latest Alsa drivers (1.0.11) and the problem
+still exists.  PLEASE if you can suggest anything i can do to get sound
+out of my headphone port, i would be very grateful. I am willing to help
+in any way.
 
-Problem fixed. Thanks!
+This issue was first reported in January 2004 and there still does not
+appear to be any progress made.
 
-Regards,
-Michal
+----------------------------------------------------------------------
+ -VoltagE- - 05-15-06 17:55 
+----------------------------------------------------------------------
+Just want to note that I haven't issued this bug.
+Could the bug owner please correct that.
 
---=20
-Michal K. K. Piotrowski
-LTG - Linux Testers Group
-(http://www.stardust.webpages.pl/ltg/wiki/)
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-29-04 20:15 user74         New Issue                                    
+01-29-04 20:15 user74         File Added: details.txt                      
+01-30-04 12:44 tiwai          Note Added: 0000049                          
+01-30-04 17:56 sparkyva       Note Added: 0000063                          
+01-30-04 17:56 sparkyva       Issue Monitored: sparkyva                    
+01-30-04 20:41 sparkyva       Note Added: 0000070                          
+01-30-04 22:01 jorge2         Note Added: 0000071                          
+02-02-04 19:37 jorge2         Note Added: 0000119                          
+02-04-04 20:00 tiwai          Note Added: 0000165                          
+02-04-04 20:01 tiwai          Note Added: 0000166                          
+02-04-04 20:52 jorge2         Note Added: 0000169                          
+02-04-04 20:52 jorge2         Note Added: 0000170                          
+02-04-04 20:53 jorge2         Note Deleted: 0000169                        
+02-05-04 13:52 matsgora       Note Added: 0000181                          
+02-05-04 14:05 dale           Note Added: 0000182                          
+02-26-04 13:07 rocco          Note Added: 0000347                          
+02-26-04 18:16 matsgora       Note Added: 0000358                          
+02-26-04 18:20 tiwai          Note Added: 0000359                          
+03-01-04 10:31 dale           Note Added: 0000401                          
+03-05-04 19:49 tiwai          Note Added: 0000513                          
+03-05-04 20:37 jorge2         Note Added: 0000515                          
+03-06-04 18:20 matsgora       Note Added: 0000520                          
+03-07-04 16:30 dale           Note Added: 0000524                          
+03-09-04 15:15 tiwai          Note Added: 0000547                          
+03-09-04 18:12 matsgora       Note Added: 0000551                          
+06-08-04 20:25 jorge2         Note Added: 0001296                          
+06-15-04 15:00 mcbridematt    Note Added: 0001308                          
+11-22-04 18:48 tiwai          Relationship added       has duplicate 0000664
+02-02-05 14:25 dale           Note Added: 0003488                          
+02-04-05 13:18 tiwai          Note Added: 0003504                          
+02-04-05 13:19 tiwai          File Added: ac97-alc-fix.diff                    
+02-04-05 18:03 jorge2         Note Added: 0003512                          
+02-05-05 13:27 jorge2         Issue Monitored: jorge2                      
+02-21-05 09:16 dale           Note Added: 0003678                          
+02-23-05 09:54 dale           Issue Monitored: dale                        
+06-14-05 21:20 graf_eichbaum  Issue Monitored: graf_eichbaum                    
+06-20-05 06:48 wenton         Note Added: 0005093                          
+06-22-05 19:50 dale           Note Added: 0005145                          
+06-24-05 08:54 wenton         Note Added: 0005204                          
+06-28-05 10:50 dale           Note Added: 0005294                          
+07-07-05 18:05 graf_eichbaum  Note Added: 0005400                          
+07-16-05 16:55 jdthood        Reporter                 user74 => -VoltagE- 
+07-16-05 16:55 jdthood        Status                   new => confirmed    
+07-16-05 16:55 jdthood        version                  1.0.2 => 1.0.8      
+07-16-05 16:55 jdthood        Summary                  No sound from external
+speakers (laptop) => Sound from internal speakers but not from headphones --
+Acer272xv
+07-16-05 16:55 jdthood        Description Updated                          
+07-16-05 19:27 dale           Issue End Monitor: dale                      
+07-16-05 19:28 dale           Issue Monitored: dale                        
+07-17-05 13:18 jorge2         Note Added: 0005507                          
+08-02-05 21:17 ignition       Issue Monitored: ignition                    
+09-29-05 12:30 jdthood        Summary                  Sound from internal
+speakers but not from headphones -- Acer272xv => No sound from headphone jack on
+Acer27* laptops
+05-09-06 21:48 dale           Note Added: 0009689                          
+05-15-06 17:55 -VoltagE-      Note Added: 0009827                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
