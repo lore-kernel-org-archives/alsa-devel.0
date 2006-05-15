@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Mon, 15 May 2006 22:42:17 +0200
-Message-ID: <d12ab1db60d7701bb149953774ae7f04@bugtrack.alsa-project.org>
+Date: Mon, 15 May 2006 22:59:57 +0200
+Message-ID: <c5ec27218684f2c7f7102be37fcec0af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2BF31A7
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 22:42:17 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A18B23A
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 22:59:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-15-2006 22:42 CEST
+Last Modified:              05-15-2006 22:59 CEST
 ======================================================================
 Summary:                    DMIX crashes Ekiga
 Description: 
@@ -50,76 +50,18 @@ versions of libasound2. I applied all patches from CVS.
 ======================================================================
 
 ----------------------------------------------------------------------
- dsandras - 05-15-06 22:33 
+ rlrevell - 05-15-06 22:58 
 ----------------------------------------------------------------------
-I applied this patch:
-http://hg.alsa-project.org/alsa-lib?cs=8c310c3277b7
-
-And it solves the problem.
-
-However, using the "default" device (and thus implicitely dmix) gives a
-very bad result with Ekiga.
-
-If I defined a .asoundrc file like this one :
-pcm.snd_card {
-        type hw
-        card 0
-}
-
-pcm.dmixer {
-        type dmix
-        ipc_key 1024
-        slave.pcm "snd_card"
-        slave {
-                period_size 256
-                buffer_size 2048
-                rate 44100
-        }
-}
-
-pcm.dsnooper {
-        type dsnoop
-        ipc_key 2048
-        slave.pcm "snd_card"
-
-        slave {
-                period_size 256
-                buffer_size 2048
-                rate 44100
-        }
-}
-
-pcm.duplex {
-        type asym
-        playback.pcm "dmixer"
-        capture.pcm "dsnooper"
-}
-
-pcm.!default {
-        type plug
-        slave.pcm "duplex"
-}
-
-Then the sound quality becomes correct, except if the machine is loaded.
-If the machine is loaded, then the latency increases.
-
-Is there any sane explanation to that problem?
-
-I'm asking because Ekiga users will complain.
+It would still be useful to test the latest drivers, just so we can rule
+out a hardware specific bug that was fixed.
 
 ----------------------------------------------------------------------
- rlrevell - 05-15-06 22:42 
+ dsandras - 05-15-06 22:59 
 ----------------------------------------------------------------------
-What are the contents of:
+I can not afford it. But a friend of mine is reporting the same problem
+with latest drivers.
 
-/proc/asound/cardX/pcmXp/subX/hw_params and
-/proc/asound/cardX/pcmXp/subX/status
-
-(replace X with the card/stream in use)
-
-for the non-working (default) and working configs?
-
-You have the latest alsa-lib and alsa-driver installed?
+Perhaps one of you can simply test Ekiga?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -139,6 +81,9 @@ Date Modified  Username       Field                    Change
 05-15-06 11:07 tiwai          Note Added: 0009818                          
 05-15-06 22:33 dsandras       Note Added: 0009828                          
 05-15-06 22:42 rlrevell       Note Added: 0009829                          
+05-15-06 22:46 dsandras       Note Added: 0009830                          
+05-15-06 22:58 rlrevell       Note Added: 0009831                          
+05-15-06 22:59 dsandras       Note Added: 0009832                          
 ======================================================================
 
 
