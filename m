@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Mon, 15 May 2006 11:07:36 +0200
-Message-ID: <26141725d247556ccb83846f5f58b8cc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002123]: Power Management is broken following changes from 1.0.10 to 1.0.11.x versions
+Date: Mon, 15 May 2006 12:11:18 +0200
+Message-ID: <69deed8615df22c40e28931b9d18f021@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EEC7223
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 11:07:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BBD3197
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 12:11:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2123> 
 ======================================================================
-Reported By:                dsandras
-Assigned To:                perex
+Reported By:                jovial
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2122
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   2123
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-15-2006 11:07 CEST
+Date Submitted:             05-13-2006 17:37 CEST
+Last Modified:              05-15-2006 12:11 CEST
 ======================================================================
-Summary:                    DMIX crashes Ekiga
+Summary:                    Power Management is broken following changes from
+1.0.10 to 1.0.11.x versions
 Description: 
-This problem is probably related to problem #2095 that was closed. 
-Unfortunately, I can not reopen it, so I'm posting a new bug report.
+I had linux kernel 2.6.15 on my machine (with alsa version 1.0.10).
+I could place my laptop on standby while playing music, and onced resumed
+the playback would also continue..... proper functionality and power
+management.
 
-When using DMIX, Ekiga crashes. This problem was not present with earlier
-versions of libasound2. I applied all patches from CVS.
+following an upgrade to kernel 2.6.16 with latest patches (includes alsa
+1.0.11-rc4), the power management does not function correctly.
+basically, i have to restart the alsasound service after resume to have
+any sound again.
 ======================================================================
 
 ----------------------------------------------------------------------
- dsandras - 05-15-06 11:01 
+ jovial - 05-14-06 05:16 
 ----------------------------------------------------------------------
-That is the second time that you tell me that it is fixed and close the bug
-report.
-That is the second time that I tell you that it is NOT fixed. I'm using
-the latest version of HG repository and all those problems are not fixed
-at all.
+i think you have a very valid point.
+i made the assumption that since my random configuration is compatible
+with alsa-1.0.10, it should also work with alsa-1.0.11.
 
-Could you please put a little bit more consideration into this bug
-report?
+i guess the right thing for me to do, is to find a _new_ configuration for
+my system that would be compatible with the new version of alsa
+(alsa-1.0.11)
 
-Thank you.
+thanks for your time, and sorry for undermining this piece of information
+at start.
+please consider this matter closed.
 
 ----------------------------------------------------------------------
- tiwai - 05-15-06 11:07 
+ tiwai - 05-15-06 12:11 
 ----------------------------------------------------------------------
-Are you using the latest HG repo?
-hg-mirror looks out of sync for a long time.  Try HG repo from rsync, or
-http://hg.alsa-project.org/alsa-lib.
-
-The fix is SHA1 ID: 8c310c3277b78a6c53af86939fb5dd6a7db509ea.
+ALSA CVS repo is dead and the code there is pretty outdated.
+Use HG repo (better from rsync) instead.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 17:35 dsandras       New Issue                                    
-05-13-06 17:39 dsandras       Note Added: 0009795                          
-05-13-06 17:41 dsandras       Note Added: 0009796                          
-05-13-06 18:29 rlrevell       Note Added: 0009799                          
-05-13-06 18:36 dsandras       Note Added: 0009800                          
-05-13-06 18:37 dsandras       File Added: busytone.wav                     
-05-15-06 10:35 tiwai          Status                   assigned => resolved
-05-15-06 10:35 tiwai          Resolution               open => fixed       
-05-15-06 10:35 tiwai          Note Added: 0009814                          
-05-15-06 11:01 dsandras       Status                   resolved => feedback
-05-15-06 11:01 dsandras       Resolution               fixed => reopened   
-05-15-06 11:01 dsandras       Note Added: 0009816                          
-05-15-06 11:07 tiwai          Note Added: 0009818                          
+05-13-06 17:37 jovial         New Issue                                    
+05-13-06 17:37 jovial         Distribution              => gentoo          
+05-13-06 17:37 jovial         Kernel Version            => 2.6.16          
+05-13-06 17:41 jovial         Note Added: 0009797                          
+05-13-06 18:27 rlrevell       Note Added: 0009798                          
+05-14-06 00:11 jovial         Note Added: 0009801                          
+05-14-06 00:27 rlrevell       Note Added: 0009802                          
+05-14-06 02:32 jovial         Note Added: 0009804                          
+05-14-06 02:42 rlrevell       Note Added: 0009805                          
+05-14-06 05:16 jovial         Note Added: 0009806                          
+05-15-06 12:11 tiwai          Note Added: 0009819                          
 ======================================================================
 
 
