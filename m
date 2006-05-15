@@ -1,13 +1,13 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: Re: au88x0_mpu401 init / fail first open
-Date: Mon, 15 May 2006 22:50:45 +0100
-Message-ID: <200605152250.45709.gineera@aspect135.co.uk>
-References: <200605051139.34432.gineera@aspect135.co.uk> <200605111552.15560.gineera@aspect135.co.uk> <s5hwtcs1u7i.wl%tiwai@suse.de>
+From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
+Subject: Re: Doubt on implementing .readi and .readn methods
+Date: Mon, 15 May 2006 17:56:44 -0300
+Message-ID: <4468EB0C.6030909@instant.com.br>
+References: <4464E1B7.6070601@instant.com.br> <s5hac9jws8q.wl%tiwai@suse.de>	 <4468DF11.4000000@instant.com.br> <1147725511.13948.29.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_1ePaEuzu/t2W54U"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hwtcs1u7i.wl%tiwai@suse.de>
+In-Reply-To: <1147725511.13948.29.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,75 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
 
---Boundary-00=_1ePaEuzu/t2W54U
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Thursday 11 May 2006 16:01, you wrote:
-> At Thu, 11 May 2006 15:52:15 +0100,
+>On Mon, 2006-05-15 at 17:05 -0300, Juan Carlos Castro y Castro wrote:
+>  
 >
-> Alan Horstmann wrote:
-> > On Thursday 11 May 2006 15:09, you wrote:
-> > > At Wed, 10 May 2006 16:53:21 +0100,
-> > >
-> > > Alan Horstmann wrote:
-> > > > It seems that the behaviour of ENTER_UART is the same with other
-> > > > cards. What is different is that au88x0_mpu401 sends it during init,
-> > > > which for example ice1712 doesn't.  The extra ENTER_UART then fouls
-> > > > up the first output_open in mpu401_uart.  Removing it as per attached
-> > > > diff is successful.  Is this a reasonable thing to do?
-> > >
-> > > Actually, both RESET and ENTER_UART are issued at open in
-> > > mpu401_uart.c, so they are basically unnecessary to be called here...
-> >
-> > Thanks for the confirmation.  The au88x0 init uses the ACK received to
-> > check the port is functioning OK so it seemed best to leave RESET as it
-> > caused no problems.
-> >
-> > In the diff I attached, the lines are just //out so it can be seen what
-> > has been taken out in case of breaking something else.  Is it preferable
-> > to remove them altogether instead?
+>>Cheers,
+>>Juan
+>>P.S.: By the way, how many people here would find this functionality a nice thing to have? (Besides me of course)
+>>    
+>>
+>What will it give us that JACK doesn't?
+>  
 >
-> Yes but only if the patched code is confirmed to work :)
+Erm... (does a quick search of what JACK does) not having to recode the app?
 
-It works fine for me; perhaps another au88x0 user could confirm also by 
-applying the diff (attached again)?
-
-Alan
-
---Boundary-00=_1ePaEuzu/t2W54U
-Content-Type: text/x-diff;
-  charset="iso-8859-1";
-  name="au88x0_mpu401.c-remove-enter_uart.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="au88x0_mpu401.c-remove-enter_uart.diff"
-
---- alsa-driver-1.0.11-orig/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-01-13 17:16:29.000000000 +0000
-+++ alsa-driver-1.0.11/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-05-10 16:17:10.000000000 +0100
-@@ -70,9 +70,9 @@
- 	temp |= (MIDI_CLOCK_DIV << 8) | ((mode >> 24) & 0xff) << 4;
- 	hwwrite(vortex->mmio, VORTEX_CTRL2, temp);
- 	hwwrite(vortex->mmio, VORTEX_MIDI_CMD, MPU401_RESET);
--	/* Set some kind of mode */
--	if (mode)
--		hwwrite(vortex->mmio, VORTEX_MIDI_CMD, MPU401_ENTER_UART);
-+//	/* Set some kind of mode */
-+//	if (mode)                    Removed as fouls mpu401_uart.c: snd_mpu401_uart_output_open
-+//		hwwrite(vortex->mmio, VORTEX_MIDI_CMD, MPU401_ENTER_UART);
- 
- 	/* Check if anything is OK. */
- 	temp = hwread(vortex->mmio, VORTEX_MIDI_DATA);
-
---Boundary-00=_1ePaEuzu/t2W54U--
-
+OK, but anyway you got me curious. If one of my apps wasn't proprietary, 
+and I decided to alter both to use JACK instead of ALSA, you say I could 
+do acoustic coupling?
 
 
 -------------------------------------------------------
