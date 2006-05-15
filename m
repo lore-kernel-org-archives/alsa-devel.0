@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Mon, 15 May 2006 11:01:04 +0200
-Message-ID: <a6d9f7b0da7edfc77f46afe583d583f7@bugtrack.alsa-project.org>
+Date: Mon, 15 May 2006 11:07:36 +0200
+Message-ID: <26141725d247556ccb83846f5f58b8cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00910D4
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 11:01:04 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5EEC7223
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 11:07:36 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-15-2006 11:01 CEST
+Last Modified:              05-15-2006 11:07 CEST
 ======================================================================
 Summary:                    DMIX crashes Ekiga
 Description: 
@@ -48,11 +48,6 @@ Unfortunately, I can not reopen it, so I'm posting a new bug report.
 When using DMIX, Ekiga crashes. This problem was not present with earlier
 versions of libasound2. I applied all patches from CVS.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 05-15-06 10:35 
-----------------------------------------------------------------------
-Already fixed on HG repo.
 
 ----------------------------------------------------------------------
  dsandras - 05-15-06 11:01 
@@ -67,6 +62,15 @@ Could you please put a little bit more consideration into this bug
 report?
 
 Thank you.
+
+----------------------------------------------------------------------
+ tiwai - 05-15-06 11:07 
+----------------------------------------------------------------------
+Are you using the latest HG repo?
+hg-mirror looks out of sync for a long time.  Try HG repo from rsync, or
+http://hg.alsa-project.org/alsa-lib.
+
+The fix is SHA1 ID: 8c310c3277b78a6c53af86939fb5dd6a7db509ea.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +87,7 @@ Date Modified  Username       Field                    Change
 05-15-06 11:01 dsandras       Status                   resolved => feedback
 05-15-06 11:01 dsandras       Resolution               fixed => reopened   
 05-15-06 11:01 dsandras       Note Added: 0009816                          
+05-15-06 11:07 tiwai          Note Added: 0009818                          
 ======================================================================
 
 
