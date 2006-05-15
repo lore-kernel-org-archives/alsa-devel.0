@@ -1,15 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: =?iso-8859-1?Q?[ALSA_-_driver_0002117]:_No_5.1-support_f=FCr_VIA8237x/161?=
- =?iso-8859-1?Q?7_based_soundsystems_(i.e._VIA_EPIA_SP8000-Board)?=
-Date: Fri, 12 May 2006 16:03:52 +0200
-Message-ID: <b1903000dd6a0dce197c4bf657c8a287@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002125]: quiet sound only through headphones
+Date: Mon, 15 May 2006 11:07:48 +0200
+Message-ID: <c435070795d5163c749b9ad870f31dce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4801916A
-	for <alsa-devel@alsa-project.org>; Fri, 12 May 2006 16:03:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 964E6223
+	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 11:07:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,52 +22,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2117> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2125> 
 ======================================================================
-Reported By:                Flipsen1977
-Assigned To:                
+Reported By:                wodz
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2117
-Category:                   PCI - via82xx
+Issue ID:                   2125
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15
+Status:                     assigned
+Distribution:               Ubuntu Dapper Drake
+Kernel Version:             2.6.15; 2.6.16.14
 ======================================================================
-Date Submitted:             05-12-2006 09:42 CEST
-Last Modified:              05-12-2006 16:03 CEST
+Date Submitted:             05-15-2006 11:07 CEST
+Last Modified:              05-15-2006 11:07 CEST
 ======================================================================
-Summary:                    No 5.1-support für VIA8237x/1617 based soundsystems
-(i.e. VIA EPIA SP8000-Board)
+Summary:                    quiet sound only through headphones
 Description: 
-I've installed the latest via82xx-module, 2-channel works fine, but
-6-channel isn't available at all.
-
-alsamixer shows all the channels, they are unmuted und up at 90-100%, but
-center/lfe und rear speakers don't work. I've been missing an opportunity
-to switch the line-in and mic-in to output. As I read in some articles
-there isn't yet support for this chipset.
-
-Is there already something done?
+I have problem getting to work soundcard in my shiny new notebook.
+The card is recognized as atiixp but output is only available through
+headphones (and rather quiet). I have googled a bit and there seems to
+be quite popular problem but on intel's boards. I have tried alsa
+drivers from 2.6.15 kernel (ubuntu dapper) as well as 1.0.11 from
+alsa-project.org.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 05-12-06 16:03 
-----------------------------------------------------------------------
-Did you test with speaker-test?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-12-06 09:42 Flipsen1977    New Issue                                    
-05-12-06 09:42 Flipsen1977    Distribution              => Debian          
-05-12-06 09:42 Flipsen1977    Kernel Version            => 2.6.15          
-05-12-06 16:03 tiwai          Note Added: 0009775                          
+05-15-06 11:07 wodz           New Issue                                    
+05-15-06 11:07 wodz           Distribution              => Ubuntu Dapper Drake
+05-15-06 11:07 wodz           Kernel Version            => 2.6.15; 2.6.16.14
 ======================================================================
 
 
