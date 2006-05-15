@@ -1,13 +1,13 @@
-From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
-Subject: Error compiling alsa-driver from sources
-Date: Tue, 16 May 2006 12:52:58 -0300
-Message-ID: <4469F55A.8060909@instant.com.br>
-References: <4464A474.6070604@instant.com.br> <s5h3bfa3x9e.wl%tiwai@suse.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Mix audio at different frequencies
+Date: Mon, 15 May 2006 14:16:56 +0100
+Message-ID: <44687F48.7080204@superbug.co.uk>
+References: <1147429541.26309.3.camel@jazc.fedora>	<s5hpsijzbof.wl%tiwai@suse.de>	<1147676786.2963.1.camel@jazc.fedora>	<s5h4pzrwqp0.wl%tiwai@suse.de>	<000601c67812$4b80e240$8ca8a8c0@gmvsistemas.es> <s5hu07r1q0o.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h3bfa3x9e.wl%tiwai@suse.de>
+In-Reply-To: <s5hu07r1q0o.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +18,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Juan Antonio Zapatero Campo <jazc@gmvsistemas.es>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-
->Juan Carlos Castro y Castro wrote:
->  
+> At Mon, 15 May 2006 13:25:39 +0200,
+> Juan Antonio Zapatero Campo wrote:
+>   
+>> No, it returns wrong buffer sizes. Instead of 160 samples, which is what I 
+>> am expecting at 8000Hz, it returns a value of 341, which I do not 
+>> understand.
+>>     
 >
->>If I compile and install the HG version of alsa-lib while everything 
->>else is 1.0.11, will Bad Things happen?
->>    
->>
->No, it shouldn't.  alsa-lib API is backward compatible.
+> You cannot get always the exactly same buffer size you requested.
+> Especially dmix limits the buffer size to its own and rate plugin
+> rescales the size according to the rate conversion.
 >
->But there were fixes and improvements in the driver and utils.  Better
->to update all things.
->  
 >
-I see that alsa-driver requires alsa-kernel, and finds it automatically 
-if present in a sibling directory. That does not happen when installing 
-the stable alsa-driver tarball.
+> Takashi
+>   
+I would argue that maybe we should modify the way alsa behaves, and 
+somehow get dmix to work with user(application) defined buffer and 
+period sizes.
+I.e. Let alsa handle whatever buffer and period size the user 
+application wants, and get ALSA to translate it into the sized needed 
+for the hardware.
+Maybe implement the use of the system timer in order to trigger the 
+buffer events we need.
 
-Here's the error I got:
-
-  CC [M]  /usr/src/hg/alsa-driver/pci/pdplus/pdplus.o
-/usr/src/hg/alsa-driver/pci/pdplus/pdplus.c:6179: error: 
-`PCI_VENDOR_ID_MARIAN' undeclared here (not in a function)
-/usr/src/hg/alsa-driver/pci/pdplus/pdplus.c:6179: error: initializer 
-element is not constant
-/usr/src/hg/alsa-driver/pci/pdplus/pdplus.c:6179: error: (near 
-initialization for `pdplus_ids[0].vendor')
-/usr/src/hg/alsa-driver/pci/pdplus/pdplus.c:6180: error: 
-`PCI_DEVICE_ID_MARIAN_PRODIF_PLUS' undeclared here (not in a function)
-/usr/src/hg/alsa-driver/pci/pdplus/pdplus.c:6180: error: initializer 
-element is not constant
-/usr/src/hg/alsa-driver/pci/pdplus/pdplus.c:6180: error: (near 
-initialization for `pdplus_ids[0].device')
-/usr/src/hg/alsa-driver/pci/pdplus/pdplus.c:6183: error: initializer 
-element is not constant
-/usr/src/hg/alsa-driver/pci/pdplus/pdplus.c:6183: error: (near 
-initialization for `pdplus_ids[0]')
-/usr/src/hg/alsa-driver/pci/pdplus/pdplus.c:6184: error: initializer 
-element is not constant
-/usr/src/hg/alsa-driver/pci/pdplus/pdplus.c:6184: error: (near 
-initialization for `pdplus_ids[1]')
-make[5]: ** [/usr/src/hg/alsa-driver/pci/pdplus/pdplus.o] Erro 1
-make[4]: ** [/usr/src/hg/alsa-driver/pci/pdplus] Erro 2
-make[3]: ** [/usr/src/hg/alsa-driver/pci] Erro 2
-make[2]: ** [_module_/usr/src/hg/alsa-driver] Erro 2
-make[1]: ** [modules] Erro 2
-make[1]: Leaving directory `/usr/src/linux-2.6.16-pom'
-make: ** [compile] Erro 2
+James
 
 
 
