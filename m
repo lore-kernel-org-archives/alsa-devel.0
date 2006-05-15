@@ -1,15 +1,12 @@
-From: "Mat Shannon" <cvyv@creative010.com>
-Subject: foodstuff
-Date: Mon, 15 May 2006 18:04:36 +0200
-Message-ID: <000601c67839$6d9e7d66$2e289a54@iqu.utlc>
+From: "Anthony Stout" <irq@l8s.co.uk>
+Subject: inflated
+Date: Mon, 15 May 2006 18:02:57 +0200
+Message-ID: <000601c67839$6e3713eb$28ce9a54@dorwb.cpz>
 Mime-Version: 1.0
 Content-Type: multipart/related;
 	type="multipart/alternative";
-	boundary="----=_NextPart_000_0002_01C6784A.31274CEE"
+	boundary="----=_NextPart_000_0002_01C6784A.31BFE36F"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from p549AC304.dip0.t-ipconnect.de (p549AC304.dip0.t-ipconnect.de [84.154.195.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 0551323A
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 18:05:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,23 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0002_01C6784A.31274CEE
+------=_NextPart_000_0002_01C6784A.31BFE36F
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0003_01C6784A.31274D0C"
+	boundary="----=_NextPart_001_0003_01C6784A.31BFE38E"
 
 
-------=_NextPart_001_0003_01C6784A.31274D0C
+------=_NextPart_001_0003_01C6784A.31BFE38E
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-------=_NextPart_001_0003_01C6784A.31274D0C
+------=_NextPart_001_0003_01C6784A.31BFE38E
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -44,22 +41,22 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
 <DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:000101c67839$6d9e7cd0$2e289a54@iqu.utlc" align=3Dbaseline=20
+src=3D"cid:000101c67839$6e371350$28ce9a54@dorwb.cpz" align=3Dbaseline=20
 border=3D0></FONT></DIV>
 </BODY></HTML>
 
-------=_NextPart_001_0003_01C6784A.31274D0C--
+------=_NextPart_001_0003_01C6784A.31BFE38E--
 
-------=_NextPart_000_0002_01C6784A.31274CEE
+------=_NextPart_000_0002_01C6784A.31BFE36F
 Content-Type: image/gif;
-	name="premiere.gif"
+	name="vocational.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <000101c67839$6d9e7cd0$2e289a54@iqu.utlc>
+Content-ID: <000101c67839$6e371350$28ce9a54@dorwb.cpz>
 
 R0lGODdhTAMcA+cAAP///xULCOrp9CQtLwgPDIuZjGVjX6S6odHZylhDVKKMnIJ/ejtMSR8ZIEk8
 SVRjcSs9Zv9UPFpmwI5GDq0OQAqJzqqb93aRs8VK+7aeXijKnI7J8cskV4uynppfrdpqNqkU0aCL
@@ -791,7 +788,7 @@ TId8NrCrOoKlyjADS/F/2M0UU9GJAKiCWPEvXFF/BMggsk0Va5GJNMgWc1GJcJGCeNEvfHF/OkgX
 hxGJbIgYj1GIjLEXnRAwlLF/ckiFkFEap5Eaq9EarxEbs1Ebt5Ebu9EbvxEcw1Ecx5Ecn4gRyhEd
 k6gK0pEd29Ed3xEe41Ee55Ee69Ee7xEf81EfkSggAAA7
 
-------=_NextPart_000_0002_01C6784A.31274CEE--
+------=_NextPart_000_0002_01C6784A.31BFE36F--
 
 
 
