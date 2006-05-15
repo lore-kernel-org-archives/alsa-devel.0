@@ -1,15 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: mailing list filters?
-Date: Mon, 15 May 2006 15:40:47 -0400
-Message-ID: <1147722048.13948.9.camel@mindpipe>
-References: <4465DCA6.2020205@gmail.com> <s5h8xp3wrxm.wl%tiwai@suse.de>
-	 <4468B96A.7030707@redfish-solutions.com> <4468C0F2.1000406@instant.com.br>
-	 <1147720227.13948.2.camel@mindpipe>  <4468D7C4.2050504@instant.com.br>
+From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
+Subject: Re: Doubt on implementing .readi and .readn methods
+Date: Mon, 15 May 2006 17:05:37 -0300
+Message-ID: <4468DF11.4000000@instant.com.br>
+References: <4464E1B7.6070601@instant.com.br> <s5hac9jws8q.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4468D7C4.2050504@instant.com.br>
+In-Reply-To: <s5hac9jws8q.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,37 +17,92 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Juan Carlos Castro y Castro <jcastro@instant.com.br>
-Cc: Philip Prindeville <philipp_subx@redfish-solutions.com>, Takashi Iwai <tiwai@suse.de>, Alvaro Kuolas <kuolas@gmail.com>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-05-15 at 16:34 -0300, Juan Carlos Castro y Castro wrote:
-> Lee Revell wrote:
-> 
-> >On Mon, 2006-05-15 at 14:57 -0300, Juan Carlos Castro y Castro wrote:
-> >  
-> >
-> >>My suggestion is: reply with a challenge from any non-subscriber post, and then (optionally) insert the sender in a whitelist so s/he doesn't need to go through the challenge process at every message. There is mailing list software out there that does that -- is Sourceforge's among them?
-> >>    
-> >>
-> >
-> >Overkill and too annoying for the casual poster.
-> >
-> >We could knock out 90% of the spam by banning .gif and .jpg attachments.
-> >
-> >Lee
-> >  
-> >
-> I don't know, my instinct says that's overly optimistic. This particular 
-> flood of spam happened to be comprised of an image attachment, but 
-> there's LOTS of spam that's text-only. You can do that, it sure is no 
-> harm, but I predict we'll be experiencing spam floods again soon thereafter.
-> 
+Nice, that clears up a lot of doubts I had. Now I'd like to clear up a 
+few things in turn -- namely, what exactly I am trying to accomplish.
 
-I don't think we need to get it all, I'm perfectly happy with a 90% S/N
-ratio.  But there are many for whom a single spam is too much.
+I want to make a "sound bridge" -- Applications A and B both do sound 
+input and output, and I want A's sound output to become B's sound input 
+and vice versa. Call it the Acoustic Coupler From Hell if you may. ;) If 
+the file plugin did emulate sound input via file as well as it does 
+sound output, I'd be all set.
 
-Lee
+Now comes the tricky part. I put debug messages in the .readi and .readn 
+functions in the file plugin, called arecord using that PCM (which works 
+fine as output, i.e., with aplay) as a source and... NONE of that 
+functions EVER get called! It's not a library installation problem -- 
+debug messages in the open function do get shown.
+
+That got me baffled. I imagined some polling problem, but I use the null 
+plugin as a slave, and that one always has bytes available. I'm pretty 
+sure I'm doing something stupid due to lack of familiarity with the ALSA 
+architecture. The question is, what?
+
+Cheers,
+Juan
+P.S.: By the way, how many people here would find this functionality a 
+nice thing to have? (Besides me of course)
+
+Takashi Iwai wrote:
+
+>At Fri, 12 May 2006 16:27:51 -0300,
+>Juan Carlos Castro y Castro wrote:
+>  
+>
+>>I'm a bit confused about what "areas" and "frames" are supposed to mean, 
+>>and in which order the data pointed to by **bufs corresponds to the data 
+>>that's written to disk in the .writen functions. I tried to follow the 
+>>logic in the functions  snd_pcm_areas_from_buf(),  
+>>snd_pcm_areas_from_bufs(), snd_pcm_file_add_frames(), and 
+>>snd_pcm_areas_copy(), and it feels like a labyrinth.
+>>    
+>>
+>
+>"area" refers to snd_pcm_channel_area_t.  It's an exported struct
+>defined in pcm.h:
+>
+>/** PCM area specification */
+>typedef struct _snd_pcm_channel_area {
+>	/** base address of channel samples */
+>	void *addr;
+>	/** offset to first sample in bits */
+>	unsigned int first;
+>	/** samples distance in bits */
+>	unsigned int step;
+>} snd_pcm_channel_area_t;
+>
+>An area array is used for a stream with multiple channels.  Each
+>element of the array contains the area information for one channel.
+>For example, in the case of 16bit 4-channel interleaved format,
+>
+>	area[*].addr = base_addr
+>	area[0].first = 0
+>	area[1].first = 16
+>	area[2].first = 32
+>	area[3].first = 48
+>	area[*].step = 64
+>
+>"frame" is the unit of samples, and 1 frame = sample-width * chanenels.
+>e.g. for 16bit 4-channel format, 1 frame = 2 * 4 = 8 bytes.
+>
+>
+>  
+>
+>>Another thing, are the .readi and .readn functions supposed to block, or 
+>>can they return less bytes (frames?) than requested?
+>>    
+>>
+>
+>Yes if opened without O_NONBLOCK flag.
+>
+>
+>Takashi
+>
+>  
+>
 
 
 
