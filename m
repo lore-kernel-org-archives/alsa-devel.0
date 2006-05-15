@@ -1,19 +1,14 @@
-From: "Michal Piotrowski" <michal.k.k.piotrowski@gmail.com>
-Subject: Re: 2.6.17-rc4-mm1
-Date: Mon, 15 May 2006 18:40:24 +0200
-Message-ID: <6bffcb0e0605150940l647273f0jf4e1b9d5737bbd2__878.655320457433$1147785719$gmane$org@mail.gmail.com>
-References: <20060515005637.00b54560.akpm@osdl.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: mailing list filters?
+Date: Mon, 15 May 2006 15:10:26 -0400
+Message-ID: <1147720227.13948.2.camel@mindpipe>
+References: <4465DCA6.2020205@gmail.com> <s5h8xp3wrxm.wl%tiwai@suse.de>
+	 <4468B96A.7030707@redfish-solutions.com>  <4468C0F2.1000406@instant.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from nz-out-0102.google.com (nz-out-0102.google.com [64.233.162.203])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2096923A
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 18:40:25 +0200 (MEST)
-Received: by nz-out-0102.google.com with SMTP id x7so174390nzc
-        for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 09:40:24 -0700 (PDT)
-In-Reply-To: <20060515005637.00b54560.akpm@osdl.org>
-Content-Disposition: inline
+In-Reply-To: <4468C0F2.1000406@instant.com.br>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,47 +18,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew Morton <akpm@osdl.org>
-Cc: perex@suse.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Juan Carlos Castro y Castro <jcastro@instant.com.br>
+Cc: Philip Prindeville <philipp_subx@redfish-solutions.com>, Takashi Iwai <tiwai@suse.de>, Alvaro Kuolas <kuolas@gmail.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, 2006-05-15 at 14:57 -0300, Juan Carlos Castro y Castro wrote:
+> My suggestion is: reply with a challenge from any non-subscriber
+> post, 
+> and then (optionally) insert the sender in a whitelist so s/he
+> doesn't 
+> need to go through the challenge process at every message. There is 
+> mailing list software out there that does that -- is Sourceforge's
+> among 
+> them?
+> 
+> 
 
-On 15/05/06, Andrew Morton <akpm@osdl.org> wrote:
->
-> ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.17-rc4/=
-2.6.17-rc4-mm1/
->
-> - This tree contains a large number of new bugs^H^H^H^Hpatches.
-[snip]
->  git-alsa.patch
+Overkill and too annoying for the casual poster.
 
-BUG: sleeping function called from invalid context at
-/usr/src/linux-mm/sound/core/info.c:117
-in_atomic():1, irqs_disabled():0
- <c1003ef9> show_trace+0xd/0xf   <c100440c> dump_stack+0x17/0x19
-  <c10178ce> __might_sleep+0x93/0x9d   <f988eeb5> snd_iprintf+0x1b/0x84 [sn=
-d]
-  <f988d808> snd_card_module_info_read+0x34/0x4e [snd]   <f988f197>
-snd_info_entry_open+0x20f/0x2cc [snd]
- <c1067a17> __dentry_open+0x133/0x260   <c1067bb7> nameidata_to_filp+0x1c/0=
-x2e
- <c1067bf7> do_filp_open+0x2e/0x35   <c1068bf2> do_sys_open+0x54/0xd7
- <c1068ca1> sys_open+0x16/0x18   <c11dab67> sysenter_past_esp+0x54/0x75
-Non-volatile memory driver v1.2
+We could knock out 90% of the spam by banning .gif and .jpg attachments.
 
-Here is dmesg http://www.stardust.webpages.pl/files/mm/2.6.17-rc4-mm1/mm-dm=
-esg
-Here is config http://www.stardust.webpages.pl/files/mm/2.6.17-rc4-mm1/mm-c=
-onfig
+Lee
 
-Regards,
-Michal
-
---=20
-Michal K. K. Piotrowski
-LTG - Linux Testers Group
-(http://www.stardust.webpages.pl/ltg/wiki/)
 
 
 -------------------------------------------------------
