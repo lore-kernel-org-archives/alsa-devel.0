@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002128]: timeout: still 8 active urbs.. when using plantronics usb headset on my asus a6km notebook
-Date: Tue, 16 May 2006 00:11:14 +0200
-Message-ID: <1457c9ca36bb938e4e4053249f3986b1@bugtrack.alsa-project.org>
+From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
+Subject: Re: Error compiling alsa-driver from sources
+Date: Tue, 16 May 2006 15:33:43 -0300
+Message-ID: <446A1B07.3070403@instant.com.br>
+References: <4464A474.6070604@instant.com.br>	<s5h3bfa3x9e.wl%tiwai@suse.de>	<4469F55A.8060909@instant.com.br> <s5hlkt22cbx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 250DF23A
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 00:11:15 +0200 (MEST)
+In-Reply-To: <s5hlkt22cbx.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2128> 
-======================================================================
-Reported By:                eNTi
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2128
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               arch linux
-Kernel Version:             Linux defiler 2.6.16-beyond-git #16 PREEMPT Mon May
-15 22:51:30 CEST 2006 i686 AMD Turion(tm) 64 Mobile Technology MT-30
-AuthenticAMD GNU/Linux
-======================================================================
-Date Submitted:             05-16-2006 00:11 CEST
-Last Modified:              05-16-2006 00:11 CEST
-======================================================================
-Summary:                    timeout: still 8 active urbs.. when using
-plantronics usb headset on my asus a6km notebook
-Description: 
-i've tried to listen to music via my plantronics usb headset, because the
-sound from the notebook i just ugly. i compiled the alsa-usb as module and
-could listen to music in audacious from my usb-mounted external harddrive.
-this works for about 1/2 to 1 1/2 songs. then the sound stops apruptly and
-audacious tries hard to play another song, after it somehow "realizes"
-that the current one cant be played any longer. no playback is possible
-any longer and even other processes start to behave very unresponsive. ps
-uax or top will hang and can't be killed. cpu utilization rises and dmesg
-spills some:
+>(snip)
+>
+>It's a known issue that I've seen sometimes.
+>alsa-driver/include/linux/pci_ids.h is missing, which is a symlink to
+>../pci_ids_compat.h.  It must be created by configure script but it's
+>removed by some reason on hgcompile.
+>
+>Create the symlink above manually or just run configure again.
+>  
+>
+./configure did it, thanks.
 
-timeout: still X active urbs..
-
-where X was a int between 4 and 8 (from my observation).
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-16-06 00:11 eNTi           New Issue                                    
-05-16-06 00:11 eNTi           Distribution              => arch linux      
-05-16-06 00:11 eNTi           Kernel Version            => Linux defiler
-2.6.16-beyond-git #16 PREEMPT Mon May 15 22:51:30 CEST 2006 i686 AMD Turion(tm)
-64 Mobile Technology MT-30 Authent
-======================================================================
-
-
+In the meantime I also realized alsa-utils requires gettext-devel. 
+Again, unlike the stable tarball.
 
 
 -------------------------------------------------------
