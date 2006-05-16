@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Tue, 16 May 2006 12:04:32 +0200
-Message-ID: <c4692234a40a2318866f9575dd301348@bugtrack.alsa-project.org>
+From: "Sergey Kolosov" <freeserj@gmail.com>
+Subject: question about closed source alsa driver
+Date: Tue, 16 May 2006 14:18:44 +0400
+Message-ID: <d39e2e70605160318meac7c91g40bb9cd7a85c0665@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_Part_73216_16663835.1147774724856"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F9F2233
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 12:04:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,96 +15,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_Part_73216_16663835.1147774724856
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
-======================================================================
-Reported By:                dsandras
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2122
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     feedback
-======================================================================
-Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-16-2006 12:04 CEST
-======================================================================
-Summary:                    DMIX crashes Ekiga
-Description: 
-This problem is probably related to problem #2095 that was closed. 
-Unfortunately, I can not reopen it, so I'm posting a new bug report.
+Can i  write closed source alsa-driver? If it possible what rules I must
+succeed(etc. can I use alsa function or I must implement it anew?).
 
-When using DMIX, Ekiga crashes. This problem was not present with earlier
-versions of libasound2. I applied all patches from CVS.
-======================================================================
+P.S.
+It is not my initiative, but license agreement.
 
-----------------------------------------------------------------------
- dsandras - 05-16-06 11:52 
-----------------------------------------------------------------------
-It perfectly works with the .asoundrc you gave me.
+------=_Part_73216_16663835.1147774724856
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Is that something that can be done by default for ALSA or does that
-correspond to something I could change in my ALSA plugin?
+Can i&nbsp; write closed source alsa-driver? If it possible what rules I mu=
+st succeed(etc. can I use alsa function or I must implement it anew?).<br><=
+br>P.S.<br>It is not my initiative, but license agreement.
 
-Thanks,
-
-----------------------------------------------------------------------
- tiwai - 05-16-06 12:04 
-----------------------------------------------------------------------
-OK, let me rephrase my questions again:
-
-- Wheter you're using the whole latest HG tree
-- What is the sample rate your app uses
-- What happens if you set "defaults.pcm.dmix_max_periods -1"
-
-Could you answer them?  Otherwise I can't help.
-
-Other userful information are:
-
-- The hardware and driver that the problem appears
-- Change period_size to 1024 and periods to 16 in your dmix config.
-  No buffer_size.  It's the as same config as in default.
-
-And what is your "plugin"?  Did you write a new plugin for alsa-lib and
-use it?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-13-06 17:35 dsandras       New Issue                                    
-05-13-06 17:39 dsandras       Note Added: 0009795                          
-05-13-06 17:41 dsandras       Note Added: 0009796                          
-05-13-06 18:29 rlrevell       Note Added: 0009799                          
-05-13-06 18:36 dsandras       Note Added: 0009800                          
-05-13-06 18:37 dsandras       File Added: busytone.wav                     
-05-15-06 10:35 tiwai          Status                   assigned => resolved
-05-15-06 10:35 tiwai          Resolution               open => fixed       
-05-15-06 10:35 tiwai          Note Added: 0009814                          
-05-15-06 11:01 dsandras       Status                   resolved => feedback
-05-15-06 11:01 dsandras       Resolution               fixed => reopened   
-05-15-06 11:01 dsandras       Note Added: 0009816                          
-05-15-06 11:07 tiwai          Note Added: 0009818                          
-05-15-06 22:33 dsandras       Note Added: 0009828                          
-05-15-06 22:42 rlrevell       Note Added: 0009829                          
-05-15-06 22:46 dsandras       Note Added: 0009830                          
-05-15-06 22:58 rlrevell       Note Added: 0009831                          
-05-15-06 22:59 dsandras       Note Added: 0009832                          
-05-15-06 23:28 rlrevell       Note Added: 0009833                          
-05-15-06 23:41 dsandras       Note Added: 0009834                          
-05-16-06 11:19 tiwai          Note Added: 0009836                          
-05-16-06 11:52 dsandras       Note Added: 0009837                          
-05-16-06 12:04 tiwai          Note Added: 0009838                          
-======================================================================
-
-
+------=_Part_73216_16663835.1147774724856--
 
 
 -------------------------------------------------------
