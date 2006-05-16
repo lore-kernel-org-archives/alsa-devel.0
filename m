@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002099]: System hangs while booting, and i get flooded by azx_get_response timeout message
-Date: Mon, 15 May 2006 12:20:46 +0200
-Message-ID: <1bbca6553a8a04ee8366b8e886698854@bugtrack.alsa-project.org>
+From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
+Subject: Re: Another asinine question
+Date: Tue, 16 May 2006 15:44:34 -0300
+Message-ID: <446A1D92.3020600@instant.com.br>
+References: <4464A474.6070604@instant.com.br> <s5h3bfa3x9e.wl%tiwai@suse.de> <4469E2B2.4040800@instant.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2827C1A7
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 12:20:47 +0200 (MEST)
+In-Reply-To: <4469E2B2.4040800@instant.com.br>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,83 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Juan Carlos Castro y Castro wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2099> 
-======================================================================
-Reported By:                bugmenot
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2099
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.16.11
-======================================================================
-Date Submitted:             05-06-2006 15:24 CEST
-Last Modified:              05-15-2006 12:20 CEST
-======================================================================
-Summary:                    System hangs while booting, and i get flooded by
-azx_get_response timeout message
-Description: 
-While booting, and after loading alsa, the screen gets flooded with
-azx_get_response timeout messages, and my system wont continue to boot. I
-than can only restart.
+> By the way, my pcm_file extensions DO work! It's the "plug" plugin 
+> that's not passing the reads! Stay tuned...
 
-I have read that this is a known error, and it should  be fixed in the cvs
-version  of alsa, but i included the cvs version (cvs copy from the
-5.5.2006) into my kernel and i still get the error.
+I'm pretty sure now the problem lies with the plug plugin -- I am either 
+not using it right (more likely) or I need to use a different plugin 
+entirely (less likely) or more hacking will be needed (unlikely).
 
-This only happens when i inlcude the intel_hda driver into the kernel
-(build into or as modules, its the same)
+Current status is: with my changes, if I use the file PCM as microphone 
+input (and use capture parameters that match the raw input file format), 
+capture works. The "plug" PCM is for format conversion, and it doesn't 
+work for input, only for output. Here's my current .asoundrc:
 
-without it alsa just claims to find no soundcard, but my system works
-well.
+------------------------------------------------------------
+pcm.fileout {
+        type file
+        file /home/jcastro/alsaout.raw
+        infile /home/jcastro/alsain.raw
+        slave.pcm null
+}
 
-I have a ibm thinkpad x60s and a hdc7 sound/model card?
-======================================================================
+pcm_slave.sl3 {
+    pcm "fileout"
+    format S16_LE
+    channels 1
+    rate 48000
+}
 
-----------------------------------------------------------------------
- bugmenot - 05-14-06 01:44 
-----------------------------------------------------------------------
-jea, compiling the HG version, and setting the module option
-index=0 module=thinkpad
-
-setting chmod 666 /dev/dsp
-so that normal users have sound too,
-workd!
-
-thx for your help!
-
-----------------------------------------------------------------------
- tiwai - 05-15-06 12:20 
-----------------------------------------------------------------------
-Could you check whether it works without model option?
-If not, please show the output of "lspci -nv" (only for class 0403).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-06-06 15:24 bugmenot       New Issue                                    
-05-06-06 15:24 bugmenot       Distribution              => Debian          
-05-06-06 15:24 bugmenot       Kernel Version            => 2.6.16.11       
-05-06-06 18:35 bugmenot       Note Added: 0009637                          
-05-08-06 09:43 bugmenot       Note Added: 0009644                          
-05-10-06 16:42 tiwai          Note Added: 0009726                          
-05-10-06 23:59 bugmenot       Note Added: 0009753                          
-05-11-06 17:08 tiwai          Note Added: 0009763                          
-05-14-06 01:44 bugmenot       Note Added: 0009803                          
-05-15-06 12:20 tiwai          Note Added: 0009820                          
-======================================================================
-
+pcm.complex_convert {
+    type plug
+    slave sl3
+}
+------------------------------------------------------------
 
 
 
