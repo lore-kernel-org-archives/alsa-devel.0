@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Hg repo usage notes.
-Date: Tue, 16 May 2006 15:25:52 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0605161525010.9330@tm8103.perex-int.cz>
-References: <200605121307.41000.linux@blennerhassett.gen.nz>
- <s5hody3zat3.wl%tiwai@suse.de>
+From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
+Subject: Re: question about closed source alsa driver
+Date: Tue, 16 May 2006 12:56:22 -0300
+Message-ID: <4469F626.8040307@instant.com.br>
+References: <d39e2e70605160318meac7c91g40bb9cd7a85c0665@mail.gmail.com>	 <4469CE12.6090701@findus.dhs.org>	 <d39e2e70605160637g153bd27ei3cc3dc28df59dba1@mail.gmail.com>	 <1147791320.13948.111.camel@mindpipe>  <4469EE3B.7010600@instant.com.br> <1147793161.13948.117.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEAFD22E
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 15:25:52 +0200 (MEST)
-In-Reply-To: <s5hody3zat3.wl%tiwai@suse.de>
+In-Reply-To: <1147793161.13948.117.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,111 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Eliot Blennerhassett <linux@blennerhassett.gen.nz>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
+Cc: Lee Revell <rlrevell@joe-job.com>, freeserj@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 12 May 2006, Takashi Iwai wrote:
+Lee Revell wrote:
 
-> At Fri, 12 May 2006 13:07:40 +1200,
-> Eliot Blennerhassett wrote:
-> > 
-> > Hi all,
-> > 
-> > I have been trying to get my head around how to use Hg repo e.g. get latest 
-> > code, fix something, make a patch etc.  Perhaps something like the following 
-> > would be useful on the download page?  I'm a total newbie to Hg, so please 
-> > step in and set me right about the correct/desirable/easier ways to do this.
-> 
-> It's a nice documentation.
-> 
-> 
-> > # Get a copy of the repository
-> > cd alsa-hg
-> > 
-> > hg clone http://hg-mirror.alsa-project.org/alsa-driver alsa-driver
-> > hg clone http://hg-mirror.alsa-project.org/alsa-kernel alsa-kernel
-> > 
-> > # Get latest
-> > hg pull -u
-> > 
-> > # Create a working copy
-> > hg clone alsa-driver alsa-driver-fixbug1
-> > cd alsa-driver-fixbug1
-> > ./cvscompile
-> > do { code; test;} until finished;
-> > hg commit -m"Fixed the foo in bar"
-> 
-> Use the following style for a commit log:
-> 
-> 	A short summary of your change in a single line
-> 
-> 	Changelog details....
-> 	....
-> 
-> 	Signed-off-by: Foo Bar <foo@bar.com>
-> 
-> It's required especially for alsa-kernel tree since it's pushed to the
-> standard linux kernel tree later.
-> 
-> > # What to do about sending the changes back ?
-> > hg outgoing ../alsa-driver
-> 
-> It can be "hg outgoing default", too.
-> 
-> > hg outgoing -p ../alsa-driver > foobar.patch
-> > #OR bundle (which is preferred)
-> > hg bundle foobar.hg ../alsa-driver
-> > #OR
-> > hg export (?what?) > foobar.patch
-> > 
-> > # email foobar.[hg,patch] to alsa-devel?
-> 
-> The bundle file is unsuitable for submission.
-> Please use always a patch file.
-> 
-> > # Other notes
-> > add to .hg/hgrc to avoid having to spec the path for hg 
-> > [incoming,outgoing,bundle]:
-> > 
-> > default-push= /path/to/alsa-driver 
-> 
-> 
-> One thing to care is the sync with upstream.
-> 
-> When the upstream is changed while you already modified and committed
-> on your local repo, the pull and "update -m" will require a new merge
-> commit.  If you do export or bundle from this repo, it will contain
-> the commit for that merge, too.  It's not good for the patch
-> submission.
-> 
-> For avoiding this, a cherry-picking is necessary.  On Hg, you can do
-> it by exporting and importing the changes.
-> 
->  - Get changes via hg export on your local repo
-> 
-> 	% cd /my/own/alsa-driver
-> 	% hg export ORIGINAL-STATE:tip > my-patch
-> 
->  - On a master repo, you can "pull -u"
-> 
-> 	% cd /upstream/alsa-driver
-> 	% hg pull -u
-> 
->    Then you can apply the patch
-> 
-> 	% hg import /my/own/alsa-driver/my-patch
-
-Could you do a small text document from these e-mails? I'll place it to 
-the ALSA website.
-
-					Thanks,
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+>>you and I understand that publishing the hardware interface to a sound card hardly gives away crucial secrets... Maybe some evangelism is in order.
+>>    
+>>
+>They just need to survey the market - I would think it would be enough
+>to see that Intel, Via, M-Audio, RME, Creative, and countless other
+>vendors all have provided open source ALSA drivers.
+>  
+>
+Now THAT's effective evangelism! Hey Sergey -- show this to your bosses!
 
 
 -------------------------------------------------------
