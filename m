@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002129]: No sound on ASUS A6R laptop (atiixp, AD1986)
-Date: Tue, 16 May 2006 23:16:58 +0200
-Message-ID: <67cc895a419434dca6fae22f6cf01ebc@bugtrack.alsa-project.org>
+From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
+Subject: Re: Doubt on implementing .readi and .readn methods
+Date: Tue, 16 May 2006 18:17:14 -0300
+Message-ID: <446A415A.5070505@instant.com.br>
+References: <4464E1B7.6070601@instant.com.br> <s5hac9jws8q.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5968722D
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 23:16:58 +0200 (MEST)
+In-Reply-To: <s5hac9jws8q.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,57 +17,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2129> 
-======================================================================
-Reported By:                bjorn_mm
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2129
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Linux
-Kernel Version:             2.6.12-9
-======================================================================
-Date Submitted:             05-16-2006 23:16 CEST
-Last Modified:              05-16-2006 23:16 CEST
-======================================================================
-Summary:                    No sound on ASUS A6R laptop (atiixp, AD1986)
-Description: 
-Greetings,
+>"area" refers to snd_pcm_channel_area_t.  It's an exported struct
+>defined in pcm.h:
+>
+>/** PCM area specification */
+>typedef struct _snd_pcm_channel_area {
+>	/** base address of channel samples */
+>	void *addr;
+>	/** offset to first sample in bits */
+>	unsigned int first;
+>	/** samples distance in bits */
+>	unsigned int step;
+>} snd_pcm_channel_area_t;
+>
+>An area array is used for a stream with multiple channels.  Each
+>element of the array contains the area information for one channel.
+>For example, in the case of 16bit 4-channel interleaved format,
+>
+>	area[*].addr = base_addr
+>	area[0].first = 0
+>	area[1].first = 16
+>	area[2].first = 32
+>	area[3].first = 48
+>	area[*].step = 64
+>
+>"frame" is the unit of samples, and 1 frame = sample-width * chanenels.
+>e.g. for 16bit 4-channel format, 1 frame = 2 * 4 = 8 bytes.
+>  
+>
+OK, let me see if I get this straight. My main concern here is how I 
+have to do the implementation of _readn(). Let's suppose the raw file 
+has the following 16-bit words in it: A, B, C, D, E, F, G, H, I...
 
-I have installed alsa-driver-1.0.11 on my laptop (ASUS A6R), but the
-soundcard is not producing any sound through the speakers, even though it
-is unmuted and recognized in alsamixer as ATI IXP using the AD1986 sound
-chip.
+After performing the _readn(), the memory ponted to by buf[0] to buf[3] 
+(four channels) will have to contain the following 16-bit words:
 
-The system is using Ubuntu Linux 5.10.x, kernel 2.6.12-9-386. 
+buf[0] -> A, E, I, ...
+buf[1] -> B, F, J, ...
+buf[2] -> C, G, K, ...
+buf[3] -> D, H, L, ...
 
-I have tried loading the atiixp module using model=asus, model=asus-eapd,
-model=laptop and model=laptop-eapd, but none helped.
+So, I'll have to read from the file to a temporary buffer and do the 
+juggling of the words (each consisting of (pcm->sample_bits >> 3) 
+bytes). Check?
 
-Here's a link to the laptop specifications @ ASUS:
-http://www.asus.com.tw/products4.aspx?modelmenu=2&model=665&l1=5&l2=24&l3=134
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-16-06 23:16 bjorn_mm       New Issue                                    
-05-16-06 23:16 bjorn_mm       Distribution              => Ubuntu Linux    
-05-16-06 23:16 bjorn_mm       Kernel Version            => 2.6.12-9        
-======================================================================
-
-
+Juan
 
 
 -------------------------------------------------------
