@@ -1,13 +1,16 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Mix audio at different frequencies
-Date: Mon, 15 May 2006 14:16:56 +0100
-Message-ID: <44687F48.7080204@superbug.co.uk>
-References: <1147429541.26309.3.camel@jazc.fedora>	<s5hpsijzbof.wl%tiwai@suse.de>	<1147676786.2963.1.camel@jazc.fedora>	<s5h4pzrwqp0.wl%tiwai@suse.de>	<000601c67812$4b80e240$8ca8a8c0@gmvsistemas.es> <s5hu07r1q0o.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Hg repo usage notes.
+Date: Tue, 16 May 2006 15:25:52 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0605161525010.9330@tm8103.perex-int.cz>
+References: <200605121307.41000.linux@blennerhassett.gen.nz>
+ <s5hody3zat3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu07r1q0o.wl%tiwai@suse.de>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CEAFD22E
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 15:25:52 +0200 (MEST)
+In-Reply-To: <s5hody3zat3.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,36 +21,110 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Juan Antonio Zapatero Campo <jazc@gmvsistemas.es>, alsa-devel@lists.sourceforge.net
+Cc: Eliot Blennerhassett <linux@blennerhassett.gen.nz>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Mon, 15 May 2006 13:25:39 +0200,
-> Juan Antonio Zapatero Campo wrote:
->   
->> No, it returns wrong buffer sizes. Instead of 160 samples, which is what I 
->> am expecting at 8000Hz, it returns a value of 341, which I do not 
->> understand.
->>     
->
-> You cannot get always the exactly same buffer size you requested.
-> Especially dmix limits the buffer size to its own and rate plugin
-> rescales the size according to the rate conversion.
->
->
-> Takashi
->   
-I would argue that maybe we should modify the way alsa behaves, and 
-somehow get dmix to work with user(application) defined buffer and 
-period sizes.
-I.e. Let alsa handle whatever buffer and period size the user 
-application wants, and get ALSA to translate it into the sized needed 
-for the hardware.
-Maybe implement the use of the system timer in order to trigger the 
-buffer events we need.
+On Fri, 12 May 2006, Takashi Iwai wrote:
 
-James
+> At Fri, 12 May 2006 13:07:40 +1200,
+> Eliot Blennerhassett wrote:
+> > 
+> > Hi all,
+> > 
+> > I have been trying to get my head around how to use Hg repo e.g. get latest 
+> > code, fix something, make a patch etc.  Perhaps something like the following 
+> > would be useful on the download page?  I'm a total newbie to Hg, so please 
+> > step in and set me right about the correct/desirable/easier ways to do this.
+> 
+> It's a nice documentation.
+> 
+> 
+> > # Get a copy of the repository
+> > cd alsa-hg
+> > 
+> > hg clone http://hg-mirror.alsa-project.org/alsa-driver alsa-driver
+> > hg clone http://hg-mirror.alsa-project.org/alsa-kernel alsa-kernel
+> > 
+> > # Get latest
+> > hg pull -u
+> > 
+> > # Create a working copy
+> > hg clone alsa-driver alsa-driver-fixbug1
+> > cd alsa-driver-fixbug1
+> > ./cvscompile
+> > do { code; test;} until finished;
+> > hg commit -m"Fixed the foo in bar"
+> 
+> Use the following style for a commit log:
+> 
+> 	A short summary of your change in a single line
+> 
+> 	Changelog details....
+> 	....
+> 
+> 	Signed-off-by: Foo Bar <foo@bar.com>
+> 
+> It's required especially for alsa-kernel tree since it's pushed to the
+> standard linux kernel tree later.
+> 
+> > # What to do about sending the changes back ?
+> > hg outgoing ../alsa-driver
+> 
+> It can be "hg outgoing default", too.
+> 
+> > hg outgoing -p ../alsa-driver > foobar.patch
+> > #OR bundle (which is preferred)
+> > hg bundle foobar.hg ../alsa-driver
+> > #OR
+> > hg export (?what?) > foobar.patch
+> > 
+> > # email foobar.[hg,patch] to alsa-devel?
+> 
+> The bundle file is unsuitable for submission.
+> Please use always a patch file.
+> 
+> > # Other notes
+> > add to .hg/hgrc to avoid having to spec the path for hg 
+> > [incoming,outgoing,bundle]:
+> > 
+> > default-push= /path/to/alsa-driver 
+> 
+> 
+> One thing to care is the sync with upstream.
+> 
+> When the upstream is changed while you already modified and committed
+> on your local repo, the pull and "update -m" will require a new merge
+> commit.  If you do export or bundle from this repo, it will contain
+> the commit for that merge, too.  It's not good for the patch
+> submission.
+> 
+> For avoiding this, a cherry-picking is necessary.  On Hg, you can do
+> it by exporting and importing the changes.
+> 
+>  - Get changes via hg export on your local repo
+> 
+> 	% cd /my/own/alsa-driver
+> 	% hg export ORIGINAL-STATE:tip > my-patch
+> 
+>  - On a master repo, you can "pull -u"
+> 
+> 	% cd /upstream/alsa-driver
+> 	% hg pull -u
+> 
+>    Then you can apply the patch
+> 
+> 	% hg import /my/own/alsa-driver/my-patch
 
+Could you do a small text document from these e-mails? I'll place it to 
+the ALSA website.
+
+					Thanks,
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
