@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002123]: Power Management is broken following changes from 1.0.10 to 1.0.11.x versions
-Date: Mon, 15 May 2006 12:11:18 +0200
-Message-ID: <69deed8615df22c40e28931b9d18f021@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002125]: quiet sound only through headphones
+Date: Tue, 16 May 2006 10:44:15 +0200
+Message-ID: <a0e2032205166df5b9436276f789a724@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0BBD3197
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 12:11:19 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 08A54231
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 10:44:15 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2123> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2125> 
 ======================================================================
-Reported By:                jovial
+Reported By:                wodz
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2123
-Category:                   PCI - hda-intel
+Issue ID:                   2125
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             2.6.16
+Distribution:               Ubuntu Dapper Drake
+Kernel Version:             2.6.15; 2.6.16.14
 ======================================================================
-Date Submitted:             05-13-2006 17:37 CEST
-Last Modified:              05-15-2006 12:11 CEST
+Date Submitted:             05-15-2006 11:07 CEST
+Last Modified:              05-16-2006 10:44 CEST
 ======================================================================
-Summary:                    Power Management is broken following changes from
-1.0.10 to 1.0.11.x versions
+Summary:                    quiet sound only through headphones
 Description: 
-I had linux kernel 2.6.15 on my machine (with alsa version 1.0.10).
-I could place my laptop on standby while playing music, and onced resumed
-the playback would also continue..... proper functionality and power
-management.
-
-following an upgrade to kernel 2.6.16 with latest patches (includes alsa
-1.0.11-rc4), the power management does not function correctly.
-basically, i have to restart the alsasound service after resume to have
-any sound again.
+I have problem getting to work soundcard in my shiny new notebook.
+The card is recognized as atiixp but output is only available through
+headphones (and rather quiet). I have googled a bit and there seems to
+be quite popular problem but on intel's boards. I have tried alsa
+drivers from 2.6.15 kernel (ubuntu dapper) as well as 1.0.11 from
+alsa-project.org.
 ======================================================================
 
 ----------------------------------------------------------------------
- jovial - 05-14-06 05:16 
+ wodz - 05-16-06 10:44 
 ----------------------------------------------------------------------
-i think you have a very valid point.
-i made the assumption that since my random configuration is compatible
-with alsa-1.0.10, it should also work with alsa-1.0.11.
+When driver is compiled with debug I have also such line in syslog:
 
-i guess the right thing for me to do, is to find a _new_ configuration for
-my system that would be compatible with the new version of alsa
-(alsa-1.0.11)
-
-thanks for your time, and sorry for undermining this piece of information
-at start.
-please consider this matter closed.
-
-----------------------------------------------------------------------
- tiwai - 05-15-06 12:11 
-----------------------------------------------------------------------
-ALSA CVS repo is dead and the code there is pretty outdated.
-Use HG repo (better from rsync) instead.
+[4294685.206000] ALSA sound/pci/atiixp.c:518: atiixp: codec reset timeout
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 17:37 jovial         New Issue                                    
-05-13-06 17:37 jovial         Distribution              => gentoo          
-05-13-06 17:37 jovial         Kernel Version            => 2.6.16          
-05-13-06 17:41 jovial         Note Added: 0009797                          
-05-13-06 18:27 rlrevell       Note Added: 0009798                          
-05-14-06 00:11 jovial         Note Added: 0009801                          
-05-14-06 00:27 rlrevell       Note Added: 0009802                          
-05-14-06 02:32 jovial         Note Added: 0009804                          
-05-14-06 02:42 rlrevell       Note Added: 0009805                          
-05-14-06 05:16 jovial         Note Added: 0009806                          
-05-15-06 12:11 tiwai          Note Added: 0009819                          
+05-15-06 11:07 wodz           New Issue                                    
+05-15-06 11:07 wodz           Distribution              => Ubuntu Dapper Drake
+05-15-06 11:07 wodz           Kernel Version            => 2.6.15; 2.6.16.14
+05-16-06 10:44 wodz           Note Added: 0009835                          
 ======================================================================
 
 
