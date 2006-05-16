@@ -1,14 +1,16 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: Multiple reports of hard lockups with alsa MPU in
-Date: Sun, 14 May 2006 00:08:19 +0200
-Message-ID: <1147558099.25313.13.camel@johannes.berg>
-References: <1147554990.6535.317.camel@mindpipe>
-	 <1147556731.25313.10.camel@johannes.berg>
-	 <1147557612.6535.322.camel@mindpipe>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [RFC] alsa integer control ranges
+Date: Tue, 16 May 2006 10:53:05 -0400
+Message-ID: <1147791186.13948.109.camel@mindpipe>
+References: <1147780945.29795.110.camel@johannes>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-KTb1d6fvTV+XM7fgNDOm"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1147557612.6535.322.camel@mindpipe>
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E7964238
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 16:53:10 +0200 (MEST)
+In-Reply-To: <1147780945.29795.110.camel@johannes>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +20,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>, linuxppc-dev list <linuxppc-dev@ozlabs.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Benjamin Berg <benjamin@sipsolutions.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-05-16 at 14:02 +0200, Johannes Berg wrote:
+> Apparently all alsa userspace programs including alsamixer suck. Hence,
+> this patch is required to make them work properly. Why is it so hard to
+> do these additions/subtractions in the program or maybe even in the alsa
+> library? The alsa libraries already think they know better and mess up
+> all kinds of things.
+> 
+> What are your opinions on this? Should this be required? And if so, why
+> do we even have the value.integer.min when we can't use it anyway? 
+> 
+> The code this patch applies against is in
+> http://johannes.sipsolutions.net/snd-aoa.git/ but that isn't all too
+> relevant, the patch serves just as an illustration of what is wrong
+> here.
+> 
 
---=-KTb1d6fvTV+XM7fgNDOm
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Ummm... what problem is this patch fixing?
 
-On Sat, 2006-05-13 at 18:00 -0400, Lee Revell wrote:
-
-> Switching to a real VC was tried and the problem persisted.
-
-I wouldn't have expected it to help, but if you got the kernel to panic
-it should then print out the message to the vc and you get to see what's
-wrong. A segfault in an interrupt handle for example.
-
-If you don't get to see any messages then I don't know, possibly a
-deadlock somewhere. Maybe try on an SMP machine and enable spinlock
-debugging?
-
-johannes
-
---=-KTb1d6fvTV+XM7fgNDOm
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIVAwUARGZY0aVg1VMiehFYAQJ9Xg//bLucZeoiSvFgaglnwGJA7XgdNk+y+vyy
-ZvoA4FRVvFGpW+T8KZMPO0dRzOdAA/TWeHmPVSS8NrkLmbie/nfT0F0JorGgjJy7
-vmobtIFnqUdlrpejQzOGft2xma+5y+L5IwgByfAwp+7uArJDJcgDNEKny3bFNSTz
-YYQUIESXl5W4QwD++bvOJ1znmXPxv+Si/E69EBUQquOKhaxxvbmH76rSt74zxzdb
-hL6uFW/z36JyNeFmtXSsVIQnQMVbT4VkGQ0t454oIGTOqJoBFDYBhQD6qdjFIiWl
-cNe5FpmYxGy/E+vg8ahAP50FJq2hqDPYBrMrqJwC9wvE1AkGyxYwjGy2yZcRRIg0
-jPs0hNwsmK/BD/0uwhuOhlMDrZLgIaYdhJTU0sVWhzlC0cIpLauzxhGkr07MNiA5
-49zuiT0NUpp3Bskr3vqw47VIwqOoSbrI126zz6sUX7GyFWDfwOrkx76GXxa/ytCL
-mq/XIa9EqcDb8N7NUAMGW76X3kGSNK88YaLurGGA2cUfDlxD7endg4mcT0bwkF8S
-6OovpE2RYTvXpsrFAYjTONEtqW1d1bMamYJVe+jF+xGrlP3QN51Gr3wa5QmYei8V
-QEJ1Zl8nF9jyayE5Ph7Ywm/A0D+VBERlLiGmK/f+j9Ml4f5Y/2WfFH/KizpdXI7F
-E3Pu9t4h+iY=
-=HJuN
------END PGP SIGNATURE-----
-
---=-KTb1d6fvTV+XM7fgNDOm--
+Lee
 
 
 
