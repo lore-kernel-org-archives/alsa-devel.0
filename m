@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Tue, 16 May 2006 11:19:47 +0200
-Message-ID: <279370912e55ac7db7731b69bc2097ac@bugtrack.alsa-project.org>
+Date: Tue, 16 May 2006 11:52:09 +0200
+Message-ID: <d3a3d5f682533af5fc203bc80c81793d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1285233
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 11:19:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD54A233
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 11:52:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-16-2006 11:19 CEST
+Last Modified:              05-16-2006 11:52 CEST
 ======================================================================
 Summary:                    DMIX crashes Ekiga
 Description: 
@@ -48,26 +48,6 @@ Unfortunately, I can not reopen it, so I'm posting a new bug report.
 When using DMIX, Ekiga crashes. This problem was not present with earlier
 versions of libasound2. I applied all patches from CVS.
 ======================================================================
-
-----------------------------------------------------------------------
- dsandras - 05-15-06 23:41 
-----------------------------------------------------------------------
-"I cannot test here as I do not have a hardware mixing sound card, and the
-problem varies by device."
-
-Me neither. Simply use DMIX.
-
-"If you set the period and buffer sizes in your .asoundrc to the values
-from the non-working config do you get the same results?"
-
-Yes.
-
-"What if you try changing Ekiga to set the period and buffer to 256/2048,
-as you have done in your .asoundrc?"
-
-I do not know how to do that. Advice from an ALSA developer would be
-welcome. Ekiga is really a widespread VoIP softphone, and getting help
-from an ALSA developer to improve DMIX support would be more than welcome.
 
 ----------------------------------------------------------------------
  tiwai - 05-16-06 11:19 
@@ -86,6 +66,16 @@ in ~/.asoundrc:
    defaults.pcm.dmix_max_periods   -1
 
 This will force apps the fixed number of periods defined by slave PCM.
+
+----------------------------------------------------------------------
+ dsandras - 05-16-06 11:52 
+----------------------------------------------------------------------
+It perfectly works with the .asoundrc you gave me.
+
+Is that something that can be done by default for ALSA or does that
+correspond to something I could change in my ALSA plugin?
+
+Thanks,
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -111,6 +101,7 @@ Date Modified  Username       Field                    Change
 05-15-06 23:28 rlrevell       Note Added: 0009833                          
 05-15-06 23:41 dsandras       Note Added: 0009834                          
 05-16-06 11:19 tiwai          Note Added: 0009836                          
+05-16-06 11:52 dsandras       Note Added: 0009837                          
 ======================================================================
 
 
