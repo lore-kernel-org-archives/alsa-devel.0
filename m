@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002116]: no sound in kernel 2.6.16-1-686
-Date: Tue, 16 May 2006 23:48:31 +0200
-Message-ID: <59063833f51eeebd4c8ad6bb1989fa82@bugtrack.alsa-project.org>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [RFC] alsa integer control ranges
+Date: Wed, 17 May 2006 08:00:56 +1000
+Message-ID: <1147816857.6753.1.camel__45372.3456630998$1147816929$gmane$org@localhost.localdomain>
+References: <1147780945.29795.110.camel@johannes>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA3D422E
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 23:48:31 +0200 (MEST)
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0E9223A
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 00:01:02 +0200 (MEST)
+In-Reply-To: <1147780945.29795.110.camel@johannes>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +20,96 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>, linuxppc-dev list <linuxppc-dev@ozlabs.org>, Benjamin Berg <benjamin@sipsolutions.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-05-16 at 14:02 +0200, Johannes Berg wrote:
+> Apparently all alsa userspace programs including alsamixer suck. Hence,
+> this patch is required to make them work properly. Why is it so hard to
+> do these additions/subtractions in the program or maybe even in the alsa
+> library? The alsa libraries already think they know better and mess up
+> all kinds of things.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2116> 
-======================================================================
-Reported By:                mramirez
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2116
-Category:                   speakertest
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             05-12-2006 01:07 CEST
-Last Modified:              05-16-2006 23:48 CEST
-======================================================================
-Summary:                    no sound in kernel 2.6.16-1-686
-Description: 
-I have updated my kernel from 2.6.15-1-486 to 2.6.16-1-686, and now the
-sound not work. 
+alsamixer works for me with negative ranges... but all other apps don't
+and there are various bugs, I blame apps converted from OSS....
 
-I run alsaconf, but not solve the problem. 
-
-if i boot on kernel 2.6.15-1-486 the sound work. (only in this version)
-
-somebody help me?
-
-
-
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 05-12-06 22:43 
-----------------------------------------------------------------------
-Try raising the PCM and Front volume and make sure all controls are
-unmuted.
-
-Don't use kmix, it's terribly buggy.  Test with alsamixer.
-
-If it still does not work post the output of "amixer"
-
-----------------------------------------------------------------------
- rlrevell - 05-16-06 23:48 
-----------------------------------------------------------------------
-Were you able to get this working?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-12-06 01:07 mramirez       New Issue                                    
-05-12-06 16:07 tiwai          Note Added: 0009777                          
-05-12-06 18:34 mramirez       Note Added: 0009785                          
-05-12-06 18:37 tiwai          Note Added: 0009787                          
-05-12-06 20:30 mramirez       Note Added: 0009790                          
-05-12-06 20:34 tiwai          Note Added: 0009791                          
-05-12-06 21:29 mramirez       Note Added: 0009792                          
-05-12-06 21:35 mramirez       Note Edited: 0009792                         
-05-12-06 22:43 rlrevell       Note Added: 0009793                          
-05-16-06 23:48 rlrevell       Note Added: 0009842                          
-======================================================================
-
+> What are your opinions on this? Should this be required? And if so, why
+> do we even have the value.integer.min when we can't use it anyway? 
+> 
+> The code this patch applies against is in
+> http://johannes.sipsolutions.net/snd-aoa.git/ but that isn't all too
+> relevant, the patch serves just as an illustration of what is wrong
+> here.
+> 
+> Thanks,
+> johannes
+> 
+> --- snd-aoa.orig/aoa/codecs/onyx/snd-aoa-codec-onyx.c	2006-05-16 12:13:39.663950213 +0200
+> +++ snd-aoa/aoa/codecs/onyx/snd-aoa-codec-onyx.c	2006-05-16 12:14:13.698643898 +0200
+> @@ -102,8 +102,8 @@ static int onyx_snd_vol_info(struct snd_
+>  {
+>  	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+>  	uinfo->count = 2;
+> -	uinfo->value.integer.min = -128;
+> -	uinfo->value.integer.max = -1;
+> +	uinfo->value.integer.min = -128+128;
+> +	uinfo->value.integer.max = -1+128;
+>  	return 0;
+>  }
+>  
+> @@ -115,8 +115,8 @@ static int onyx_snd_vol_get(struct snd_k
+>  
+>  	onyx_read_register(onyx, ONYX_REG_DAC_ATTEN_LEFT, &l);
+>  	onyx_read_register(onyx, ONYX_REG_DAC_ATTEN_RIGHT, &r);
+> -	ucontrol->value.integer.value[0] = l;
+> -	ucontrol->value.integer.value[1] = r;
+> +	ucontrol->value.integer.value[0] = l+128;
+> +	ucontrol->value.integer.value[1] = r+128;
+>  	return 0;
+>  }
+>  
+> @@ -125,8 +125,8 @@ static int onyx_snd_vol_put(struct snd_k
+>  {
+>  	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
+>  
+> -	onyx_write_register(onyx, ONYX_REG_DAC_ATTEN_LEFT, ucontrol->value.integer.value[0]);
+> -	onyx_write_register(onyx, ONYX_REG_DAC_ATTEN_RIGHT, ucontrol->value.integer.value[1]);
+> +	onyx_write_register(onyx, ONYX_REG_DAC_ATTEN_LEFT, ucontrol->value.integer.value[0]-128);
+> +	onyx_write_register(onyx, ONYX_REG_DAC_ATTEN_RIGHT, ucontrol->value.integer.value[1]-128);
+>  	/* FIXME: we could be checking if anything changed */
+>  	return 1;
+>  }
+> @@ -145,8 +145,8 @@ static int onyx_snd_inputgain_info(struc
+>  {
+>  	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+>  	uinfo->count = 1;
+> -	uinfo->value.integer.min = 3;
+> -	uinfo->value.integer.max = 28;
+> +	uinfo->value.integer.min = 3-3;
+> +	uinfo->value.integer.max = 28-3;
+>  	return 0;
+>  }
+>  
+> @@ -157,7 +157,7 @@ static int onyx_snd_inputgain_get(struct
+>  	u8 ig;
+>  
+>  	onyx_read_register(onyx, ONYX_REG_ADC_CONTROL, &ig);
+> -	ucontrol->value.integer.value[0] = ig & ONYX_ADC_PGA_GAIN_MASK;
+> +	ucontrol->value.integer.value[0] = (ig & ONYX_ADC_PGA_GAIN_MASK)-3;
+>  	return 0;
+>  }
+>  
+> @@ -169,7 +169,7 @@ static int onyx_snd_inputgain_put(struct
+>  
+>  	onyx_read_register(onyx, ONYX_REG_ADC_CONTROL, &val);
+>  	val &= ~ONYX_ADC_PGA_GAIN_MASK;
+> -	val |= ucontrol->value.integer.value[0] & ONYX_ADC_PGA_GAIN_MASK;
+> +	val |= (ucontrol->value.integer.value[0]+3) & ONYX_ADC_PGA_GAIN_MASK;
+>  	onyx_write_register(onyx, ONYX_REG_ADC_CONTROL, val);
+>  	return 1;
+>  }
+> 
 
 
 
