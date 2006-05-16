@@ -1,14 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: mailing list filters?
-Date: Mon, 15 May 2006 15:10:26 -0400
-Message-ID: <1147720227.13948.2.camel@mindpipe>
-References: <4465DCA6.2020205@gmail.com> <s5h8xp3wrxm.wl%tiwai@suse.de>
-	 <4468B96A.7030707@redfish-solutions.com>  <4468C0F2.1000406@instant.com.br>
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Subject: Best way of adding temporary limits to capture or playback
+Date: Tue, 16 May 2006 07:54:16 +0200
+Message-ID: <44696908.4070208@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4468C0F2.1000406@instant.com.br>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,28 +15,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Juan Carlos Castro y Castro <jcastro@instant.com.br>
-Cc: Philip Prindeville <philipp_subx@redfish-solutions.com>, Takashi Iwai <tiwai@suse.de>, Alvaro Kuolas <kuolas@gmail.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2006-05-15 at 14:57 -0300, Juan Carlos Castro y Castro wrote:
-> My suggestion is: reply with a challenge from any non-subscriber
-> post, 
-> and then (optionally) insert the sender in a whitelist so s/he
-> doesn't 
-> need to go through the challenge process at every message. There is 
-> mailing list software out there that does that -- is Sourceforge's
-> among 
-> them?
-> 
-> 
+Hello
 
-Overkill and too annoying for the casual poster.
+My AC97 controller has a limit when doing capture/playback in full
+duplex, the bitrate and endianess has to be the same for both streams
+(playback/capture). Is there a nice and easy way to set this limit?
 
-We could knock out 90% of the spam by banning .gif and .jpg attachments.
+My current plan is to change the hardware parameters in the playback
+open and capture open callbacks if there is an active playback or
+capture already present. And then reset this hardware limit when the
+close callback is called.
 
-Lee
+I would of course enjoy just setting a flag in the driver telling it
+that capture and playback rates/endianess is related, and is locked if
+one of the streams is opened.
 
+PS! I'm having some sort of problems getting my emails from this lists,
+seems like I don't get a copy anymore :/ I've checked the settings in
+mailman, and they seem good.
+
+PPS! Sorry if this is received twice, but I didn't receive a copy or
+find a copy in an online repository (twice).
+
+-- 
+With kind regards,
+Med vennlig hilsen,
+
+Hans-Christian Egtvedt
+Applications Engineer - AVR Applications Lab
+Atmel Norway
 
 
 -------------------------------------------------------
