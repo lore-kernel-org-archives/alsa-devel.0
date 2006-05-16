@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Tue, 16 May 2006 11:52:09 +0200
-Message-ID: <d3a3d5f682533af5fc203bc80c81793d@bugtrack.alsa-project.org>
+Date: Tue, 16 May 2006 12:04:32 +0200
+Message-ID: <c4692234a40a2318866f9575dd301348@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD54A233
-	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 11:52:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F9F2233
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 12:04:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     feedback
 ======================================================================
 Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-16-2006 11:52 CEST
+Last Modified:              05-16-2006 12:04 CEST
 ======================================================================
 Summary:                    DMIX crashes Ekiga
 Description: 
@@ -50,24 +50,6 @@ versions of libasound2. I applied all patches from CVS.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-16-06 11:19 
-----------------------------------------------------------------------
-First, don't apply a single patch but use the whole HG tree.  The code sync
-between tester and developer is one of most important things.
-
-What is the sample rate the app uses?  One of differences between your
-setting and the default is the sample rate.  The default is 48k while
-yours is 44.1k.
-
-Another difference is period and buffer size.  The recent dmix code does
-async data transfer and may have varied periods.  Try to set the following
-in ~/.asoundrc:
-
-   defaults.pcm.dmix_max_periods   -1
-
-This will force apps the fixed number of periods defined by slave PCM.
-
-----------------------------------------------------------------------
  dsandras - 05-16-06 11:52 
 ----------------------------------------------------------------------
 It perfectly works with the .asoundrc you gave me.
@@ -76,6 +58,26 @@ Is that something that can be done by default for ALSA or does that
 correspond to something I could change in my ALSA plugin?
 
 Thanks,
+
+----------------------------------------------------------------------
+ tiwai - 05-16-06 12:04 
+----------------------------------------------------------------------
+OK, let me rephrase my questions again:
+
+- Wheter you're using the whole latest HG tree
+- What is the sample rate your app uses
+- What happens if you set "defaults.pcm.dmix_max_periods -1"
+
+Could you answer them?  Otherwise I can't help.
+
+Other userful information are:
+
+- The hardware and driver that the problem appears
+- Change period_size to 1024 and periods to 16 in your dmix config.
+  No buffer_size.  It's the as same config as in default.
+
+And what is your "plugin"?  Did you write a new plugin for alsa-lib and
+use it?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -102,6 +104,7 @@ Date Modified  Username       Field                    Change
 05-15-06 23:41 dsandras       Note Added: 0009834                          
 05-16-06 11:19 tiwai          Note Added: 0009836                          
 05-16-06 11:52 dsandras       Note Added: 0009837                          
+05-16-06 12:04 tiwai          Note Added: 0009838                          
 ======================================================================
 
 
