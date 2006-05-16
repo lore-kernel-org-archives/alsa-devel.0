@@ -1,18 +1,14 @@
-From: "Fulvia Ours" <oursfulvia@goarmstrong.com>
-Subject: Re: your VtAGRgA
-Date: Sat, 13 May 2006 00:46:36 -0700
-Message-ID: <000001c67661$5ca7bd80$592fa8c0@fmr45>
-Reply-To: "Fulvia Ours" <oursfulvia@goarmstrong.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0002116]: no sound in kernel 2.6.16-1-686
+Date: Tue, 16 May 2006 23:48:31 +0200
+Message-ID: <59063833f51eeebd4c8ad6bb1989fa82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C67626.B048E580"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25A21189
-	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 09:48:50 +0200 (MEST)
-Received: from knetco.com (unknown [201.121.36.91])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 9DAA799461
-	for <alsa-devel@alsa-project.org>; Sat, 13 May 2006 09:48:45 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA3D422E
+	for <alsa-devel@alsa-project.org>; Tue, 16 May 2006 23:48:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,191 +21,69 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C67626.B048E580
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2116> 
+======================================================================
+Reported By:                mramirez
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   2116
+Category:                   speakertest
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             05-12-2006 01:07 CEST
+Last Modified:              05-16-2006 23:48 CEST
+======================================================================
+Summary:                    no sound in kernel 2.6.16-1-686
+Description: 
+I have updated my kernel from 2.6.15-1-486 to 2.6.16-1-686, and now the
+sound not work. 
 
-Hi
-=20
-A
-X
-V
-L
-C
-V
-P
-m
-a
-I
-e
-I
-A
-r
-b
-n
-A
-v
-A
-L
-o
-i
-a
-G
-i
-L
-I
-z
-e
-x
-R
-t
-I
-U
-a
-n
+I run alsaconf, but not solve the problem. 
 
-A
-ra
-S
-M
-c
+if i boot on kernel 2.6.15-1-486 the sound work. (only in this version)
+
+somebody help me?
 
 
-=20
-=20
-=20
 
-=20
-http://www.earsxumins.com
-=20
-=20
-=20
-=20
-=20
-inwards. It seemed as if darkness flowed out like a vapour from the hole
-in the mountain-side, and deep darkness in which nothing could be seen=20
-lay before their eyes mouth leading in and down.=20
-Chapter 12=20
-Inside Information=20
-For a long time the dwarves stood in the dark before the door and=20
+======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 05-12-06 22:43 
+----------------------------------------------------------------------
+Try raising the PCM and Front volume and make sure all controls are
+unmuted.
 
-------=_NextPart_000_0001_01C67626.B048E580
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Don't use kmix, it's terribly buggy.  Test with alsamixer.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi</DIV>
-<DIV>&nbsp;</DIV>
-<DIV
+If it still does not work post the output of "amixer"
 
-style=3D"
+----------------------------------------------------------------------
+ rlrevell - 05-16-06 23:48 
+----------------------------------------------------------------------
+Were you able to get this working?
 
-FLOAT
-
-
-:
-left
-"> <DIV> A</DIV> <DIV> X</DIV> <DIV> <STRONG> V</STRONG></DIV> <DIV> =
-L</DIV> <DIV> <STRONG> C</STRONG></DIV> <DIV> <STRONG> V</STRONG></DIV> =
-<DIV> P</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> m</DIV> <DIV> a</DIV> <DIV> <STRONG> I</STRONG></DIV> <DIV> =
-e</DIV> <DIV> <STRONG> I</STRONG></DIV> <DIV> <STRONG> A</STRONG></DIV> =
-<DIV> r</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> b</DIV> <DIV> n</DIV> <DIV> <STRONG> A</STRONG></DIV> <DIV> =
-v</DIV> <DIV> <STRONG> A</STRONG></DIV> <DIV> <STRONG> L</STRONG></DIV> =
-<DIV> o</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> i</DIV> <DIV> a</DIV> <DIV> <STRONG> G</STRONG></DIV> <DIV> =
-i</DIV> <DIV> <STRONG> L</STRONG></DIV> <DIV> <STRONG> I</STRONG></DIV> =
-<DIV> z</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> e</DIV> <DIV> x</DIV> <DIV> <STRONG> R</STRONG></DIV> <DIV> =
-t</DIV> <DIV> <STRONG> I</STRONG></DIV> <DIV> <STRONG> U</STRONG></DIV> =
-<DIV> a</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> n</DIV> <DIV> <BR></DIV> <DIV> <STRONG> A</STRONG></DIV> <DIV> =
-ra</DIV> <DIV> <STRONG> S</STRONG></DIV> <DIV> <STRONG> M</STRONG></DIV> =
-<DIV> c</DIV> </DIV>
-<DIV
-
-style=3D"
-
-FLOAT
-
-
-:
-left
-"> <DIV> <BR></DIV> <DIV> <BR></DIV> <DIV> &nbsp;</DIV> <DIV> </DIV> =
-<DIV> &nbsp;</DIV> <DIV> &nbsp;</DIV> <DIV> <BR></DIV> </DIV>
-<DIV style=3D"CLEAR: both">&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.earsxumins.com">http://www.earsxumins.com</A></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>inwards. It seemed as if darkness flowed out like a vapour from the =
-hole <BR>in the mountain-side, and deep darkness in which nothing could =
-be seen <BR>lay before their eyes mouth leading in and down. <BR>    =
-Chapter 12 <BR>    Inside Information <BR>   For a long time the dwarves =
-stood in the dark before the door and <BR></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C67626.B048E580--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-12-06 01:07 mramirez       New Issue                                    
+05-12-06 16:07 tiwai          Note Added: 0009777                          
+05-12-06 18:34 mramirez       Note Added: 0009785                          
+05-12-06 18:37 tiwai          Note Added: 0009787                          
+05-12-06 20:30 mramirez       Note Added: 0009790                          
+05-12-06 20:34 tiwai          Note Added: 0009791                          
+05-12-06 21:29 mramirez       Note Added: 0009792                          
+05-12-06 21:35 mramirez       Note Edited: 0009792                         
+05-12-06 22:43 rlrevell       Note Added: 0009793                          
+05-16-06 23:48 rlrevell       Note Added: 0009842                          
+======================================================================
 
 
 
