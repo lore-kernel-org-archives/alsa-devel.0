@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Mon, 15 May 2006 23:28:01 +0200
-Message-ID: <551dff85c2d2c1110d4be30dd4ce7967@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002127]: speaker mute on sony vaio vgn-a497xp
+Date: Wed, 17 May 2006 02:10:52 +0200
+Message-ID: <7b8495046cdd9bab61064bd0baeddeea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 002CE23A
-	for <alsa-devel@alsa-project.org>; Mon, 15 May 2006 23:28:01 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F317222D
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 02:10:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2127> 
 ======================================================================
-Reported By:                dsandras
-Assigned To:                perex
+Reported By:                febelus
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2122
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   2127
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     assigned
+Distribution:               fedora core 5
+Kernel Version:             2.6.16-1.2096_FC5
 ======================================================================
-Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-15-2006 23:28 CEST
+Date Submitted:             05-15-2006 17:37 CEST
+Last Modified:              05-17-2006 02:10 CEST
 ======================================================================
-Summary:                    DMIX crashes Ekiga
+Summary:                    speaker mute on sony vaio vgn-a497xp
 Description: 
-This problem is probably related to problem #2095 that was closed. 
-Unfortunately, I can not reopen it, so I'm posting a new bug report.
-
-When using DMIX, Ekiga crashes. This problem was not present with earlier
-versions of libasound2. I applied all patches from CVS.
+i've install fc5 on my sony vaio vgn-a497xp and i've unmute all channell
+with alsamixer but the speaker are mute.
 ======================================================================
 
 ----------------------------------------------------------------------
- dsandras - 05-15-06 22:59 
+ rlrevell - 05-17-06 02:10 
 ----------------------------------------------------------------------
-I can not afford it. But a friend of mine is reporting the same problem
-with latest drivers.
+Please post the output of "amixer".
 
-Perhaps one of you can simply test Ekiga?
-
-----------------------------------------------------------------------
- rlrevell - 05-15-06 23:28 
-----------------------------------------------------------------------
-I cannot test here as I do not have a hardware mixing sound card, and the
-problem varies by device.
-
-If you set the period and buffer sizes in your .asoundrc to the values
-from the non-working config do you get the same results?
-
-What if you try changing Ekiga to set the period and buffer to 256/2048,
-as you have done in your .asoundrc?
+You may also want to try the latest ALSA version (1.0.11)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 17:35 dsandras       New Issue                                    
-05-13-06 17:39 dsandras       Note Added: 0009795                          
-05-13-06 17:41 dsandras       Note Added: 0009796                          
-05-13-06 18:29 rlrevell       Note Added: 0009799                          
-05-13-06 18:36 dsandras       Note Added: 0009800                          
-05-13-06 18:37 dsandras       File Added: busytone.wav                     
-05-15-06 10:35 tiwai          Status                   assigned => resolved
-05-15-06 10:35 tiwai          Resolution               open => fixed       
-05-15-06 10:35 tiwai          Note Added: 0009814                          
-05-15-06 11:01 dsandras       Status                   resolved => feedback
-05-15-06 11:01 dsandras       Resolution               fixed => reopened   
-05-15-06 11:01 dsandras       Note Added: 0009816                          
-05-15-06 11:07 tiwai          Note Added: 0009818                          
-05-15-06 22:33 dsandras       Note Added: 0009828                          
-05-15-06 22:42 rlrevell       Note Added: 0009829                          
-05-15-06 22:46 dsandras       Note Added: 0009830                          
-05-15-06 22:58 rlrevell       Note Added: 0009831                          
-05-15-06 22:59 dsandras       Note Added: 0009832                          
-05-15-06 23:28 rlrevell       Note Added: 0009833                          
+05-15-06 17:37 febelus        New Issue                                    
+05-15-06 17:37 febelus        File Added: scsound.log                      
+05-15-06 17:37 febelus        Distribution              => fedora core 5   
+05-15-06 17:37 febelus        Kernel Version            => 2.6.16-1.2096_FC5
+05-17-06 02:10 rlrevell       Note Added: 0009843                          
 ======================================================================
 
 
