@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002118]: no sound, just craking in headphones
-Date: Wed, 17 May 2006 17:27:39 +0200
-Message-ID: <3c2aac9b0c77d7ad60b9886e6f093c12@bugtrack.alsa-project.org>
+From: Wolfgang Pfeiffer <roto@gmx.net>
+Subject: Re: [RFC] alsa integer control ranges
+Date: Wed, 17 May 2006 17:38:00 +0200
+Message-ID: <20060517153800.GA2894__9194.48197023503$1147880235$gmane$org@localhost>
+References: <1147780945.29795.110.camel@johannes> <1147791186.13948.109.camel@mindpipe> <1147791315.983.21.camel@johannes>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D673A1A0
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 17:27:39 +0200 (MEST)
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 25C0D19C
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 17:35:45 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <1147791315.983.21.camel@johannes>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,67 +20,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Lee Revell <rlrevell@joe-job.com>, linuxppc-dev list <linuxppc-dev@ozlabs.org>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, May 16, 2006 at 04:55:15PM +0200, Johannes Berg wrote:
+> On Tue, 2006-05-16 at 10:53 -0400, Lee Revell wrote:
+> 
+> > Ummm... what problem is this patch fixing?
+> 
+> The problems that
+> (a) kmix, gnome-alsamixer, gnome-volume-control and others can't
+>     properly use the playback volume control because it has a range
+>     that doesn't start at 0
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2118> 
-======================================================================
-Reported By:                jobo
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2118
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               FC%
-Kernel Version:             2.6.16-1.2111_FC5
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             05-13-2006 00:24 CEST
-Last Modified:              05-17-2006 17:27 CEST
-======================================================================
-Summary:                    no sound, just craking in headphones
-Description: 
-hey guys i have a asus a6km laptop,  i cannot get any sound out of it, i
-tried installing the new alsa driver and utils and lib, but how can i tell
-which version i have installed, it has a sis chipset, please help me get
-sound on this so i can never go back to windows,   thanks alot guys
+True if you only use kmix, that via 'ps ax' shows up as something like this:
 
+[ ... ] kmix [kdeinit] -caption KMix -icon kmix -miniicon kmix
 
-Joe
-======================================================================
+But if you - separately and additionally - add the "Sound Mixer"
+applet to the KDE kicker (the panel) *plus* make sure you split the
+volume control slider for the "Sound Mixer" channel you have a working
+volume control .. :)
+At least this is how it works here, with 
+"Kmix Panel Applet 2.6 (Using KDE 3.5.2)", and on Debian unstable .. 
 
-----------------------------------------------------------------------
- jobo - 05-17-06 16:56 
-----------------------------------------------------------------------
-no response on this issue???
+If I play with these apps there seem to be glitches, so they do not
+seem to work "properly". But with a bit of fiddling between what KDE
+calls "Sound Mixer" and "Kmix" (both actually seem to be part of the
+same application, i.e. kmix) you should have a working volume slider
+... 
 
-----------------------------------------------------------------------
- tiwai - 05-17-06 17:27 
-----------------------------------------------------------------------
-Already fixed in HG repo.
+HTH
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-13-06 00:24 jobo           New Issue                                    
-05-13-06 00:24 jobo           Distribution              => FC%             
-05-13-06 00:24 jobo           Kernel Version            => 2.6.16-1.2111_FC5
-05-17-06 16:56 jobo           Note Added: 0009851                          
-05-17-06 17:27 tiwai          Status                   new => resolved     
-05-17-06 17:27 tiwai          Resolution               open => fixed       
-05-17-06 17:27 tiwai          Assigned To               => tiwai           
-05-17-06 17:27 tiwai          Note Added: 0009854                          
-======================================================================
+Best Regards
+Wolfgang
 
+-- 
+Wolfgang Pfeiffer: /ICQ: 286585973/ + + +  /AIM: crashinglinux/
+http://profiles.yahoo.com/wolfgangpfeiffer
 
+Key ID: E3037113
+http://keyserver.mine.nu/pks/lookup?search=0xE3037113&fingerprint=on
 
 
 -------------------------------------------------------
