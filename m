@@ -1,12 +1,17 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Hg mirror out of sync
-Date: Wed, 17 May 2006 08:14:16 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0605170813460.10248@tm8103.perex-int.cz>
-References: <87mzdk9vvl.fsf@zebra.localdomain>
+Subject: Re: [RFC] alsa integer control ranges
+Date: Wed, 17 May 2006 08:41:47 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0605170836470.10248@tm8103.perex-int.cz>
+References: <1147780945.29795.110.camel@johannes>
+ <Pine.LNX.4.61.0605161430220.9330@tm8103.perex-int.cz>
+ <1147817058.6753.7.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <87mzdk9vvl.fsf@zebra.localdomain>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6A56221
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 08:41:48 +0200 (MEST)
+In-Reply-To: <1147817058.6753.7.camel@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,21 +21,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Matthias Koenig <mk@phasorlab.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Johannes Berg <johannes@sipsolutions.net>, ALSA development <alsa-devel@alsa-project.org>, linuxppc-dev list <linuxppc-dev@ozlabs.org>, Benjamin Berg <benjamin@sipsolutions.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 14 May 2006, Matthias Koenig wrote:
+On Wed, 17 May 2006, Benjamin Herrenschmidt wrote:
 
-> Hi,
+> On Tue, 2006-05-16 at 14:31 +0200, Jaroslav Kysela wrote:
+> > On Tue, 16 May 2006, Johannes Berg wrote:
+> > 
+> > > Apparently all alsa userspace programs including alsamixer suck. Hence,
+> > > this patch is required to make them work properly. Why is it so hard to
+> > > do these additions/subtractions in the program or maybe even in the alsa
+> > > library? The alsa libraries already think they know better and mess up
+> > > all kinds of things.
+> > 
+> > It's better to fix apps, if they are broken.
 > 
-> The Hg mirror http://hg-mirror.alsa-project.org/
-> seems to be out of sync with the master server.
-> It did not get any updates since almost two weeks.
+> Problem is, they are currently all broken (pretty much) and thus unless
+> we want to release a driver that won't work with any current distros,
+> we'll have to whack the ranges :(
 
-The mirror is synced properly now.
+It's better to have problematic values by default and define a module 
+(driver) option to enable the "compatible" behaviour. Otherwise the apps 
+will be never fixed. Also, ideally, you can fix apps and send patches to 
+authors and/or create problematic controls in the dummy driver 
+(drivers/dummy.c) and send a notice to app developers that they have 
+broken apps and ask to fix them refering to the dummy driver test case.
 
-					Thanks,
 						Jaroslav
 
 -----
