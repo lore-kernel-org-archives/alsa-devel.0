@@ -1,20 +1,15 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [RFC] alsa integer control ranges
-Date: Thu, 18 May 2006 07:41:52 +1000
-Message-ID: <1147902112.10703.2.camel__18.3200849734888$1147902198$gmane$org@localhost.localdomain>
-References: <1147780945.29795.110.camel@johannes>
-	 <s5h7j4m40kf.wl%tiwai@suse.de>
-	 <1147817023.6753.5.camel@localhost.localdomain>
-	 <s5hy7x10y5t.wl%tiwai@suse.de> <1147868218.15507.4.camel@johannes>
-	 <s5hd5ec4yn7.wl%tiwai@suse.de>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Re: au88x0_mpu401 init / fail first open
+Date: Wed, 17 May 2006 22:44:29 +0100
+Message-ID: <200605172244.30000.gineera@aspect135.co.uk>
+References: <200605051139.34432.gineera@aspect135.co.uk> <200605152250.45709.gineera@aspect135.co.uk> <s5hhd3q464w.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C524238
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 23:41:58 +0200 (MEST)
-In-Reply-To: <s5hd5ec4yn7.wl%tiwai@suse.de>
+In-Reply-To: <s5hhd3q464w.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,18 +20,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Johannes Berg <johannes@sipsolutions.net>, ALSA development <alsa-devel@alsa-project.org>, linuxppc-dev list <linuxppc-dev@ozlabs.org>, Benjamin Berg <benjamin@sipsolutions.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-05-17 at 14:35 +0200, Takashi Iwai wrote:
+On Tuesday 16 May 2006 11:26, Takashi Iwai wrote:
+> At Mon, 15 May 2006 22:50:45 +0100,
+>
+> Alan Horstmann wrote:
+> > [1  <text/plain; iso-8859-1 (7bit)>]
+> >
+> > On Thursday 11 May 2006 16:01, you wrote:
+> > > At Thu, 11 May 2006 15:52:15 +0100,
+> > >
+> > > Alan Horstmann wrote:
+> > > > On Thursday 11 May 2006 15:09, you wrote:
+> > > > > At Wed, 10 May 2006 16:53:21 +0100,
+> > > > >
+> > > > > Alan Horstmann wrote:
+> > > > > > It seems that the behaviour of ENTER_UART is the same with other
+> > > > > > cards. What is different is that au88x0_mpu401 sends it during
+> > > > > > init, which for example ice1712 doesn't.  The extra ENTER_UART
+> > > > > > then fouls up the first output_open in mpu401_uart.  Removing it
+> > > > > > as per attached diff is successful.  Is this a reasonable thing
+> > > > > > to do?
+> > > > >
+> > > > > Actually, both RESET and ENTER_UART are issued at open in
+> > > > > mpu401_uart.c, so they are basically unnecessary to be called
+> > > > > here...
+> > > >
+> > > > Thanks for the confirmation.  The au88x0 init uses the ACK received
+> > > > to check the port is functioning OK so it seemed best to leave RESET
+> > > > as it caused no problems.
+> > > >
+> > > > In the diff I attached, the lines are just //out so it can be seen
+> > > > what has been taken out in case of breaking something else.  Is it
+> > > > preferable to remove them altogether instead?
+> > >
+> > > Yes but only if the patched code is confirmed to work :)
+> >
+> > It works fine for me; perhaps another au88x0 user could confirm also by
+> > applying the diff (attached again)?
+>
+> What happens if you remove MPU401_RESET there, too?
+> It's anyway issued in mpu401_uart.c later.
 
-> The question is where to implement a huge table or a complex
-> conversion function -- whether in the driver or in alsa-lib.
+Well, if just the MPU401_RESET line is removed, the value subsequently read to 
+check if OK is not 0xfe (ACK) and so the check fails and halts loading the 
+driver.  However the whole 6 lines of the check can be removed and the port 
+seems to continue to function OK, but it is unnecessarily drastic to solve 
+the original problem caused by the ENTER_UART, and then there is no check at 
+init of the port operating OK.
 
-The lib of course
+Alan
 
-Ben.
 
+> > [2 au88x0_mpu401.c-remove-enter_uart.diff <text/x-diff; iso-8859-1
+> > (7bit)>] ---
+> > alsa-driver-1.0.11-orig/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-01-13
+> > 17:16:29.000000000 +0000 +++
+> > alsa-driver-1.0.11/alsa-kernel/pci/au88x0/au88x0_mpu401.c	2006-05-10
+> > 16:17:10.000000000 +0100 @@ -70,9 +70,9 @@
+> >  	temp |= (MIDI_CLOCK_DIV << 8) | ((mode >> 24) & 0xff) << 4;
+> >  	hwwrite(vortex->mmio, VORTEX_CTRL2, temp);
+> >  	hwwrite(vortex->mmio, VORTEX_MIDI_CMD, MPU401_RESET);
+> > -	/* Set some kind of mode */
+> > -	if (mode)
+> > -		hwwrite(vortex->mmio, VORTEX_MIDI_CMD, MPU401_ENTER_UART);
+> > +//	/* Set some kind of mode */
+> > +//	if (mode)                    Removed as fouls mpu401_uart.c:
+> > snd_mpu401_uart_output_open +//		hwwrite(vortex->mmio, VORTEX_MIDI_CMD,
+> > MPU401_ENTER_UART);
+> >
+> >  	/* Check if anything is OK. */
+> >  	temp = hwread(vortex->mmio, VORTEX_MIDI_DATA);
+>
+> -------------------------------------------------------
+> Using Tomcat but need to do more? Need to support web services, security?
+> Get stuff done quickly with pre-integrated technology to make your job
+> easier Download IBM WebSphere Application Server v.1.0.1 based on Apache
+> Geronimo
+> http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 
 
