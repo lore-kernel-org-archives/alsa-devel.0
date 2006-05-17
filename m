@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002118]: no sound, just craking in headphones
-Date: Wed, 17 May 2006 16:56:54 +0200
-Message-ID: <302d3ed0f0c9e838288b24d5927f9057@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002127]: speaker mute on sony vaio vgn-a497xp
+Date: Wed, 17 May 2006 17:09:32 +0200
+Message-ID: <eaee73f7e21417ef922f18e6aed86ec4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2657419C
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 16:56:55 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CD5D18B
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 17:09:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,47 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2118> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2127> 
 ======================================================================
-Reported By:                jobo
-Assigned To:                
+Reported By:                febelus
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2118
-Category:                   PCI - intel8x0
+Issue ID:                   2127
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               FC%
-Kernel Version:             2.6.16-1.2111_FC5
+Status:                     assigned
+Distribution:               fedora core 5
+Kernel Version:             2.6.16-1.2096_FC5
 ======================================================================
-Date Submitted:             05-13-2006 00:24 CEST
-Last Modified:              05-17-2006 16:56 CEST
+Date Submitted:             05-15-2006 17:37 CEST
+Last Modified:              05-17-2006 17:09 CEST
 ======================================================================
-Summary:                    no sound, just craking in headphones
+Summary:                    speaker mute on sony vaio vgn-a497xp
 Description: 
-hey guys i have a asus a6km laptop,  i cannot get any sound out of it, i
-tried installing the new alsa driver and utils and lib, but how can i tell
-which version i have installed, it has a sis chipset, please help me get
-sound on this so i can never go back to windows,   thanks alot guys
-
-
-Joe
+i've install fc5 on my sony vaio vgn-a497xp and i've unmute all channell
+with alsamixer but the speaker are mute.
 ======================================================================
 
 ----------------------------------------------------------------------
- jobo - 05-17-06 16:56 
+ febelus - 05-17-06 15:44 
 ----------------------------------------------------------------------
-no response on this issue???
+i've open bug first on fedora bugzilla and i install alsa 1.0.11 from:
+http://people.redhat.com/stransky/alsa/
+
+but all is mute!!!
+
+----------------------------------------------------------------------
+ rlrevell - 05-17-06 17:09 
+----------------------------------------------------------------------
+Post the output of "amixer"
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 00:24 jobo           New Issue                                    
-05-13-06 00:24 jobo           Distribution              => FC%             
-05-13-06 00:24 jobo           Kernel Version            => 2.6.16-1.2111_FC5
-05-17-06 16:56 jobo           Note Added: 0009851                          
+05-15-06 17:37 febelus        New Issue                                    
+05-15-06 17:37 febelus        File Added: scsound.log                      
+05-15-06 17:37 febelus        Distribution              => fedora core 5   
+05-15-06 17:37 febelus        Kernel Version            => 2.6.16-1.2096_FC5
+05-17-06 02:10 rlrevell       Note Added: 0009843                          
+05-17-06 02:12 rlrevell       Note Added: 0009844                          
+05-17-06 09:50 febelus        Note Added: 0009845                          
+05-17-06 13:07 tiwai          Note Added: 0009847                          
+05-17-06 15:44 febelus        Note Added: 0009850                          
+05-17-06 17:09 rlrevell       Note Added: 0009852                          
 ======================================================================
 
 
