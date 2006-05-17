@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002127]: speaker mute on sony vaio vgn-a497xp
-Date: Wed, 17 May 2006 13:08:00 +0200
-Message-ID: <109223f661124548c61f4fad768b8edd@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002130]: PCI 128 (en1370) second channel does not work
+Date: Wed, 17 May 2006 13:12:01 +0200
+Message-ID: <008cc9103534d3377c404a7b400193be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 28E071A2
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 13:08:01 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F9711A2
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 13:12:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2127> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2130> 
 ======================================================================
-Reported By:                febelus
-Assigned To:                tiwai
+Reported By:                ipartola
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2127
-Category:                   PCI - hda-intel
+Project:                    ALSA - lib
+Issue ID:                   2130
+Category:                   hw specific configuration
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               fedora core 5
-Kernel Version:             2.6.16-1.2096_FC5
+Status:                     new
 ======================================================================
-Date Submitted:             05-15-2006 17:37 CEST
-Last Modified:              05-17-2006 13:07 CEST
+Date Submitted:             05-17-2006 03:40 CEST
+Last Modified:              05-17-2006 13:12 CEST
 ======================================================================
-Summary:                    speaker mute on sony vaio vgn-a497xp
+Summary:                    PCI 128 (en1370) second channel does not work
 Description: 
-i've install fc5 on my sony vaio vgn-a497xp and i've unmute all channell
-with alsamixer but the speaker are mute.
+I'm using an EN1370 based card (PCI 128 CT4700). The card has two jacks
+labeled as outputs on it. cat /proc/asound/devices says that there are two
+digital audio devices and one control device on this card. when I try to
+do 
+$ aplay -Dsurround40 -c 4 some.wav I get the following message:
+
+ALSA lib setup.c:555:(add_elem) Cannot obtain info for CTL elem
+(MIXER,'PCM 0 Output also on Line-In Jack',0,0,0): No such file or
+directory
+aplay: main:547: audio open error: No such file or directory
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- febelus - 05-17-06 09:50 
+ tiwai - 05-17-06 13:12 
 ----------------------------------------------------------------------
-i unmute the mixer and raise to max all channell volumes!!!!i've try alsa
-1.0.11 but nothingh...
-
-----------------------------------------------------------------------
- tiwai - 05-17-06 13:07 
-----------------------------------------------------------------------
-Did you install ALSA 1.0.11 _drivers_ ?  Some VAIO laptops don't work well
-with ALSA drivers in 2.6.16.x kernel tree.
+Try the uploaded patch.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-15-06 17:37 febelus        New Issue                                    
-05-15-06 17:37 febelus        File Added: scsound.log                      
-05-15-06 17:37 febelus        Distribution              => fedora core 5   
-05-15-06 17:37 febelus        Kernel Version            => 2.6.16-1.2096_FC5
-05-17-06 02:10 rlrevell       Note Added: 0009843                          
-05-17-06 02:12 rlrevell       Note Added: 0009844                          
-05-17-06 09:50 febelus        Note Added: 0009845                          
-05-17-06 13:07 tiwai          Note Added: 0009847                          
+05-17-06 03:40 ipartola       New Issue                                    
+05-17-06 13:12 tiwai          Note Added: 0009848                          
 ======================================================================
 
 
