@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002130]: PCI 128 (en1370) second channel does not work
-Date: Wed, 17 May 2006 22:23:59 +0200
-Message-ID: <ba39894a70172caf462fd6c6f13a7c22@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002118]: no sound, just craking in headphones
+Date: Wed, 17 May 2006 23:31:59 +0200
+Message-ID: <e5968d93a47226ac2da41cc579b5d486@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 429E6160
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 22:23:59 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EBFD1AA
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 23:32:00 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2130> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2118> 
 ======================================================================
-Reported By:                ipartola
-Assigned To:                
+Reported By:                jobo
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2130
-Category:                   hw specific configuration
+Project:                    ALSA - driver
+Issue ID:                   2118
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     feedback
+Distribution:               FC%
+Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
-Date Submitted:             05-17-2006 03:40 CEST
-Last Modified:              05-17-2006 22:23 CEST
+Date Submitted:             05-13-2006 00:24 CEST
+Last Modified:              05-17-2006 23:31 CEST
 ======================================================================
-Summary:                    PCI 128 (en1370) second channel does not work
+Summary:                    no sound, just craking in headphones
 Description: 
-I'm using an EN1370 based card (PCI 128 CT4700). The card has two jacks
-labeled as outputs on it. cat /proc/asound/devices says that there are two
-digital audio devices and one control device on this card. when I try to
-do 
-$ aplay -Dsurround40 -c 4 some.wav I get the following message:
-
-ALSA lib setup.c:555:(add_elem) Cannot obtain info for CTL elem
-(MIXER,'PCM 0 Output also on Line-In Jack',0,0,0): No such file or
-directory
-aplay: main:547: audio open error: No such file or directory
+hey guys i have a asus a6km laptop,  i cannot get any sound out of it, i
+tried installing the new alsa driver and utils and lib, but how can i tell
+which version i have installed, it has a sis chipset, please help me get
+sound on this so i can never go back to windows,   thanks alot guys
 
 
+Joe
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-17-06 13:12 
+ tiwai - 05-17-06 17:27 
 ----------------------------------------------------------------------
-Try the uploaded patch.
+Already fixed in HG repo.
 
 ----------------------------------------------------------------------
- ipartola - 05-17-06 22:23 
+ jobo - 05-17-06 23:31 
 ----------------------------------------------------------------------
-That helped. Now I have beautiful surround sound output. For example:
-
-$ speaker-test -c 4 -D surround40 -r 44100
-
-This works perfectly as expected. Mplayer works just fine too. Thank you
-very much.
+sorry but what does that mean?  hg repo?  im not a linux expert yet, can
+you please be more specific?  i installed the latest drivers and libs and
+utils and still no sound, what else can i do?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-06 03:40 ipartola       New Issue                                    
-05-17-06 13:12 tiwai          Note Added: 0009848                          
-05-17-06 13:12 tiwai          File Added: ens1370-surround40-fix.diff           
-        
-05-17-06 22:23 ipartola       Note Added: 0009858                          
+05-13-06 00:24 jobo           New Issue                                    
+05-13-06 00:24 jobo           Distribution              => FC%             
+05-13-06 00:24 jobo           Kernel Version            => 2.6.16-1.2111_FC5
+05-17-06 16:56 jobo           Note Added: 0009851                          
+05-17-06 17:27 tiwai          Status                   new => resolved     
+05-17-06 17:27 tiwai          Resolution               open => fixed       
+05-17-06 17:27 tiwai          Assigned To               => tiwai           
+05-17-06 17:27 tiwai          Note Added: 0009854                          
+05-17-06 23:31 jobo           Status                   resolved => feedback
+05-17-06 23:31 jobo           Resolution               fixed => reopened   
+05-17-06 23:31 jobo           Note Added: 0009859                          
 ======================================================================
 
 
