@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002127]: speaker mute on sony vaio vgn-a497xp
-Date: Wed, 17 May 2006 02:10:52 +0200
-Message-ID: <7b8495046cdd9bab61064bd0baeddeea@bugtrack.alsa-project.org>
+Date: Wed, 17 May 2006 02:12:07 +0200
+Message-ID: <7469b318404aa99fd5acfd25d1d00fd7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F317222D
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 02:10:52 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3943422E
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 02:12:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2096_FC5
 ======================================================================
 Date Submitted:             05-15-2006 17:37 CEST
-Last Modified:              05-17-2006 02:10 CEST
+Last Modified:              05-17-2006 02:12 CEST
 ======================================================================
 Summary:                    speaker mute on sony vaio vgn-a497xp
 Description: 
@@ -55,6 +55,12 @@ Please post the output of "amixer".
 
 You may also want to try the latest ALSA version (1.0.11)
 
+----------------------------------------------------------------------
+ rlrevell - 05-17-06 02:12 
+----------------------------------------------------------------------
+Never mind - it's obvious what the problem is, you unmuted the mixer but
+did not raise the volumes.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -63,6 +69,7 @@ Date Modified  Username       Field                    Change
 05-15-06 17:37 febelus        Distribution              => fedora core 5   
 05-15-06 17:37 febelus        Kernel Version            => 2.6.16-1.2096_FC5
 05-17-06 02:10 rlrevell       Note Added: 0009843                          
+05-17-06 02:12 rlrevell       Note Added: 0009844                          
 ======================================================================
 
 
