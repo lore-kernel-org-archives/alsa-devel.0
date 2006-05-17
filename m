@@ -1,14 +1,15 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Mix audio at different frequencies
-Date: Wed, 17 May 2006 20:12:27 +0200
-Message-ID: <m2psicldv8.fsf@vador2.mandriva.com>
+Date: Wed, 17 May 2006 15:04:43 -0400
+Message-ID: <1147892684.2473.0.camel@mindpipe>
 References: <1147429541.26309.3.camel@jazc.fedora>
-	<s5hpsijzbof.wl%tiwai@suse.de> <1147676786.2963.1.camel@jazc.fedora>
-	<1147812562.13948.144.camel@mindpipe>
+	 <s5hpsijzbof.wl%tiwai@suse.de> <1147676786.2963.1.camel@jazc.fedora>
+	 <1147812562.13948.144.camel@mindpipe>  <m2psicldv8.fsf@vador2.mandriva.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1147812562.13948.144.camel@mindpipe> (Lee Revell's message of "Tue, 16 May 2006 16:49:20 -0400")
+In-Reply-To: <m2psicldv8.fsf@vador2.mandriva.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,17 +19,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
+To: Thierry Vignaud <tvignaud@mandriva.com>
 Cc: Juan Zapatero <jazc@gmvsistemas.es>, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell <rlrevell@joe-job.com> writes:
+On Wed, 2006-05-17 at 20:12 +0200, Thierry Vignaud wrote:
+> Lee Revell <rlrevell@joe-job.com> writes:
+> 
+> > That ALSA already defaults to using dmix with the rate plugin since
+> > version 1.0.9.  It should work without an .asoundrc.
+> 
+> actually, that depends on the driver, thus on the sound card (which
+> doesn't look it was specified in this thread?).
+> 
 
-> That ALSA already defaults to using dmix with the rate plugin since
-> version 1.0.9.  It should work without an .asoundrc.
+It should have been solved in the latest release for everything but USB
+audio.
 
-actually, that depends on the driver, thus on the sound card (which
-doesn't look it was specified in this thread?).
+Lee
+
 
 
 -------------------------------------------------------
