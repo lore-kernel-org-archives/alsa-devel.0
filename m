@@ -1,22 +1,21 @@
 From: Thierry Vignaud <tvignaud@mandriva.com>
 Subject: Re: [alsa-cvslog] alsa-kernel: New ChangeSet 4251:05f8dd80b37c
-Date: Wed, 17 May 2006 16:14:02 +0200
-Message-ID: <m2fyj8pwlx.fsf@vador2.mandriva.com>
+Date: Wed, 17 May 2006 16:13:09 +0200
+Message-ID: <m2k68kpwne.fsf@vador2.mandriva.com>
 References: <ALOGGER1147857168.87@alsa-project.org>
-	<m2k68kpwne.fsf@vador2.mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from office.mandriva.com (ezoffice.mandriva.com [84.14.106.134])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B4E9119C
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 16:15:42 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B341D19C
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 16:14:52 +0200 (MEST)
 Received: from vador.mandriva.com (unknown [192.168.100.253])
-	by office.mandriva.com (Postfix) with ESMTP id B6ED45485B
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 16:15:42 +0200 (CEST)
+	by office.mandriva.com (Postfix) with ESMTP id BF44254B3E
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 16:14:49 +0200 (CEST)
 Received: from vador2.mandriva.com (vador2.mandriva.com [127.0.0.1])
-	by vador.mandriva.com (Postfix) with ESMTP id 458D61BDCE
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 16:14:02 +0200 (CEST)
-In-Reply-To: <m2k68kpwne.fsf@vador2.mandriva.com> (Thierry Vignaud's message of "Wed, 17 May 2006 16:13:09 +0200")
+	by vador.mandriva.com (Postfix) with ESMTP id 3CFAB1BDCE
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 16:13:09 +0200 (CEST)
+In-Reply-To: <ALOGGER1147857168.87@alsa-project.org> (Takashi Iwai's message of "Wed, 17 May 2006 11:12:48 +0200 (CEST)")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -29,15 +28,35 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thierry Vignaud <tvignaud@mandriva.com> writes:
+Takashi Iwai <tiwai@suse.de> writes:
 
-> it would be quite nicer for us poor reader monkeys if the subject
-> could contain the path of the altered directory (eg: here
-> alsa-kernel/pci/) like most CVS or SVN commit maillers do.
+> changeset:   4251:05f8dd80b37c1dd49c8a4189b40fa52b5b1c3c22
+> tag:         tip
+> user:        tiwai
+> date:        Wed May 17 11:04:19 2006 +0200
+> files:       pci/azt3328.c
+> description:
+> azt3328.c: use kernel coding style
+> 
+> Scope braces were not done the One True Kernel Way.
 
-and even like the old CVS commit mailer of ALSA:
+this is not a real bug per se but anyway:
 
-"Subject: [alsa-cvslog] CVS: alsa-kernel/pci/pcxhr pcxhr.c,1.2,1.3 pcxhr.h,1.1,1.2 pcxhr_mixer.c,1.1,1.2"
+it would be quite nicer for us poor reader monkeys if the subject
+could contain the path of the altered directory (eg: here
+alsa-kernel/pci/) like most CVS or SVN commit maillers do.
+
+thanks :-)
+
+
+btw, it would be better if reply addresses weren't "ALSA HG Logger
+<noreply@alsa-project.org>" and "alsa-cvslog@lists.sourceforge.net"
+since the former is obviously not to user and the later is probably
+limited (at least i supposed it is like in some other projects)
+
+my 2 cents.
+
+see you
 
 
 -------------------------------------------------------
