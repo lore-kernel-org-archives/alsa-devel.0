@@ -1,14 +1,20 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002118]: no sound, just craking in headphones
-Date: Wed, 17 May 2006 23:31:59 +0200
-Message-ID: <e5968d93a47226ac2da41cc579b5d486@bugtrack.alsa-project.org>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [RFC] alsa integer control ranges
+Date: Thu, 18 May 2006 07:41:52 +1000
+Message-ID: <1147902112.10703.2.camel__18.3200849734888$1147902198$gmane$org@localhost.localdomain>
+References: <1147780945.29795.110.camel@johannes>
+	 <s5h7j4m40kf.wl%tiwai@suse.de>
+	 <1147817023.6753.5.camel@localhost.localdomain>
+	 <s5hy7x10y5t.wl%tiwai@suse.de> <1147868218.15507.4.camel@johannes>
+	 <s5hd5ec4yn7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2EBFD1AA
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 23:32:00 +0200 (MEST)
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C524238
+	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 23:41:58 +0200 (MEST)
+In-Reply-To: <s5hd5ec4yn7.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +24,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Johannes Berg <johannes@sipsolutions.net>, ALSA development <alsa-devel@alsa-project.org>, linuxppc-dev list <linuxppc-dev@ozlabs.org>, Benjamin Berg <benjamin@sipsolutions.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2006-05-17 at 14:35 +0200, Takashi Iwai wrote:
 
-The following issue has been REOPENED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2118> 
-======================================================================
-Reported By:                jobo
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2118
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               FC%
-Kernel Version:             2.6.16-1.2111_FC5
-======================================================================
-Date Submitted:             05-13-2006 00:24 CEST
-Last Modified:              05-17-2006 23:31 CEST
-======================================================================
-Summary:                    no sound, just craking in headphones
-Description: 
-hey guys i have a asus a6km laptop,  i cannot get any sound out of it, i
-tried installing the new alsa driver and utils and lib, but how can i tell
-which version i have installed, it has a sis chipset, please help me get
-sound on this so i can never go back to windows,   thanks alot guys
+> The question is where to implement a huge table or a complex
+> conversion function -- whether in the driver or in alsa-lib.
 
+The lib of course
 
-Joe
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 05-17-06 17:27 
-----------------------------------------------------------------------
-Already fixed in HG repo.
-
-----------------------------------------------------------------------
- jobo - 05-17-06 23:31 
-----------------------------------------------------------------------
-sorry but what does that mean?  hg repo?  im not a linux expert yet, can
-you please be more specific?  i installed the latest drivers and libs and
-utils and still no sound, what else can i do?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-13-06 00:24 jobo           New Issue                                    
-05-13-06 00:24 jobo           Distribution              => FC%             
-05-13-06 00:24 jobo           Kernel Version            => 2.6.16-1.2111_FC5
-05-17-06 16:56 jobo           Note Added: 0009851                          
-05-17-06 17:27 tiwai          Status                   new => resolved     
-05-17-06 17:27 tiwai          Resolution               open => fixed       
-05-17-06 17:27 tiwai          Assigned To               => tiwai           
-05-17-06 17:27 tiwai          Note Added: 0009854                          
-05-17-06 23:31 jobo           Status                   resolved => feedback
-05-17-06 23:31 jobo           Resolution               fixed => reopened   
-05-17-06 23:31 jobo           Note Added: 0009859                          
-======================================================================
+Ben.
 
 
 
