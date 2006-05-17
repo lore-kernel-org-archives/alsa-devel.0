@@ -1,19 +1,16 @@
 From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: ALSA releasing scheme
-Date: Wed, 17 May 2006 19:55:55 +0200
-Message-ID: <m23bf8mt78.fsf@vador2.mandriva.com>
+Subject: Re: question about closed source alsa driver
+Date: Wed, 17 May 2006 20:09:17 +0200
+Message-ID: <m2u07ole0i.fsf@vador2.mandriva.com>
+References: <d39e2e70605160318meac7c91g40bb9cd7a85c0665@mail.gmail.com>
+	<4469CE12.6090701@findus.dhs.org>
+	<d39e2e70605160637g153bd27ei3cc3dc28df59dba1@mail.gmail.com>
+	<1147791320.13948.111.camel@mindpipe>
+	<d39e2e70605161226i2234a968rd301315188fb5831@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from office.mandriva.com (ezoffice.mandriva.com [84.14.106.134])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6889B1A7
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 19:57:36 +0200 (MEST)
-Received: from vador.mandriva.com (unknown [192.168.100.253])
-	by office.mandriva.com (Postfix) with ESMTP id ECC165485B
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 19:57:35 +0200 (CEST)
-Received: from vador2.mandriva.com (vador2.mandriva.com [127.0.0.1])
-	by vador.mandriva.com (Postfix) with ESMTP id 9C9CF1BD5C
-	for <alsa-devel@alsa-project.org>; Wed, 17 May 2006 19:55:55 +0200 (CEST)
+In-Reply-To: <d39e2e70605161226i2234a968rd301315188fb5831@mail.gmail.com> (Sergey Kolosov's message of "Tue, 16 May 2006 23:26:47 +0400")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,52 +20,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Sergey Kolosov <freeserj@gmail.com>
+Cc: Lee Revell <rlrevell@joe-job.com>, =?iso-8859-15?Q?Petter_Sundl=F6f?= <petter.sundlof@findus.dhs.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+"Sergey Kolosov" <freeserj@gmail.com> writes:
 
-As ALSA packager in Mandriva Linux (at least for the userland part),
-I've a few questions:
+> It's not just a sound card. It's driver for device but sound is one
+> of the basic functions( still there are other parts, initialize
+> mapping etc). Maybe I emit some functions to other module...
 
-I know there's no roadmap, that developent is driven by bug fixes and
-improvments, not by a schedule, ..., but anyway:
+anyway, since:
 
-1) Is there an estimate date of release for the next release?
+$ ~/cvs/alsa $ head -2 alsa-driver/COPYING
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 2, June 1991
 
-2) Is it planned to desync releases of drivers and of the lib (when
-it's know that no changes was made in config files that depends upon a
-new kernel).
+it's obvious one cannot link a non GPL-compatible driver with ALSA
+core... [1]
 
-Especially, there're changes (bug fixes regarding segfaults for
-example) or new features that do not depends on the actual alsa-kernel
-version.
+maybe, if they really fell, they can't release the whole stuff under
+GPL (or under a GPL compatible license), they'll have to release the
+sound driver part as GPL.
 
-It would be nice if :
-- either alsa-lib's trunk would be stabilized and released more often
-  (so that these features got tested earlier)
-- or bug fixes releases would be released for latest stable release
-  (eg: alsa-lib-1.0.11.1, then alsa-lib-1.0.11.2, alsa-lib-1.0.11.3,
-  ...)
+also, since:
 
-Even if some changes are done in that area (mixer element vs userland
-config files), since alsa team is pulling its changes into main kernel
-from times to times, wouldn't it make sense to release alsa-lib more
-often?
+- lots of symbols in various kernel subsystem are forbidden to be used
+  by non GPL (or GPL compatible) by drivers (eg EXPORT_SYMBOL_GPL)
 
-Or better, why not have a way to make it work across driver changes in
-that area? (whip me if this is not an actual problem :-) )
+- some kernel developers have explicitely set the boundary (look at
+  GPL and discussions about GPL) for the linking in order to forbid
+  creating binary drivers using their subsystems and/or frameworks.
 
-It's not that unusual that for the same distro, some users need to
-boot an older kernel (thus with maybe an older alsa-kernel part)
-because of some reasons.
+it can be uneasy to write a proprietary driver w/o legal matters for
+the other parts (non sound stuff).
 
-It's also not that unusual than one test several different kernels at
-once (the more usual case maybe being switching between his distro's
-kernel and the latest upstream kernel).
+either one accepts the license or it doesn't (and then he cannot link)
+
+my 2 cents.
 
 
-See you
+[1] unless all ALSA developers (including all those who sent patches i
+    guess) acknoledge to set the GPL boundary (eg where ended what is
+    called a "derivative work") at the point one can write such a
+    driver
 
 
 -------------------------------------------------------
