@@ -1,9 +1,9 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Mantis issue
-Date: Thu, 18 May 2006 18:32:46 -0400
-Message-ID: <1147991566.2576.34.camel@mindpipe>
+From: Peter Plessas <plessas@mur.at>
+Subject: compilation error with alsa-driver-1.0.11
+Date: Fri, 19 May 2006 00:56:01 +0200
+Message-ID: <446CFB81.2050204@mur.at>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -15,15 +15,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-No matter what I do, I can only get Mantis to show me 8 bugs.  I have
-reset ALL the filters and nothing works.  It used to show me 700-1500.
-Can anyone confirm this?
+Hi Dear List,
 
-Lee
+trying to compile alsa-drivers for powermac and hdsp along a 2.6.16 
+kernel, configured with:
 
+./configure --with-oss=yes --with-cards=powermac,usb-audio,hdsp
+
+getting an error, at 'make' here:
+
+In file included from /usr/local/src/alsa-driver-1.0.11/ppc/pmac.c:8:
+/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c: In 
+function 'snd_pmac_detect':
+/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
+warning: implicit declaration of function 'machine_is'
+/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
+error: 'powermac' undeclared (first use in this function)
+/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
+error: (Each undeclared identifier is reported only once
+/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
+error: for each function it appears in.)
+make[4]: *** [/usr/local/src/alsa-driver-1.0.11/ppc/pmac.o] Error 1
+make[3]: *** [/usr/local/src/alsa-driver-1.0.11/ppc] Error 2
+make[2]: *** [_module_/usr/local/src/alsa-driver-1.0.11] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.16.16'
+make: *** [compile] Error 2
+
+Anyone has a suggestion why this happens?
+I need to get this working by saturday so i am quite desperate and 
+thanking in advance for any advice,
+
+regards.
+
+Peter
 
 
 -------------------------------------------------------
