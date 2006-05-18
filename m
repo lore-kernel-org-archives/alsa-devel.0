@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002118]: no sound, just craking in headphones
-Date: Thu, 18 May 2006 02:59:57 +0200
-Message-ID: <6105d41aa41cd21f3ce5d266f04ff8ce@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002133]: Lacking support for simple USB "wireless" (via bluetooth A2DP) / no mixer
+Date: Thu, 18 May 2006 08:12:07 +0200
+Message-ID: <f3b8c6fd47850ef726952a97630d0564@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0C4A238
-	for <alsa-devel@alsa-project.org>; Thu, 18 May 2006 02:59:57 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 06B0B23A
+	for <alsa-devel@alsa-project.org>; Thu, 18 May 2006 08:12:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2118> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2133> 
 ======================================================================
-Reported By:                jobo
-Assigned To:                tiwai
+Reported By:                dx9s
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2118
-Category:                   PCI - intel8x0
+Issue ID:                   2133
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               FC%
-Kernel Version:             2.6.16-1.2111_FC5
+Status:                     assigned
+Distribution:               Slackware 10.2
+Kernel Version:             2.6.16.16
 ======================================================================
-Date Submitted:             05-13-2006 00:24 CEST
-Last Modified:              05-18-2006 02:59 CEST
+Date Submitted:             05-18-2006 08:12 CEST
+Last Modified:              05-18-2006 08:12 CEST
 ======================================================================
-Summary:                    no sound, just craking in headphones
+Summary:                    Lacking support for simple USB "wireless" (via
+bluetooth A2DP) / no mixer
 Description: 
-hey guys i have a asus a6km laptop,  i cannot get any sound out of it, i
-tried installing the new alsa driver and utils and lib, but how can i tell
-which version i have installed, it has a sis chipset, please help me get
-sound on this so i can never go back to windows,   thanks alot guys
+was using 2.6.15.6 (packed with alsa-driver 1.0.10rc3), updater to
+2.6.16.16 (packed with alsa-driver 1.0.11rc2) and update alsa-driver to
+1.0.11 (finial) as well other alsa-*-1.0.11
 
+Hardware: Saitek A-250 http://www.saitekaudio.com/en/a250.asp
 
-Joe
+according to other resources I've seen, it is a wireless USB audio device
+that uses a generic Bluetooth A2DP
+(http://en.wikipedia.org/wiki/Bluetooth#Bluetooth_profiles) transport. I
+have not used on WinHoles XP but it appears that it uses whatever Native
+usb audio support that comes with XP -- so it appears to be generic.
+
+Get error message (enabled advanced alsa debuging, "CONFIG_SND_DEBUG=y")
+
+ALSA /root/src/alsa-driver-1.0.11/usb/usbaudio.c:2670: 3:1:0 : no or
+invalid class specific endpoint descriptor
+
+BTW> the Bluetooth transport is not available and only a USB audio device
+appears to be present to the system
+
+I have a pure guess that it might ALSO have problem with the hardware not
+having a software controllable mixer (mixer is only remote unit). Also
+purportedly, it also can function as a HID device from the "remote" (it
+has play/pause, next and previous / which it claims will work with
+WinHoles Media Player)
+
+Summary: tweaking the driver to support this hardware? It has pretty good
+sound for being so small (using the wired LINE input). I've come across
+others out there (in the internet) that are interested in using it with
+Linux and claim they reached somebody at the company -- which is how I
+know it uses A2DP.
+
+--Doug
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 05-18-06 00:34 
-----------------------------------------------------------------------
-Yes, the bug is fixed in the latest development tree but not in any
-released version.  You can wait for the next release, or check the list
-archive - an "Alsa HG howto" was posted recently.
-
-----------------------------------------------------------------------
- jobo - 05-18-06 02:59 
-----------------------------------------------------------------------
-awesome so the next release will fix the no sound?   thats great, i really
-appreciate your help, does anyone know when the next release will come
-out? 
-
-thanks guys
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 00:24 jobo           New Issue                                    
-05-13-06 00:24 jobo           Distribution              => FC%             
-05-13-06 00:24 jobo           Kernel Version            => 2.6.16-1.2111_FC5
-05-17-06 16:56 jobo           Note Added: 0009851                          
-05-17-06 17:27 tiwai          Status                   new => resolved     
-05-17-06 17:27 tiwai          Resolution               open => fixed       
-05-17-06 17:27 tiwai          Assigned To               => tiwai           
-05-17-06 17:27 tiwai          Note Added: 0009854                          
-05-17-06 23:31 jobo           Status                   resolved => feedback
-05-17-06 23:31 jobo           Resolution               fixed => reopened   
-05-17-06 23:31 jobo           Note Added: 0009859                          
-05-18-06 00:34 rlrevell       Note Added: 0009860                          
-05-18-06 02:59 jobo           Note Added: 0009861                          
+05-18-06 08:12 dx9s           New Issue                                    
+05-18-06 08:12 dx9s           Distribution              => Slackware 10.2  
+05-18-06 08:12 dx9s           Kernel Version            => 2.6.16.16       
 ======================================================================
 
 
