@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001903]: Recording of USB sound doesn't work
-Date: Fri, 19 May 2006 00:10:30 +0200
-Message-ID: <df9d89f8e9036d0163f16715133e7e60@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Mantis issue
+Date: Thu, 18 May 2006 18:32:46 -0400
+Message-ID: <1147991566.2576.34.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B5D3221
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 00:10:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,82 +15,14 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+No matter what I do, I can only get Mantis to show me 8 bugs.  I have
+reset ALL the filters and nothing works.  It used to show me 700-1500.
+Can anyone confirm this?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1903> 
-======================================================================
-Reported By:                nbaggus
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1903
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               gentoo
-Kernel Version:             2.6.15-gentoo-r1
-======================================================================
-Date Submitted:             03-10-2006 01:38 CET
-Last Modified:              05-19-2006 00:10 CEST
-======================================================================
-Summary:                    Recording of USB sound doesn't work
-Description: 
-arecord gives the next error message on:
-
-$ arecord -D hw:2 -t wav -f S16_LE -d 10 file.wav
-Recording WAVE 'file.wav' : Signed 16 bit Little Endian, Rate 8000 Hz,
-Mono
-arecord: pcm_read:1303: read error: Input/output error
-$ 
-
-after about 10 seconds. The recorded sound is a kind of metalic click in
-silence. at playback the duration is between 1 and 2 seconds.
-======================================================================
-
-----------------------------------------------------------------------
- nbaggus - 05-19-06 00:08 
-----------------------------------------------------------------------
-Kernel updated to 2.6.16-r7 (Gentoo) alsa-driver to 1.0.11
-still no cigar.
-
-----------------------------------------------------------------------
- nbaggus - 05-19-06 00:10 
-----------------------------------------------------------------------
-Using the logitech headset:
-
-$ arecord -D hw:1 -t wav -f S16_LE -d 10 file.wav
-Recording WAVE 'file.wav' : Signed 16 bit Little Endian, Rate 8000 Hz,
-Mono
-arecord: pcm_read:1345: read error: Input/output error
-$    
-
-The attached file is the result of a 10 second wistle.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-10-06 01:38 nbaggus        New Issue                                    
-03-10-06 01:38 nbaggus        Distribution              => gentoo          
-03-10-06 01:38 nbaggus        Kernel Version            => 2.6.15-gentoo-r1
-03-10-06 08:53 Clemens LadischNote Added: 0008401                          
-03-10-06 08:53 Clemens LadischStatus                   assigned => feedback
-03-10-06 13:47 nbaggus        Note Added: 0008402                          
-03-10-06 20:13 nbaggus        Note Edited: 0008402                         
-03-10-06 20:56 nbaggus        Note Added: 0008411                          
-03-13-06 12:05 nbaggus        Note Edited: 0008411                         
-03-16-06 10:38 nbaggus        Issue Monitored: nbaggus                     
-04-02-06 09:23 nbaggus        Note Added: 0009058                          
-04-03-06 09:38 nbaggus        Note Added: 0009091                          
-05-19-06 00:08 nbaggus        Note Added: 0009868                          
-05-19-06 00:10 nbaggus        Note Added: 0009869                          
-======================================================================
-
+Lee
 
 
 
