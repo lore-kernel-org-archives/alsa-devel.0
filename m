@@ -1,54 +1,51 @@
-From: Andreas Mohr <andi@rhlx01.fht-esslingen.de>
-Subject: Re: How to enable bios-disabled soundcard?
-Date: Thu, 18 May 2006 17:15:20 +0200
-Message-ID: <20060518151520.GA32572@rhlx01.fht-esslingen.de>
-References: <Pine.SOC.4.61.0605181650080.4469@math.ut.ee>
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: Re: Re: [alsa-cvslog] alsa-kernel: New ChangeSet 4251:05f8dd80b37c
+Date: Thu, 18 May 2006 17:15:02 +0200
+Message-ID: <m2wtcjfjpl.fsf@vador2.mandriva.com>
+References: <ALOGGER1147857168.87@alsa-project.org>
+	<m2k68kpwne.fsf@vador2.mandriva.com> <m2fyj8pwlx.fsf@vador2.mandriva.com>
+	<s5hejyrfoo0.wl%tiwai@suse.de> <m2bqtvgyr2.fsf@vador2.mandriva.com>
+	<s5hhd3nz7qr.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751362AbWERPPX@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.SOC.4.61.0605181650080.4469@math.ut.ee>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Meelis Roos <mroos@linux.ee>
-Cc: Linux Kernel list <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from office.mandriva.com (ezoffice.mandriva.com [84.14.106.134])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D261122D
+	for <alsa-devel@alsa-project.org>; Thu, 18 May 2006 17:15:04 +0200 (MEST)
+In-Reply-To: <s5hhd3nz7qr.wl%tiwai@suse.de> (Takashi Iwai's message of "Thu, 18 May 2006 17:13:16 +0200")
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Takashi Iwai <tiwai@suse.de> writes:
 
-[CC'ing ALSA list]
-
-On Thu, May 18, 2006 at 05:09:47PM +0300, Meelis Roos wrote:
-> Context: IBM X20 laptop with integrated PCI CS4281 soundcard. Loading 
-> snd_cs4281 gives these messages and registers no alsa device:
+> > > But I agree that the current subject is fairly useless.  Maybe
+> > > the first commit-log line would be best for the subject line,
+> > > too.  It's used for the subject line of patches, so why not for
+> > > notification mails, too.
+> > 
+> > why not? that would be as nice as knowing what was altered.
 > 
-> ACPI: PCI interrupt for device 0000:00:0b.0 disabled
-> CS4281: probe of 0000:00:0b.0 failed with error -5
-> 
-> Error -5 seems to be -EIO.
-> 
-> There is no option ib bios to enable/disable the soundcard and the bios 
-> is almost the latest (2.23, latest 2.25 fixes only unrelated things by 
-> changelog).
+> Basically I object to (automatic) inclusion of modifies files /
+> directories in the summary.  I want to know more about what the
+> change is for rather than which files are modified.  Usually the
+> changelog summary (the first) line mentions which component is
+> changed (if not, it's wide spread).  That should suffice.
 
-The mail subject most likely is wrong, since the IRQ message above
-doesn't suggest a BIOS issue at all,
-since the message is most likely a result of calling snd_cs4281_free()
-in failure path, which disables this IRQ again.
+i'm fine with that. i'll be better than current status :-)
 
-> lspci identifies the card as follows (pci ID is the same as in the 
-> driver):
-> 0000:00:0b.0 Multimedia audio controller: Cirrus Logic Crystal CS4281 PCI 
-> Audio (rev 01)
-> 
-> I tried pci=routeirq. It distributed the interrupts differently but this 
-> problem did remain.
 
-I believe that it's a simple hardware mismatch failure in the main probe
-function of this driver, nothing else.
-
-> So how can I enable the soundcard?
-
-The best way to find out is to edit snd_cs4281_probe() and add snd_printk()s
-at all error paths to find the one which actually fails.
-
-Andreas Mohr
+-------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
