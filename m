@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002133]: Lacking support for simple USB "wireless" (via bluetooth A2DP) / no mixer
-Date: Thu, 18 May 2006 08:12:07 +0200
-Message-ID: <f3b8c6fd47850ef726952a97630d0564@bugtrack.alsa-project.org>
+Date: Thu, 18 May 2006 08:42:16 +0200
+Message-ID: <e1bed78552ff31a15026548553ab58c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 06B0B23A
-	for <alsa-devel@alsa-project.org>; Thu, 18 May 2006 08:12:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C27718B
+	for <alsa-devel@alsa-project.org>; Thu, 18 May 2006 08:42:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2133> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Slackware 10.2
 Kernel Version:             2.6.16.16
 ======================================================================
 Date Submitted:             05-18-2006 08:12 CEST
-Last Modified:              05-18-2006 08:12 CEST
+Last Modified:              05-18-2006 08:42 CEST
 ======================================================================
 Summary:                    Lacking support for simple USB "wireless" (via
 bluetooth A2DP) / no mixer
@@ -80,12 +80,59 @@ know it uses A2DP.
 --Doug
 ======================================================================
 
+----------------------------------------------------------------------
+ dx9s - 05-18-06 08:42 
+----------------------------------------------------------------------
+I just looked at the lsusb -v in more detail and went back and looked at
+the error message:
+
+ALSA /root/src/alsa-driver-1.0.11/usb/usbaudio.c:2670: 3:1:0 : no or
+invalid class specific endpoint descriptor
+
+
+and the end of the lsusb -v:
+...
+      Endpoint Descriptor:
+        bLength 7
+        bDescriptorType 5
+        bEndpointAddress 0x81 EP 1 IN
+        bmAttributes 3
+          Transfer Type Interrupt
+          Synch Type None
+          Usage Type Data
+        wMaxPacketSize 0x0010 bytes 16 once
+        bInterval 1
+        HID Device Descriptor:
+          bLength 9
+          bDescriptorType 33
+          bcdHID 1.11
+          bCountryCode 0 Not supported
+          bNumDescriptors 1
+          bDescriptorType 34 Report
+          wDescriptorLength 44
+
+Hey.. the last descriptor has something that isn't usb-sound related ...
+this is the entry that describes the HID functionality.... 
+
+I HAVE A STRONG HUNCH that *THIS* is causes the error message reported in
+dmesg... "no or invalid class specific endpoint descriptor" .. I wonder!
+could it be this simple?
+
+work around would be to read this descripter and ignore it...??? the HID
+function are secondary to getting the primary function (sound) to work!?
+
+Just a thought!
+
+--Doug
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-18-06 08:12 dx9s           New Issue                                    
 05-18-06 08:12 dx9s           Distribution              => Slackware 10.2  
 05-18-06 08:12 dx9s           Kernel Version            => 2.6.16.16       
+05-18-06 08:14 dx9s           Issue Monitored: dx9s                        
+05-18-06 08:42 dx9s           Note Added: 0009862                          
 ======================================================================
 
 
