@@ -1,14 +1,11 @@
-From: Thorsten Mika <info@thorstenmika.com>
-Subject: Re: C-Media MD 85217
-Date: Thu, 18 May 2006 17:18:32 +0200
-Message-ID: <20060518171832.285d4d82@localhost>
-References: <20060518094959.53a5b85f@localhost>
-	<20060518091258.GA26583@turing.informatik.uni-halle.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Status of pinnacle/fiji driver
+Date: Thu, 18 May 2006 11:29:14 -0400
+Message-ID: <1147966154.12531.62.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060518091258.GA26583@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,41 +15,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA Development List <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+Someone pointed out on IRC that this driver has bitrotted and doesn't
+compile with recent kernels.
 
-Am Thu, 18 May 2006 11:12:58 +0200
-schrieb Clemens:
+alsa/alsa-driver-1.0.11/isa/msnd/msnd_pinnacle.c:117: error: expected )
+before string constant
 
-> Thorsten Mika wrote:
-> > I just purchased a set of flat speakers in a german discount shop,
-> > manufactured by Medion an bearing the description MD 85217.
-> > 
-> > alsamixer recognizes the interface and shows up one volume control
-> > labelled "PCM", but unfortunately it does not have much effect,
-> > except that it turns off the speaker when switched to zero. So it
-> > only allows maximum output and mute.
-> 
-> Whatever effect the setting of a mixer control has on the sound output
-> depends on what the device's firmware does with it.  After sending the
-> control value to the device, the driver cannot do anything about it.
+I think it's due to use of MODULE_PARM which seems to have been removed?
 
-so this means it won't work? But how do they do it in Windoze? And are
-there other cheap USB-Speaker solutions? Actually, I only need this
-little USB thingy...
+I also notice that this driver is not in the kernel.  Could it be added?
+It would allow the OSS driver to be deprecated.
 
-Regards,
+Lee
 
-  t.
-
--- 
-Thorsten Mika                         mailto: info@thorstenmika.com
-Muenster / Germany                        +49 - (0) 251 - 200 76 83
-
-Public Key ID: 28BAEE63 -- http://www.pgp.net
 
 
 -------------------------------------------------------
