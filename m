@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001903]: Recording of USB sound doesn't work
-Date: Fri, 19 May 2006 00:08:20 +0200
-Message-ID: <885d1d2385e30e7b94e9f09a49eb5c41@bugtrack.alsa-project.org>
+Date: Fri, 19 May 2006 00:10:30 +0200
+Message-ID: <df9d89f8e9036d0163f16715133e7e60@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 546F0221
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 00:08:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B5D3221
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 00:10:30 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.15-gentoo-r1
 ======================================================================
 Date Submitted:             03-10-2006 01:38 CET
-Last Modified:              05-19-2006 00:08 CEST
+Last Modified:              05-19-2006 00:10 CEST
 ======================================================================
 Summary:                    Recording of USB sound doesn't work
 Description: 
@@ -57,15 +57,23 @@ silence. at playback the duration is between 1 and 2 seconds.
 ======================================================================
 
 ----------------------------------------------------------------------
- nbaggus - 04-03-06 09:38 
-----------------------------------------------------------------------
-No change for 1.0.11-rc4.
-
-----------------------------------------------------------------------
  nbaggus - 05-19-06 00:08 
 ----------------------------------------------------------------------
 Kernel updated to 2.6.16-r7 (Gentoo) alsa-driver to 1.0.11
 still no cigar.
+
+----------------------------------------------------------------------
+ nbaggus - 05-19-06 00:10 
+----------------------------------------------------------------------
+Using the logitech headset:
+
+$ arecord -D hw:1 -t wav -f S16_LE -d 10 file.wav
+Recording WAVE 'file.wav' : Signed 16 bit Little Endian, Rate 8000 Hz,
+Mono
+arecord: pcm_read:1345: read error: Input/output error
+$    
+
+The attached file is the result of a 10 second wistle.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +91,7 @@ Date Modified  Username       Field                    Change
 04-02-06 09:23 nbaggus        Note Added: 0009058                          
 04-03-06 09:38 nbaggus        Note Added: 0009091                          
 05-19-06 00:08 nbaggus        Note Added: 0009868                          
+05-19-06 00:10 nbaggus        Note Added: 0009869                          
 ======================================================================
 
 
