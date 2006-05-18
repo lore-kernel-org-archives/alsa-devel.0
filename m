@@ -1,18 +1,14 @@
-From: Thierry Vignaud <tvignaud@mandriva.com>
-Subject: Re: Re: [alsa-cvslog] alsa-kernel: New ChangeSet 4251:05f8dd80b37c
-Date: Thu, 18 May 2006 17:15:02 +0200
-Message-ID: <m2wtcjfjpl.fsf@vador2.mandriva.com>
-References: <ALOGGER1147857168.87@alsa-project.org>
-	<m2k68kpwne.fsf@vador2.mandriva.com> <m2fyj8pwlx.fsf@vador2.mandriva.com>
-	<s5hejyrfoo0.wl%tiwai@suse.de> <m2bqtvgyr2.fsf@vador2.mandriva.com>
-	<s5hhd3nz7qr.wl%tiwai@suse.de>
+From: Thorsten Mika <info@thorstenmika.com>
+Subject: Re: C-Media MD 85217
+Date: Thu, 18 May 2006 17:18:32 +0200
+Message-ID: <20060518171832.285d4d82@localhost>
+References: <20060518094959.53a5b85f@localhost>
+	<20060518091258.GA26583@turing.informatik.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from office.mandriva.com (ezoffice.mandriva.com [84.14.106.134])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D261122D
-	for <alsa-devel@alsa-project.org>; Thu, 18 May 2006 17:15:04 +0200 (MEST)
-In-Reply-To: <s5hhd3nz7qr.wl%tiwai@suse.de> (Takashi Iwai's message of "Thu, 18 May 2006 17:13:16 +0200")
+In-Reply-To: <20060518091258.GA26583@turing.informatik.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,26 +18,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA Development List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
+Hi Clemens,
 
-> > > But I agree that the current subject is fairly useless.  Maybe
-> > > the first commit-log line would be best for the subject line,
-> > > too.  It's used for the subject line of patches, so why not for
-> > > notification mails, too.
+Am Thu, 18 May 2006 11:12:58 +0200
+schrieb Clemens:
+
+> Thorsten Mika wrote:
+> > I just purchased a set of flat speakers in a german discount shop,
+> > manufactured by Medion an bearing the description MD 85217.
 > > 
-> > why not? that would be as nice as knowing what was altered.
+> > alsamixer recognizes the interface and shows up one volume control
+> > labelled "PCM", but unfortunately it does not have much effect,
+> > except that it turns off the speaker when switched to zero. So it
+> > only allows maximum output and mute.
 > 
-> Basically I object to (automatic) inclusion of modifies files /
-> directories in the summary.  I want to know more about what the
-> change is for rather than which files are modified.  Usually the
-> changelog summary (the first) line mentions which component is
-> changed (if not, it's wide spread).  That should suffice.
+> Whatever effect the setting of a mixer control has on the sound output
+> depends on what the device's firmware does with it.  After sending the
+> control value to the device, the driver cannot do anything about it.
 
-i'm fine with that. i'll be better than current status :-)
+so this means it won't work? But how do they do it in Windoze? And are
+there other cheap USB-Speaker solutions? Actually, I only need this
+little USB thingy...
+
+Regards,
+
+  t.
+
+-- 
+Thorsten Mika                         mailto: info@thorstenmika.com
+Muenster / Germany                        +49 - (0) 251 - 200 76 83
+
+Public Key ID: 28BAEE63 -- http://www.pgp.net
 
 
 -------------------------------------------------------
