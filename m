@@ -1,7 +1,7 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Status of pinnacle/fiji driver
-Date: Thu, 18 May 2006 11:29:14 -0400
-Message-ID: <1147966154.12531.62.camel@mindpipe>
+Subject: strace and ALSA ioctls
+Date: Thu, 18 May 2006 11:41:48 -0400
+Message-ID: <1147966909.12531.65.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -18,16 +18,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Someone pointed out on IRC that this driver has bitrotted and doesn't
-compile with recent kernels.
+I have never seen strace correctly identify a single ALSA ioctl.  This
+makes debugging a serious PITA.  Is it fixable?
 
-alsa/alsa-driver-1.0.11/isa/msnd/msnd_pinnacle.c:117: error: expected )
-before string constant
+ioctl(3, USBDEVFS_CONTROL, 0xbfe13958)  = 0
+ioctl(3, UI_DEV_CREATE, 0xbfe13a70)     = 0
+close(3)                                = 0
+stat64("/usr/share/alsa/alsa.conf", {st_mode=S_IFREG|0644,
+st_size=7501, ...}) = 0
+open("/dev/snd/controlC0", O_RDONLY)    = 3
+close(3)                                = 0
+open("/dev/snd/controlC0", O_RDWR)      = 3
+ioctl(3, USBDEVFS_CONTROL, 0xbfe138f8)  = 0
+fcntl64(3, F_GETFL)                     = 0x2 (flags O_RDWR)
+fcntl64(3, F_SETFL, O_RDWR|O_NONBLOCK)  = 0
+ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xbfe139e4) = 0
+ioctl(3, USBDEVFS_RELEASEINTERFACE, 0xbfe139e4) = 0
+ioctl(3, USBDEVFS_CONNECTINFO, 0xbfe136d0) = 0
+ioctl(3, USBDEVFS_IOCTL, 0xbfe13230)    = 0
+ioctl(3, USBDEVFS_CONNECTINFO, 0xbfe136d0) = 0
+ioctl(3, USBDEVFS_IOCTL, 0xbfe13230)    = 0
+ioctl(3, USBDEVFS_IOCTL, 0xbfe13230)    = 0
+ioctl(3, USBDEVFS_CONNECTINFO, 0xbfe136d0) = 0
+ioctl(3, USBDEVFS_IOCTL, 0xbfe13250)    = 0
+ioctl(3, USBDEVFS_CONNECTINFO, 0xbfe136d0) = 0
+ioctl(3, USBDEVFS_IOCTL, 0xbfe13230)    = 0
+ioctl(3, USBDEVFS_IOCTL, 0xbfe13230)    = 0
+ioctl(3, USBDEVFS_CONNECTINFO, 0xbfe136d0) = 0
+ioctl(3, USBDEVFS_IOCTL, 0xbfe13250)    = 0
 
-I think it's due to use of MODULE_PARM which seems to have been removed?
-
-I also notice that this driver is not in the kernel.  Could it be added?
-It would allow the OSS driver to be deprecated.
+etc
 
 Lee
 
