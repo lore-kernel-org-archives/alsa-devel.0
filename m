@@ -1,11 +1,14 @@
-From: Peter Plessas <plessas@mur.at>
-Subject: compilation error with alsa-driver-1.0.11
-Date: Fri, 19 May 2006 00:56:01 +0200
-Message-ID: <446CFB81.2050204@mur.at>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002135]: emu10k1: resume (S3) doesn't work with Audigy 2 ZS Notebook
+Date: Fri, 19 May 2006 01:33:16 +0200
+Message-ID: <7c88516b447804beaa785afafb47031e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46FA1197
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 01:33:16 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,43 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Dear List,
 
-trying to compile alsa-drivers for powermac and hdsp along a 2.6.16 
-kernel, configured with:
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2135> 
+======================================================================
+Reported By:                cathectic
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2135
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Slamd64
+Kernel Version:             2.6.17-rc4
+======================================================================
+Date Submitted:             05-19-2006 01:33 CEST
+Last Modified:              05-19-2006 01:33 CEST
+======================================================================
+Summary:                    emu10k1: resume (S3) doesn't work with Audigy 2 ZS
+Notebook
+Description: 
+System: Acer Aspire 5021
+Sound Card: Creative Audigy 2 ZS Notebook
+Kernel: 2.6.17-rc4 (also tested on 2.6.16.16)
+Append lines: "noapic" and "noapic acpi_irq_balance" (needed for suspend
+to work)
 
-./configure --with-oss=yes --with-cards=powermac,usb-audio,hdsp
+When the Audigy 2 ZS Notebook is inserted, and the snd-emu10k1 module is
+loaded, after suspending (S3) the laptop, it will not resume.
 
-getting an error, at 'make' here:
+If the card is removed first; or the snd-emu10k1 module is unloaded before
+standby (or the card can be physically ejected while on standby); resume
+works fine (the module can then be reloaded afterwards manually and the
+card will start working again).
+======================================================================
 
-In file included from /usr/local/src/alsa-driver-1.0.11/ppc/pmac.c:8:
-/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c: In 
-function 'snd_pmac_detect':
-/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
-warning: implicit declaration of function 'machine_is'
-/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
-error: 'powermac' undeclared (first use in this function)
-/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
-error: (Each undeclared identifier is reported only once
-/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
-error: for each function it appears in.)
-make[4]: *** [/usr/local/src/alsa-driver-1.0.11/ppc/pmac.o] Error 1
-make[3]: *** [/usr/local/src/alsa-driver-1.0.11/ppc] Error 2
-make[2]: *** [_module_/usr/local/src/alsa-driver-1.0.11] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.16.16'
-make: *** [compile] Error 2
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-19-06 01:33 cathectic      New Issue                                    
+05-19-06 01:33 cathectic      Distribution              => Slamd64         
+05-19-06 01:33 cathectic      Kernel Version            => 2.6.17-rc4      
+======================================================================
 
-Anyone has a suggestion why this happens?
-I need to get this working by saturday so i am quite desperate and 
-thanking in advance for any advice,
 
-regards.
-
-Peter
 
 
 -------------------------------------------------------
