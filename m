@@ -1,27 +1,46 @@
-From: Meelis Roos <mroos@linux.ee>
-Subject: Re: [Alsa-devel] Re: How to enable bios-disabled soundcard?
-Date: Fri, 19 May 2006 00:39:59 +0300 (EEST)
-Message-ID: <Pine.SOC.4.61.0605190039160.27206@math.ut.ee>
-References: <Pine.SOC.4.61.0605181650080.4469@math.ut.ee>
- <20060518151520.GA32572@rhlx01.fht-esslingen.de> <s5h3bf72us4.wl%tiwai@suse.de>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Compile warnings, sound.c
+Date: Thu, 18 May 2006 22:44:04 +0100
+Message-ID: <200605182244.04516.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751403AbWERVkR@vger.kernel.org>
-In-Reply-To: <s5h3bf72us4.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Andreas Mohr <andi@rhlx01.fht-esslingen.de>, Linux Kernel list <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->> The best way to find out is to edit snd_cs4281_probe() and add snd_printk()s
->> at all error paths to find the one which actually fails.
->
-> The error EIO comes only from snd_cs4281_chip_init(), and you must
-> have a corresponding error message.
->
-> There are some fixes in 2.6.17 tree regarding cs4281.  Give it a try.
+For quite a while (including prior to 1.0.11) I have noticed these compile 
+warnings.  Are they harmless?  Kernel is 2.4.21-99.
 
-Yes! Todays 2.6.17-rc4+git works fine with this soundcard. Thanks!
 
--- 
-Meelis Roos (mroos@linux.ee)
+sound.c: In function `snd_open':
+sound.c:175: warning: assignment discards qualifiers from pointer target type
+sound.c:180: warning: assignment discards qualifiers from pointer target type
+/usr/share/alsa1.0.11/alsa-driver-1.0.11/include/platform_device_compat.h: At 
+top level:
+sound.c:43: warning: `device_mode' defined but not used
+rm -f snd.o
+ld  -r -o snd.o sound.o init.o memory.o info.o control.o misc.o device.o 
+isadma.o sound_oss.o info_oss.o wrappers.o mis
+
+Thanks   Alan
+
+
+
+-------------------------------------------------------
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
