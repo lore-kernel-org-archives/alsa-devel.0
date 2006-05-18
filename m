@@ -1,45 +1,27 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: mailing list filters?
-Date: Thu, 18 May 2006 15:09:58 -0400
-Message-ID: <1147979399.2576.11.camel@mindpipe>
-References: <4465DCA6.2020205@gmail.com> <s5h8xp3wrxm.wl%tiwai@suse.de>
-	 <4468B96A.7030707@redfish-solutions.com> <4468C0F2.1000406@instant.com.br>
-	 <1147720227.13948.2.camel@mindpipe> <4468D7C4.2050504@instant.com.br>
-	 <1147722048.13948.9.camel@mindpipe>  <20060518201722.2faedde3@SiRiUS.home>
+From: Meelis Roos <mroos@linux.ee>
+Subject: Re: [Alsa-devel] Re: How to enable bios-disabled soundcard?
+Date: Fri, 19 May 2006 00:39:59 +0300 (EEST)
+Message-ID: <Pine.SOC.4.61.0605190039160.27206@math.ut.ee>
+References: <Pine.SOC.4.61.0605181650080.4469@math.ut.ee>
+ <20060518151520.GA32572@rhlx01.fht-esslingen.de> <s5h3bf72us4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20060518201722.2faedde3@SiRiUS.home>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Kuther <gimpel@sonnenkinder.org>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751403AbWERVkR@vger.kernel.org>
+In-Reply-To: <s5h3bf72us4.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Andreas Mohr <andi@rhlx01.fht-esslingen.de>, Linux Kernel list <linux-kernel@vger.kernel.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2006-05-18 at 20:17 +0200, Thomas Kuther wrote:
-> well it's like 90/10 S/N ratio, yes. 
-> My spamassassin runs hot with this list. *hint* :)
-> (thank god for it!) 
+>> The best way to find out is to edit snd_cs4281_probe() and add snd_printk()s
+>> at all error paths to find the one which actually fails.
+>
+> The error EIO comes only from snd_cs4281_chip_init(), and you must
+> have a corresponding error message.
+>
+> There are some fixes in 2.6.17 tree regarding cs4281.  Give it a try.
 
-But, you can see in the headers that SF already runs everything through
-SA.  However some of the obvious spam gets a very low spam score (3-5).
-Do you have any theory about that?  Is SF's spamassassassin just poorly
-tuned?
+Yes! Todays 2.6.17-rc4+git works fine with this soundcard. Thanks!
 
-Lee
-
-
-
--------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+-- 
+Meelis Roos (mroos@linux.ee)
