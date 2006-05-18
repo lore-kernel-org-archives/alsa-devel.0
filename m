@@ -1,13 +1,11 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Compile warnings, sound.c
-Date: Thu, 18 May 2006 22:44:04 +0100
-Message-ID: <200605182244.04516.gineera@aspect135.co.uk>
+From: "V.N Ambrose" <noel.ambrose@gmail.com>
+Subject: Dear all (X-Fi)
+Date: Thu, 18 May 2006 18:03:49 -0400
+Message-ID: <1147989829.3506.3.camel@server>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,25 +15,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-For quite a while (including prior to 1.0.11) I have noticed these compile 
-warnings.  Are they harmless?  Kernel is 2.4.21-99.
+Dear all
+
+I have an X-fi Card and want it supported in Linux.
+I have university level c++ knowledge and have been using linux/bsd for
+10yrs now.
+I am willing to provide all and i repeat all my free time towards
+getting this supported. I do not have driver programming experience and
+if someone can help assist , we are at least off to a start.
+I have the hardware on my personal computer and can supply whatever
+information needed that i can retrieve using my Fedora 5 OS.
 
 
-sound.c: In function `snd_open':
-sound.c:175: warning: assignment discards qualifiers from pointer target type
-sound.c:180: warning: assignment discards qualifiers from pointer target type
-/usr/share/alsa1.0.11/alsa-driver-1.0.11/include/platform_device_compat.h: At 
-top level:
-sound.c:43: warning: `device_mode' defined but not used
-rm -f snd.o
-ld  -r -o snd.o sound.o init.o memory.o info.o control.o misc.o device.o 
-isadma.o sound_oss.o info_oss.o wrappers.o mis
+Sincerely
 
-Thanks   Alan
+Noel Ambrose
 
 
 
