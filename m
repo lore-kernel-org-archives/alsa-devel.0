@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002133]: Lacking support for simple USB "wireless" (via bluetooth A2DP) / no mixer
-Date: Thu, 18 May 2006 08:42:16 +0200
-Message-ID: <e1bed78552ff31a15026548553ab58c4@bugtrack.alsa-project.org>
+Date: Thu, 18 May 2006 09:45:14 +0200
+Message-ID: <6edf2e9618a11daed6173fa6c90a1cbd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C27718B
-	for <alsa-devel@alsa-project.org>; Thu, 18 May 2006 08:42:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7EB261A2
+	for <alsa-devel@alsa-project.org>; Thu, 18 May 2006 09:45:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10.2
 Kernel Version:             2.6.16.16
 ======================================================================
 Date Submitted:             05-18-2006 08:12 CEST
-Last Modified:              05-18-2006 08:42 CEST
+Last Modified:              05-18-2006 09:45 CEST
 ======================================================================
 Summary:                    Lacking support for simple USB "wireless" (via
 bluetooth A2DP) / no mixer
@@ -125,6 +125,19 @@ Just a thought!
 
 --Doug
 
+----------------------------------------------------------------------
+ Clemens Ladisch - 05-18-06 09:45 
+----------------------------------------------------------------------
+This error message has nothing to do with either the lack of mixer controls
+or the HID interface.
+
+In this case, "no or invalid class specific endpoint descriptor" means
+that this device does not have the class-specific endpoint descriptor that
+is required by the USB Audio specification.
+
+Please try the patch (it makes the driver guess some endpoint attributes
+that hopefully will work).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -133,6 +146,7 @@ Date Modified  Username       Field                    Change
 05-18-06 08:12 dx9s           Kernel Version            => 2.6.16.16       
 05-18-06 08:14 dx9s           Issue Monitored: dx9s                        
 05-18-06 08:42 dx9s           Note Added: 0009862                          
+05-18-06 09:45 Clemens LadischNote Added: 0009863                          
 ======================================================================
 
 
