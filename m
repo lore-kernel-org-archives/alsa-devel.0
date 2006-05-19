@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - tools 0002136]: ice1724gt support for Envy24Control
-Date: Fri, 19 May 2006 23:55:09 +0200
-Message-ID: <e5ac6478e4f1e960eaa59582f3c7e440@bugtrack.alsa-project.org>
+Date: Sat, 20 May 2006 00:00:37 +0200
+Message-ID: <3d0d179f3ca6b85ee62eb004f88ea0e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19245191
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 23:55:09 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02635191
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 00:00:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             05-19-2006 21:21 CEST
-Last Modified:              05-19-2006 23:55 CEST
+Last Modified:              05-20-2006 00:00 CEST
 ======================================================================
 Summary:                    ice1724gt support for Envy24Control
 Description: 
@@ -53,17 +53,25 @@ Trial OSS works fine .
 ======================================================================
 
 ----------------------------------------------------------------------
- gineera - 05-19-06 23:55 
+ gineera - 05-19-06 23:56 
 ----------------------------------------------------------------------
 Envy24control just provides a convenient way to access the Alsa controls. 
 If sound is not working, use alsamixer (from a terminal window) and you
 should have all the controls available.  Channels are usually muted and at
 zero level by default.  If it doesn't work using alsamixer, the underlying
-driver may be at fault (may then be worth trying alsa 1.0.11).
+driver may be at fault.
 
 Envy24control does not add any more controls although it gives signal
 meters and is easier to use, and is quite separate from the sound driver. 
 It is quite possible that it doesn't support 1724 chips (yet?).
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 05-20-06 00:00 
+----------------------------------------------------------------------
+Yes, it's a known issue that envy24 control does not support ICE1724. 
+However this is interesting, it sounds like it could be trivial to fix.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -71,6 +79,8 @@ Date Modified  Username       Field                    Change
 05-19-06 21:21 hlabs          New Issue                                    
 05-19-06 21:22 hlabs          Issue Monitored: hlabs                       
 05-19-06 23:55 gineera        Note Added: 0009880                          
+05-19-06 23:56 gineera        Note Edited: 0009880                         
+05-20-06 00:00 rlrevell       Note Added: 0009881                          
 ======================================================================
 
 
