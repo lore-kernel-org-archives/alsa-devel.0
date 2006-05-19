@@ -1,18 +1,14 @@
-From: "Halvar Tyer" <halvare@iaffl2924.com>
-Subject: Re: test AMBBtpEN
-Date: Fri, 19 May 2006 14:36:26 -0700
-Message-ID: <000001c67b8c$4872d180$6058a8c0@ryq43>
-Reply-To: "Halvar Tyer" <halvare@iaffl2924.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0002136]: ice1724gt support for Envy24Control
+Date: Fri, 19 May 2006 23:55:09 +0200
+Message-ID: <e5ac6478e4f1e960eaa59582f3c7e440@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C67B51.9C18DB80"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AAE7018A
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 23:37:42 +0200 (MEST)
-Received: from cn.net (82-33-168-75.cable.ubr06.wiga.blueyonder.co.uk [82.33.168.75])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id CDA4099405
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 23:37:18 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19245191
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 23:55:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,78 +21,57 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C67B51.9C18DB80
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2136> 
+======================================================================
+Reported By:                hlabs
+Assigned To:                
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   2136
+Category:                   envy24control
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             05-19-2006 21:21 CEST
+Last Modified:              05-19-2006 23:55 CEST
+======================================================================
+Summary:                    ice1724gt support for Envy24Control
+Description: 
+What about ice1724gt support for Envy24Control util ?
+My card is M-Audio Revolution 5.1
+Envy24Control says : no Ice1712 found.
 
-Hi,
-=20
-P R O Z ^ C
-V A L / U M
-L E V / T R A
-S O M ^
-M E R / D / A
-X ^ N A X
-A M B / E N
-V / A G R A
-C / A L / S
-=20
-http://www.daysosun.com
-=20
-=20
-=20
-=20
-=20
-The dragon is still alive and in the halls under the Mountain=20
-then-or I imagine so from the smoke, said the hobbit.=20
-That does not prove it, said Balin, though I dont doubt you are=20
-right. But he might be gone away some time, or he might be lying out on=20
-the mountain-side keeping watch, and still I expect smokes and steams=20
-would come out of the gates: all the halls within must be filled with=20
+All modules loads fine but no sound at all :(
+Vanilla kernel 2.6.16 with ALSA 1.0.11 .
+Trial OSS works fine .
 
+======================================================================
 
-------=_NextPart_000_0001_01C67B51.9C18DB80
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+----------------------------------------------------------------------
+ gineera - 05-19-06 23:55 
+----------------------------------------------------------------------
+Envy24control just provides a convenient way to access the Alsa controls. 
+If sound is not working, use alsamixer (from a terminal window) and you
+should have all the controls available.  Channels are usually muted and at
+zero level by default.  If it doesn't work using alsamixer, the underlying
+driver may be at fault (may then be worth trying alsa 1.0.11).
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,</DIV><DIV>&nbsp;</DIV>
-<DIV>P R O Z ^ C<BR>
-V A L / U M<BR>
-L E V / T R A<BR>
-S O M ^<BR>
-M E R / D / A<BR>
-X ^ N A X<BR>
-A M B / E N<BR>
-V / A G R A<BR>
-C / A L / S</DIV><DIV>&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.daysosun.com">http://www.daysosun.com</A></DIV><DIV>&n=
-bsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>   The dragon is still alive and in the =
-halls under the Mountain <BR>then-or I imagine so from the smoke, said =
-the hobbit. <BR>   That does not prove it, said Balin, though I dont =
-doubt you are <BR>right. But he might be gone away some time, or he =
-might be lying out on <BR>the mountain-side keeping watch, and still I =
-expect smokes and steams <BR>would come out of the gates: all the halls =
-within must be filled with <BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C67B51.9C18DB80--
+Envy24control does not add any more controls although it gives signal
+meters and is easier to use, and is quite separate from the sound driver. 
+It is quite possible that it doesn't support 1724 chips (yet?).
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-19-06 21:21 hlabs          New Issue                                    
+05-19-06 21:22 hlabs          Issue Monitored: hlabs                       
+05-19-06 23:55 gineera        Note Added: 0009880                          
+======================================================================
 
 
 
