@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001161]: Midi in still does not work for Hoontech/STAudio DSP2000 C-Port
-Date: Fri, 19 May 2006 16:59:56 +0200
-Message-ID: <bb7199ee36e18e08634042ccaf21ff81@bugtrack.alsa-project.org>
+From: Peter Plessas <plessas@mur.at>
+Subject: Re: compilation error with alsa-driver-1.0.11
+Date: Fri, 19 May 2006 17:15:40 +0200
+Message-ID: <446DE11C.2090903@mur.at>
+References: <446CFB81.2050204@mur.at>	<s5hves2xrsu.wl%tiwai@suse.de>	<446DD407.8050302@mur.at> <s5hu07mw0nn.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C943B23D
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 16:59:56 +0200 (MEST)
+In-Reply-To: <s5hu07mw0nn.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,141 +17,109 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1161> 
-======================================================================
-Reported By:                vandongen2
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1161
-Category:                   PCI - ice1712
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               linux from scratch
-Kernel Version:             2.6.12-rc4-RT-V0.7.47-03
-======================================================================
-Date Submitted:             06-06-2005 15:29 CEST
-Last Modified:              05-19-2006 16:59 CEST
-======================================================================
-Summary:                    Midi in still does not work for Hoontech/STAudio
-DSP2000 C-Port
-Description: 
-As reported before in bug 000055 that is now marked resolved.
-It has not been resolved.
-The problem seems to be related to hardware specific registers on the card
-that need to be set.
+that's it, working now.
 
-I will be happy to spend a couple of days trying different flags/bits with
-the initialisation code, if somebody gives me an idea of where to start.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000055 Midi in does not work for Hoontech/STAu...
-======================================================================
+Ah now i know why, i got confused with the first lines of hgcompile 
+(alsa-kernel not found) when it tries to detect if the symlink is 
+already set, and changed alsa-kernel's location, or the env-variables'.
 
-----------------------------------------------------------------------
- sbahling - 03-05-06 13:22 
-----------------------------------------------------------------------
-I can't speak for the DSP24 card, but I have a mkII version and once I
-traced out the logic on the board. I recall that INSEL and DAREAR signal
-went no where. They clock-in on a latch, but those outputs of the latch
-are not connected to anything. Also, I found that the MUTE signal was
-inversed, so I have to patch hoontech.c to MUTE my inputs to turn them on
-(for my ADCIII box).
+Thanks a lot, so much great help!
 
-To get MIDI_IN to work on my ADCIII (not sure if this works on c-port), I
-need the following part of my default hoontech patch:
+Peter
 
--   for (box = 0; box < 4; box++) {
-+   for (box = 1; box < 2; box++) {
-
-I'm using midi in on a box addressed as box 1. This patch is obviously not
-addressing the root issue, but it works for me. Maybe it gives clue to
-someone who knows the code better. It seems like there is some global
-signal that is clearing the settings so if I do not limit this loop to the
-my box, it gets cleared again when addressing the next.
-
-My hoontech patch:
-
-Index: hoontech.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ice1712/hoontech.c,v
-retrieving revision 1.10
-diff -u -r1.10 hoontech.c
---- hoontech.c  16 Jan 2006 16:34:25 -0000  1.10
-+++ hoontech.c  5 Mar 2006 12:04:24 -0000
-@@ -190,23 +190,23 @@
-    ICE1712_STDSP24_3_INSEL(ice->spec.hoontech.boxbits, 0);
-
-    /* let's go - activate only functions in first box */
--   ice->spec.hoontech.config = 0;
--               /* ICE1712_STDSP24_MUTE |
--                  ICE1712_STDSP24_INSEL |
--                  ICE1712_STDSP24_DAREAR; */
--   ice->spec.hoontech.boxconfig[0] = ICE1712_STDSP24_BOX_CHN1 |
-+   /* need to set MUTE flag to un-mute ADCIII */
-+   ice->spec.hoontech.config = ICE1712_STDSP24_MUTE;
-+                   /*ICE1712_STDSP24_INSEL |*/
-+                  /*ICE1712_STDSP24_DAREAR; */
-+   ice->spec.hoontech.boxconfig[0] =
-+   ice->spec.hoontech.boxconfig[1] =
-+   ice->spec.hoontech.boxconfig[2] =
-+   ice->spec.hoontech.boxconfig[3] = ICE1712_STDSP24_BOX_CHN1 |
-                     ICE1712_STDSP24_BOX_CHN2 |
-                     ICE1712_STDSP24_BOX_CHN3 |
-                     ICE1712_STDSP24_BOX_CHN4 |
-                     ICE1712_STDSP24_BOX_MIDI1 |
-                     ICE1712_STDSP24_BOX_MIDI2;
--   ice->spec.hoontech.boxconfig[1] =
--   ice->spec.hoontech.boxconfig[2] =
--   ice->spec.hoontech.boxconfig[3] = 0;    
-snd_ice1712_stdsp24_darear(ice, (ice->spec.hoontech.config &
-ICE1712_STDSP24_DAREAR) ? 1 : 0);     snd_ice1712_stdsp24_mute(ice,
-(ice->spec.hoontech.config & ICE1712_STDSP24_MUTE) ? 1 : 0);    
-snd_ice1712_stdsp24_insel(ice, (ice->spec.hoontech.config &
-ICE1712_STDSP24_INSEL) ? 1 : 0);
--   for (box = 0; box < 4; box++) {
-+   for (box = 1; box < 2; box++) {
-        for (chn = 0; chn < 4; chn++)            
-snd_ice1712_stdsp24_box_channel(ice, box, chn,
-(ice->spec.hoontech.boxconfig[box] & (1 << chn)) ? 1 : 0);
-        snd_ice1712_stdsp24_box_midi(ice, box,
-
-----------------------------------------------------------------------
- gineera - 05-19-06 16:59 
-----------------------------------------------------------------------
-I can confirm this problem on a recently aquired DSP2000.  The change
-suggested by Perex disabled the audio and didn't seem to help midi in.
-
-The change mentioned by sbahling also didn't help.
-
-For now I have to remove this card and return to my now fully functioning
-DMX6fire as spare time is needed to campaign against the closure of our
-local school!  However I will return to it soon.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-06-05 15:29 vandongen2     New Issue                                    
-06-06-05 15:29 vandongen2     Distribution              => linux from scratch
-06-06-05 15:29 vandongen2     Kernel Version            =>
-2.6.12-rc4-RT-V0.7.47-03
-06-07-05 08:24 perex          Relationship added       related to 0000055  
-06-16-05 14:54 perex          Note Added: 0005055                          
-06-17-05 11:13 vandongen2     Note Added: 0005066                          
-03-05-06 13:22 sbahling       Note Added: 0008357                          
-05-19-06 16:59 gineera        Note Added: 0009878                          
-======================================================================
-
-
+Takashi Iwai wrote:
+> At Fri, 19 May 2006 16:19:51 +0200,
+> Peter Plessas wrote:
+> 
+>>Hi Takashi,
+>>
+>>thanks for the hint, did a checkout of the ng sources, wondering at 
+>>running ./configure, howto specify soundcards:
+>>
+>>checking for which soundcards to compile driver for... configure: error: 
+>>Unknown soundcard pmac
+> 
+> 
+> The basic step is like below:
+> 
+> 1. get alsa-kernel and alsa-driver directories (repos) in the same
+> level of directory
+> 
+> 	% cd /somewhere/alsa
+> 	% hg clone http://hg-mirror.alsa-project.org/alsa-driver
+> 	% hg clone http://hg-mirror.alsa-project.org/alsa-kernel
+> 
+> 2. go to alsa-driver directory and run hgcompile
+> 
+> 	% cd alsa-driver
+> 	% ./hgcompile --with-debug=full --with-cards=powermac
+> 
+> If this still doesn't work, let me know.
+> 
+> 
+> Takashi
+> 
+> 
+> 
+>>tried as well: all, usb-audio, hdsp, powermac,... all giving the same 
+>>error.
+>>I downloaded alsa-driver and alsa-kernel directories, do i miss something?
+>>
+>>Sorry for the inconvenience,
+>>
+>>regards,
+>>
+>>Peter
+>>
+>>Takashi Iwai wrote:
+>>
+>>>At Fri, 19 May 2006 00:56:01 +0200,
+>>>Peter Plessas wrote:
+>>>
+>>>
+>>>>Hi Dear List,
+>>>>
+>>>>trying to compile alsa-drivers for powermac and hdsp along a 2.6.16 
+>>>>kernel, configured with:
+>>>>
+>>>>./configure --with-oss=yes --with-cards=powermac,usb-audio,hdsp
+>>>>
+>>>>getting an error, at 'make' here:
+>>>>
+>>>>In file included from /usr/local/src/alsa-driver-1.0.11/ppc/pmac.c:8:
+>>>>/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c: In 
+>>>>function 'snd_pmac_detect':
+>>>>/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
+>>>>warning: implicit declaration of function 'machine_is'
+>>>>/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
+>>>>error: 'powermac' undeclared (first use in this function)
+>>>>/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
+>>>>error: (Each undeclared identifier is reported only once
+>>>>/usr/local/src/alsa-driver-1.0.11/ppc/../alsa-kernel/ppc/pmac.c:872: 
+>>>>error: for each function it appears in.)
+>>>>make[4]: *** [/usr/local/src/alsa-driver-1.0.11/ppc/pmac.o] Error 1
+>>>>make[3]: *** [/usr/local/src/alsa-driver-1.0.11/ppc] Error 2
+>>>>make[2]: *** [_module_/usr/local/src/alsa-driver-1.0.11] Error 2
+>>>>make[1]: *** [modules] Error 2
+>>>>make[1]: Leaving directory `/usr/src/linux-2.6.16.16'
+>>>>make: *** [compile] Error 2
+>>>>
+>>>>Anyone has a suggestion why this happens?
+>>>>I need to get this working by saturday so i am quite desperate and 
+>>>>thanking in advance for any advice,
+>>>
+>>>
+>>>Try HG version.
+>>>
+>>>
+>>>Takashi
+>>
 
 
 -------------------------------------------------------
