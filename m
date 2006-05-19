@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
-Date: Fri, 19 May 2006 08:49:12 +0200
-Message-ID: <0838adb4c59df956cc86d2b94bdf94a5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001957]: HP dv8000t hda-intel codec not recognized
+Date: Fri, 19 May 2006 09:06:23 +0200
+Message-ID: <e72e587dfee146c0f28b56202c9b6aa5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A79821A
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 08:49:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1CA1413E
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 09:06:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,102 +24,220 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1957> 
 ======================================================================
-Reported By:                dsandras
-Assigned To:                perex
+Reported By:                legoguy
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2122
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   1957
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             05-13-2006 17:35 CEST
-Last Modified:              05-19-2006 08:49 CEST
+Date Submitted:             03-24-2006 02:18 CET
+Last Modified:              05-19-2006 09:06 CEST
 ======================================================================
-Summary:                    DMIX crashes Ekiga
+Summary:                    HP dv8000t hda-intel codec not recognized
 Description: 
-This problem is probably related to problem #2095 that was closed. 
-Unfortunately, I can not reopen it, so I'm posting a new bug report.
+lspci -nv:
+00:1b.0 0403: 8086:27d8 (rev 01)
+	Subsystem: 103c:30a5
+	Flags: bus master, fast devsel, latency 0, IRQ 7
+	Memory at d2400000 (64-bit, non-prefetchable) [size=16K]
+	Capabilities: [50] Power Management version 2
+	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+	Capabilities: [70] Express Unknown type IRQ 0
+	Capabilities: [100] Virtual Channel
+	Capabilities: [130] Unknown (5)
 
-When using DMIX, Ekiga crashes. This problem was not present with earlier
-versions of libasound2. I applied all patches from CVS.
+
+cat /proc/asound/card0/codec\#0:
+Codec: Generic 14f1 ID 5047
+Address: 0
+Vendor Id: 0x14f15047
+Subsystem Id: 0x103c30a5
+Revision Id: 0x100000
+Default PCM: rates 0x040, bits 0x02, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x10 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x11 0x11]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x11 [Audio Output] wcaps 0x611: Stereo Digital
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x12 [Audio Input] wcaps 0x100d1b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x0e, stepsize=0x05, mute=1
+  Amp-In vals:  [0x0e 0x0e] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
+0x80] [0x80 0x80]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+  Connection: 6
+     0x19* 0x14 0x15 0x1a 0x16 0x10
+Node 0x13 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1e 0x1e]
+  Pincap 0x081001c: OUT HP
+  Pin Default 0xc3111010: [Both] Speaker at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0xc0: OUT HP
+  Power: 0x0
+  Connection: 3
+     0x19* 0x10 0x16
+Node 0x14 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x0833c: IN OUT HP
+  Pin Default 0x03811011: [Jack] Line In at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+  Connection: 2
+     0x19* 0x16
+Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x0833c: IN OUT HP
+  Pin Default 0x03a11012: [Jack] Mic at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+  Connection: 3
+     0x1c 0x19* 0x16
+Node 0x16 [Pin Complex] wcaps 0x400401: Stereo
+  Pincap 0x0860: IN
+  Pin Default 0x99330100: [Fixed] CD at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+Node 0x17 [Pin Complex] wcaps 0x400481: Stereo
+  Pincap 0x08324: IN
+  Pin Default 0xb7a00100: [Fixed] Mic at Oth Mobile-In
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x00:
+  Power: 0x0
+Node 0x18 [Pin Complex] wcaps 0x400701: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x21440100: [Jack] SPDIF Out at Sep Rear
+    Conn = RCA, Color = Unknown
+  Pin-ctls: 0x00:
+  Power: 0x0
+  Connection: 1
+     0x11
+Node 0x19 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-In vals:  [0x07 0x07] [0x07 0x07] [0x80 0x80] [0x17 0x17]
+  Power: 0x0
+  Connection: 4
+     0x10 0x1b 0x1a 0x16
+Node 0x1a [Audio Selector] wcaps 0x30050d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x1f, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Power: 0x0
+  Connection: 3
+     0x15* 0x14 0x17
+Node 0x1b [Audio Selector] wcaps 0x300501: Stereo
+  Power: 0x0
+  Connection: 2
+     0x14* 0x15
+Node 0x1c [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x1d [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x08314: OUT
+  Pin Default 0x90100112: [Fixed] Speaker at Int N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Power: 0x0
+  Connection: 3
+     0x1c 0x19* 0x16
+Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
+
+
+
+I'm only given one out channel, Master, and one in channel, Mic, along
+with Line and Capture. I cannot adjust the volume of the PC Speaker beep,
+which is outrageously loud. From past experience with ALSA et al shouldn't
+there be PCM and (since this supposedly supports S/PDIF with some special
+jack) some other additional channels?
+
+At any rate, this codec isn't detected/identified by the driver as
+anything other than Generic.
 ======================================================================
 
 ----------------------------------------------------------------------
- dsandras - 05-16-06 13:02 
+ tiwai - 05-18-06 11:40 
 ----------------------------------------------------------------------
-"Wheter you're using the whole latest HG tree"
-
-Not completely. I couldn't find a way to generate a patch with hg and then
-I cancelled and took only the patch that was interesting to fix the
-original problem.
-
-"What is the sample rate your app uses"
-
-8kHz or 16kHz depending if the codec is wideband or not.
-
-"What happens if you set "defaults.pcm.dmix_max_periods -1"
-
-The result is good. 
-
-"The hardware and driver that the problem appears"
-
-All hardware, all drivers. All of the developers have different hardware
-and they can all reproduce the problem without the .asoundrc that I gave
-you or without the .asoundrc that you gave me. Of course, only with DMIX.
-
-"Change period_size to 1024 and periods to 16 in your dmix config.
-No buffer_size. It's the as same config as in default"
-
-It gives bad results.
-
-"And what is your "plugin"? Did you write a new plugin for alsa-lib and
-use it?"
-
-It is the portion of code that Ekiga is using to manager audio devices,
-the ALSA version.
+Of course, KERN_DEBUG prefix itself won't appear in the message.  It's a
+log-level.  Compile with --with-debug=detect, as I asked.
 
 ----------------------------------------------------------------------
- Raymond - 05-19-06 08:49 
+ legoguy - 05-19-06 09:06 
 ----------------------------------------------------------------------
-If your application use 8K/16K, there is no point to use .asoundrc which
-specifiy dmix rate 44100. 
+Ah, alright, just had to set the logging level higher. Here.
 
-Your application should filter out those sound card which do'nt support
-duplex
+../../alsa-kernel/pci/hda/hda_generic.c:568: AUD_IN = 12
+../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x12 IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x14 IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:244: CONNECT: NID=0x1b IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x1b IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:210: UNMUTE OUT: NID=0x1b
+../../alsa-kernel/pci/hda/hda_generic.c:244: CONNECT: NID=0x19 IDX=0x1
+../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x19 IDX=0x1
+../../alsa-kernel/pci/hda/hda_generic.c:210: UNMUTE OUT: NID=0x19
+../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x15 IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:607: [Capture Source] NID=0x12,
+#SRC=2
+../../alsa-kernel/pci/hda/hda_generic.c:610:   [Line] IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:610:   [Mic] IDX=0x2
+../../alsa-kernel/pci/hda/hda_generic.c:282: AUD_OUT found 10
+../../alsa-kernel/pci/hda/hda_generic.c:244: CONNECT: NID=0x19 IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x19 IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:210: UNMUTE OUT: NID=0x19
+../../alsa-kernel/pci/hda/hda_generic.c:244: CONNECT: NID=0x13 IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x13 IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:210: UNMUTE OUT: NID=0x13
+../../alsa-kernel/pci/hda/hda_generic.c:210: UNMUTE OUT: NID=0x13
+../../alsa-kernel/pci/hda/hda_generic.c:668: [Capture Switch] NID=0x12,
+DIR=IN, IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:688: [Capture Volume] NID=0x12,
+DIR=IN, IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:244: CONNECT: NID=0x12 IDX=0x0
+../../alsa-kernel/pci/hda/hda_generic.c:675: [Master Playback Switch]
+NID=0x10, DIR=OUT
+../../alsa-kernel/pci/hda/hda_generic.c:695: [Master Playback Volume]
+NID=0x10, DIR=OUT
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-06 17:35 dsandras       New Issue                                    
-05-13-06 17:39 dsandras       Note Added: 0009795                          
-05-13-06 17:41 dsandras       Note Added: 0009796                          
-05-13-06 18:29 rlrevell       Note Added: 0009799                          
-05-13-06 18:36 dsandras       Note Added: 0009800                          
-05-13-06 18:37 dsandras       File Added: busytone.wav                     
-05-15-06 10:35 tiwai          Status                   assigned => resolved
-05-15-06 10:35 tiwai          Resolution               open => fixed       
-05-15-06 10:35 tiwai          Note Added: 0009814                          
-05-15-06 11:01 dsandras       Status                   resolved => feedback
-05-15-06 11:01 dsandras       Resolution               fixed => reopened   
-05-15-06 11:01 dsandras       Note Added: 0009816                          
-05-15-06 11:07 tiwai          Note Added: 0009818                          
-05-15-06 22:33 dsandras       Note Added: 0009828                          
-05-15-06 22:42 rlrevell       Note Added: 0009829                          
-05-15-06 22:46 dsandras       Note Added: 0009830                          
-05-15-06 22:58 rlrevell       Note Added: 0009831                          
-05-15-06 22:59 dsandras       Note Added: 0009832                          
-05-15-06 23:28 rlrevell       Note Added: 0009833                          
-05-15-06 23:41 dsandras       Note Added: 0009834                          
-05-16-06 11:19 tiwai          Note Added: 0009836                          
-05-16-06 11:52 dsandras       Note Added: 0009837                          
-05-16-06 12:04 tiwai          Note Added: 0009838                          
-05-16-06 13:02 dsandras       Note Added: 0009839                          
-05-19-06 08:49 Raymond        Note Added: 0009874                          
+03-24-06 02:18 legoguy        New Issue                                    
+03-24-06 02:18 legoguy        Distribution              => Gentoo Linux    
+03-24-06 02:18 legoguy        Kernel Version            => 2.6.16          
+03-24-06 03:06 legoguy        Issue Monitored: legoguy                     
+03-26-06 01:55 tiwai          Note Added: 0008963                          
+03-26-06 22:18 legoguy        Note Added: 0008976                          
+03-26-06 23:09 legoguy        Note Edited: 0008976                         
+04-20-06 15:39 tiwai          Note Added: 0009389                          
+05-16-06 17:59 legoguy        Note Added: 0009840                          
+05-16-06 17:59 legoguy        Note Edited: 0009840                         
+05-16-06 18:00 legoguy        Note Edited: 0009840                         
+05-16-06 18:03 legoguy        Note Edited: 0009840                         
+05-16-06 18:04 legoguy        Note Edited: 0009840                         
+05-18-06 11:40 tiwai          Note Added: 0009865                          
+05-19-06 09:06 legoguy        Note Added: 0009875                          
 ======================================================================
 
 
