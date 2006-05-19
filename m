@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001957]: HP dv8000t hda-intel codec not recognized
-Date: Fri, 19 May 2006 09:06:23 +0200
-Message-ID: <e72e587dfee146c0f28b56202c9b6aa5@bugtrack.alsa-project.org>
+From: vincent Guittot <vincent.guittot@yahoo.fr>
+Subject: audio stream other than pcm
+Date: Fri, 19 May 2006 07:39:44 +0000 (GMT)
+Message-ID: <20060519073944.15025.qmail@web27312.mail.ukl.yahoo.com>
+Reply-To: vincent Guittot <vincent.guittot@yahoo.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="0-2111093745-1148024384=:97547"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1CA1413E
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 09:06:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,229 +15,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--0-2111093745-1148024384=:97547
+Content-Type: text/plain; charset=us-ascii
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1957> 
-======================================================================
-Reported By:                legoguy
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1957
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.16
-======================================================================
-Date Submitted:             03-24-2006 02:18 CET
-Last Modified:              05-19-2006 09:06 CEST
-======================================================================
-Summary:                    HP dv8000t hda-intel codec not recognized
-Description: 
-lspci -nv:
-00:1b.0 0403: 8086:27d8 (rev 01)
-	Subsystem: 103c:30a5
-	Flags: bus master, fast devsel, latency 0, IRQ 7
-	Memory at d2400000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: [50] Power Management version 2
-	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-	Capabilities: [70] Express Unknown type IRQ 0
-	Capabilities: [100] Virtual Channel
-	Capabilities: [130] Unknown (5)
+Hi, 
+ 
+I'm trying to develop an alsa driver for an embedded audio card which includes some hardware codec. I would like to use alsa for handling the whole audio card : mixer, pcm and hardware codec. Right now, I have no major issue with the mixer and the pcm stream but several question about how alsa behaves with an encoded audio stream. Several audio format are already defined in the sndrv_pcm_format enum but i can't find any details about how the period size and the elapse notification is handled with encoded data . Where can i find some details ? is there any alsa sound cards driver which already manage encoded audio stream ?
+ 
+Regards,
+Vincent
+--0-2111093745-1148024384=:97547
+Content-Type: text/html; charset=us-ascii
 
-
-cat /proc/asound/card0/codec\#0:
-Codec: Generic 14f1 ID 5047
-Address: 0
-Vendor Id: 0x14f15047
-Subsystem Id: 0x103c30a5
-Revision Id: 0x100000
-Default PCM: rates 0x040, bits 0x02, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-Node 0x10 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x11 0x11]
-  PCM: rates 0x040, bits 0x02, types 0x1
-  Power: 0x0
-Node 0x11 [Audio Output] wcaps 0x611: Stereo Digital
-  PCM: rates 0x040, bits 0x02, types 0x1
-  Power: 0x0
-Node 0x12 [Audio Input] wcaps 0x100d1b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x0e, stepsize=0x05, mute=1
-  Amp-In vals:  [0x0e 0x0e] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
-0x80] [0x80 0x80]
-  PCM: rates 0x040, bits 0x02, types 0x1
-  Power: 0x0
-  Connection: 6
-     0x19* 0x14 0x15 0x1a 0x16 0x10
-Node 0x13 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x1e 0x1e]
-  Pincap 0x081001c: OUT HP
-  Pin Default 0xc3111010: [Both] Speaker at Ext Left
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0xc0: OUT HP
-  Power: 0x0
-  Connection: 3
-     0x19* 0x10 0x16
-Node 0x14 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x1f 0x1f]
-  Pincap 0x0833c: IN OUT HP
-  Pin Default 0x03811011: [Jack] Line In at Ext Left
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x20: IN
-  Power: 0x0
-  Connection: 2
-     0x19* 0x16
-Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x1f 0x1f]
-  Pincap 0x0833c: IN OUT HP
-  Pin Default 0x03a11012: [Jack] Mic at Ext Left
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0x20: IN
-  Power: 0x0
-  Connection: 3
-     0x1c 0x19* 0x16
-Node 0x16 [Pin Complex] wcaps 0x400401: Stereo
-  Pincap 0x0860: IN
-  Pin Default 0x99330100: [Fixed] CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x20: IN
-  Power: 0x0
-Node 0x17 [Pin Complex] wcaps 0x400481: Stereo
-  Pincap 0x08324: IN
-  Pin Default 0xb7a00100: [Fixed] Mic at Oth Mobile-In
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x00:
-  Power: 0x0
-Node 0x18 [Pin Complex] wcaps 0x400701: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x21440100: [Jack] SPDIF Out at Sep Rear
-    Conn = RCA, Color = Unknown
-  Pin-ctls: 0x00:
-  Power: 0x0
-  Connection: 1
-     0x11
-Node 0x19 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals:  [0x07 0x07] [0x07 0x07] [0x80 0x80] [0x17 0x17]
-  Power: 0x0
-  Connection: 4
-     0x10 0x1b 0x1a 0x16
-Node 0x1a [Audio Selector] wcaps 0x30050d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x1f, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Power: 0x0
-  Connection: 3
-     0x15* 0x14 0x17
-Node 0x1b [Audio Selector] wcaps 0x300501: Stereo
-  Power: 0x0
-  Connection: 2
-     0x14* 0x15
-Node 0x1c [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  PCM: rates 0x040, bits 0x02, types 0x1
-  Power: 0x0
-Node 0x1d [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x1f 0x1f]
-  Pincap 0x08314: OUT
-  Pin Default 0x90100112: [Fixed] Speaker at Int N/A
-    Conn = Unknown, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Power: 0x0
-  Connection: 3
-     0x1c 0x19* 0x16
-Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
-
-
-
-I'm only given one out channel, Master, and one in channel, Mic, along
-with Line and Capture. I cannot adjust the volume of the PC Speaker beep,
-which is outrageously loud. From past experience with ALSA et al shouldn't
-there be PCM and (since this supposedly supports S/PDIF with some special
-jack) some other additional channels?
-
-At any rate, this codec isn't detected/identified by the driver as
-anything other than Generic.
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 05-18-06 11:40 
-----------------------------------------------------------------------
-Of course, KERN_DEBUG prefix itself won't appear in the message.  It's a
-log-level.  Compile with --with-debug=detect, as I asked.
-
-----------------------------------------------------------------------
- legoguy - 05-19-06 09:06 
-----------------------------------------------------------------------
-Ah, alright, just had to set the logging level higher. Here.
-
-../../alsa-kernel/pci/hda/hda_generic.c:568: AUD_IN = 12
-../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x12 IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x14 IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:244: CONNECT: NID=0x1b IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x1b IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:210: UNMUTE OUT: NID=0x1b
-../../alsa-kernel/pci/hda/hda_generic.c:244: CONNECT: NID=0x19 IDX=0x1
-../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x19 IDX=0x1
-../../alsa-kernel/pci/hda/hda_generic.c:210: UNMUTE OUT: NID=0x19
-../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x15 IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:607: [Capture Source] NID=0x12,
-#SRC=2
-../../alsa-kernel/pci/hda/hda_generic.c:610:   [Line] IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:610:   [Mic] IDX=0x2
-../../alsa-kernel/pci/hda/hda_generic.c:282: AUD_OUT found 10
-../../alsa-kernel/pci/hda/hda_generic.c:244: CONNECT: NID=0x19 IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x19 IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:210: UNMUTE OUT: NID=0x19
-../../alsa-kernel/pci/hda/hda_generic.c:244: CONNECT: NID=0x13 IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:226: UNMUTE IN: NID=0x13 IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:210: UNMUTE OUT: NID=0x13
-../../alsa-kernel/pci/hda/hda_generic.c:210: UNMUTE OUT: NID=0x13
-../../alsa-kernel/pci/hda/hda_generic.c:668: [Capture Switch] NID=0x12,
-DIR=IN, IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:688: [Capture Volume] NID=0x12,
-DIR=IN, IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:244: CONNECT: NID=0x12 IDX=0x0
-../../alsa-kernel/pci/hda/hda_generic.c:675: [Master Playback Switch]
-NID=0x10, DIR=OUT
-../../alsa-kernel/pci/hda/hda_generic.c:695: [Master Playback Volume]
-NID=0x10, DIR=OUT
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-24-06 02:18 legoguy        New Issue                                    
-03-24-06 02:18 legoguy        Distribution              => Gentoo Linux    
-03-24-06 02:18 legoguy        Kernel Version            => 2.6.16          
-03-24-06 03:06 legoguy        Issue Monitored: legoguy                     
-03-26-06 01:55 tiwai          Note Added: 0008963                          
-03-26-06 22:18 legoguy        Note Added: 0008976                          
-03-26-06 23:09 legoguy        Note Edited: 0008976                         
-04-20-06 15:39 tiwai          Note Added: 0009389                          
-05-16-06 17:59 legoguy        Note Added: 0009840                          
-05-16-06 17:59 legoguy        Note Edited: 0009840                         
-05-16-06 18:00 legoguy        Note Edited: 0009840                         
-05-16-06 18:03 legoguy        Note Edited: 0009840                         
-05-16-06 18:04 legoguy        Note Edited: 0009840                         
-05-18-06 11:40 tiwai          Note Added: 0009865                          
-05-19-06 09:06 legoguy        Note Added: 0009875                          
-======================================================================
-
-
+<html><head><style type="text/css"><!-- DIV {margin:0px} --></style></head><body><div style="font-family:times new roman, new york, times, serif;font-size:12pt"><DIV style="FONT-SIZE: 12pt; FONT-FAMILY: times new roman, new york, times, serif">
+<DIV style="FONT-SIZE: 12pt; FONT-FAMILY: times new roman, new york, times, serif">
+<DIV>Hi, </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I'm trying to develop an alsa driver for an embedded audio card which includes some hardware codec. I would like to use alsa for handling the whole audio card : mixer, pcm and hardware codec. Right now, I have no major issue with the mixer and the pcm stream but several question about how alsa behaves with an&nbsp;encoded audio stream. Several audio format are already defined in the sndrv_pcm_format enum but i can't find any details about how&nbsp;the period size and the elapse notification is handled with encoded data&nbsp;. Where can i find some details ? is there any alsa sound cards driver which already manage encoded audio stream ?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Regards,</DIV>
+<DIV>Vincent</DIV></DIV></DIV></div></body></html>
+--0-2111093745-1148024384=:97547--
 
 
 -------------------------------------------------------
