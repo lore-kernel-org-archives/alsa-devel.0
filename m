@@ -1,15 +1,14 @@
-From: "Ireneus Kress" <kressiren@ara-mv.nl>
-Subject: Re: test AMBBstEN
-Date: Fri, 19 May 2006 10:30:02 -0700
-Message-ID: <000001c67b69$dc46fc60$7596a8c0@hma28>
-Reply-To: "Ireneus Kress" <kressiren@ara-mv.nl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0002136]: ice1724gt support for Envy24Control
+Date: Fri, 19 May 2006 21:21:09 +0200
+Message-ID: <0def2ff56348064e4bcf78b91d801b5e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C67B2F.2FEA6E50"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from renderscope.com (adsl-ull-123-246.47-151.net24.it [151.47.246.123])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 44FA118C
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 19:34:29 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A574153
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 21:21:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,78 +21,42 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C67B2F.2FEA6E50
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2136> 
+======================================================================
+Reported By:                hlabs
+Assigned To:                
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   2136
+Category:                   envy24control
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             05-19-2006 21:21 CEST
+Last Modified:              05-19-2006 21:21 CEST
+======================================================================
+Summary:                    ice1724gt support for Envy24Control
+Description: 
+What about ice1724gt support for Envy24Control util ?
+My card is M-Audio Revolution 5.1
+Envy24Control says : no Ice1712 found.
 
-Hi,
-=20
-P R O Z ^ C
-A M B / E N
-C / A L / S
-L E V / T R A
-M E R / D / A
-S O M ^
-V / A G R A
-X ^ N A X
-V A L / U M
-=20
-http://www.seewhituc.com
-=20
-=20
-=20
-=20
-=20
-Yet golden treasure inside is hid,=20
-he asked to gain time, until he could think of a really hard one.=20
-This he thought a dreadfully easy chestnut, though he had not asked it=20
-in the usual words. But it proved a nasty poser for Gollum. He hissed to
-himself, and still he did not answer; he whispered and spluttered.=20
-After some while Bilbo became impatient. Well, what is it? he said.=20
+All modules loads fine but no sound at all :(
+Vanilla kernel 2.6.16 with ALSA 1.0.11 .
+Trial OSS works fine .
 
+======================================================================
 
-------=_NextPart_000_0001_01C67B2F.2FEA6E50
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,</DIV><DIV>&nbsp;</DIV>
-<DIV>P R O Z ^ C<BR>
-A M B / E N<BR>
-C / A L / S<BR>
-L E V / T R A<BR>
-M E R / D / A<BR>
-S O M ^<BR>
-V / A G R A<BR>
-X ^ N A X<BR>
-V A L / U M</DIV><DIV>&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.seewhituc.com">http://www.seewhituc.com</A></DIV><DIV>=
-&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>   Yet golden treasure inside is hid, =
-<BR>   he asked to gain time, until he could think of a really hard one. =
-<BR>This he thought a dreadfully easy chestnut, though he had not asked =
-it <BR>in the usual words. But it proved a nasty poser for Gollum. He =
-hissed to <BR>himself, and still he did not answer; he whispered and =
-spluttered. <BR>   After some while Bilbo became impatient. Well, what =
-is it? he said. <BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C67B2F.2FEA6E50--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-19-06 21:21 hlabs          New Issue                                    
+======================================================================
 
 
 
