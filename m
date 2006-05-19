@@ -1,14 +1,14 @@
-From: "jayakumar alsa" <jayakumar.alsa@gmail.com>
-Subject: Re: Dear all (X-Fi)
-Date: Fri, 19 May 2006 21:13:59 +0800
-Message-ID: <47f5dce30605190613l7792574an8bc77e49a5ebed17@mail.gmail.com>
-References: <1147989829.3506.3.camel@server>
+From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
+Subject: Re: A better pcm_file "infile" patch, and a declaration
+ of being miffed.
+Date: Fri, 19 May 2006 10:45:32 -0300
+Message-ID: <446DCBFC.6020703@instant.com.br>
+References: <446CA0F0.2000603@instant.com.br> <s5hr72qxppf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1147989829.3506.3.camel@server>
-Content-Disposition: inline
+In-Reply-To: <s5hr72qxppf.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,60 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "V.N Ambrose" <noel.ambrose@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 5/19/06, V.N Ambrose <noel.ambrose@gmail.com> wrote:
-> Dear all
+Takashi Iwai wrote:
+
+>At Thu, 18 May 2006 13:29:36 -0300,
+>Juan Carlos Castro y Castro wrote:
+>  
 >
-> I have an X-fi Card and want it supported in Linux.
+>>OK, this implements the "infile" parameter of pcm_file in a much cleaner 
+>>way. Note that the the below new members of snd_pcm_file_t are not used 
+>>now, but WILL be when I implement protection from fraction-of-frame reads:
+>>
+>>       size_t rbuf_size_bytes;
+>>       size_t rbuf_used_bytes;
+>>       char *rbuf;
+>>
+>>Now, the whole reason of this shebang was so I can use the "infile" AND 
+>>convert rates in the process -- i.e., the app programs its microphone in 
+>>whatever rate/format it wants, and ALSA converts the sound from the 
+>>existing format to what the app needs.
+>>
+>>The exact opposite of this already works for output -- I can force a 
+>>file to be written in the same format, no matter how the app configures 
+>>its sound output. For this, I use the .asoundrc that's also attached. 
+>>But it doesn't work for input. Can someone help me?
+>>    
+>>
+>I guess it works if you point a real mic PCM device as slave but still
+>using infile?
+>  
+>
+It will ignore the microphone and read from the file instead. The 
+typical use, therefore, is with the null plugin as slave.
 
-You have good intentions and you're not alone. I suspect it's the same
-card discussed in this bug report:
+If you want to mix a file and a live input (say, for making a narration 
+with ambient music), I suppose there are ways to do that with dmix, am I 
+correct? (Hmmm, this could have a "loop" option)
 
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1327
+My problem is different, it's rate & format conversion. I want to be 
+able to use an specific existing file as input even if the app programs 
+the "microphone" for a different rate/format. I'm almost certain there 
+is a way to do that with existing ALSA plugins (plug? dmix?) but I've 
+been unable to find it out on my own. :(
 
-> I have university level c++ knowledge and have been using linux/bsd for
-> 10yrs now.
-> I am willing to provide all and i repeat all my free time towards
-> getting this supported. I do not have driver programming experience and
-> if someone can help assist , we are at least off to a start.
+>The patch looks almost OK.  But please don't forget to add the
+>description of new parameter in the doxygen comment (in \section
+>pcm_plugins_file Plugin: File), too.
+>
+>Also, please provide a changelog and a signed-off-by line, e.g.
+>
+>	The short summary in a line...
+>
+>	A detailed change log...
+>	....
+>
+>	Signed-off-by: Foo Bar <foo@bar.com>
+>  
+>
+Will do.
 
-Excellent. Note that ALSA drivers and the Linux kernel are in C. I
-recommend you spend some time reading through this book [free pdf] on
-the Linux kernel and device drivers in general:
-
-http://lwn.net/Kernel/LDD3/
-
-and also read Takashi's and other ALSA documentation after that:
-
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/
-
-At that point, you'll have a good idea of what kind of data you're
-looking for in order to write a driver for this card.
-
-> I have the hardware on my personal computer and can supply whatever
-> information needed that i can retrieve using my Fedora 5 OS.
-
-I suspect that initially, you'll find that you'll need Windows in
-order to reverse engineer what Creative's windows driver is doing. You
-might be able to achieve this in many ways. You could get the
-Microsoft DDK and write a filter driver that sits between Creative's
-driver and the PCI subsystem or is at least able to watch what calls
-are being made. If you have access to an ICE debugger and/or other
-windows tools, you might also watch the register read/writes that way.
-You could also, as James pointed out, do a .sys object dump of
-Creative's driver and try to work out the various low level functions
-that achieve things like setting up DMA, configuring rates, accessing
-AC97 and other things.
-
-As you can probably imagine, all this stuff is not likely to be a
-short and easy piece of work. :-) But the process of doing it can be
-quite enjoyable so gather together some friends and start hacking at
-it.
-
-jayakumar
+Cheers,
+Juan
 
 
 -------------------------------------------------------
