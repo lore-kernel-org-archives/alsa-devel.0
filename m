@@ -1,14 +1,13 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: alsa and locking
-Date: Fri, 19 May 2006 19:09:46 +0200
-Message-ID: <1148058586.6228.30.camel@johannes.berg>
-References: <1148055062.6228.19.camel@johannes.berg>
-	 <s5hd5eavvcj.wl%tiwai@suse.de> <1148057163.6228.26.camel@johannes.berg>
-	 <s5hac9ene36.wl%tiwai@suse.de>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: DMX6fire in the sound-card matrix
+Date: Fri, 19 May 2006 18:13:45 +0100
+Message-ID: <200605191813.45352.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-pBnlv3hHKI4Z4wzydUY3"
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hac9ene36.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,43 +21,34 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I think it is overdue to update the soundcard matrix in respect of the 
+Terratec DMX6fire.  How is this done?
 
---=-pBnlv3hHKI4Z4wzydUY3
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+In particular, it has for some time shown a specific warning about the front 
+box not working.  Is it possible to counter that with a positive affirmation 
+comment?
 
-On Fri, 2006-05-19 at 19:01 +0200, Takashi Iwai wrote:
->=20
-> Yes.  open/close are protected via open_mutex in the PCM core level for
-> avoiding open races, but otherwise it's responsibility of the driver.=20
+All the functions of the card and front box are fully supported from 1.0.11 
+and there are no outstanding 'oddities' that affect performance as far as I 
+can tell (& I am usually considered fussy).  Envy24control gives full access 
+to the controls (which are more than you get with the Terratec Windows 
+driver).  The functionality should list optical and coax digital in and out, 
+plus midi in and out as well as internal wavetable connector, in addition to 
+the analogue audio inputs and outputs.
 
-Ok, thanks. I'll look at it then (probably needs spin-locks since I need
-those in the atomic parts too)
+The DMX6fire gives a pro-grade ice1712 sound system in a home-computer box.  I 
+have recorded into audacity 8 Channels (plus 2 blank) at 24bit 96KHz with no 
+glitches, and created CDs using the digital inputs to transfer live 
+recordings to the PC.  Performance is now consistent and solid.  [..gets off 
+soapbox..]
 
-johannes
+What do you think of having a rating system for supported soundcards so users 
+(like me) can know what level of functioning to expect.  For example Bronze 
+to indicate mainly working with some problems, through to Gold for complete, 
+solid, well-affirmed performance?  The level of support for the STAudio 
+DSP2000 for example seems to be a long way below that for the DMX6fire.
 
---=-pBnlv3hHKI4Z4wzydUY3
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIVAwUARG3716Vg1VMiehFYAQI0pBAAoxtERdCq6wmOTif2+WQMov5fnxJ8c0nd
-iDHJSJv+YoLGscJzPyTO9aWkGdT3uqbMBb4Hl1+kglPQdNHfOPqlFe6HgdvvW+Am
-TQOXfKyfVxikSek8odsJ+LM+aU85pY6ACxnCY4YnplbB2bCGEbC6TEg/eIp+EJOi
-+R7DhgV6lkLD/qWyLMHL61Peo6kWRzC78NnhHH1eB7Y9KQGIoSD85xjermDRkSuA
-FBrh1pXJQZjRrytZDDSd/IyTKddpMKqxpuIeXOF2PZCogcRDVqBfUp2wr01zoOkd
-uTNSNHF5G5kbgPS2FFmIAa0FL7rgoHaGdZA6sFSn32LhCT+7LUjMwBdGrU3tzhwT
-eekmXLxe5gl3FMTCWBe5mJVWJixDPrtEjuR89CYaXsDxpncyQAWPcEg5iqrj4k9f
-9JuzHQp+Igb4Rx5g8P62gV0GxywCOgJ/gmLD+DKvH3DCxPUbuFvaX5m7ARvx0JzI
-jy9nGjZNoealQrMD1xj92tu1cVDvb0yXyeO442aS5TcfyJpsOoC0/3CAWYqNfiv6
-G4eXiiOSO3W3RQcUR/sMajvJdIgnI94WNo6GIfHUgqHQcmPBrD6mKpNoWrXrBqr3
-hdx5sJwaRo3M4u7fKI6tY/36UdIXFQ8bMzF+NBEcwHvM00niyNWIeAfn+ToQfPsD
-S4QhVNIW0PM=
-=WnVH
------END PGP SIGNATURE-----
-
---=-pBnlv3hHKI4Z4wzydUY3--
+Regards  Alan
 
 
 
