@@ -1,18 +1,12 @@
-From: "Linos Redman" <redmaa@airi.co.kr>
-Subject: Re: test VdALLtUM
-Date: Fri, 19 May 2006 13:52:18 -0700
-Message-ID: <000001c67b86$1e208680$9e6ca8c0@ozq68>
-Reply-To: "Linos Redman" <redmaa@airi.co.kr>
+From: Gerald Grabner <gerald.grabner@gmx.net>
+Subject: Re: quit =?utf-8?b?c25kX3BjbV9yZWFkaSw=?= retrieve pending frames
+Date: Fri, 19 May 2006 21:17:45 +0000 (UTC)
+Message-ID: <loom.20060519T230916-804@post.gmane.org>
+References: <4465BDCB.7010900@gmx.net> <s5h3bfbwqiw.wl%tiwai@suse.de> <s5hpsic3cza.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C67B4B.71C1AE80"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 538D719D
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 22:52:45 +0200 (MEST)
-Received: from pwdinc.org (laf31-2-82-224-249-128.fbx.proxad.net [82.224.249.128])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id C1E8F9931D
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 22:52:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,81 +16,143 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Takashi Iwai <tiwai <at> suse.de> writes:
+> 
+> At Mon, 15 May 2006 12:06:47 +0200,
+> I wrote:
+> > 
+> > At Sat, 13 May 2006 13:06:51 +0200,
+> > Gerald Grabner wrote:
+> > > 
+> > > Hi,
+> > > 
+> > > I'm experimenting with the ALSA PCM API and was wondering whether
+> > > there is a simple way to exit a record loop by stopping the pcm, but
+> > > without loosing pending frames.
+> > > 
+> > > Initially, I was thinking of something like this, where I would call
+> > > snd_pcm_drop(pcm) from some other thread:
+> > > 
+> > >    while ( true )
+> > >      {
+> > >        r = snd_pcm_readi (pcm, data, frames);
+> > >        fwrite (data, 2, 2*r, file);
+> > >        if ( r != frames )
+> > >          break;
+> > >      }
+> > > 
+> > > However, snd_pcm_drain(pcm) doesn't work here; the loop continues.
+> > > snd_pcm_drop(pcm) breaks the loop, but pending frames are lost, and
+> > > r=-EBADFD.
+> > > 
+> > > Is there an easy way to stop snd_pcm_readi in a way that I can
+> > > retrieve the residual frames? Do I need to set any parameters for
+> > > that purpose?
+> > 
+> > If you're using hw or plughw, it's likely a bug in alsa-driver.
+> > Try the patch below.
+> 
+> Actually the patch was also wrong.  snd_pcm_drain() shouldn't wait for
+> the capture streams.  So, the patch becomes pretty simple like below.
+> I'll commit it to HG repo.
+> 
+> Takashi
+> 
+> diff -r 44d28ed5d3d5 core/pcm_native.c
+> --- a/core/pcm_native.c	Wed May 17 11:26:39 2006 +0200
+> +++ b/core/pcm_native.c	Wed May 17 17:07:17 2006 +0200
+>  <at>  <at>  -1469,8 +1469,6  <at>  <at>  static int snd_pcm_drain(
+struct snd_pcm_
+>  		}
+>  	}
+>  	up_read(&snd_pcm_link_rwsem);
+> -	if (! num_drecs)
+> -		goto _error;
+> 
+>  	snd_pcm_stream_lock_irq(substream);
+>  	/* resume pause */
 
-------=_NextPart_000_0001_01C67B4B.71C1AE80
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
-=20
-A M B / E N
-C / A L / S
-M E R / D / A
-V A L / U M
-P R O Z ^ C
-X ^ N A X
-V / A G R A
-L E V / T R A
-S O M ^
-=20
-http://www.daysosun.com
-=20
-=20
-=20
-=20
-=20
-choice of you! May his beard wither! As for you I will throw you to the=20
-rocks! he cried and lifted Bilbo in his arms.=20
-Stay! Your wish is granted! said a voice. The old man with the=20
-casket threw aside his hood and cloak. Here is Gandalf! And none too=20
-soon it seems. If you dont like my Burglar, please dont damage him.=20
-Put him down, and listen first to what he has to say!=20
+Hi Takashi,
+
+there seems to be some problem with this patch (the short one). After
+recompiling the kernel (and my application), my application doesn't
+exit and I can't kill it anymore. The pcm device is kind of lost. See
+below for the /var/log/messages entry.
+
+Gerald
 
 
-------=_NextPart_000_0001_01C67B4B.71C1AE80
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,</DIV><DIV>&nbsp;</DIV>
-<DIV>A M B / E N<BR>
-C / A L / S<BR>
-M E R / D / A<BR>
-V A L / U M<BR>
-P R O Z ^ C<BR>
-X ^ N A X<BR>
-V / A G R A<BR>
-L E V / T R A<BR>
-S O M ^</DIV><DIV>&nbsp;</DIV>
-<DIV><A =
-href=3D"http://www.daysosun.com">http://www.daysosun.com</A></DIV><DIV>&n=
-bsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>choice of you! May his beard wither! As =
-for you I will throw you to the <BR>rocks! he cried and lifted Bilbo in =
-his arms. <BR>   Stay! Your wish is granted! said a voice. The old man =
-with the <BR>casket threw aside his hood and cloak. Here is Gandalf! And =
-none too <BR>soon it seems. If you dont like my Burglar, please dont =
-damage him. <BR>Put him down, and listen first to what he has to say! =
-<BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C67B4B.71C1AE80--
-
+May 19 22:49:58 tux Unable to handle kernel NULL pointer dereference
+at virtual address 00000001
+May 19 22:49:58 tux printing eip:
+May 19 22:49:58 tux 00000001
+May 19 22:49:58 tux *pde = 00000000
+May 19 22:49:58 tux Oops: 0000 [#1]
+May 19 22:49:58 tux PREEMPT 
+May 19 22:49:58 tux Modules linked in: ipt_REJECT xt_tcpudp
+iptable_filter ipt_MASQUERADE iptable_nat ip_nat ip_conntrack
+ip_tables x_tables nvidia
+May 19 22:49:58 tux CPU:    0
+May 19 22:49:58 tux EIP:    0060:[<00000001>]    Tainted: P      VLI
+May 19 22:49:58 tux EFLAGS: 00210087   (2.6.16-gentoo-r7 #2) 
+May 19 22:49:58 tux EIP is at 0x1
+May 19 22:49:58 tux eax: d8f83ebc ebx: 00000001 ecx: 00000001 edx:
+d8f83ec8
+May 19 22:49:58 tux esi: 00000001 edi: db22e4a4 ebp: d87e1e84 esp:
+d87e1e60
+May 19 22:49:58 tux ds: 007b   es: 007b   ss: 0068
+May 19 22:49:58 tux Process mplay (pid: 10349, threadinfo=d87e0000
+task=df8f60d0)
+May 19 22:49:58 tux Stack: <0>c010f8d4 d8f83ebc 00000003 00000000
+00000000 00200002 d87e0000 00000000
+May 19 22:49:58 tux 00200046 d87e1eac c010f911 db22e4a4 00000003
+00000001 00000000 00000000
+May 19 22:49:58 tux 00000000 00000001 c03d12fc dfcad980 c02afde4
+00000000 00000001 d87e0000
+May 19 22:49:58 tux Call Trace:
+May 19 22:49:58 tux [<c010f8d4>] __wake_up_common+0x2b/0x47
+May 19 22:49:58 tux [<c010f911>] __wake_up+0x21/0x44
+May 19 22:49:58 tux [<c02afde4>] snd_pcm_action_single+0x2e/0x44
+May 19 22:49:58 tux [<c02afe45>] snd_pcm_action+0x4b/0x55
+May 19 22:49:58 tux [<c02b0118>] snd_pcm_stop+0x12/0x16
+May 19 22:49:58 tux [<c02b0bbc>] snd_pcm_drop+0x8b/0xc3
+May 19 22:49:58 tux [<c02b19d9>] snd_pcm_release+0x1e/0xbb
+May 19 22:49:58 tux [<c01444d1>] __fput+0x83/0x142
+May 19 22:49:58 tux [<c0143146>] filp_close+0x4c/0x55
+May 19 22:49:58 tux [<c011426d>] close_files+0x4b/0x5b
+May 19 22:49:58 tux [<c01142be>] put_files_struct+0x13/0x3b
+May 19 22:49:58 tux [<c0114bd7>] do_exit+0x19a/0x35d
+May 19 22:49:58 tux [<c0114e4f>] sys_exit_group+0x0/0x11
+May 19 22:49:58 tux [<c0102549>] syscall_call+0x7/0xb
+May 19 22:49:58 tux Code:  Bad EIP value.
+May 19 22:49:58 tux <1>Fixing recursive fault but reboot is needed!
+May 19 22:49:58 tux scheduling while atomic: mplay/0x00000003/10349
+May 19 22:49:58 tux [<c033cbf1>] schedule+0x43/0x53f
+May 19 22:49:58 tux [<c0102773>] error_code+0x4f/0x54
+May 19 22:49:58 tux [<c0114aea>] do_exit+0xad/0x35d
+May 19 22:49:58 tux [<c0102e2b>] do_trap+0x0/0xc1
+May 19 22:49:58 tux [<c010e3c8>] do_page_fault+0x38d/0x4bd
+May 19 22:49:58 tux [<c0116b54>] __do_softirq+0x34/0x7d
+May 19 22:49:58 tux [<c010e03b>] do_page_fault+0x0/0x4bd
+May 19 22:49:58 tux [<c0102773>] error_code+0x4f/0x54
+May 19 22:49:58 tux [<c010f8d4>] __wake_up_common+0x2b/0x47
+May 19 22:49:58 tux [<c010f911>] __wake_up+0x21/0x44
+May 19 22:49:58 tux [<c02afde4>] snd_pcm_action_single+0x2e/0x44
+May 19 22:49:58 tux [<c02afe45>] snd_pcm_action+0x4b/0x55
+May 19 22:49:58 tux [<c02b0118>] snd_pcm_stop+0x12/0x16
+May 19 22:49:58 tux [<c02b0bbc>] snd_pcm_drop+0x8b/0xc3
+May 19 22:49:58 tux [<c02b19d9>] snd_pcm_release+0x1e/0xbb
+May 19 22:49:58 tux [<c01444d1>] __fput+0x83/0x142
+May 19 22:49:58 tux [<c0143146>] filp_close+0x4c/0x55
+May 19 22:49:58 tux [<c011426d>] close_files+0x4b/0x5b
+May 19 22:49:58 tux [<c01142be>] put_files_struct+0x13/0x3b
+May 19 22:49:58 tux [<c0114bd7>] do_exit+0x19a/0x35d
+May 19 22:49:58 tux [<c0114e4f>] sys_exit_group+0x0/0x11
+May 19 22:49:58 tux [<c0102549>] syscall_call+0x7/0xb
 
 
 
