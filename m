@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq 52-101)
-Date: Fri, 19 May 2006 08:07:45 +0200
-Message-ID: <c27d641a24847b125d58f4fb55f47f8f@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002122]: DMIX crashes Ekiga
+Date: Fri, 19 May 2006 08:49:12 +0200
+Message-ID: <0838adb4c59df956cc86d2b94bdf94a5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9CEC123A
-	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 08:07:45 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A79821A
+	for <alsa-devel@alsa-project.org>; Fri, 19 May 2006 08:49:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,213 +24,102 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2122> 
 ======================================================================
-Reported By:                liangalei
-Assigned To:                
+Reported By:                dsandras
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1134
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   2122
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.14
+Status:                     feedback
 ======================================================================
-Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              05-19-2006 08:07 CEST
+Date Submitted:             05-13-2006 17:35 CEST
+Last Modified:              05-19-2006 08:49 CEST
 ======================================================================
-Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
-52-101)
+Summary:                    DMIX crashes Ekiga
 Description: 
-My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
+This problem is probably related to problem #2095 that was closed. 
+Unfortunately, I can not reopen it, so I'm posting a new bug report.
 
-alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
-just support modem's AC-97 or else provide whole sound ? )
-
-alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
-will contine to "Have a lot fun".
-
-I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
-recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
-
-Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
------ ./configure --with-cards=azx (error: no this card)
------ ./configure ; make; make install (no error report), not run
-./snddevices
-
-No sound ! So much days, so much test..... (if i915GM chipset + Conexant
-chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
-not, I will just wait for new alsa-driver.)
-
-thanks
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001931 Unknown AC97 codec, digital sound works
+When using DMIX, Ekiga crashes. This problem was not present with earlier
+versions of libasound2. I applied all patches from CVS.
 ======================================================================
 
 ----------------------------------------------------------------------
- fedukoff - 05-18-06 13:37 
+ dsandras - 05-16-06 13:02 
 ----------------------------------------------------------------------
-Is it usefull? 
-http://www.linuxant.com/drivers/riptide/index.php
+"Wheter you're using the whole latest HG tree"
+
+Not completely. I couldn't find a way to generate a patch with hg and then
+I cancelled and took only the patch that was interesting to fix the
+original problem.
+
+"What is the sample rate your app uses"
+
+8kHz or 16kHz depending if the codec is wideband or not.
+
+"What happens if you set "defaults.pcm.dmix_max_periods -1"
+
+The result is good. 
+
+"The hardware and driver that the problem appears"
+
+All hardware, all drivers. All of the developers have different hardware
+and they can all reproduce the problem without the .asoundrc that I gave
+you or without the .asoundrc that you gave me. Of course, only with DMIX.
+
+"Change period_size to 1024 and periods to 16 in your dmix config.
+No buffer_size. It's the as same config as in default"
+
+It gives bad results.
+
+"And what is your "plugin"? Did you write a new plugin for alsa-lib and
+use it?"
+
+It is the portion of code that Ekiga is using to manager audio devices,
+the ALSA version.
 
 ----------------------------------------------------------------------
- fedukoff - 05-19-06 08:07 
+ Raymond - 05-19-06 08:49 
 ----------------------------------------------------------------------
-response from Linuxant:
+If your application use 8K/16K, there is no point to use .asoundrc which
+specifiy dmix rate 44100. 
 
-Hi,
-
-as far as I know, Conexant does not manufacture an AC97 bus, however,
-they manufacture modems that can connect to the AC97 bus and we provide
-the HSF modem driver that you can download at:
-
-http://www.linuxant.com/drivers/hsf/downloads-license.php
-
-for these modem devices.
-
-We do not provide an audio driver for a Conexant device that is attached
-to the AC97 bus. We do provide however the riptide driver, which is an
-audio driver for a PCI riptide device and it not related to the AC97 bus.
-
-Regards,
-
-
-Jonathan
-Technical specialist / Linuxant
-www.linuxant.com
-support@linuxant.com
+Your application should filter out those sound card which do'nt support
+duplex
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-28-05 08:49 liangalei      New Issue                                    
-05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
-05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
-05-28-05 09:17 liangalei      Note Added: 0004759                          
-05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
-05-30-05 03:29 liangalei      Note Added: 0004795                          
-06-01-05 16:58 tiwai          Note Added: 0004863                          
-06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
-=> PCI - intel8x0
-06-02-05 10:42 liangalei      Note Added: 0004875                          
-06-06-05 09:53 perex          Assigned To              perex =>            
-06-23-05 12:42 tiwai          Note Added: 0005182                          
-06-24-05 03:12 liangalei      File Added: asound.state                     
-06-24-05 03:13 liangalei      File Added: ac97#0-0                         
-06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
-06-24-05 03:18 liangalei      Note Added: 0005202                          
-08-28-05 15:28 ybar           Note Added: 0005962                          
-11-29-05 05:59 derek          Issue Monitored: derek                       
-11-29-05 06:00 derek          Issue End Monitor: derek                     
-11-29-05 06:03 derek          Note Added: 0006870                          
-02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
-02-17-06 22:22 gandhi         Note Added: 0008110                          
-02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
-02-17-06 23:28 gandhi         Note Edited: 0008110                         
-02-17-06 23:43 gandhi         Note Edited: 0008110                         
-02-18-06 02:05 gandhi         Note Added: 0008112                          
-02-18-06 08:13 liangalei      Note Added: 0008116                          
-02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
-02-18-06 15:56 gandhi         Note Added: 0008120                          
-02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
-03-03-06 08:29 robitech       Note Added: 0008336                          
-03-15-06 05:34 JProgrammer    Note Added: 0008526                          
-03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
-03-15-06 06:39 Kooper         Note Added: 0008527                          
-03-15-06 11:40 tiwai          Note Added: 0008531                          
-03-15-06 11:53 Kooper         Note Added: 0008535                          
-03-15-06 12:13 JProgrammer    Note Added: 0008538                          
-03-15-06 12:18 tiwai          Note Added: 0008540                          
-03-15-06 23:48 JProgrammer    Note Added: 0008579                          
-03-16-06 15:04 tiwai          Note Added: 0008606                          
-03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
-   
-03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
-03-17-06 04:10 Kooper         Note Added: 0008633                          
-03-17-06 12:07 tiwai          Note Added: 0008641                          
-03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
-      
-03-17-06 12:35 Kooper         Note Added: 0008644                          
-03-21-06 02:38 JProgrammer    Note Added: 0008736                          
-03-25-06 10:51 alessiodf      Note Added: 0008944                          
-03-26-06 20:12 alessiodf      Note Edited: 0008944                         
-03-26-06 20:15 alessiodf      Note Edited: 0008944                         
-03-30-06 15:47 trava          Note Added: 0009034                          
-04-07-06 13:05 kesiev         Note Added: 0009137                          
-04-07-06 13:06 kesiev         Note Edited: 0009137                         
-04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
-04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
-04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
-04-12-06 16:21 kesiev         Note Added: 0009246                          
-04-12-06 16:21 kesiev         File Added: qta058Ba.inf                     
-04-13-06 14:00 kesiev         Note Added: 0009259                          
-04-13-06 14:00 kesiev         File Added: windows-details.txt                   
-
-04-13-06 14:54 kesiev         Note Edited: 0009259                         
-04-13-06 15:34 kesiev         Issue Monitored: kesiev                      
-04-15-06 12:33 kesiev         Note Edited: 0009259                         
-04-15-06 12:33 kesiev         File Added: alsasound.conf                    
-04-18-06 09:35 fedukoff       Note Added: 0009326                          
-05-01-06 20:24 rawsock        Issue Monitored: rawsock                     
-05-03-06 15:55 fedukoff       Issue Monitored: fedukoff                    
-05-09-06 14:36 drseergio      Note Added: 0009658                          
-05-09-06 16:40 rlrevell       Note Added: 0009661                          
-05-09-06 17:16 drseergio      Note Added: 0009662                          
-05-09-06 17:19 drseergio      Note Edited: 0009662                         
-05-09-06 17:28 rlrevell       Note Added: 0009664                          
-05-09-06 17:31 drseergio      Note Edited: 0009662                         
-05-09-06 17:32 drseergio      Note Added: 0009665                          
-05-09-06 17:41 drseergio      Note Edited: 0009665                         
-05-09-06 17:49 rlrevell       Note Added: 0009667                          
-05-09-06 17:52 drseergio      Note Added: 0009668                          
-05-09-06 17:57 rlrevell       Note Added: 0009669                          
-05-09-06 18:00 drseergio      Note Added: 0009670                          
-05-09-06 18:33 fedukoff       Note Added: 0009672                          
-05-09-06 18:44 drseergio      Note Added: 0009673                          
-05-09-06 19:11 fedukoff       Note Added: 0009674                          
-05-09-06 19:12 rlrevell       Note Added: 0009675                          
-05-09-06 19:21 drseergio      Note Added: 0009676                          
-05-09-06 19:27 fedukoff       Note Added: 0009677                          
-05-09-06 19:28 rlrevell       Note Added: 0009678                          
-05-09-06 19:30 drseergio      Note Added: 0009679                          
-05-09-06 19:39 fedukoff       Note Added: 0009680                          
-05-09-06 19:42 rlrevell       Note Added: 0009681                          
-05-09-06 19:50 drseergio      Note Added: 0009682                          
-05-09-06 20:16 fedukoff       Note Added: 0009683                          
-05-09-06 20:17 rlrevell       Note Added: 0009684                          
-05-09-06 20:19 rlrevell       Note Added: 0009685                          
-05-09-06 20:28 drseergio      Note Added: 0009686                          
-05-09-06 20:29 fedukoff       Note Added: 0009687                          
-05-09-06 20:34 rlrevell       Note Added: 0009688                          
-05-09-06 22:07 fedukoff       Note Added: 0009691                          
-05-10-06 15:58 fedukoff       Note Added: 0009719                          
-05-10-06 17:10 rlrevell       Note Added: 0009735                          
-05-10-06 17:19 kesiev         Note Added: 0009738                          
-05-10-06 17:21 trava          Note Added: 0009740                          
-05-10-06 17:25 trava          Note Added: 0009741                          
-05-10-06 17:41 fedukoff       Note Added: 0009743                          
-05-10-06 18:03 fedukoff       Note Added: 0009745                          
-05-10-06 18:20 trava          Note Added: 0009746                          
-05-10-06 18:34 fedukoff       Note Added: 0009748                          
-05-11-06 08:15 fedukoff       Note Added: 0009759                          
-05-11-06 08:42 JProgrammer    Note Added: 0009760                          
-05-11-06 08:45 fedukoff       Note Added: 0009761                          
-05-11-06 18:25 fedukoff       Note Added: 0009764                          
-05-12-06 08:13 fedukoff       Note Added: 0009773                          
-05-12-06 08:14 fedukoff       Note Edited: 0009773                         
-05-15-06 14:15 fedukoff       Note Added: 0009822                          
-05-15-06 14:49 rlrevell       Note Added: 0009824                          
-05-15-06 14:57 fedukoff       Note Added: 0009825                          
-05-15-06 15:25 rlrevell       Note Added: 0009826                          
-05-18-06 12:45 fedukoff       Note Added: 0009866                          
-05-18-06 13:37 fedukoff       Note Added: 0009867                          
-05-18-06 13:48 fedukoff       Note Deleted: 0009822                        
-05-19-06 08:07 fedukoff       Note Added: 0009873                          
+05-13-06 17:35 dsandras       New Issue                                    
+05-13-06 17:39 dsandras       Note Added: 0009795                          
+05-13-06 17:41 dsandras       Note Added: 0009796                          
+05-13-06 18:29 rlrevell       Note Added: 0009799                          
+05-13-06 18:36 dsandras       Note Added: 0009800                          
+05-13-06 18:37 dsandras       File Added: busytone.wav                     
+05-15-06 10:35 tiwai          Status                   assigned => resolved
+05-15-06 10:35 tiwai          Resolution               open => fixed       
+05-15-06 10:35 tiwai          Note Added: 0009814                          
+05-15-06 11:01 dsandras       Status                   resolved => feedback
+05-15-06 11:01 dsandras       Resolution               fixed => reopened   
+05-15-06 11:01 dsandras       Note Added: 0009816                          
+05-15-06 11:07 tiwai          Note Added: 0009818                          
+05-15-06 22:33 dsandras       Note Added: 0009828                          
+05-15-06 22:42 rlrevell       Note Added: 0009829                          
+05-15-06 22:46 dsandras       Note Added: 0009830                          
+05-15-06 22:58 rlrevell       Note Added: 0009831                          
+05-15-06 22:59 dsandras       Note Added: 0009832                          
+05-15-06 23:28 rlrevell       Note Added: 0009833                          
+05-15-06 23:41 dsandras       Note Added: 0009834                          
+05-16-06 11:19 tiwai          Note Added: 0009836                          
+05-16-06 11:52 dsandras       Note Added: 0009837                          
+05-16-06 12:04 tiwai          Note Added: 0009838                          
+05-16-06 13:02 dsandras       Note Added: 0009839                          
+05-19-06 08:49 Raymond        Note Added: 0009874                          
 ======================================================================
 
 
