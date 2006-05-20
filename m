@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002137]: No mute controls for Audigy or Audigy 2ZS
-Date: Sat, 20 May 2006 17:27:20 +0200
-Message-ID: <6cb3f72d3163d5d71b692bd29335f374@bugtrack.alsa-project.org>
+Date: Sat, 20 May 2006 17:32:31 +0200
+Message-ID: <9325756a14f13df7e77c8e6e67fbbc05@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B33EF191
-	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 17:27:20 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDCB5191
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 17:32:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.15, 2.6.16
 ======================================================================
 Date Submitted:             05-20-2006 15:23 CEST
-Last Modified:              05-20-2006 17:27 CEST
+Last Modified:              05-20-2006 17:32 CEST
 ======================================================================
 Summary:                    No mute controls for Audigy or Audigy 2ZS
 Description: 
@@ -67,16 +67,17 @@ mute controls, maybe this is the same sort of thing.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-20-06 17:22 
-----------------------------------------------------------------------
-Wasn't it a deliberate design decision not to waste GPRs on mute controls,
-as this can be implemented by the mixer app?
-
-----------------------------------------------------------------------
  jcdutton - 05-20-06 17:27 
 ----------------------------------------------------------------------
 One does not have to use GPRs to implement it.
 One can just use local state variables instead.
+
+----------------------------------------------------------------------
+ pzad - 05-20-06 17:32 
+----------------------------------------------------------------------
+Simpler is waste GPRs. Audigy has plenty of GPRs to waste :-). Mute on
+every controls needs 54 GPRs - there will be more then 256 GPRs free after
+implementing them.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -91,6 +92,7 @@ Date Modified  Username       Field                    Change
 05-20-06 17:02 jcdutton       Status                   new => acknowledged 
 05-20-06 17:22 rlrevell       Note Added: 0009887                          
 05-20-06 17:27 jcdutton       Note Added: 0009888                          
+05-20-06 17:32 pzad           Note Added: 0009889                          
 ======================================================================
 
 
