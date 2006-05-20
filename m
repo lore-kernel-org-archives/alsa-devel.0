@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002137]: No mute controls for Audigy or Audigy 2ZS
-Date: Sat, 20 May 2006 17:32:31 +0200
-Message-ID: <9325756a14f13df7e77c8e6e67fbbc05@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0002136]: ice1724gt support for Envy24Control
+Date: Sat, 20 May 2006 18:55:48 +0200
+Message-ID: <e0414cd2ff4f5d0476f2614ec1e8f1f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BDCB5191
-	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 17:32:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 526F21A2
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 18:55:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2137> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2136> 
 ======================================================================
-Reported By:                stdpikachu
+Reported By:                hlabs
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2137
-Category:                   PCI - emu10k1
+Project:                    ALSA - tools
+Issue ID:                   2136
+Category:                   envy24control
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Gentoo
-Kernel Version:             2.6.15, 2.6.16
+Status:                     new
 ======================================================================
-Date Submitted:             05-20-2006 15:23 CEST
-Last Modified:              05-20-2006 17:32 CEST
+Date Submitted:             05-19-2006 21:21 CEST
+Last Modified:              05-20-2006 18:55 CEST
 ======================================================================
-Summary:                    No mute controls for Audigy or Audigy 2ZS
+Summary:                    ice1724gt support for Envy24Control
 Description: 
-The problem has been around for while, but have only just got around to
-reporting it (incidentally, where do I search for previously file bug
-reports?).
+What about ice1724gt support for Envy24Control util ?
+My card is M-Audio Revolution 5.1
+Envy24Control says : no Ice1712 found.
 
-I have three computers, all with various flavours of Audigy cards, all
-using the latest emu10k1 alsa driver. The problem also exists with the
-in-kernel audigy driver. Googling for other people with the same problem
-suggests the problem crept it quite a while ago.
+All modules loads fine but no sound at all :(
+Vanilla kernel 2.6.16 with ALSA 1.0.11 .
+Trial OSS works fine .
 
-No matter what UI is used, I can't mute most channels provided by the
-audigy driver. For instance, in alsamixer I can only mute Headphones,
-Line, CD, Phone, PC Speaker and Aux. ALl other channels are without mute
-toggles.
-
-The upshot of this is that mute controls in almost all alsa apps doesn't
-work and the only way to mute the channel is to manually set master or PCM
-volume to zero.
-
-I read of a bug with one of the intel sound drivers that lost most of the
-mute controls, maybe this is the same sort of thing.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 05-20-06 17:27 
+ rlrevell - 05-20-06 00:00 
 ----------------------------------------------------------------------
-One does not have to use GPRs to implement it.
-One can just use local state variables instead.
+Yes, it's a known issue that envy24 control does not support ICE1724. 
+However this is interesting, it sounds like it could be trivial to fix.
 
 ----------------------------------------------------------------------
- pzad - 05-20-06 17:32 
+ hlabs - 05-20-06 18:55 
 ----------------------------------------------------------------------
-Simpler is waste GPRs. Audigy has plenty of GPRs to waste :-). Mute on
-every controls needs 54 GPRs - there will be more then 256 GPRs free after
-implementing them.
+It doesn't work using alsamixer.
+All controls unmuted and routed to PCM out.
+Still no sound :( Even via oss emulation.
+
+aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Revolution51 [M Audio Revolution-5.1], device 0: ICE1724
+[ICE1724]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Revolution51 [M Audio Revolution-5.1], device 1: IEC1724 IEC958
+[IEC1724 IEC958]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: Revolution51 [M Audio Revolution-5.1], device 2: ICE1724 Surrounds
+[ICE1724 Surround PCM]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-20-06 15:23 stdpikachu     New Issue                                    
-05-20-06 15:23 stdpikachu     File Added: alsamixer.png                    
-05-20-06 15:23 stdpikachu     Distribution              => Gentoo          
-05-20-06 15:23 stdpikachu     Kernel Version            => 2.6.15, 2.6.16  
-05-20-06 16:09 pzad           Note Added: 0009884                          
-05-20-06 16:47 stdpikachu     Note Added: 0009885                          
-05-20-06 17:02 jcdutton       Note Added: 0009886                          
-05-20-06 17:02 jcdutton       Status                   new => acknowledged 
-05-20-06 17:22 rlrevell       Note Added: 0009887                          
-05-20-06 17:27 jcdutton       Note Added: 0009888                          
-05-20-06 17:32 pzad           Note Added: 0009889                          
+05-19-06 21:21 hlabs          New Issue                                    
+05-19-06 21:22 hlabs          Issue Monitored: hlabs                       
+05-19-06 23:55 gineera        Note Added: 0009880                          
+05-19-06 23:56 gineera        Note Edited: 0009880                         
+05-20-06 00:00 rlrevell       Note Added: 0009881                          
+05-20-06 18:55 hlabs          Note Added: 0009890                          
 ======================================================================
 
 
