@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002137]: No mute controls for Audigy or Audigy 2ZS
-Date: Sat, 20 May 2006 21:17:50 +0200
-Message-ID: <71950503ad80d7122a1a5f35bdec67a9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002132]: No sound from speakers
+Date: Sat, 20 May 2006 21:43:19 +0200
+Message-ID: <d0933adc17a6ab3379336639847341b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C03F418A
-	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 21:17:50 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1516618D
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 21:43:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2137> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
 ======================================================================
-Reported By:                stdpikachu
+Reported By:                bzbarsky
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2137
-Category:                   PCI - emu10k1
+Issue ID:                   2132
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Gentoo
-Kernel Version:             2.6.15, 2.6.16
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             05-20-2006 15:23 CEST
-Last Modified:              05-20-2006 21:17 CEST
+Date Submitted:             05-17-2006 19:54 CEST
+Last Modified:              05-20-2006 21:43 CEST
 ======================================================================
-Summary:                    No mute controls for Audigy or Audigy 2ZS
+Summary:                    No sound from speakers
 Description: 
-The problem has been around for while, but have only just got around to
-reporting it (incidentally, where do I search for previously file bug
-reports?).
-
-I have three computers, all with various flavours of Audigy cards, all
-using the latest emu10k1 alsa driver. The problem also exists with the
-in-kernel audigy driver. Googling for other people with the same problem
-suggests the problem crept it quite a while ago.
-
-No matter what UI is used, I can't mute most channels provided by the
-audigy driver. For instance, in alsamixer I can only mute Headphones,
-Line, CD, Phone, PC Speaker and Aux. ALl other channels are without mute
-toggles.
-
-The upshot of this is that mute controls in almost all alsa apps doesn't
-work and the only way to mute the channel is to manually set master or PCM
-volume to zero.
-
-I read of a bug with one of the intel sound drivers that lost most of the
-mute controls, maybe this is the same sort of thing.
+Alsa seems to detect the sound card, but when I try to actually play
+something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 05-20-06 19:57 
+ Raymond - 05-20-06 05:31 
 ----------------------------------------------------------------------
-Could you try this audigy_mute.patch ?
-Not very much tested, but for me it works.
-Need some work to support cards with 1361T chip (I don't have such card -
-someone else have to finish it.
+In your scsound.log , it it strange that amixer report "Caller ID" and "off
+hook"
+
+----------------------------------------------------------------------
+ bzbarsky - 05-20-06 21:43 
+----------------------------------------------------------------------
+Hmm...  It also reports "Phone"...  Could that be relevant?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-20-06 15:23 stdpikachu     New Issue                                    
-05-20-06 15:23 stdpikachu     File Added: alsamixer.png                    
-05-20-06 15:23 stdpikachu     Distribution              => Gentoo          
-05-20-06 15:23 stdpikachu     Kernel Version            => 2.6.15, 2.6.16  
-05-20-06 16:09 pzad           Note Added: 0009884                          
-05-20-06 16:47 stdpikachu     Note Added: 0009885                          
-05-20-06 17:02 jcdutton       Note Added: 0009886                          
-05-20-06 17:02 jcdutton       Status                   new => acknowledged 
-05-20-06 17:22 rlrevell       Note Added: 0009887                          
-05-20-06 17:27 jcdutton       Note Added: 0009888                          
-05-20-06 17:32 pzad           Note Added: 0009889                          
-05-20-06 19:57 pzad           Note Added: 0009891                          
-05-20-06 21:17 rlrevell       Note Added: 0009892                          
+05-17-06 19:54 bzbarsky       New Issue                                    
+05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
+05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
+05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
+05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
+05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
+05-17-06 19:56 bzbarsky       File Added: scsound.log                      
+05-17-06 19:57 bzbarsky       Note Added: 0009857                          
+05-20-06 05:31 Raymond        Note Added: 0009882                          
+05-20-06 21:43 bzbarsky       Note Added: 0009893                          
 ======================================================================
 
 
