@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Sat, 20 May 2006 21:43:19 +0200
-Message-ID: <d0933adc17a6ab3379336639847341b0@bugtrack.alsa-project.org>
+From: "Kamal Forest" <foresto@kfunigraz.ac.at>
+Subject: Re: test AMkBBtEN
+Date: Sat, 20 May 2006 12:48:36 -0700
+Message-ID: <000001c67c46$621d7350$46f2a8c0@zgr35>
+Reply-To: "Kamal Forest" <foresto@kfunigraz.ac.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C67C0B.B5BE9B50"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1516618D
-	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 21:43:19 +0200 (MEST)
+Received: from kfunigraz.ac.at (host244-138.pool878.interbusiness.it [87.8.138.244])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id E70BB18F
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 21:48:40 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,58 +22,79 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
-======================================================================
-Reported By:                bzbarsky
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2132
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              05-20-2006 21:43 CEST
-======================================================================
-Summary:                    No sound from speakers
-Description: 
-Alsa seems to detect the sound card, but when I try to actually play
-something there is no sound from the speakers.
-======================================================================
+------=_NextPart_000_0001_01C67C0B.B5BE9B50
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- Raymond - 05-20-06 05:31 
-----------------------------------------------------------------------
-In your scsound.log , it it strange that amixer report "Caller ID" and "off
-hook"
+Hi,
+=20
+A M B / E N
+V A L / U M
+V / A G R A
+P R O Z ^ C
+M E R / D / A
+S O M ^
+X ^ N A X
+L E V / T R A
+C / A L / S
+=20
+http://www.ketuvuision.com
+=20
+=20
+=20
+=20
+=20
+talking and shut their eyes, he kept on muttering and chuckling to
+himself.=20
+Gollum! Well Im blest! So thats how he sneaked past me is it? Now=20
+I know! Just crept quietly along did you, Mr. Baggins? Buttons all over=20
+the doorstep? Good old Bilbo-Bilbo-Bilbo-bo-bo-bo- And then he fell=20
+asleep, and there was complete silence for a long time.=20
+All of a sudden Dwalin opened an eye, and looked round at them.=20
 
-----------------------------------------------------------------------
- bzbarsky - 05-20-06 21:43 
-----------------------------------------------------------------------
-Hmm...  It also reports "Phone"...  Could that be relevant?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-17-06 19:54 bzbarsky       New Issue                                    
-05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
-05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
-05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
-05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
-05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
-05-17-06 19:56 bzbarsky       File Added: scsound.log                      
-05-17-06 19:57 bzbarsky       Note Added: 0009857                          
-05-20-06 05:31 Raymond        Note Added: 0009882                          
-05-20-06 21:43 bzbarsky       Note Added: 0009893                          
-======================================================================
+------=_NextPart_000_0001_01C67C0B.B5BE9B50
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hi,</DIV><DIV>&nbsp;</DIV>
+<DIV>A M B / E N<BR>
+V A L / U M<BR>
+V / A G R A<BR>
+P R O Z ^ C<BR>
+M E R / D / A<BR>
+S O M ^<BR>
+X ^ N A X<BR>
+L E V / T R A<BR>
+C / A L / S</DIV><DIV>&nbsp;</DIV>
+<DIV><A =
+href=3D"http://www.ketuvuision.com">http://www.ketuvuision.com</A></DIV><=
+DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>talking and shut their eyes, he kept on =
+muttering and chuckling to himself. <BR>   Gollum! Well Im blest! So =
+thats how he sneaked past me is it? Now <BR>I know! Just crept quietly =
+along did you, Mr. Baggins? Buttons all over <BR>the doorstep? Good old =
+Bilbo-Bilbo-Bilbo-bo-bo-bo- And then he fell <BR>asleep, and there was =
+complete silence for a long time. <BR>   All of a sudden Dwalin opened =
+an eye, and looked round at them. <BR></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C67C0B.B5BE9B50--
+
 
 
 
