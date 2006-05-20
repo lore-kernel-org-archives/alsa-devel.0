@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002137]: No mute controls for Audigy or Audigy 2ZS
-Date: Sat, 20 May 2006 15:23:30 +0200
-Message-ID: <d1dfe406832d4b3ea862b80a7c71ecb3@bugtrack.alsa-project.org>
+Date: Sat, 20 May 2006 16:09:21 +0200
+Message-ID: <2b9e179aa39186a7e2632bdea90aab97@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A9A3140
-	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 15:23:31 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 67DB1196
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 16:09:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2137> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.15, 2.6.16
 ======================================================================
 Date Submitted:             05-20-2006 15:23 CEST
-Last Modified:              05-20-2006 15:23 CEST
+Last Modified:              05-20-2006 16:09 CEST
 ======================================================================
 Summary:                    No mute controls for Audigy or Audigy 2ZS
 Description: 
@@ -66,6 +66,12 @@ I read of a bug with one of the intel sound drivers that lost most of the
 mute controls, maybe this is the same sort of thing.
 ======================================================================
 
+----------------------------------------------------------------------
+ pzad - 05-20-06 16:09 
+----------------------------------------------------------------------
+AFAIK Audigy alsa driver never had mute switches (sb live had). Only analog
+mixer part has mute switches.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -73,6 +79,7 @@ Date Modified  Username       Field                    Change
 05-20-06 15:23 stdpikachu     File Added: alsamixer.png                    
 05-20-06 15:23 stdpikachu     Distribution              => Gentoo          
 05-20-06 15:23 stdpikachu     Kernel Version            => 2.6.15, 2.6.16  
+05-20-06 16:09 pzad           Note Added: 0009884                          
 ======================================================================
 
 
