@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0002136]: ice1724gt support for Envy24Control
-Date: Sat, 20 May 2006 00:00:37 +0200
-Message-ID: <3d0d179f3ca6b85ee62eb004f88ea0e9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002132]: No sound from speakers
+Date: Sat, 20 May 2006 05:31:54 +0200
+Message-ID: <2cb253b9e40cb8e88d7463f4334f2863@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02635191
-	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 00:00:37 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BEFDA195
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 05:31:54 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,63 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2136> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
 ======================================================================
-Reported By:                hlabs
+Reported By:                bzbarsky
 Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   2136
-Category:                   envy24control
+Project:                    ALSA - driver
+Issue ID:                   2132
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             05-19-2006 21:21 CEST
-Last Modified:              05-20-2006 00:00 CEST
+Date Submitted:             05-17-2006 19:54 CEST
+Last Modified:              05-20-2006 05:31 CEST
 ======================================================================
-Summary:                    ice1724gt support for Envy24Control
+Summary:                    No sound from speakers
 Description: 
-What about ice1724gt support for Envy24Control util ?
-My card is M-Audio Revolution 5.1
-Envy24Control says : no Ice1712 found.
-
-All modules loads fine but no sound at all :(
-Vanilla kernel 2.6.16 with ALSA 1.0.11 .
-Trial OSS works fine .
-
+Alsa seems to detect the sound card, but when I try to actually play
+something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- gineera - 05-19-06 23:56 
+ bzbarsky - 05-17-06 19:57 
 ----------------------------------------------------------------------
-Envy24control just provides a convenient way to access the Alsa controls. 
-If sound is not working, use alsamixer (from a terminal window) and you
-should have all the controls available.  Channels are usually muted and at
-zero level by default.  If it doesn't work using alsamixer, the underlying
-driver may be at fault.
-
-Envy24control does not add any more controls although it gives signal
-meters and is easier to use, and is quite separate from the sound driver. 
-It is quite possible that it doesn't support 1724 chips (yet?).
-
-
+Please let me know if there is any more information that I can provide that
+would help.
 
 ----------------------------------------------------------------------
- rlrevell - 05-20-06 00:00 
+ Raymond - 05-20-06 05:31 
 ----------------------------------------------------------------------
-Yes, it's a known issue that envy24 control does not support ICE1724. 
-However this is interesting, it sounds like it could be trivial to fix.
+In your scsound.log , it it strange that amixer report "Caller ID" and "off
+hook"
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-19-06 21:21 hlabs          New Issue                                    
-05-19-06 21:22 hlabs          Issue Monitored: hlabs                       
-05-19-06 23:55 gineera        Note Added: 0009880                          
-05-19-06 23:56 gineera        Note Edited: 0009880                         
-05-20-06 00:00 rlrevell       Note Added: 0009881                          
+05-17-06 19:54 bzbarsky       New Issue                                    
+05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
+05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
+05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
+05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
+05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
+05-17-06 19:56 bzbarsky       File Added: scsound.log                      
+05-17-06 19:57 bzbarsky       Note Added: 0009857                          
+05-20-06 05:31 Raymond        Note Added: 0009882                          
 ======================================================================
 
 
