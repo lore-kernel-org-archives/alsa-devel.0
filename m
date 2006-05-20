@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002137]: No mute controls for Audigy or Audigy 2ZS
-Date: Sat, 20 May 2006 17:02:23 +0200
-Message-ID: <0697e0932d2c024a4659bf5dd09172c2@bugtrack.alsa-project.org>
+Date: Sat, 20 May 2006 17:22:59 +0200
+Message-ID: <f89adbbdd3c1c0b11d821b42f795486c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6163E1A2
-	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 17:02:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53375191
+	for <alsa-devel@alsa-project.org>; Sat, 20 May 2006 17:22:59 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2137> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.15, 2.6.16
 ======================================================================
 Date Submitted:             05-20-2006 15:23 CEST
-Last Modified:              05-20-2006 17:02 CEST
+Last Modified:              05-20-2006 17:22 CEST
 ======================================================================
 Summary:                    No mute controls for Audigy or Audigy 2ZS
 Description: 
@@ -67,23 +67,17 @@ mute controls, maybe this is the same sort of thing.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 05-20-06 16:09 
-----------------------------------------------------------------------
-AFAIK Audigy alsa driver never had mute switches (sb live had). Only analog
-mixer part has mute switches.
-
-----------------------------------------------------------------------
- stdpikachu - 05-20-06 16:47 
-----------------------------------------------------------------------
-What does that mean in terms of giving emu10k1 mute functionality? It isn't
-possible?
-
-----------------------------------------------------------------------
  jcdutton - 05-20-06 17:02 
 ----------------------------------------------------------------------
 Of course it is possible. It is just that time is spent on other things
 instead.
 
+
+----------------------------------------------------------------------
+ rlrevell - 05-20-06 17:22 
+----------------------------------------------------------------------
+Wasn't it a deliberate design decision not to waste GPRs on mute controls,
+as this can be implemented by the mixer app?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +90,7 @@ Date Modified  Username       Field                    Change
 05-20-06 16:47 stdpikachu     Note Added: 0009885                          
 05-20-06 17:02 jcdutton       Note Added: 0009886                          
 05-20-06 17:02 jcdutton       Status                   new => acknowledged 
+05-20-06 17:22 rlrevell       Note Added: 0009887                          
 ======================================================================
 
 
