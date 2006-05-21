@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002112]: Problems recording sound from my USB microphone
-Date: Sun, 21 May 2006 19:20:06 +0200
-Message-ID: <a8e8e8d3f78f21f40900570aca50ae27@bugtrack.alsa-project.org>
+Date: Sun, 21 May 2006 19:41:06 +0200
+Message-ID: <2c93387c2383db8891e73ab7f9d27470@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F544192
-	for <alsa-devel@alsa-project.org>; Sun, 21 May 2006 19:20:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FE14192
+	for <alsa-devel@alsa-project.org>; Sun, 21 May 2006 19:41:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2112> 
 ======================================================================
@@ -35,10 +35,12 @@ Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             05-10-2006 23:00 CEST
-Last Modified:              05-21-2006 19:20 CEST
+Last Modified:              05-21-2006 19:41 CEST
 ======================================================================
 Summary:                    Problems recording sound from my USB microphone
 Description: 
@@ -293,6 +295,7 @@ Date Modified  Username       Field                    Change
 05-10-06 23:00 mkap           New Issue                                    
 05-11-06 01:30 rlrevell       Note Added: 0009756                          
 05-21-06 19:20 mkap           Note Added: 0009900                          
+05-21-06 19:41 rlrevell       Status                   new => closed       
 ======================================================================
 
 
