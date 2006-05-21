@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002137]: No mute controls for Audigy or Audigy 2ZS
-Date: Sun, 21 May 2006 11:32:26 +0200
-Message-ID: <9b0937626a8d8b6d7880be5faad0b295@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001556]: Fortissimo 4: No Volume Control
+Date: Sun, 21 May 2006 14:10:12 +0200
+Message-ID: <bfdb8dadf85e2d5235abdc40931b49c5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 751D7188
-	for <alsa-devel@alsa-project.org>; Sun, 21 May 2006 11:32:26 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F3DB147
+	for <alsa-devel@alsa-project.org>; Sun, 21 May 2006 14:10:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2137> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1556> 
 ======================================================================
-Reported By:                stdpikachu
-Assigned To:                
+Reported By:                bladus
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2137
-Category:                   PCI - emu10k1
+Issue ID:                   1556
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               Gentoo
-Kernel Version:             2.6.15, 2.6.16
+Status:                     feedback
+Distribution:               Gentoo Linux 2005.1
+Kernel Version:             2.6.14-ck1
 ======================================================================
-Date Submitted:             05-20-2006 15:23 CEST
-Last Modified:              05-21-2006 11:32 CEST
+Date Submitted:             11-13-2005 22:06 CET
+Last Modified:              05-21-2006 14:10 CEST
 ======================================================================
-Summary:                    No mute controls for Audigy or Audigy 2ZS
+Summary:                    Fortissimo 4: No Volume Control
 Description: 
-The problem has been around for while, but have only just got around to
-reporting it (incidentally, where do I search for previously file bug
-reports?).
+With the Hercules Fortissimo 4 (Envy24HT) there's no posibillity to control
+the volume.
+It's always at max.
 
-I have three computers, all with various flavours of Audigy cards, all
-using the latest emu10k1 alsa driver. The problem also exists with the
-in-kernel audigy driver. Googling for other people with the same problem
-suggests the problem crept it quite a while ago.
+Under Windows the card uses the reference drivers from VIA, so maybe you
+can fix that issue.
+I would be very happy if you could send me a response to this issue within
+a week, since when it's not possible i can return the card to the
+merchant.
 
-No matter what UI is used, I can't mute most channels provided by the
-audigy driver. For instance, in alsamixer I can only mute Headphones,
-Line, CD, Phone, PC Speaker and Aux. ALl other channels are without mute
-toggles.
+Thank you.
 
-The upshot of this is that mute controls in almost all alsa apps doesn't
-work and the only way to mute the channel is to manually set master or PCM
-volume to zero.
-
-I read of a bug with one of the intel sound drivers that lost most of the
-mute controls, maybe this is the same sort of thing.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-20-06 21:17 
+ madman2003 - 01-30-06 15:55 
 ----------------------------------------------------------------------
-pzad, did you forget to upload the patch?
+Hercules Fortissimo 4(One codec, one dac):
+http://www.wolfsonmicro.com/products/digital_audio/dacs/WM8766/
+http://www.wolfsonmicro.com/products/digital_audio/codecs/WM8776/
+
+Terratec Aureon 7.1 Space(codec):
+http://www.wolfsonmicro.com/products/digital_audio/codecs/WM8770/
+
+The difference is the 8770 has anologue gain and the 8776 only has digital
+volume control and i remember reading somewhere that the analogue gain is
+actually used. The WM8776 is less common and that's why it's probably not
+supported. I only use the optical out and i don't care much for the
+analogue connectors. But i thought i'd mention it.
 
 ----------------------------------------------------------------------
- pzad - 05-21-06 11:32 
+ pajo - 05-21-06 14:10 
 ----------------------------------------------------------------------
-Sorry.
+Basic volume control(only front channels) works with module option:
+
+options snd_ice1724 model="ms300"
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-20-06 15:23 stdpikachu     New Issue                                    
-05-20-06 15:23 stdpikachu     File Added: alsamixer.png                    
-05-20-06 15:23 stdpikachu     Distribution              => Gentoo          
-05-20-06 15:23 stdpikachu     Kernel Version            => 2.6.15, 2.6.16  
-05-20-06 16:09 pzad           Note Added: 0009884                          
-05-20-06 16:47 stdpikachu     Note Added: 0009885                          
-05-20-06 17:02 jcdutton       Note Added: 0009886                          
-05-20-06 17:02 jcdutton       Status                   new => acknowledged 
-05-20-06 17:22 rlrevell       Note Added: 0009887                          
-05-20-06 17:27 jcdutton       Note Added: 0009888                          
-05-20-06 17:32 pzad           Note Added: 0009889                          
-05-20-06 19:57 pzad           Note Added: 0009891                          
-05-20-06 21:17 rlrevell       Note Added: 0009892                          
-05-20-06 21:18 rlrevell       Note View State: public: 9892                    
-05-21-06 11:32 pzad           File Added: audigy_mute.patch                    
-05-21-06 11:32 pzad           Note Added: 0009897                          
+11-13-05 22:06 bladus         New Issue                                    
+11-13-05 22:06 bladus         Distribution              => Gentoo Linux 2005.1
+11-13-05 22:06 bladus         Kernel Version            => 2.6.14-ck1      
+11-14-05 11:02 perex          Note Added: 0006713                          
+11-14-05 11:02 perex          Assigned To               => perex           
+11-14-05 11:02 perex          Status                   new => feedback     
+11-14-05 13:39 bladus         Note Added: 0006722                          
+11-14-05 13:55 bladus         Note Added: 0006723                          
+11-14-05 14:01 perex          Note Added: 0006724                          
+11-15-05 16:37 bladus         Note Added: 0006731                          
+11-19-05 10:27 bladus         Note Added: 0006761                          
+01-10-06 19:37 liiwi          Issue Monitored: liiwi                       
+01-10-06 19:58 liiwi          Note Added: 0007552                          
+01-26-06 08:35 rolling        Note Added: 0007785                          
+01-26-06 08:36 rolling        Note Edited: 0007785                         
+01-30-06 15:55 madman2003     Note Added: 0007838                          
+05-21-06 14:10 pajo           Note Added: 0009898                          
 ======================================================================
 
 
