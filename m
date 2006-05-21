@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002134]: arecord doesn't work in amd x86_64 X2 dual core.
-Date: Sun, 21 May 2006 14:12:38 +0200
-Message-ID: <089676c67929ac8604d7fa74cdeb14be@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Crash on playback with x86_64
+Date: Sun, 21 May 2006 17:12:27 +0200
+Message-ID: <20060521171227.644b1747.pochini@shiny.it>
+References: <20060519233712.9ceb39b3.pochini@shiny.it>
+	<s5hk68gn950.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11FD2229
-	for <alsa-devel@alsa-project.org>; Sun, 21 May 2006 14:12:38 +0200 (MEST)
+In-Reply-To: <s5hk68gn950.wl%tiwai@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +18,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 20 May 2006 15:00:43 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2134> 
-======================================================================
-Reported By:                bolsog
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2134
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             05-18-2006 13:25 CEST
-Last Modified:              05-21-2006 14:12 CEST
-======================================================================
-Summary:                    arecord doesn't work in amd x86_64 X2 dual core.
-Description: 
-arecord doen't work on a amd x86_64 X2 dual core.
+> > An Athlon 64 user (Asus A8V-deluxe VIA K8T800 PCI/AGP chipset) is having
+> > problems with ALSA and my driver for the Mia-midi sound card. The system
+> > hangs solid when he tries to play something. The weird thing is that
+> > capture works. 99% of the code paths are the same for both capture and
+> > playback. The same card works on another (32 bits) box. After having tried
+> > all usual voodoo, I still don't know what &%$@# is happening. Is there any
+> > known or suspect problem with ALSA on 64 bits systems ?
+>
+> No, I don't know of any 64bit-specific lock-up problem.
+> Does it happen with the latest ALSA release (or better with HG
+> version)?
 
-examples:
-arecord -d 10 -c 2 -f S16_LE -r 32000 foo.wav
-arecord -d 10 -f S16_LE -r 48000 foo.wav
-arecord -d 10 -f S16_LE -r 32000 foo.wav
-arecord -d 10 -f S16_LE -r 16000 foo.wav
-
-all examples must be terminated using Ctrl-c and only the 44 byte header
-is saved. 
-
-The soundcard is a 
-Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
-Controller
-(rev a2)
-
-We tested this problem on a similar pc with amd x86_64 single core with
-the same
-soundcard and all works fine.
-
-aplay works on both pcs without problems!
-
-We tested on Fedora Core 4 (1.0.10) and Fedora Core 5 (1.0.11rc2)
-
-We need recording on this pc, so we appreciate every help. Thanks.
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 05-21-06 14:12 
-----------------------------------------------------------------------
-How about arecord -v -D hw:0,0 -d 10 -f S16_LE -r 48000 foo.wav ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-18-06 13:25 bolsog         New Issue                                    
-05-21-06 14:12 Raymond        Note Added: 0009899                          
-======================================================================
+ALSA 1.0.11 on kernel 2.6.16.16 and all older versions of both ALSA and
+kernel he tested.
 
 
+--
+Giuliano.
 
 
 -------------------------------------------------------
