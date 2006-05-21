@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001556]: Fortissimo 4: No Volume Control
-Date: Sun, 21 May 2006 14:10:12 +0200
-Message-ID: <bfdb8dadf85e2d5235abdc40931b49c5@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002134]: arecord doesn't work in amd x86_64 X2 dual core.
+Date: Sun, 21 May 2006 14:12:38 +0200
+Message-ID: <089676c67929ac8604d7fa74cdeb14be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F3DB147
-	for <alsa-devel@alsa-project.org>; Sun, 21 May 2006 14:10:12 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11FD2229
+	for <alsa-devel@alsa-project.org>; Sun, 21 May 2006 14:12:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1556> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2134> 
 ======================================================================
-Reported By:                bladus
-Assigned To:                perex
+Reported By:                bolsog
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1556
-Category:                   PCI - ice1724
+Project:                    ALSA - utils
+Issue ID:                   2134
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo Linux 2005.1
-Kernel Version:             2.6.14-ck1
+Status:                     new
 ======================================================================
-Date Submitted:             11-13-2005 22:06 CET
-Last Modified:              05-21-2006 14:10 CEST
+Date Submitted:             05-18-2006 13:25 CEST
+Last Modified:              05-21-2006 14:12 CEST
 ======================================================================
-Summary:                    Fortissimo 4: No Volume Control
+Summary:                    arecord doesn't work in amd x86_64 X2 dual core.
 Description: 
-With the Hercules Fortissimo 4 (Envy24HT) there's no posibillity to control
-the volume.
-It's always at max.
+arecord doen't work on a amd x86_64 X2 dual core.
 
-Under Windows the card uses the reference drivers from VIA, so maybe you
-can fix that issue.
-I would be very happy if you could send me a response to this issue within
-a week, since when it's not possible i can return the card to the
-merchant.
+examples:
+arecord -d 10 -c 2 -f S16_LE -r 32000 foo.wav
+arecord -d 10 -f S16_LE -r 48000 foo.wav
+arecord -d 10 -f S16_LE -r 32000 foo.wav
+arecord -d 10 -f S16_LE -r 16000 foo.wav
 
-Thank you.
+all examples must be terminated using Ctrl-c and only the 44 byte header
+is saved. 
 
+The soundcard is a 
+Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
+Controller
+(rev a2)
+
+We tested this problem on a similar pc with amd x86_64 single core with
+the same
+soundcard and all works fine.
+
+aplay works on both pcs without problems!
+
+We tested on Fedora Core 4 (1.0.10) and Fedora Core 5 (1.0.11rc2)
+
+We need recording on this pc, so we appreciate every help. Thanks.
 ======================================================================
 
 ----------------------------------------------------------------------
- madman2003 - 01-30-06 15:55 
+ Raymond - 05-21-06 14:12 
 ----------------------------------------------------------------------
-Hercules Fortissimo 4(One codec, one dac):
-http://www.wolfsonmicro.com/products/digital_audio/dacs/WM8766/
-http://www.wolfsonmicro.com/products/digital_audio/codecs/WM8776/
-
-Terratec Aureon 7.1 Space(codec):
-http://www.wolfsonmicro.com/products/digital_audio/codecs/WM8770/
-
-The difference is the 8770 has anologue gain and the 8776 only has digital
-volume control and i remember reading somewhere that the analogue gain is
-actually used. The WM8776 is less common and that's why it's probably not
-supported. I only use the optical out and i don't care much for the
-analogue connectors. But i thought i'd mention it.
-
-----------------------------------------------------------------------
- pajo - 05-21-06 14:10 
-----------------------------------------------------------------------
-Basic volume control(only front channels) works with module option:
-
-options snd_ice1724 model="ms300"
+How about arecord -v -D hw:0,0 -d 10 -f S16_LE -r 48000 foo.wav ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-13-05 22:06 bladus         New Issue                                    
-11-13-05 22:06 bladus         Distribution              => Gentoo Linux 2005.1
-11-13-05 22:06 bladus         Kernel Version            => 2.6.14-ck1      
-11-14-05 11:02 perex          Note Added: 0006713                          
-11-14-05 11:02 perex          Assigned To               => perex           
-11-14-05 11:02 perex          Status                   new => feedback     
-11-14-05 13:39 bladus         Note Added: 0006722                          
-11-14-05 13:55 bladus         Note Added: 0006723                          
-11-14-05 14:01 perex          Note Added: 0006724                          
-11-15-05 16:37 bladus         Note Added: 0006731                          
-11-19-05 10:27 bladus         Note Added: 0006761                          
-01-10-06 19:37 liiwi          Issue Monitored: liiwi                       
-01-10-06 19:58 liiwi          Note Added: 0007552                          
-01-26-06 08:35 rolling        Note Added: 0007785                          
-01-26-06 08:36 rolling        Note Edited: 0007785                         
-01-30-06 15:55 madman2003     Note Added: 0007838                          
-05-21-06 14:10 pajo           Note Added: 0009898                          
+05-18-06 13:25 bolsog         New Issue                                    
+05-21-06 14:12 Raymond        Note Added: 0009899                          
 ======================================================================
 
 
