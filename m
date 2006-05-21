@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Sun, 21 May 2006 04:49:35 +0200
-Message-ID: <9c6fc573fd640dfe16b185b6f797a04e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002137]: No mute controls for Audigy or Audigy 2ZS
+Date: Sun, 21 May 2006 11:32:26 +0200
+Message-ID: <9b0937626a8d8b6d7880be5faad0b295@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2589221A
-	for <alsa-devel@alsa-project.org>; Sun, 21 May 2006 04:49:36 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 751D7188
+	for <alsa-devel@alsa-project.org>; Sun, 21 May 2006 11:32:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,110 +24,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2137> 
 ======================================================================
-Reported By:                zanonmark
+Reported By:                stdpikachu
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
+Issue ID:                   2137
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
+Status:                     acknowledged
+Distribution:               Gentoo
+Kernel Version:             2.6.15, 2.6.16
 ======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              05-21-2006 04:49 CEST
+Date Submitted:             05-20-2006 15:23 CEST
+Last Modified:              05-21-2006 11:32 CEST
 ======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
+Summary:                    No mute controls for Audigy or Audigy 2ZS
 Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+The problem has been around for while, but have only just got around to
+reporting it (incidentally, where do I search for previously file bug
+reports?).
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
+I have three computers, all with various flavours of Audigy cards, all
+using the latest emu10k1 alsa driver. The problem also exists with the
+in-kernel audigy driver. Googling for other people with the same problem
+suggests the problem crept it quite a while ago.
 
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
+No matter what UI is used, I can't mute most channels provided by the
+audigy driver. For instance, in alsamixer I can only mute Headphones,
+Line, CD, Phone, PC Speaker and Aux. ALl other channels are without mute
+toggles.
 
-So, will you please include such a parameter in the next version of the
-driver?
+The upshot of this is that mute controls in almost all alsa apps doesn't
+work and the only way to mute the channel is to manually set master or PCM
+volume to zero.
 
-Thanks a lot,
-
-Marco.
-
+I read of a bug with one of the intel sound drivers that lost most of the
+mute controls, maybe this is the same sort of thing.
 ======================================================================
 
 ----------------------------------------------------------------------
- zanonmark - 05-20-06 11:30 
+ rlrevell - 05-20-06 21:17 
 ----------------------------------------------------------------------
-1) Unfortunately, playing doesn't show up anything but:
-root@ubuntu:/home/marco# amidi -d -p hw:0,0
-[pressing CTRL+C]
-0 bytes read
-
-2) As per the OSS driver, how can I test it?
-I just unloaded (rmmod) snd_ens1371 and loaded (modprobe) es1371. I can
-hear xmms playing pcm sounds, but how can i test midi?
-"cat /dev/midi" and playing doesn't show up anything.
-
-Thanks,
-
-MZ
+pzad, did you forget to upload the patch?
 
 ----------------------------------------------------------------------
- Raymond - 05-21-06 04:49 
+ pzad - 05-21-06 11:32 
 ----------------------------------------------------------------------
-arecordmidi will allow you to record your play on keyboard to a midi file.
-
-You will need Timidity++ or softsynth if you want to hear the playback.
-
-However it seem that there is no communication between midi keyboard and
-ens1371.
+Sorry.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
-04-18-06 13:18 Raymond        Note Edited: 0009328                         
-04-18-06 16:28 Clemens LadischNote Added: 0009338                          
-04-19-06 20:05 zanonmark      Note Added: 0009354                          
-04-19-06 21:49 rlrevell       Note Added: 0009356                          
-04-20-06 03:39 Raymond        Note Added: 0009363                          
-04-22-06 13:36 zanonmark      Note Added: 0009433                          
-04-24-06 15:47 Raymond        Note Added: 0009452                          
-04-24-06 15:57 zanonmark      Note Added: 0009460                          
-04-25-06 03:25 Raymond        Note Added: 0009484                          
-04-25-06 10:55 zanonmark      Note Added: 0009486                          
-04-26-06 10:54 Raymond        Note Added: 0009505                          
-04-26-06 19:51 zanonmark      Note Added: 0009522                          
-05-01-06 10:38 Raymond        Note Added: 0009553                          
-05-07-06 13:33 zanonmark      Note Added: 0009641                          
-05-12-06 03:58 Raymond        Note Added: 0009771                          
-05-12-06 19:44 zanonmark      Note Added: 0009788                          
-05-13-06 05:19 Raymond        Note Added: 0009794                          
-05-19-06 03:44 Raymond        Note Added: 0009872                          
-05-20-06 11:30 zanonmark      Note Added: 0009883                          
-05-21-06 04:49 Raymond        Note Added: 0009896                          
+05-20-06 15:23 stdpikachu     New Issue                                    
+05-20-06 15:23 stdpikachu     File Added: alsamixer.png                    
+05-20-06 15:23 stdpikachu     Distribution              => Gentoo          
+05-20-06 15:23 stdpikachu     Kernel Version            => 2.6.15, 2.6.16  
+05-20-06 16:09 pzad           Note Added: 0009884                          
+05-20-06 16:47 stdpikachu     Note Added: 0009885                          
+05-20-06 17:02 jcdutton       Note Added: 0009886                          
+05-20-06 17:02 jcdutton       Status                   new => acknowledged 
+05-20-06 17:22 rlrevell       Note Added: 0009887                          
+05-20-06 17:27 jcdutton       Note Added: 0009888                          
+05-20-06 17:32 pzad           Note Added: 0009889                          
+05-20-06 19:57 pzad           Note Added: 0009891                          
+05-20-06 21:17 rlrevell       Note Added: 0009892                          
+05-20-06 21:18 rlrevell       Note View State: public: 9892                    
+05-21-06 11:32 pzad           File Added: audigy_mute.patch                    
+05-21-06 11:32 pzad           Note Added: 0009897                          
 ======================================================================
 
 
