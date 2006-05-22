@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001833]: oops in snd_mpu401_uart
-Date: Mon, 22 May 2006 16:49:14 +0200
-Message-ID: <b8adb9eaed346563e04db4380ab8fba8@bugtrack.alsa-project.org>
+Date: Mon, 22 May 2006 17:21:26 +0200
+Message-ID: <720f48907c2ebde8ab8b218a1efe7fd0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 46585172
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 16:49:15 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5E00E173
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 17:21:26 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833> 
 ======================================================================
 Reported By:                ponchick
-Assigned To:                
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   1833
@@ -35,12 +35,14 @@ Category:                   GENERIC - mpu401
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               gentoo
 Kernel Version:             gentoo-sources-2.6.15-r4
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             02-09-2006 08:33 CET
-Last Modified:              05-22-2006 16:49 CEST
+Last Modified:              05-22-2006 17:21 CEST
 ======================================================================
 Summary:                    oops in snd_mpu401_uart
 Description: 
@@ -114,30 +116,6 @@ gentoo-sources-2.6.15-r1 and gentoo-sources-2.6.15-r4.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 05-22-06 14:57 
-----------------------------------------------------------------------
-The cause of the oops seem related to storing (void iomem *) to int
-
-Change "int port" to "unsigned long port" in snd_vortex_midi() MAY fix the
-oops without apply the patch in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833#8084
-
-If it can't fix the oops, you will need to apply the the patch in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1833#8084
-
-Both Jon Masters's patch and Alan Horstmann's patch are already in HG
-repo
-
-Jon Master's patch is used to check whether io ports (0x330, 0x320, 0x310,
-0x300 and the corresponding bit CTRL_MIDI_PORT is correct since au88x0
-only ACK when  combination is correct VORTEX_LEGACY_MIDI
-
-Alan Horstmann's patch is to prevent au88x0 enter into UART mode since
-mpu401 won't ACK to cmd RESSET if it is in UART mode
-
-
-
-----------------------------------------------------------------------
  Raymond - 05-22-06 16:49 
 ----------------------------------------------------------------------
 The offset VORTEX_MIDI_DATA VORTEX_MIDI_CMD are different for au8820 and
@@ -160,6 +138,12 @@ alsa-kernel/driver/mpu401/mpu401_uart.c
 		mpu->cport = port + 1;
 		break;
 	};
+
+----------------------------------------------------------------------
+ rlrevell - 05-22-06 17:21 
+----------------------------------------------------------------------
+The Oops is fixed in HG repo.  Please open new bug reports for any other
+issues.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -302,6 +286,10 @@ gentoo-sources-2.6.15-r4
 05-22-06 14:57 Raymond        Note Edited: 0009910                         
 05-22-06 16:28 Raymond        Note Edited: 0009871                         
 05-22-06 16:49 Raymond        Note Added: 0009914                          
+05-22-06 17:21 rlrevell       Status                   new => resolved     
+05-22-06 17:21 rlrevell       Resolution               open => fixed       
+05-22-06 17:21 rlrevell       Assigned To               => rlrevell        
+05-22-06 17:21 rlrevell       Note Added: 0009915                          
 ======================================================================
 
 
