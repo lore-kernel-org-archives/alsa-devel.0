@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002145]: Quiet sound, no master channel, no PCM channel and no ability to switch to non-8ch mode
-Date: Tue, 23 May 2006 00:22:22 +0200
-Message-ID: <58da72672b2fcc6cbcec74c9c70ab3fd@bugtrack.alsa-project.org>
+Date: Tue, 23 May 2006 00:39:18 +0200
+Message-ID: <722e6f299140fd7e17bb97e66db031ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 496C6189
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 00:22:22 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8B29175
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 00:39:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2145> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2111_FC5 (SMP)
 ======================================================================
 Date Submitted:             05-23-2006 00:22 CEST
-Last Modified:              05-23-2006 00:22 CEST
+Last Modified:              05-23-2006 00:39 CEST
 ======================================================================
 Summary:                    Quiet sound, no master channel, no PCM channel and
 no ability to switch to non-8ch mode
@@ -52,6 +52,11 @@ volume.
 only one option: 8ch (card supports 2-8ch).
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 05-23-06 00:39 
+----------------------------------------------------------------------
+Please post the output of "amixer"
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -59,6 +64,7 @@ Date Modified  Username       Field                    Change
 05-23-06 00:22 rathann        Distribution              => Fedora Core 5   
 05-23-06 00:22 rathann        Kernel Version            => 2.6.16-1.2111_FC5
 (SMP)
+05-23-06 00:39 rlrevell       Note Added: 0009920                          
 ======================================================================
 
 
