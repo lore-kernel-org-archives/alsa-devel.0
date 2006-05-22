@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002141]: No sound through front channels.
-Date: Mon, 22 May 2006 11:52:58 +0200
-Message-ID: <72cfb2a490b0478461f5861a9d429fd9@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002134]: arecord doesn't work in amd x86_64 X2 dual core.
+Date: Mon, 22 May 2006 11:57:58 +0200
+Message-ID: <9e87c25c1e7719bed408328b78b1b604@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BAF5164
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 11:52:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0DAF7191
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 11:57:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,263 +22,176 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2141> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2134> 
 ======================================================================
-Reported By:                d3ity
+Reported By:                bolsog
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2141
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   2134
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Slackware 10.2
-Kernel Version:             2.6.16.14/2.6.16.16
 ======================================================================
-Date Submitted:             05-22-2006 11:52 CEST
-Last Modified:              05-22-2006 11:52 CEST
+Date Submitted:             05-18-2006 13:25 CEST
+Last Modified:              05-22-2006 11:57 CEST
 ======================================================================
-Summary:                    No sound through front channels.
+Summary:                    arecord doesn't work in amd x86_64 X2 dual core.
 Description: 
-Using the onboard Nforce2 sound on my A7N8X Deluxe, sound only plays back
-through Surround jack, and LFE, and only when "Duplicate Front" is turned
-on in alsamixer.  Without "Duplicate Front" enabled, no sound whatsoever.
+arecord doen't work on a amd x86_64 X2 dual core.
 
-Center speaker also refuses to work, I've checked my wiring about 800
-times, so that can be ruled out.
+examples:
+arecord -d 10 -c 2 -f S16_LE -r 32000 foo.wav
+arecord -d 10 -f S16_LE -r 48000 foo.wav
+arecord -d 10 -f S16_LE -r 32000 foo.wav
+arecord -d 10 -f S16_LE -r 16000 foo.wav
 
-Went into the #alsa channel on freenode, attempted to upgrade alsa
-versions, only seemed to break things.  Upgraded to latest (2.6.17-rc4)
-kernel only makes things slightly better.  Center channel appears, but
-still nothing out of the front speakers.  Speakers are known to be good
-and working.  
+all examples must be terminated using Ctrl-c and only the 44 byte header
+is saved. 
 
-Below is my amixer, and lsmod output, if anything else is needed, please
-let me know.
+The soundcard is a 
+Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
+Controller
+(rev a2)
 
---- amixer output --
+We tested this problem on a similar pc with amd x86_64 single core with
+the same
+soundcard and all works fine.
 
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [on]
-  Front Right: Playback 31 [100%] [on]
-Simple mixer control 'Master Mono',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 30 [97%] [on]
-Simple mixer control '3D Control - Center',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 9 [60%]
-Simple mixer control '3D Control - Depth',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 15
-  Mono: 9 [60%]
-Simple mixer control '3D Control - Switch',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 25 [81%] [on]
-  Front Right: Playback 25 [81%] [on]
-Simple mixer control 'Surround',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 29 [94%] [on]
-  Front Right: Playback 29 [94%] [on]
-Simple mixer control 'Surround Down Mix',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'Surround Jack Mode',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Center',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 31 [100%] [on]
-Simple mixer control 'Center/LFE Down Mix',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-Simple mixer control 'LFE',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 31
-  Mono: Playback 29 [94%] [on]
-Simple mixer control 'Line',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 30 [97%] [on] Capture [off]
-  Front Right: Playback 30 [97%] [on] Capture [off]
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 29 [94%] [on] Capture [off]
-  Front Right: Playback 29 [94%] [on] Capture [off]
-Simple mixer control 'Mic',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 30 [97%] [on]
-  Front Left: Capture [on]
-  Front Right: Capture [on]
-Simple mixer control 'Mic Boost (+20dB)',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Mic Select',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Video',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [on] Capture [off]
-  Front Right: Playback 31 [100%] [on] Capture [off]
-Simple mixer control 'Phone',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
-cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Mono
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono: Playback 29 [94%] [on]
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
-  Playback channels: Mono
-  Capture channels: Mono
-  Mono: Playback [on] Capture [off]
-Simple mixer control 'IEC958 Playback AC97-SPSA',0
-  Capabilities: volume volume-joined
-  Playback channels: Mono
-  Limits: 0 - 3
-  Mono: 3 [100%]
-Simple mixer control 'PC Speaker',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 15
-  Mono: Playback 15 [100%] [on]
-Simple mixer control 'Aux',0
-  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
-cswitch-exclusive
-  Capture exclusive group: 0
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Front Left: Playback 31 [100%] [on] Capture [off]
-  Front Right: Playback 31 [100%] [on] Capture [off]
-Simple mixer control 'Mono Output Select',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch cswitch-joined
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 0 [0%] [on]
-  Front Right: Capture 0 [0%] [on]
-Simple mixer control 'Mix',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Mix Mono',0
-  Capabilities: cswitch cswitch-joined cswitch-exclusive
-  Capture exclusive group: 0
-  Capture channels: Front Left - Front Right
-  Front Left: Capture [off]
-  Front Right: Capture [off]
-Simple mixer control 'Analog to IEC958 Output',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Channel Mode',0
-  Capabilities:
-  Mono:
-Simple mixer control 'Duplicate Front',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Exchange Center/LFE',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'External Amplifier',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'Swap Surround Slot',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
+aplay works on both pcs without problems!
 
---lsmod output--
-bash-3.1$ lsmod
-Module                  Size  Used by
-nvidia               4539604  20
-snd_pcm_oss            41312  1
-snd_mixer_oss          14080  3 snd_pcm_oss
-ohci_hcd               16644  0
-forcedeth              18500  0
-snd_intel8x0           25692  3
-snd_ac97_codec         79328  1 snd_intel8x0
-snd_ac97_bus            1792  1 snd_ac97_codec
-snd_pcm                69064  3 snd_pcm_oss,snd_intel8x0,snd_ac97_codec
-snd_timer              18372  1 snd_pcm
-snd                    40484  6
-snd_pcm_oss,snd_mixer_oss,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-soundcore               6816  4 snd
-snd_page_alloc          7496  2 snd_intel8x0,snd_pcm
-wm8775                  4492  0
-cx25840                20624  0
-tda9887                13776  0
-tuner                  44396  0
-v4l2_common             6336  1 tuner
-ivtv                  160400  2
-firmware_class          7296  2 cx25840,ivtv
-v4l1_compat            11460  1 ivtv
-tveeprom               12048  1 ivtv
-videodev                6592  3 ivtv
+We tested on Fedora Core 4 (1.0.10) and Fedora Core 5 (1.0.11rc2)
 
+We need recording on this pc, so we appreciate every help. Thanks.
 ======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 05-21-06 14:15 
+----------------------------------------------------------------------
+How about arecord -v -D hw:0,0 -d 10 -f S16_LE -r 48000 -c 2 foo.wav ?
+
+or
+
+arecord -v -D plughw:0,0 -d 10 -f S16_LE -r 48000 foo.wav
+
+
+
+----------------------------------------------------------------------
+ bolsog - 05-22-06 11:57 
+----------------------------------------------------------------------
+| arecord -v -D hw:0,0 -d 10 -f S16_LE -r 48000 foo.wav
+
+Recording WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Stereo
+Hardware PCM card 0 'NVidia CK804' device 0 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 4096
+  period_time  : 85333
+  tick_time    : 4000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 4096
+  xfer_align   : 4096
+  start_threshold  : 1
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 4611686018427387904
+
+arecord: pcm_read:1338: read error: Eingabe-/Ausgabefehler
+
+--
+And foo.wav wasn't created.
+
+Eingabe-/Ausgabefehler means Input/Output-error. 
+Our FC5 is installed with German root-account.
+
+---
+
+| arecord -v -D plughw:0,0 -d 10 -f S16_LE -r 48000 foo.wav
+
+Recording WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 48000 Hz,
+Mono
+Plug PCM: Route conversion PCM (sformat=S16_LE)
+  Transformation table:
+    0 <- 0*0,5 + 1*0,5
+Its setup is:
+  stream       : CAPTURE
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 1
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 4096
+  period_time  : 85333
+  tick_time    : 4000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 4096
+  xfer_align   : 4096
+  start_threshold  : 1
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 4611686018427387904
+Slave: Hardware PCM card 0 'NVidia CK804' device 0 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 4096
+  period_time  : 85333
+  tick_time    : 4000
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 4096
+  xfer_align   : 4096
+  start_threshold  : 1
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 4611686018427387904
+
+--
+This command never stops. I pressed Ctrl-C and a 44byte foo.wav was
+created.
+
+--
+I've used the root-account for both commands.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-22-06 11:52 d3ity          New Issue                                    
-05-22-06 11:52 d3ity          Distribution              => Slackware 10.2  
-05-22-06 11:52 d3ity          Kernel Version            => 2.6.16.14/2.6.16.16
+05-18-06 13:25 bolsog         New Issue                                    
+05-21-06 14:12 Raymond        Note Added: 0009899                          
+05-21-06 14:13 Raymond        Note Edited: 0009899                         
+05-21-06 14:15 Raymond        Note Edited: 0009899                         
+05-22-06 11:57 bolsog         Note Added: 0009907                          
 ======================================================================
 
 
