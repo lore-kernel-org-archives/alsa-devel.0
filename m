@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001724]: au88x0 PCM configuration problem - buffer_size constraint
-Date: Mon, 22 May 2006 15:48:37 +0200
-Message-ID: <c2c6719249fa1952f8a29f157d7f7e8e@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: DMX6fire  Consumer AC97 not used
+Date: Mon, 22 May 2006 14:52:08 +0100
+Message-ID: <200605221450.14491.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_IIccEJ3nyBV6201"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 969B3186
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 15:48:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,153 +15,121 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1724
-Category:                   PCI - au88x0
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             01-07-2006 05:10 CET
-Last Modified:              05-22-2006 15:48 CEST
-======================================================================
-Summary:                    au88x0 PCM configuration problem - buffer_size
-constraint
-Description: 
-/cvs/alsa-lib/test/pcm_min
+--Boundary-00=_IIccEJ3nyBV6201
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-ALSA lib pcm.c:7127:(snd_pcm_set_params) Unable to set buffer time
-(latency) 500000 for PLAYBACK: Invalid argument
-Playback open error: Invalid argument
+Another little 'tidy-up':
 
-sound card is au8830, the au88x0 driver only accept period size in power
-of 2.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001766 jackd : ALSA: cannot set period size to...
-======================================================================
+Have always had the following log message with DMX6fire:
 
-----------------------------------------------------------------------
- mjander - 02-13-06 08:52 
-----------------------------------------------------------------------
-Hi,
+ linux kernel: Consumer PCM code does not work well at the moment --jk
+ linux kernel: ALSA ac97_codec.c:1671: AC'97 0:0 does not respond - RESET
+ linux kernel: ALSA ac97_codec.c:1682: AC'97 0:0 access is not valid 
+[0xffffffff], removing mixer.
+ linux kernel: ice1712: cannot initialize ac97 for consumer, skipped
 
-The messages of the kind:
+and thought the last 3 were due to the first.  However, after comparing 
+DMX6fire with STDSP24 card, it seems to me that the 6fire doesn't have an 
+AC97 chip, nor anywhere to connect to one in the standard front box, and the 
+W2K drivers from Terratec don't support it.  It is remotely possible that 
+other extension boxes may use it -but they do not have alsa support at 
+present.
 
-vortex: 0 virt=2, real=2, delta=2
-vortex: 0 virt=11, real=3, delta=2
+BUT the eeprom data has it enabled.  As the value is checked at several places 
+in the code, the attached patch changes the stored value for this and the 
+previous 'Limit ADACs to 6' bits.
 
-appear when your system is lossing interrupts because of overload. You are
-asking your computer to do something it is not capable of. Thats it.
+As a result, the log now shows no evidence of ice1712 driver at all, so I 
+added 'init...done' as in the attached 'init-message' patch.  It may be the 
+wrong place, or not wanted at all, so I kept it separate from the AC97 patch.  
+Hope it's OK in this case to attach both here.
 
-period size is measured in frames and period_bytes in bytes. AFAIK any
-size is meant to be in frames.
+BTW, re 'Consumer PCM code does not work well at the moment --jk',  will it be 
+fixed?
 
-Best Regards
-Manuel Jander
+Alan
 
-----------------------------------------------------------------------
- Raymond - 05-22-06 15:48 
-----------------------------------------------------------------------
-http://hg-mirror.alsa-project.org/alsa-lib?cmd=changeset;node=481c12cfbffd;style=gitweb
+ice1712.c-disable-6fire-AC97.patch
 
-Whenever snd_pcm_hw_params_set_buffer_time_near() or
-snd_pcm_hw_params_set_period_time_near() fail, the error is irrecoverable
+Summary:  Disable AC97 for DMX6fire
 
-However this behaviour seem undocumented in alsa-lib
+Consumer AC97 is not used by the Terratec DMX6fire, but eeprom bit indicates 
+it is; change the stored value to disable failling consumer mode.
 
-snd_pcm_hw_params_test_buffer_time() should be used instead of
-snd_pcm_hw_params_set_buffer_time_near()
+Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
 
-http://bugzilla.gnome.org/show_bug.cgi?id=342085
+ice1712.c-init-message.patch
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-07-06 05:10 Raymond        New Issue                                    
-01-09-06 15:19 Raymond        Note Added: 0007537                          
-01-19-06 15:04 Raymond        Note Deleted: 0007537                        
-01-19-06 15:36 Raymond        Note Added: 0007721                          
-01-28-06 07:58 Raymond        Note Added: 0007828                          
-01-28-06 07:58 Raymond        Note Deleted: 0007721                        
-01-30-06 18:46 Raymond        Note Added: 0007840                          
-01-31-06 03:15 Raymond        Note Added: 0007844                          
-01-31-06 06:41 Raymond        Note Edited: 0007840                         
-01-31-06 07:03 Raymond        Note Edited: 0007840                         
-01-31-06 07:08 Raymond        Note Edited: 0007840                         
-01-31-06 07:11 Raymond        Note Edited: 0007840                         
-01-31-06 08:31 Raymond        Note Edited: 0007840                         
-01-31-06 09:48 Raymond        Note Edited: 0007844                         
-01-31-06 10:19 perex          Note Added: 0007845                          
-01-31-06 10:26 perex          Note Added: 0007847                          
-01-31-06 10:26 perex          Note Edited: 0007847                         
-01-31-06 10:48 perex          Project                  ALSA - lib => ALSA -
-driver
-01-31-06 10:49 perex          Category                 0_general => PCI - au88x0
-01-31-06 10:49 perex          Summary                  simple PCM helper
-function => au88x0 PCM configuration problem - buffer_size constraint
-01-31-06 11:06 Raymond        Note Added: 0007848                          
-01-31-06 13:48 perex          Status                   new => assigned     
-01-31-06 13:48 perex          Assigned To               => mjander         
-01-31-06 13:49 perex          Relationship added       related to 0001766  
-01-31-06 15:59 Raymond        Note Added: 0007852                          
-02-01-06 07:35 perex          Note Added: 0007857                          
-02-01-06 10:32 Raymond        Note Added: 0007858                          
-02-01-06 10:37 Raymond        Note Edited: 0007848                         
-02-01-06 17:15 Raymond        Note Edited: 0007844                         
-02-01-06 17:20 Raymond        Note Added: 0007860                          
-02-02-06 10:23 Raymond        Note Added: 0007874                          
-02-02-06 11:10 Raymond        Note Edited: 0007874                         
-02-02-06 15:48 Raymond        Note Edited: 0007874                         
-02-03-06 14:26 Raymond        Note Added: 0007897                          
-02-04-06 02:46 Raymond        Note Edited: 0007874                         
-02-04-06 02:52 Raymond        Note Edited: 0007858                         
-02-04-06 02:56 Raymond        Note Edited: 0007858                         
-02-05-06 16:39 Raymond        Note Added: 0007939                          
-02-05-06 16:48 Raymond        Note Added: 0007940                          
-02-06-06 04:40 Raymond        Note Deleted: 0007939                        
-02-06-06 06:15 Raymond        Note Edited: 0007940                         
-02-07-06 07:35 Raymond        Note Added: 0007954                          
-02-13-06 03:11 Raymond        Note Added: 0008036                          
-02-13-06 08:52 mjander        Note Added: 0008039                          
-02-13-06 16:57 Raymond        Note Added: 0008055                          
-02-13-06 17:02 Raymond        Note Edited: 0008055                         
-02-13-06 17:02 Raymond        Note Edited: 0008055                         
-02-16-06 04:01 Raymond        Note Added: 0008083                          
-02-19-06 06:31 Raymond        Note Added: 0008130                          
-02-19-06 06:39 Raymond        Note Edited: 0008130                         
-03-07-06 11:08 Raymond        Note Added: 0008362                          
-03-07-06 14:18 Raymond        Note Edited: 0007844                         
-03-24-06 10:51 Raymond        File Added: snd_pcm_set_params.patch              
-     
-03-30-06 18:35 Raymond        Note Added: 0009036                          
-05-22-06 15:11 Raymond        Note Deleted: 0008055                        
-05-22-06 15:12 Raymond        Note Deleted: 0008362                        
-05-22-06 15:13 Raymond        Note Deleted: 0008130                        
-05-22-06 15:14 Raymond        Note Deleted: 0008083                        
-05-22-06 15:15 Raymond        Note Deleted: 0009036                        
-05-22-06 15:16 Raymond        Note Deleted: 0007860                        
-05-22-06 15:17 Raymond        Note Deleted: 0007848                        
-05-22-06 15:20 Raymond        Note Deleted: 0007940                        
-05-22-06 15:24 Raymond        Note Deleted: 0007954                        
-05-22-06 15:48 Raymond        Note Added: 0009912                          
-======================================================================
+Adds init message to the ice1712 driver.
 
+
+
+--Boundary-00=_IIccEJ3nyBV6201
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="ice1712.c-disable-6fire-AC97.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="ice1712.c-disable-6fire-AC97.patch"
+
+--- alsa-driver-1.0.11-orig/alsa-kernel/pci/ice1712/ice1712.c	2006-04-18 12:38:03.000000000 +0100
++++ alsa-driver-1.0.11/alsa-kernel/pci/ice1712/ice1712.c	2006-05-20 17:09:53.000000000 +0100
+@@ -2398,13 +2398,11 @@
+ 	udelay(200);
+ 	outb(ICE1712_NATIVE, ICEREG(ice, CONTROL));
+ 	udelay(200);
+-	if (ice->eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE && !ice->dxr_enable) {
+-                /* Limit active ADCs and DACs to 6;  */
+-                /* Note: DXR extension not supported */
+-		pci_write_config_byte(ice->pci, 0x60, 0x2a);
+-	} else {
+-		pci_write_config_byte(ice->pci, 0x60, ice->eeprom.data[ICE_EEP1_CODEC]);
+-	}
++	if (ice->eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE && !ice->dxr_enable)
++		/*  Limit active ADCs and DACs to 6;  Note: DXR extensions are not currently supported */
++		/*  Also AC97 Consumer hardware is not provided in standard 6fire front box            */
++		ice->eeprom.data[ICE_EEP1_CODEC] = 0x3a;  /*  Correct eeprom value  */
++	pci_write_config_byte(ice->pci, 0x60, ice->eeprom.data[ICE_EEP1_CODEC]);
+ 	pci_write_config_byte(ice->pci, 0x61, ice->eeprom.data[ICE_EEP1_ACLINK]);
+ 	pci_write_config_byte(ice->pci, 0x62, ice->eeprom.data[ICE_EEP1_I2SID]);
+ 	pci_write_config_byte(ice->pci, 0x63, ice->eeprom.data[ICE_EEP1_SPDIF]);
+
+--Boundary-00=_IIccEJ3nyBV6201
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="ice1712.c-init-message.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="ice1712.c-init-message.patch"
+
+--- alsa-driver-1.0.11-orig/alsa-kernel/pci/ice1712/ice1712.c	2006-04-18 12:38:03.000000000 +0100
++++ alsa-driver-1.0.11/alsa-kernel/pci/ice1712/ice1712.c	2006-05-20 21:57:03.000000000 +0100
+@@ -2394,7 +2394,6 @@
+ 
+ static int __devinit snd_ice1712_chip_init(struct snd_ice1712 *ice)
+ {
++	printk("ice1712: Init...");
+ 	outb(ICE1712_RESET | ICE1712_NATIVE, ICEREG(ice, CONTROL));
+ 	udelay(200);
+ 	outb(ICE1712_NATIVE, ICEREG(ice, CONTROL));
+@@ -2434,6 +2433,7 @@
+ 		snd_ice1712_write(ice, ICE1712_IREG_CONSUMER_POWERDOWN, 0);
+ 	}
+ 	snd_ice1712_set_pro_rate(ice, 48000, 1);
++	printk("done\n");
+ 
+ 	return 0;
+ }
+
+--Boundary-00=_IIccEJ3nyBV6201--
 
 
 
