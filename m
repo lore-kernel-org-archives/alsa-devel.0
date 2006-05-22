@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002140]: No sound from mic on Fujitsu Siemens Amilo M3438G
-Date: Mon, 22 May 2006 10:17:13 +0200
-Message-ID: <93456ca926d1ba441f3c726fc95df523@bugtrack.alsa-project.org>
+From: "Kees Smits" <smita@enjoyboy.com>
+Subject: Re: test VALLtcUM
+Date: Mon, 22 May 2006 02:12:13 -0700
+Message-ID: <000001c67d7f$d020b1c0$963ea8c0@grh22>
+Reply-To: "Kees Smits" <smita@enjoyboy.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C67D45.23C1D9C0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D72B188
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 10:17:13 +0200 (MEST)
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9E1B2190
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 11:12:14 +0200 (MEST)
+Received: from enjoyboy.com (host163-104.pool8253.interbusiness.it [82.53.104.163])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 7007A994C8
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 11:12:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,55 +25,77 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2140> 
-======================================================================
-Reported By:                jacobs
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2140
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               OpenSuSE 10.1
-Kernel Version:             2.6.16.13
-======================================================================
-Date Submitted:             05-22-2006 10:17 CEST
-Last Modified:              05-22-2006 10:17 CEST
-======================================================================
-Summary:                    No sound from mic on Fujitsu Siemens Amilo M3438G
-Description: 
-I own a Fujitsu Siemens Amilo M3438G notebook with an onboard Azalia 7.1
-SPDIF chipset/codec (see spec sheet at
-http://www.fujitsu-siemens.de/ps/db/notebook/ds_amilo_m3438g_m4438g_d.pdf).
-OpenSuSE 10.1 (Kernel 2.6.16.13) is installed; the module snd-hda-intel is
- loaded. Sound playback through the internal speakers and headphone does
-work but I am unable to get sound from the internal and external
-microphone. The alsamixer has three capture controls which all are set to
-capture and maximum volume. Each capture controls source is set to mic.
-The playback channel for mic is unmuted and also set to maximum volume but
-I just don't get a signal.
+------=_NextPart_000_0001_01C67D45.23C1D9C0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-I've tried to apply different model options to the snd-hda-intel module
-relating to the file ALSA-Configuration.txt without luck.
+Hi,
+=20
+V A L / U M
+S O M ^
+V / A G R A
+P R O Z ^ C
+X ^ N A X
+A M B / E N
+C / A L / S
+L E V / T R A
+M E R / D / A
+=20
+http://www.wozawukelans.com
+=20
+=20
+=20
+=20
+=20
+What about your promise then?=20
+I will look after that. I am not sending the horse back, I am riding=20
+Then they knew that Gandalf was going to leave them at the very edge=20
+of Mirkwood, and they were in despair.=20
+But nothing they could say would change his mind.=20
+Now we had this all out before, when we landed on the Carrock, he=20
 
-This didn't work with OpenSuSE 10.0 (Kernel 2.6.13) either.
 
-If you need any technical information please let me know.
-======================================================================
+------=_NextPart_000_0001_01C67D45.23C1D9C0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-22-06 10:17 jacobs         New Issue                                    
-05-22-06 10:17 jacobs         Distribution              => OpenSuSE 10.1   
-05-22-06 10:17 jacobs         Kernel Version            => 2.6.16.13       
-======================================================================
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hi,</DIV><DIV>&nbsp;</DIV>
+<DIV>V A L / U M<BR>
+S O M ^<BR>
+V / A G R A<BR>
+P R O Z ^ C<BR>
+X ^ N A X<BR>
+A M B / E N<BR>
+C / A L / S<BR>
+L E V / T R A<BR>
+M E R / D / A</DIV><DIV>&nbsp;</DIV>
+<DIV><A =
+href=3D"http://www.wozawukelans.com">http://www.wozawukelans.com</A></DIV=
+><DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>   What about your promise then? <BR>   =
+I will look after that. I am not sending the horse back, I am riding =
+<BR>   Then they knew that Gandalf was going to leave them at the very =
+edge <BR>of Mirkwood, and they were in despair. <BR>   But nothing they =
+could say would change his mind. <BR>   Now we had this all out before, =
+when we landed on the Carrock, he <BR></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C67D45.23C1D9C0--
+
 
 
 
