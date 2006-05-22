@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002138]: Getting Compilation Error compiling for hda-intel driver
-Date: Mon, 22 May 2006 04:40:35 +0200
-Message-ID: <d69296b8c4435a371d0db5c7e6c6286c@bugtrack.alsa-project.org>
+Date: Mon, 22 May 2006 04:48:48 +0200
+Message-ID: <a83ccb864bd0a8fd4ab88af36706a113@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3E9322C
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 04:40:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 68F3622C
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 04:48:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2111-FC5
 ======================================================================
 Date Submitted:             05-22-2006 00:38 CEST
-Last Modified:              05-22-2006 04:40 CEST
+Last Modified:              05-22-2006 04:48 CEST
 ======================================================================
 Summary:                    Getting Compilation Error compiling for hda-intel
 driver
@@ -74,6 +74,12 @@ ALSA.
 
 What problem are you trying to solve?
 
+----------------------------------------------------------------------
+ Raymond - 05-22-06 04:48 
+----------------------------------------------------------------------
+It seem that you are upgrade from FC3/FC4 to FC5, FC5 bundled with ALSA
+1.0.11rc2.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -82,6 +88,7 @@ Date Modified  Username       Field                    Change
 05-22-06 00:38 millerdp       Distribution              => Fedora Core 5   
 05-22-06 00:38 millerdp       Kernel Version            => 2.6.16-1.2111-FC5
 05-22-06 04:40 rlrevell       Note Added: 0009903                          
+05-22-06 04:48 Raymond        Note Added: 0009904                          
 ======================================================================
 
 
