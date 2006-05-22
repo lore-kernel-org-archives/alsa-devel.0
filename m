@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002143]: Error running configure
-Date: Mon, 22 May 2006 15:08:00 +0200
-Message-ID: <309f93d8a3927c0cfe09be97daf4f506@bugtrack.alsa-project.org>
+Date: Mon, 22 May 2006 15:38:28 +0200
+Message-ID: <0bd80ed32a151e4591ec74c255330e9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F74D21F
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 15:08:00 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31673186
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 15:38:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2143> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-22-2006 15:07 CEST
-Last Modified:              05-22-2006 15:07 CEST
+Last Modified:              05-22-2006 15:38 CEST
 ======================================================================
 Summary:                    Error running configure
 Description: 
@@ -54,12 +54,22 @@ sources (default is /lib/modules/2.6.16-1.2080_FC5/source).
 
 ======================================================================
 
+----------------------------------------------------------------------
+ friser - 05-22-06 15:38 
+----------------------------------------------------------------------
+What does the error mean?
+What should I install in order to fix the problem?
+Thank you very much
+
+Umberto
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-22-06 15:07 friser         New Issue                                    
 05-22-06 15:07 friser         Distribution              => fedora core 5   
 05-22-06 15:07 friser         Kernel Version            => 2.6.16-1.2080_FC5
+05-22-06 15:38 friser         Note Added: 0009911                          
 ======================================================================
 
 
