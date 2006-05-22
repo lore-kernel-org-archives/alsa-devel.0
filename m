@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Mon, 22 May 2006 04:14:29 +0200
-Message-ID: <6db4d4368f5074f144dd3d7f8336b788@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002138]: Getting Compilation Error compiling for hda-intel driver
+Date: Mon, 22 May 2006 04:40:35 +0200
+Message-ID: <d69296b8c4435a371d0db5c7e6c6286c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F5BD22C
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 04:14:29 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3E9322C
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 04:40:35 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,68 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2138> 
 ======================================================================
-Reported By:                bzbarsky
-Assigned To:                
+Reported By:                millerdp
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2132
-Category:                   PCI - ens1371
+Issue ID:                   2138
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2111-FC5
 ======================================================================
-Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              05-22-2006 04:14 CEST
+Date Submitted:             05-22-2006 00:38 CEST
+Last Modified:              05-22-2006 04:40 CEST
 ======================================================================
-Summary:                    No sound from speakers
+Summary:                    Getting Compilation Error compiling for hda-intel
+driver
 Description: 
-Alsa seems to detect the sound card, but when I try to actually play
-something there is no sound from the speakers.
+While trying to compile the ALSA drivers for the hda-intel module following
+the directions on the web site I get the following error
+
+make[1]: Entering directory `/usr/src/kernels/2.6.16-1.2111_FC5-i686'
+  CC [M]  /usr/src/alsa/alsa-driver-1.0.9rc4a/acore/hpetimer.o
+In file included from
+/usr/src/alsa/alsa-driver-1.0.9rc4a/include/adriver.h:674,                
+from /usr/src/alsa/alsa-driver-1.0.9rc4a/include/sound/driver.h:42,
+                 from
+/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/hpetimer.c:22:
+include/linux/pci.h:460: error: expected identifier or &#8216;(&#8217;
+before numeric constant
+make[4]: *** [/usr/src/alsa/alsa-driver-1.0.9rc4a/acore/hpetimer.o] Error
+1
+make[3]: *** [/usr/src/alsa/alsa-driver-1.0.9rc4a/acore] Error 2
+make[2]: *** [_module_/usr/src/alsa/alsa-driver-1.0.9rc4a] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/kernels/2.6.16-1.2111_FC5-i686'
+
 ======================================================================
 
 ----------------------------------------------------------------------
- bzbarsky - 05-22-06 02:53 
+ rlrevell - 05-22-06 04:40 
 ----------------------------------------------------------------------
-The motherboard is a Tyan board; I believe it's an S1854A (Trinity 400). 
-I've attached the two files.
+You cannot compile an old ALSA against a kernel that contains a newer
+ALSA.
 
-----------------------------------------------------------------------
- Raymond - 05-22-06 04:14 
-----------------------------------------------------------------------
-0:00 = 0000
-
-0:7c = 0000
-0:7e = 4e53
-
-The driver (ac97_codec.c) is unable to identify the codec, you will need
-to find out which codec from the motherboard manual or looking at the
-label printed on the codec chip which is a 48-pins square shaped chip near
-the onboard es1373
+What problem are you trying to solve?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-06 19:54 bzbarsky       New Issue                                    
-05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
-05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
-05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
-05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
-05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
-05-17-06 19:56 bzbarsky       File Added: scsound.log                      
-05-17-06 19:57 bzbarsky       Note Added: 0009857                          
-05-20-06 05:31 Raymond        Note Added: 0009882                          
-05-20-06 21:43 bzbarsky       Note Added: 0009893                          
-05-21-06 03:41 Raymond        Note Added: 0009894                          
-05-21-06 03:48 Raymond        Note Edited: 0009894                         
-05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
-05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
-05-22-06 02:53 bzbarsky       Note Added: 0009901                          
-05-22-06 04:14 Raymond        Note Added: 0009902                          
+05-22-06 00:38 millerdp       New Issue                                    
+05-22-06 00:38 millerdp       File Added: config.status                    
+05-22-06 00:38 millerdp       Distribution              => Fedora Core 5   
+05-22-06 00:38 millerdp       Kernel Version            => 2.6.16-1.2111-FC5
+05-22-06 04:40 rlrevell       Note Added: 0009903                          
 ======================================================================
 
 
