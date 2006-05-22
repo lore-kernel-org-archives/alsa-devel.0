@@ -1,11 +1,15 @@
 From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: DMX6fire  Consumer AC97 not used
-Date: Mon, 22 May 2006 14:52:08 +0100
-Message-ID: <200605221450.14491.gineera@aspect135.co.uk>
+Subject: Re: Re: mpu401_uart -how to set for output only?
+Date: Mon, 22 May 2006 14:18:51 +0100
+Message-ID: <200605221418.51512.gineera@aspect135.co.uk>
+References: <200605191151.24428.gineera@aspect135.co.uk> <200605191710.01019.gineera@aspect135.co.uk> <s5hzmhelyus.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_IIccEJ3nyBV6201"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hzmhelyus.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,117 +23,75 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Friday 19 May 2006 18:15, you wrote:
+> At Fri, 19 May 2006 17:10:01 +0100,
+>
+> Alan Horstmann wrote:
+> > On Friday 19 May 2006 13:44, you wrote:
+> > > At Fri, 19 May 2006 11:51:24 +0100,
+> > >
+> > > Alan Horstmann wrote:
+> > > > When a mpu401 midi device is created, it seems to appear as available
+> > > > for both input and output.
+> > > >
+> > > > However, several ice1712 cards use the 2nd mpu401 port for midi out
+> > > > only and do not make any connection available for input.
+> > > >
+> > > > How can the 2nd device be created for output only so the device does
+> > > > not appear as available for input?
+> > >
+> > > I have the following pending patch on my local tree.
+> > > It changes the 5th parameter in snd_mpu401_uart_new() to bit flags,
+> > > and allows you to choose duplex, separate tx, and mmio mode.
+> > >
+> > > If it looks OK to you, I'll commit it.
+> >
+> > Wow!  It is not very often something has been tackled before you mention
+> > the need!  I hope to try this out quickley over the next few days and
+> > report back.
+>
+> Argh, I found a silly typo in my previous patch.
+> The fixed one is below.
 
---Boundary-00=_IIccEJ3nyBV6201
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Took a bit of effort to get patch to apply to 1.0.11 here, but eventually 
+suceeded to get it to compile and run, with MPU401_INFO_INTEGRATED in all 
+occurances.
+Then changed ice1712.c 2nd port to MPU401_INFO_OUTPUT.  Loading the driver 
+failled:
 
-Another little 'tidy-up':
+   linux kernel: ALSA ../../alsa-kernel/drivers/mpu401/mpu401_uart.c:548:  
+mpu401_uart: unable to grab port 0xc81c size 2
 
-Have always had the following log message with DMX6fire:
+Perhaps if ! ( _INTEGRATED) at this section should include _OUTPUT and _INPUT 
+flags?
 
- linux kernel: Consumer PCM code does not work well at the moment --jk
- linux kernel: ALSA ac97_codec.c:1671: AC'97 0:0 does not respond - RESET
- linux kernel: ALSA ac97_codec.c:1682: AC'97 0:0 access is not valid 
-[0xffffffff], removing mixer.
- linux kernel: ice1712: cannot initialize ac97 for consumer, skipped
+Anyway I //out these 8 lines and the driver would load.  However, 
 
-and thought the last 3 were due to the first.  However, after comparing 
-DMX6fire with STDSP24 card, it seems to me that the 6fire doesn't have an 
-AC97 chip, nor anywhere to connect to one in the standard front box, and the 
-W2K drivers from Terratec don't support it.  It is remotely possible that 
-other extension boxes may use it -but they do not have alsa support at 
-present.
+> cat /proc/asound/seq/clients
+Client info
+  cur  clients : 3
+  peak clients : 4
+  max  clients : 192
 
-BUT the eeprom data has it enabled.  As the value is checked at several places 
-in the code, the attached patch changes the stored value for this and the 
-previous 'Limit ADACs to 6' bits.
+Client   0 : "System" [Kernel]
+  Port   0 : "Timer" (Rwe-)
+  Port   1 : "Announce" (R-e-)
+Client  16 : "TerraTec DMX6Fire" [Kernel]
+  Port   0 : "MIDI-Front DMX6fire 0" (RWeX)
+  Port  32 : "Wavetable DMX6fire 0" (--e-)
+Client  20 : "Aureal Vortex au8820" [Kernel]
+  Port   0 : "au8820 MIDI 1" (RWeX)
 
-As a result, the log now shows no evidence of ice1712 driver at all, so I 
-added 'init...done' as in the attached 'init-message' patch.  It may be the 
-wrong place, or not wanted at all, so I kept it separate from the AC97 patch.  
-Hope it's OK in this case to attach both here.
+shows(?) that the wavetable device is not writable. aplaymidi cannot open the 
+port, and doesn't list it.
 
-BTW, re 'Consumer PCM code does not work well at the moment --jk',  will it be 
-fixed?
+Suggestions as to what causes this? Have checked out_enable=1, input_enable=0 
+for the 2nd port.
 
-Alan
+Is this patch going to be appropriate where a duplex port (ie the envy24 chip) 
+is used for output only?
 
-ice1712.c-disable-6fire-AC97.patch
-
-Summary:  Disable AC97 for DMX6fire
-
-Consumer AC97 is not used by the Terratec DMX6fire, but eeprom bit indicates 
-it is; change the stored value to disable failling consumer mode.
-
-Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
-
-ice1712.c-init-message.patch
-
-Adds init message to the ice1712 driver.
-
-
-
---Boundary-00=_IIccEJ3nyBV6201
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="ice1712.c-disable-6fire-AC97.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="ice1712.c-disable-6fire-AC97.patch"
-
---- alsa-driver-1.0.11-orig/alsa-kernel/pci/ice1712/ice1712.c	2006-04-18 12:38:03.000000000 +0100
-+++ alsa-driver-1.0.11/alsa-kernel/pci/ice1712/ice1712.c	2006-05-20 17:09:53.000000000 +0100
-@@ -2398,13 +2398,11 @@
- 	udelay(200);
- 	outb(ICE1712_NATIVE, ICEREG(ice, CONTROL));
- 	udelay(200);
--	if (ice->eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE && !ice->dxr_enable) {
--                /* Limit active ADCs and DACs to 6;  */
--                /* Note: DXR extension not supported */
--		pci_write_config_byte(ice->pci, 0x60, 0x2a);
--	} else {
--		pci_write_config_byte(ice->pci, 0x60, ice->eeprom.data[ICE_EEP1_CODEC]);
--	}
-+	if (ice->eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE && !ice->dxr_enable)
-+		/*  Limit active ADCs and DACs to 6;  Note: DXR extensions are not currently supported */
-+		/*  Also AC97 Consumer hardware is not provided in standard 6fire front box            */
-+		ice->eeprom.data[ICE_EEP1_CODEC] = 0x3a;  /*  Correct eeprom value  */
-+	pci_write_config_byte(ice->pci, 0x60, ice->eeprom.data[ICE_EEP1_CODEC]);
- 	pci_write_config_byte(ice->pci, 0x61, ice->eeprom.data[ICE_EEP1_ACLINK]);
- 	pci_write_config_byte(ice->pci, 0x62, ice->eeprom.data[ICE_EEP1_I2SID]);
- 	pci_write_config_byte(ice->pci, 0x63, ice->eeprom.data[ICE_EEP1_SPDIF]);
-
---Boundary-00=_IIccEJ3nyBV6201
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="ice1712.c-init-message.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="ice1712.c-init-message.patch"
-
---- alsa-driver-1.0.11-orig/alsa-kernel/pci/ice1712/ice1712.c	2006-04-18 12:38:03.000000000 +0100
-+++ alsa-driver-1.0.11/alsa-kernel/pci/ice1712/ice1712.c	2006-05-20 21:57:03.000000000 +0100
-@@ -2394,7 +2394,6 @@
- 
- static int __devinit snd_ice1712_chip_init(struct snd_ice1712 *ice)
- {
-+	printk("ice1712: Init...");
- 	outb(ICE1712_RESET | ICE1712_NATIVE, ICEREG(ice, CONTROL));
- 	udelay(200);
- 	outb(ICE1712_NATIVE, ICEREG(ice, CONTROL));
-@@ -2434,6 +2433,7 @@
- 		snd_ice1712_write(ice, ICE1712_IREG_CONSUMER_POWERDOWN, 0);
- 	}
- 	snd_ice1712_set_pro_rate(ice, 48000, 1);
-+	printk("done\n");
- 
- 	return 0;
- }
-
---Boundary-00=_IIccEJ3nyBV6201--
+Regards   Alan
 
 
 
