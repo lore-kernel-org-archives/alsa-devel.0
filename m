@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Mon, 22 May 2006 02:53:51 +0200
-Message-ID: <1ed4cc057370a5fb5341c03f765472ac@bugtrack.alsa-project.org>
+Date: Mon, 22 May 2006 04:14:29 +0200
+Message-ID: <6db4d4368f5074f144dd3d7f8336b788@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0D0122C
-	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 02:53:51 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F5BD22C
+	for <alsa-devel@alsa-project.org>; Mon, 22 May 2006 04:14:29 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              05-22-2006 02:53 CEST
+Last Modified:              05-22-2006 04:14 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
@@ -49,26 +49,23 @@ something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 05-21-06 03:48 
-----------------------------------------------------------------------
-"Phone" is normal, but "Caller ID" and "off hook" ctrl only exist in modem
-(MC97)
-
-What is the model of the motherboard ?
-
-Please post the output of
-
-cat /proc/asound/card0/codec97#0/ac97#0-0
-
-cat /proc/asound/card0/codec97#0/ac97#0-0+regs
-
-
-
-----------------------------------------------------------------------
  bzbarsky - 05-22-06 02:53 
 ----------------------------------------------------------------------
 The motherboard is a Tyan board; I believe it's an S1854A (Trinity 400). 
 I've attached the two files.
+
+----------------------------------------------------------------------
+ Raymond - 05-22-06 04:14 
+----------------------------------------------------------------------
+0:00 = 0000
+
+0:7c = 0000
+0:7e = 4e53
+
+The driver (ac97_codec.c) is unable to identify the codec, you will need
+to find out which codec from the motherboard manual or looking at the
+label printed on the codec chip which is a 48-pins square shaped chip near
+the onboard es1373
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -88,6 +85,7 @@ Date Modified  Username       Field                    Change
 05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
 05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
 05-22-06 02:53 bzbarsky       Note Added: 0009901                          
+05-22-06 04:14 Raymond        Note Added: 0009902                          
 ======================================================================
 
 
