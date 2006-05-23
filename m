@@ -1,17 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: 2.6.17-rc4-mm3
-Date: Tue, 23 May 2006 17:35:11 -0400
-Message-ID: <1148420112.12529.169.camel__29469.74684387$1148420201$gmane$org@mindpipe>
-References: <20060522022709.633a7a7f.akpm@osdl.org>
-	 <6bffcb0e0605231407v11453f63t8b7335fd614ccdf9@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002155]: problems with m-audio delta 1010lt
+Date: Tue, 23 May 2006 23:47:07 +0200
+Message-ID: <86f758ff852b6a6ac408b7cd831877f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 8C7E317B
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 23:35:15 +0200 (MEST)
-In-Reply-To: <6bffcb0e0605231407v11453f63t8b7335fd614ccdf9@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D50E9178
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 23:47:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,42 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Cc: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, perex@suse.cz, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-05-23 at 23:07 +0200, Michal Piotrowski wrote:
-> Hi,
-> 
-> On 22/05/06, Andrew Morton <akpm@osdl.org> wrote:
-> >
-> > ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.17-rc4/2.6.17-rc4-mm3/
-> >
-> [snip]
-> >  git-alsa.patch
-> 
-> I have noticed small problem with ALSA.
-> When I boot 2.6.17-rc4-mm3 everything is ok, then I switch to
-> 2.6.17-rc4-git11 - everything is ok. But when I switch back to
-> 2.6.17-rc4-mm3 PCM is mute (off), Spread Front to Surround and
-> Center/LFE is off, Channel Mode is set to 2ch (should be 6ch).
-> 
-> /sbin/alsactl -v
-> alsactl version 1.0.11rc2
-> 
-> This is an user space tools bug?
 
-If the mixer controls changed between those versions, then alsactl will
-be unable to completely restore the mixer state.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2155> 
+======================================================================
+Reported By:                solar76
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2155
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               open suse10.0
+Kernel Version:             
+======================================================================
+Date Submitted:             05-23-2006 23:47 CEST
+Last Modified:              05-23-2006 23:47 CEST
+======================================================================
+Summary:                    problems with m-audio delta 1010lt
+Description: 
+ 	 HELIX-Engine does not work fine on M-audio Delta1010LT
+&#171; on: May 18, 2006, 10:44:14 AM &#187;
+	Reply with quote
+hello! my problem is still that the HELIX-Engine does not work fine on
+M-audio Delta1010LT! i can play every type of audio-format like
+mp3s+waves,...-but the sound makes some latency-problems with my
+HQ-soundcard!
+is there anybody who knows, how i can change the bufferzize of my
+soundcard (M-audio Delta1010LT with alsa and envy24control!!). i choosed
+the amarok 1.3 from the openSuse 10.0 DVD with the helix engine,..!
+or is there a way-how i can configure the helix-engine for my
+soundcard,..in some details??? but please recognize, that i am not a
+proffessional unix-freak! just a newbie who is a big fan of suses open
+source linux! i made a perfect multimedia-system with all codecs-plugins
+(mp3,xvid,divx,ogg,etc.), xmms, k3burn, m-player,
+vlc,...ADOUR+AUDACITY,....! is there anybody with the M-audio delta 1010LT
+who knows my problem?Huh please write me a short ,....! thanks a lot-u all
+linux-freaks! i love your way of community---GO ON!!!!!
+======================================================================
 
-Otherwise the problem is with your userspace tools.  I think KDE likes
-to save/restore mixer settings on its own and its ALSA support is
-horribly buggy.
-
-It would help if you determine what app is saving/restoring the mixer
-settings.
-
-Lee
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-23-06 23:47 solar76        New Issue                                    
+05-23-06 23:47 solar76        Distribution              => open suse10.0   
+======================================================================
 
 
 
