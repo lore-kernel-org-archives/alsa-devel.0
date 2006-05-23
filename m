@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002153]: Line In and Aux are switched
-Date: Tue, 23 May 2006 21:57:18 +0200
-Message-ID: <dfb363a800e9c1bfcc80377569ccb387@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002154]: No sound on HDA-Intel Card
+Date: Tue, 23 May 2006 22:02:47 +0200
+Message-ID: <97dc132ece9f839a1a6f9714f30ef166@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C060F17B
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 21:57:18 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11E4617B
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 22:02:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,35 +24,42 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2153> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2154> 
 ======================================================================
-Reported By:                buboleck
+Reported By:                hawk
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2153
-Category:                   PCI - intel8x0
+Issue ID:                   2154
+Category:                   1_OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2111_FC
 ======================================================================
-Date Submitted:             05-23-2006 21:57 CEST
-Last Modified:              05-23-2006 21:57 CEST
+Date Submitted:             05-23-2006 22:02 CEST
+Last Modified:              05-23-2006 22:02 CEST
 ======================================================================
-Summary:                    Line In and Aux are switched
+Summary:                    No sound on HDA-Intel Card
 Description: 
-Line In and Aux are switched. 
-
-Hardware: Nvidia nForce4 (Intel edition MCP04, Realtek ALC850)
+HDA-Intel - HDA ULI M5461 card on Intel machine running Fedora Core 5.
+I can't hear any sound even though the driver shows no problem installing.
+Even xmms and realplayer show that everything is runnign smoothly, I have
+checked that the alsamixer has not muted any of the controls. I have also
+followed the instructions given at
+http://people.redhat.com/stransky/alsa/
+but to no results.
+Please help.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-23-06 21:57 buboleck       New Issue                                    
+05-23-06 22:02 hawk           New Issue                                    
+05-23-06 22:02 hawk           Distribution              => Fedora Core 5   
+05-23-06 22:02 hawk           Kernel Version            => 2.6.16-1.2111_FC
 ======================================================================
 
 
