@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Tue, 23 May 2006 11:26:14 +0200
-Message-ID: <437f208c4f0380240938912caec10792@bugtrack.alsa-project.org>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: DMX6fire  Consumer AC97 not used
+Date: Tue, 23 May 2006 10:45:35 +0100
+Message-ID: <200605231037.14170.gineera@aspect135.co.uk>
+References: <200605221450.14491.gineera@aspect135.co.uk> <s5hverykvd1.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_/mtcElIvcd2qzjp"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECDDD110
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 11:26:14 +0200 (MEST)
+In-Reply-To: <s5hverykvd1.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,117 +18,112 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
-======================================================================
-Reported By:                zanonmark
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
-======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              05-23-2006 11:26 CEST
-======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
-Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+--Boundary-00=_/mtcElIvcd2qzjp
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
+On Monday 22 May 2006 15:05, you wrote:
+> At Mon, 22 May 2006 14:52:08 +0100,
+>
+> Alan Horstmann wrote:
+> > Another little 'tidy-up':
+> >
+> > Have always had the following log message with DMX6fire:
+> >
+> >  linux kernel: Consumer PCM code does not work well at the moment --jk
+> >  linux kernel: ALSA ac97_codec.c:1671: AC'97 0:0 does not respond - RES=
+ET
+> >  linux kernel: ALSA ac97_codec.c:1682: AC'97 0:0 access is not valid
+> > [0xffffffff], removing mixer.
+> >  linux kernel: ice1712: cannot initialize ac97 for consumer, skipped
+> >
+> > and thought the last 3 were due to the first.  However, after comparing
+> > DMX6fire with STDSP24 card, it seems to me that the 6fire doesn't have =
+an
+> > AC97 chip, nor anywhere to connect to one in the standard front box, and
+> > the W2K drivers from Terratec don't support it.  It is remotely possible
+> > that other extension boxes may use it -but they do not have alsa support
+> > at present.
+> >
+> > BUT the eeprom data has it enabled.  As the value is checked at several
+> > places in the code, the attached patch changes the stored value for this
+> > and the previous 'Limit ADACs to 6' bits.
+> >
+> > As a result, the log now shows no evidence of ice1712 driver at all, so=
+ I
+> > added 'init...done' as in the attached 'init-message' patch.  It may be
+> > the wrong place, or not wanted at all, so I kept it separate from the
+> > AC97 patch. Hope it's OK in this case to attach both here.
+>
+> Please don't put such printk.  We don't put any info print at probe
+> unless any problem exists.
 
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
+OK, it's your call on this.  To me it is useful to log major system events =
+to=20
+look back and see what was happening; there is plenty of much less useful=20
+messsages in the logs, including IP addresses, every root login, and every=
+=20
+second that I don't have a CD in the drive! (need to fix that).  The au8820=
+=20
+driver does a similar init message.
 
-So, will you please include such a parameter in the next version of the
-driver?
+> Otherwise the change looks OK to get merged, but please fold the
+> comment within 80 columns.
 
-Thanks a lot,
+Amended AC97 patch attached.
 
-Marco.
+Alan
 
-======================================================================
+ice1712.c-disable-6fire-AC97-2.patch
 
-----------------------------------------------------------------------
- Raymond - 05-21-06 04:49 
-----------------------------------------------------------------------
-arecordmidi will allow you to record your play on keyboard to a midi file.
+Summary: =A0Disable AC97 for DMX6fire
 
-You will need Timidity++ or softsynth if you want to hear the playback.
+Consumer AC97 is not used by the Terratec DMX6fire, but eeprom bit indicate=
+s=20
+it is; change the stored value to disable failing consumer mode.
 
-However it seem that there is no communication between midi keyboard and
-ens1371.
+Signed-off-by: Alan Horstmann <gineera@aspect135.co.uk>
 
-----------------------------------------------------------------------
- zanonmark - 05-23-06 11:26 
-----------------------------------------------------------------------
-do you mean it could be a keyboard communication problem?
+--Boundary-00=_/mtcElIvcd2qzjp
+Content-Type: text/x-diff;
+  charset="iso-8859-1";
+  name="ice1712.c-disable-6fire-AC97-2.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="ice1712.c-disable-6fire-AC97-2.patch"
 
-I remember using the same keyboard (roland em-25) with Windows98 and a
-MIDI software (Anvil Studio trial) with no configuration problems, but I
-don't have Windows98 here anymore so I cannot repeat the test.
+--- alsa-driver-1.0.11-orig/alsa-kernel/pci/ice1712/ice1712.c	2006-04-18 12:38:03.000000000 +0100
++++ alsa-driver-1.0.11/alsa-kernel/pci/ice1712/ice1712.c	2006-05-22 22:43:38.000000000 +0100
+@@ -2398,13 +2398,13 @@
+ 	udelay(200);
+ 	outb(ICE1712_NATIVE, ICEREG(ice, CONTROL));
+ 	udelay(200);
+-	if (ice->eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE && !ice->dxr_enable) {
+-                /* Limit active ADCs and DACs to 6;  */
+-                /* Note: DXR extension not supported */
+-		pci_write_config_byte(ice->pci, 0x60, 0x2a);
+-	} else {
+-		pci_write_config_byte(ice->pci, 0x60, ice->eeprom.data[ICE_EEP1_CODEC]);
+-	}
++	if (ice->eeprom.subvendor == ICE1712_SUBDEVICE_DMX6FIRE && !ice->dxr_enable)
++		/*  Set eeprom value to limit active ADCs and DACs to 6;
++		 *  Also disable AC97 as no hardware in standard 6fire card/box
++		 *  Note: DXR extensions are not currently supported
++		 */
++		ice->eeprom.data[ICE_EEP1_CODEC] = 0x3a;
++	pci_write_config_byte(ice->pci, 0x60, ice->eeprom.data[ICE_EEP1_CODEC]);
+ 	pci_write_config_byte(ice->pci, 0x61, ice->eeprom.data[ICE_EEP1_ACLINK]);
+ 	pci_write_config_byte(ice->pci, 0x62, ice->eeprom.data[ICE_EEP1_I2SID]);
+ 	pci_write_config_byte(ice->pci, 0x63, ice->eeprom.data[ICE_EEP1_SPDIF]);
 
-Is there any MIDI initialization string I have to send to the keyboard?
-
-Thanks,
-
-MZ
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
-04-18-06 13:18 Raymond        Note Edited: 0009328                         
-04-18-06 16:28 Clemens LadischNote Added: 0009338                          
-04-19-06 20:05 zanonmark      Note Added: 0009354                          
-04-19-06 21:49 rlrevell       Note Added: 0009356                          
-04-20-06 03:39 Raymond        Note Added: 0009363                          
-04-22-06 13:36 zanonmark      Note Added: 0009433                          
-04-24-06 15:47 Raymond        Note Added: 0009452                          
-04-24-06 15:57 zanonmark      Note Added: 0009460                          
-04-25-06 03:25 Raymond        Note Added: 0009484                          
-04-25-06 10:55 zanonmark      Note Added: 0009486                          
-04-26-06 10:54 Raymond        Note Added: 0009505                          
-04-26-06 19:51 zanonmark      Note Added: 0009522                          
-05-01-06 10:38 Raymond        Note Added: 0009553                          
-05-07-06 13:33 zanonmark      Note Added: 0009641                          
-05-12-06 03:58 Raymond        Note Added: 0009771                          
-05-12-06 19:44 zanonmark      Note Added: 0009788                          
-05-13-06 05:19 Raymond        Note Added: 0009794                          
-05-19-06 03:44 Raymond        Note Added: 0009872                          
-05-20-06 11:30 zanonmark      Note Added: 0009883                          
-05-21-06 04:49 Raymond        Note Added: 0009896                          
-05-23-06 11:26 zanonmark      Note Added: 0009930                          
-======================================================================
-
+--Boundary-00=_/mtcElIvcd2qzjp--
 
 
 
