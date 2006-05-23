@@ -1,13 +1,14 @@
-From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
-Subject: Re: How to add full duplex capture and playback?
-Date: Tue, 23 May 2006 14:57:08 +0200
-Message-ID: <447306A4.5010406@atmel.com>
-References: <446D9014.1070300@atmel.com>	<446DA1AA.1080907@atmel.com>	<s5hbqtuxjhq.wl%tiwai@suse.de>	<446DE77F.909@atmel.com> <s5hhd3mvvyy.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002147]: lack of full duplex operation for ati-ixp chipset.
+Date: Tue, 23 May 2006 15:01:58 +0200
+Message-ID: <40c022ea192e693046e24699fb32075d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhd3mvvyy.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1FA0173
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 15:01:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,53 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Fri, 19 May 2006 17:42:55 +0200,
-> Hans-Christian Egtvedt wrote:
->> Takashi Iwai wrote:
->>> At Fri, 19 May 2006 12:44:58 +0200,
->>> Hans-Christian Egtvedt wrote:
 
-<snipp code>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
+======================================================================
+Reported By:                Gene Heskett
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2147
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               FC5, uptodate
+Kernel Version:             2.6.16-1.2111_FC5
+======================================================================
+Date Submitted:             05-23-2006 03:52 CEST
+Last Modified:              05-23-2006 15:01 CEST
+======================================================================
+Summary:                    lack of full duplex operation for ati-ixp chipset.
+Description: 
+skype, ekiga, audacity, and generally any program that needs to both
+transmit and receive, using isolated paths, fails in playback when
+recording.  In skype, I sound great at the far end, but reception may or
+may not work, with emphasis on the not.  What I hear in the phones, or in
+the speakers, sounds like what you would get if you took a sentence of
+spoken words, break it up into say 5ms pieces, and play them at maybe 10
+of these little snippets per second, so that the resultant sound is broken
+up to the point of no comprehension, and stretched in time by a
+considerable amount.
 
->> But it does not work quite as expected. I'm still able to set rate and
->> format from userspace (aplay/arecord), and this again will alter the
->> hardware setup when the prepare callback is called.
-> 
-> Right.  The restriction of configuration space is defined by the rules
-> set in open callback.  hw_params callback just follows the given
-> parameter and returns the success or the failure code.
-> 
-> A typical code is like below:
+In audacity, simultanious playback, or play one track while recording
+another, likewise fails in that only very short snippets of the played
+track are output to the phones or speakers.
 
-<snipp code example>
+Likewise, ekiga suffers from this same effect, I'm told I sound great on
+teh other end, but I can't hear more than half a word occasionally.
+======================================================================
 
-Thank you, this really clear things up. Driver is working as expected now.
+----------------------------------------------------------------------
+ tiwai - 05-23-06 15:01 
+----------------------------------------------------------------------
+The driver works as full-duplex.  Try a simple test with arecord and aplay.
 
-> In addition, a proper mutex would be preferred around the operation.
-> 
-> To be more strict, we may change hw_params like the following:
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-23-06 03:52 Gene Heskett   New Issue                                    
+05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
+05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
+05-23-06 15:01 tiwai          Note Added: 0009934                          
+======================================================================
 
-<snipp code example>
 
-> However, this doesn't work with OSS emulation because OSS emulation
-> initializes the rate to a certain default one.  If app tries to change
-> the rate in the full-duplex mode, then it's refused.
-
-I will leave this part out for now, since it dosn't work with OSS
-emaulation.
-
--- 
-With kind regards,
-Med vennlig hilsen,
-
-Hans-Christian Egtvedt
-Applications Engineer - AVR Applications Lab
-Atmel Norway
 
 
 -------------------------------------------------------
