@@ -1,18 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [PATCH 2.6.17-rc2] ALSA: PCMCIA sound devices
-	shouldn't depend on ISA
-Date: Tue, 23 May 2006 12:27:50 -0400
-Message-ID: <1148401671.12529.59.camel@mindpipe>
-References: <20060419144008.GD24807@harddisk-recovery.com>
-	 <1148357665.12529.17.camel@mindpipe>  <s5hbqtoyj5w.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002149]: No sound, with Ensoniq 5880 AudioPCI
+Date: Tue, 23 May 2006 18:29:07 +0200
+Message-ID: <e59dcf7d604719e6ba03351d41c47e46@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id BE2E615C
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 18:28:00 +0200 (MEST)
-In-Reply-To: <s5hbqtoyj5w.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBAAC15C
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 18:29:07 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,34 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Erik Mouw <erik@harddisk-recovery.com>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Asbj=F8rn_S=E6b=F8?= <asbjs@q2s.ntnu.no>, Linux PCMCIA development <linux-pcmcia@lists.infradead.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-05-23 at 15:17 +0200, Takashi Iwai wrote:
-> At Tue, 23 May 2006 00:14:24 -0400,
-> Lee Revell wrote:
-> >=20
-> > On Wed, 2006-04-19 at 16:40 +0200, Erik Mouw wrote:
-> > > The ALSA drivers for PCMCIA devices depend on ISA, but modern
-> > > laptops can have PCMCIA support without ISA. This patch removes
-> > > the dependency.
-> > >=20
-> >=20
-> > I am pretty sure I found a case where the VXPocket driver failed
-> > silently if CONFIG_ISAPNP is not set.  According to Takashi-san it is=
- a
-> > PCMCIA bug not an ALSA bug.  It was a P4 laptop several years old.  I
-> > don't have access to it right now but can get it.
-> >=20
-> > What additional information do you need to debug it?
->=20
-> The combination of actually used drivers (PCMCIA bridge, etc)?
->=20
 
-Asbj=F8rn, please provide lsmod and dmesg output.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2149> 
+======================================================================
+Reported By:                sergiopr
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2149
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             kernel-2.6.16-1.2111_FC5
+======================================================================
+Date Submitted:             05-23-2006 10:25 CEST
+Last Modified:              05-23-2006 18:29 CEST
+======================================================================
+Summary:                    No sound, with Ensoniq 5880 AudioPCI
+Description: 
+After a fresh install of Fedora Core 5, firstboot and
+system-config-souncard utilities correctly detect the sound card, but no
+sound comes from the speakers.
 
-Lee
+Furthermore, aplay -l gives:
+aplay: device_list:222: no soundcards found...
+======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 05-23-06 18:29 
+----------------------------------------------------------------------
+According to your dmesg
+
+ACPI: PCI Interrupt Link [LNKA] enabled at IRQ 10
+PCI: setting IRQ 10 as level-triggered
+ACPI: PCI Interrupt 0000:00:0c.0[A] -> Link [LNKA] -> GSI 10 (level, low)
+-> IRQ 10
+PCI: Unable to reserve I/O region #1:40@de00 for device 0000:00:0c.0
+ENS1371: probe of 0000:00:0c.0 failed with error -16
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-23-06 10:25 sergiopr       New Issue                                    
+05-23-06 10:25 sergiopr       File Added: buginfo.tar.bz2                    
+05-23-06 10:25 sergiopr       Kernel Version            =>
+kernel-2.6.16-1.2111_FC5
+05-23-06 18:29 Raymond        Note Added: 0009944                          
+======================================================================
+
 
 
 
