@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002154]: No sound on HDA-Intel Card
-Date: Tue, 23 May 2006 22:02:47 +0200
-Message-ID: <97dc132ece9f839a1a6f9714f30ef166@bugtrack.alsa-project.org>
+From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
+Subject: What happened with the DEBUG_THREAD define in the asterisk Makefile?
+Date: Tue, 23 May 2006 17:28:26 -0300
+Message-ID: <4473706A.3020305@instant.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 11E4617B
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 22:02:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +15,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+There's no mention of it in the current SVN version. Version 1.2.7.1 had 
+the following:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2154> 
-======================================================================
-Reported By:                hawk
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2154
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2111_FC
-======================================================================
-Date Submitted:             05-23-2006 22:02 CEST
-Last Modified:              05-23-2006 22:02 CEST
-======================================================================
-Summary:                    No sound on HDA-Intel Card
-Description: 
-HDA-Intel - HDA ULI M5461 card on Intel machine running Fedora Core 5.
-I can't hear any sound even though the driver shows no problem installing.
-Even xmms and realplayer show that everything is runnign smoothly, I have
-checked that the alsamixer has not muted any of the controls. I have also
-followed the instructions given at
-http://people.redhat.com/stransky/alsa/
-but to no results.
-Please help.
-======================================================================
+# Optional debugging parameters
+DEBUG_THREADS = #-DDUMP_SCHEDULER #-DDEBUG_SCHEDULER #-DDEBUG_THREADS 
+#-DDO_CRASH #-DDETECT_DEADLOCKS
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-23-06 22:02 hawk           New Issue                                    
-05-23-06 22:02 hawk           Distribution              => Fedora Core 5   
-05-23-06 22:02 hawk           Kernel Version            => 2.6.16-1.2111_FC
-======================================================================
-
+Also, the "howto debug a deadlock" at 
+http://www.voip-info.org/wiki/view/Asterisk+debugging seems to be out of 
+date -- it doesn't tell what DUMP_SCHEDULER, DEBUG_SCHEDULER and 
+DETECT_DEADLOCKS are for, how can they be used, or what caveats are 
+associated with enabling them.
 
 
 
