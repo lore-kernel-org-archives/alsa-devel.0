@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002148]: lack of full duplex operation for ati-ixp chipset.
-Date: Tue, 23 May 2006 05:56:07 +0200
-Message-ID: <66a41d75f1523ab9b81c151ecb0eed8f@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH 2.6.17-rc2] ALSA: PCMCIA sound devices shouldn't depend
+ on ISA
+Date: Tue, 23 May 2006 00:14:24 -0400
+Message-ID: <1148357665.12529.17.camel@mindpipe>
+References: <20060419144008.GD24807@harddisk-recovery.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 21DF8170
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 05:56:08 +0200 (MEST)
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 99312172
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 06:14:34 +0200 (MEST)
+In-Reply-To: <20060419144008.GD24807@harddisk-recovery.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +21,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Erik Mouw <erik@harddisk-recovery.com>
+Cc: alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Asbj=F8rn_S=E6b=F8?= <asbjs@q2s.ntnu.no>, Linux PCMCIA development <linux-pcmcia@lists.infradead.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2006-04-19 at 16:40 +0200, Erik Mouw wrote:
+> The ALSA drivers for PCMCIA devices depend on ISA, but modern
+> laptops can have PCMCIA support without ISA. This patch removes
+> the dependency.
+> 
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2148> 
-======================================================================
-Reported By:                Gene Heskett
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2148
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     closed
-Distribution:               FC5, uptodate
-Kernel Version:             2.6.16-1.2111_FC5
-Resolution:                 open
-Fixed in Version:           
-======================================================================
-Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-23-2006 05:56 CEST
-======================================================================
-Summary:                    lack of full duplex operation for ati-ixp chipset.
-Description: 
-skype, ekiga, audacity, and generally any program that needs to both
-transmit and receive, using isolated paths, fails in playback when
-recording.  In skype, I sound great at the far end, but reception may or
-may not work, with emphasis on the not.  What I hear in the phones, or in
-the speakers, sounds like what you would get if you took a sentence of
-spoken words, break it up into say 5ms pieces, and play them at maybe 10
-of these little snippets per second, so that the resultant sound is broken
-up to the point of no comprehension, and stretched in time by a
-considerable amount.
+I am pretty sure I found a case where the VXPocket driver failed
+silently if CONFIG_ISAPNP is not set.  According to Takashi-san it is a
+PCMCIA bug not an ALSA bug.  It was a P4 laptop several years old.  I
+don't have access to it right now but can get it.
 
-In audacity, simultanious playback, or play one track while recording
-another, likewise fails in that only very short snippets of the played
-track are output to the phones or speakers.
+What additional information do you need to debug it?
 
-Likewise, ekiga suffers from this same effect, I'm told I sound great on
-teh other end, but I can't hear more than half a word occasionally.
-======================================================================
-
-----------------------------------------------------------------------
- Gene Heskett - 05-23-06 03:58 
-----------------------------------------------------------------------
-sorry about the dual fileing, the motels wireless decided to take a crap
-and I didn't know if it succeeded or not the fisdt time.
-
-----------------------------------------------------------------------
- rlrevell - 05-23-06 05:56 
-----------------------------------------------------------------------
-No problem.  Closing.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-23-06 03:52 Gene Heskett   New Issue                                    
-05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
-05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
-05-23-06 03:58 Gene Heskett   Note Added: 0009925                          
-05-23-06 05:56 rlrevell       Status                   assigned => closed  
-05-23-06 05:56 rlrevell       Note Added: 0009928                          
-======================================================================
-
+Lee
 
 
 
