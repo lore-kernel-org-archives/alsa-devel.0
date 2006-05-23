@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002134]: arecord doesn't work in amd x86_64 X2 dual core.
-Date: Tue, 23 May 2006 14:39:31 +0200
-Message-ID: <c90dec7d4c0f7516b306f090c776b892@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002150]: [PATCH] Adding functionality for Prodigy 7.1LT
+Date: Tue, 23 May 2006 14:51:09 +0200
+Message-ID: <47654dfa47a79f5d07b2eab8c54b1c1d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09733170
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 14:39:32 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 34D8B173
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 14:51:09 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,78 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2150> 
 ======================================================================
-Reported By:                bolsog
+Reported By:                Demosthenes
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2134
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   2150
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-18-2006 13:25 CEST
-Last Modified:              05-23-2006 14:39 CEST
+Date Submitted:             05-23-2006 13:07 CEST
+Last Modified:              05-23-2006 14:51 CEST
 ======================================================================
-Summary:                    arecord doesn't work in amd x86_64 X2 dual core.
+Summary:                    [PATCH] Adding functionality for Prodigy 7.1LT
 Description: 
-arecord doen't work on a amd x86_64 X2 dual core.
+Hello, I would like to indicate a patch provided in another thread that has
+since become idle:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744
 
-examples:
-arecord -d 10 -c 2 -f S16_LE -r 32000 foo.wav
-arecord -d 10 -f S16_LE -r 48000 foo.wav
-arecord -d 10 -f S16_LE -r 32000 foo.wav
-arecord -d 10 -f S16_LE -r 16000 foo.wav
+This patch is not written by me and the person who wrote the patch no
+longer owns this sound card.  However the changes it makes are fairly
+simple and add much in the way of functionality.
 
-all examples must be terminated using Ctrl-c and only the 44 byte header
-is saved. 
+This patch is known to add support for useable front audio channels, user
+controllable headphone channel and support for optical output.(as reported
+in this thread)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2109
 
-The soundcard is a 
-Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
-Controller
-(rev a2)
 
-We tested this problem on a similar pc with amd x86_64 single core with
-the same
-soundcard and all works fine.
+I have been using this patch for some time (and with the latest stable
+ALSA) and have had no problems, other users have also had similar
+success.
 
-aplay works on both pcs without problems!
+I would greatly appreciate if this patch could be adopted and added to
+ALSA since it is a great improvement on the previous driver.
 
-We tested on Fedora Core 4 (1.0.10) and Fedora Core 5 (1.0.11rc2)
+Thank you.
 
-We need recording on this pc, so we appreciate every help. Thanks.
+P.S. I hope that this is a suitable way to suggest this patch, I have
+already tried bumping the original issue but with no success.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-22-06 18:52 
+ tiwai - 05-23-06 14:51 
 ----------------------------------------------------------------------
-This sounds like an interrupt routing problem.
-
-Does the interrupt count for the soundcard in /proc/interrupts increase
-while arecord is running?
-
-----------------------------------------------------------------------
- bolsog - 05-23-06 14:39 
-----------------------------------------------------------------------
-in /proc/interupts is the interrupt of the soundcard constant:
-
-19:        154        108   IO-APIC-level  NVidia CK804
+Please provide a summary, changelog and signed-off-by lines as found in the
+main page, if you intend to merge the patch to upstream...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-18-06 13:25 bolsog         New Issue                                    
-05-21-06 14:12 Raymond        Note Added: 0009899                          
-05-21-06 14:13 Raymond        Note Edited: 0009899                         
-05-21-06 14:15 Raymond        Note Edited: 0009899                         
-05-22-06 11:57 bolsog         Note Added: 0009907                          
-05-22-06 17:47 Raymond        Note Added: 0009917                          
-05-22-06 17:53 bolsog         File Added: arecord-L.txt                    
-05-22-06 18:52 rlrevell       Note Added: 0009918                          
-05-23-06 14:39 bolsog         Note Added: 0009932                          
+05-23-06 13:07 Demosthenes    New Issue                                    
+05-23-06 14:51 tiwai          Note Added: 0009933                          
 ======================================================================
 
 
