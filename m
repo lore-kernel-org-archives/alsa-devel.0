@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
-Date: Tue, 23 May 2006 05:10:47 +0200
-Message-ID: <fe15026af964d31b06adb2a27cf30043@bugtrack.alsa-project.org>
+Date: Tue, 23 May 2006 05:50:11 +0200
+Message-ID: <14a78e3d9c3a33358aafc0887c5711d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4B25192
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 05:10:47 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 063FB166
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 05:50:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               Arch Linux
 Kernel Version:             2.6.15-archck4
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             02-24-2006 07:27 CET
-Last Modified:              05-23-2006 05:10 CEST
+Last Modified:              05-23-2006 05:50 CEST
 ======================================================================
 Summary:                    USB sound device appears to be loading properly, but
 all applications report the device is busy
@@ -59,14 +61,14 @@ blocked.  This all worked properly with a 2.6.14-ck kernel.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-22-06 07:18 
-----------------------------------------------------------------------
-Does it work with 2.6.17-rc4?
-
-----------------------------------------------------------------------
  oggb4mp3 - 05-23-06 05:10 
 ----------------------------------------------------------------------
 Yes, It works with 2.6.17 final
+
+----------------------------------------------------------------------
+ rlrevell - 05-23-06 05:50 
+----------------------------------------------------------------------
+I guess you mean 2.6.17-rc4?  I don't see the 2.6.17 annoncement yet...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +98,8 @@ Date Modified  Username       Field                    Change
 05-22-06 05:04 oggb4mp3       Note Added: 0009905                          
 05-22-06 07:18 rlrevell       Note Added: 0009906                          
 05-23-06 05:10 oggb4mp3       Note Added: 0009926                          
+05-23-06 05:50 rlrevell       Status                   assigned => closed  
+05-23-06 05:50 rlrevell       Note Added: 0009927                          
 ======================================================================
 
 
