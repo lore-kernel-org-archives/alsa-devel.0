@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002148]: lack of full duplex operation for ati-ixp chipset.
-Date: Tue, 23 May 2006 03:58:34 +0200
-Message-ID: <80345f50bde94ee7deaae97623338a57@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001874]: USB sound device appears to be loading properly, but all applications report the device is busy
+Date: Tue, 23 May 2006 05:10:47 +0200
+Message-ID: <fe15026af964d31b06adb2a27cf30043@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C393D162
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 03:58:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4B25192
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 05:10:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,57 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2148> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1874> 
 ======================================================================
-Reported By:                Gene Heskett
-Assigned To:                tiwai
+Reported By:                oggb4mp3
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2148
-Category:                   PCI - atiixp
+Issue ID:                   1874
+Category:                   USB - usb-audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               FC5, uptodate
-Kernel Version:             2.6.16-1.2111_FC5
+Distribution:               Arch Linux
+Kernel Version:             2.6.15-archck4
 ======================================================================
-Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-23-2006 03:58 CEST
+Date Submitted:             02-24-2006 07:27 CET
+Last Modified:              05-23-2006 05:10 CEST
 ======================================================================
-Summary:                    lack of full duplex operation for ati-ixp chipset.
+Summary:                    USB sound device appears to be loading properly, but
+all applications report the device is busy
 Description: 
-skype, ekiga, audacity, and generally any program that needs to both
-transmit and receive, using isolated paths, fails in playback when
-recording.  In skype, I sound great at the far end, but reception may or
-may not work, with emphasis on the not.  What I hear in the phones, or in
-the speakers, sounds like what you would get if you took a sentence of
-spoken words, break it up into say 5ms pieces, and play them at maybe 10
-of these little snippets per second, so that the resultant sound is broken
-up to the point of no comprehension, and stretched in time by a
-considerable amount.
+I own a USB audio Device with a TI burr-brown DAC and with my recent
+upgrade to 2.6.15-ck4, all apps report that the device is busy.  I found
+this bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1585 that
+I thought might be the culprit, but when I tried to apply the patch, I
+found that it was already applied.  I tried to reverse it, thinking that I
+might have had one of the devices that worked without it and this patch
+actually broke it, but no joy.
 
-In audacity, simultanious playback, or play one track while recording
-another, likewise fails in that only very short snippets of the played
-track are output to the phones or speakers.
-
-Likewise, ekiga suffers from this same effect, I'm told I sound great on
-teh other end, but I can't hear more than half a word occasionally.
+The device appears to be present as alsa device hw:1,0, the same as it
+always was, and I can select it, but all apps report that it is busy or
+blocked.  This all worked properly with a 2.6.14-ck kernel.
 ======================================================================
 
 ----------------------------------------------------------------------
- Gene Heskett - 05-23-06 03:58 
+ rlrevell - 05-22-06 07:18 
 ----------------------------------------------------------------------
-sorry about the dual fileing, the motels wireless decided to take a crap
-and I didn't know if it succeeded or not the fisdt time.
+Does it work with 2.6.17-rc4?
+
+----------------------------------------------------------------------
+ oggb4mp3 - 05-23-06 05:10 
+----------------------------------------------------------------------
+Yes, It works with 2.6.17 final
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-23-06 03:52 Gene Heskett   New Issue                                    
-05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
-05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
-05-23-06 03:58 Gene Heskett   Note Added: 0009925                          
+02-24-06 07:27 oggb4mp3       New Issue                                    
+02-24-06 07:27 oggb4mp3       Distribution              => Arch Linux      
+02-24-06 07:27 oggb4mp3       Kernel Version            => 2.6.15-archck4  
+02-24-06 07:32 oggb4mp3       Note Added: 0008171                          
+02-24-06 14:16 Clemens LadischNote Added: 0008175                          
+02-24-06 15:00 oggb4mp3       Note Added: 0008177                          
+02-24-06 15:32 Clemens LadischNote Added: 0008178                          
+02-25-06 00:49 oggb4mp3       Note Added: 0008183                          
+02-27-06 00:37 oggb4mp3       Note Added: 0008210                          
+02-27-06 02:54 oggb4mp3       Note Added: 0008211                          
+02-27-06 16:48 oggb4mp3       Note Added: 0008224                          
+02-27-06 18:18 oggb4mp3       Note Added: 0008226                          
+02-27-06 18:22 Clemens LadischNote Added: 0008227                          
+02-27-06 22:33 oggb4mp3       Note Added: 0008232                          
+03-01-06 03:40 oggb4mp3       Note Added: 0008263                          
+03-01-06 03:42 oggb4mp3       Note Edited: 0008263                         
+03-02-06 04:34 oggb4mp3       Note Added: 0008292                          
+03-02-06 14:37 oggb4mp3       Note Added: 0008305                          
+03-02-06 14:38 oggb4mp3       File Added: fix_burr_brown.patch                  
+ 
+03-02-06 17:18 oggb4mp3       Note Edited: 0008305                         
+03-07-06 17:09 oggb4mp3       Note Added: 0008369                          
+05-22-06 05:04 oggb4mp3       Note Added: 0009905                          
+05-22-06 07:18 rlrevell       Note Added: 0009906                          
+05-23-06 05:10 oggb4mp3       Note Added: 0009926                          
 ======================================================================
 
 
