@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002148]: lack of full duplex operation for ati-ixp chipset.
-Date: Tue, 23 May 2006 03:52:41 +0200
-Message-ID: <b93dc59e50b0a2af9f0964a00ed213a3@bugtrack.alsa-project.org>
+Date: Tue, 23 May 2006 03:58:34 +0200
+Message-ID: <80345f50bde94ee7deaae97623338a57@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D4F91AC
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 03:52:41 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C393D162
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 03:58:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2148> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-23-2006 03:52 CEST
+Last Modified:              05-23-2006 03:58 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -62,12 +62,19 @@ Likewise, ekiga suffers from this same effect, I'm told I sound great on
 teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
+----------------------------------------------------------------------
+ Gene Heskett - 05-23-06 03:58 
+----------------------------------------------------------------------
+sorry about the dual fileing, the motels wireless decided to take a crap
+and I didn't know if it succeeded or not the fisdt time.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-23-06 03:52 Gene Heskett   New Issue                                    
 05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
 05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
+05-23-06 03:58 Gene Heskett   Note Added: 0009925                          
 ======================================================================
 
 
