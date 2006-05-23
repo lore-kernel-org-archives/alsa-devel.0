@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002149]: No sound, with Ensoniq 5880 AudioPCI
-Date: Tue, 23 May 2006 18:29:07 +0200
-Message-ID: <e59dcf7d604719e6ba03351d41c47e46@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002134]: arecord doesn't work in amd x86_64 X2 dual core.
+Date: Tue, 23 May 2006 18:37:38 +0200
+Message-ID: <6330ffedfd6db873e7bcc10b2aded252@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBAAC15C
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 18:29:07 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55A0415C
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 18:37:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2149> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2134> 
 ======================================================================
-Reported By:                sergiopr
+Reported By:                bolsog
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2149
-Category:                   PCI - ens1371
+Project:                    ALSA - utils
+Issue ID:                   2134
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             kernel-2.6.16-1.2111_FC5
 ======================================================================
-Date Submitted:             05-23-2006 10:25 CEST
-Last Modified:              05-23-2006 18:29 CEST
+Date Submitted:             05-18-2006 13:25 CEST
+Last Modified:              05-23-2006 18:37 CEST
 ======================================================================
-Summary:                    No sound, with Ensoniq 5880 AudioPCI
+Summary:                    arecord doesn't work in amd x86_64 X2 dual core.
 Description: 
-After a fresh install of Fedora Core 5, firstboot and
-system-config-souncard utilities correctly detect the sound card, but no
-sound comes from the speakers.
+arecord doen't work on a amd x86_64 X2 dual core.
 
-Furthermore, aplay -l gives:
-aplay: device_list:222: no soundcards found...
+examples:
+arecord -d 10 -c 2 -f S16_LE -r 32000 foo.wav
+arecord -d 10 -f S16_LE -r 48000 foo.wav
+arecord -d 10 -f S16_LE -r 32000 foo.wav
+arecord -d 10 -f S16_LE -r 16000 foo.wav
+
+all examples must be terminated using Ctrl-c and only the 44 byte header
+is saved. 
+
+The soundcard is a 
+Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
+Controller
+(rev a2)
+
+We tested this problem on a similar pc with amd x86_64 single core with
+the same
+soundcard and all works fine.
+
+aplay works on both pcs without problems!
+
+We tested on Fedora Core 4 (1.0.10) and Fedora Core 5 (1.0.11rc2)
+
+We need recording on this pc, so we appreciate every help. Thanks.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 05-23-06 18:29 
+ bolsog - 05-23-06 14:39 
 ----------------------------------------------------------------------
-According to your dmesg
+in /proc/interupts is the interrupt of the soundcard constant:
 
-ACPI: PCI Interrupt Link [LNKA] enabled at IRQ 10
-PCI: setting IRQ 10 as level-triggered
-ACPI: PCI Interrupt 0000:00:0c.0[A] -> Link [LNKA] -> GSI 10 (level, low)
--> IRQ 10
-PCI: Unable to reserve I/O region #1:40@de00 for device 0000:00:0c.0
-ENS1371: probe of 0000:00:0c.0 failed with error -16
+19:        154        108   IO-APIC-level  NVidia CK804
+
+----------------------------------------------------------------------
+ rlrevell - 05-23-06 18:37 
+----------------------------------------------------------------------
+So it does not increase while arecord is running?
+
+Try booting with "noapic"
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-23-06 10:25 sergiopr       New Issue                                    
-05-23-06 10:25 sergiopr       File Added: buginfo.tar.bz2                    
-05-23-06 10:25 sergiopr       Kernel Version            =>
-kernel-2.6.16-1.2111_FC5
-05-23-06 18:29 Raymond        Note Added: 0009944                          
+05-18-06 13:25 bolsog         New Issue                                    
+05-21-06 14:12 Raymond        Note Added: 0009899                          
+05-21-06 14:13 Raymond        Note Edited: 0009899                         
+05-21-06 14:15 Raymond        Note Edited: 0009899                         
+05-22-06 11:57 bolsog         Note Added: 0009907                          
+05-22-06 17:47 Raymond        Note Added: 0009917                          
+05-22-06 17:53 bolsog         File Added: arecord-L.txt                    
+05-22-06 18:52 rlrevell       Note Added: 0009918                          
+05-23-06 14:39 bolsog         Note Added: 0009932                          
+05-23-06 18:37 rlrevell       Note Added: 0009945                          
 ======================================================================
 
 
