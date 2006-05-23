@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002134]: arecord doesn't work in amd x86_64 X2 dual core.
-Date: Tue, 23 May 2006 18:37:38 +0200
-Message-ID: <6330ffedfd6db873e7bcc10b2aded252@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002152]: Hercule fw16/12
+Date: Tue, 23 May 2006 18:48:14 +0200
+Message-ID: <e47d2c16cf93e056ce450576b8fb0f80@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 55A0415C
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 18:37:38 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C888173
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 18:48:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2134> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2152> 
 ======================================================================
-Reported By:                bolsog
+Reported By:                u9t4u
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2134
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   2152
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Fedora core 5
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-18-2006 13:25 CEST
-Last Modified:              05-23-2006 18:37 CEST
+Date Submitted:             05-23-2006 18:48 CEST
+Last Modified:              05-23-2006 18:48 CEST
 ======================================================================
-Summary:                    arecord doesn't work in amd x86_64 X2 dual core.
+Summary:                    Hercule fw16/12
 Description: 
-arecord doen't work on a amd x86_64 X2 dual core.
+Hi,
+I just look here if someone is allready involve in the driver'building for
+this great card. I send a mail to the support website of HERCULES, but I
+have no answer concerning the development of any drivers for the 16/12.
+This card looks really good for me and it's not really expensive for the
+moment so, I really afraid about a non migration to linux for this one.
+Really hope your answer and congratulation for all your work
 
-examples:
-arecord -d 10 -c 2 -f S16_LE -r 32000 foo.wav
-arecord -d 10 -f S16_LE -r 48000 foo.wav
-arecord -d 10 -f S16_LE -r 32000 foo.wav
-arecord -d 10 -f S16_LE -r 16000 foo.wav
-
-all examples must be terminated using Ctrl-c and only the 44 byte header
-is saved. 
-
-The soundcard is a 
-Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
-Controller
-(rev a2)
-
-We tested this problem on a similar pc with amd x86_64 single core with
-the same
-soundcard and all works fine.
-
-aplay works on both pcs without problems!
-
-We tested on Fedora Core 4 (1.0.10) and Fedora Core 5 (1.0.11rc2)
-
-We need recording on this pc, so we appreciate every help. Thanks.
 ======================================================================
-
-----------------------------------------------------------------------
- bolsog - 05-23-06 14:39 
-----------------------------------------------------------------------
-in /proc/interupts is the interrupt of the soundcard constant:
-
-19:        154        108   IO-APIC-level  NVidia CK804
-
-----------------------------------------------------------------------
- rlrevell - 05-23-06 18:37 
-----------------------------------------------------------------------
-So it does not increase while arecord is running?
-
-Try booting with "noapic"
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-18-06 13:25 bolsog         New Issue                                    
-05-21-06 14:12 Raymond        Note Added: 0009899                          
-05-21-06 14:13 Raymond        Note Edited: 0009899                         
-05-21-06 14:15 Raymond        Note Edited: 0009899                         
-05-22-06 11:57 bolsog         Note Added: 0009907                          
-05-22-06 17:47 Raymond        Note Added: 0009917                          
-05-22-06 17:53 bolsog         File Added: arecord-L.txt                    
-05-22-06 18:52 rlrevell       Note Added: 0009918                          
-05-23-06 14:39 bolsog         Note Added: 0009932                          
-05-23-06 18:37 rlrevell       Note Added: 0009945                          
+05-23-06 18:48 u9t4u          New Issue                                    
+05-23-06 18:48 u9t4u          Distribution              => Fedora core 5   
 ======================================================================
 
 
