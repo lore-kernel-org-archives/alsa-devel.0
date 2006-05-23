@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Tue, 23 May 2006 19:09:24 +0200
-Message-ID: <987636e4e602b8a32cf49efc868277b7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002147]: lack of full duplex operation for ati-ixp chipset.
+Date: Tue, 23 May 2006 19:14:08 +0200
+Message-ID: <bde9e7a94db6645e83f968d676431b1f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 896BC178
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 19:09:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85D1817B
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 19:14:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,109 +24,106 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
 ======================================================================
-Reported By:                zanonmark
-Assigned To:                
+Reported By:                Gene Heskett
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2023
-Category:                   PCI - ens1371
+Issue ID:                   2147
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu 5.10
-Kernel Version:             2.6.12-10
+Status:                     assigned
+Distribution:               FC5, uptodate
+Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
-Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              05-23-2006 19:09 CEST
+Date Submitted:             05-23-2006 03:52 CEST
+Last Modified:              05-23-2006 19:14 CEST
 ======================================================================
-Summary:                    midi/joystick port disabled and no way to enable it
+Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
-I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
-of the soundcard.
+skype, ekiga, audacity, and generally any program that needs to both
+transmit and receive, using isolated paths, fails in playback when
+recording.  In skype, I sound great at the far end, but reception may or
+may not work, with emphasis on the not.  What I hear in the phones, or in
+the speakers, sounds like what you would get if you took a sentence of
+spoken words, break it up into say 5ms pieces, and play them at maybe 10
+of these little snippets per second, so that the resultant sound is broken
+up to the point of no comprehension, and stretched in time by a
+considerable amount.
 
-Unfortunately, while PCM works fine and /dev/midi is created, I see no
-MIDI communication through /dev/midi.
-/proc/asound/AudioPCI/audiopci reports that the joystick port is
-disabled.
+In audacity, simultanious playback, or play one track while recording
+another, likewise fails in that only very short snippets of the played
+track are output to the phones or speakers.
 
-It is probably a bug on the Ubuntu side (did they forget to compile the
-driver correctly?), but I'd like to see a parameter for enabling the
-joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
-but snd_ens1371 has not, so:
-1) it is not possible to reload (rmmod and modprobe) the driver with that
-parameter enabling the midi/joystick port manually,
-2) it is not possible to save (alsactl store), modify and reload (alsactl
-restore) the soundcard settings, because I see no such parameter to
-modify.
-
-So, will you please include such a parameter in the next version of the
-driver?
-
-Thanks a lot,
-
-Marco.
-
+Likewise, ekiga suffers from this same effect, I'm told I sound great on
+teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- zanonmark - 05-23-06 11:26 
+ Gene Heskett - 05-23-06 18:07 
 ----------------------------------------------------------------------
-do you mean it could be a keyboard communication problem?
+The only .wav files are the short, maybe 1 second max length, sound effects
+for many programs.  It is an FC5 install about 6 weeks old.
 
-I remember using the same keyboard (roland em-25) with Windows98 and a
-MIDI software (Anvil Studio trial) with no configuration problems, but I
-don't have Windows98 here anymore so I cannot repeat the test.
+1: no line out or line in on this laptop, only headphone and microphone
+jacks are actually present.
 
-Is there any MIDI initialization string I have to send to the keyboard?
+2: In kmix, the mics red led button seems to be mutually exclusive with
+almost any other source.  Mic works fine. Either in my phones or on the
+other end.
 
-Thanks,
+3. I'll have to see if I can re-rip something to a .wav.  And it will be
+an intermittent effort after today, for quite a few days as I'll be
+working on an antenna (big broadcast one 40+ feet long, several thousand
+pounds) for the next 2-3 weeks as much as I can push these 71 year old
+bones to do.
 
-MZ
+4: isn't a problem, and I'm not really concerned that 5 will fail, its the
+playback at stage 3 that won't work.  I have done similar tests using
+audacity
+and its always the playback that fails, unless playback is the ONLY thing
+audacity is doing ATM.
+
+I'd just like to make skype or zfone to work, but nothing seems to make
+the incoming audio usable when there is an outgoing stream.
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 05-23-06 19:09 
+ tiwai - 05-23-06 19:14 
 ----------------------------------------------------------------------
-The keyboard should not need any special initialization.
+Grr, you make the things too complex.  Let's sort out the thing straight.
 
-To check whether the cable itself works, connect the sound card's MIDI
-output to its MIDI input, run "amidi -d -p hw:0", then play something to
-the ES1371 port (with aplaymidi or any sequencer).
+The duplex problem and the inproper recording are different things. 
+First, check whether both non-duplex playback and recording work
+properly.
+
+For checking playback, you can use speaker-test program in alsa-utils
+package, too.  Run "speaker-test -c2 -tw", for example.
+
+As I mentioned, you can test recording of the played stream by setting
+"Capture Source" to "Mix".  It needs no extra hardware setup, so no hard
+work after running a full marathon.
+
+If the full-duplex works by this way, skype and other programs should work
+as well -- as long as you set up the mixer correctly.
+
+Anyway, don't use audacity or whatever apps might be using OSS emulation
+for tests.  They can't be used as references.  Use basic tools included in
+ALSA packages for primary tests.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-16-06 12:18 zanonmark      New Issue                                    
-04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
-04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
-04-17-06 06:56 rlrevell       Note Added: 0009301                          
-04-17-06 07:19 Raymond        Note Added: 0009303                          
-04-17-06 19:59 zanonmark      Note Added: 0009319                          
-04-18-06 10:54 Raymond        Note Added: 0009328                          
-04-18-06 13:18 Raymond        Note Edited: 0009328                         
-04-18-06 16:28 Clemens LadischNote Added: 0009338                          
-04-19-06 20:05 zanonmark      Note Added: 0009354                          
-04-19-06 21:49 rlrevell       Note Added: 0009356                          
-04-20-06 03:39 Raymond        Note Added: 0009363                          
-04-22-06 13:36 zanonmark      Note Added: 0009433                          
-04-24-06 15:47 Raymond        Note Added: 0009452                          
-04-24-06 15:57 zanonmark      Note Added: 0009460                          
-04-25-06 03:25 Raymond        Note Added: 0009484                          
-04-25-06 10:55 zanonmark      Note Added: 0009486                          
-04-26-06 10:54 Raymond        Note Added: 0009505                          
-04-26-06 19:51 zanonmark      Note Added: 0009522                          
-05-01-06 10:38 Raymond        Note Added: 0009553                          
-05-07-06 13:33 zanonmark      Note Added: 0009641                          
-05-12-06 03:58 Raymond        Note Added: 0009771                          
-05-12-06 19:44 zanonmark      Note Added: 0009788                          
-05-13-06 05:19 Raymond        Note Added: 0009794                          
-05-19-06 03:44 Raymond        Note Added: 0009872                          
-05-20-06 11:30 zanonmark      Note Added: 0009883                          
-05-21-06 04:49 Raymond        Note Added: 0009896                          
-05-23-06 11:26 zanonmark      Note Added: 0009930                          
-05-23-06 19:09 Clemens LadischNote Added: 0009946                          
+05-23-06 03:52 Gene Heskett   New Issue                                    
+05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
+05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
+05-23-06 15:01 tiwai          Note Added: 0009934                          
+05-23-06 16:46 Gene Heskett   Note Added: 0009938                          
+05-23-06 17:24 tiwai          Note Added: 0009941                          
+05-23-06 18:07 Gene Heskett   Note Added: 0009943                          
+05-23-06 19:14 tiwai          Note Added: 0009947                          
 ======================================================================
 
 
