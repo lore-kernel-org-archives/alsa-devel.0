@@ -1,19 +1,13 @@
-From: "Michal Piotrowski" <michal.k.k.piotrowski@gmail.com>
-Subject: Re: 2.6.17-rc4-mm3
-Date: Tue, 23 May 2006 23:07:55 +0200
-Message-ID: <6bffcb0e0605231407v11453f63t8b7335fd614ccdf9__31548.2229264036$1148418551$gmane$org@mail.gmail.com>
-References: <20060522022709.633a7a7f.akpm@osdl.org>
+From: Juan Carlos Castro y Castro <jcastro@instant.com.br>
+Subject: SORRY all!
+Date: Tue, 23 May 2006 18:23:16 -0300
+Message-ID: <44737D44.4020301@instant.com.br>
+References: <4473706A.3020305@instant.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from nz-out-0102.google.com (nz-out-0102.google.com [64.233.162.193])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3E6615E
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 23:08:02 +0200 (MEST)
-Received: by nz-out-0102.google.com with SMTP id i28so1565663nzi
-        for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 14:08:01 -0700 (PDT)
-In-Reply-To: <20060522022709.633a7a7f.akpm@osdl.org>
-Content-Disposition: inline
+In-Reply-To: <4473706A.3020305@instant.com.br>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,38 +17,10 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew Morton <akpm@osdl.org>
-Cc: linux-kernel@vger.kernel.org, perex@suse.cz, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On 22/05/06, Andrew Morton <akpm@osdl.org> wrote:
->
-> ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.17-rc4/=
-2.6.17-rc4-mm3/
->
-[snip]
->  git-alsa.patch
-
-I have noticed small problem with ALSA.
-When I boot 2.6.17-rc4-mm3 everything is ok, then I switch to
-2.6.17-rc4-git11 - everything is ok. But when I switch back to
-2.6.17-rc4-mm3 PCM is mute (off), Spread Front to Surround and
-Center/LFE is off, Channel Mode is set to 2ch (should be 6ch).
-
-/sbin/alsactl -v
-alsactl version 1.0.11rc2
-
-This is an user space tools bug?
-
-Regards,
-Michal
-
---=20
-Michal K. K. Piotrowski
-LTG - Linux Testers Group
-(http://www.stardust.webpages.pl/ltg/wiki/)
+SORRY! Wrong list! D'oh.
 
 
 -------------------------------------------------------
