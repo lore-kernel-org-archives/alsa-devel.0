@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002147]: lack of full duplex operation for ati-ixp chipset.
-Date: Tue, 23 May 2006 15:01:58 +0200
-Message-ID: <40c022ea192e693046e24699fb32075d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002146]: No sound for 'SigmaTel ID 7634' Codec
+Date: Tue, 23 May 2006 15:06:27 +0200
+Message-ID: <688f55aeaa93f17e1040730bccca1aa2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1FA0173
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 15:01:58 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 199BD170
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 15:06:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2146> 
 ======================================================================
-Reported By:                Gene Heskett
+Reported By:                ig88b
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2147
-Category:                   PCI - atiixp
+Issue ID:                   2146
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               FC5, uptodate
-Kernel Version:             2.6.16-1.2111_FC5
+Distribution:               Gentoo
+Kernel Version:             2.6.16-gentoo-r3
 ======================================================================
-Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-23-2006 15:01 CEST
+Date Submitted:             05-23-2006 03:17 CEST
+Last Modified:              05-23-2006 15:06 CEST
 ======================================================================
-Summary:                    lack of full duplex operation for ati-ixp chipset.
+Summary:                    No sound for 'SigmaTel ID 7634' Codec
 Description: 
-skype, ekiga, audacity, and generally any program that needs to both
-transmit and receive, using isolated paths, fails in playback when
-recording.  In skype, I sound great at the far end, but reception may or
-may not work, with emphasis on the not.  What I hear in the phones, or in
-the speakers, sounds like what you would get if you took a sentence of
-spoken words, break it up into say 5ms pieces, and play them at maybe 10
-of these little snippets per second, so that the resultant sound is broken
-up to the point of no comprehension, and stretched in time by a
-considerable amount.
+No sound in the same manner as
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2115
 
-In audacity, simultanious playback, or play one track while recording
-another, likewise fails in that only very short snippets of the played
-track are output to the phones or speakers.
-
-Likewise, ekiga suffers from this same effect, I'm told I sound great on
-teh other end, but I can't hear more than half a word occasionally.
+However, none of the 'model=' options work for me and this appears to be a
+different (unsupported?) codec.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-23-06 15:01 
+ tiwai - 05-23-06 15:06 
 ----------------------------------------------------------------------
-The driver works as full-duplex.  Try a simple test with arecord and aplay.
+It's really an unknown codec.
+
+Possibly it's compatible with other STAC92xx, so try to add the
+corresponding id (0x83847634) to snd_hda_preset_sigmatel[] table in
+pci/hda/patch_sigmatel.c.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-23-06 03:52 Gene Heskett   New Issue                                    
-05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
-05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
-05-23-06 15:01 tiwai          Note Added: 0009934                          
+05-23-06 03:17 ig88b          New Issue                                    
+05-23-06 03:17 ig88b          Distribution              => Gentoo          
+05-23-06 03:17 ig88b          Kernel Version            => 2.6.16-gentoo-r3
+05-23-06 03:56 ig88b          Issue Monitored: ig88b                       
+05-23-06 15:06 tiwai          Note Added: 0009935                          
 ======================================================================
 
 
