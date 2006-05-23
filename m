@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001025]: kernel panic when trying to load module snd-au8830
-Date: Tue, 23 May 2006 17:23:15 +0200
-Message-ID: <635f5b66f668731314b12cca780cca9d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002147]: lack of full duplex operation for ati-ixp chipset.
+Date: Tue, 23 May 2006 17:24:58 +0200
+Message-ID: <d7532caf2ea88dd5c06d4e77487bb780@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A715175
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 17:23:16 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3DE34186
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 17:24:58 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,84 +24,94 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1025> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
 ======================================================================
-Reported By:                Osiris
-Assigned To:                mjander
+Reported By:                Gene Heskett
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1025
-Category:                   PCI - au88x0
+Issue ID:                   2147
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.11.6
+Distribution:               FC5, uptodate
+Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
-Date Submitted:             03-30-2005 22:50 CEST
-Last Modified:              05-23-2006 17:23 CEST
+Date Submitted:             05-23-2006 03:52 CEST
+Last Modified:              05-23-2006 17:24 CEST
 ======================================================================
-Summary:                    kernel panic when trying to load module snd-au8830
+Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
-kernel panic occurs on boot when system tries to load kernel module for
-Aureal Vortex 2. The same thing happens when driver is compiled into
-kernel, not module
+skype, ekiga, audacity, and generally any program that needs to both
+transmit and receive, using isolated paths, fails in playback when
+recording.  In skype, I sound great at the far end, but reception may or
+may not work, with emphasis on the not.  What I hear in the phones, or in
+the speakers, sounds like what you would get if you took a sentence of
+spoken words, break it up into say 5ms pieces, and play them at maybe 10
+of these little snippets per second, so that the resultant sound is broken
+up to the point of no comprehension, and stretched in time by a
+considerable amount.
 
+In audacity, simultanious playback, or play one track while recording
+another, likewise fails in that only very short snippets of the played
+track are output to the phones or speakers.
+
+Likewise, ekiga suffers from this same effect, I'm told I sound great on
+teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- ponchick - 12-21-05 04:18 
+ Gene Heskett - 05-23-06 16:46 
 ----------------------------------------------------------------------
-I try diff11.diff on alsa-driver-1.0.10 with minor changes in it. It works
-for me. I use it for 2 weeks now and it works fine. I use mixer/equalizer
-but don't even touch gameport, mpu and oss emulation. 
-My configuration:
-P4 631 (em64t)
-Aureal Vortex 2
-Gentoo Linux 2005.1 
-Kernel 2.6.14-gentoo-r2 and 2.6.13-gentoo-r5 (vanilla sources + some
-gentoo patches)
-alsa-drivers 1.0.10 (not kernel one!)
+Thats not so simple, I have only ogg files from one cd available, which
+aplay apparently doesn't know how to play.  I've not ripped any aditional
+music because grip cannot play a cd in the drive.  Attempts result in grip
+(or most any other cd player, like kscd, go thru the motions of playing
+the cd, but only silence comes out), it can rip it, and a not very high
+quality rip (sounds like amplifier saturation to this broadcast engineer
+and audacity says the levels are running 0 db and above) was made.  So I'm
+not at all familiar with either aplay or arecord.
+
+Can you supply a command line that would generate a file for test, and
+then a command line that will play that file while recording another, with
+no crosstalk between them?  Something you *know* works so we aren't trying
+compare apple to oranges?
 
 ----------------------------------------------------------------------
- Raymond - 05-23-06 17:23 
+ tiwai - 05-23-06 17:24 
 ----------------------------------------------------------------------
-ponchick,
+Surprising, you have no WAV files for playback, or you have no oggdec or
+sox program on your system.  Apparently you're trying something very
+special.
 
-Please confirm the patch fix the mpu401 oops on your EM64T 
+I asked a simple test like below:
 
-http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=84bfd1d02d61;style=gitweb
+0. prepare a WAV file for playback.  not necessarily so long.
+1. set up your system a loopback from line-out jack directly to line-in.
+2. select the capture source to "Line" (or "Mic" according to your h/w
+setting)
+3. run "aplay somefile.wav" on a terminal
+4. run "arecord -vv -fcd foo.wav" on another terminal at the same time.
+   VU meter appears, and adjust the "Capture Volume" for the preferred
+level
+5. check the recorded WAV file.
+
+Alternatively, you can record via internal loopback without jack
+connection by choosing "Mix" as the capture source.  Then the playback
+audio is directly routed to the ADC.  In this case, the setup 1 and 2 can
+be omitted.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 22:50 Osiris         New Issue                                    
-03-30-05 22:50 Osiris         Distribution              => Debian          
-03-30-05 22:50 Osiris         Kernel Version            => 2.6.11.6        
-03-31-05 11:34 mjander        Note Added: 0004278                          
-04-03-05 21:16 Osiris         Note Added: 0004320                          
-04-04-05 10:19 alien999999999 Issue Monitored: alien999999999                   
-
-04-04-05 11:00 alien999999999 File Added: alsa-changes.tar.bz2                  
- 
-04-04-05 11:00 alien999999999 Note Added: 0004325                          
-08-24-05 11:04 Raymond        Note Added: 0005927                          
-11-25-05 08:22 Raymond        Note Added: 0006848                          
-12-21-05 04:05 ponchick       Issue Monitored: ponchick                    
-12-21-05 04:18 ponchick       Note Added: 0007107                          
-12-21-05 04:19 ponchick       File Added: diff11.diff.bz2                    
-12-22-05 13:01 Raymond        Note Added: 0007123                          
-01-02-06 09:57 Raymond        Note Deleted: 0007123                        
-01-05-06 08:28 Raymond        Note Added: 0007463                          
-01-18-06 16:07 Raymond        Note Added: 0007712                          
-02-21-06 18:32 Raymond        Note Added: 0008153                          
-05-12-06 04:27 Raymond        Note Deleted: 0008153                        
-05-12-06 04:27 Raymond        Note Deleted: 0007712                        
-05-12-06 04:28 Raymond        Note Deleted: 0007463                        
-05-12-06 04:46 Raymond        Note Added: 0009772                          
-05-13-06 08:36 Raymond        Note Deleted: 0009772                        
-05-23-06 17:23 Raymond        Note Added: 0009940                          
+05-23-06 03:52 Gene Heskett   New Issue                                    
+05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
+05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
+05-23-06 15:01 tiwai          Note Added: 0009934                          
+05-23-06 16:46 Gene Heskett   Note Added: 0009938                          
+05-23-06 17:24 tiwai          Note Added: 0009941                          
 ======================================================================
 
 
