@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002146]: No sound for 'SigmaTel ID 7634' Codec
-Date: Tue, 23 May 2006 03:17:35 +0200
-Message-ID: <d74f4ff3056a3c674bae187c2be3c33e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002147]: lack of full duplex operation for ati-ixp chipset.
+Date: Tue, 23 May 2006 03:52:23 +0200
+Message-ID: <9e8b5863a02caf396ac62edc13a03ce4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48D93222
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 03:17:35 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B3901AC
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 03:52:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,39 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2146> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
 ======================================================================
-Reported By:                ig88b
+Reported By:                Gene Heskett
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2146
-Category:                   PCI - hda-intel
+Issue ID:                   2147
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16-gentoo-r3
+Distribution:               FC5, uptodate
+Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
-Date Submitted:             05-23-2006 03:17 CEST
-Last Modified:              05-23-2006 03:17 CEST
+Date Submitted:             05-23-2006 03:52 CEST
+Last Modified:              05-23-2006 03:52 CEST
 ======================================================================
-Summary:                    No sound for 'SigmaTel ID 7634' Codec
+Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
-No sound in the same manner as
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2115
+skype, ekiga, audacity, and generally any program that needs to both
+transmit and receive, using isolated paths, fails in playback when
+recording.  In skype, I sound great at the far end, but reception may or
+may not work, with emphasis on the not.  What I hear in the phones, or in
+the speakers, sounds like what you would get if you took a sentence of
+spoken words, break it up into say 5ms pieces, and play them at maybe 10
+of these little snippets per second, so that the resultant sound is broken
+up to the point of no comprehension, and stretched in time by a
+considerable amount.
 
-However, none of the 'model=' options work for me and this appears to be a
-different (unsupported?) codec.
+In audacity, simultanious playback, or play one track while recording
+another, likewise fails in that only very short snippets of the played
+track are output to the phones or speakers.
+
+Likewise, ekiga suffers from this same effect, I'm told I sound great on
+teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-23-06 03:17 ig88b          New Issue                                    
-05-23-06 03:17 ig88b          Distribution              => Gentoo          
-05-23-06 03:17 ig88b          Kernel Version            => 2.6.16-gentoo-r3
+05-23-06 03:52 Gene Heskett   New Issue                                    
+05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
+05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
 ======================================================================
 
 
