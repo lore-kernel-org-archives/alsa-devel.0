@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002147]: lack of full duplex operation for ati-ixp chipset.
-Date: Tue, 23 May 2006 03:52:23 +0200
-Message-ID: <9e8b5863a02caf396ac62edc13a03ce4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002148]: lack of full duplex operation for ati-ixp chipset.
+Date: Tue, 23 May 2006 03:52:41 +0200
+Message-ID: <b93dc59e50b0a2af9f0964a00ed213a3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B3901AC
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 03:52:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5D4F91AC
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 03:52:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2148> 
 ======================================================================
 Reported By:                Gene Heskett
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2147
+Issue ID:                   2148
 Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
