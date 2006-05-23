@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002152]: Hercule fw16/12
-Date: Tue, 23 May 2006 18:48:14 +0200
-Message-ID: <e47d2c16cf93e056ce450576b8fb0f80@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Tue, 23 May 2006 19:09:24 +0200
+Message-ID: <987636e4e602b8a32cf49efc868277b7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C888173
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 18:48:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 896BC178
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 19:09:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,43 +22,111 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2152> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
 ======================================================================
-Reported By:                u9t4u
+Reported By:                zanonmark
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2152
-Category:                   1_OTHERS
+Issue ID:                   2023
+Category:                   PCI - ens1371
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora core 5
-Kernel Version:             
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
 ======================================================================
-Date Submitted:             05-23-2006 18:48 CEST
-Last Modified:              05-23-2006 18:48 CEST
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              05-23-2006 19:09 CEST
 ======================================================================
-Summary:                    Hercule fw16/12
+Summary:                    midi/joystick port disabled and no way to enable it
 Description: 
-Hi,
-I just look here if someone is allready involve in the driver'building for
-this great card. I send a mail to the support website of HERCULES, but I
-have no answer concerning the development of any drivers for the 16/12.
-This card looks really good for me and it's not really expensive for the
-moment so, I really afraid about a non migration to linux for this one.
-Really hope your answer and congratulation for all your work
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
+
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
+
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
+
+So, will you please include such a parameter in the next version of the
+driver?
+
+Thanks a lot,
+
+Marco.
 
 ======================================================================
+
+----------------------------------------------------------------------
+ zanonmark - 05-23-06 11:26 
+----------------------------------------------------------------------
+do you mean it could be a keyboard communication problem?
+
+I remember using the same keyboard (roland em-25) with Windows98 and a
+MIDI software (Anvil Studio trial) with no configuration problems, but I
+don't have Windows98 here anymore so I cannot repeat the test.
+
+Is there any MIDI initialization string I have to send to the keyboard?
+
+Thanks,
+
+MZ
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 05-23-06 19:09 
+----------------------------------------------------------------------
+The keyboard should not need any special initialization.
+
+To check whether the cable itself works, connect the sound card's MIDI
+output to its MIDI input, run "amidi -d -p hw:0", then play something to
+the ES1371 port (with aplaymidi or any sequencer).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-23-06 18:48 u9t4u          New Issue                                    
-05-23-06 18:48 u9t4u          Distribution              => Fedora core 5   
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
+04-17-06 06:56 rlrevell       Note Added: 0009301                          
+04-17-06 07:19 Raymond        Note Added: 0009303                          
+04-17-06 19:59 zanonmark      Note Added: 0009319                          
+04-18-06 10:54 Raymond        Note Added: 0009328                          
+04-18-06 13:18 Raymond        Note Edited: 0009328                         
+04-18-06 16:28 Clemens LadischNote Added: 0009338                          
+04-19-06 20:05 zanonmark      Note Added: 0009354                          
+04-19-06 21:49 rlrevell       Note Added: 0009356                          
+04-20-06 03:39 Raymond        Note Added: 0009363                          
+04-22-06 13:36 zanonmark      Note Added: 0009433                          
+04-24-06 15:47 Raymond        Note Added: 0009452                          
+04-24-06 15:57 zanonmark      Note Added: 0009460                          
+04-25-06 03:25 Raymond        Note Added: 0009484                          
+04-25-06 10:55 zanonmark      Note Added: 0009486                          
+04-26-06 10:54 Raymond        Note Added: 0009505                          
+04-26-06 19:51 zanonmark      Note Added: 0009522                          
+05-01-06 10:38 Raymond        Note Added: 0009553                          
+05-07-06 13:33 zanonmark      Note Added: 0009641                          
+05-12-06 03:58 Raymond        Note Added: 0009771                          
+05-12-06 19:44 zanonmark      Note Added: 0009788                          
+05-13-06 05:19 Raymond        Note Added: 0009794                          
+05-19-06 03:44 Raymond        Note Added: 0009872                          
+05-20-06 11:30 zanonmark      Note Added: 0009883                          
+05-21-06 04:49 Raymond        Note Added: 0009896                          
+05-23-06 11:26 zanonmark      Note Added: 0009930                          
+05-23-06 19:09 Clemens LadischNote Added: 0009946                          
 ======================================================================
 
 
