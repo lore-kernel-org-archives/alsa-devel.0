@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001744]: Audiotrak Prodigy 7.1LT is still unusable, only H.P. chanel work and sound is quick...
-Date: Tue, 23 May 2006 19:24:24 +0200
-Message-ID: <cc9e55e13af766e16e6fe93785b04343@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Tue, 23 May 2006 20:02:32 +0200
+Message-ID: <a8b34238c7f5905aa3e666a840dc7e33@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5BFDE189
-	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 19:24:24 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1EA9173
+	for <alsa-devel@alsa-project.org>; Tue, 23 May 2006 20:02:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,123 +22,121 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1744> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
 ======================================================================
-Reported By:                robertdavid
-Assigned To:                rlrevell
+Reported By:                zanonmark
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1744
-Category:                   PCI - ice1724
-Reproducibility:            sometimes
-Severity:                   tweak
+Issue ID:                   2023
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo linux
-Kernel Version:             2.6.14-archck-r7
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
 ======================================================================
-Date Submitted:             01-13-2006 22:16 CET
-Last Modified:              05-23-2006 19:24 CEST
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              05-23-2006 20:02 CEST
 ======================================================================
-Summary:                    Audiotrak Prodigy 7.1LT is still unusable, only H.P.
-chanel work and sound is quick...
+Summary:                    midi/joystick port disabled and no way to enable it
 Description: 
-Im very glad that was added support for Prodigy, but there is still only
-two channel working (7,8), the others are silent (tryed all volume
-settings).
-The sound from 7,8 chanel is good in case of quality, but is faster than
-it should be (turn off Multi Track Rate Locking didnt do anything).
-I've tryed mpalyer and XMMS, both the same.
-I've compiled form CVS and keep it as it was (patched 13.1.2006 to support
-Prodigy 7.1LT) 
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
+
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
+
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
+
+So, will you please include such a parameter in the next version of the
+driver?
+
+Thanks a lot,
+
+Marco.
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0001090 Support for new Prodigy 7.1 LT
-======================================================================
 
 ----------------------------------------------------------------------
- Anho Ki - 04-23-06 22:43 
+ Clemens Ladisch - 05-23-06 19:09 
 ----------------------------------------------------------------------
-sorry... i don't use prodigy 7.1lt anymore...
-i bought prodigy 7.1(NOT LT), and sold 7.1LT...
+The keyboard should not need any special initialization.
 
-the only problem for me was that i couldn't enable line-in.
-7.1LT doesn't have ac97 codec, so maybe it needs another way to control
-ADC.
-
-i asked to Audiotrak, how i can use this stuff in linux,
-but there're no answers. :(
-their technical support is not good, and they have no plans to test it on
-linux.
-(not developing drivers, just testing...)
-
-and their new product, Prodigy HD2, doesn't use its own driver anymore.
-and it will use VIA's reference driver.
-(then, it must store correct informations in EEPROM?)
-in my opinion, we'd better use this new product or something from
-others... :(
-(i don't know whether they launch it over korea or only in korea)
-
-anyway, with patch in here,
-i could get correct outputs from all jacks(front, rear, c/s, bs, and
-optical).
-
-that's all i can say about...
-i hope someone will work for this...
+To check whether the cable itself works, connect the sound card's MIDI
+output to its MIDI input, run "amidi -d -p hw:0", then play something to
+the ES1371 port (with aplaymidi or any sequencer).
 
 ----------------------------------------------------------------------
- rlrevell - 05-23-06 19:24 
+ zanonmark - 05-23-06 20:02 
 ----------------------------------------------------------------------
-Patch has been merged, the device is supported.
+Excuse me, I didn't understand: how can I connect the sound card's output
+with its input? the 15-pins jack would "use" the whole port,
+
+also, I don't know whether this makes sense, but i tried:
+ amidi -d -p hw:0
+on one console, and:
+ amidi -p hw:0 -S "F0 43 10 4C 00 00 7E 00 F7"
+on another console, and I could not see anything in the first one:
+shouldn't I see the dump of those characters?
+
+Thanks for your patience :)
+
+MZ
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-13-06 22:16 robertdavid    New Issue                                    
-01-13-06 22:16 robertdavid    Distribution              => Gentoo linux    
-01-13-06 22:16 robertdavid    Kernel Version            => 2.6.14-archck-r7
-01-14-06 00:13 drfindley      File Added: asound.state                     
-01-14-06 00:15 drfindley      Note Added: 0007650                          
-01-14-06 00:16 drfindley      Issue Monitored: drfindley                    
-01-14-06 00:28 robertdavid    Note Added: 0007651                          
-01-14-06 00:29 robertdavid    Note Edited: 0007651                         
-01-14-06 18:09 robertdavid    Note Added: 0007654                          
-01-15-06 19:18 Anho Ki        Note Added: 0007667                          
-01-17-06 01:21 Anho Ki        Note Added: 0007694                          
-01-17-06 01:48 rlrevell       Relationship added       related to 0001090  
-01-17-06 09:24 Anho Ki        File Added: prodigy71.patch                    
-01-17-06 09:24 Anho Ki        Issue Monitored: Anho Ki                     
-01-17-06 09:38 Anho Ki        Note Added: 0007695                          
-01-17-06 11:13 robertdavid    Note Added: 0007696                          
-01-17-06 16:39 tinez          Issue Monitored: tinez                       
-01-18-06 23:42 Anho Ki        Note Added: 0007717                          
-01-22-06 00:20 msmigiel       Issue Monitored: msmigiel                    
-01-23-06 18:23 Demosthenes    Issue Monitored: Demosthenes                    
-01-24-06 06:38 mccart         Issue Monitored: mccart                      
-01-25-06 12:17 Anho Ki        Note Added: 0007780                          
-01-26-06 23:40 robertdavid    Note Added: 0007794                          
-03-08-06 20:45 robertdavid    Note Added: 0008385                          
-03-08-06 20:50 robertdavid    Note Edited: 0008385                         
-03-24-06 23:21 jimgleason     Issue Monitored: jimgleason                    
-03-29-06 18:02 Demosthenes    Note Added: 0008997                          
-04-23-06 12:42 Demosthenes    Note Added: 0009442                          
-04-23-06 22:43 Anho Ki        Note Added: 0009444                          
-05-23-06 19:24 rlrevell       Status                   new => resolved     
-05-23-06 19:24 rlrevell       Resolution               open => fixed       
-05-23-06 19:24 rlrevell       Assigned To               => rlrevell        
-05-23-06 19:24 rlrevell       Note Added: 0009949                          
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
+04-17-06 06:56 rlrevell       Note Added: 0009301                          
+04-17-06 07:19 Raymond        Note Added: 0009303                          
+04-17-06 19:59 zanonmark      Note Added: 0009319                          
+04-18-06 10:54 Raymond        Note Added: 0009328                          
+04-18-06 13:18 Raymond        Note Edited: 0009328                         
+04-18-06 16:28 Clemens LadischNote Added: 0009338                          
+04-19-06 20:05 zanonmark      Note Added: 0009354                          
+04-19-06 21:49 rlrevell       Note Added: 0009356                          
+04-20-06 03:39 Raymond        Note Added: 0009363                          
+04-22-06 13:36 zanonmark      Note Added: 0009433                          
+04-24-06 15:47 Raymond        Note Added: 0009452                          
+04-24-06 15:57 zanonmark      Note Added: 0009460                          
+04-25-06 03:25 Raymond        Note Added: 0009484                          
+04-25-06 10:55 zanonmark      Note Added: 0009486                          
+04-26-06 10:54 Raymond        Note Added: 0009505                          
+04-26-06 19:51 zanonmark      Note Added: 0009522                          
+05-01-06 10:38 Raymond        Note Added: 0009553                          
+05-07-06 13:33 zanonmark      Note Added: 0009641                          
+05-12-06 03:58 Raymond        Note Added: 0009771                          
+05-12-06 19:44 zanonmark      Note Added: 0009788                          
+05-13-06 05:19 Raymond        Note Added: 0009794                          
+05-19-06 03:44 Raymond        Note Added: 0009872                          
+05-20-06 11:30 zanonmark      Note Added: 0009883                          
+05-21-06 04:49 Raymond        Note Added: 0009896                          
+05-23-06 11:26 zanonmark      Note Added: 0009930                          
+05-23-06 19:09 Clemens LadischNote Added: 0009946                          
+05-23-06 20:02 zanonmark      Note Added: 0009950                          
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-Using Tomcat but need to do more? Need to support web services, security?
-Get stuff done quickly with pre-integrated technology to make your job easier
-Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
+All the advantages of Linux Managed Hosting--Without the Cost and Risk!
+Fully trained technicians. The highest number of Red Hat certifications in
+the hosting industry. Fanatical Support. Click to learn more
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=107521&bid=248729&dat=121642
