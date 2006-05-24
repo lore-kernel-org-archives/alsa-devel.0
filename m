@@ -1,20 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [PATCH 2.6.17-rc2] ALSA: PCMCIA sound devices
-	shouldn't depend on ISA
-Date: Wed, 24 May 2006 17:02:18 -0400
-Message-ID: <1148504539.22215.11.camel@mindpipe>
-References: <20060419144008.GD24807@harddisk-recovery.com>
-	 <1148357665.12529.17.camel@mindpipe> <s5hbqtoyj5w.wl%tiwai@suse.de>
-	 <1148401671.12529.59.camel@mindpipe> <20060524145800.GA2621@stud.ntnu.no>
-	 <20060524204653.GA11570@dominikbrodowski.de>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: Re: Re: mpu401_uart -how to set for output only?
+Date: Wed, 24 May 2006 16:21:14 +0100
+Message-ID: <200605241621.14432.gineera@aspect135.co.uk>
+References: <200605191151.24428.gineera@aspect135.co.uk> <200605231044.41691.gineera@aspect135.co.uk> <s5hodxpx9rr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id BD6A012A
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 23:02:30 +0200 (MEST)
-In-Reply-To: <20060524204653.GA11570@dominikbrodowski.de>
+In-Reply-To: <s5hodxpx9rr.wl%tiwai@suse.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,29 +19,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: Takashi Iwai <tiwai@suse.de>, Erik Mouw <erik@harddisk-recovery.com>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Asbj=F8rn_S=E6b=F8?= <asbjs@q2s.ntnu.no>, Linux PCMCIA development <linux-pcmcia@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2006-05-24 at 22:46 +0200, Dominik Brodowski wrote:
-> Hi,
->=20
-> On Wed, May 24, 2006 at 04:58:00PM +0200, Asbj=F8rn S=E6b=F8 wrote:
-> > Note that the vxpocket must be hotplugged to be recognised. =20
-> > Cold-plugging it (having it already in the computer when booting) is =
-not=20
-> > sufficient.
->=20
-> Seems the driver needs a firmware which it cannot find:
->=20
+On Tuesday 23 May 2006 12:26, you wrote:
 
-This hotplug/coldplug issue is a relatively minor problem.  The real
-problem is that it would not work at all (completely silent failure, did
-not even try to load firmware, no messages from driver) without
-CONFIG_ISAPNP.
+> My bad.  The input and output are swapped at calling
+> snd_rawmidi_new().
+>
+> I committed the fixed change to HG repo now.  Please use HG repo
+> instead.
 
-Lee
+That was it!  Great.  Swapped input and output arguments, and code functions 
+with MPU401_INFO_OUTPUT as expected.
 
+Patch for ice1712 next, as separate thread.
+
+Alan
 
 
 
