@@ -1,18 +1,11 @@
-From: "Phelan Ring" <ring@tvratings.com>
-Subject: exaggeratio 258
-Date: Tue, 23 May 2006 21:46:19 -0700
-Message-ID: <000001c67eec$ff820310$7793a8c0@svl43>
-Reply-To: "Phelan Ring" <ring@tvratings.com>
+From: Mail Delivery Subsystem <MAILER-DAEMON@aol.com>
+Subject: Returned mail: User unknown
+Date: Wed, 24 May 2006 02:38:21 -0400 (EDT)
+Message-ID: <200605240638.CAE29366@rly-xa05.mx.aol.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C67EB2.53257500"
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="CAE29366.1148452701/rly-xa05.mx.aol.com"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8B9D170
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 06:46:28 +0200 (MEST)
-Received: from leerelectric.com (212.Red-83-34-91.dynamicIP.rima-tde.net [83.34.91.212])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 2D810995A6
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 06:46:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +15,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa.jcu.cz
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+This is a MIME-encapsulated message
 
-------=_NextPart_000_0001_01C67EB2.53257500
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+--CAE29366.1148452701/rly-xa05.mx.aol.com
 
-Hi,
-=20
-L E V / T R A
-M E R / D / A
-A M B / E N
-V / A G R A=20
-S O M ^
-X ^ N A X
-V A L / U M=20
-P R O Z ^ C
-C / A L / S=20
-=20
-http://www.linkenderlisto.com <http://www.linkenderlisto.com>=20
+The original message was received at Wed, 24 May 2006 02:37:43 -0400 (EDT)
+from host242-119.pool81119.interbusiness.it [81.119.119.242]
 
 
+*** ATTENTION ***
+
+Your e-mail is being returned to you because there was a problem with its
+delivery.  The address which was undeliverable is listed in the section
+labeled: "----- The following addresses had permanent fatal errors -----".
+
+The reason your mail is being returned to you is listed in the section
+labeled: "----- Transcript of Session Follows -----".
+
+The line beginning with "<<<" describes the specific reason your e-mail could
+not be delivered.  The next line contains a second error message which is a
+general translation for other e-mail servers.
+
+Please direct further questions regarding this message to your e-mail
+administrator.
+
+--AOL Postmaster
 
 
 
-Dwalin and Balin here already, I see, said Kili. Let us join the=20
-throng!=20
-Throng! thought Mr. Baggins. I dont like the sound of that. I=20
-really must sit down for a minute and collect my wits, and have a=20
-drink. He had only just had a sip-in the corner, while the four dwarves=20
-sat around the table, and talked about mines and gold and troubles with=20
+   ----- The following addresses had permanent fatal errors -----
+<abenini@aol.com>
 
+   ----- Transcript of session follows -----
+... while talking to air-xa03.mail.aol.com.:
+>>> RCPT To:<abenini@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <abenini@aol.com>... User unknown
 
-------=_NextPart_000_0001_01C67EB2.53257500
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+--CAE29366.1148452701/rly-xa05.mx.aol.com
+Content-Type: message/delivery-status
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>L E V / T R A<BR>
-M E R /  D / A<BR>
-A M B / E N<BR>
-<B> V / A G R A </B><BR>
-S O M ^<BR>
-X ^ N A X<BR>
-<B> V A L / U M </B><BR>
-P R O Z ^ C<BR>
-<B> C / A L / S </B></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><A =
-href=3D"http://www.linkenderlisto.com"><FONT face=3DArial =
-size=3D2>http://www.linkenderlisto.com</FONT></A></FONT></DIV><BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<DIV><FONT face=3DArial size=3D2>   Dwalin and Balin here already, I =
-see, said Kili. Let us join the <BR>throng! <BR>   Throng! thought Mr. =
-Baggins. I dont like the sound of that. I <BR>really must sit down for a =
-minute and collect my wits, and have a <BR>drink. He had only just had a =
-sip-in the corner, while the four dwarves <BR>sat around the table, and =
-talked about mines and gold and troubles with =
-<BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C67EB2.53257500--
+Reporting-MTA: dns; rly-xa05.mx.aol.com
+Arrival-Date: Wed, 24 May 2006 02:37:43 -0400 (EDT)
 
+Final-Recipient: RFC822; abenini@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xa03.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Wed, 24 May 2006 02:38:21 -0400 (EDT)
 
+--CAE29366.1148452701/rly-xa05.mx.aol.com
+Content-Type: text/rfc822-headers
+
+Received: from  alsa.jcu.cz (host242-119.pool81119.interbusiness.it [81.119.119.242]) by rly-xa05.mx.aol.com (v109.13) with ESMTP id MAILRELAYINXA59-774473ff33301; Wed, 24 May 2006 02:37:40 -0400
+From: alsa-devel@alsa.jcu.cz
+To: abenini@aol.com
+Subject: Returned mail: Data format error
+Date: Wed, 24 May 2006 09:38:34 +0200
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0002_104630C0.52BC593B"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MIMEOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+X-AOL-IP: 81.119.119.242
+X-AOL-SCOLL-SCORE: 0:2:297023367:11542724
+X-AOL-SCOLL-URL_COUNT: 0
+Message-ID: <200605240237.774473ff33301@rly-xa05.mx.aol.com>
+
+--CAE29366.1148452701/rly-xa05.mx.aol.com--
 
 
 
