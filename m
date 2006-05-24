@@ -1,11 +1,14 @@
-From: "John Matthews" <jm169@ohm.york.ac.uk>
-Subject: Via 82xx Drivers
-Date: Wed, 24 May 2006 13:27:50 +0100
-Message-ID: <001b01c67f2d$7d4ecd10$0601a8c0@johnspc>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Wed, 24 May 2006 14:32:50 +0200
+Message-ID: <59ea7037fbe972d9dfe9e240c9d6f3bf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0018_01C67F35.DAFC9B60"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CFB97175
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 14:32:50 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,138 +18,132 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0018_01C67F35.DAFC9B60
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+======================================================================
+Reported By:                zanonmark
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2023
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
+======================================================================
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              05-24-2006 14:32 CEST
+======================================================================
+Summary:                    midi/joystick port disabled and no way to enable it
+Description: 
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
 
-Greetings,
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
 
-I am writing to describe a problem I have involving the snd-via82xx =
-audio drivers on 2.6 kernels.  I have updated to the latest alsa-drivers =
-to no avail.
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
 
-Everything works fine, apart from one small issue.  Certain programs =
-have strange clicks at certain points.  The main example is with =
-fluidsynth http://www.nongnu.org/fluid/   When a note is turned off =
-there is a very loud click which can be louder than the note was - the =
-same type of click that happens when you turn a channel on or off.
+So, will you please include such a parameter in the next version of the
+driver?
 
-This doesn't happen with any other sound card that I have tried (tried a =
-few others including snd-ice1712 on an m-audio delta 410).  It also =
-doesn't happen with the via binary oss style drivers,  "viaudiocombo" =
-which are available from via's website.
+Thanks a lot,
 
-The clicks do happen (suprisingly) in exactly the same places with =
-fluidsynth running into jack into snd-via82xx.
+Marco.
 
-I have tried this on various different boards I have around, although =
-they are all types of VIA epia mini-itx boards.
+======================================================================
 
-I have also tried dxs_support=3D1, dxs_support=3D2,dxs_support=3D3, =
-dxs_support=3D4 and this doesn't help.
+----------------------------------------------------------------------
+ zanonmark - 05-23-06 20:02 
+----------------------------------------------------------------------
+Excuse me, I didn't understand: how can I connect the sound card's output
+with its input? the 15-pins jack would "use" the whole port,
 
-It may well be the same problem which was noted here.  =
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1667
+also, I don't know whether this makes sense, but i tried:
+ amidi -d -p hw:0
+on one console, and:
+ amidi -p hw:0 -S "F0 43 10 4C 00 00 7E 00 F7"
+on another console, and I could not see anything in the first one:
+shouldn't I see the dump of those characters?
 
-Its meant that I have to use the viaudiocombo drivers for this purpose, =
-and I'd rather use the nice up to date alsa ones!
+Thanks for your patience :)
 
-Please, I would be grateful for any help or thoughts - I am an =
-experienced coder, though I've never worked with device drivers before,
+MZ
 
-Thanks,
+----------------------------------------------------------------------
+ Clemens Ladisch - 05-24-06 14:32 
+----------------------------------------------------------------------
+With "output" and "input", I meant the MIDI jacks of your gameport-MIDI
+adapter.
+If it has built in cables, you cannot connect one to the other.
 
-John Matthews,
-University of York
+In this case, you can just connect pins 12 and 15 of the gameport with a
+wire (view with a monospaced font):
+  8             1
+-------------------
+\ o o o o o o o o /
+ \ o o o o o o o /
+  -+-----+-------
+ 15|     |     9
+   \_____/
 
-------=_NextPart_000_0018_01C67F35.DAFC9B60
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2900.2873" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><FONT face=3DArial =
-size=3D2>Greetings,</FONT></DIV>
-<DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I am writing to describe a problem I =
-have involving=20
-the snd-via82xx audio drivers on 2.6 kernels.&nbsp; I have updated =
-to&nbsp;the=20
-latest alsa-drivers&nbsp;to no avail.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Everything works fine, apart from one =
-small=20
-issue.&nbsp; Certain programs have strange clicks at certain =
-points.&nbsp; The=20
-main example is with fluidsynth <FONT color=3D#008000><A=20
-href=3D"http://www.nongnu.org/fluid/">http://www.nongnu.org/fluid/</A></F=
-ONT><FONT=20
-color=3D#000000>&nbsp;&nbsp; When a note is turned off there is a very =
-loud click=20
-which can be louder than the note was - the same type of click that =
-happens when=20
-you turn a channel on or off.</FONT></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>This doesn't happen with any other =
-sound card that=20
-I have tried (tried a few others including snd-ice1712 on an =
-m-audio&nbsp;delta=20
-410).&nbsp; It also doesn't happen with the via binary oss style =
-drivers,&nbsp;=20
-"viaudiocombo"&nbsp;which are available from via's website.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>The clicks&nbsp;do happen (suprisingly) =
-in exactly=20
-the same places with fluidsynth running into jack into =
-snd-via82xx.</FONT></DIV>
-<DIV>&nbsp;</DIV>
-<DIV>I have tried this on various different boards I have around, =
-although they=20
-are all types of VIA epia mini-itx boards.</DIV>
-<DIV>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>I have also tried dxs_support=3D1,=20
-dxs_support=3D2,dxs_support=3D3, dxs_support=3D4 and this doesn't =
-help.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>It may well be the same problem which =
-was noted=20
-here.&nbsp; </FONT><FONT face=3DArial size=3D2><A=20
-href=3D"https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1667">ht=
-tps://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D1667</A></FONT></D=
-IV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Its meant that I have to use the =
-viaudiocombo=20
-drivers for this purpose, and I'd rather use the nice up to date alsa=20
-ones!</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Please, I would be grateful for any =
-help or=20
-thoughts - I am an experienced coder, though I've never worked with =
-device=20
-drivers before,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Thanks,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>John Matthews,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2>University of York</FONT></DIV>
-<DIV>&nbsp;</DIV></FONT></DIV></BODY></HTML>
+Your amidi commands should work _if_ the output is connected to the input.
 
-------=_NextPart_000_0018_01C67F35.DAFC9B60--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
+04-17-06 06:56 rlrevell       Note Added: 0009301                          
+04-17-06 07:19 Raymond        Note Added: 0009303                          
+04-17-06 19:59 zanonmark      Note Added: 0009319                          
+04-18-06 10:54 Raymond        Note Added: 0009328                          
+04-18-06 13:18 Raymond        Note Edited: 0009328                         
+04-18-06 16:28 Clemens LadischNote Added: 0009338                          
+04-19-06 20:05 zanonmark      Note Added: 0009354                          
+04-19-06 21:49 rlrevell       Note Added: 0009356                          
+04-20-06 03:39 Raymond        Note Added: 0009363                          
+04-22-06 13:36 zanonmark      Note Added: 0009433                          
+04-24-06 15:47 Raymond        Note Added: 0009452                          
+04-24-06 15:57 zanonmark      Note Added: 0009460                          
+04-25-06 03:25 Raymond        Note Added: 0009484                          
+04-25-06 10:55 zanonmark      Note Added: 0009486                          
+04-26-06 10:54 Raymond        Note Added: 0009505                          
+04-26-06 19:51 zanonmark      Note Added: 0009522                          
+05-01-06 10:38 Raymond        Note Added: 0009553                          
+05-07-06 13:33 zanonmark      Note Added: 0009641                          
+05-12-06 03:58 Raymond        Note Added: 0009771                          
+05-12-06 19:44 zanonmark      Note Added: 0009788                          
+05-13-06 05:19 Raymond        Note Added: 0009794                          
+05-19-06 03:44 Raymond        Note Added: 0009872                          
+05-20-06 11:30 zanonmark      Note Added: 0009883                          
+05-21-06 04:49 Raymond        Note Added: 0009896                          
+05-23-06 11:26 zanonmark      Note Added: 0009930                          
+05-23-06 19:09 Clemens LadischNote Added: 0009946                          
+05-23-06 20:02 zanonmark      Note Added: 0009950                          
+05-24-06 14:32 Clemens LadischNote Added: 0009956                          
+======================================================================
+
 
 
 
