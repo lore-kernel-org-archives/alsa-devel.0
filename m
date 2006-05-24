@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002137]: No mute controls for Audigy or Audigy 2ZS
-Date: Wed, 24 May 2006 22:33:57 +0200
-Message-ID: <7bc0650374f05b49717e408645712856@bugtrack.alsa-project.org>
+From: Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: Re: Re: [PATCH 2.6.17-rc2] ALSA: PCMCIA sound devices shouldn't depend on ISA
+Date: Wed, 24 May 2006 22:46:53 +0200
+Message-ID: <20060524204653.GA11570@dominikbrodowski.de>
+References: <20060419144008.GD24807@harddisk-recovery.com> <1148357665.12529.17.camel@mindpipe> <s5hbqtoyj5w.wl%tiwai@suse.de> <1148401671.12529.59.camel@mindpipe> <20060524145800.GA2621@stud.ntnu.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3AF0162
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 22:33:57 +0200 (MEST)
+Received: from linta.de (isilmar.linta.de [213.239.214.66])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89D51171
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 22:52:51 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20060524145800.GA2621@stud.ntnu.no>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,105 +21,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>, Takashi Iwai <tiwai@suse.de>, Erik Mouw <erik@harddisk-recovery.com>, alsa-devel@alsa-project.org, =?iso-8859-1?B?QXNiavhybiBT5mL4?= <asbjs@q2s.ntnu.no>, Linux PCMCIA development <linux-pcmcia@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2137> 
-======================================================================
-Reported By:                stdpikachu
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2137
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     acknowledged
-Distribution:               Gentoo
-Kernel Version:             2.6.15, 2.6.16
-======================================================================
-Date Submitted:             05-20-2006 15:23 CEST
-Last Modified:              05-24-2006 22:33 CEST
-======================================================================
-Summary:                    No mute controls for Audigy or Audigy 2ZS
-Description: 
-The problem has been around for while, but have only just got around to
-reporting it (incidentally, where do I search for previously file bug
-reports?).
+On Wed, May 24, 2006 at 04:58:00PM +0200, Asbj=F8rn S=E6b=F8 wrote:
+> Note that the vxpocket must be hotplugged to be recognised. =20
+> Cold-plugging it (having it already in the computer when booting) is no=
+t=20
+> sufficient.
 
-I have three computers, all with various flavours of Audigy cards, all
-using the latest emu10k1 alsa driver. The problem also exists with the
-in-kernel audigy driver. Googling for other people with the same problem
-suggests the problem crept it quite a while ago.
+Seems the driver needs a firmware which it cannot find:
 
-No matter what UI is used, I can't mute most channels provided by the
-audigy driver. For instance, in alsamixer I can only mute Headphones,
-Line, CD, Phone, PC Speaker and Aux. ALl other channels are without mute
-toggles.
+> pcmcia: registering new device pcmcia1.0
+...
+> ALSA /home/asbjorn/alsa/alsa_1.0.11/alsa-driver-1.0.11/drivers/vx/../..=
+/alsa-kernel/drivers/vx/vx_hwdep.c:62: vx: can't load firmware vx/bx_1_vx=
+p.b56
+...
+> pccard: card ejected from slot 1
+> pccard: PCMCIA card inserted into slot 1
+> pcmcia: registering new device pcmcia1.0
 
-The upshot of this is that mute controls in almost all alsa apps doesn't
-work and the only way to mute the channel is to manually set master or PCM
-volume to zero.
-
-I read of a bug with one of the intel sound drivers that lost most of the
-mute controls, maybe this is the same sort of thing.
-======================================================================
-
-----------------------------------------------------------------------
- stdpikachu - 05-24-06 21:45 
-----------------------------------------------------------------------
-Apols for the numpty reply, but what are the instructions for patching the
-driver source? I've not done much kernel haXx0ring myself. I tried patch
--p0 against emufx.c, but when that fails I'm a little bit lost...!
-
-Thanks for devoting the time and effort into all of this :)
-
-P.S. Is the 1361T chip the one inside the Audigy LS?
-
-----------------------------------------------------------------------
- pzad - 05-24-06 22:33 
-----------------------------------------------------------------------
-I think 1361T is in Audigy 4.
-
-The simplest way is:
-Get alsa-driver package - from www.alsa-project.org.
-extract it somewhere
-change dir to alsa-kernel dir in (should be in "somewhere" dir)
-patch -p1 < path_to_patch
-configure
-make
-make install
-restart alsa (/etc/init.d/alsasound restart)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-20-06 15:23 stdpikachu     New Issue                                    
-05-20-06 15:23 stdpikachu     File Added: alsamixer.png                    
-05-20-06 15:23 stdpikachu     Distribution              => Gentoo          
-05-20-06 15:23 stdpikachu     Kernel Version            => 2.6.15, 2.6.16  
-05-20-06 16:09 pzad           Note Added: 0009884                          
-05-20-06 16:47 stdpikachu     Note Added: 0009885                          
-05-20-06 17:02 jcdutton       Note Added: 0009886                          
-05-20-06 17:02 jcdutton       Status                   new => acknowledged 
-05-20-06 17:22 rlrevell       Note Added: 0009887                          
-05-20-06 17:27 jcdutton       Note Added: 0009888                          
-05-20-06 17:32 pzad           Note Added: 0009889                          
-05-20-06 19:57 pzad           Note Added: 0009891                          
-05-20-06 21:17 rlrevell       Note Added: 0009892                          
-05-20-06 21:18 rlrevell       Note View State: public: 9892                    
-05-21-06 11:32 pzad           File Added: audigy_mute.patch                    
-05-21-06 11:32 pzad           Note Added: 0009897                          
-05-21-06 11:41 pzad           Note Edited: 0009897                         
-05-24-06 21:45 stdpikachu     Note Added: 0009960                          
-05-24-06 22:33 pzad           Note Added: 0009961                          
-======================================================================
-
-
+	Dominik
 
 
 -------------------------------------------------------
