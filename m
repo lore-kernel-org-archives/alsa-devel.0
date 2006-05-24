@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002156]: Geode support still not ported from OSS
-Date: Wed, 24 May 2006 09:50:48 +0200
-Message-ID: <41970255344236c2fd5a4b0e0f7c9847@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002157]: Regression on HP dc7600 (0x103c, 0x3012)
+Date: Wed, 24 May 2006 11:39:21 +0200
+Message-ID: <3a915da2b892bd73fcfb44de3784779a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E24A4198
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 09:50:48 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F1677171
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 11:39:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,43 +24,39 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2156> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2157> 
 ======================================================================
-Reported By:                Quietti
-Assigned To:                
+Reported By:                ondrej
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2156
-Category:                   ISA - sb16/sbawe
+Issue ID:                   2157
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Ubuntu Linux
+Kernel Version:             2.6.15-23-amd64-xen
 ======================================================================
-Date Submitted:             05-24-2006 09:50 CEST
-Last Modified:              05-24-2006 09:50 CEST
+Date Submitted:             05-24-2006 11:39 CEST
+Last Modified:              05-24-2006 11:39 CEST
 ======================================================================
-Summary:                    Geode support still not ported from OSS
+Summary:                    Regression on HP dc7600 (0x103c, 0x3012)
 Description: 
-According to http://www.ussg.iu.edu/hypermail/linux/kernel/0601.2/1636.html
-the Geode series all provide a sb16-compatible card. Yet, I notice that
-the OSS "sb" module works, while the ALSA "snd-sb16" module doesn't.
+Sound stopped working when upgraded to anything higher then 1.0.9, there
+was new code to add support for HDA intel (Realtek) on HP machines.
 
-Meanwhle, documentation for the more recent Geode SCx200 hardware suggests
-an AC97-compatible chip. I notice that e.g. the snd-via82xx driver offer
-both AC97 support and a Soundblaster compatibility mode, but that doesn't
-work with this Geode either.
-
-Feel free to reassing this to the appropriate driver, if this has been
-ported already, or if a documented solution exists.
+0x3012 is almost same as 0x3013, just Headphones and Front is reversed. 
+And BTW "Front" is connector on the back of machine.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-24-06 09:50 Quietti        New Issue                                    
+05-24-06 11:39 ondrej         New Issue                                    
+05-24-06 11:39 ondrej         Distribution              => Ubuntu Linux    
+05-24-06 11:39 ondrej         Kernel Version            => 2.6.15-23-amd64-xen
 ======================================================================
 
 
