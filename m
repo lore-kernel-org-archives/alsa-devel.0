@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002081]: and-atiixp module does not load into kernel
-Date: Wed, 24 May 2006 21:02:34 +0200
-Message-ID: <618dfb869130d9f143b320f08e8491b6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002157]: Regression on HP dc7600 (0x103c, 0x3012)
+Date: Wed, 24 May 2006 21:10:53 +0200
+Message-ID: <664edc65d5ba722156633daf0d980b50@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57EDA19A
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 21:02:34 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 68F8919A
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 21:10:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,83 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2081> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2157> 
 ======================================================================
-Reported By:                KaszeL
+Reported By:                ondrej
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2081
-Category:                   PCI - atiixp
+Issue ID:                   2157
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16-ck6-r1
+Distribution:               Ubuntu Linux
+Kernel Version:             2.6.15-23-amd64-xen
 ======================================================================
-Date Submitted:             04-28-2006 00:07 CEST
-Last Modified:              05-24-2006 21:02 CEST
+Date Submitted:             05-24-2006 11:39 CEST
+Last Modified:              05-24-2006 21:10 CEST
 ======================================================================
-Summary:                    and-atiixp module does not load into kernel
+Summary:                    Regression on HP dc7600 (0x103c, 0x3012)
 Description: 
-On DFI Infinity RS432 kernel module snd-atiixp does not load into kernel.
-After succesfoul compilation via gentoo portage/emerge i allways get
-errors similar to this:
+Sound stopped working when upgraded to anything higher then 1.0.9, there
+was new code to add support for HDA intel (Realtek) on HP machines.
 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
-atiixp: codec read timeout (reg 0) 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
-atiixp: codec read timeout (reg 3c) 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:458:
-atiixp: codec read timeout (reg 1c) 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/ac97/ac97_codec.c:1910:
-AC'97 2 does not respond - RESET 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/ac97/ac97_codec.c:1919:
-AC'97 2 access is not valid [0xffffffff], removing mixer. 
-ALSA
-/usr/data/temp/portage/alsa-driver-1.0.11/work/alsa-driver-1.0.11/pci/../alsa-kernel/pci/atiixp.c:1411:
-atiixp: no codec available 
-
-Here is my lspci info:
-00:14.5 Multimedia audio controller: ATI Technologies Inc IXP SB400 AC'97
-Audio Controller (rev 80) 
-        Subsystem: DFI Inc Unknown device 3100 
-        Flags: 66MHz, slow devsel, IRQ 18 
-        Memory at fe02b000 (32-bit, non-prefetchable) [size=256] 
-        Capabilities: [40] Message Signalled Interrupts: 64bit- Queue=0/0
-Enable
-
-I've tried several kernel and alsa-driver versions. I've also tried to
-compile alsa staticly into the kernel but this does not work either.
+0x3012 is almost same as 0x3013, just Headphones and Front is reversed. 
+And BTW "Front" is connector on the back of machine.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-03-06 11:46 
+ ondrej - 05-24-06 21:10 
 ----------------------------------------------------------------------
-Try acpi=off or pci=noacpi boot option at first.
+Just one more observation:
 
-----------------------------------------------------------------------
- KaszeL - 05-24-06 21:02 
-----------------------------------------------------------------------
-I've tried to disable ACPI completely, still no change.
+With ALS260_HP_3013 Front Mic can be muted/unmuted, volume works, but
+Capture is not, f.e. Ekiga is not able to capture any input from
+microphone and starts printing error messages.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-28-06 00:07 KaszeL         New Issue                                    
-04-28-06 00:07 KaszeL         Distribution              => Gentoo          
-04-28-06 00:07 KaszeL         Kernel Version            => 2.6.16-ck6-r1   
-04-28-06 00:08 KaszeL         Issue Monitored: KaszeL                      
-05-02-06 18:10 tiwai          Note Added: 0009567                          
-05-02-06 20:25 KaszeL         Note Added: 0009577                          
-05-03-06 11:46 tiwai          Note Added: 0009588                          
-05-24-06 21:02 KaszeL         Note Added: 0009958                          
+05-24-06 11:39 ondrej         New Issue                                    
+05-24-06 11:39 ondrej         Distribution              => Ubuntu Linux    
+05-24-06 11:39 ondrej         Kernel Version            => 2.6.15-23-amd64-xen
+05-24-06 13:26 ondrej         Issue Monitored: ondrej                      
+05-24-06 13:50 fuman          Issue Monitored: fuman                       
+05-24-06 21:10 ondrej         Note Added: 0009959                          
 ======================================================================
 
 
