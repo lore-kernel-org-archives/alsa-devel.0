@@ -1,18 +1,12 @@
-From: "Elliot Peterson" <kfu@crazy-friesack.de>
-Subject: shortly menial
-Date: Wed, 24 May 2006 13:23:59 -0400
-Message-ID: <001601c67f57$d32669df$4cd65b18@jk.ga>
+From: "Marianne Knox" <ejo@brumath.com>
+Subject: syntheses gushy
+Date: Wed, 24 May 2006 13:27:25 -0400
+Message-ID: <001601c67f57$d4f70abc$646e5b18@og.dqed>
 Mime-Version: 1.0
 Content-Type: multipart/related;
 	type="multipart/alternative";
-	boundary="----=_NextPart_000_0012_01C67F36.4C14C953"
+	boundary="----=_NextPart_000_0012_01C67F36.4DE56A8C"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DBC2319A
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 19:31:10 +0200 (MEST)
-Received: from c-24-91-178-76.hsd1.ma.comcast.net (c-24-91-178-76.hsd1.ma.comcast.net [24.91.178.76])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 997EE99490
-	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 19:31:08 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,23 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0012_01C67F36.4C14C953
+------=_NextPart_000_0012_01C67F36.4DE56A8C
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_0013_01C67F36.4C14C976"
+	boundary="----=_NextPart_001_0013_01C67F36.4DE56A98"
 
 
-------=_NextPart_001_0013_01C67F36.4C14C976
+------=_NextPart_001_0013_01C67F36.4DE56A98
 Content-Type: text/plain;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
 
-------=_NextPart_001_0013_01C67F36.4C14C976
+------=_NextPart_001_0013_01C67F36.4DE56A98
 Content-Type: text/html;
 	charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -47,22 +41,22 @@ Content-Transfer-Encoding: quoted-printable
 <HTML><HEAD>
 <META http-equiv=3DContent-Type content=3D"text/html; =
 charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2800.1441" name=3DGENERATOR>
+<META content=3D"MSHTML 6.00.2800.1409" name=3DGENERATOR>
 <STYLE></STYLE>
 </HEAD>
 <BODY bgColor=3D#ffffff>
 <DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001101c67f57$d3266930$4cd65b18@jk.ga" align=3Dbaseline=20
+src=3D"cid:001101c67f57$d4f70a80$646e5b18@og.dqed" align=3Dbaseline=20
 border=3D0></FONT></DIV>
 </BODY></HTML>
 
-------=_NextPart_001_0013_01C67F36.4C14C976--
+------=_NextPart_001_0013_01C67F36.4DE56A98--
 
-------=_NextPart_000_0012_01C67F36.4C14C953
+------=_NextPart_000_0012_01C67F36.4DE56A8C
 Content-Type: image/gif;
-	name="concurrently.gif"
+	name="optic.gif"
 Content-Transfer-Encoding: base64
-Content-ID: <001101c67f57$d3266930$4cd65b18@jk.ga>
+Content-ID: <001101c67f57$d4f70a80$646e5b18@og.dqed>
 
 R0lGODdhMwPIAucAAP///xYSFuf78AsXFTgrMIiCgXh3Y1JeT9zE17qwqJCJloN6ijQrMEFQRFEv
 cQ4Ta0pSWbxW4NAfJvaO6a95exAeqCqE5cGYabHpmSL4rI1C/uf/VMfQdO3HAtZ2fFGHmvqyH99z
@@ -741,7 +735,7 @@ erZ7+7eD+xPSYriTe7mTe4c2o7mr+7qze7u7+7vDe7y3KC/Ie73b+73je77r+77ze7/7+78DfMAL
 /MATfMEb/MEjfMIr/MIzfMM7/MNDfMRL/MRTfMVb/MVjvHL3QcZzfMd7/MeDfMiL/MiTfMmb/Mmj
 fMqr/MqzfMu7/MvDfMzLvH0HBAA7
 
-------=_NextPart_000_0012_01C67F36.4C14C953--
+------=_NextPart_000_0012_01C67F36.4DE56A8C--
 
 
 
