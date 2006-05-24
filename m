@@ -1,12 +1,18 @@
-From: "Eddy Swinton" <swinte@furr-angels.com>
-Subject: cheekbon 469
-Date: Tue, 23 May 2006 21:38:42 -0700
-Message-ID: <000001c67eeb$ef7f0090$ca44a8c0@jyy6>
-Reply-To: "Eddy Swinton" <swinte@furr-angels.com>
+From: "Phelan Ring" <ring@tvratings.com>
+Subject: exaggeratio 258
+Date: Tue, 23 May 2006 21:46:19 -0700
+Message-ID: <000001c67eec$ff820310$7793a8c0@svl43>
+Reply-To: "Phelan Ring" <ring@tvratings.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C67EB1.43202890"
+	boundary="----=_NextPart_000_0001_01C67EB2.53257500"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8B9D170
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 06:46:28 +0200 (MEST)
+Received: from leerelectric.com (212.Red-83-34-91.dynamicIP.rima-tde.net [83.34.91.212])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 2D810995A6
+	for <alsa-devel@alsa-project.org>; Wed, 24 May 2006 06:46:28 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,26 +22,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C67EB1.43202890
+------=_NextPart_000_0001_01C67EB2.53257500
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
 Hi,
 =20
-V A L / U M=20
-P R O Z ^ C
+L E V / T R A
+M E R / D / A
 A M B / E N
 V / A G R A=20
-X ^ N A X
 S O M ^
-M E R / D / A
-L E V / T R A
+X ^ N A X
+V A L / U M=20
+P R O Z ^ C
 C / A L / S=20
 =20
 http://www.linkenderlisto.com <http://www.linkenderlisto.com>=20
@@ -44,14 +50,15 @@ http://www.linkenderlisto.com <http://www.linkenderlisto.com>=20
 
 
 
-him in the gloom seemed pretty low in the water, and he guessed that=20
-these had dwarves inside. I do hope I put the lids on tight enough! he=20
-thought, but before long he was worrying too much about himself to=20
-remember the dwarves. He managed to keep his head above the water, but=20
-he was shivering with the cold, and he wondered if he would die of it=20
-before the luck turned, and how much longer he would be able to hang on,
+Dwalin and Balin here already, I see, said Kili. Let us join the=20
+throng!=20
+Throng! thought Mr. Baggins. I dont like the sound of that. I=20
+really must sit down for a minute and collect my wits, and have a=20
+drink. He had only just had a sip-in the corner, while the four dwarves=20
+sat around the table, and talked about mines and gold and troubles with=20
 
-------=_NextPart_000_0001_01C67EB1.43202890
+
+------=_NextPart_000_0001_01C67EB2.53257500
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -66,14 +73,14 @@ charset=3Dus-ascii">
 <BODY bgColor=3D#ffffff>
 <DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><B> V A L / U M </B><BR>
-P R O Z ^ C<BR>
+<DIV><FONT face=3DArial size=3D2>L E V / T R A<BR>
+M E R /  D / A<BR>
 A M B / E N<BR>
 <B> V / A G R A </B><BR>
-X ^ N A X<BR>
 S O M ^<BR>
-M E R /  D / A<BR>
-L E V / T R A<BR>
+X ^ N A X<BR>
+<B> V A L / U M </B><BR>
+P R O Z ^ C<BR>
 <B> C / A L / S </B></FONT></DIV>
 <DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
 <DIV><FONT face=3DArial size=3D2><A =
@@ -83,15 +90,14 @@ size=3D2>http://www.linkenderlisto.com</FONT></A></FONT></DIV><BR>
 <BR>
 <BR>
 <BR>
-<DIV><FONT face=3DArial size=3D2>him in the gloom seemed pretty low in =
-the water, and he guessed that <BR>these had dwarves inside. I do hope I =
-put the lids on tight enough! he <BR>thought, but before long he was =
-worrying too much about himself to <BR>remember the dwarves. He managed =
-to keep his head above the water, but <BR>he was shivering with the =
-cold, and he wondered if he would die of it <BR>before the luck turned, =
-and how much longer he would be able to hang on, =
+<DIV><FONT face=3DArial size=3D2>   Dwalin and Balin here already, I =
+see, said Kili. Let us join the <BR>throng! <BR>   Throng! thought Mr. =
+Baggins. I dont like the sound of that. I <BR>really must sit down for a =
+minute and collect my wits, and have a <BR>drink. He had only just had a =
+sip-in the corner, while the four dwarves <BR>sat around the table, and =
+talked about mines and gold and troubles with =
 <BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C67EB1.43202890--
+------=_NextPart_000_0001_01C67EB2.53257500--
 
 
 
