@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
-Date: Thu, 25 May 2006 18:33:39 +0200
-Message-ID: <0570ea7848a389a73f8322a89752951f@bugtrack.alsa-project.org>
+Date: Thu, 25 May 2006 19:31:11 +0200
+Message-ID: <7738d8eb40d767808e0c4d39015ec7ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD231146
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2006 18:33:39 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D5F43169
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2006 19:31:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu 5.10
 Kernel Version:             2.6.12-10
 ======================================================================
 Date Submitted:             04-16-2006 12:18 CEST
-Last Modified:              05-25-2006 18:33 CEST
+Last Modified:              05-25-2006 19:31 CEST
 ======================================================================
 Summary:                    midi/joystick port disabled and no way to enable it
 Description: 
@@ -72,26 +72,6 @@ Marco.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 05-24-06 14:32 
-----------------------------------------------------------------------
-With "output" and "input", I meant the MIDI jacks of your gameport-MIDI
-adapter.
-If it has built in cables, you cannot connect one to the other.
-
-In this case, you can just connect pins 12 and 15 of the gameport with a
-wire (view with a monospaced font):
-  8             1
--------------------
-\ o o o o o o o o /
- \ o o o o o o o /
-  -+-----+-------
- 15|     |     9
-   \_____/
-
-
-Your amidi commands should work _if_ the output is connected to the input.
-
-----------------------------------------------------------------------
  zanonmark - 05-25-06 18:33 
 ----------------------------------------------------------------------
 I've connected pins 12 and 15 of the gameport and I typed the same "amidi"
@@ -101,6 +81,29 @@ second terminal window! So the gameport looks like working... :)
 So the problem lies in the MIDI cable?
 
 Thanks, MZ
+
+----------------------------------------------------------------------
+ zanonmark - 05-25-06 19:31 
+----------------------------------------------------------------------
+Some additional considerations:
+
+My MIDI cable was built this way:
+(a) a 15-pins port on the pc side;
+(b) (i) another 15-pins port and (ii) 2 5-pins ports on the keyboard
+side.
+
+1) As I told before, connecting pins 15 and 12 of the card gameport (a)
+actually worked! It seems that the driver was ok. My apologies to the
+whole ALSA team for the waste of time.
+
+2) Instead, connecting pins 15 and 12 of (b-i) and typing the same "amidi"
+commands returns in random characters displayed in the console. Shouldn't
+I see the same results as in point 1)? Does it mean that I have some cable
+problems?
+
+Thanks,
+
+MZ
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -137,6 +140,7 @@ Date Modified  Username       Field                    Change
 05-23-06 20:02 zanonmark      Note Added: 0009950                          
 05-24-06 14:32 Clemens LadischNote Added: 0009956                          
 05-25-06 18:33 zanonmark      Note Added: 0009962                          
+05-25-06 19:31 zanonmark      Note Added: 0009963                          
 ======================================================================
 
 
