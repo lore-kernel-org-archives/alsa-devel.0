@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002160]: ALi Corporation M5455 PCI AC-Link Controller Audio Device (rev 20)
-Date: Thu, 25 May 2006 22:13:53 +0200
-Message-ID: <ce22cbf7b74dc8eb318d3e4979159a61@bugtrack.alsa-project.org>
+Date: Thu, 25 May 2006 22:26:13 +0200
+Message-ID: <b84bf9360fa2d0760a8ca32930a1f15d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F1AD17B
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2006 22:13:53 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3659517B
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2006 22:26:14 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2160> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               Ubuntu Dapper Beta 2
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-25-2006 22:13 CEST
-Last Modified:              05-25-2006 22:13 CEST
+Last Modified:              05-25-2006 22:26 CEST
 ======================================================================
 Summary:                    ALi Corporation M5455 PCI AC-Link Controller Audio
 Device (rev 20)
@@ -50,11 +50,20 @@ The sound card "ALi Corporation M5455 PCI AC-Link Controller Audio Device
 work. It is recognized by the system but doesn't work.
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 05-25-06 22:26 
+----------------------------------------------------------------------
+"Doesn't work" is not a useful bug report.
+
+Please provide the output of "aadebug" and describe how you are testing
+it.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-25-06 22:13 marciovinicius New Issue                                    
 05-25-06 22:13 marciovinicius Distribution              => Ubuntu Dapper Beta 2
+05-25-06 22:26 rlrevell       Note Added: 0009965                          
 ======================================================================
 
 
