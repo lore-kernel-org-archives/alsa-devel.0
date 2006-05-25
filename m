@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002160]: ALi Corporation M5455 PCI AC-Link Controller Audio Device (rev 20)
-Date: Thu, 25 May 2006 22:26:13 +0200
-Message-ID: <b84bf9360fa2d0760a8ca32930a1f15d@bugtrack.alsa-project.org>
+Date: Thu, 25 May 2006 22:38:13 +0200
+Message-ID: <8b024c7a272ac443be3d925617772adc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3659517B
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2006 22:26:14 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5682F17B
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2006 22:38:13 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu Dapper Beta 2
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-25-2006 22:13 CEST
-Last Modified:              05-25-2006 22:26 CEST
+Last Modified:              05-25-2006 22:38 CEST
 ======================================================================
 Summary:                    ALi Corporation M5455 PCI AC-Link Controller Audio
 Device (rev 20)
@@ -58,12 +58,20 @@ work. It is recognized by the system but doesn't work.
 Please provide the output of "aadebug" and describe how you are testing
 it.
 
+----------------------------------------------------------------------
+ marciovinicius - 05-25-06 22:38 
+----------------------------------------------------------------------
+Sorry, I'm new here. What is "aadebug"? And the tests are described in the
+links I posted here. (mainly
+http://www.ubuntuforums.org/showthread.php?t=169987)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 05-25-06 22:13 marciovinicius New Issue                                    
 05-25-06 22:13 marciovinicius Distribution              => Ubuntu Dapper Beta 2
 05-25-06 22:26 rlrevell       Note Added: 0009965                          
+05-25-06 22:38 marciovinicius Note Added: 0009966                          
 ======================================================================
 
 
