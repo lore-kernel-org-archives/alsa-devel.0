@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002160]: ALi Corporation M5455 PCI AC-Link Controller Audio Device (rev 20)
-Date: Thu, 25 May 2006 22:38:13 +0200
-Message-ID: <8b024c7a272ac443be3d925617772adc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Thu, 25 May 2006 22:50:21 +0200
+Message-ID: <36a1c45406e5e8f27ad9bf3c3c72641f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5682F17B
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2006 22:38:13 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85A9B17C
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2006 22:50:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,118 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2160> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
 ======================================================================
-Reported By:                marciovinicius
+Reported By:                zanonmark
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2160
-Category:                   1_OTHERS
+Issue ID:                   2023
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu Dapper Beta 2
-Kernel Version:             
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
 ======================================================================
-Date Submitted:             05-25-2006 22:13 CEST
-Last Modified:              05-25-2006 22:38 CEST
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              05-25-2006 22:50 CEST
 ======================================================================
-Summary:                    ALi Corporation M5455 PCI AC-Link Controller Audio
-Device (rev 20)
+Summary:                    midi/joystick port disabled and no way to enable it
 Description: 
-The sound card "ALi Corporation M5455 PCI AC-Link Controller Audio Device
-(rev 20)" which cames onboard "Asus k8u-x" motherboard simply doesn´t
-work. It is recognized by the system but doesn't work.
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
+
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
+
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
+
+So, will you please include such a parameter in the next version of the
+driver?
+
+Thanks a lot,
+
+Marco.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-25-06 22:26 
+ gineera - 05-25-06 21:53 
 ----------------------------------------------------------------------
-"Doesn't work" is not a useful bug report.
+As I understand it, the midi connections are unlikely to be brought out on
+the gameport of your connector cable (your b(i)).  Refer to midi org web
+site, the 5-pin DIN midi connectors should have opto-isolators built in to
+the cable connectors driving as a 'current loop', which makes it
+unsuitable for splitting.
 
-Please provide the output of "aadebug" and describe how you are testing
-it.
+Does the keyboard have midi-thro'? If so connect midi out DIN plug to
+keyboard midi in, and midi in plug to midi thro -then the signal should
+loop back.  Try it both ways round as some cables have the plugs labelled
+for which they should connect to, rather than which they come from.
+
+Hope this might help.
 
 ----------------------------------------------------------------------
- marciovinicius - 05-25-06 22:38 
+ zanonmark - 05-25-06 22:50 
 ----------------------------------------------------------------------
-Sorry, I'm new here. What is "aadebug"? And the tests are described in the
-links I posted here. (mainly
-http://www.ubuntuforums.org/showthread.php?t=169987)
+Unfortunately my keyboard does not have midi-thru.
+
+I will experiment with some friend's MIDI cables. :)
+
+Thanks all,
+
+MZ
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-25-06 22:13 marciovinicius New Issue                                    
-05-25-06 22:13 marciovinicius Distribution              => Ubuntu Dapper Beta 2
-05-25-06 22:26 rlrevell       Note Added: 0009965                          
-05-25-06 22:38 marciovinicius Note Added: 0009966                          
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
+04-17-06 06:56 rlrevell       Note Added: 0009301                          
+04-17-06 07:19 Raymond        Note Added: 0009303                          
+04-17-06 19:59 zanonmark      Note Added: 0009319                          
+04-18-06 10:54 Raymond        Note Added: 0009328                          
+04-18-06 13:18 Raymond        Note Edited: 0009328                         
+04-18-06 16:28 Clemens LadischNote Added: 0009338                          
+04-19-06 20:05 zanonmark      Note Added: 0009354                          
+04-19-06 21:49 rlrevell       Note Added: 0009356                          
+04-20-06 03:39 Raymond        Note Added: 0009363                          
+04-22-06 13:36 zanonmark      Note Added: 0009433                          
+04-24-06 15:47 Raymond        Note Added: 0009452                          
+04-24-06 15:57 zanonmark      Note Added: 0009460                          
+04-25-06 03:25 Raymond        Note Added: 0009484                          
+04-25-06 10:55 zanonmark      Note Added: 0009486                          
+04-26-06 10:54 Raymond        Note Added: 0009505                          
+04-26-06 19:51 zanonmark      Note Added: 0009522                          
+05-01-06 10:38 Raymond        Note Added: 0009553                          
+05-07-06 13:33 zanonmark      Note Added: 0009641                          
+05-12-06 03:58 Raymond        Note Added: 0009771                          
+05-12-06 19:44 zanonmark      Note Added: 0009788                          
+05-13-06 05:19 Raymond        Note Added: 0009794                          
+05-19-06 03:44 Raymond        Note Added: 0009872                          
+05-20-06 11:30 zanonmark      Note Added: 0009883                          
+05-21-06 04:49 Raymond        Note Added: 0009896                          
+05-23-06 11:26 zanonmark      Note Added: 0009930                          
+05-23-06 19:09 Clemens LadischNote Added: 0009946                          
+05-23-06 20:02 zanonmark      Note Added: 0009950                          
+05-24-06 14:32 Clemens LadischNote Added: 0009956                          
+05-25-06 18:33 zanonmark      Note Added: 0009962                          
+05-25-06 19:31 zanonmark      Note Added: 0009963                          
+05-25-06 21:53 gineera        Note Added: 0009964                          
+05-25-06 22:50 zanonmark      Note Added: 0009967                          
 ======================================================================
 
 
