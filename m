@@ -1,15 +1,14 @@
-From: "Cheng Campion" <chengu@hhcexploration.com>
-Subject: parla 6277
-Date: Thu, 25 May 2006 00:34:10 -0700
-Message-ID: <000001c67fcd$9cad3ca0$cb02a8c0@lpq57>
-Reply-To: "Cheng Campion" <chengu@hhcexploration.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002023]: midi/joystick port disabled and no way to enable it
+Date: Thu, 25 May 2006 18:33:39 +0200
+Message-ID: <0570ea7848a389a73f8322a89752951f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C67F92.F04E64A0"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from address.com (adsl-69-226-91-238.dsl.irvnca.pacbell.net [69.226.91.238])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 83A8D167
-	for <alsa-devel@alsa-project.org>; Thu, 25 May 2006 09:34:11 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD231146
+	for <alsa-devel@alsa-project.org>; Thu, 25 May 2006 18:33:39 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +21,123 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0001_01C67F92.F04E64A0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2023> 
+======================================================================
+Reported By:                zanonmark
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2023
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Ubuntu 5.10
+Kernel Version:             2.6.12-10
+======================================================================
+Date Submitted:             04-16-2006 12:18 CEST
+Last Modified:              05-25-2006 18:33 CEST
+======================================================================
+Summary:                    midi/joystick port disabled and no way to enable it
+Description: 
+I have a MIDI keyboard and I'd like to connect it to the midi/joystick port
+of the soundcard.
 
-Hi,
-=20
-P R O z & C
-A m B / E N
-X & n a x
-C i A L / S
-M e R / D / A
-V / a G R A
-S O m &
-V A L / u M
-T r & m a d o I
-L e V / T R A
-A m o x / c i I l / n
-=20
-http://www.numzaisundes.com <http://www.numzaisundes.com>=20
+Unfortunately, while PCM works fine and /dev/midi is created, I see no
+MIDI communication through /dev/midi.
+/proc/asound/AudioPCI/audiopci reports that the joystick port is
+disabled.
+
+It is probably a bug on the Ubuntu side (did they forget to compile the
+driver correctly?), but I'd like to see a parameter for enabling the
+joystick port "on the fly": other drivers have one (e.g.: "joystick=1"),
+but snd_ens1371 has not, so:
+1) it is not possible to reload (rmmod and modprobe) the driver with that
+parameter enabling the midi/joystick port manually,
+2) it is not possible to save (alsactl store), modify and reload (alsactl
+restore) the soundcard settings, because I see no such parameter to
+modify.
+
+So, will you please include such a parameter in the next version of the
+driver?
+
+Thanks a lot,
+
+Marco.
+
+======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 05-24-06 14:32 
+----------------------------------------------------------------------
+With "output" and "input", I meant the MIDI jacks of your gameport-MIDI
+adapter.
+If it has built in cables, you cannot connect one to the other.
+
+In this case, you can just connect pins 12 and 15 of the gameport with a
+wire (view with a monospaced font):
+  8             1
+-------------------
+\ o o o o o o o o /
+ \ o o o o o o o /
+  -+-----+-------
+ 15|     |     9
+   \_____/
 
 
+Your amidi commands should work _if_ the output is connected to the input.
 
+----------------------------------------------------------------------
+ zanonmark - 05-25-06 18:33 
+----------------------------------------------------------------------
+I've connected pins 12 and 15 of the gameport and I typed the same "amidi"
+commands as before, this time I was able to see the correct result on the
+second terminal window! So the gameport looks like working... :)
 
+So the problem lies in the MIDI cable?
 
-floundering in the cold water they had a difficult and very nasty job=20
-finding which were the right barrels. Knocking outside and calling only=20
-discovered about six dwarves that could answer. They were unpacked and=20
-helped ashore where they sat or lay muttering and moaning; they were so=20
-soaked and bruised and cramped that they could hardly yet realize their=20
-release or be properly thankful for it. Dwalin and Balin were two of the
+Thanks, MZ
 
-------=_NextPart_000_0001_01C67F92.F04E64A0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>P R O z & C<BR>
-A m B / E N<BR>
-X & n a x<BR>
-<STRONG>C i A L / S</STRONG><BR>
-M e R /  D / A<BR>
-<STRONG>V / a G R A</STRONG><BR>
-S O m &<BR>
-<STRONG>V A L / u M</STRONG><BR>
-T r & m a d o I<BR>
-L e V / T R A<BR>
-A m o x / c i I l / n</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><A =
-href=3D"http://www.numzaisundes.com"><FONT face=3DArial =
-size=3D2>http://www.numzaisundes.com</FONT></A></FONT></DIV><BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<DIV><FONT face=3DArial size=3D2>floundering in the cold water they had =
-a difficult and very nasty job <BR>finding which were the right barrels. =
-Knocking outside and calling only <BR>discovered about six dwarves that =
-could answer. They were unpacked and <BR>helped ashore where they sat or =
-lay muttering and moaning; they were so <BR>soaked and bruised and =
-cramped that they could hardly yet realize their <BR>release or be =
-properly thankful for it. Dwalin and Balin were two of the =
-<BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C67F92.F04E64A0--
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-16-06 12:18 zanonmark      New Issue                                    
+04-16-06 12:18 zanonmark      Distribution              => Ubuntu 5.10     
+04-16-06 12:18 zanonmark      Kernel Version            => 2.6.12-10       
+04-17-06 06:56 rlrevell       Note Added: 0009301                          
+04-17-06 07:19 Raymond        Note Added: 0009303                          
+04-17-06 19:59 zanonmark      Note Added: 0009319                          
+04-18-06 10:54 Raymond        Note Added: 0009328                          
+04-18-06 13:18 Raymond        Note Edited: 0009328                         
+04-18-06 16:28 Clemens LadischNote Added: 0009338                          
+04-19-06 20:05 zanonmark      Note Added: 0009354                          
+04-19-06 21:49 rlrevell       Note Added: 0009356                          
+04-20-06 03:39 Raymond        Note Added: 0009363                          
+04-22-06 13:36 zanonmark      Note Added: 0009433                          
+04-24-06 15:47 Raymond        Note Added: 0009452                          
+04-24-06 15:57 zanonmark      Note Added: 0009460                          
+04-25-06 03:25 Raymond        Note Added: 0009484                          
+04-25-06 10:55 zanonmark      Note Added: 0009486                          
+04-26-06 10:54 Raymond        Note Added: 0009505                          
+04-26-06 19:51 zanonmark      Note Added: 0009522                          
+05-01-06 10:38 Raymond        Note Added: 0009553                          
+05-07-06 13:33 zanonmark      Note Added: 0009641                          
+05-12-06 03:58 Raymond        Note Added: 0009771                          
+05-12-06 19:44 zanonmark      Note Added: 0009788                          
+05-13-06 05:19 Raymond        Note Added: 0009794                          
+05-19-06 03:44 Raymond        Note Added: 0009872                          
+05-20-06 11:30 zanonmark      Note Added: 0009883                          
+05-21-06 04:49 Raymond        Note Added: 0009896                          
+05-23-06 11:26 zanonmark      Note Added: 0009930                          
+05-23-06 19:09 Clemens LadischNote Added: 0009946                          
+05-23-06 20:02 zanonmark      Note Added: 0009950                          
+05-24-06 14:32 Clemens LadischNote Added: 0009956                          
+05-25-06 18:33 zanonmark      Note Added: 0009962                          
+======================================================================
 
 
 
