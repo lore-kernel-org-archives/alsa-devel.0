@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002161]: Build ALSA to play file wave
-Date: Fri, 26 May 2006 12:12:16 +0200
-Message-ID: <2e066a35a46378dcd64c4d0be6fbddd7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002162]: Build ALSA to play file wave
+Date: Fri, 26 May 2006 12:12:17 +0200
+Message-ID: <7d9705c7b15b8a0165cdd7afb47f224b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1B8F15E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E485915E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 May 2006 12:12:16 +0200 (MEST)
+	Fri, 26 May 2006 12:12:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,13 +25,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2161> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2162> 
 ======================================================================
 Reported By:                pvtuan
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2161
+Issue ID:                   2162
 Category:                   CORE - pcm
 Reproducibility:            always
 Severity:                   minor
