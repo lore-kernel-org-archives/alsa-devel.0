@@ -1,15 +1,14 @@
-From: "Fiera Quijano" <quija@era.com>
-Subject: veraciou 4863
-Date: Sat, 27 May 2006 02:32:30 -0700
-Message-ID: <000001c68170$79f7c8c0$a658a8c0@tzh8>
-Reply-To: Fiera Quijano <quija@era.com>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: [PATCH] Allow ioplugins to override snd_pcm_delay()
+Date: Fri, 26 May 2006 11:38:11 +0200
+Message-ID: <4476CC83.8080103@cendio.se>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1401407149=="
+Content-Type: multipart/mixed; boundary="===============0728407240=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from era.com (c-71-226-123-4.hsd1.az.comcast.net [71.226.123.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id B4D1B18A
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 183B5156
 	for <alsa-devel@alsa-project.org>;
-	Sat, 27 May 2006 11:34:55 +0200 (MEST)
+	Fri, 26 May 2006 11:38:15 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,105 +18,117 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============0728407240==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enigEFE241F739EC36FD8FF8F778"
+
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigEFE241F739EC36FD8FF8F778
+Content-Type: multipart/mixed; boundary="------------020000050803020003010708"
+
 This is a multi-part message in MIME format.
-
---===============1401407149==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C68135.CD98F0C0"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0001_01C68135.CD98F0C0
-Content-Type: text/plain;
-	charset="us-ascii"
+--------------020000050803020003010708
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-=20
-X & n a x
-A m o x / c i I l / n
-P R O z & C
-V A L / u M
-L e V / T R A
-S O m &
-A m B / E N
-M e R / D / A
-T r & m a d o I
-C i A L / S
-V / a G R A
-=20
-http://www.kounbuberdans.com <http://www.kounbuberdans.com>=20
+Some io plug-ins might want to adjust the reported delay value and not
+strictly follow the current buffer usage (that's why we have two calls
+after all).
+
+Allow them to specify a delay() callback and use the previous behaviour
+if they don't.
+
+Signed-off-by: Pierre Ossman <ossman@cendio.se>
 
 
-
-
-
-for Gandalf and Thorin, while at the far end he put Beorns big black=20
-chair of the same sort (in which he sat with his great legs stuck far=20
-out under the table). These were all the chairs he had in his hall, and=20
-he probably had them low like the tables for the convenience of the=20
-wonderful animals that waited on him. What did the rest sit on? They=20
-were not forgotten. The other ponies came in rolling round drum-shaped=20
-
-
-------=_NextPart_000_0001_01C68135.CD98F0C0
-Content-Type: text/html;
-	charset="us-ascii"
+--------------020000050803020003010708
+Content-Type: text/x-patch;
+ name="ioplug-delay.patch"
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline;
+ filename="ioplug-delay.patch"
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>X & n a x<BR>
-A m o x / c i I l / n<BR>
-P R O z & C<BR>
-<STRONG>V A L / u M</STRONG><BR>
-L e V / T R A<BR>
-S O m &<BR>
-A m B / E N<BR>
-M e R /  D / A<BR>
-T r & m a d o I<BR>
-<STRONG>C i A L / S</STRONG><BR>
-<STRONG>V / a G R A</STRONG></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><A =
-href=3D"http://www.kounbuberdans.com"><FONT face=3DArial =
-size=3D2>http://www.kounbuberdans.com</FONT></A></FONT></DIV><BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<DIV><FONT face=3DArial size=3D2>for Gandalf and Thorin, while at the =
-far end he put Beorns big black <BR>chair of the same sort (in which he =
-sat with his great legs stuck far <BR>out under the table). These were =
-all the chairs he had in his hall, and <BR>he probably had them low like =
-the tables for the convenience of the <BR>wonderful animals that waited =
-on him. What did the rest sit on? They <BR>were not forgotten. The other =
-ponies came in rolling round drum-shaped <BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C68135.CD98F0C0--
+? ioplug-delay.patch
+Index: include/pcm_ioplug.h
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/alsa/alsa-lib/include/pcm_ioplug.h,v
+retrieving revision 1.5
+diff -u -r1.5 pcm_ioplug.h
+--- include/pcm_ioplug.h	24 May 2005 09:42:01 -0000	1.5
++++ include/pcm_ioplug.h	25 May 2006 19:05:23 -0000
+@@ -130,6 +130,10 @@
+ 	 */
+ 	snd_pcm_sframes_t (*pointer)(snd_pcm_ioplug_t *io);
+ 	/**
++	 * get the delay for the running PCM; optional
++	 */
++	int (*delay)(snd_pcm_ioplug_t *io, snd_pcm_sframes_t *delayp);
++	/**
+ 	 * transfer the data; optional
+ 	 */
+ 	snd_pcm_sframes_t (*transfer)(snd_pcm_ioplug_t *io,
+Index: src/pcm/pcm_ioplug.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_ioplug.c,v
+retrieving revision 1.10
+diff -u -r1.10 pcm_ioplug.c
+--- src/pcm/pcm_ioplug.c	28 Jun 2005 10:24:45 -0000	1.10
++++ src/pcm/pcm_ioplug.c	25 May 2006 19:05:24 -0000
+@@ -106,8 +106,14 @@
+=20
+ static int snd_pcm_ioplug_delay(snd_pcm_t *pcm, snd_pcm_sframes_t *delay=
+p)
+ {
+-	snd_pcm_ioplug_hw_ptr_update(pcm);
+-	*delayp =3D snd_pcm_mmap_hw_avail(pcm);=20
++	ioplug_priv_t *io =3D pcm->private_data;
++
++	if (io->data->callback->delay)
++		return io->data->callback->delay(io->data, delayp);
++	else {
++		snd_pcm_ioplug_hw_ptr_update(pcm);
++		*delayp =3D snd_pcm_mmap_hw_avail(pcm);
++	}
+ 	return 0;
+ }
+=20
+
+--------------020000050803020003010708--
+
+--------------enigEFE241F739EC36FD8FF8F778
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
+
+iD8DBQFEdsyF7b8eESbyJLgRAlVCAJ9UVnTAjMM/tLWrB66Lf7xsLLhi0QCgolrD
+zYPXgiOeGi2gQofYSLwquOM=
+=dKyq
+-----END PGP SIGNATURE-----
+
+--------------enigEFE241F739EC36FD8FF8F778--
 
 
-
-
-
---===============1401407149==
+--===============0728407240==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1401407149==
+--===============0728407240==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -128,4 +139,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1401407149==--
+--===============0728407240==--
