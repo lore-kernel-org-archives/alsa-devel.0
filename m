@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: =?iso-8859-1?q?=5BALSA_-_driver_0002117=5D=3A_No_5?=
- =?iso-8859-1?q?=2E1-support_f=FCr_VIA8237x/1617_based_soundsystems_=28i?=
- =?iso-8859-1?q?=2Ee=2E_VIA_EPIA_SP8000-Board=29?=
-Date: Fri, 26 May 2006 20:56:32 +0200
-Message-ID: <087e6b90d147ec4399f9b4a5837100a9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002165]: Fix mixer map for Hercules
+	Gamesurround Muse LT usb soundcard.
+Date: Fri, 26 May 2006 23:37:55 +0200
+Message-ID: <050788f21a5244ea5add96da546f205e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 617DF13B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A605171
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 May 2006 20:56:32 +0200 (MEST)
+	Fri, 26 May 2006 23:37:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,106 +24,105 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2117> =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                Flipsen1977
-Assigned To:                =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2165> 
+======================================================================
+Reported By:                jereynaud
+Assigned To:                Clemens Ladisch
+======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2117
-Category:                   PCI - via82xx
+Issue ID:                   2165
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             05-12-2006 09:42 CEST
-Last Modified:              05-26-2006 20:56 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    No 5.1-support f=FCr VIA8237x/1617 based sounds=
-ystems
-(i.e. VIA EPIA SP8000-Board)
-Description: =
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             05-26-2006 23:37 CEST
+Last Modified:              05-26-2006 23:37 CEST
+======================================================================
+Summary:                    Fix mixer map for Hercules Gamesurround Muse LT usb
+soundcard.
+Description: 
+Add correct support for this sound card :
+add a new map in usbmixer_maps.c
 
-I've installed the latest via82xx-module, 2-channel works fine, but
-6-channel isn't available at all.
+Signed-off-by: Jean-Emmanuel REYNAUD <je.reynaud@laposte.net>
 
-alsamixer shows all the channels, they are unmuted und up at 90-100%, but
-center/lfe und rear speakers don't work. I've been missing an opportunity
-to switch the line-in and mic-in to output. As I read in some articles
-there isn't yet support for this chipset.
 
-Is there already something done?
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- linux-2.6.16.18/sound/usb/usbmixer_maps.c   2006-05-22
+20:04:35.000000000 +0200
++++ linux-2.6.16.18.new/sound/usb/usbmixer_maps.c       2006-05-26
+22:35:03.000000000 +0200
+@@ -219,6 +219,43 @@
+ };
 
-----------------------------------------------------------------------
- tiwai - 05-26-06 14:49 =
+ /*
++ * Hercules Gamesurround USB.
++ * USB_IN[1] --------------+-+->MU[15]-->FU[9]--> Spk-OUT[6]
++ *                         | |
++ * Mic-IN[2] --+-->FU[10]------+----->SU[8]-----> USB_OUT[7]
++ *             |           | | |
++ *             +-->FU[13]--+ | |
++ *                           | |
++ * Lin-IN[3] --+-->FU[11]------+
++ *             |             |
++ *             +-->FU[14]----+
++ */
++static struct usbmix_name_map hercules_gamesurround_muse_pocket_lt_map[]
+= {
++       /* 1: IT pcm */
++       /* 2: IT mic */
++       /* 3: IT line */
++       /* 6: OT speaker */
++       /* 7: OT pcm capture */
++       { 8, "Capture Source" }, /* SU, Capture Source */
++       { 9, "Master Playback" }, /* FU, default Speaker 1 */
++       { 10, "Mic Capture" }, /* FU, default Auto Gain Input */
++       { 11, "Line Capture" }, /* FU, default PCM Capture */
++       { 13, "Mic Playback" }, /* FU, default Mic Playback */
++       { 14, "Line Playback" }, /* FU, default Speaker */
++       /* 15: MU */
++       { 0 } /* terminator */
++};
++static struct usbmix_selector_map
+hercules_gamesurround_muse_pocket_lt_selectors_map[] = {
++       {
++               .id = 8, /* Capture Source */
++               .count = 2,
++               .names = (const char*[]) {"Mic", "Line"}
++       },
++       { 0 } /* terminator */
++};
++
++
++/*
+  * Control map entries
+  */
 
-----------------------------------------------------------------------
-Please attach the generated file after "alsactl -f somefile store" and the
-contents of /proc/asound/card0/codec#0/* files.
-The former contains the current mixer status, so you can check whether
-"Surround", "Center" and "LFE" are properly unmuted/adjusted.
+@@ -256,6 +293,13 @@
+                .id = USB_ID(0x0c45, 0x1158),
+                .map = justlink_map,
+        },
++       {
++               /* Hercules Gamesurround Muse Pocket LT*/
++               .id = USB_ID(0x06f8, 0xc000),
++               .map = hercules_gamesurround_muse_pocket_lt_map,
++               .selector_map =
+hercules_gamesurround_muse_pocket_lt_selectors_map,
++               .ignore_ctl_error = 1,
++       },
+        { 0 } /* terminator */
+ };
 
-I have no datasheet for VT1617A.  So, it's a bit hard to track down.
 
-----------------------------------------------------------------------
- doobedoobedo - 05-26-06 20:56 =
-
-----------------------------------------------------------------------
-Here you go, hope it helps. I'm quite willing to do any
-experimenting/testing you think may be useful...
+======================================================================
 
 Issue History
-Date Modified  Username       Field                    Change              =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-05-12-06 09:42 Flipsen1977    New Issue                                    =
-
-05-12-06 09:42 Flipsen1977    Distribution              =3D> Debian        =
-  =
-
-05-12-06 09:42 Flipsen1977    Kernel Version            =3D> 2.6.15        =
-  =
-
-05-12-06 16:03 tiwai          Note Added: 0009775                          =
-
-05-15-06 14:27 Flipsen1977    Note Added: 0009823                          =
-
-05-15-06 22:17 Flipsen1977    Note Edited: 0009823                         =
-
-05-26-06 02:45 doobedoobedo   Note Added: 0009970                          =
-
-05-26-06 14:49 tiwai          Note Added: 0009977                          =
-
-05-26-06 20:50 doobedoobedo   File Added: somefile                         =
-
-05-26-06 20:50 doobedoobedo   File Added: ac97#0-0                         =
-
-05-26-06 20:51 doobedoobedo   File Added: ac97#0-0+regs                    =
-
-05-26-06 20:56 doobedoobedo   Note Added: 0009980                          =
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Modified  Username       Field                    Change              
+======================================================================
+05-26-06 23:37 jereynaud      New Issue                                    
+======================================================================
