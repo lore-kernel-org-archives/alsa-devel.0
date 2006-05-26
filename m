@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002160]: ALi Corporation M5455 PCI AC-Link Controller Audio Device (rev 20)
-Date: Fri, 26 May 2006 03:00:28 +0200
-Message-ID: <6ab9384484534650b87549ac54777c4c@bugtrack.alsa-project.org>
+Date: Fri, 26 May 2006 03:14:32 +0200
+Message-ID: <8084ba67f64647893e939b0a7d63cfdd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42829130
-	for <alsa-devel@alsa-project.org>; Fri, 26 May 2006 03:00:28 +0200 (MEST)
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 67596151
+	for <alsa-devel@alsa-project.org>; Fri, 26 May 2006 03:14:32 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Ubuntu Dapper Beta 2
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-25-2006 22:13 CEST
-Last Modified:              05-26-2006 03:00 CEST
+Last Modified:              05-26-2006 03:14 CEST
 ======================================================================
 Summary:                    ALi Corporation M5455 PCI AC-Link Controller Audio
 Device (rev 20)
@@ -49,13 +49,6 @@ The sound card "ALi Corporation M5455 PCI AC-Link Controller Audio Device
 (rev 20)" which cames onboard "Asus k8u-x" motherboard simply doesn´t
 work. It is recognized by the system but doesn't work.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 05-25-06 22:56 
-----------------------------------------------------------------------
-http://alsa.opensrc.org/aadebug
-
-It sounds like a Ubuntu bug.
 
 ----------------------------------------------------------------------
  marciovinicius - 05-26-06 03:00 
@@ -118,6 +111,18 @@ AC-Link Controller Audio Device (rev 20)
 0000:00:18.3 Host bridge: Advanced Micro Devices [AMD] K8
 [Athlon64/Opteron] Miscellaneous Control
 
+----------------------------------------------------------------------
+ marciovinicius - 05-26-06 03:14 
+----------------------------------------------------------------------
+If you see the links I posted you'll see that it happens at least with
+Debian and Fedora too (not only with Ubuntu). It likely refers to the
+AMD64 version of the kernel, but I think it is an ALSA issue too.
+As a matter of fact the kernel version is 2.6.15-23-amd64-generic (as you
+can see in aadebug report). I couldn't write at the time when I made the
+report and I don't know how to change the report (I don't know if I can do
+it). Actually I'd like to change the severity of the report to major too -
+I don't have sound! :(
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -127,6 +132,7 @@ Date Modified  Username       Field                    Change
 05-25-06 22:38 marciovinicius Note Added: 0009966                          
 05-25-06 22:56 rlrevell       Note Added: 0009968                          
 05-26-06 03:00 marciovinicius Note Added: 0009971                          
+05-26-06 03:14 marciovinicius Note Added: 0009972                          
 ======================================================================
 
 
