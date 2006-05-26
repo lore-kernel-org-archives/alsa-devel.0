@@ -1,16 +1,17 @@
-From: Pierre Ossman <ossman@cendio.se>
-Subject: Re: [PATCH] Allow ioplugins to override snd_pcm_delay()
-Date: Fri, 26 May 2006 14:46:16 +0200
-Message-ID: <4476F898.3030202@cendio.se>
-References: <4476CC83.8080103@cendio.se> <4476F794.7010306@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: =?iso-8859-1?q?=5BALSA_-_driver_0002117=5D=3A_No_5?=
+ =?iso-8859-1?q?=2E1-support_f=FCr_VIA8237x/1617_based_soundsystems_=28i?=
+ =?iso-8859-1?q?=2Ee=2E_VIA_EPIA_SP8000-Board=29?=
+Date: Fri, 26 May 2006 14:49:31 +0200
+Message-ID: <5eeab5877a10a33e0e0068c618033516@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0775913146=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 414F9155
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE987177
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 May 2006 14:46:19 +0200 (MEST)
-In-Reply-To: <4476F794.7010306@superbug.co.uk>
+	Fri, 26 May 2006 14:49:31 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,84 +21,102 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============0775913146==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig2E1B57DCEAA35EE2BC05C48A"
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig2E1B57DCEAA35EE2BC05C48A
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2117> =
 
-James Courtier-Dutton wrote:
-> Pierre Ossman wrote:
->> Some io plug-ins might want to adjust the reported delay value and not=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                Flipsen1977
+Assigned To:                =
 
->> strictly follow the current buffer usage (that's why we have two calls=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Issue ID:                   2117
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             05-12-2006 09:42 CEST
+Last Modified:              05-26-2006 14:49 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    No 5.1-support f=FCr VIA8237x/1617 based sounds=
+ystems
+(i.e. VIA EPIA SP8000-Board)
+Description: =
 
->> after all).
->>
->> Allow them to specify a delay() callback and use the previous behaviou=
-r
->> if they don't.
->>
->> Signed-off-by: Pierre Ossman <ossman@cendio.se>
->>  =20
-> Can you give an example of a plugin that would want to adjust the delay=
+I've installed the latest via82xx-module, 2-channel works fine, but
+6-channel isn't available at all.
 
-> value?
->=20
+alsamixer shows all the channels, they are unmuted und up at 90-100%, but
+center/lfe und rear speakers don't work. I've been missing an opportunity
+to switch the line-in and mic-in to output. As I read in some articles
+there isn't yet support for this chipset.
 
-The polypaudio backend, which is why I submitted this patch.
+Is there already something done?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-The recently released padsp (esddsp-equivalent) has much better latency
-reporting than the ALSA to polypaudio plug-in. And we just can't have
-OSS applications outperforming ALSA ones. ;)
+----------------------------------------------------------------------
+ doobedoobedo - 05-26-06 02:45 =
 
---=20
-Pierre Ossman                Telephone: +46-13-21 46 00
-Cendio AB                    Web: http://www.cendio.com
+----------------------------------------------------------------------
+I have a VIA EPIA SP1300 (same board different processor) and have exactly
+the same problem.
 
+----------------------------------------------------------------------
+ tiwai - 05-26-06 14:49 =
 
---------------enig2E1B57DCEAA35EE2BC05C48A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+----------------------------------------------------------------------
+Please attach the generated file after "alsactl -f somefile store" and the
+contents of /proc/asound/card0/codec#0/* files.
+The former contains the current mixer status, so you can check whether
+"Surround", "Center" and "LFE" are properly unmuted/adjusted.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
+I have no datasheet for VT1617A.  So, it's a bit hard to track down.
 
-iD8DBQFEdviZ7b8eESbyJLgRAp3wAJ47jLrGWwp2Qo9DzZYzQ5CktPteVgCfaJI1
-9SMWqldlsLMEqawXdnkm6dc=
-=Us3+
------END PGP SIGNATURE-----
+Issue History
+Date Modified  Username       Field                    Change              =
 
---------------enig2E1B57DCEAA35EE2BC05C48A--
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+05-12-06 09:42 Flipsen1977    New Issue                                    =
 
+05-12-06 09:42 Flipsen1977    Distribution              =3D> Debian        =
+  =
 
---===============0775913146==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+05-12-06 09:42 Flipsen1977    Kernel Version            =3D> 2.6.15        =
+  =
 
+05-12-06 16:03 tiwai          Note Added: 0009775                          =
 
---===============0775913146==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+05-15-06 14:27 Flipsen1977    Note Added: 0009823                          =
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
+05-15-06 22:17 Flipsen1977    Note Edited: 0009823                         =
 
---===============0775913146==--
+05-26-06 02:45 doobedoobedo   Note Added: 0009970                          =
+
+05-26-06 14:49 tiwai          Note Added: 0009977                          =
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
