@@ -1,16 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002140]: No sound from mic on Fujitsu
-	Siemens Amilo M3438G
-Date: Fri, 26 May 2006 19:26:08 +0200
-Message-ID: <259b3c5c1040f8d6b87adc3bc8cb0223@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: TODO list
+Date: Fri, 26 May 2006 18:30:36 +0100
+Message-ID: <44773B3C.4020206@superbug.co.uk>
+References: <4475F316.5000908@superbug.co.uk>	<s5hpsi1qc1h.wl%tiwai@suse.de>	<4476E687.10608@superbug.co.uk>	<s5hfyiwpzoe.wl%tiwai@suse.de>	<44772DE3.60104@superbug.co.uk>
+	<s5hslmwu3s2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E37A3EB
+Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net
+	[194.217.242.92])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3AAB613E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 May 2006 19:26:08 +0200 (MEST)
+	Fri, 26 May 2006 19:30:37 +0200 (MEST)
+In-Reply-To: <s5hslmwu3s2.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,76 +23,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+>> For mmap, all that happens is that the application asks for a mmap 
+>> address from the kernel.
+>> If we could get the kernel to manipulate shared memory, so that the mmap 
+>> address given to the application is shared with the daemon, surely that 
+>> would work.
+>>     
+>
+> The sharing of memory between the app and the daemon is easy via a
+> simple mmap invoked from both sides.  But, sharing the mmapped buffer
+> from a sound driver between the daemon and the app over yet another
+> driver is a tough problem, because the buffer is strictly bound to the
+> sound card hardware.
+>   
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2140> 
-======================================================================
-Reported By:                jacobs
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2140
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               OpenSuSE 10.1
-Kernel Version:             2.6.16.13
-======================================================================
-Date Submitted:             05-22-2006 10:17 CEST
-Last Modified:              05-26-2006 19:26 CEST
-======================================================================
-Summary:                    No sound from mic on Fujitsu Siemens Amilo M3438G
-Description: 
-I own a Fujitsu Siemens Amilo M3438G notebook with an onboard Azalia 7.1
-SPDIF chipset/codec (see spec sheet at
-http://www.fujitsu-siemens.de/ps/db/notebook/ds_amilo_m3438g_m4438g_d.pdf).
-OpenSuSE 10.1 (Kernel 2.6.16.13) is installed; the module snd-hda-intel is
- loaded. Sound playback through the internal speakers and headphone does
-work but I am unable to get sound from the internal and external
-microphone. The alsamixer has three capture controls which all are set to
-capture and maximum volume. Each capture controls source is set to mic.
-The playback channel for mic is unmuted and also set to maximum volume but
-I just don't get a signal.
+> We need to consider first the basic design more deeply.
+> For example, even if we get the mmapped buffer, it's not enough for
+> the whole operation, especially when the period/buffer size doesn't
+> match with whta OSS requires.
+>
+>
+> Takashi
+>   
 
-I've tried to apply different model options to the snd-hda-intel module
-relating to the file ALSA-Configuration.txt without luck.
+I was thinking more along the lines of User App -> OSS kernel shim -> 
+userland daemon buffer, one buffer per user app -> alsa-lib.
+So, the mmap would not be a real mmap, it would be a simple matter of 
+tricking the User app into thinking it is mmapped. It would be a double 
+buffer really.
+So, the daemon buffer would just be whatever size the OSS user app 
+wanted, and the daemon would then pass it's contents to alsa-lib or 
+jackd as and when needed.
+All this would probably only be possible if some high res timer source 
+(e.g. the system timer) was used to trigger the period boundaries. I 
+think I mentioned that idea some time ago. Maybe we should just aim for 
+that TODO item to help dmix work better at 44100Hz, and then worry about 
+the OSS kernel shim after that.
+Maybe by that time....OSS would have disappeared! :-)
 
-This didn't work with OpenSuSE 10.0 (Kernel 2.6.13) either.
-
-If you need any technical information please let me know.
-======================================================================
-
-----------------------------------------------------------------------
- el - 05-26-06 19:26 
-----------------------------------------------------------------------
-Hi, I experienced the same Problem with my M3438G. I was running Kubuntu
-Breezy, Kubuntu Dapper and Kanotix als well as ALSA 1.0.10, 1.0.11rcX and
-1.0.11. When I load the module without any additional parameters "cat
-/sys/module/snd_hda_intel/parameters/model" returns "<NULL>", don't know
-if this behavior is expected or not. 
-
-Then I tried passing model=fujitsu and such, but couldn't get the
-microphone to work. But when I tried model=auto (Should be the default
-according to the documentation, but obviously it isn't) I got it to work
-by turning up the leftmost capture control an setting it's input source to
-Front Mic. 
-
-I still got some high pitched noise in the background of any recording
-when using Ubuntu Breezy, but that seems to be a different Problem.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-22-06 10:17 jacobs         New Issue                                    
-05-22-06 10:17 jacobs         Distribution              => OpenSuSE 10.1   
-05-22-06 10:17 jacobs         Kernel Version            => 2.6.16.13       
-05-23-06 07:35 jacobs         Issue Monitored: jacobs                      
-05-26-06 19:13 el             Issue Monitored: el                          
-05-26-06 19:26 el             Note Added: 0009979                          
-======================================================================
+James
