@@ -1,19 +1,14 @@
-From: Juan Zapatero <jazc@gmvsistemas.es>
+From: Benoit Fouet <benoit.fouet@purplelabs.com>
 Subject: Re: Raise and lower volume through Alsa Api
-Date: Fri, 26 May 2006 10:31:23 +0200
-Message-ID: <1148632283.4785.4.camel@jazc.fedora>
-References: <1147429541.26309.3.camel@jazc.fedora>
-	<s5hpsijzbof.wl%tiwai@suse.de> <1147676786.2963.1.camel@jazc.fedora>
-	<1147812562.13948.144.camel@mindpipe>	<m2psicldv8.fsf@vador2.mandriva.com>
-	<1147892684.2473.0.camel@mindpipe>
-	<1148631774.4785.2.camel@jazc.fedora>
-	<4476BB92.3070203@purplelabs.com>
+Date: Fri, 26 May 2006 10:36:25 +0200
+Message-ID: <4476BE09.6080903@purplelabs.com>
+References: <1147429541.26309.3.camel@jazc.fedora>	<s5hpsijzbof.wl%tiwai@suse.de>
+	<1147676786.2963.1.camel@jazc.fedora>	<1147812562.13948.144.camel@mindpipe>	<m2psicldv8.fsf@vador2.mandriva.com>	<1147892684.2473.0.camel@mindpipe>	<1148631774.4785.2.camel@jazc.fedora>	<4476BB92.3070203@purplelabs.com>
+	<1148632283.4785.4.camel@jazc.fedora>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0676276828=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <4476BB92.3070203@purplelabs.com>
-Content-Disposition: inline
+In-Reply-To: <1148632283.4785.4.camel@jazc.fedora>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,56 +18,240 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Benoit Fouet <benoit.fouet@purplelabs.com>
+To: Juan Zapatero <jazc@gmvsistemas.es>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-QnV0IHdoYXQgYWJvdXQgZG9pbmcgaXQgdGhyb3VnaCBBUEksIHNvIHRoYXQgdm9sdW1lIGlzIHNl
-dCBpbiB0aGUKYXBwbGljYXRpb24sIHdpdGhvdXQgdXNpbmcgYW55IHZvbHVtZSBwbHVnaW4uLi4K
-CkVsIHZpZSwgMjYtMDUtMjAwNiBhIGxhcyAxMDoyNSArMDIwMCwgQmVub2l0IEZvdWV0IGVzY3Jp
-YmnDszoKPiB5b3UgaGF2ZSB0aGUgc29mdHZvbHVtZSBwbHVnaW4gaSB0aGluay4KPiAKPiAtLSBC
-ZW4KPiAKPiBKdWFuIFphcGF0ZXJvIHdyb3RlOgo+IAo+ID5JcyB0aGVyZSBhbnkgd2F5IG9mIG1v
-ZGlmeWluZyBzdHJlYW0ncyB2b2x1bWUgdGhyb3VnaCBsaWJhc291bmQgQVBJPwo+ID5JIG1lYW4s
-IHJhaXNpbmcgb3IgbG93ZXJpbmcgYSBzdHJlYW1zIHZvbHVtZSBiZWZvcmUgc2VuZGluZyBpdCB0
-bwo+ID5zb3VuZGNhcmQgd2l0aCB3cml0ZSguLi4pCj4gPgo+ID4KPiA+Cj4gPgo+ID5fX19fX19f
-X19fX19fX19fX19fX19fCj4gPkVzdGUgbWVuc2FqZSwgeSBlbiBzdSBjYXNvLCBjdWFscXVpZXIg
-ZmljaGVybyBhbmV4byBhbCBtaXNtbywKPiA+IHB1ZWRlIGNvbnRlbmVyIGluZm9ybWFjaW9uIGNs
-YXNpZmljYWRhIHBvciBzdSBlbWlzb3IgY29tbyBjb25maWRlbmNpYWwKPiA+IGVuIGVsIG1hcmNv
-IGRlIHN1IFNpc3RlbWEgZGUgR2VzdGlvbiBkZSBTZWd1cmlkYWQgZGUgbGEgCj4gPkluZm9ybWFj
-aW9uIHNpZW5kbyBwYXJhIHVzbyBleGNsdXNpdm8gZGVsIGRlc3RpbmF0YXJpbywgcXVlZGFuZG8g
-Cj4gPnByb2hpYmlkYSBzdSBkaXZ1bGdhY2lvbiBjb3BpYSBvIGRpc3RyaWJ1Y2lvbiBhIHRlcmNl
-cm9zIHNpbiBsYSAKPiA+YXV0b3JpemFjaW9uIGV4cHJlc2EgZGVsIHJlbWl0ZW50ZS4gU2kgVmQu
-IGhhIHJlY2liaWRvIGVzdGUgbWVuc2FqZSAKPiA+IGVycm9uZWFtZW50ZSwgc2UgcnVlZ2EgbG8g
-bm90aWZpcXVlIGFsIHJlbWl0ZW50ZSB5IHByb2NlZGEgYSBzdSBib3JyYWRvLiAKPiA+R3JhY2lh
-cyBwb3Igc3UgY29sYWJvcmFjaW9uLgo+ID5fX19fX19fX19fX19fX19fX19fX19fCj4gPlRoaXMg
-bWVzc2FnZSBpbmNsdWRpbmcgYW55IGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlh
-bCAKPiA+aW5mb3JtYXRpb24sIGFjY29yZGluZyB0byBvdXIgSW5mb3JtYXRpb24gU2VjdXJpdHkg
-TWFuYWdlbWVudCBTeXN0ZW0sCj4gPiBhbmQgaW50ZW5kZWQgc29sZWx5IGZvciBhIHNwZWNpZmlj
-IGluZGl2aWR1YWwgdG8gd2hvbSB0aGV5IGFyZSBhZGRyZXNzZWQuCj4gPiBBbnkgdW5hdXRob3Jp
-c2VkIGNvcHksIGRpc2Nsb3N1cmUgb3IgZGlzdHJpYnV0aW9uIG9mIHRoaXMgbWVzc2FnZQo+ID4g
-aXMgc3RyaWN0bHkgZm9yYmlkZGVuLiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIHRyYW5zbWlz
-c2lvbiBpbiBlcnJvciwKPiA+IHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSBh
-bmQgZGVsZXRlIGl0Lgo+ID5fX19fX19fX19fX19fX19fX19fX19fCj4gPgo+ID4KPiA+X19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiA+QWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKPiA+QWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiA+aHR0cHM6
-Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo+ID4gIAo+
-ID4KCgpfX19fX19fX19fX19fX19fX19fX19fCkVzdGUgbWVuc2FqZSwgeSBlbiBzdSBjYXNvLCBj
-dWFscXVpZXIgZmljaGVybyBhbmV4byBhbCBtaXNtbywKIHB1ZWRlIGNvbnRlbmVyIGluZm9ybWFj
-aW9uIGNsYXNpZmljYWRhIHBvciBzdSBlbWlzb3IgY29tbyBjb25maWRlbmNpYWwKIGVuIGVsIG1h
-cmNvIGRlIHN1IFNpc3RlbWEgZGUgR2VzdGlvbiBkZSBTZWd1cmlkYWQgZGUgbGEgCkluZm9ybWFj
-aW9uIHNpZW5kbyBwYXJhIHVzbyBleGNsdXNpdm8gZGVsIGRlc3RpbmF0YXJpbywgcXVlZGFuZG8g
-CnByb2hpYmlkYSBzdSBkaXZ1bGdhY2lvbiBjb3BpYSBvIGRpc3RyaWJ1Y2lvbiBhIHRlcmNlcm9z
-IHNpbiBsYSAKYXV0b3JpemFjaW9uIGV4cHJlc2EgZGVsIHJlbWl0ZW50ZS4gU2kgVmQuIGhhIHJl
-Y2liaWRvIGVzdGUgbWVuc2FqZSAKIGVycm9uZWFtZW50ZSwgc2UgcnVlZ2EgbG8gbm90aWZpcXVl
-IGFsIHJlbWl0ZW50ZSB5IHByb2NlZGEgYSBzdSBib3JyYWRvLiAKR3JhY2lhcyBwb3Igc3UgY29s
-YWJvcmFjaW9uLgpfX19fX19fX19fX19fX19fX19fX19fClRoaXMgbWVzc2FnZSBpbmNsdWRpbmcg
-YW55IGF0dGFjaG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCAKaW5mb3JtYXRpb24sIGFj
-Y29yZGluZyB0byBvdXIgSW5mb3JtYXRpb24gU2VjdXJpdHkgTWFuYWdlbWVudCBTeXN0ZW0sCiBh
-bmQgaW50ZW5kZWQgc29sZWx5IGZvciBhIHNwZWNpZmljIGluZGl2aWR1YWwgdG8gd2hvbSB0aGV5
-IGFyZSBhZGRyZXNzZWQuCiBBbnkgdW5hdXRob3Jpc2VkIGNvcHksIGRpc2Nsb3N1cmUgb3IgZGlz
-dHJpYnV0aW9uIG9mIHRoaXMgbWVzc2FnZQogaXMgc3RyaWN0bHkgZm9yYmlkZGVuLiBJZiB5b3Ug
-aGF2ZSByZWNlaXZlZCB0aGlzIHRyYW5zbWlzc2lvbiBpbiBlcnJvciwKIHBsZWFzZSBub3RpZnkg
-dGhlIHNlbmRlciBpbW1lZGlhdGVseSBhbmQgZGVsZXRlIGl0LgpfX19fX19fX19fX19fX19fX19f
-X19fCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0
-cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This is a multi-part message in MIME format.
+--===============0676276828==
+Content-Type: multipart/alternative;
+	boundary="------------000104020308050707000705"
+
+This is a multi-part message in MIME format.
+--------------000104020308050707000705
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+AFAIK, there's no way to do this... but i don't know ALSA that much to
+be sure of it...
+but you can easily manage such a soft volume before sending samples to AL=
+SA.
+
+-- Ben
+
+Juan Zapatero wrote:
+
+>But what about doing it through API, so that volume is set in the
+>application, without using any volume plugin...
+>
+>El vie, 26-05-2006 a las 10:25 +0200, Benoit Fouet escribi=C3=B3:
+> =20
+>
+>>you have the softvolume plugin i think.
+>>
+>>-- Ben
+>>
+>>Juan Zapatero wrote:
+>>
+>>   =20
+>>
+>>>Is there any way of modifying stream's volume through libasound API?
+>>>I mean, raising or lowering a streams volume before sending it to
+>>>soundcard with write(...)
+>>>
+>>>
+>>>
+>>>
+>>>______________________
+>>>Este mensaje, y en su caso, cualquier fichero anexo al mismo,
+>>>puede contener informacion clasificada por su emisor como confidencial
+>>>en el marco de su Sistema de Gestion de Seguridad de la=20
+>>>Informacion siendo para uso exclusivo del destinatario, quedando=20
+>>>prohibida su divulgacion copia o distribucion a terceros sin la=20
+>>>autorizacion expresa del remitente. Si Vd. ha recibido este mensaje=20
+>>>erroneamente, se ruega lo notifique al remitente y proceda a su borrad=
+o.=20
+>>>Gracias por su colaboracion.
+>>>______________________
+>>>This message including any attachments may contain confidential=20
+>>>information, according to our Information Security Management System,
+>>>and intended solely for a specific individual to whom they are address=
+ed.
+>>>Any unauthorised copy, disclosure or distribution of this message
+>>>is strictly forbidden. If you have received this transmission in error=
+,
+>>>please notify the sender immediately and delete it.
+>>>______________________
+>>>
+>>>
+>>>_______________________________________________
+>>>Alsa-devel mailing list
+>>>Alsa-devel@lists.sourceforge.net
+>>>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>>>=20
+>>>
+>>>     =20
+>>>
+>
+>
+>______________________
+>Este mensaje, y en su caso, cualquier fichero anexo al mismo,
+> puede contener informacion clasificada por su emisor como confidencial
+> en el marco de su Sistema de Gestion de Seguridad de la=20
+>Informacion siendo para uso exclusivo del destinatario, quedando=20
+>prohibida su divulgacion copia o distribucion a terceros sin la=20
+>autorizacion expresa del remitente. Si Vd. ha recibido este mensaje=20
+> erroneamente, se ruega lo notifique al remitente y proceda a su borrado=
+.=20
+>Gracias por su colaboracion.
+>______________________
+>This message including any attachments may contain confidential=20
+>information, according to our Information Security Management System,
+> and intended solely for a specific individual to whom they are addresse=
+d.
+> Any unauthorised copy, disclosure or distribution of this message
+> is strictly forbidden. If you have received this transmission in error,
+> please notify the sender immediately and delete it.
+>______________________
+>
+>
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> =20
+>
+
+--------------000104020308050707000705
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content=3D"text/html;charset=3DUTF-8" http-equiv=3D"Content-Type"=
+>
+  <title></title>
+</head>
+<body bgcolor=3D"#ffffff" text=3D"#000000">
+AFAIK, there's no way to do this... but i don't know ALSA that much to
+be sure of it...<br>
+but you can easily manage such a soft volume before sending samples to
+ALSA.<br>
+<br>
+-- Ben<br>
+<br>
+Juan Zapatero wrote:
+<blockquote cite=3D"mid1148632283.4785.4.camel@jazc.fedora" type=3D"cite"=
+>
+  <pre wrap=3D"">But what about doing it through API, so that volume is s=
+et in the
+application, without using any volume plugin...
+
+El vie, 26-05-2006 a las 10:25 +0200, Benoit Fouet escribi=C3=B3:
+  </pre>
+  <blockquote type=3D"cite">
+    <pre wrap=3D"">you have the softvolume plugin i think.
+
+-- Ben
+
+Juan Zapatero wrote:
+
+    </pre>
+    <blockquote type=3D"cite">
+      <pre wrap=3D"">Is there any way of modifying stream's volume throug=
+h libasound API?
+I mean, raising or lowering a streams volume before sending it to
+soundcard with write(...)
+
+
+
+
+______________________
+Este mensaje, y en su caso, cualquier fichero anexo al mismo,
+puede contener informacion clasificada por su emisor como confidencial
+en el marco de su Sistema de Gestion de Seguridad de la=20
+Informacion siendo para uso exclusivo del destinatario, quedando=20
+prohibida su divulgacion copia o distribucion a terceros sin la=20
+autorizacion expresa del remitente. Si Vd. ha recibido este mensaje=20
+erroneamente, se ruega lo notifique al remitente y proceda a su borrado.=20
+Gracias por su colaboracion.
+______________________
+This message including any attachments may contain confidential=20
+information, according to our Information Security Management System,
+and intended solely for a specific individual to whom they are addressed.
+Any unauthorised copy, disclosure or distribution of this message
+is strictly forbidden. If you have received this transmission in error,
+please notify the sender immediately and delete it.
+______________________
+
+
+_______________________________________________
+Alsa-devel mailing list
+<a class=3D"moz-txt-link-abbreviated" href=3D"mailto:Alsa-devel@lists.sou=
+rceforge.net">Alsa-devel@lists.sourceforge.net</a>
+<a class=3D"moz-txt-link-freetext" href=3D"https://lists.sourceforge.net/=
+lists/listinfo/alsa-devel">https://lists.sourceforge.net/lists/listinfo/a=
+lsa-devel</a>
+=20
+
+      </pre>
+    </blockquote>
+  </blockquote>
+  <pre wrap=3D""><!---->
+
+______________________
+Este mensaje, y en su caso, cualquier fichero anexo al mismo,
+ puede contener informacion clasificada por su emisor como confidencial
+ en el marco de su Sistema de Gestion de Seguridad de la=20
+Informacion siendo para uso exclusivo del destinatario, quedando=20
+prohibida su divulgacion copia o distribucion a terceros sin la=20
+autorizacion expresa del remitente. Si Vd. ha recibido este mensaje=20
+ erroneamente, se ruega lo notifique al remitente y proceda a su borrado.=
+=20
+Gracias por su colaboracion.
+______________________
+This message including any attachments may contain confidential=20
+information, according to our Information Security Management System,
+ and intended solely for a specific individual to whom they are addressed=
+.
+ Any unauthorised copy, disclosure or distribution of this message
+ is strictly forbidden. If you have received this transmission in error,
+ please notify the sender immediately and delete it.
+______________________
+
+
+_______________________________________________
+Alsa-devel mailing list
+<a class=3D"moz-txt-link-abbreviated" href=3D"mailto:Alsa-devel@lists.sou=
+rceforge.net">Alsa-devel@lists.sourceforge.net</a>
+<a class=3D"moz-txt-link-freetext" href=3D"https://lists.sourceforge.net/=
+lists/listinfo/alsa-devel">https://lists.sourceforge.net/lists/listinfo/a=
+lsa-devel</a>
+  </pre>
+</blockquote>
+</body>
+</html>
+
+--------------000104020308050707000705--
+
+
+--===============0676276828==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0676276828==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0676276828==--
