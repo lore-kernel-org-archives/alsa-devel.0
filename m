@@ -1,15 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002162]: Build ALSA to play file wave
-Date: Fri, 26 May 2006 14:45:24 +0200
-Message-ID: <cb23d1b54050bf93ab34dc5ae79de370@bugtrack.alsa-project.org>
+From: Pierre Ossman <ossman@cendio.se>
+Subject: Re: [PATCH] Allow ioplugins to override snd_pcm_delay()
+Date: Fri, 26 May 2006 14:46:16 +0200
+Message-ID: <4476F898.3030202@cendio.se>
+References: <4476CC83.8080103@cendio.se> <4476F794.7010306@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0775913146=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A79F8155
+Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 414F9155
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 May 2006 14:45:24 +0200 (MEST)
+	Fri, 26 May 2006 14:46:19 +0200 (MEST)
+In-Reply-To: <4476F794.7010306@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,61 +20,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============0775913146==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig2E1B57DCEAA35EE2BC05C48A"
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2162> 
-======================================================================
-Reported By:                pvtuan
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2162
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.11-1.1369_FC4
-Resolution:                 duplicate
-Duplicate:                  2161
-Fixed in Version:           
-======================================================================
-Date Submitted:             05-26-2006 12:12 CEST
-Last Modified:              05-26-2006 14:45 CEST
-======================================================================
-Summary:                    Build ALSA to play file wave
-Description: 
-I write a example to open sound card and playback a wave file. In my file I
-want to know sizeof type "snd_pcm_hw_params_t". So I use function
-"sizeof(snd_pcm_hw_params_t)" for my purpose. When I build my example,
-there is an error:invalid application of `sizeof' to incomplete type. I
-try to find definition of this type but only se "typedef
-_snd_pcm_hw_params snd_pcm_hw_params_t" and no more.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig2E1B57DCEAA35EE2BC05C48A
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Can you help me with this problem?
+James Courtier-Dutton wrote:
+> Pierre Ossman wrote:
+>> Some io plug-ins might want to adjust the reported delay value and not=
 
-Thank you for your help.
-Thanks in advance
-PVTuan
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0002161 Build ALSA to play file wave
-======================================================================
+>> strictly follow the current buffer usage (that's why we have two calls=
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-26-06 12:12 pvtuan         New Issue                                    
-05-26-06 12:12 pvtuan         Kernel Version            => 2.6.11-1.1369_FC4
-05-26-06 14:45 tiwai          Relationship added       duplicate of 0002161
-05-26-06 14:45 tiwai          Duplicate ID             0 => 2161           
-05-26-06 14:45 tiwai          Status                   new => resolved     
-05-26-06 14:45 tiwai          Resolution               open => duplicate   
-05-26-06 14:45 tiwai          Assigned To               => tiwai           
-======================================================================
+>> after all).
+>>
+>> Allow them to specify a delay() callback and use the previous behaviou=
+r
+>> if they don't.
+>>
+>> Signed-off-by: Pierre Ossman <ossman@cendio.se>
+>>  =20
+> Can you give an example of a plugin that would want to adjust the delay=
+
+> value?
+>=20
+
+The polypaudio backend, which is why I submitted this patch.
+
+The recently released padsp (esddsp-equivalent) has much better latency
+reporting than the ALSA to polypaudio plug-in. And we just can't have
+OSS applications outperforming ALSA ones. ;)
+
+--=20
+Pierre Ossman                Telephone: +46-13-21 46 00
+Cendio AB                    Web: http://www.cendio.com
+
+
+--------------enig2E1B57DCEAA35EE2BC05C48A
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.3 (GNU/Linux)
+Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
+
+iD8DBQFEdviZ7b8eESbyJLgRAp3wAJ47jLrGWwp2Qo9DzZYzQ5CktPteVgCfaJI1
+9SMWqldlsLMEqawXdnkm6dc=
+=Us3+
+-----END PGP SIGNATURE-----
+
+--------------enig2E1B57DCEAA35EE2BC05C48A--
+
+
+--===============0775913146==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0775913146==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0775913146==--
