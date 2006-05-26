@@ -1,16 +1,19 @@
-From: Pierre Ossman <ossman@cendio.se>
-Subject: Re: [PATCH] Allow ioplugins to override snd_pcm_delay()
-Date: Fri, 26 May 2006 14:35:20 +0200
-Message-ID: <4476F608.2040400@cendio.se>
-References: <4476CC83.8080103@cendio.se> <s5hk689q8h5.wl%tiwai@suse.de>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: snd-aoa review?
+Date: Fri, 26 May 2006 14:41:23 +0200
+Message-ID: <1148647283.16989.46.camel@johannes.berg>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2026786175=="
+Content-Type: multipart/mixed; boundary="===============0987851476=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65AFD177
+Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9D43177
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 May 2006 14:35:21 +0200 (MEST)
-In-Reply-To: <s5hk689q8h5.wl%tiwai@suse.de>
+	Fri, 26 May 2006 14:41:38 +0200 (MEST)
+Received: from [84.135.221.87] (helo=johannes.berg)
+	by sipsolutions.net with esmtpsa (TLS-1.0:RSA_ARCFOUR_MD5:16)
+	(Exim 4.61) (envelope-from <johannes@sipsolutions.net>)
+	id 1FjbdC-0000gA-UV
+	for alsa-devel@alsa-project.org; Fri, 26 May 2006 13:41:31 +0100
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,62 +23,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============2026786175==
+
+--===============0987851476==
 Content-Type: multipart/signed; micalg=pgp-sha1;
 	protocol="application/pgp-signature";
-	boundary="------------enig3E93A6C49F018397923F1F1B"
+	boundary="=-nKqlZCSiD+786RGheL3u"
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig3E93A6C49F018397923F1F1B
-Content-Type: text/plain; charset=ISO-8859-1
+
+--=-nKqlZCSiD+786RGheL3u
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-Takashi Iwai wrote:
->=20
-> First, we need the increase of version number
-> (SND_PCM_IOPLUG_VERSION) if we modify API.  If the version of the
-> object is older, either reject or allow it as compatible.
->=20
+hey,
 
-The headers do not detail how versions are managed here. Which component
-of the version number should I increase?
+I'm trying to make snd-aoa handle all of the layout-id based Apple sound
+stuff that snd-powermac can handle so we can remove that part from
+snd-powermac and get snd-aoa in. This still requires some changes like
+headphone detection, and some more codec support, but most things are
+there now.
 
---=20
-Rgds
-Pierre Ossman                Telephone: +46-13-21 46 00
-Cendio AB                    Web: http://www.cendio.com
+The code is described at
+http://johannes.sipsolutions.net/Projects/snd-aoa and the git tree is
+suitable for including into sound/ in the linux sources by just copying
+the directory into there and doing the trivial Makefile/Kconfig hookups
+(Makefile just add the aoa/ subdir and Kconfig just source
+sound/aoa/Kconfig). doc/ should probably removed then.
 
+I'd like to get this reviewed a bit by you, what should I do for that?
+Should I post a full patch that adds all the files? Or is it ok for you
+to pull the tree with git?
 
---------------enig3E93A6C49F018397923F1F1B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+johannes
+
+--=-nKqlZCSiD+786RGheL3u
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
 
-iD8DBQFEdvYI7b8eESbyJLgRAmeZAJ4gYFA63gd1GO3vstMRAbKCgexmJwCfYt+T
-UJv4shxzKs1XrFvPcSKID6M=
-=rq32
+iQIVAwUARHb3cKVg1VMiehFYAQL63w/+M+HnHwSW81EyZV4RnKmxkxkCQh5UzjzN
+cYWa4GDc10A4lNKuL3ebfw8cg559x2v8XqbYNeTmaD+LFeerNcwXmVL7KeRk2/HC
+J+NZT8kFXgyfzaEU5CsLtxArzFUELd7DFtiK4luBPQK8tx08tVUJBSzTTJoALLWl
+b7FUyxUPKtFb+Qq03+pN1AY3Cm17b0op6zMr/fuJrkSwYAje3pWiD8qRusaakoiQ
+S3nFICTS5WXUZ7h1MtEoRkTQXLq3oyLqVvorToBltQVf6Pbaqcu8Tiha9SIOemoi
+jfkG+SOnXXkYKyfwRCJttHkCFeKoIwvM1nJ+9oX7u1m0aavQ+86XL6awf6j7QMQh
+s8Plb3QU/Mx1NQ7FaTVsrUFgiDGtiuMc7AFCJCI4cuYNrjeI0afg+Ogtw4jVMe2D
+WxYyGFTz09Dq31XB/7RM3e3QkEnUE1gziL3oQ//nzgautQqBiWyIQBRusVR1oRlY
+riJZc+lsCb8hdjZPFzakpjiEdjaMhtm1Lii+sTUMcxPg4XoLDPf3Lg0T+bzC1MiZ
+1yVy9EmbhAfRYLGy95Z5PtPVbgV11boDW4rsb1Dn93EgGtZ8gtB9IQFGeUqB0zEX
+58+fe+Ny0J9/yqZeR8YF6YqMhRIfR5p4Pv4FxpC+YsR3mZwvbNrEcIJPsSs4rx5Q
+X1qPr16Upno=
+=80Po
 -----END PGP SIGNATURE-----
 
---------------enig3E93A6C49F018397923F1F1B--
+--=-nKqlZCSiD+786RGheL3u--
 
 
---===============2026786175==
+
+--===============0987851476==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2026786175==
+--===============0987851476==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -86,4 +101,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============2026786175==--
+--===============0987851476==--
