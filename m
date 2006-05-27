@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001226]: Ego Sys NEON
-Date: Sat, 27 May 2006 03:06:32 +0200
-Message-ID: <ed983dcf759622c1da4320838c402d2b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002165]: Fix mixer map for Hercules
+	Gamesurround Muse LT usb soundcard.
+Date: Sat, 27 May 2006 03:29:51 +0200
+Message-ID: <d5ba6ead7dcd579789bf60461341ef58@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 325F817C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1283153
 	for <alsa-devel@alsa-project.org>;
-	Sat, 27 May 2006 03:06:32 +0200 (MEST)
+	Sat, 27 May 2006 03:29:51 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,68 +24,114 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1226> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2165> 
 ======================================================================
-Reported By:                nictuku
+Reported By:                jereynaud
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1226
+Issue ID:                   2165
 Category:                   USB - usb-audio
-Reproducibility:            N/A
-Severity:                   feature
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware Current
-Kernel Version:             2.4
+Status:                     closed
+Distribution:               
+Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             07-01-2005 21:21 CEST
-Last Modified:              05-27-2006 03:06 CEST
+Date Submitted:             05-26-2006 23:37 CEST
+Last Modified:              05-27-2006 03:29 CEST
 ======================================================================
-Summary:                    Ego Sys NEON
+Summary:                    Fix mixer map for Hercules Gamesurround Muse LT usb
+soundcard.
 Description: 
-hi, i have a ESI NeON (
-http://www.esi-pro.com/viewProduct.php?pid=42&page=1 ) i've tryed to make
-it work with alsa with no success, but strangely on the oss the 24-bit
-audio interface works. I just send this bug report to know if there's a
-way to make it work or if it's planned to put support on this hardware. if
-you need to test it feel free to contactme (nictuku@gmail.com)
-thanx
+Add correct support for this sound card :
+add a new map in usbmixer_maps.c
+
+Signed-off-by: Jean-Emmanuel REYNAUD <je.reynaud@laposte.net>
+
+
+--- linux-2.6.16.18/sound/usb/usbmixer_maps.c   2006-05-22
+20:04:35.000000000 +0200
++++ linux-2.6.16.18.new/sound/usb/usbmixer_maps.c       2006-05-26
+22:35:03.000000000 +0200
+@@ -219,6 +219,43 @@
+ };
+
+ /*
++ * Hercules Gamesurround USB.
++ * USB_IN[1] --------------+-+->MU[15]-->FU[9]--> Spk-OUT[6]
++ *                         | |
++ * Mic-IN[2] --+-->FU[10]------+----->SU[8]-----> USB_OUT[7]
++ *             |           | | |
++ *             +-->FU[13]--+ | |
++ *                           | |
++ * Lin-IN[3] --+-->FU[11]------+
++ *             |             |
++ *             +-->FU[14]----+
++ */
++static struct usbmix_name_map hercules_gamesurround_muse_pocket_lt_map[]
+= {
++       /* 1: IT pcm */
++       /* 2: IT mic */
++       /* 3: IT line */
++       /* 6: OT speaker */
++       /* 7: OT pcm capture */
++       { 8, "Capture Source" }, /* SU, Capture Source */
++       { 9, "Master Playback" }, /* FU, default Speaker 1 */
++       { 10, "Mic Capture" }, /* FU, default Auto Gain Input */
++       { 11, "Line Capture" }, /* FU, default PCM Capture */
++       { 13, "Mic Playback" }, /* FU, default Mic Playback */
++       { 14, "Line Playback" }, /* FU, default Speaker */
++       /* 15: MU */
++       { 0 } /* terminator */
++};
++static struct usbmix_selector_map
+hercules_gamesurround_muse_pocket_lt_selectors_map[] = {
++       {
++               .id = 8, /* Capture Source */
++               .count = 2,
++               .names = (const char*[]) {"Mic", "Line"}
++       },
++       { 0 } /* terminator */
++};
++
++
++/*
+  * Control map entries
+  */
+
+@@ -256,6 +293,13 @@
+                .id = USB_ID(0x0c45, 0x1158),
+                .map = justlink_map,
+        },
++       {
++               /* Hercules Gamesurround Muse Pocket LT*/
++               .id = USB_ID(0x06f8, 0xc000),
++               .map = hercules_gamesurround_muse_pocket_lt_map,
++               .selector_map =
+hercules_gamesurround_muse_pocket_lt_selectors_map,
++               .ignore_ctl_error = 1,
++       },
+        { 0 } /* terminator */
+ };
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- nictuku - 08-04-05 18:09 
+ rlrevell - 05-27-06 03:29 
 ----------------------------------------------------------------------
-it worked perfectly. you could add it to the list of supported harware.
-Both sound and midi worked just fine :). thanks!!
-
-----------------------------------------------------------------------
- rzr - 05-27-06 03:06 
-----------------------------------------------------------------------
-Actually It is not fully supported because there are at least 2 capture
-audio chanels and alsamixer does show only one.
-
-I attached my current /proc/asound/NeON if it helps...
-I'll also drop notes at http://rzr.online.fr/q/MIDI
-
-Find me online for more
+Duplicate of 2166
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-01-05 21:21 nictuku        New Issue                                    
-07-01-05 21:21 nictuku        Distribution              => Slackware Current
-07-01-05 21:21 nictuku        Kernel Version            => 2.4             
-07-04-05 09:23 Clemens LadischNote Added: 0005382                          
-07-06-05 23:04 nictuku        Issue Monitored: nictuku                     
-07-06-05 23:06 nictuku        Note Added: 0005395                          
-07-06-05 23:09 nictuku        Issue End Monitor: nictuku                    
-07-23-05 00:32 nictuku        Note Added: 0005551                          
-07-25-05 11:05 Clemens LadischNote Added: 0005562                          
-08-04-05 18:09 nictuku        Note Added: 0005651                          
-05-27-06 03:04 rzr            File Added: neon-usb_0a92_00c1.zip                
-   
-05-27-06 03:06 rzr            Note Added: 0009981                          
+05-26-06 23:37 jereynaud      New Issue                                    
+05-27-06 03:29 rlrevell       Status                   assigned => closed  
+05-27-06 03:29 rlrevell       Note Added: 0009982                          
 ======================================================================
