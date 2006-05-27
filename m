@@ -1,14 +1,16 @@
-From: Pierre Ossman <ossman@cendio.se>
-Subject: [PATCH] Allow ioplugins to override snd_pcm_delay()
-Date: Fri, 26 May 2006 11:38:11 +0200
-Message-ID: <4476CC83.8080103@cendio.se>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001496]: JAck won't run on the CMedia
+	8738
+Date: Sat, 27 May 2006 15:06:21 +0200
+Message-ID: <c6519eb8b3620122d8cc850bebf03d7d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0728407240=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mail.cendio.se (mail.cendio.se [193.12.253.69])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 183B5156
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAFE518C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 26 May 2006 11:38:15 +0200 (MEST)
+	Sat, 27 May 2006 15:06:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,125 +20,309 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============0728407240==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enigEFE241F739EC36FD8FF8F778"
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigEFE241F739EC36FD8FF8F778
-Content-Type: multipart/mixed; boundary="------------020000050803020003010708"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1496> 
+======================================================================
+Reported By:                Mark Knecht
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1496
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.14-rc5-rt5 && 2.6.12-gentoo-r10
+======================================================================
+Date Submitted:             10-24-2005 18:30 CEST
+Last Modified:              05-27-2006 15:06 CEST
+======================================================================
+Summary:                    JAck won't run on the CMedia 8738
+Description: 
+I have a machine with 3 sound devices in it:
 
-This is a multi-part message in MIME format.
---------------020000050803020003010708
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+mark@gigastudio ~ $ cat /proc/asound/cards
+0 [M2496          ]: ICE1712 - M Audio Audiophile 24/96
+                    M Audio Audiophile 24/96 at 0xa400, irq 10
+1 [R15            ]: RME9636 - RME Digi9636 (Rev 1.5)
+                    RME Digi9636 (Rev 1.5) at 0xe2000000, irq 9
+2 [CMI8738MC6     ]: CMI8738-MC6 - C-Media PCI CMI8738-MC6
+                    C-Media PCI CMI8738-MC6 (model 55) at 0xd800, irq 11
+mark@gigastudio ~ $
 
-Some io plug-ins might want to adjust the reported delay value and not
-strictly follow the current buffer usage (that's why we have two calls
-after all).
+  Jack is installed and runs fine on the AP2496 and the Hammerfall.
+Jack does not run correctly on the 8738. I first saw this on
+2.6.12-gentoo-r10 so I updated to 2.6.14-rc5-rt5 and see the same
+problem. The problem is independent of JAck timings. It's as bad with
+1024/2 as it is with 128/2.
 
-Allow them to specify a delay() callback and use the previous behaviour
-if they don't.
+1) If I use QJackCtl to start Jack it fails immediately:
 
-Signed-off-by: Pierre Ossman <ossman@cendio.se>
+09:07:02.736 JACK is starting...
+09:07:02.737 /usr/bin/jackd -R -P80 -dalsa -dhw:2 -r44100 -p128 -n2
+09:07:02.752 JACK was started with PID=6191 (0x182f).
+jackd 0.100.5
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK compiled with System V SHM support.
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... hw:2|hw:2|128|2|44100|0|0|nomon|swmeter|-|32bit
+control device hw:2
+configuring for 44100Hz, period = 128 frames, buffer = 2 periods
+Note: audio device hw:2 doesn't support a 32bit sample format so JACK
+will try a 24bit format instead
+Note: audio device hw:2 doesn't support a 24bit sample format so JACK
+will try a 16bit format instead
+nperiods = 2 for capture
+Note: audio device hw:2 doesn't support a 32bit sample format so JACK
+will try a 24bit format instead
+Note: audio device hw:2 doesn't support a 24bit sample format so JACK
+will try a 16bit format instead
+nperiods = 2 for playback
+09:07:04.844 Server configuration saved to "/home/mark/.jackdrc".
+09:07:04.845 Statistics reset.
+09:07:04.965 Client activated.
+09:07:04.966 Audio connection change.
+09:07:04.973 Audio connection graph change.
+09:07:04.974 XRUN callback (1).
+09:07:06.977 XRUN callback (342 skipped).
+jackd watchdog: timeout - killing jackd
+zombified - calling shutdown handler
+09:07:07.952 Shutdown notification.
+09:07:07.953 Client deactivated.
+09:07:07.954 JACK was stopped successfully.
+cannot send request type 7 to server
+cannot read result for request type 7 from server (Broken pipe)
+cannot send request type 7 to server
+cannot read result for request type 7 from server (Broken pipe)
+
+2) If I change the settings to support capture only it seems to work.
+I have not tested that I can actually receive audio as it isn;t
+important in my application:
+
+09:07:53.784 JACK is starting...
+09:07:53.786 /usr/bin/jackd -R -P80 -dalsa -dhw:2 -r44100 -p128 -n2 -C
+09:07:53.793 JACK was started with PID=6198 (0x1836).
+jackd 0.100.5
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK compiled with System V SHM support.
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... -|hw:2|128|2|44100|0|0|nomon|swmeter|-|32bit
+control device hw:2
+configuring for 44100Hz, period = 128 frames, buffer = 2 periods
+Note: audio device hw:2 doesn't support a 32bit sample format so JACK
+will try a 24bit format instead
+Note: audio device hw:2 doesn't support a 24bit sample format so JACK
+will try a 16bit format instead
+nperiods = 2 for capture
+09:07:55.902 Server configuration saved to "/home/mark/.jackdrc".
+09:07:55.904 Statistics reset.
+09:07:55.909 Client activated.
+09:07:55.911 Audio connection change.
+09:07:55.921 Audio connection graph change.
+
+3) If I set it for playback only it fails with lots of xruns:
+
+09:08:36.228 JACK is starting...
+09:08:36.230 /usr/bin/jackd -R -P80 -dalsa -dhw:2 -r44100 -p128 -n2 -P
+09:08:36.248 JACK was started with PID=6205 (0x183d).
+jackd 0.100.5
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK compiled with System V SHM support.
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... hw:2|-|128|2|44100|0|0|nomon|swmeter|-|32bit
+control device hw:2
+configuring for 44100Hz, period = 128 frames, buffer = 2 periods
+Note: audio device hw:2 doesn't support a 32bit sample format so JACK
+will try a 24bit format instead
+Note: audio device hw:2 doesn't support a 24bit sample format so JACK
+will try a 16bit format instead
+nperiods = 2 for playback
+09:08:38.388 Server configuration saved to "/home/mark/.jackdrc".
+09:08:38.390 Statistics reset.
+09:08:38.395 Client activated.
+09:08:38.397 Audio connection change.
+09:08:38.404 Audio connection graph change.
+09:08:41.458 XRUN callback (1).
+delay of 5809.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5697.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5675.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5675.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+
+<SNIP>
+
+delay of 5660.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5665.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+09:08:42.322 Client deactivated.
+09:08:42.323 JACK is stopping...
+delay of 5667.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5641.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5734.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5743.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5758.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5683.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5750.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5739.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5769.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+jack main caught signal 15
+delay of 5656.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+no message buffer overruns
+09:08:42.392 JACK was stopped successfully.
+
+The hardware is pretty generic:
+
+gigastudio ~ # lspci
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
+KT266/A/333]
+0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
+KT266/A/333 AGP]
+0000:00:05.0 Multimedia audio controller: C-Media Electronics Inc
+CM8738 (rev 10)
+0000:00:06.0 Mass storage controller: Promise Technology, Inc.
+PDC20265 (FastTrak100 Lite/Ultra100) (rev 02)
+0000:00:0c.0 FireWire (IEEE 1394): Texas Instruments TSB12LV23
+IEEE-1394 Controller
+0000:00:0d.0 Ethernet controller: Intel Corporation 82557/8/9
+[Ethernet Pro 100] (rev 05)
+0000:00:0f.0 Multimedia audio controller: Xilinx Corporation RME
+Digi9652 (Hammerfall) (rev 08)
+0000:00:10.0 Multimedia audio controller: VIA Technologies Inc.
+ICE1712 [Envy24] PCI Multi-Channel I/O Controller (rev 02)
+0000:00:11.0 ISA bridge: VIA Technologies, Inc. VT8233 PCI to ISA Bridge
+0000:00:11.1 IDE interface: VIA Technologies, Inc.
+VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06)
+0000:00:11.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB
+1.1 Controller (rev 1b)
+0000:00:11.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB
+1.1 Controller (rev 1b)
+0000:00:11.4 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB
+1.1 Controller (rev 1b)
+0000:01:00.0 VGA compatible controller: nVidia Corporation NV18
+[GeForce4 MX 4000 AGP 8x] (rev c1)
+gigastudio ~ #
 
 
---------------020000050803020003010708
-Content-Type: text/x-patch;
- name="ioplug-delay.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline;
- filename="ioplug-delay.patch"
+It runs fine with the Hammerfall:
 
-? ioplug-delay.patch
-Index: include/pcm_ioplug.h
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/alsa/alsa-lib/include/pcm_ioplug.h,v
-retrieving revision 1.5
-diff -u -r1.5 pcm_ioplug.h
---- include/pcm_ioplug.h	24 May 2005 09:42:01 -0000	1.5
-+++ include/pcm_ioplug.h	25 May 2006 19:05:23 -0000
-@@ -130,6 +130,10 @@
- 	 */
- 	snd_pcm_sframes_t (*pointer)(snd_pcm_ioplug_t *io);
- 	/**
-+	 * get the delay for the running PCM; optional
-+	 */
-+	int (*delay)(snd_pcm_ioplug_t *io, snd_pcm_sframes_t *delayp);
-+	/**
- 	 * transfer the data; optional
- 	 */
- 	snd_pcm_sframes_t (*transfer)(snd_pcm_ioplug_t *io,
-Index: src/pcm/pcm_ioplug.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_ioplug.c,v
-retrieving revision 1.10
-diff -u -r1.10 pcm_ioplug.c
---- src/pcm/pcm_ioplug.c	28 Jun 2005 10:24:45 -0000	1.10
-+++ src/pcm/pcm_ioplug.c	25 May 2006 19:05:24 -0000
-@@ -106,8 +106,14 @@
-=20
- static int snd_pcm_ioplug_delay(snd_pcm_t *pcm, snd_pcm_sframes_t *delay=
-p)
- {
--	snd_pcm_ioplug_hw_ptr_update(pcm);
--	*delayp =3D snd_pcm_mmap_hw_avail(pcm);=20
-+	ioplug_priv_t *io =3D pcm->private_data;
-+
-+	if (io->data->callback->delay)
-+		return io->data->callback->delay(io->data, delayp);
-+	else {
-+		snd_pcm_ioplug_hw_ptr_update(pcm);
-+		*delayp =3D snd_pcm_mmap_hw_avail(pcm);
-+	}
- 	return 0;
- }
-=20
+09:13:57.183 JACK is starting...
+09:13:57.185 /usr/bin/jackd -R -P80 -dalsa -dhw:1 -r44100 -p128 -n2
+09:13:57.218 JACK was started with PID=6240 (0x1860).
+jackd 0.100.5
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK compiled with System V SHM support.
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... hw:1|hw:1|128|2|44100|0|0|nomon|swmeter|-|32bit
+control device hw:1
+configuring for 44100Hz, period = 128 frames, buffer = 2 periods
+nperiods = 2 for capture
+nperiods = 2 for playback
+09:13:59.375 Server configuration saved to "/home/mark/.jackdrc".
+09:13:59.377 Statistics reset.
+09:13:59.500 Client activated.
+09:13:59.503 Audio connection change.
+09:13:59.510 Audio connection graph change.
 
---------------020000050803020003010708--
+It runs fine with the AP2496:
 
---------------enigEFE241F739EC36FD8FF8F778
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+09:14:41.826 JACK is starting...
+09:14:41.828 /usr/bin/jackd -R -dalsa -dhw:0 -r44100 -p128 -n2
+09:14:41.845 JACK was started with PID=6247 (0x1867).
+jackd 0.100.5
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK compiled with System V SHM support.
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... hw:0|hw:0|128|2|44100|0|0|nomon|swmeter|-|32bit
+control device hw:0
+configuring for 44100Hz, period = 128 frames, buffer = 2 periods
+nperiods = 2 for capture
+nperiods = 2 for playback
+09:14:43.933 Server configuration saved to "/home/mark/.jackdrc".
+09:14:43.935 Statistics reset.
+09:14:43.941 Client activated.
+09:14:43.943 Audio connection change.
+09:14:43.951 Audio connection graph change.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-Comment: Using GnuPG with Fedora - http://enigmail.mozdev.org
-
-iD8DBQFEdsyF7b8eESbyJLgRAlVCAJ9UVnTAjMM/tLWrB66Lf7xsLLhi0QCgolrD
-zYPXgiOeGi2gQofYSLwquOM=
-=dKyq
------END PGP SIGNATURE-----
-
---------------enigEFE241F739EC36FD8FF8F778--
+gigastudio ~ # cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
+08:13:09 2005 UTC).
+gigastudio ~ #
 
 
---===============0728407240==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
+======================================================================
 
---===============0728407240==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+----------------------------------------------------------------------
+ Mark Knecht - 10-26-05 19:02 
+----------------------------------------------------------------------
+Because the question of chip revisions came up on the Alsa-dev list I'm
+adding this info:
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
+0000:00:05.0 Multimedia audio controller: C-Media Electronics Inc CM8738
+(rev 10)
+        Subsystem: ASUSTeK Computer Inc. CMI8738 6ch-MX
+        Flags: bus master, stepping, medium devsel, latency 32, IRQ 11
+        I/O ports at d800 [size=256]
+        Capabilities: <available only to root>
 
---===============0728407240==--
+----------------------------------------------------------------------
+ Raymond - 05-27-06 15:06 
+----------------------------------------------------------------------
+You need option -S if your sound card does not support 32bits
+
+    -S, --shorts    Try 16-bit samples before 32-bit (default: false)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-24-05 18:30 Mark Knecht    New Issue                                    
+10-24-05 18:30 Mark Knecht    Distribution              => Gentoo          
+10-24-05 18:30 Mark Knecht    Kernel Version            => 2.6.14-rc5-rt5 &&
+2.6.12-gentoo-r10
+10-24-05 23:57 Mark Knecht    Note Added: 0006525                          
+10-25-05 15:46 Mark Knecht    Note Added: 0006544                          
+10-26-05 19:01 Mark Knecht    Note Added: 0006561                          
+10-26-05 19:02 Mark Knecht    Note Added: 0006562                          
+05-27-06 15:06 Raymond        Note Added: 0009983                          
+======================================================================
