@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001627]: snd-hda-intel no suitable
 	model
-Date: Sun, 28 May 2006 06:14:22 +0200
-Message-ID: <3819a8d5c0d8db2f49a1595589068077@bugtrack.alsa-project.org>
+Date: Sun, 28 May 2006 06:20:29 +0200
+Message-ID: <58c6e1008f3bf8b148e2af2279e194de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6E92A171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B127B171
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 06:14:22 +0200 (MEST)
+	Sun, 28 May 2006 06:20:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1627> 
 ======================================================================
@@ -37,12 +37,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               
 Kernel Version:             
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             12-07-2005 21:00 CET
-Last Modified:              05-28-2006 06:14 CEST
+Last Modified:              05-28-2006 06:20 CEST
 ======================================================================
 Summary:                    snd-hda-intel no suitable model
 Description: 
@@ -75,42 +77,18 @@ both and a master volume
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-23-06 21:22 
-----------------------------------------------------------------------
-The original bug report is too vague.  Please comment individually on these
-problems:
-
-- volume control wheel does not work at all
-
-  It's not implemented yet.
-
-- Headset jack disables internal speakers
-
-  This is usually the behavior users want.
-
-- Headset and internal Speakers have a different output control :( (or no
-master volume)
-
-  As tiwai said, the hardware does not have a master volume
-
-- Internal Mic gets disabled when external mic is plugged in
-
-  This also seems correct to me.
-
-- Mic works with a lot of try and error
-
-  Please explain
-
-"the best config would be:
-- correct recording device and volume selection"
-
-This is too vague, what do you mean by "correct"?
-
-----------------------------------------------------------------------
  der_sprengmeister - 05-28-06 06:14 
 ----------------------------------------------------------------------
 To rlrevell: Why should he use the fujitsu-model? It's only exist in
 ALC260/262. But the FujitsiSiemens AmiloM1439G has an ALC880.
+
+----------------------------------------------------------------------
+ rlrevell - 05-28-06 06:20 
+----------------------------------------------------------------------
+Sorry, my advice was incorrect.
+
+Anyway, closing, as there does not seem to be a real bug and no response
+in 4 months.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -130,4 +108,6 @@ Date Modified  Username       Field                    Change
 01-23-06 21:05 Alexander LavrinenkoNote Added: 0007763                          
 01-23-06 21:22 rlrevell       Note Added: 0007764                          
 05-28-06 06:14 der_sprengmeisterNote Added: 0009996                          
+05-28-06 06:20 rlrevell       Status                   assigned => closed  
+05-28-06 06:20 rlrevell       Note Added: 0009997                          
 ======================================================================
