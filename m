@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002147]: lack of full duplex operation
 	for ati-ixp chipset.
-Date: Sun, 28 May 2006 05:34:43 +0200
-Message-ID: <8b3e8ffaca443e52daddefb18e9f087b@bugtrack.alsa-project.org>
+Date: Sun, 28 May 2006 05:37:53 +0200
+Message-ID: <a264cfd0a5d95786d6d324430c4ef14e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 62DD5171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4B04615D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 05:34:43 +0200 (MEST)
+	Sun, 28 May 2006 05:37:54 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-28-2006 05:34 CEST
+Last Modified:              05-28-2006 05:37 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -65,15 +65,6 @@ teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- Gene Heskett - 05-28-06 05:27 
-----------------------------------------------------------------------
-I've done that, now how do I restart the sound server so it knows of the
-change?
-
--- 
-Cheers, Gene
-
-----------------------------------------------------------------------
  rlrevell - 05-28-06 05:34 
 ----------------------------------------------------------------------
 There is no need to, .asoundrc changes are effective immediately.  ALSA
@@ -81,6 +72,20 @@ does not use a sound server.
 
 It probably won't help with the OSS apps but it will keep one ALSA app
 from blocking another.  I believe ekiga has ALSA support.
+
+----------------------------------------------------------------------
+ Gene Heskett - 05-28-06 05:37 
+----------------------------------------------------------------------
+I've also followed that link in 0009988, and "mv /etc/alsa/pcm/front.conf
+/etc/alsa/pcm/old.front.conf"
+
+then added the contents of that link to a new front.conf file.
+
+Was that the right thing to do?  Some docs on this stuff sure would be
+nice...
+
+-- 
+Cheers, Gene
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -104,4 +109,5 @@ Date Modified  Username       Field                    Change
 05-28-06 05:10 rlrevell       Note Added: 0009991                          
 05-28-06 05:27 Gene Heskett   Note Added: 0009992                          
 05-28-06 05:34 rlrevell       Note Added: 0009993                          
+05-28-06 05:37 Gene Heskett   Note Added: 0009994                          
 ======================================================================
