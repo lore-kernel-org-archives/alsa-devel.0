@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002147]: lack of full duplex operation
 	for ati-ixp chipset.
-Date: Sun, 28 May 2006 03:08:50 +0200
-Message-ID: <a8a6593a5b804a041bf8fd15b7e1be62@bugtrack.alsa-project.org>
+Date: Sun, 28 May 2006 03:20:06 +0200
+Message-ID: <52fd8a2e42a24d5cee3d01d01e2daa05@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1EDC171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3B43171
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 03:08:52 +0200 (MEST)
+	Sun, 28 May 2006 03:20:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-28-2006 03:08 CEST
+Last Modified:              05-28-2006 03:20 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -63,29 +63,6 @@ track are output to the phones or speakers.
 Likewise, ekiga suffers from this same effect, I'm told I sound great on
 teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 05-23-06 19:14 
-----------------------------------------------------------------------
-Grr, you make the things too complex.  Let's sort out the thing straight.
-
-The duplex problem and the inproper recording are different things. 
-First, check whether both non-duplex playback and recording work
-properly.
-
-For checking playback, you can use speaker-test program in alsa-utils
-package, too.  Run "speaker-test -c2 -tw", for example.
-
-As I mentioned, you can test recording of the played stream by setting
-"Capture Source" to "Mix".  It needs no extra hardware setup, so no hard
-work after running a full marathon.
-
-If the full-duplex works by this way, skype and other programs should work
-as well -- as long as you set up the mixer correctly.
-
-Anyway, don't use audacity or whatever apps might be using OSS emulation
-for tests.  They can't be used as references.  Use basic tools included in
-ALSA packages for primary tests.
 
 ----------------------------------------------------------------------
  Gene Heskett - 05-28-06 03:08 
@@ -160,6 +137,24 @@ thats alsa compliant?
 -- 
 Cheers, Gene
 
+----------------------------------------------------------------------
+ Gene Heskett - 05-28-06 03:20 
+----------------------------------------------------------------------
+I'm sorry, that added note got badly hacked and parts of it will not make a
+lot of sense.  This lappy has a touch pad that I cannot seem to disable,
+and if a thumb gets too close to it (it doesn't have to actually touch the
+sonofabitch), it will jump to someplace else on the screen and highlight a
+few lines of text, which will of course be deleted on the next keystroke.
+
+Its such a pain in the ass that I'm tempted to go get a usb keyboard and
+see if I can make it work because this is frustrating in the maximus.
+
+That however has little or nothing to do with my audio problem, and thats
+a lack of full duplex operation IN THE REAL WORLD...
+
+-- 
+Cheers, Gene
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -172,4 +167,5 @@ Date Modified  Username       Field                    Change
 05-23-06 18:07 Gene Heskett   Note Added: 0009943                          
 05-23-06 19:14 tiwai          Note Added: 0009947                          
 05-28-06 03:08 Gene Heskett   Note Added: 0009985                          
+05-28-06 03:20 Gene Heskett   Note Added: 0009986                          
 ======================================================================
