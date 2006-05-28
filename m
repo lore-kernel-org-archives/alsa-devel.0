@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002147]: lack of full duplex operation
 	for ati-ixp chipset.
-Date: Sun, 28 May 2006 03:22:18 +0200
-Message-ID: <982c14448d1da251f25d87e61d14d001@bugtrack.alsa-project.org>
+Date: Sun, 28 May 2006 03:59:00 +0200
+Message-ID: <7823229c2a7c8602acfa89dae75025a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91C80171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12131181
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 03:22:18 +0200 (MEST)
+	Sun, 28 May 2006 03:59:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-28-2006 03:22 CEST
+Last Modified:              05-28-2006 03:58 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -65,24 +65,6 @@ teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- Gene Heskett - 05-28-06 03:20 
-----------------------------------------------------------------------
-I'm sorry, that added note got badly hacked and parts of it will not make a
-lot of sense.  This lappy has a touch pad that I cannot seem to disable,
-and if a thumb gets too close to it (it doesn't have to actually touch the
-sonofabitch), it will jump to someplace else on the screen and highlight a
-few lines of text, which will of course be deleted on the next keystroke.
-
-Its such a pain in the ass that I'm tempted to go get a usb keyboard and
-see if I can make it work because this is frustrating in the maximus.
-
-That however has little or nothing to do with my audio problem, and thats
-a lack of full duplex operation IN THE REAL WORLD...
-
--- 
-Cheers, Gene
-
-----------------------------------------------------------------------
  rlrevell - 05-28-06 03:22 
 ----------------------------------------------------------------------
 "So that, according to your judgement, means its working. So why can't I
@@ -103,6 +85,21 @@ ALSA does not have a volume control per PCM instance - unless the app
 implements its own software volume control, there is only the global
 volume control in alsamixer.
 
+----------------------------------------------------------------------
+ Raymond - 05-28-06 03:58 
+----------------------------------------------------------------------
+arecord -vv -fcd foo.wav
+Recording WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+Warning: rate is not accurate (requested = 44100Hz, got = 48000Hz)
+         please, try the plug plugin (-Dplug:default)
+Hardware PCM card 0 'ATI IXP' device 0 subdevice 0
+
+It seem that dmix and dsnoop are disabled and your card only support
+48000Hz 
+
+http://hg-mirror.alsa-project.org/alsa-lib?cmd=file;file=src/conf/cards/ATIIXP.conf;filenode=38d08ce2e926e4db86d686ddbab08f38a60edaf9;style=raw
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -117,4 +114,5 @@ Date Modified  Username       Field                    Change
 05-28-06 03:08 Gene Heskett   Note Added: 0009985                          
 05-28-06 03:20 Gene Heskett   Note Added: 0009986                          
 05-28-06 03:22 rlrevell       Note Added: 0009987                          
+05-28-06 03:58 Raymond        Note Added: 0009988                          
 ======================================================================
