@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002147]: lack of full duplex operation
 	for ati-ixp chipset.
-Date: Sun, 28 May 2006 04:24:12 +0200
-Message-ID: <e147bf93456c8a4d1db473350bad0e97@bugtrack.alsa-project.org>
+Date: Sun, 28 May 2006 04:51:10 +0200
+Message-ID: <225f99905a4427d3febf28cb68e7b1c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2B4E171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5CD7C171
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 04:24:12 +0200 (MEST)
+	Sun, 28 May 2006 04:51:10 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-28-2006 04:24 CEST
+Last Modified:              05-28-2006 04:51 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -65,52 +65,48 @@ teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 05-28-06 04:05 
-----------------------------------------------------------------------
-arecord -vv -fcd foo.wav
-Recording WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-Warning: rate is not accurate (requested = 44100Hz, got = 48000Hz)
-         please, try the plug plugin (-Dplug:default)
-Hardware PCM card 0 'ATI IXP' device 0 subdevice 0
-
-It seem that dmix and dsnoop are disabled and your card only support
-48000Hz 
-
-http://hg-mirror.alsa-project.org/alsa-lib?cmd=file;file=src/conf/cards/ATIIXP.conf;filenode=38d08ce2e926e4db86d686ddbab08f38a60edaf9;style=raw
-
-Most likely the card need "type plug" for playing/recording 44100Hz
-
-# default with dmix/dsnoop
-ATIIXP.pcm.default {
-	@args [ CARD ]
-	@args.CARD {
-		type string
-	}
-	type asym
-	playback.pcm {
-		type plug
-		slave.pcm {
-			@func concat
-			strings [ "dmix:" $CARD ]
-		}
-	}
-	capture.pcm {
-		type plug
-		slave.pcm {
-			@func concat
-			strings [ "dsnoop:" $CARD ]
-		}
-	}
-}
-
-
-
-----------------------------------------------------------------------
  rlrevell - 05-28-06 04:24 
 ----------------------------------------------------------------------
 If you are using alsa-lib 1.0.11 it should be using dmix and dsnoop by
 default.
+
+----------------------------------------------------------------------
+ Gene Heskett - 05-28-06 04:51 
+----------------------------------------------------------------------
+>From 0009987, a VU meter appears, its a text meter, not a gui, so i guess I
+miss-understood.
+
+>From 0009988, my current /root/.asoundrc:
+pcm.atiixp {
+     type hw
+     card 0
+}
+
+ctl.atiixp {
+     type hw
+     card 0
+}
+pcm.!default {
+        type hw
+        card 0
+}
+
+ctl.!default {
+        type hw
+        card 0
+}
+
+Do I add the stuff in 009988, or replace this with that, what?
+
+>From 0009989, it would appear that alsalib is 1.0.11-3-rc2.2 (FC5 rpm) 
+The kernel is 2.6.16-1.2122_FC5.   This appears to be the latest versions
+of the alsalib and company available for FC5.
+
+Am I going to have to see if I can recall howto configure checkinstall for
+defaulting to rpm production again in order to install 1.0.11 final?
+
+-- 
+Cherrs, Gene
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -130,4 +126,5 @@ Date Modified  Username       Field                    Change
 05-28-06 04:04 Raymond        Note Edited: 0009988                         
 05-28-06 04:05 Raymond        Note Edited: 0009988                         
 05-28-06 04:24 rlrevell       Note Added: 0009989                          
+05-28-06 04:51 Gene Heskett   Note Added: 0009990                          
 ======================================================================
