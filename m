@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001627]: snd-hda-intel no suitable
-	model
-Date: Sun, 28 May 2006 06:20:29 +0200
-Message-ID: <58c6e1008f3bf8b148e2af2279e194de@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002147]: lack of full duplex operation
+	for ati-ixp chipset.
+Date: Sun, 28 May 2006 06:29:25 +0200
+Message-ID: <984a47cb7424b0548150dbfde95fc458@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B127B171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84D94169
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 06:20:29 +0200 (MEST)
+	Sun, 28 May 2006 06:29:25 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,90 +24,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1627> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
 ======================================================================
-Reported By:                Elfe
+Reported By:                Gene Heskett
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1627
-Category:                   PCI - hda-intel
+Issue ID:                   2147
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               FC5, uptodate
+Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
-Date Submitted:             12-07-2005 21:00 CET
-Last Modified:              05-28-2006 06:20 CEST
+Date Submitted:             05-23-2006 03:52 CEST
+Last Modified:              05-28-2006 06:29 CEST
 ======================================================================
-Summary:                    snd-hda-intel no suitable model
+Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
-Hi,
+skype, ekiga, audacity, and generally any program that needs to both
+transmit and receive, using isolated paths, fails in playback when
+recording.  In skype, I sound great at the far end, but reception may or
+may not work, with emphasis on the not.  What I hear in the phones, or in
+the speakers, sounds like what you would get if you took a sentence of
+spoken words, break it up into say 5ms pieces, and play them at maybe 10
+of these little snippets per second, so that the resultant sound is broken
+up to the point of no comprehension, and stretched in time by a
+considerable amount.
 
-I can't find a suitable model for the ALC880 on my Fujitsi Siemens Amilo
-1439G.
-The following devices are present:
-- internal speakers (possibly emulating pc beep)
-- internal mic
-- one jack for mic/line-in
-- one jack for Headset/IEC958
-- volume control wheel
+In audacity, simultanious playback, or play one track while recording
+another, likewise fails in that only very short snippets of the played
+track are output to the phones or speakers.
 
-status:
-- volume control wheel does not work at all
-- Headset jack disables internal speakers
-- Headset and internal Speakers have a different output control :( (or no
-master volume)
-- Internal Mic gets disabled when external mic is plugged in
-- Mic works with a lot of try and error
-
-the best config would be:
-- volume wheel working
-- the control for internal speakers and headphone combined into one or
-both and a master volume
-- correct recording device and volume selection
-- microphone boost setting if available
-
+Likewise, ekiga suffers from this same effect, I'm told I sound great on
+teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- der_sprengmeister - 05-28-06 06:14 
+ rlrevell - 05-28-06 06:13 
 ----------------------------------------------------------------------
-To rlrevell: Why should he use the fujitsu-model? It's only exist in
-ALC260/262. But the FujitsiSiemens AmiloM1439G has an ALC880.
+"mv /etc/alsa/pcm/front.conf /etc/alsa/pcm/old.front.conf"
+
+No, that's bad advice - I would change it back.
+
+It's not documented because the user is not supposed to have to change it.
+ If you do it's a bug.  Unfortunately there is a lot of bad information
+out there.
 
 ----------------------------------------------------------------------
- rlrevell - 05-28-06 06:20 
+ Gene Heskett - 05-28-06 06:29 
 ----------------------------------------------------------------------
-Sorry, my advice was incorrect.
+Then what was I supposed to do with that links information?
 
-Anyway, closing, as there does not seem to be a real bug and no response
-in 4 months.
+-- 
+Cheers, Gene
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-07-05 21:00 Elfe           New Issue                                    
-12-08-05 17:26 tiwai          Note Added: 0006960                          
-01-15-06 19:55 tuxlover       Note Added: 0007668                          
-01-15-06 19:59 rlrevell       Note Added: 0007669                          
-01-15-06 21:55 tuxlover       Note Added: 0007673                          
-01-15-06 21:57 rlrevell       Note Added: 0007674                          
-01-15-06 21:57 tuxlover       Note Edited: 0007673                         
-01-15-06 21:59 rlrevell       Note Added: 0007675                          
-01-15-06 22:01 tuxlover       Note Added: 0007676                          
-01-15-06 22:07 rlrevell       Note Added: 0007677                          
-01-15-06 22:14 tuxlover       Note Added: 0007678                          
-01-15-06 22:26 rlrevell       Note Added: 0007679                          
-01-23-06 21:05 Alexander LavrinenkoNote Added: 0007763                          
-01-23-06 21:22 rlrevell       Note Added: 0007764                          
-05-28-06 06:14 der_sprengmeisterNote Added: 0009996                          
-05-28-06 06:20 rlrevell       Status                   assigned => closed  
-05-28-06 06:20 rlrevell       Note Added: 0009997                          
+05-23-06 03:52 Gene Heskett   New Issue                                    
+05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
+05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
+05-23-06 15:01 tiwai          Note Added: 0009934                          
+05-23-06 16:46 Gene Heskett   Note Added: 0009938                          
+05-23-06 17:24 tiwai          Note Added: 0009941                          
+05-23-06 18:07 Gene Heskett   Note Added: 0009943                          
+05-23-06 19:14 tiwai          Note Added: 0009947                          
+05-28-06 03:08 Gene Heskett   Note Added: 0009985                          
+05-28-06 03:20 Gene Heskett   Note Added: 0009986                          
+05-28-06 03:22 rlrevell       Note Added: 0009987                          
+05-28-06 03:58 Raymond        Note Added: 0009988                          
+05-28-06 04:04 Raymond        Note Edited: 0009988                         
+05-28-06 04:05 Raymond        Note Edited: 0009988                         
+05-28-06 04:24 rlrevell       Note Added: 0009989                          
+05-28-06 04:51 Gene Heskett   Note Added: 0009990                          
+05-28-06 05:10 rlrevell       Note Added: 0009991                          
+05-28-06 05:27 Gene Heskett   Note Added: 0009992                          
+05-28-06 05:34 rlrevell       Note Added: 0009993                          
+05-28-06 05:37 Gene Heskett   Note Added: 0009994                          
+05-28-06 06:13 rlrevell       Note Added: 0009995                          
+05-28-06 06:29 Gene Heskett   Note Added: 0009998                          
 ======================================================================
