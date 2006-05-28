@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002147]: lack of full duplex operation
 	for ati-ixp chipset.
-Date: Sun, 28 May 2006 06:35:08 +0200
-Message-ID: <8c08198262ee85d7b12957ef249a37cc@bugtrack.alsa-project.org>
+Date: Sun, 28 May 2006 08:22:04 +0200
+Message-ID: <85908a7a36522fe28fd2445c3d88df59@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA3C9171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D397183
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 06:35:08 +0200 (MEST)
+	Sun, 28 May 2006 08:22:04 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-28-2006 06:35 CEST
+Last Modified:              05-28-2006 08:22 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -65,17 +65,25 @@ teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- Gene Heskett - 05-28-06 06:29 
-----------------------------------------------------------------------
-Then what was I supposed to do with that links information?
-
--- 
-Cheers, Gene
-
-----------------------------------------------------------------------
  rlrevell - 05-28-06 06:35 
 ----------------------------------------------------------------------
 Heh, I have no idea.
+
+----------------------------------------------------------------------
+ Raymond - 05-28-06 08:22 
+----------------------------------------------------------------------
+All sound card conf files and pcm conf files should have been installed to
+/usr/share/alsa when you installed alsa-lib
+
+Use option -v  in aplay/arecord to verify that the ALSA applications are
+using dmix and dsnoop to access your sound card via device "default"
+
+audacity need "configure --with-portaudio=v19" for ALSA
+
+Known issues/problems for audacity 1.2.4b
+ * Linux only: Recording in full duplex on some Linux systems causes
+    mono recordings to sound slowed-down or low-pitched.  To work around
+    this problem, set Audacity to record in stereo.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,4 +111,5 @@ Date Modified  Username       Field                    Change
 05-28-06 06:13 rlrevell       Note Added: 0009995                          
 05-28-06 06:29 Gene Heskett   Note Added: 0009998                          
 05-28-06 06:35 rlrevell       Note Added: 0009999                          
+05-28-06 08:22 Raymond        Note Added: 0010000                          
 ======================================================================
