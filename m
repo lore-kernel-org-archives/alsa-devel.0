@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002147]: lack of full duplex operation
 	for ati-ixp chipset.
-Date: Sun, 28 May 2006 05:10:37 +0200
-Message-ID: <44633b134e567c2ba2b5b06928fa4f3a@bugtrack.alsa-project.org>
+Date: Sun, 28 May 2006 05:27:16 +0200
+Message-ID: <bf48279467f21e5820a1862a61405e2e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA45A171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D538171
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 05:10:37 +0200 (MEST)
+	Sun, 28 May 2006 05:27:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-28-2006 05:10 CEST
+Last Modified:              05-28-2006 05:27 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -65,47 +65,18 @@ teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- Gene Heskett - 05-28-06 04:51 
-----------------------------------------------------------------------
->From 0009987, a VU meter appears, its a text meter, not a gui, so i guess I
-miss-understood.
-
->From 0009988, my current /root/.asoundrc:
-pcm.atiixp {
-     type hw
-     card 0
-}
-
-ctl.atiixp {
-     type hw
-     card 0
-}
-pcm.!default {
-        type hw
-        card 0
-}
-
-ctl.!default {
-        type hw
-        card 0
-}
-
-Do I add the stuff in 009988, or replace this with that, what?
-
->From 0009989, it would appear that alsalib is 1.0.11-3-rc2.2 (FC5 rpm) 
-The kernel is 2.6.16-1.2122_FC5.   This appears to be the latest versions
-of the alsalib and company available for FC5.
-
-Am I going to have to see if I can recall howto configure checkinstall for
-defaulting to rpm production again in order to install 1.0.11 final?
-
--- 
-Cherrs, Gene
-
-----------------------------------------------------------------------
  rlrevell - 05-28-06 05:10 
 ----------------------------------------------------------------------
 Remove the .asoundrc, it is preventing dmix from working.
+
+----------------------------------------------------------------------
+ Gene Heskett - 05-28-06 05:27 
+----------------------------------------------------------------------
+I've done that, now how do I restart the sound server so it knows of the
+change?
+
+-- 
+Cheers, Gene
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -127,4 +98,5 @@ Date Modified  Username       Field                    Change
 05-28-06 04:24 rlrevell       Note Added: 0009989                          
 05-28-06 04:51 Gene Heskett   Note Added: 0009990                          
 05-28-06 05:10 rlrevell       Note Added: 0009991                          
+05-28-06 05:27 Gene Heskett   Note Added: 0009992                          
 ======================================================================
