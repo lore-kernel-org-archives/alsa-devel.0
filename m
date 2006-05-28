@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002147]: lack of full duplex operation
 	for ati-ixp chipset.
-Date: Sun, 28 May 2006 03:59:00 +0200
-Message-ID: <7823229c2a7c8602acfa89dae75025a9@bugtrack.alsa-project.org>
+Date: Sun, 28 May 2006 04:24:12 +0200
+Message-ID: <e147bf93456c8a4d1db473350bad0e97@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 12131181
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B2B4E171
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 03:59:00 +0200 (MEST)
+	Sun, 28 May 2006 04:24:12 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-28-2006 03:58 CEST
+Last Modified:              05-28-2006 04:24 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -65,28 +65,7 @@ teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-28-06 03:22 
-----------------------------------------------------------------------
-"So that, according to your judgement, means its working. So why can't I
-make it work in the real world? For skype or ekiga."
-
-Because skype, audacity, and ekiga are OSS apps, and OSS apps block
-everything else from using the soundcard.  It might be possible to solve
-this eventually but it's difficult.  It's much easier if those apps simply
-add ALSA support...
-
-"FWIW, when I start arecord, I get this on the terminal screen but no
-volume control appears:"
-
-I'm not sure what you mean by "no volume control appears".  Where are you
-expecting it to appear?
-
-ALSA does not have a volume control per PCM instance - unless the app
-implements its own software volume control, there is only the global
-volume control in alsamixer.
-
-----------------------------------------------------------------------
- Raymond - 05-28-06 03:58 
+ Raymond - 05-28-06 04:05 
 ----------------------------------------------------------------------
 arecord -vv -fcd foo.wav
 Recording WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
@@ -99,6 +78,39 @@ It seem that dmix and dsnoop are disabled and your card only support
 48000Hz 
 
 http://hg-mirror.alsa-project.org/alsa-lib?cmd=file;file=src/conf/cards/ATIIXP.conf;filenode=38d08ce2e926e4db86d686ddbab08f38a60edaf9;style=raw
+
+Most likely the card need "type plug" for playing/recording 44100Hz
+
+# default with dmix/dsnoop
+ATIIXP.pcm.default {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type asym
+	playback.pcm {
+		type plug
+		slave.pcm {
+			@func concat
+			strings [ "dmix:" $CARD ]
+		}
+	}
+	capture.pcm {
+		type plug
+		slave.pcm {
+			@func concat
+			strings [ "dsnoop:" $CARD ]
+		}
+	}
+}
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 05-28-06 04:24 
+----------------------------------------------------------------------
+If you are using alsa-lib 1.0.11 it should be using dmix and dsnoop by
+default.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -115,4 +127,7 @@ Date Modified  Username       Field                    Change
 05-28-06 03:20 Gene Heskett   Note Added: 0009986                          
 05-28-06 03:22 rlrevell       Note Added: 0009987                          
 05-28-06 03:58 Raymond        Note Added: 0009988                          
+05-28-06 04:04 Raymond        Note Edited: 0009988                         
+05-28-06 04:05 Raymond        Note Edited: 0009988                         
+05-28-06 04:24 rlrevell       Note Added: 0009989                          
 ======================================================================
