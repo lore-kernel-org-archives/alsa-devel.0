@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002147]: lack of full duplex operation
-	for ati-ixp chipset.
-Date: Sun, 28 May 2006 13:17:05 +0200
-Message-ID: <2d34df94f40a622caab70111fbed4b9b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001496]: JAck won't run on the CMedia
+	8738
+Date: Sun, 28 May 2006 15:12:25 +0200
+Message-ID: <9d48243d84ca8051a1139ffdfc68ea17@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5562818A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 97809181
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 13:17:05 +0200 (MEST)
+	Sun, 28 May 2006 15:12:25 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,153 +26,301 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1496> 
 ======================================================================
-Reported By:                Gene Heskett
+Reported By:                Mark Knecht
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2147
-Category:                   PCI - atiixp
+Issue ID:                   1496
+Category:                   PCI - cmipci
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               FC5, uptodate
-Kernel Version:             2.6.16-1.2111_FC5
+Distribution:               Gentoo
+Kernel Version:             2.6.14-rc5-rt5 && 2.6.12-gentoo-r10
 ======================================================================
-Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-28-2006 13:17 CEST
+Date Submitted:             10-24-2005 18:30 CEST
+Last Modified:              05-28-2006 15:12 CEST
 ======================================================================
-Summary:                    lack of full duplex operation for ati-ixp chipset.
+Summary:                    JAck won't run on the CMedia 8738
 Description: 
-skype, ekiga, audacity, and generally any program that needs to both
-transmit and receive, using isolated paths, fails in playback when
-recording.  In skype, I sound great at the far end, but reception may or
-may not work, with emphasis on the not.  What I hear in the phones, or in
-the speakers, sounds like what you would get if you took a sentence of
-spoken words, break it up into say 5ms pieces, and play them at maybe 10
-of these little snippets per second, so that the resultant sound is broken
-up to the point of no comprehension, and stretched in time by a
-considerable amount.
+I have a machine with 3 sound devices in it:
 
-In audacity, simultanious playback, or play one track while recording
-another, likewise fails in that only very short snippets of the played
-track are output to the phones or speakers.
+mark@gigastudio ~ $ cat /proc/asound/cards
+0 [M2496          ]: ICE1712 - M Audio Audiophile 24/96
+                    M Audio Audiophile 24/96 at 0xa400, irq 10
+1 [R15            ]: RME9636 - RME Digi9636 (Rev 1.5)
+                    RME Digi9636 (Rev 1.5) at 0xe2000000, irq 9
+2 [CMI8738MC6     ]: CMI8738-MC6 - C-Media PCI CMI8738-MC6
+                    C-Media PCI CMI8738-MC6 (model 55) at 0xd800, irq 11
+mark@gigastudio ~ $
 
-Likewise, ekiga suffers from this same effect, I'm told I sound great on
-teh other end, but I can't hear more than half a word occasionally.
+  Jack is installed and runs fine on the AP2496 and the Hammerfall.
+Jack does not run correctly on the 8738. I first saw this on
+2.6.12-gentoo-r10 so I updated to 2.6.14-rc5-rt5 and see the same
+problem. The problem is independent of JAck timings. It's as bad with
+1024/2 as it is with 128/2.
+
+1) If I use QJackCtl to start Jack it fails immediately:
+
+09:07:02.736 JACK is starting...
+09:07:02.737 /usr/bin/jackd -R -P80 -dalsa -dhw:2 -r44100 -p128 -n2
+09:07:02.752 JACK was started with PID=6191 (0x182f).
+jackd 0.100.5
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK compiled with System V SHM support.
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... hw:2|hw:2|128|2|44100|0|0|nomon|swmeter|-|32bit
+control device hw:2
+configuring for 44100Hz, period = 128 frames, buffer = 2 periods
+Note: audio device hw:2 doesn't support a 32bit sample format so JACK
+will try a 24bit format instead
+Note: audio device hw:2 doesn't support a 24bit sample format so JACK
+will try a 16bit format instead
+nperiods = 2 for capture
+Note: audio device hw:2 doesn't support a 32bit sample format so JACK
+will try a 24bit format instead
+Note: audio device hw:2 doesn't support a 24bit sample format so JACK
+will try a 16bit format instead
+nperiods = 2 for playback
+09:07:04.844 Server configuration saved to "/home/mark/.jackdrc".
+09:07:04.845 Statistics reset.
+09:07:04.965 Client activated.
+09:07:04.966 Audio connection change.
+09:07:04.973 Audio connection graph change.
+09:07:04.974 XRUN callback (1).
+09:07:06.977 XRUN callback (342 skipped).
+jackd watchdog: timeout - killing jackd
+zombified - calling shutdown handler
+09:07:07.952 Shutdown notification.
+09:07:07.953 Client deactivated.
+09:07:07.954 JACK was stopped successfully.
+cannot send request type 7 to server
+cannot read result for request type 7 from server (Broken pipe)
+cannot send request type 7 to server
+cannot read result for request type 7 from server (Broken pipe)
+
+2) If I change the settings to support capture only it seems to work.
+I have not tested that I can actually receive audio as it isn;t
+important in my application:
+
+09:07:53.784 JACK is starting...
+09:07:53.786 /usr/bin/jackd -R -P80 -dalsa -dhw:2 -r44100 -p128 -n2 -C
+09:07:53.793 JACK was started with PID=6198 (0x1836).
+jackd 0.100.5
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK compiled with System V SHM support.
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... -|hw:2|128|2|44100|0|0|nomon|swmeter|-|32bit
+control device hw:2
+configuring for 44100Hz, period = 128 frames, buffer = 2 periods
+Note: audio device hw:2 doesn't support a 32bit sample format so JACK
+will try a 24bit format instead
+Note: audio device hw:2 doesn't support a 24bit sample format so JACK
+will try a 16bit format instead
+nperiods = 2 for capture
+09:07:55.902 Server configuration saved to "/home/mark/.jackdrc".
+09:07:55.904 Statistics reset.
+09:07:55.909 Client activated.
+09:07:55.911 Audio connection change.
+09:07:55.921 Audio connection graph change.
+
+3) If I set it for playback only it fails with lots of xruns:
+
+09:08:36.228 JACK is starting...
+09:08:36.230 /usr/bin/jackd -R -P80 -dalsa -dhw:2 -r44100 -p128 -n2 -P
+09:08:36.248 JACK was started with PID=6205 (0x183d).
+jackd 0.100.5
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK compiled with System V SHM support.
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... hw:2|-|128|2|44100|0|0|nomon|swmeter|-|32bit
+control device hw:2
+configuring for 44100Hz, period = 128 frames, buffer = 2 periods
+Note: audio device hw:2 doesn't support a 32bit sample format so JACK
+will try a 24bit format instead
+Note: audio device hw:2 doesn't support a 24bit sample format so JACK
+will try a 16bit format instead
+nperiods = 2 for playback
+09:08:38.388 Server configuration saved to "/home/mark/.jackdrc".
+09:08:38.390 Statistics reset.
+09:08:38.395 Client activated.
+09:08:38.397 Audio connection change.
+09:08:38.404 Audio connection graph change.
+09:08:41.458 XRUN callback (1).
+delay of 5809.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5697.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5675.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5675.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+
+<SNIP>
+
+delay of 5660.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5665.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+09:08:42.322 Client deactivated.
+09:08:42.323 JACK is stopping...
+delay of 5667.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5641.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5734.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5743.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5758.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5683.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5750.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5739.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+delay of 5769.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+jack main caught signal 15
+delay of 5656.000 usecs exceeds estimated spare time of 2872.000; restart
+...
+no message buffer overruns
+09:08:42.392 JACK was stopped successfully.
+
+The hardware is pretty generic:
+
+gigastudio ~ # lspci
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
+KT266/A/333]
+0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
+KT266/A/333 AGP]
+0000:00:05.0 Multimedia audio controller: C-Media Electronics Inc
+CM8738 (rev 10)
+0000:00:06.0 Mass storage controller: Promise Technology, Inc.
+PDC20265 (FastTrak100 Lite/Ultra100) (rev 02)
+0000:00:0c.0 FireWire (IEEE 1394): Texas Instruments TSB12LV23
+IEEE-1394 Controller
+0000:00:0d.0 Ethernet controller: Intel Corporation 82557/8/9
+[Ethernet Pro 100] (rev 05)
+0000:00:0f.0 Multimedia audio controller: Xilinx Corporation RME
+Digi9652 (Hammerfall) (rev 08)
+0000:00:10.0 Multimedia audio controller: VIA Technologies Inc.
+ICE1712 [Envy24] PCI Multi-Channel I/O Controller (rev 02)
+0000:00:11.0 ISA bridge: VIA Technologies, Inc. VT8233 PCI to ISA Bridge
+0000:00:11.1 IDE interface: VIA Technologies, Inc.
+VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06)
+0000:00:11.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB
+1.1 Controller (rev 1b)
+0000:00:11.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB
+1.1 Controller (rev 1b)
+0000:00:11.4 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB
+1.1 Controller (rev 1b)
+0000:01:00.0 VGA compatible controller: nVidia Corporation NV18
+[GeForce4 MX 4000 AGP 8x] (rev c1)
+gigastudio ~ #
+
+
+It runs fine with the Hammerfall:
+
+09:13:57.183 JACK is starting...
+09:13:57.185 /usr/bin/jackd -R -P80 -dalsa -dhw:1 -r44100 -p128 -n2
+09:13:57.218 JACK was started with PID=6240 (0x1860).
+jackd 0.100.5
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK compiled with System V SHM support.
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... hw:1|hw:1|128|2|44100|0|0|nomon|swmeter|-|32bit
+control device hw:1
+configuring for 44100Hz, period = 128 frames, buffer = 2 periods
+nperiods = 2 for capture
+nperiods = 2 for playback
+09:13:59.375 Server configuration saved to "/home/mark/.jackdrc".
+09:13:59.377 Statistics reset.
+09:13:59.500 Client activated.
+09:13:59.503 Audio connection change.
+09:13:59.510 Audio connection graph change.
+
+It runs fine with the AP2496:
+
+09:14:41.826 JACK is starting...
+09:14:41.828 /usr/bin/jackd -R -dalsa -dhw:0 -r44100 -p128 -n2
+09:14:41.845 JACK was started with PID=6247 (0x1867).
+jackd 0.100.5
+Copyright 2001-2005 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK compiled with System V SHM support.
+loading driver ..
+apparent rate = 44100
+creating alsa driver ... hw:0|hw:0|128|2|44100|0|0|nomon|swmeter|-|32bit
+control device hw:0
+configuring for 44100Hz, period = 128 frames, buffer = 2 periods
+nperiods = 2 for capture
+nperiods = 2 for playback
+09:14:43.933 Server configuration saved to "/home/mark/.jackdrc".
+09:14:43.935 Statistics reset.
+09:14:43.941 Client activated.
+09:14:43.943 Audio connection change.
+09:14:43.951 Audio connection graph change.
+
+gigastudio ~ # cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.10rc1 (Mon Sep 12
+08:13:09 2005 UTC).
+gigastudio ~ #
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 05-28-06 08:32 
+ rlrevell - 05-27-06 17:55 
 ----------------------------------------------------------------------
-Please note that dmix is not perfect for ATIIXP, any ALSA application open
-surround51 still can block the other ALSA applications.
+No, you don't need -S - it falls back to 16 bit automatically.
+
+Does it work any better at 48000Hz?
+
+Any improvement with ALSA 1.0.11?
 
 ----------------------------------------------------------------------
- Gene Heskett - 05-28-06 13:17 
+ Mark Knecht - 05-28-06 15:12 
 ----------------------------------------------------------------------
-re 00010000 (Raymond)
-That may be true for other distros, but FC5 has only the speaker-test
-subdir at that location, with everything else in /etc/alsa.
-
-As for the audacity mono problem, I've already run into that, and as far
-as the configure option given, this is an rpm, so I have no idea howto
-enforce that without installing from the src rpm.  If this is causing an
-alsa/audacity then we should be pulling the packager into this
-discussion.
-
-As for applying the -v option to aplay, it does this:
-[root@diablo ~]# aplay -v foo.wav
-Playing WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 48000 Hz,
-Stereo
-Plug PCM: Direct Stream Mixing PCM
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 16384
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Hardware PCM card 0 'ATI IXP' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tick_time    : 4000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 1
-  stop_threshold   : 1073741824
-  silence_threshold: 0
-  silence_size : 1073741824
-  boundary     : 1073741824
-[root@diablo ~]#
-
-NDI if the above is correct. I do not see the device default listed above.
-But it sounds fine.  If its supposed to show 'default' then what file do I
-check to ascertain that its correct, bearing in mind this IS an uptodate
-as of 6 hours ago fedora core 5 install, and the files are not in what you
-seem to think is the std location.
-
--- 
-Cheers, Gene
+Sorry, but after 8 months of waiting for any response on this problem the
+machine no longer even runs Linux so I cannot test with newer Alsa. It's
+no longer an isse for me but I cannot say it's fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-23-06 03:52 Gene Heskett   New Issue                                    
-05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
-05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
-05-23-06 15:01 tiwai          Note Added: 0009934                          
-05-23-06 16:46 Gene Heskett   Note Added: 0009938                          
-05-23-06 17:24 tiwai          Note Added: 0009941                          
-05-23-06 18:07 Gene Heskett   Note Added: 0009943                          
-05-23-06 19:14 tiwai          Note Added: 0009947                          
-05-28-06 03:08 Gene Heskett   Note Added: 0009985                          
-05-28-06 03:20 Gene Heskett   Note Added: 0009986                          
-05-28-06 03:22 rlrevell       Note Added: 0009987                          
-05-28-06 03:58 Raymond        Note Added: 0009988                          
-05-28-06 04:04 Raymond        Note Edited: 0009988                         
-05-28-06 04:05 Raymond        Note Edited: 0009988                         
-05-28-06 04:24 rlrevell       Note Added: 0009989                          
-05-28-06 04:51 Gene Heskett   Note Added: 0009990                          
-05-28-06 05:10 rlrevell       Note Added: 0009991                          
-05-28-06 05:27 Gene Heskett   Note Added: 0009992                          
-05-28-06 05:34 rlrevell       Note Added: 0009993                          
-05-28-06 05:37 Gene Heskett   Note Added: 0009994                          
-05-28-06 06:13 rlrevell       Note Added: 0009995                          
-05-28-06 06:29 Gene Heskett   Note Added: 0009998                          
-05-28-06 06:35 rlrevell       Note Added: 0009999                          
-05-28-06 08:22 Raymond        Note Added: 0010000                          
-05-28-06 08:32 Raymond        Note Added: 0010001                          
-05-28-06 13:17 Gene Heskett   Note Added: 0010002                          
+10-24-05 18:30 Mark Knecht    New Issue                                    
+10-24-05 18:30 Mark Knecht    Distribution              => Gentoo          
+10-24-05 18:30 Mark Knecht    Kernel Version            => 2.6.14-rc5-rt5 &&
+2.6.12-gentoo-r10
+10-24-05 23:57 Mark Knecht    Note Added: 0006525                          
+10-25-05 15:46 Mark Knecht    Note Added: 0006544                          
+10-26-05 19:01 Mark Knecht    Note Added: 0006561                          
+10-26-05 19:02 Mark Knecht    Note Added: 0006562                          
+05-27-06 15:06 Raymond        Note Added: 0009983                          
+05-27-06 17:55 rlrevell       Note Added: 0009984                          
+05-28-06 15:12 Mark Knecht    Note Added: 0010003                          
 ======================================================================
