@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002147]: lack of full duplex operation
 	for ati-ixp chipset.
-Date: Sun, 28 May 2006 03:20:06 +0200
-Message-ID: <52fd8a2e42a24d5cee3d01d01e2daa05@bugtrack.alsa-project.org>
+Date: Sun, 28 May 2006 03:22:18 +0200
+Message-ID: <982c14448d1da251f25d87e61d14d001@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A3B43171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91C80171
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 03:20:07 +0200 (MEST)
+	Sun, 28 May 2006 03:22:18 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-28-2006 03:20 CEST
+Last Modified:              05-28-2006 03:22 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -65,79 +65,6 @@ teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- Gene Heskett - 05-28-06 03:08 
-----------------------------------------------------------------------
-Ok, now I have a couple of days to play with this.  To quote you:
-"Apparently you're trying to do something special."
-
-I suppose thats in the eye of the beholder, but I do not consider running
-skype or its ilk too terribly special.  In my eye, what you are asking me
-to do is the special stuff.
-
->From a few hours of screwing with this last week, its known that
-speaker-test runs ok regardless of the starting order.  However if
-speaker-test is the first user of the audio system started, then nothing
-else can access  in the headset now, so lets see if your example "arecord
--vv -fcd foo.wav" works, and yes it does.  However, no volume control
-appeared, and my talking, with the headset mouthpiece only half an inch to
-one side, looked as if it was overloading arecord.  However, stopping the
-speaker-test, and "aplay foo.wav" also works.
-Now, start the recording first...  And thats working also.
-
-So that, according to your judgement, means its working.  So why can't I
-make it work in the real world?  For skype or ekiga.
-
-FWIW, when I start arecord, I get this on the terminal screen but no
-volume control appears:
-
-[root@diablo libzrtp-0.2.0]# arecord -vv -fcd foo.wav
-Recording WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-Warning: rate is not accurate (requested = 44100Hz, got = 48000Hz)
-         please, try the plug plugin (-Dplug:default)
-Hardware PCM card 0 'ATI IXP' device 0 subdevice 0
-Its setup is:
-  stream       : CAPTURE
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 4096
-  period_time  : 85333
-  tick_time    : 4000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 4096
-  xfer_align   : 4096
-  start_threshold  : 1
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-##+                                               | 03%%
-Aborted by signal Interrupt...
-
-Does anyone have a recipe for an .asoundrc that will stop the above error,
-or make it work for skype etc?
-
-Audacity can record ok, PROVIDED it is the first thing started, if I do
-the speaker-test thing, then start audacity, then audacity is locked away
-from the device, this will also occur if I stop the audacity recording
-while speaker-test is running, and then attempt to restart a new
-recording.
-
-Is audacity an oss appliction?  In which case what do we replace it with
-thats alsa compliant?
-
--- 
-Cheers, Gene
-
-----------------------------------------------------------------------
  Gene Heskett - 05-28-06 03:20 
 ----------------------------------------------------------------------
 I'm sorry, that added note got badly hacked and parts of it will not make a
@@ -155,6 +82,27 @@ a lack of full duplex operation IN THE REAL WORLD...
 -- 
 Cheers, Gene
 
+----------------------------------------------------------------------
+ rlrevell - 05-28-06 03:22 
+----------------------------------------------------------------------
+"So that, according to your judgement, means its working. So why can't I
+make it work in the real world? For skype or ekiga."
+
+Because skype, audacity, and ekiga are OSS apps, and OSS apps block
+everything else from using the soundcard.  It might be possible to solve
+this eventually but it's difficult.  It's much easier if those apps simply
+add ALSA support...
+
+"FWIW, when I start arecord, I get this on the terminal screen but no
+volume control appears:"
+
+I'm not sure what you mean by "no volume control appears".  Where are you
+expecting it to appear?
+
+ALSA does not have a volume control per PCM instance - unless the app
+implements its own software volume control, there is only the global
+volume control in alsamixer.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -168,4 +116,5 @@ Date Modified  Username       Field                    Change
 05-23-06 19:14 tiwai          Note Added: 0009947                          
 05-28-06 03:08 Gene Heskett   Note Added: 0009985                          
 05-28-06 03:20 Gene Heskett   Note Added: 0009986                          
+05-28-06 03:22 rlrevell       Note Added: 0009987                          
 ======================================================================
