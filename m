@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002147]: lack of full duplex operation
 	for ati-ixp chipset.
-Date: Sun, 28 May 2006 06:29:25 +0200
-Message-ID: <984a47cb7424b0548150dbfde95fc458@bugtrack.alsa-project.org>
+Date: Sun, 28 May 2006 06:35:08 +0200
+Message-ID: <8c08198262ee85d7b12957ef249a37cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 84D94169
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DA3C9171
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 06:29:25 +0200 (MEST)
+	Sun, 28 May 2006 06:35:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-28-2006 06:29 CEST
+Last Modified:              05-28-2006 06:35 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -65,23 +65,17 @@ teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-28-06 06:13 
-----------------------------------------------------------------------
-"mv /etc/alsa/pcm/front.conf /etc/alsa/pcm/old.front.conf"
-
-No, that's bad advice - I would change it back.
-
-It's not documented because the user is not supposed to have to change it.
- If you do it's a bug.  Unfortunately there is a lot of bad information
-out there.
-
-----------------------------------------------------------------------
  Gene Heskett - 05-28-06 06:29 
 ----------------------------------------------------------------------
 Then what was I supposed to do with that links information?
 
 -- 
 Cheers, Gene
+
+----------------------------------------------------------------------
+ rlrevell - 05-28-06 06:35 
+----------------------------------------------------------------------
+Heh, I have no idea.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -108,4 +102,5 @@ Date Modified  Username       Field                    Change
 05-28-06 05:37 Gene Heskett   Note Added: 0009994                          
 05-28-06 06:13 rlrevell       Note Added: 0009995                          
 05-28-06 06:29 Gene Heskett   Note Added: 0009998                          
+05-28-06 06:35 rlrevell       Note Added: 0009999                          
 ======================================================================
