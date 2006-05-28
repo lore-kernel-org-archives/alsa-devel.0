@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002147]: lack of full duplex operation
 	for ati-ixp chipset.
-Date: Sun, 28 May 2006 04:51:10 +0200
-Message-ID: <225f99905a4427d3febf28cb68e7b1c1@bugtrack.alsa-project.org>
+Date: Sun, 28 May 2006 05:10:37 +0200
+Message-ID: <44633b134e567c2ba2b5b06928fa4f3a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5CD7C171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA45A171
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 04:51:10 +0200 (MEST)
+	Sun, 28 May 2006 05:10:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-28-2006 04:51 CEST
+Last Modified:              05-28-2006 05:10 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -63,12 +63,6 @@ track are output to the phones or speakers.
 Likewise, ekiga suffers from this same effect, I'm told I sound great on
 teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 05-28-06 04:24 
-----------------------------------------------------------------------
-If you are using alsa-lib 1.0.11 it should be using dmix and dsnoop by
-default.
 
 ----------------------------------------------------------------------
  Gene Heskett - 05-28-06 04:51 
@@ -108,6 +102,11 @@ defaulting to rpm production again in order to install 1.0.11 final?
 -- 
 Cherrs, Gene
 
+----------------------------------------------------------------------
+ rlrevell - 05-28-06 05:10 
+----------------------------------------------------------------------
+Remove the .asoundrc, it is preventing dmix from working.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -127,4 +126,5 @@ Date Modified  Username       Field                    Change
 05-28-06 04:05 Raymond        Note Edited: 0009988                         
 05-28-06 04:24 rlrevell       Note Added: 0009989                          
 05-28-06 04:51 Gene Heskett   Note Added: 0009990                          
+05-28-06 05:10 rlrevell       Note Added: 0009991                          
 ======================================================================
