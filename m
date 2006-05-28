@@ -1,15 +1,17 @@
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [RFC 0/7] snd-aoa: add snd-aoa
-Date: Sun, 28 May 2006 21:00:26 +0200
-Message-ID: <20060528190026.754474000@johannes.berg>
+Subject: [RFC 6/7] snd-aoa: add Kconfig and Makefile
+Date: Sun, 28 May 2006 21:00:32 +0200
+Message-ID: <20060528190130.441063000@johannes.berg>
+References: <20060528190026.754474000@johannes.berg>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CE472191
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42E3E191
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 May 2006 21:02:44 +0200 (MEST)
+	Sun, 28 May 2006 21:02:52 +0200 (MEST)
+Content-Disposition: inline; filename=06-add-build-stuff.patch
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,19 +25,34 @@ To: alsa-devel@alsa-project.org
 Cc: linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-The following patches would add snd-aoa to the Linux source tree. I'm
-posting them here in the spirit of getting review fairly early, it works
-fine for those machines it handles but has some rough edges like not
-providing headphone detection at the moment.
+This patch adds the simple Kconfig and Makefile files for aoa.
 
-There are plans to fix this, but they might be influenced by your comments
-so I'm holding off there a bit. One thing that will probably be done is
-moving all the alsa controls for various inputs from the codecs to the
-fabric, the fabric needs to know these anyway and code can be simplified and
-prepared for headphone/... detection if the codecs simply provide hooks to
-turn on/off the various in- and outputs.
+--- /dev/null
++++ b/sound/aoa/Kconfig
+@@ -0,0 +1,17 @@
++menu "Apple Onboard Audio driver"
++	depends on SND != n && PPC
++
++config SND_AOA
++	tristate "Apple Onboard Audio driver"
++	depends on SOUND && SND_PCM && EXPERIMENTAL
++	---help---
++	This option enables the new driver for the various
++	Apple Onboard Audio components.
++
++source "sound/aoa/fabrics/Kconfig"
++
++source "sound/aoa/codecs/Kconfig"
++
++source "sound/aoa/soundbus/Kconfig"
++
++endmenu
+--- /dev/null
++++ b/sound/aoa/Makefile
+@@ -0,0 +1,4 @@
++obj-$(CONFIG_SND_AOA) += core/
++obj-$(CONFIG_SND_AOA) += codecs/
++obj-$(CONFIG_SND_AOA) += fabrics/
++obj-$(CONFIG_SND_AOA_SOUNDBUS) += soundbus/
 
-Any comments are appreciated.
-
-Thanks,
-johannes
+--
