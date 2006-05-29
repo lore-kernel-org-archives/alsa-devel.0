@@ -1,19 +1,16 @@
-From: "Bristol Dillon" <brisy@fnb-corp.com>
-Subject: coronatio 6396
-Date: Sun, 28 May 2006 21:10:46 -0700
-Message-ID: <000001c682d5$dc9931b0$f1faa8c0@rpv93>
-Reply-To: Bristol Dillon <brisy@fnb-corp.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002140]: No sound from mic on Fujitsu
+	Siemens Amilo M3438G
+Date: Mon, 29 May 2006 08:26:49 +0200
+Message-ID: <5b6fa561e673fd95f2fd21cb86e7b713@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1223239212=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 424FA159
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5C0B159
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 May 2006 06:11:02 +0200 (MEST)
-Received: from drymalla.com (unknown [221.1.167.42])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	C3C31992D4 for <alsa-devel@alsa-project.org>;
-	Mon, 29 May 2006 06:10:59 +0200 (MEST)
+	Mon, 29 May 2006 08:26:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,111 +23,86 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---===============1223239212==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C6829B.30464090"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2140> 
+======================================================================
+Reported By:                jacobs
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2140
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               OpenSuSE 10.1
+Kernel Version:             2.6.16.13
+======================================================================
+Date Submitted:             05-22-2006 10:17 CEST
+Last Modified:              05-29-2006 08:26 CEST
+======================================================================
+Summary:                    No sound from mic on Fujitsu Siemens Amilo M3438G
+Description: 
+I own a Fujitsu Siemens Amilo M3438G notebook with an onboard Azalia 7.1
+SPDIF chipset/codec (see spec sheet at
+http://www.fujitsu-siemens.de/ps/db/notebook/ds_amilo_m3438g_m4438g_d.pdf).
+OpenSuSE 10.1 (Kernel 2.6.16.13) is installed; the module snd-hda-intel is
+ loaded. Sound playback through the internal speakers and headphone does
+work but I am unable to get sound from the internal and external
+microphone. The alsamixer has three capture controls which all are set to
+capture and maximum volume. Each capture controls source is set to mic.
+The playback channel for mic is unmuted and also set to maximum volume but
+I just don't get a signal.
 
-This is a multi-part message in MIME format.
+I've tried to apply different model options to the snd-hda-intel module
+relating to the file ALSA-Configuration.txt without luck.
 
-------=_NextPart_000_0001_01C6829B.30464090
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+This didn't work with OpenSuSE 10.0 (Kernel 2.6.13) either.
 
-Hi,
-=20
-V A L / u M
-V / a G R A
-M e R / D / A
-P R O z & C
-T r & m a d o I
-X & n a x
-C i A L / S
-A m B / E N
-L e V / T R A
-A m o x / c i I l / n
-S O m &
-=20
-http://www.ostaravacas.com <http://www.ostaravacas.com>=20
+If you need any technical information please let me know.
+======================================================================
 
+----------------------------------------------------------------------
+ el - 05-26-06 19:26 
+----------------------------------------------------------------------
+Hi, I experienced the same Problem with my M3438G. I was running Kubuntu
+Breezy, Kubuntu Dapper and Kanotix als well as ALSA 1.0.10, 1.0.11rcX and
+1.0.11. When I load the module without any additional parameters "cat
+/sys/module/snd_hda_intel/parameters/model" returns "<NULL>", don't know
+if this behavior is expected or not. 
 
+Then I tried passing model=fujitsu and such, but couldn't get the
+microphone to work. But when I tried model=auto (Should be the default
+according to the documentation, but obviously it isn't) I got it to work
+by turning up the leftmost capture control an setting it's input source to
+Front Mic. 
 
+I still got some high pitched noise in the background of any recording
+when using Ubuntu Breezy, but that seems to be a different Problem.
 
+----------------------------------------------------------------------
+ jacobs - 05-29-06 08:26 
+----------------------------------------------------------------------
+Hello el,
 
-the path from the deep red carpets of the forest. Still Bombur slept and
-they grew very weary. At times they heard disquieting laughter.=20
-Sometimes there was singing in the distance too. The laughter was the=20
-laughter of fair voices not of goblins, and the singing was beautiful,=20
-but it sounded eerie and strange, and they were not comforted, rather=20
-they hurried on from those parts with what strength they had left. Two=20
+I've tried that but it doesn't give satisfying results. First of all the
+channels are assigned falsely, e.g. Front is actually the headphone. At
+least they were correct when I didn't pass model=auto to the module.
 
+Secondly I only get a signal from the microphone when I shout into it
+(=when it's loud) plus the sound quality is pretty bad.
 
-------=_NextPart_000_0001_01C6829B.30464090
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><STRONG>V A L / u M</STRONG><BR>
-<STRONG>V / a G R A</STRONG><BR>
-M e R /  D / A<BR>
-P R O z & C<BR>
-T r & m a d o I<BR>
-X & n a x<BR>
-<STRONG>C i A L / S</STRONG><BR>
-A m B / E N<BR>
-L e V / T R A<BR>
-A m o x / c i I l / n<BR>
-S O m &</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><A =
-href=3D"http://www.ostaravacas.com"><FONT face=3DArial =
-size=3D2>http://www.ostaravacas.com</FONT></A></FONT></DIV><BR>
-<BR>
-<BR>
-<BR>
-<BR>
-<DIV><FONT face=3DArial size=3D2>the path from the deep red carpets of =
-the forest. Still Bombur slept and <BR>they grew very weary. At times =
-they heard disquieting laughter. <BR>Sometimes there was singing in the =
-distance too. The laughter was the <BR>laughter of fair voices not of =
-goblins, and the singing was beautiful, <BR>but it sounded eerie and =
-strange, and they were not comforted, rather <BR>they hurried on from =
-those parts with what strength they had left. Two =
-<BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C6829B.30464090--
-
-
-
-
-
---===============1223239212==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1223239212==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1223239212==--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-22-06 10:17 jacobs         New Issue                                    
+05-22-06 10:17 jacobs         Distribution              => OpenSuSE 10.1   
+05-22-06 10:17 jacobs         Kernel Version            => 2.6.16.13       
+05-23-06 07:35 jacobs         Issue Monitored: jacobs                      
+05-26-06 19:13 el             Issue Monitored: el                          
+05-26-06 19:26 el             Note Added: 0009979                          
+05-29-06 08:26 jacobs         Note Added: 0010007                          
+======================================================================
