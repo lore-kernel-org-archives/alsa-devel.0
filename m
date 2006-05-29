@@ -1,17 +1,18 @@
-From: Andrew Morton <akpm@osdl.org>
+From: Ingo Molnar <mingo@elte.hu>
 Subject: Re: 2.6.17-rc4-mm3-lockdep BUG: possible deadlock
 	detected!
-Date: Mon, 29 May 2006 11:47:49 -0700
-Message-ID: <20060529114749.ba020660.akpm@osdl.org>
+Date: Mon, 29 May 2006 21:07:07 +0200
+Message-ID: <20060529190707.GB24445@elte.hu>
 References: <6bffcb0e0605291132u701cd69tb855cf60fa317994@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from smtp.osdl.org (smtp.osdl.org [65.172.181.4])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 10EC3159
+Received: from mx2.mail.elte.hu (mx2.mail.elte.hu [157.181.151.9])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 319A014E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 May 2006 20:43:35 +0200 (MEST)
+	Mon, 29 May 2006 21:06:48 +0200 (MEST)
+Content-Disposition: inline
 In-Reply-To: <6bffcb0e0605291132u701cd69tb855cf60fa317994@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,48 +24,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, mingo@elte.hu, alsa-devel@alsa-project.org, perex@suse.cz, linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 29 May 2006 20:32:47 +0200
-"Michal Piotrowski" <michal.k.k.piotrowski@gmail.com> wrote:
+
+* Michal Piotrowski <michal.k.k.piotrowski@gmail.com> wrote:
 
 > I get this with Ingo's lockdep patch from
 > http://people.redhat.com/mingo/generic-irq-subsystem/
-> 
+
+sigh, that patchset is not released yet ... it showed up in the genirq 
+directory accidentally. (will release it later today)
+
 > ====================================
 > [ BUG: possible deadlock detected! ]
 > ------------------------------------
-> modprobe/592 is trying to acquire lock:
->  (&grp->list_mutex){----}, at: [<fd9ee555>]
-> snd_seq_port_connect+0xc0/0x337 [snd_seq]
-> 
-> but task is already holding lock:
->  (&grp->list_mutex){----}, at: [<fd9ee4fb>]
-> snd_seq_port_connect+0x66/0x337 [snd_seq]
-> 
-> which could potentially lead to deadlocks!
-> 
-> other info that might help us debug this:
-> 1 locks held by modprobe/592:
->  #0:  (&grp->list_mutex){----}, at: [<fd9ee4fb>]
-> snd_seq_port_connect+0x66/0x337 [snd_seq]
 
-yes,
+at first sight this looks like a rare case of nested locking not yet 
+covered by the lock validator. Could you try the patch below, to 
+correctly express this locking construct to the lock validator?
 
-        down_write(&src->list_mutex);
-        down_write(&dest->list_mutex);
+Btw., beyond this false positive, i dont see how the lock ordering 
+between ports is guaranteed - maybe there's some implicit rule that 
+enforces it. And the whole grp->list_lock and grp->list_mutex lock use 
+seems quite fragile - using list_lock in atomic contexts and list_mutex 
+in schedulable contexts?
 
-I wonder if there's anything which prevents another task from concurrently
-coming in and trying to perform the opposite connection and causing a
-deadlock.
+	Ingo
 
-The way we normally handle this is
-
-	if (src < dest) {
-		down_write(&src->list_mutex);
-		down_write(&dest->list_mutex);
-	} else {
-		down_write(&dest->list_mutex);
-		down_write(&src->list_mutex);
-	}
+Index: linux/sound/core/seq/seq_ports.c
+===================================================================
+--- linux.orig/sound/core/seq/seq_ports.c
++++ linux/sound/core/seq/seq_ports.c
+@@ -518,7 +518,7 @@ int snd_seq_port_connect(struct snd_seq_
+ 	atomic_set(&subs->ref_count, 2);
+ 
+ 	down_write(&src->list_mutex);
+-	down_write(&dest->list_mutex);
++	down_write_nested(&dest->list_mutex, SINGLE_DEPTH_NESTING);
+ 
+ 	exclusive = info->flags & SNDRV_SEQ_PORT_SUBS_EXCLUSIVE ? 1 : 0;
+ 	err = -EBUSY;
+@@ -591,7 +591,7 @@ int snd_seq_port_disconnect(struct snd_s
+ 	unsigned long flags;
+ 
+ 	down_write(&src->list_mutex);
+-	down_write(&dest->list_mutex);
++	down_write_nested(&dest->list_mutex, SINGLE_DEPTH_NESTING);
+ 
+ 	/* look for the connection */
+ 	list_for_each(p, &src->list_head) {
