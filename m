@@ -1,16 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002147]: lack of full duplex operation
-	for ati-ixp chipset.
-Date: Mon, 29 May 2006 04:24:50 +0200
-Message-ID: <46fdb1657c6edef8e3ee9fc51ef0584a@bugtrack.alsa-project.org>
+From: "Bristol Dillon" <brisy@fnb-corp.com>
+Subject: coronatio 6396
+Date: Sun, 28 May 2006 21:10:46 -0700
+Message-ID: <000001c682d5$dc9931b0$f1faa8c0@rpv93>
+Reply-To: Bristol Dillon <brisy@fnb-corp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1223239212=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A390A128
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 424FA159
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 May 2006 04:24:50 +0200 (MEST)
+	Mon, 29 May 2006 06:11:02 +0200 (MEST)
+Received: from drymalla.com (unknown [221.1.167.42])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	C3C31992D4 for <alsa-devel@alsa-project.org>;
+	Mon, 29 May 2006 06:10:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,117 +26,111 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
-======================================================================
-Reported By:                Gene Heskett
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2147
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               FC5, uptodate
-Kernel Version:             2.6.16-1.2111_FC5
-======================================================================
-Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-29-2006 04:24 CEST
-======================================================================
-Summary:                    lack of full duplex operation for ati-ixp chipset.
-Description: 
-skype, ekiga, audacity, and generally any program that needs to both
-transmit and receive, using isolated paths, fails in playback when
-recording.  In skype, I sound great at the far end, but reception may or
-may not work, with emphasis on the not.  What I hear in the phones, or in
-the speakers, sounds like what you would get if you took a sentence of
-spoken words, break it up into say 5ms pieces, and play them at maybe 10
-of these little snippets per second, so that the resultant sound is broken
-up to the point of no comprehension, and stretched in time by a
-considerable amount.
+--===============1223239212==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C6829B.30464090"
 
-In audacity, simultanious playback, or play one track while recording
-another, likewise fails in that only very short snippets of the played
-track are output to the phones or speakers.
+This is a multi-part message in MIME format.
 
-Likewise, ekiga suffers from this same effect, I'm told I sound great on
-teh other end, but I can't hear more than half a word occasionally.
-======================================================================
+------=_NextPart_000_0001_01C6829B.30464090
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- Raymond - 05-29-06 03:13 
-----------------------------------------------------------------------
-audacity 1.2.x - portaudio (Portable Real-Time Audio Library) use "plughw"
-or "hw" for playback and capture, if you are using a sound card which does
-not support hardware mixing, you have to stop the other application first
-in order to use audacity.
+Hi,
+=20
+V A L / u M
+V / a G R A
+M e R / D / A
+P R O z & C
+T r & m a d o I
+X & n a x
+C i A L / S
+A m B / E N
+L e V / T R A
+A m o x / c i I l / n
+S O m &
+=20
+http://www.ostaravacas.com <http://www.ostaravacas.com>=20
 
-If you want to run audacity and other applications concurrently , you will
-need a sound card which support hardware mixing
 
-----------------------------------------------------------------------
- Gene Heskett - 05-29-06 04:24 
-----------------------------------------------------------------------
-but we're stuck with whats in this lappy, with only the bare minimum of
-actual 'bondouts' available.
 
-It seems to me that a software layer doing the mixing could be written
-that does present a uniform, chipset independent interface that the apps,
-oss or alsa, could not tell from the actual hardware.  Any mutually
-exclusive locks should be converted into virtual locks that exist only for
-that individual software port being accessed.  All mixing should take
-place beyond that point.
 
-In the case of this ATI-IXP chipset then, exactly how is this being done? 
-As in does there exist a block diagram of how this is actually  done?
 
-I'm also having trouble with the concept that the major (except for closed
-src skype) audio apps for linux are still dependent on the oss interface 3
-years after alsa became the default linux audio system. That boggles the
-mind given the obviously improved interfaces now presented to the
-user/coder by alsa with 1.0.11, and which I can only see improving with
-additional time.
+the path from the deep red carpets of the forest. Still Bombur slept and
+they grew very weary. At times they heard disquieting laughter.=20
+Sometimes there was singing in the distance too. The laughter was the=20
+laughter of fair voices not of goblins, and the singing was beautiful,=20
+but it sounded eerie and strange, and they were not comforted, rather=20
+they hurried on from those parts with what strength they had left. Two=20
 
-The bottom line to me is that I think I have a reasonable expectation of
-these 'major' applications all Just working(TM), if not now then not too
-far into the future.
 
--- 
-Cheers, Gene
+------=_NextPart_000_0001_01C6829B.30464090
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-23-06 03:52 Gene Heskett   New Issue                                    
-05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
-05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
-05-23-06 15:01 tiwai          Note Added: 0009934                          
-05-23-06 16:46 Gene Heskett   Note Added: 0009938                          
-05-23-06 17:24 tiwai          Note Added: 0009941                          
-05-23-06 18:07 Gene Heskett   Note Added: 0009943                          
-05-23-06 19:14 tiwai          Note Added: 0009947                          
-05-28-06 03:08 Gene Heskett   Note Added: 0009985                          
-05-28-06 03:20 Gene Heskett   Note Added: 0009986                          
-05-28-06 03:22 rlrevell       Note Added: 0009987                          
-05-28-06 03:58 Raymond        Note Added: 0009988                          
-05-28-06 04:04 Raymond        Note Edited: 0009988                         
-05-28-06 04:05 Raymond        Note Edited: 0009988                         
-05-28-06 04:24 rlrevell       Note Added: 0009989                          
-05-28-06 04:51 Gene Heskett   Note Added: 0009990                          
-05-28-06 05:10 rlrevell       Note Added: 0009991                          
-05-28-06 05:27 Gene Heskett   Note Added: 0009992                          
-05-28-06 05:34 rlrevell       Note Added: 0009993                          
-05-28-06 05:37 Gene Heskett   Note Added: 0009994                          
-05-28-06 06:13 rlrevell       Note Added: 0009995                          
-05-28-06 06:29 Gene Heskett   Note Added: 0009998                          
-05-28-06 06:35 rlrevell       Note Added: 0009999                          
-05-28-06 08:22 Raymond        Note Added: 0010000                          
-05-28-06 08:32 Raymond        Note Added: 0010001                          
-05-28-06 13:17 Gene Heskett   Note Added: 0010002                          
-05-29-06 03:13 Raymond        Note Added: 0010005                          
-05-29-06 04:24 Gene Heskett   Note Added: 0010006                          
-======================================================================
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><STRONG>V A L / u M</STRONG><BR>
+<STRONG>V / a G R A</STRONG><BR>
+M e R /  D / A<BR>
+P R O z & C<BR>
+T r & m a d o I<BR>
+X & n a x<BR>
+<STRONG>C i A L / S</STRONG><BR>
+A m B / E N<BR>
+L e V / T R A<BR>
+A m o x / c i I l / n<BR>
+S O m &</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2><A =
+href=3D"http://www.ostaravacas.com"><FONT face=3DArial =
+size=3D2>http://www.ostaravacas.com</FONT></A></FONT></DIV><BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<DIV><FONT face=3DArial size=3D2>the path from the deep red carpets of =
+the forest. Still Bombur slept and <BR>they grew very weary. At times =
+they heard disquieting laughter. <BR>Sometimes there was singing in the =
+distance too. The laughter was the <BR>laughter of fair voices not of =
+goblins, and the singing was beautiful, <BR>but it sounded eerie and =
+strange, and they were not comforted, rather <BR>they hurried on from =
+those parts with what strength they had left. Two =
+<BR></FONT></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C6829B.30464090--
+
+
+
+
+
+--===============1223239212==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1223239212==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1223239212==--
