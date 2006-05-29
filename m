@@ -1,17 +1,16 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: [PATCH] undeclared TASK_(UN)INTERRUPTIBLE fixed
-Date: Mon, 29 May 2006 15:37:23 +0200
-Message-ID: <20060529133723.GA4194@tuba>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002147]: lack of full duplex operation
+	for ati-ixp chipset.
+Date: Mon, 29 May 2006 15:34:22 +0200
+Message-ID: <49f5acea9fd9c8a793398562f5996221@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="AhhlLboLdkugWU4S"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 55B68168
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18977168
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 May 2006 15:31:07 +0200 (MEST)
-Received: from ml by tuba with local (Exim 4.50) id 1Fkhvw-000166-3j
-	for alsa-devel@alsa-project.org; Mon, 29 May 2006 15:37:24 +0200
-Content-Disposition: inline
+	Mon, 29 May 2006 15:34:23 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,48 +24,96 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
+======================================================================
+Reported By:                Gene Heskett
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2147
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               FC5, uptodate
+Kernel Version:             2.6.16-1.2111_FC5
+======================================================================
+Date Submitted:             05-23-2006 03:52 CEST
+Last Modified:              05-29-2006 15:34 CEST
+======================================================================
+Summary:                    lack of full duplex operation for ati-ixp chipset.
+Description: 
+skype, ekiga, audacity, and generally any program that needs to both
+transmit and receive, using isolated paths, fails in playback when
+recording.  In skype, I sound great at the far end, but reception may or
+may not work, with emphasis on the not.  What I hear in the phones, or in
+the speakers, sounds like what you would get if you took a sentence of
+spoken words, break it up into say 5ms pieces, and play them at maybe 10
+of these little snippets per second, so that the resultant sound is broken
+up to the point of no comprehension, and stretched in time by a
+considerable amount.
 
-This patch fixes a compilation problem of undeclared 
-TASK_INTERRUPTIBLE and TASK_UNINTERRUPTIBLE in acore/wrappers.c
+In audacity, simultanious playback, or play one track while recording
+another, likewise fails in that only very short snippets of the played
+track are output to the phones or speakers.
 
-Detected on an alpha machine w/ 2.4.27, gcc 3.3.5
+Likewise, ekiga suffers from this same effect, I'm told I sound great on
+teh other end, but I can't hear more than half a word occasionally.
+======================================================================
 
-Signed-off-by: Martin Langer <martin-langer@gmx.de>
+----------------------------------------------------------------------
+ Raymond - 05-29-06 11:41 
+----------------------------------------------------------------------
+It is because audacity support multi-channel capture (up to 16 channels)
+and it must open "hw" device in order to check whether the sound card
+support this feature.
 
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="compilationfix.patch"
+----------------------------------------------------------------------
+ Raymond - 05-29-06 15:34 
+----------------------------------------------------------------------
+The atiixp driver only support 2, 4 or 6 channels playback and 2 channels
+capture
 
---- wrappers.c~	2005-11-17 12:14:24.000000000 +0100
-+++ wrappers.c	2006-05-29 15:04:53.000000000 +0200
-@@ -4,6 +4,7 @@
- #include <linux/version.h>
- #include <linux/config.h>
- #include <linux/string.h>
-+#include <linux/sched.h>
- 
- #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
- #if defined(CONFIG_MODVERSIONS) && !defined(__GENKSYMS__) && !defined(__DEPEND__)
+aplay/arecord using device "default" with "type plug" which allow
+play/record mono sound.
 
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+audacity using device "hw" of atiixp can only capture stereo sound.
 
-
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---AhhlLboLdkugWU4S--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-23-06 03:52 Gene Heskett   New Issue                                    
+05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
+05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
+05-23-06 15:01 tiwai          Note Added: 0009934                          
+05-23-06 16:46 Gene Heskett   Note Added: 0009938                          
+05-23-06 17:24 tiwai          Note Added: 0009941                          
+05-23-06 18:07 Gene Heskett   Note Added: 0009943                          
+05-23-06 19:14 tiwai          Note Added: 0009947                          
+05-28-06 03:08 Gene Heskett   Note Added: 0009985                          
+05-28-06 03:20 Gene Heskett   Note Added: 0009986                          
+05-28-06 03:22 rlrevell       Note Added: 0009987                          
+05-28-06 03:58 Raymond        Note Added: 0009988                          
+05-28-06 04:04 Raymond        Note Edited: 0009988                         
+05-28-06 04:05 Raymond        Note Edited: 0009988                         
+05-28-06 04:24 rlrevell       Note Added: 0009989                          
+05-28-06 04:51 Gene Heskett   Note Added: 0009990                          
+05-28-06 05:10 rlrevell       Note Added: 0009991                          
+05-28-06 05:27 Gene Heskett   Note Added: 0009992                          
+05-28-06 05:34 rlrevell       Note Added: 0009993                          
+05-28-06 05:37 Gene Heskett   Note Added: 0009994                          
+05-28-06 06:13 rlrevell       Note Added: 0009995                          
+05-28-06 06:29 Gene Heskett   Note Added: 0009998                          
+05-28-06 06:35 rlrevell       Note Added: 0009999                          
+05-28-06 08:22 Raymond        Note Added: 0010000                          
+05-28-06 08:32 Raymond        Note Added: 0010001                          
+05-28-06 13:17 Gene Heskett   Note Added: 0010002                          
+05-29-06 03:13 Raymond        Note Added: 0010005                          
+05-29-06 04:24 Gene Heskett   Note Added: 0010006                          
+05-29-06 11:41 Raymond        Note Added: 0010010                          
+05-29-06 14:56 Raymond        Note Edited: 0010005                         
+05-29-06 15:34 Raymond        Note Added: 0010011                          
+======================================================================
