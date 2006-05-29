@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001883]: NO SOUND on K8N4-E Delux
-	motherboard (NFORCE-CK804 sound - snd-intel8x0)
-Date: Mon, 29 May 2006 10:27:41 +0200
-Message-ID: <5469982d6a1068ab71ae1e7d292593ec@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume
+	trouble
+Date: Mon, 29 May 2006 11:23:11 +0200
+Message-ID: <129ed2eb297da704283055e4da54e067@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AE637167
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7AE3516B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 May 2006 10:27:41 +0200 (MEST)
+	Mon, 29 May 2006 11:23:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,92 +26,118 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1883> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
 ======================================================================
-Reported By:                samael
+Reported By:                christophe
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1883
+Issue ID:                   917
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo / Ubuntu
-Kernel Version:             kernel-2.6.15
+Status:                     feedback
+Distribution:               Ununtu
+Kernel Version:             2.6.11-rc3
 ======================================================================
-Date Submitted:             02-27-2006 09:03 CET
-Last Modified:              05-29-2006 10:27 CEST
+Date Submitted:             02-17-2005 20:16 CET
+Last Modified:              05-29-2006 11:23 CEST
 ======================================================================
-Summary:                    NO SOUND on  K8N4-E Delux motherboard (NFORCE-CK804
-sound - snd-intel8x0)
+Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
-AMD64 3000+ on K8N4-E Delux motherboard
-(NFORCE-CK804 sound - snd-intel8x0)
+I have a problem with the driver for my soundcard after
+ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
+problem with prior kernels, I first tried with 2.6.8).
 
-ALSA-1.0.2/4 - sound works perfect!! After 1.0.4 - NO SOUND!!
-GSI 21 (level, low) -> IRQ 18
-Feb 12 19:46:31 tux PCI: Setting latency timer of device 0000:00:04.0 to
-64 
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-...............................................
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux AC'97 0 does not respond - RESET
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux codec_semaphore: semaphore is not ready
-[0x1][0x1010101] 
-Feb 12 19:46:31 tux AC'97 0 access is not valid [0xffffffff], removing
-mixer. Feb 12 19:46:31 tux Unable to initialize codec #0
-Feb 12 19:46:31 tux ACPI: PCI interrupt for device 0000:00:04.0 disabled
+This is a IBM x40 laptop (23865FU) with an intel chipset.
+
+The relevant lspci line is:
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
+Audio Controller (rev
++01)
+
+The driver I use is snd_intel8x0.
+
+The problem is that after a suspend/resume cycle the sound
+output is either off or only on one side or with statics.
+
+I tried to do:
+
+~$ alsactl power off
+~$ alsactl power on
+
+without any change.
+
+If I suspend/resume multiple time I can get the sound output
+a little better (like on one side instead of off). But so far
+to get the correct sound back I need to reboot.
+
+Is it a known problem?
+Is there a way to force the driver to reinitialized the chipset?
+
+Thanks for alsa,
+Christophe
+
 ======================================================================
 
 ----------------------------------------------------------------------
- samael - 05-03-06 19:16 
+ danone - 03-17-06 10:52 
 ----------------------------------------------------------------------
-I resolved this problem by upgrading BIOS to newest one (beta) from
-asus.com.
-
-By the way, after 2 hard monthes of using ASUS K8N4-E Delux, I replaced it
-on Epox MB :) 
-Much better!!!!! 
-
-All this problems are linked with bad Asus BIOS :(
-
-
+I have a similar problem on my HP Compaq nx8220. After resuming from s3
+sound seems to work with headphones but the inbuild speakers stay mute.
+Tried several things: 
+rmmod/modprobe soundmodules => doesn't help
+alsactl power off => wrecks resume
+playback while suspending => wrecks suspend
+diff content of /proc/asound before/after => no difference
+Could it be related to this problem?
 
 ----------------------------------------------------------------------
- thessy - 05-29-06 10:27 
+ iMil - 05-29-06 11:23 
 ----------------------------------------------------------------------
-Same problem here (look at uploaded aa-debug-output file).
-
-kernel 2.6.16, debian sarge (with backports)
-
-worked with 2.6.7, till upgrade no more.
-
-I won't get back, because of suspend2 works now ;-)
-
-The problem is known and will be fixed in new kernel version?
+same problem here with a nx8220 laptop, kernel 2.6.16, FC5.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-27-06 09:03 samael         New Issue                                    
-02-27-06 09:03 samael         Distribution              => Gentoo / Ubuntu 
-02-27-06 09:03 samael         Kernel Version            => kernel-2.6.15   
-02-27-06 09:04 samael         Issue Monitored: samael                      
-03-02-06 15:29 tiwai          Note Added: 0008309                          
-03-07-06 15:15 samael         Note Added: 0008363                          
-03-07-06 15:20 tiwai          Note Added: 0008364                          
-03-07-06 15:30 samael         Note Added: 0008367                          
-05-03-06 12:18 ksc91u         Note Added: 0009592                          
-05-03-06 19:14 samael         Note Added: 0009598                          
-05-03-06 19:15 samael         Note Edited: 0009598                         
-05-03-06 19:16 samael         Note Edited: 0009598                         
-05-29-06 10:27 thessy         Note Added: 0010008                          
+02-17-05 20:16 christophe     New Issue                                    
+02-17-05 20:16 christophe     Distribution              => Ununtu          
+02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
+02-17-05 20:30 tiwai          Note Added: 0003636                          
+02-17-05 21:01 christophe     Note Added: 0003639                          
+02-17-05 21:06 christophe     Note Added: 0003640                          
+02-17-05 22:38 christophe     Note Added: 0003643                          
+02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
+02-18-05 09:41 alexs81        Note Added: 0003649                          
+02-18-05 18:00 christophe     Note Added: 0003657                          
+02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
+               
+02-18-05 20:35 alexs81        Note Added: 0003659                          
+02-18-05 20:50 christophe     Note Added: 0003660                          
+02-18-05 21:13 alexs81        Note Added: 0003661                          
+02-18-05 21:16 christophe     Note Added: 0003662                          
+02-18-05 21:32 alexs81        Note Added: 0003663                          
+02-18-05 21:39 rlrevell       Note Added: 0003664                          
+02-19-05 02:40 christophe     Note Added: 0003668                          
+02-19-05 12:07 alexs81        Note Added: 0003669                          
+02-19-05 22:15 christophe     Note Added: 0003671                          
+02-19-05 22:16 christophe     Note Added: 0003672                          
+02-21-05 19:16 christophe     Note Added: 0003681                          
+02-21-05 19:21 christophe     Note Added: 0003682                          
+06-28-05 16:49 christophe     Note Added: 0005298                          
+06-29-05 16:04 christophe     Note Added: 0005306                          
+06-29-05 20:05 tiwai          Note Added: 0005308                          
+06-29-05 20:05 tiwai          File Added: ich-resume-fix.diff                   
+
+06-29-05 20:28 christophe     Note Added: 0005313                          
+06-29-05 23:17 christophe     Note Added: 0005320                          
+12-30-05 22:09 rlrevell       Note Added: 0007268                          
+03-01-06 00:59 rlrevell       Status                   new => closed       
+03-02-06 13:00 christophe     Status                   closed => feedback  
+03-02-06 13:00 christophe     Resolution               open => reopened    
+03-02-06 13:00 christophe     Note Added: 0008302                          
+03-17-06 10:52 danone         Note Added: 0008635                          
+03-17-06 10:52 danone         Issue Monitored: danone                      
+05-29-06 11:23 iMil           Note Added: 0010009                          
 ======================================================================
