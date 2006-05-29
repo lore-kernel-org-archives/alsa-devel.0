@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002147]: lack of full duplex operation
 	for ati-ixp chipset.
-Date: Mon, 29 May 2006 03:13:46 +0200
-Message-ID: <287c0010ac10026d406750ff8f2e416e@bugtrack.alsa-project.org>
+Date: Mon, 29 May 2006 04:24:50 +0200
+Message-ID: <46fdb1657c6edef8e3ee9fc51ef0584a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6DDDB13E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A390A128
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 May 2006 03:13:46 +0200 (MEST)
+	Mon, 29 May 2006 04:24:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               FC5, uptodate
 Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
 Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-29-2006 03:13 CEST
+Last Modified:              05-29-2006 04:24 CEST
 ======================================================================
 Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
@@ -65,82 +65,6 @@ teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- Gene Heskett - 05-28-06 13:17 
-----------------------------------------------------------------------
-re 00010000 (Raymond)
-That may be true for other distros, but FC5 has only the speaker-test
-subdir at that location, with everything else in /etc/alsa.
-
-As for the audacity mono problem, I've already run into that, and as far
-as the configure option given, this is an rpm, so I have no idea howto
-enforce that without installing from the src rpm.  If this is causing an
-alsa/audacity then we should be pulling the packager into this
-discussion.
-
-As for applying the -v option to aplay, it does this:
-[root@diablo ~]# aplay -v foo.wav
-Playing WAVE 'foo.wav' : Signed 16 bit Little Endian, Rate 48000 Hz,
-Stereo
-Plug PCM: Direct Stream Mixing PCM
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 16384
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Hardware PCM card 0 'ATI IXP' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tick_time    : 4000
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 1
-  stop_threshold   : 1073741824
-  silence_threshold: 0
-  silence_size : 1073741824
-  boundary     : 1073741824
-[root@diablo ~]#
-
-NDI if the above is correct. I do not see the device default listed above.
-But it sounds fine.  If its supposed to show 'default' then what file do I
-check to ascertain that its correct, bearing in mind this IS an uptodate
-as of 6 hours ago fedora core 5 install, and the files are not in what you
-seem to think is the std location.
-
--- 
-Cheers, Gene
-
-----------------------------------------------------------------------
  Raymond - 05-29-06 03:13 
 ----------------------------------------------------------------------
 audacity 1.2.x - portaudio (Portable Real-Time Audio Library) use "plughw"
@@ -150,6 +74,36 @@ in order to use audacity.
 
 If you want to run audacity and other applications concurrently , you will
 need a sound card which support hardware mixing
+
+----------------------------------------------------------------------
+ Gene Heskett - 05-29-06 04:24 
+----------------------------------------------------------------------
+but we're stuck with whats in this lappy, with only the bare minimum of
+actual 'bondouts' available.
+
+It seems to me that a software layer doing the mixing could be written
+that does present a uniform, chipset independent interface that the apps,
+oss or alsa, could not tell from the actual hardware.  Any mutually
+exclusive locks should be converted into virtual locks that exist only for
+that individual software port being accessed.  All mixing should take
+place beyond that point.
+
+In the case of this ATI-IXP chipset then, exactly how is this being done? 
+As in does there exist a block diagram of how this is actually  done?
+
+I'm also having trouble with the concept that the major (except for closed
+src skype) audio apps for linux are still dependent on the oss interface 3
+years after alsa became the default linux audio system. That boggles the
+mind given the obviously improved interfaces now presented to the
+user/coder by alsa with 1.0.11, and which I can only see improving with
+additional time.
+
+The bottom line to me is that I think I have a reasonable expectation of
+these 'major' applications all Just working(TM), if not now then not too
+far into the future.
+
+-- 
+Cheers, Gene
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -181,4 +135,5 @@ Date Modified  Username       Field                    Change
 05-28-06 08:32 Raymond        Note Added: 0010001                          
 05-28-06 13:17 Gene Heskett   Note Added: 0010002                          
 05-29-06 03:13 Raymond        Note Added: 0010005                          
+05-29-06 04:24 Gene Heskett   Note Added: 0010006                          
 ======================================================================
