@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002158]: play produces i/o error on
-	ad1845 (miro)
-Date: Mon, 29 May 2006 23:21:55 +0200
-Message-ID: <2bcd6835ba8206e5b1e5980424798191@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002035]: Realtek 861 card not
+	functional using included alsa drivers
+Date: Mon, 29 May 2006 23:33:36 +0200
+Message-ID: <04c07d1d35c666017c36542087049416@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ECE55152
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7ACC9135
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 May 2006 23:21:55 +0200 (MEST)
+	Mon, 29 May 2006 23:33:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,81 +26,106 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2158> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
 ======================================================================
-Reported By:                martin
-Assigned To:                
+Reported By:                vertex
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2158
-Category:                   ISA - miro
+Issue ID:                   2035
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
-Date Submitted:             05-24-2006 15:13 CEST
-Last Modified:              05-29-2006 23:21 CEST
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              05-29-2006 23:33 CEST
 ======================================================================
-Summary:                    play produces i/o error on ad1845 (miro)
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
 Description: 
-At first I will mention that 1.0.10final works without problems. And
-1.0.11rc3 or any newer version fails always during the fifth hw_writei
-with this Input/Output error:
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-aplay -Dplughw:1 /data/audio/lisboa_reloaded_1_20060421.wav Playing WAVE
-'/data/audio/lisboa_reloaded_1_20060421.wav' : Signed 16 bit Little 
-Endian, Rate 44100 Hz, Stereo
-hw_writei: frames = 4096, xferi.result = 4096, err = 0
-hw_writei: frames = 4096, xferi.result = 4096, err = 0
-hw_writei: frames = 4096, xferi.result = 4096, err = 0
-hw_writei: frames = 4096, xferi.result = 4096, err = 0
-hw_writei: frames = 4096, xferi.result = -5, err = -5
-aplay: pcm_write:1264: write error: Input/output error
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-My snd-miro uses an AD1845 which will be driven by the cs4231-lib. It's
-really possible that other cards with an ad1845 will have the same
-problem. BTW, recording seems to work without problems.
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
 
-Unfortunately I haven't found the bug, yet. It was introduced between
-1.0.10 and 1.0.11rc3. Well, if rc1/rc2 would compile, I could be more
-precise here.
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-A strace log is attached. Any ideas? (Just before I start the hard way:
-fixing the rc1/2 compilation bug and hunting for the bad patch...)
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- martin - 05-29-06 23:21 
+ vertex - 05-11-06 00:44 
 ----------------------------------------------------------------------
-I have to correct myself. After trying out a bunch of things it's obvious
-that it fails on x86. OTOH it works on an alpha cpu without problems.
-Sorry, I've mixed x86/alpha results in my former report.
+The motherboard vendor released a bios update. I am attaching the contents
+of /proc/asound/card0/codec#0 and the bits of debug that I found in dmesg
 
-Trying out an old and new version I can confirm for same miro pcm20 hw:
-1.0.9b and 1.0.11: snd-miro works fine on alpha
-1.0.9b and 1.0.11: snd-miro fails on x86 with this i/o error
+When I inserted the snd-hda-intel module with model=3stack, it shows a
+functional PCM channel, but still no sound on built-in speakers or
+headphones.
 
-Both systems are using a general ISA bus (I guess), but the AlphaBIOS
-doesn't support PnP. 
+Using auto, 6stack, and 6stack dig leaves me with unusable mixer
+controls.
 
-Ok, let's play a little bit with pnp stuff. Alsa compile option
---with-isapnp=no doesn't make a difference. Disable PNP support in the
-BIOS doesn't make a difference again.
+Please let me know if I can provide any other information.
 
-Building a new kernel with PNP support disabled doesn't help, but at least
-I saw another message now: "miro.c:1265: unable to detect OPTi9xx chip".
+----------------------------------------------------------------------
+ taschenorakel - 05-29-06 23:33 
+----------------------------------------------------------------------
+Also have this problem using a similiar notebook:
+https://launchpad.net/distros/ubuntu/+source/linux-source-2.6.15/+bug/44814
 
-Weird. It goes through all loops of snd_card_miro_detect() and can't find
-my 924. I guess it's time to look for an opti924 datasheet now.
-Hmm, but why does this card work on alphas then?
+Guess one of the nodes 0x03, 0x07 or 0x08 has to published for amixer? How
+would I have to modify patch_realtek.c to figure this out?
+
+Thanks
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-24-06 15:13 martin         New Issue                                    
-05-24-06 15:13 martin         File Added: miro.log.gz                      
-05-29-06 23:21 martin         Note Added: 0010014                          
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
+05-11-06 00:44 vertex         Note Added: 0009755                          
+05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
+05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
+  
+05-29-06 23:33 taschenorakel  Note Added: 0010015                          
 ======================================================================
