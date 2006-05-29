@@ -1,18 +1,22 @@
-From: "Michal Piotrowski" <michal.k.k.piotrowski@gmail.com>
-Subject: 2.6.17-rc4-mm3-lockdep BUG: possible deadlock detected!
-Date: Mon, 29 May 2006 20:32:47 +0200
-Message-ID: <6bffcb0e0605291132u701cd69tb855cf60fa317994@mail.gmail.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: dB gain
+Date: Mon, 29 May 2006 20:34:55 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0605292031100.11164@tm8103-a.perex-int.cz>
+References: <4478A290.80702@superbug.co.uk> <s5hverp7zcr.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0605291540430.11164@tm8103-a.perex-int.cz>
+	<Pine.LNX.4.61.0605291601230.11164@tm8103-a.perex-int.cz>
+	<s5hbqtg9a8a.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0605291630000.11164@tm8103-a.perex-int.cz>
+	<447B0F62.6010802@superbug.co.uk> <s5hzmh0deir.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from nz-out-0102.google.com (nz-out-0102.google.com [64.233.162.200])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E4DD1159
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 617BF159
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 May 2006 20:32:51 +0200 (MEST)
-Received: by nz-out-0102.google.com with SMTP id l1so604229nzf
-	for <alsa-devel@alsa-project.org>; Mon, 29 May 2006 11:32:48 -0700 (PDT)
-Content-Disposition: inline
+	Mon, 29 May 2006 20:34:56 +0200 (MEST)
+In-Reply-To: <s5hzmh0deir.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,53 +26,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Ingo Molnar <mingo@elte.hu>
-Cc: Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>, perex@suse.cz
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, 29 May 2006, Takashi Iwai wrote:
 
-I get this with Ingo's lockdep patch from
-http://people.redhat.com/mingo/generic-irq-subsystem/
+> At Mon, 29 May 2006 16:12:34 +0100,
+> James Courtier-Dutton wrote:
+> > 
+> > Jaroslav Kysela wrote:
+> > > On Mon, 29 May 2006, Takashi Iwai wrote:
+> > > 
+> > >> What we'll get by this compression is only the reduction of ioctl
+> > >> size.  But, these ioctls are called not so often and no time-critical
+> > >> task.
+> > > 
+> > > Nope. I'm talking about saving code in alsa-lib. Having a special case in 
+> > > alsa-lib for all hints is not really good. If you can store all necessary 
+> > > ranges to 32-bit value (which is allocated anyway) is a win. Of course, 
+> > > all mechanisms as James proposed will not be changed. I see only one 
+> > > problem why my proposal is not acceptable - we must store also the 
+> > > identifier type to the 32-bit value in the kernel side. Also, having both 
+> > > min and max values is not necessary (it can be evaluated from step).
+> > > 
+> > I don't understand where you think you are making a win with these
+> > 32-bit values? None of the information is stored in alsa-lib after the
+> > function has returned to the user app. It is all temporary use.
+> 
+> Maybe cached values to avoid too frequent ioctls?
+> 
+> But, still it won't save so much memory at all, given that we have at
+> most 100 controls with volumes...
 
-====================================
-[ BUG: possible deadlock detected! ]
-------------------------------------
-modprobe/592 is trying to acquire lock:
- (&grp->list_mutex){----}, at: [<fd9ee555>]
-snd_seq_port_connect+0xc0/0x337 [snd_seq]
+Sorry, I was looking to the proposed patch very quickly so my ideas were
+based on old implementation which is #if 0 #endifed for alsa-lib (there 
+was only one 32-bit hint value specifying the dB expression).
 
-but task is already holding lock:
- (&grp->list_mutex){----}, at: [<fd9ee4fb>]
-snd_seq_port_connect+0x66/0x337 [snd_seq]
+						Jaroslav
 
-which could potentially lead to deadlocks!
-
-other info that might help us debug this:
-1 locks held by modprobe/592:
- #0:  (&grp->list_mutex){----}, at: [<fd9ee4fb>]
-snd_seq_port_connect+0x66/0x337 [snd_seq]
-
-stack backtrace:
- <c1003f36> show_trace+0xd/0xf  <c1004449> dump_stack+0x17/0x19
- <c1039792> __lockdep_acquire+0xa1a/0xa39  <c1039bed> lockdep_acquire+0x69/0x82
- <fd9ee570> snd_seq_port_connect+0xdb/0x337 [snd_seq]  <fd9ea5f5>
-snd_seq_ioctl_subscribe_port+0x96/0xe6 [snd_seq]
- <fd9e91d4> snd_seq_do_ioctl+0x5d/0x68 [snd_seq]  <fd9e921c>
-snd_seq_kernel_client_ctl+0x2d/0x3b [snd_seq]
- <f8877274> snd_seq_oss_create_client+0x12d/0x142 [snd_seq_oss]
-<f88770f7> alsa_seq_oss_init+0xf7/0x147 [snd_seq_oss]
- <c104116d> sys_init_module+0xa6/0x230  <c11efa8b> sysenter_past_esp+0x54/0x8d
-
-Here is dmesg http://www.stardust.webpages.pl/files/lockdep/2.6.17-rc4-mm3-lockdep1/lockdep-dmesg
-
-Here is config
-http://www.stardust.webpages.pl/files/lockdep/2.6.17-rc4-mm3-lockdep1/lockdep-config
-
-Regards,
-Michal
-
--- 
-Michal K. K. Piotrowski
-LTG - Linux Testers Group
-(http://www.stardust.webpages.pl/ltg/wiki/)
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
