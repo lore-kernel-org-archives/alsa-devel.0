@@ -1,17 +1,21 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [RFC 2/7] snd-aoa: add aoa core
-Date: Tue, 30 May 2006 14:44:31 +0200
-Message-ID: <1148993072.3102.10.camel__16160.9794981361$1148993242$gmane$org@johannes>
-References: <20060528190026.754474000@johannes.berg>
-	<20060528190124.579130000@johannes.berg> <s5hac919jzl.wl%tiwai@suse.de>
+From: Arjan van de Ven <arjan@linux.intel.com>
+Subject: Re: BUG: possible deadlock detected! (sound) [Was:
+	2.6.17-rc5-mm1]
+Date: Tue, 30 May 2006 14:59:06 +0200
+Message-ID: <1148993947.3636.61.camel@laptopd505.fenrus.org>
+References: <20060530022925.8a67b613.akpm@osdl.org>
+	<447C22CE.2060402@gmail.com>
+	<1148987188.3636.52.camel@laptopd505.fenrus.org>
+	<s5h3berd6ne.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0469351363=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83A1914F
+Received: from laptopd505.fenrus.org (a222036.upc-a.chello.nl [62.163.222.36])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29BC914F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 May 2006 14:44:49 +0200 (MEST)
-In-Reply-To: <s5hac919jzl.wl%tiwai@suse.de>
+	Tue, 30 May 2006 14:59:10 +0200 (MEST)
+In-Reply-To: <s5h3berd6ne.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,72 +26,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: Takashi Iwai <tiwai@suse.de>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+Cc: Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, Jiri Slaby <jirislaby@gmail.com>, James@superbug.demon.co.uk, linux-kernel@vger.kernel.org, emu10k1-devel@lists.sourceforge.net, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-05-30 at 14:44 +0200, Takashi Iwai wrote:
+> This ops is a unique object assigned to a different "id" string.
+> 
+> The first snd_seq_device_register_driver() called from emu10k1_synth.c
+> is the registration for the id "snd-synth-emu10k1".
+> Then in init_device(), the corresponding devices are initialized, and
+> one callback registers again another device for OSS sequencer with a
+> different id "snd-seq-oss" via snd_seq_device_new() inside the lock.
+> Now it hits the lock-detector but the lock should belong to a
+> different ops object in practice.
+> 
+> This nested lock may happen only in two drivers, emu10k1-synth and
+> opl3, and only together with OSS emulation.  Since the OSS emulation
+> layer don't do active registration from itself, no deadlock should
+> happen (in theory -- I may oversee something :)
 
---===============0469351363==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-wDOrYlhNG7k3O3MhfTmY"
+ok fair enough
 
+Jiri, can you test the patch below? (I don't have this hardware)
 
---=-wDOrYlhNG7k3O3MhfTmY
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+The ops structure has complex locking rules, where not all ops are
+equal, some are subordinate on others for some complex sound cards. This
+requires for lockdep checking that each individual reg_mutex is
+considered in separation for its locking rules.
 
-On Mon, 2006-05-29 at 12:57 +0200, Takashi Iwai wrote:
-> > +	alsa_card =3D snd_card_new(-1, name, mod, sizeof(struct aoa_card));
->=20
-> Usually the first argument here is the index module option so that
-> user may specify the card order (e.g. secondary card) independent from
-> the order of module loading.
+Signed-off-by: Arjan van de Ven <arjan@linux.intel.com>
 
-Are you saying I should add an index module option and pass that?
+---
+ sound/core/seq/seq_device.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-johannes
-
---=-wDOrYlhNG7k3O3MhfTmY
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIVAwUARHw+LaVg1VMiehFYAQKs9hAApDarzZ7JMqB6V9e97xqnoKGIh4g3RUqA
-T6azyCCmIJUYdhgIpaOVI0byrd2imNbzO29Mmzkd4/OzbaSQxNAlDkW3W0p5QS6X
-5KeLFjL7KxQ6tikNZz+LFRBBouDzkB1TpzzObqjV6Ys5A95hSDwerEi0Yy2Pnb2i
-SQi4fsbPyksq0bd5XiBLKRUU0hdPokSQaI4d2EJzBx+EM1pwNKQ6oP4VdFNiPiza
-GNT7JPWsh8phm0ReglWy0jDGIut8GEvBeMrCApO/2nSrUfq9gSlN2e3meX4LOvom
-7Or/NyXOK+H1ObkZ1Sml7Xi1SevqvlQf68Re4C7PTtyhbn7sX/u964By2GqDczT+
-r1SHay3JW1fFyV4PpZuXa2PXqxPFy4lv8jJFpcoIb3nViMVY3xvwLJzAXNyQHqMa
-EMCHKszBYbZnmlq7YKmGkdhhxV1OJNDP2xFf1fVPkN3GKngPzwycXVEDrqM2PM2u
-Nt0YGyc5Wo/t0mr7JEV0NQG9fwKlnR5x/zgFqfF4HnOZITwTBXcbASXrltCxV1IC
-/PjlDlIQBNolLwe/HxAjfJ68bzLFSc2q1PkxLz24lYxnpaeTlSmYOuYEE7dbZSe3
-kfowcgRUWxEAPFv2pWyZn1gDl02C6becIhaMLQH05tx8oFplPuVTKzf2ejADXEy9
-JvD6g195Tcg=
-=cwPS
------END PGP SIGNATURE-----
-
---=-wDOrYlhNG7k3O3MhfTmY--
-
-
-
---===============0469351363==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0469351363==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0469351363==--
+Index: linux-2.6.17-rc4-mm3-lockdep/sound/core/seq/seq_device.c
+===================================================================
+--- linux-2.6.17-rc4-mm3-lockdep.orig/sound/core/seq/seq_device.c
++++ linux-2.6.17-rc4-mm3-lockdep/sound/core/seq/seq_device.c
+@@ -46,6 +46,7 @@
+ #include <linux/kmod.h>
+ #include <linux/slab.h>
+ #include <linux/mutex.h>
++#include <linux/lockdep.h>
+ 
+ MODULE_AUTHOR("Takashi Iwai <tiwai@suse.de>");
+ MODULE_DESCRIPTION("ALSA sequencer device management");
+@@ -73,6 +74,8 @@ struct ops_list {
+ 	struct mutex reg_mutex;
+ 
+ 	struct list_head list;	/* next driver */
++
++	struct lockdep_type_key reg_mutex_key;
+ };
+ 
+ 
+@@ -379,7 +382,7 @@ static struct ops_list * create_driver(c
+ 
+ 	/* set up driver entry */
+ 	strlcpy(ops->id, id, sizeof(ops->id));
+-	mutex_init(&ops->reg_mutex);
++	mutex_init_key(&ops->reg_mutex, id, &ops->reg_mutex_key);
+ 	ops->driver = DRIVER_EMPTY;
+ 	INIT_LIST_HEAD(&ops->dev_list);
+ 	/* lock this instance */
