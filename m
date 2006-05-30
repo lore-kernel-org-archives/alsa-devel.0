@@ -1,21 +1,21 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: James Courtier-Dutton <James@superbug.co.uk>
 Subject: Re: dB gain
-Date: Tue, 30 May 2006 21:49:28 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0605302141510.9178@tm8103.perex-int.cz>
+Date: Tue, 30 May 2006 19:59:58 +0100
+Message-ID: <447C962E.3010103@superbug.co.uk>
 References: <4478A290.80702@superbug.co.uk> <s5hverp7zcr.wl%tiwai@suse.de>
 	<447B0A19.2050408@superbug.co.uk> <s5hy7wkddyf.wl%tiwai@suse.de>
 	<447B308E.2050502@superbug.co.uk> <s5hirnod7l2.wl%tiwai@suse.de>
 	<Pine.LNX.4.61.0605292017280.11164@tm8103-a.perex-int.cz>
-	<447C962E.3010103@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FFE5140
+Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net
+	[194.217.242.88])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 65014150
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 May 2006 21:49:29 +0200 (MEST)
-In-Reply-To: <447C962E.3010103@superbug.co.uk>
+	Tue, 30 May 2006 21:00:02 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.61.0605292017280.11164@tm8103-a.perex-int.cz>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,24 +25,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: James Courtier-Dutton <James@superbug.co.uk>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 30 May 2006, James Courtier-Dutton wrote:
+So, from what I can see, there have been no real reasons why I should
+not commit my db gain code now.
+Except for the actual name of the ioctl function. Should I also use a
+different number?
+Lets take a vote:
+1) SNDRV_CTL_IOCTL_MISC = _IOR('U', 0x22, struct snd_ctl_misc),
+2) SNDRV_CTL_IOCTL_INFO2 = _IOR('U', 0x22, struct snd_ctl_info2),
+3) SNDRV_CTL_IOCTL_TLV = _IOR('U', 0x22, struct snd_ctl_tlv),
+4) Something else...suggest.
 
-> So, from what I can see, there have been no real reasons why I should
-> not commit my db gain code now.
+Once we decide, I will commit it.
 
-I would suggest to reduce the driver code (remove TLV parsing) and create 
-two ioctls (one global and one numid based). Or we can even add the global 
-ioctl later and parse TLV in driver, when we add something else to TLV.
-This means that the ioctl semantics will change from "operate with TLV"
-to "gather all possible information to TLV" which is all we need now.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+James
