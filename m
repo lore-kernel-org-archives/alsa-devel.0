@@ -1,15 +1,16 @@
-From: "Gwenevere Mynatt" <gwen@kingworld.com>
-Subject: Re: 725 Rontge
-Date: Mon, 29 May 2006 15:11:17 -0700
-Message-ID: <000001c6836c$ceadc880$8410a8c0@ssp81>
-Reply-To: Gwenevere Mynatt <gwen@kingworld.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002147]: lack of full duplex operation
+	for ati-ixp chipset.
+Date: Tue, 30 May 2006 03:46:20 +0200
+Message-ID: <1316d9ee00e0a0aebf9885697cbb23fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1717218499=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from kingworld.com (85-18-136-94.fastres.net [85.18.136.94])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CD79714F
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 44BB8146
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 May 2006 00:15:04 +0200 (MEST)
+	Tue, 30 May 2006 03:46:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,102 +23,138 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---===============1717218499==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C68332.224EF080"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
+======================================================================
+Reported By:                Gene Heskett
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2147
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               FC5, uptodate
+Kernel Version:             2.6.16-1.2111_FC5
+======================================================================
+Date Submitted:             05-23-2006 03:52 CEST
+Last Modified:              05-30-2006 03:46 CEST
+======================================================================
+Summary:                    lack of full duplex operation for ati-ixp chipset.
+Description: 
+skype, ekiga, audacity, and generally any program that needs to both
+transmit and receive, using isolated paths, fails in playback when
+recording.  In skype, I sound great at the far end, but reception may or
+may not work, with emphasis on the not.  What I hear in the phones, or in
+the speakers, sounds like what you would get if you took a sentence of
+spoken words, break it up into say 5ms pieces, and play them at maybe 10
+of these little snippets per second, so that the resultant sound is broken
+up to the point of no comprehension, and stretched in time by a
+considerable amount.
 
-This is a multi-part message in MIME format.
+In audacity, simultanious playback, or play one track while recording
+another, likewise fails in that only very short snippets of the played
+track are output to the phones or speakers.
 
-------=_NextPart_000_0001_01C68332.224EF080
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Likewise, ekiga suffers from this same effect, I'm told I sound great on
+teh other end, but I can't hear more than half a word occasionally.
+======================================================================
 
-Hi,=20
-L E V ? T R A
-V A L / U M=20
-A M B / E N
-M E R ? D i A
-V ? A G R A=20
-S O M ^
-P R O Z ^ C
-C ? A L i S=20
-X ^ N A X=20
-http://www.arterremai.com=20
+----------------------------------------------------------------------
+ sprocketboy - 05-29-06 21:24 
+----------------------------------------------------------------------
+This is a "me too" type of post, but maybe I can add some more useful
+information.
 
+I have tried to record while playing (overdub) in audacity as well, and
+have never gotten it to work.  The default audacity-1.2.3 RPM for Mandriva
+is compiled with the portaudio=v18 flag set, which means that audacity
+looks for an OSS driver, or in the case of ALSA, an OSS emulator.  I have
+tried compiling both the stable audacity-1.2.3 and the beta 1.3.0 versions
+with the portaudio=v19 flag set.  In both cases, the "ALSA ATI IXP" driver
+appears as a device selection in audacity's "Preferences" dialog, but if I
+select the ALSA driver for input and output and try to record, audacity
+locks up the kernel.
 
+Here is the relevant output for 'lspci -v' on my system.  I am using the
+Mandriva kernel 2.6.12-22mdk, custom compiled with support for SMP, 4GB
+himem, hyperthreading (I have a dual-core processor on a Toshiba laptop),
+and pre-emptible kernel.  Do any of those settings break the ati-ixp
+driver?
 
+00:14.5 Multimedia audio controller: ATI Technologies Inc IXP150 AC'97
+Audio Controller (rev 01)
+        Subsystem: Toshiba America Info Systems: Unknown device ff01
+        Flags: bus master, 66Mhz, slow devsel, latency 64, IRQ 17
+        Memory at e8004400 (32-bit, non-prefetchable) [size=256]
 
-Then Thorin was stricken dumb with amazement and confusion. No one=20
-spoke for a long while. Thorin at length broke the silence, and his=20
-voice was thick with wrath. That stone was my fathers, and is mine,=20
-he said. Why should I purchase my own? But wonder overcame him and he=20
-added: But how came you by the heirloom of my house-if there is need to=20
-ask such a question of thieves? We are not thieves, Bard answered.=20
+----------------------------------------------------------------------
+ Raymond - 05-30-06 03:46 
+----------------------------------------------------------------------
+strace -e trace=open aplay any.wav
 
+This tell you where do alsa-lib search and open those conf files ?
 
-------=_NextPart_000_0001_01C68332.224EF080
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+The device "default" is used whenever you don't specify -D device for
+those alsa-util
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi,
-<BR>
-L E V ? T R A<BR>
-<B>V A L / U M </B><BR>
-A M B / E N<BR>
-M E R ? D i A<BR>
-<B> V ? A G R A </B><BR>
-S O M ^<BR>
-P R O Z ^ C<BR>
-<B>C ? A L i S </B><BR>
-X ^ N A X
-<BR>
-<A href=3D"http://www.arterremai.com">http://www.arterremai.com</A>
-<BR>
-<BR>
-<BR>
-<BR>
-<BR>
-   Then Thorin was stricken dumb with amazement and confusion. No one =
-<BR>spoke for a long while. Thorin at length broke the silence, and his =
-<BR>voice was thick with wrath. That stone was my fathers, and is mine, =
-<BR>he said. Why should I purchase my own? But wonder overcame him and =
-he <BR>added: But how came you by the heirloom of my house-if there is =
-need to <BR>ask such a question of thieves? We are not thieves, Bard =
-answered. <BR></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C68332.224EF080--
+aplay -v any.wav
+
+Plug PCM: Direct Stream Mixing PCM                 <---  dmix
+Hardware PCM card 0 'ATI IXP' device 0 subdevice 0 <---- hw
+
+hw is the slave pcm of dmix in ATIIXP.conf
 
 
+Refer to the changelog in README.txt of audacity-src-1.2.4b
 
+Changes in 1.2.2:
 
+  * Added support for Software Playthrough (listen to what you're
+    recording while recording it, or while monitoring using a VU
+    meter) - this makes it possible, for example, to record using one
+    audio device while listening to it play through a separate device.
 
---===============1717218499==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1717218499==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1717218499==--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-23-06 03:52 Gene Heskett   New Issue                                    
+05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
+05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
+05-23-06 15:01 tiwai          Note Added: 0009934                          
+05-23-06 16:46 Gene Heskett   Note Added: 0009938                          
+05-23-06 17:24 tiwai          Note Added: 0009941                          
+05-23-06 18:07 Gene Heskett   Note Added: 0009943                          
+05-23-06 19:14 tiwai          Note Added: 0009947                          
+05-28-06 03:08 Gene Heskett   Note Added: 0009985                          
+05-28-06 03:20 Gene Heskett   Note Added: 0009986                          
+05-28-06 03:22 rlrevell       Note Added: 0009987                          
+05-28-06 03:58 Raymond        Note Added: 0009988                          
+05-28-06 04:04 Raymond        Note Edited: 0009988                         
+05-28-06 04:05 Raymond        Note Edited: 0009988                         
+05-28-06 04:24 rlrevell       Note Added: 0009989                          
+05-28-06 04:51 Gene Heskett   Note Added: 0009990                          
+05-28-06 05:10 rlrevell       Note Added: 0009991                          
+05-28-06 05:27 Gene Heskett   Note Added: 0009992                          
+05-28-06 05:34 rlrevell       Note Added: 0009993                          
+05-28-06 05:37 Gene Heskett   Note Added: 0009994                          
+05-28-06 06:13 rlrevell       Note Added: 0009995                          
+05-28-06 06:29 Gene Heskett   Note Added: 0009998                          
+05-28-06 06:35 rlrevell       Note Added: 0009999                          
+05-28-06 08:22 Raymond        Note Added: 0010000                          
+05-28-06 08:32 Raymond        Note Added: 0010001                          
+05-28-06 13:17 Gene Heskett   Note Added: 0010002                          
+05-29-06 03:13 Raymond        Note Added: 0010005                          
+05-29-06 04:24 Gene Heskett   Note Added: 0010006                          
+05-29-06 11:41 Raymond        Note Added: 0010010                          
+05-29-06 14:56 Raymond        Note Edited: 0010005                         
+05-29-06 15:34 Raymond        Note Added: 0010011                          
+05-29-06 15:55 Gene Heskett   Note Added: 0010012                          
+05-29-06 21:16 sprocketboy    Issue Monitored: sprocketboy                    
+05-29-06 21:24 sprocketboy    Note Added: 0010013                          
+05-30-06 03:46 Raymond        Note Added: 0010016                          
+======================================================================
