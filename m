@@ -1,17 +1,17 @@
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [RFC 5/7] snd-aoa: add layout-id fabric
-Date: Tue, 30 May 2006 14:37:55 +0200
-Message-ID: <1148992675.3102.2.camel@johannes>
+Subject: Re: [RFC 4/7] snd-aoa: add codecs
+Date: Tue, 30 May 2006 14:43:16 +0200
+Message-ID: <1148992996.3102.8.camel__41723.8718983301$1148993145$gmane$org@johannes>
 References: <20060528190026.754474000@johannes.berg>
-	<20060528190129.503400000@johannes.berg> <s5h64jp9ge4.wl%tiwai@suse.de>
+	<20060528190125.927852000@johannes.berg> <s5h8xol9gom.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0243733340=="
+Content-Type: multipart/mixed; boundary="===============1060262990=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD45E14F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B645014F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 May 2006 14:38:07 +0200 (MEST)
-In-Reply-To: <s5h64jp9ge4.wl%tiwai@suse.de>
+	Tue, 30 May 2006 14:43:28 +0200 (MEST)
+In-Reply-To: <s5h8xol9gom.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,60 +26,140 @@ Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0243733340==
+--===============1060262990==
 Content-Type: multipart/signed; micalg=pgp-sha1;
 	protocol="application/pgp-signature";
-	boundary="=-8WXs2ordTxhsmS7HleAU"
+	boundary="=-snKVV9vrQ2Fd8JPriS7s"
 
 
---=-8WXs2ordTxhsmS7HleAU
+--=-snKVV9vrQ2Fd8JPriS7s
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2006-05-29 at 14:14 +0200, Takashi Iwai wrote:
+On Mon, 2006-05-29 at 14:08 +0200, Takashi Iwai wrote:
+> > +	if (reg !=3D ONYX_REG_CONTROL) {
+> > +		*value =3D onyx->cache[reg-FIRSTREGISTER];
+> > +		return 0;
+> > +	}
+> > +	v =3D i2c_smbus_read_byte_data(&onyx->i2c, reg);
+> > +	if (v < 0)
+> > +		return -1;
+> > +	*value =3D (u8)v;
+> > +	onyx->cache[ONYX_REG_CONTROL-FIRSTREGISTER] =3D *value;
+>=20
+> Isn't it "reg - FIRSTREGISTER" ?
 
-> Just from curiosity:  Does this work properly?
-> I remember that there was a deadlock when you call request_module()
-> during module probe.
+Nah, look at the first line I quoted :)
 
-Yes, it works, but I don't think this is actually done during module
-probe (would have to check though)
 
+> I'd define a constant for 128.
+
+#define OFFSET_BECAUSE_ALSA_USERSPACE_PROGRAMS_SUCK 128
+;)
+
+Just kidding, will do.
+
+> Fold lines to fit with 80 columns (heh, blaming other one's code is
+> easy :)
+
+Heh. I thought I'd Lindent'ed most of it.
+
+> > +	/* FIXME: we could be checking if anything changed */
+> > +	mutex_unlock(&onyx->mutex);
+> > +
+> > +	return 1;
+>=20
+> The put callback is supposed to return 0 if the values are unchanged
+> (although most apps ignore the return value).
+
+Does it have to? This way there's an event, but...
+
+> > +static u8 initial_values[] =3D {
+>=20
+> Should have ARRAY_SIZE(register_map) since this size must be identical
+> with register_map.
+
+Good point.
+
+> > +#define ADDCTL(n)							\
+> > +	do {								\
+> > +		ctl =3D snd_ctl_new1(&n, onyx);				\
+> > +		if (ctl) {						\
+> > +			ctl->id.device =3D				\
+> > +				onyx->codec.soundbus_dev->pcm->device;	\
+> > +			aoa_snd_ctl_add(ctl);				\
+>=20
+> No error check?
+
+Hmm, yeah, I guess it should have error checks. Will revisit that.
+
+> Use strlcpy, or MAX_CODEC_NAME_LEN-1.  Similar lines are found in
+> tas driver too.
+
+Right.
+
+> Looks a bit too hacky.  IMO, it's better to define a struct
+
+Maybe I'll just get rid of it completely, it's never hooked up as far as
+I know. But yeah, I guess you're right.
+
+> > +static int tas_snd_capture_source_info(struct snd_kcontrol *kcontrol,
+> > +	struct snd_ctl_elem_info *uinfo)
+> > +{
+> > +	static char* texts[] =3D { "Line-In", "Microphone" };
+>=20
+> char *texts[]
+
+Any particular reason?
+
+> > +/* I need help here!
+>=20
+> Use ifdef.  Nested comments are bad.
+
+I know. Temporary code, probably going away completely.
+
+> > +	aoa_snd_ctl_add(snd_ctl_new1(&volume_control, tas));
+>=20
+> Error checks please.
+
+What should it do on such errors?
+
+Thanks,
 johannes
 
---=-8WXs2ordTxhsmS7HleAU
+--=-snKVV9vrQ2Fd8JPriS7s
 Content-Type: application/pgp-signature; name=signature.asc
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIVAwUARHw8oKVg1VMiehFYAQIAZxAAxYEeGPjqDPEVb80eF/qjcv6mUrpPdQAy
-27QIxHTarXSDOiSQ62TCrIBClosaxS7tBnPKL/Fo6XX6UjCjSY2Eks+JkFnvsb5X
-JuzoxXb59KykKDfse8GRVqUQM4NYrCd0fLqcMWgk2o8gkChpfxtBnuak5LKDLMXp
-ojiOBURYksY6h1odWQOBi+AzaocWKa3Xq0jzBpQL3/MbySe8ah6xKrH8fGV7V2Ee
-e3fouWVo6hNLCcGZVJCCbZ1pMwwUYYWeiZzjWB925+S8naoVnqZ6XS+14MuzTbgJ
-f8NGynhRrhi/UY9PI/TJJjmhukEMrfOujTLSbsHG4NabHAb1OjEjuXvqD1N4JvfB
-9LlbbqzJPJUbeKOi9X2XkBL9o9Hd3rYjBTrQ91OqBnKSWpn/nRS7gAeEgr6bL5pI
-H8Gbdy4vQqZlK7FIV0kVR9QW8avnkj7Q4mmLy+f/4Zf4hXmDXrOorz07ymouybcR
-FCABsqgIEVMqYj5JdqBoIzoSUWQW0l8gRXAP691kjKFaME9SnhMMt3iLJkIstbMs
-8Z96gRy+Wkpur2R1go5Eg3rBRkHRJ/XSkchqNm9G2iy5QIPwDmrM4n8sz0ZM7Ho3
-G2CfzeFgUtLBgHQ0cC+el4B/ircucDdZShaFZGdRFS2xULRIhMqb/JmaHd7K5Wf4
-pPl7VTBS8Rc=
-=XWrP
+iQIVAwUARHw94aVg1VMiehFYAQJAug/+OIa55SASnMv/ZpquSLUmRv0V1vrTb8X2
+fFWNdpk35bU0WPFPqhfmogujVfQgzhRMGFiw4JjJ17IDvYP3JDlN5viCqRJF7R6Y
+c8oSGAdWktUEPgfs/GcGKaBB6lpgExILE1Ww+3guhdEV1IzVbBvHhgG/LeqexQOk
+TFzHgvkrlGBUoMTMb76dBSniaFCojcNMCwqtielz/QIvdYrY1M1wTWqTe/bGlKUr
+ffhrsIXXj1TvTYsVhLWvmfYQMeslSuJGvv/5s4CVonHQPFNt3tn1ukp0You3rikf
+AFzEM7dsCWo8xA79ZkIFIQlkZ9kUHCnYlSzmuzvRFP4Ji/hg4VLt91v5J/GC5vJf
+iTU1sq7tInovN1JVLTIefhWAjXWro2medAGwQ5KyCOWbKG2CECzQovhvBJRZ0UV5
+lfxTwOex4bU3GplErJmkcaWakFAvCcswWvBo10mLjDfC/ykdNcpfba9T7gkbRxYw
+ER4DZnvexCPIarQPjaihkI3PaqcniGTeDEOVWQ9PebzhlHlHpKmGQWtoBv94J6wk
+bksIJN6rxx6NIjNVnjkshEp2Vt0nGUOpcKbejZyfzVFoiiHNIAxDPITXpwKlZWPN
+PZS0t9Wv+tq5JxO6VE5fTx9dpLuxCDxF9jLTo28i+/NjQnFa9zNPqXYOmuD5neKJ
+CtCRq90Xt54=
+=r+8W
 -----END PGP SIGNATURE-----
 
---=-8WXs2ordTxhsmS7HleAU--
+--=-snKVV9vrQ2Fd8JPriS7s--
 
 
 
---===============0243733340==
+--===============1060262990==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0243733340==
+--===============1060262990==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -90,4 +170,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============0243733340==--
+--===============1060262990==--
