@@ -1,20 +1,17 @@
-From: Arjan van de Ven <arjan@infradead.org>
-Subject: Re: BUG: possible deadlock detected! (sound) [Was:
-	2.6.17-rc5-mm1]
-Date: Tue, 30 May 2006 13:06:28 +0200
-Message-ID: <1148987188.3636.52.camel@laptopd505.fenrus.org>
-References: <20060530022925.8a67b613.akpm@osdl.org>
-	<447C22CE.2060402@gmail.com>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [RFC 0/7] snd-aoa: add snd-aoa
+Date: Tue, 30 May 2006 14:37:19 +0200
+Message-ID: <1148992639.3102.0.camel@johannes>
+References: <20060528190026.754474000@johannes.berg>
+	<1148843408.13437.4.camel@johannes.berg> <s5hejyd9m33.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1425025469=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from pentafluge.infradead.org (pentafluge.infradead.org
-	[213.146.154.40])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5C8914F
+Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71F6614F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 May 2006 13:06:35 +0200 (MEST)
-In-Reply-To: <447C22CE.2060402@gmail.com>
+	Tue, 30 May 2006 14:37:47 +0200 (MEST)
+In-Reply-To: <s5hejyd9m33.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,41 +21,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jiri Slaby <jirislaby@gmail.com>
-Cc: Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, tiwai@suse.de, James@superbug.demon.co.uk, linux-kernel@vger.kernel.org, emu10k1-devel@lists.sourceforge.net, perex@suse.cz
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2006-05-30 at 147 +0159, Jiri Slaby wrote:
 
-(I've turned your backtrace upside down to show it "chronological")
-
- [<c05911e0>] alsa_emu10k1_synth_init+0x22/0x24
- [<c0333d04>] snd_seq_device_register_driver+0x8f/0xeb
-
-this one does:
-
-       mutex_lock(&ops->reg_mutex);
-       ...
-       list_for_each(head, &ops->dev_list) {
-                struct snd_seq_device *dev = list_entry(head, struct snd_seq_device, list);
-                init_device(dev, ops);
-       }
-       mutex_unlock(&ops->reg_mutex);
-
- [<c0333537>] init_device+0x2c/0x94
-  which calls into the driver
- [<c0352c39>] snd_emu10k1_synth_new_device+0xe7/0x14e
- [<c0353f50>] snd_emux_register+0x10d/0x13f
- [<c0358260>] snd_emux_init_seq_oss+0x35/0x9c
- [<c0333aa0>] snd_seq_device_new+0x96/0x111
-
-and this one does
-        mutex_lock(&ops->reg_mutex);
-        list_add_tail(&dev->list, &ops->dev_list);
-        ops->num_devices++;
-        mutex_unlock(&ops->reg_mutex);
+--===============1425025469==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-NNkh0+FprPwzNkkDDjj4"
 
 
-so... on first sight this looks like a real deadlock;
-unless the ALSA folks can tell me why "ops" is always different,
-and what the lock ordering rules between those is...
+--=-NNkh0+FprPwzNkkDDjj4
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2006-05-29 at 12:12 +0200, Takashi Iwai wrote:
+
+> Not sure which filtered the post (sourceforge server?)...
+
+Yeah, sf.net, you can look at it on their mailman interface.
+
+> Could you repost with a gzipped attachment?
+
+I'll instead split it up into two which are both smaller, can be done.
+
+johannes
+
+--=-NNkh0+FprPwzNkkDDjj4
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIVAwUARHw8faVg1VMiehFYAQIalRAAu19FVwXFbKKCDKrfJcFDfjggByMqlAui
+F8m1l+kTT1p/VDN9YAT3JnI0Pr8Dw573XSW1+QjXhB0F367VjMhurpQ1+tE4Qlj1
+M4RTeNweQHZWbKrGx2A+tuI5bhucnzzZCjEzwnrBiZ4q7nCoks//zC5tmH8jOIJF
+0LG7s+93Z71PZIae/JnNpLyvi6lel68LIHSrormrHKaZFoCesE0+F5eM2umLdjr5
+MgNe+D+KEegq6EuInQBrfE2ghhE35ZOWezorqU+2B7TAqztf4bVUcLZNi9Z75y9l
+bCC4Il6zeY+SKxc5yK4BCNAWAijsqCU8TaSSvl/zsBdWxkXlLSq7QNhtTbQabQiX
+LkiSKyktmLlwdwVDfL8vaYZGKbSsbwIj5n1vc5pCIcYDF1tY5eknuRJVeSfhyd3h
+/8lzwjbrMvmYUBD1qMETEXIRSjIiBJY1Fl51IIEwNbpHKL4WCU53/Gud6OC7jqbk
+Vte0djPz0ugidM0bMCjsWDBPf3YLBB21oK9WNuOm7uns7Z9qH/YcgvwE12ltsZf2
+FGuL/o3c7l41OnBrCa+chhg0lySzzIttPLDo6c8xGBGdBSioTLbx9c2VRXtdJ4yC
+24J/cxCcYOndRVyL/9jrckafHhfP1iHfDgH1obbFs5Fd2d9qqJSIOEwA8ugfcSnX
+PnLfcNkDLiA=
+=1nSI
+-----END PGP SIGNATURE-----
+
+--=-NNkh0+FprPwzNkkDDjj4--
+
+
+
+--===============1425025469==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1425025469==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1425025469==--
