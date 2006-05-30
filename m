@@ -1,16 +1,21 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not
-	functional using included alsa drivers
-Date: Tue, 30 May 2006 19:11:13 +0200
-Message-ID: <1315ee48d856537cb0e02ecdcfb8a878@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: dB gain
+Date: Tue, 30 May 2006 21:49:28 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0605302141510.9178@tm8103.perex-int.cz>
+References: <4478A290.80702@superbug.co.uk> <s5hverp7zcr.wl%tiwai@suse.de>
+	<447B0A19.2050408@superbug.co.uk> <s5hy7wkddyf.wl%tiwai@suse.de>
+	<447B308E.2050502@superbug.co.uk> <s5hirnod7l2.wl%tiwai@suse.de>
+	<Pine.LNX.4.61.0605292017280.11164@tm8103-a.perex-int.cz>
+	<447C962E.3010103@superbug.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9D867147
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FFE5140
 	for <alsa-devel@alsa-project.org>;
-	Tue, 30 May 2006 19:11:13 +0200 (MEST)
+	Tue, 30 May 2006 21:49:29 +0200 (MEST)
+In-Reply-To: <447C962E.3010103@superbug.co.uk>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,109 +25,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 30 May 2006, James Courtier-Dutton wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
-======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
-======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              05-30-2006 19:11 CEST
-======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
-Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
+> So, from what I can see, there have been no real reasons why I should
+> not commit my db gain code now.
 
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+I would suggest to reduce the driver code (remove TLV parsing) and create 
+two ioctls (one global and one numid based). Or we can even add the global 
+ioctl later and parse TLV in driver, when we add something else to TLV.
+This means that the ioctl semantics will change from "operate with TLV"
+to "gather all possible information to TLV" which is all we need now.
 
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
+						Jaroslav
 
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
-
-Please let me know if there is something more I can provide.
-======================================================================
-
-----------------------------------------------------------------------
- taschenorakel - 05-29-06 23:33 
-----------------------------------------------------------------------
-Also have this problem using a similiar notebook:
-https://launchpad.net/distros/ubuntu/+source/linux-source-2.6.15/+bug/44814
-
-Guess one of the nodes 0x03, 0x07 or 0x08 has to published for amixer? How
-would I have to modify patch_realtek.c to figure this out?
-
-Thanks
-
-----------------------------------------------------------------------
- vertex - 05-30-06 19:11 
-----------------------------------------------------------------------
-I've been trying to figure out this process myself. Here is a thread that
-might be helpful:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618 . I just don't
-have the skill to fix this problem. I found the attached
-patch_realtek.diff pretty interesting. Also, here is a link to the realtek
-datasheet:
-http://www.realtek.com.tw/downloads/downloads1-3.aspx?spec=True&compamodel=ALC861
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-04-20-06 14:41 tiwai          Note Added: 0009375                          
-04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
-   
-04-20-06 20:22 vertex         File Added: codec0.during.playback                
-   
-04-20-06 20:23 vertex         Note Added: 0009398                          
-04-21-06 16:50 tiwai          Note Added: 0009416                          
-04-21-06 16:51 tiwai          Note Added: 0009417                          
-04-21-06 16:54 tiwai          Note Added: 0009418                          
-04-21-06 18:56 vertex         Note Added: 0009428                          
-04-26-06 00:37 vertex         Note Added: 0009499                          
-05-11-06 00:44 vertex         Note Added: 0009755                          
-05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
-05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
-  
-05-29-06 23:33 taschenorakel  Note Added: 0010015                          
-05-30-06 19:11 vertex         Note Added: 0010021                          
-======================================================================
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
