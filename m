@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not
 	functional using included alsa drivers
-Date: Wed, 31 May 2006 21:02:17 +0200
-Message-ID: <b2e293bcd74724b2dd075a7c968ddfcd@bugtrack.alsa-project.org>
+Date: Wed, 31 May 2006 21:06:33 +0200
+Message-ID: <b36c2e7adff537bd406a5f3ca88696a6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E776C11F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B84EE3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 May 2006 21:02:17 +0200 (MEST)
+	Wed, 31 May 2006 21:06:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              05-31-2006 21:02 CEST
+Last Modified:              05-31-2006 21:06 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -73,30 +73,6 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- taschenorakel - 05-31-06 20:20 
-----------------------------------------------------------------------
-GOOD NEWS: There is some version of snd-intel-hda which can produce sound
-with this notebook. Bundled with my notebook there was some CD-ROM labled
-with "Intervideo InstantOn"
-(http://www.kefk.net/Linux/Distributionen/Speziell/InterVideo/index.asp).
-It contains some mini Linux for quickly playing media files without
-booting a full operating system.
-
-The file C:\InstantON\lib_main contains a MIMIX filesystem containing this
-version of snd-intel-hda.ko:
-
-/tmp/m31/alsa-driver-1.0.9b_24a/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c;
-compiled for "2.6.13 SMP preempt 686 gcc-3.4".
-
-Checksums:
-
-eee42797c5a4b11d04ac61de26b7ab51  snd-hda-codec.ko
-c16bdc4c3f6bc1d77dae76bd752efffc  snd-hda-intel.ko
-
-Now we just have to tell Intervideo to give us their version of
-alsa-driver-1.0.9b_24a :-)
-
-----------------------------------------------------------------------
  vertex - 05-31-06 21:02 
 ----------------------------------------------------------------------
 I have contacted someone with Intervideo OEM sales dept. She is going to
@@ -104,6 +80,13 @@ try and get me in contact with someone in their engineering department.
 If there is any problem with that, I have the main contact for their legal
 department. Seeing as how these drivers are released under the gpl, they
 are legally obligated to provide source code for their modifications.
+
+----------------------------------------------------------------------
+ vertex - 05-31-06 21:06 
+----------------------------------------------------------------------
+It looks like you can download the source on their page, but it does not
+look up-to-date. Look here:
+http://www.intervideo.com/jsp/oem/InstantON_GPL.jsp
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -138,4 +121,5 @@ Date Modified  Username       Field                    Change
 05-30-06 19:11 vertex         Note Added: 0010021                          
 05-31-06 20:20 taschenorakel  Note Added: 0010028                          
 05-31-06 21:02 vertex         Note Added: 0010029                          
+05-31-06 21:06 vertex         Note Added: 0010030                          
 ======================================================================
