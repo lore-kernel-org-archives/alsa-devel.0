@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002177]: Logitech USB headset fails to
-	work when used through usb hub
-Date: Wed, 31 May 2006 23:38:38 +0200
-Message-ID: <a08e79c8d694cefb8a9d2f790aabfd42@bugtrack.alsa-project.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [RFC] rawmidi suspend/resume support
+Date: Wed, 31 May 2006 23:59:24 +0200
+Message-ID: <20060531235924.6bc1a911.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD62C140
-	for <alsa-devel@alsa-project.org>;
-	Wed, 31 May 2006 23:38:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,68 +15,161 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2177> 
-======================================================================
-Reported By:                harking
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2177
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16
-======================================================================
-Date Submitted:             05-31-2006 23:38 CEST
-Last Modified:              05-31-2006 23:38 CEST
-======================================================================
-Summary:                    Logitech USB headset fails to work when used through
-usb hub
-Description: 
-Hello, I'm having some issues getting my Logtech USB headset to work when
-used through a Dell Monitor USB Hub. The headset works fine when plugged
-into the pc directly.
+Does this patch make sense ?
 
-I think it might be related to Bug 0000061
+It adds two functions to rawmidi.c: snd_rawmidi_suspend() and
+snd_rawmidi_resume() and it adds a new ops callback. Those functions
+pause or restart the tasklet respectively and call the driver's
+ops->power(down/up) function. This patch also prevents driver's ops->
+functions from being called while the card is supended.
 
-Here are the errors from dmesg when trying to play through the device
-using alsa:
+(tested ok with the Gina 3G)
 
-usb 1-7.4: new full speed USB device using ehci_hcd and address 7
-usb 1-7.4: configuration #1 chosen from 1 choice
-input: Logitech Logitech USB Headset as /class/input/input3
-input: USB HID v1.00 Device [Logitech Logitech USB Headset] on
-usb-0000:00:1d.7-7.4
-usbcore: registered new driver snd-usb-audio
-cannot submit datapipe for urb 0, err = -38
-cannot submit datapipe for urb 0, err = -38
-cannot submit datapipe for urb 0, err = -38
-cannot submit datapipe for urb 0, err = -38
-cannot submit datapipe for urb 0, err = -38
-cannot submit datapipe for urb 0, err = -38
 
-The errors will appear every time an application tries to open the sound
-device.
 
-This error is being generated from linux-2.6.16/sound/usb/usbaudio.c
+diff -dupr alsa-kernel__orig/core/rawmidi.c alsa-kernel/core/rawmidi.c
+--- alsa-kernel__orig/core/rawmidi.c	2006-05-17 23:17:58.000000000 +0200
++++ alsa-kernel/core/rawmidi.c	2006-05-31 23:47:16.000000000 +0200
+@@ -155,17 +155,28 @@ static int snd_rawmidi_runtime_free(stru
+ 
+ static inline void snd_rawmidi_output_trigger(struct snd_rawmidi_substream *substream,int up)
+ {
+-	if (up) {
+-		tasklet_hi_schedule(&substream->runtime->tasklet);
+-	} else {
+-		tasklet_kill(&substream->runtime->tasklet);
+-		substream->ops->trigger(substream, 0);
++	struct snd_card *card = substream->rmidi->card;
++
++	snd_power_lock(card);
++	if (snd_power_wait(card, SNDRV_CTL_POWER_D0) >= 0) {
++		if (up) {
++			tasklet_hi_schedule(&substream->runtime->tasklet);
++		} else {
++			tasklet_kill(&substream->runtime->tasklet);
++			substream->ops->trigger(substream, 0);
++		}
+ 	}
++	snd_power_unlock(card);
+ }
+ 
+ static void snd_rawmidi_input_trigger(struct snd_rawmidi_substream *substream, int up)
+ {
+-	substream->ops->trigger(substream, up);
++	struct snd_card *card = substream->rmidi->card;
++
++	snd_power_lock(card);
++	if (snd_power_wait(card, SNDRV_CTL_POWER_D0) >= 0)
++		substream->ops->trigger(substream, up);
++	snd_power_unlock(card);
+ 	if (!up && substream->runtime->event)
+ 		tasklet_kill(&substream->runtime->tasklet);
+ }
+@@ -204,9 +215,14 @@ int snd_rawmidi_drain_output(struct snd_
+ 	runtime->drain = 0;
+ 	if (err != -ERESTARTSYS) {
+ 		/* we need wait a while to make sure that Tx FIFOs are empty */
+-		if (substream->ops->drain)
+-			substream->ops->drain(substream);
+-		else
++		if (substream->ops->drain) {
++			struct snd_card *card = substream->rmidi->card;
++
++			snd_power_lock(card);
++			if (snd_power_wait(card, SNDRV_CTL_POWER_D0) >= 0)
++				substream->ops->drain(substream);
++			snd_power_unlock(card);
++		} else
+ 			msleep(50);
+ 		snd_rawmidi_drop_output(substream);
+ 	}
+@@ -1648,6 +1664,59 @@ void snd_rawmidi_set_ops(struct snd_rawm
+ 	}
+ }
+ 
++
++#ifdef CONFIG_PM
++
++/**
++ * snd_rawmidi_suspend
++ * @substream: the rawmidi substream
++ *
++ * Suspend the given substream.
++ */
++int snd_rawmidi_suspend(struct snd_rawmidi_substream *substream)
++{
++	int err;
++	struct snd_card *card = substream->rmidi->card;
++
++snd_printk("snd_rawmidi_suspend\n");
++	err = 0;
++	snd_power_lock(card);
++	tasklet_disable(&substream->runtime->tasklet);
++	if (substream->ops->power)
++		err = substream->ops->power(substream, 0);
++	snd_power_unlock(card);
++	return err;
++}
++
++EXPORT_SYMBOL(snd_rawmidi_suspend);
++
++
++/**
++ * snd_rawmidi_resume
++ * @substream: the rawmidi substream
++ *
++ * Resume the given substream.
++ */
++int snd_rawmidi_resume(struct snd_rawmidi_substream *substream)
++{
++	int err;
++	struct snd_card *card = substream->rmidi->card;
++
++snd_printk("snd_rawmidi_resume\n");
++	err = 0;
++	snd_power_lock(card);
++	if (substream->ops->power)
++		err = substream->ops->power(substream, 1);
++	tasklet_enable(&substream->runtime->tasklet);
++	snd_power_unlock(card);
++	return err;
++}
++
++EXPORT_SYMBOL(snd_rawmidi_resume);
++
++#endif /* CONFIG_PM */
++
++
+ /*
+  *  ENTRY functions
+  */
+diff -dupr alsa-kernel__orig/include/rawmidi.h alsa-kernel/include/rawmidi.h
+--- alsa-kernel__orig/include/rawmidi.h	2006-05-17 23:17:58.000000000 +0200
++++ alsa-kernel/include/rawmidi.h	2006-05-28 19:57:49.000000000 +0200
+@@ -53,6 +53,7 @@ struct snd_rawmidi_ops {
+ 	int (*close) (struct snd_rawmidi_substream * substream);
+ 	void (*trigger) (struct snd_rawmidi_substream * substream, int up);
+ 	void (*drain) (struct snd_rawmidi_substream * substream);
++	int (*power) (struct snd_rawmidi_substream * substream, int state);
+ };
+ 
+ struct snd_rawmidi_global_ops {
+@@ -182,5 +183,7 @@ long snd_rawmidi_kernel_read(struct snd_
+ 			     unsigned char *buf, long count);
+ long snd_rawmidi_kernel_write(struct snd_rawmidi_substream *substream,
+ 			      const unsigned char *buf, long count);
++int snd_rawmidi_suspend(struct snd_rawmidi_substream *substream);
++int snd_rawmidi_resume(struct snd_rawmidi_substream *substream);
+ 
+ #endif /* __SOUND_RAWMIDI_H */
 
-Thanks for all of your help!
 
-======================================================================
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-31-06 23:38 harking        New Issue                                    
-05-31-06 23:38 harking        Distribution              => Gentoo          
-05-31-06 23:38 harking        Kernel Version            => 2.6.16          
-======================================================================
+
+
+--
+Giuliano.
