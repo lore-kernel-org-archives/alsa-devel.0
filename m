@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not
-	functional using included alsa drivers
-Date: Wed, 31 May 2006 23:23:51 +0200
-Message-ID: <2fdce9de2f0b44c7e8e15790e7773c22@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002177]: Logitech USB headset fails to
+	work when used through usb hub
+Date: Wed, 31 May 2006 23:38:38 +0200
+Message-ID: <a08e79c8d694cefb8a9d2f790aabfd42@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C03314E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD62C140
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 May 2006 23:23:51 +0200 (MEST)
+	Wed, 31 May 2006 23:38:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,104 +24,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2177> 
 ======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
+Reported By:                harking
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
+Issue ID:                   2177
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
+Distribution:               Gentoo
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              05-31-2006 23:23 CEST
+Date Submitted:             05-31-2006 23:38 CEST
+Last Modified:              05-31-2006 23:38 CEST
 ======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
+Summary:                    Logitech USB headset fails to work when used through
+usb hub
 Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
+Hello, I'm having some issues getting my Logtech USB headset to work when
+used through a Dell Monitor USB Hub. The headset works fine when plugged
+into the pc directly.
 
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+I think it might be related to Bug 0000061
 
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
+Here are the errors from dmesg when trying to play through the device
+using alsa:
 
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+usb 1-7.4: new full speed USB device using ehci_hcd and address 7
+usb 1-7.4: configuration #1 chosen from 1 choice
+input: Logitech Logitech USB Headset as /class/input/input3
+input: USB HID v1.00 Device [Logitech Logitech USB Headset] on
+usb-0000:00:1d.7-7.4
+usbcore: registered new driver snd-usb-audio
+cannot submit datapipe for urb 0, err = -38
+cannot submit datapipe for urb 0, err = -38
+cannot submit datapipe for urb 0, err = -38
+cannot submit datapipe for urb 0, err = -38
+cannot submit datapipe for urb 0, err = -38
+cannot submit datapipe for urb 0, err = -38
 
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
+The errors will appear every time an application tries to open the sound
+device.
 
-Please let me know if there is something more I can provide.
+This error is being generated from linux-2.6.16/sound/usb/usbaudio.c
+
+Thanks for all of your help!
+
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 05-31-06 22:51 
-----------------------------------------------------------------------
-Well, the alsa-driver posted on that site is identical to alsa-driver
-1.0.8.  Hopefully they will comply with the GPL and post their modified
-1.0.9.
-
-Is there any way you can test a live CD of an older distro to establish
-whether your sound works with unmodified ALSA 1.0.8?
-
-----------------------------------------------------------------------
- vertex - 05-31-06 23:23 
-----------------------------------------------------------------------
-Mine is from Uniwill.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-04-20-06 14:41 tiwai          Note Added: 0009375                          
-04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
-   
-04-20-06 20:22 vertex         File Added: codec0.during.playback                
-   
-04-20-06 20:23 vertex         Note Added: 0009398                          
-04-21-06 16:50 tiwai          Note Added: 0009416                          
-04-21-06 16:51 tiwai          Note Added: 0009417                          
-04-21-06 16:54 tiwai          Note Added: 0009418                          
-04-21-06 18:56 vertex         Note Added: 0009428                          
-04-26-06 00:37 vertex         Note Added: 0009499                          
-05-11-06 00:44 vertex         Note Added: 0009755                          
-05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
-05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
-  
-05-29-06 23:33 taschenorakel  Note Added: 0010015                          
-05-30-06 19:11 vertex         Note Added: 0010021                          
-05-31-06 20:20 taschenorakel  Note Added: 0010028                          
-05-31-06 21:02 vertex         Note Added: 0010029                          
-05-31-06 21:06 vertex         Note Added: 0010030                          
-05-31-06 22:43 rlrevell       Note Added: 0010032                          
-05-31-06 22:51 rlrevell       Note Added: 0010033                          
-05-31-06 23:23 vertex         Note Added: 0010035                          
+05-31-06 23:38 harking        New Issue                                    
+05-31-06 23:38 harking        Distribution              => Gentoo          
+05-31-06 23:38 harking        Kernel Version            => 2.6.16          
 ======================================================================
