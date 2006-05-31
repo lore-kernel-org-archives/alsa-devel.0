@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not
 	functional using included alsa drivers
-Date: Wed, 31 May 2006 22:43:41 +0200
-Message-ID: <13e9183a9d5578317a4efd5575f00cc6@bugtrack.alsa-project.org>
+Date: Wed, 31 May 2006 22:51:19 +0200
+Message-ID: <c26d3f9b329b3c7c4e0b7c927d7d768a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16C19138
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0E099138
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 May 2006 22:43:41 +0200 (MEST)
+	Wed, 31 May 2006 22:51:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              05-31-2006 22:43 CEST
+Last Modified:              05-31-2006 22:51 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -73,16 +73,19 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- vertex - 05-31-06 21:06 
-----------------------------------------------------------------------
-It looks like you can download the source on their page, but it does not
-look up-to-date. Look here:
-http://www.intervideo.com/jsp/oem/InstantON_GPL.jsp
-
-----------------------------------------------------------------------
  rlrevell - 05-31-06 22:43 
 ----------------------------------------------------------------------
 Which notebook is it, Fujitsu or Samsung?
+
+----------------------------------------------------------------------
+ rlrevell - 05-31-06 22:51 
+----------------------------------------------------------------------
+Well, the alsa-driver posted on that site is identical to alsa-driver
+1.0.8.  Hopefully they will comply with the GPL and post their modified
+1.0.9.
+
+Is there any way you can test a live CD of an older distro to establish
+whether your sound works with unmodified ALSA 1.0.8?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -119,4 +122,5 @@ Date Modified  Username       Field                    Change
 05-31-06 21:02 vertex         Note Added: 0010029                          
 05-31-06 21:06 vertex         Note Added: 0010030                          
 05-31-06 22:43 rlrevell       Note Added: 0010032                          
+05-31-06 22:51 rlrevell       Note Added: 0010033                          
 ======================================================================
