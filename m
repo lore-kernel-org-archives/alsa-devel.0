@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002171]: Wish for m-audio projectmix
-	I/O driver
-Date: Wed, 31 May 2006 19:30:35 +0200
-Message-ID: <ce93d7f4bb05d411cbe96ef97a50325c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002035]: Realtek 861 card not
+	functional using included alsa drivers
+Date: Wed, 31 May 2006 20:20:31 +0200
+Message-ID: <0cd4b2663559999794353ecf2a1a2bc5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 707E6140
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2DBF142
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 May 2006 19:30:35 +0200 (MEST)
+	Wed, 31 May 2006 20:20:31 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,51 +24,119 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2171> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
 ======================================================================
-Reported By:                junnu
-Assigned To:                Clemens Ladisch
+Reported By:                vertex
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2171
-Category:                   1_OTHERS
+Issue ID:                   2035
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 won't fix
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
-Date Submitted:             05-29-2006 13:05 CEST
-Last Modified:              05-31-2006 19:30 CEST
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              05-31-2006 20:20 CEST
 ======================================================================
-Summary:                    Wish for m-audio projectmix I/O driver
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
 Description: 
-Hi all!
-As soon as this driver comes to reality, I will change my studio from
-windows to Linux based. Does anyone know is this even possible? Sorry my
-bad english!
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
+
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
+
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 05-31-06 19:30 
+ vertex - 05-30-06 19:11 
 ----------------------------------------------------------------------
-A driver for FireWire devices is written by the FreeBoB project.  The
-ProjectMix isn't listed on
-<http://freebob.sourceforge.net/index.php/List_of_Supported_Devices>, but
-it probably is quite similar to other M-Audio devices.
+I've been trying to figure out this process myself. Here is a thread that
+might be helpful:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1618 . I just don't
+have the skill to fix this problem. I found the attached
+patch_realtek.diff pretty interesting. Also, here is a link to the realtek
+datasheet:
+http://www.realtek.com.tw/downloads/downloads1-3.aspx?spec=True&compamodel=ALC861
+
+----------------------------------------------------------------------
+ taschenorakel - 05-31-06 20:20 
+----------------------------------------------------------------------
+GOOD NEWS: There is some version of snd-intel-hda which can produce sound
+with this notebook. Bundled with my notebook there was some CD-ROM labled
+with "Intervideo InstantOn"
+(http://www.kefk.net/Linux/Distributionen/Speziell/InterVideo/index.asp).
+It contains some mini Linux for quickly playing media files without
+booting a full operating system.
+
+The file C:\InstantON\lib_main contains a MIMIX filesystem containing this
+version of snd-intel-hda.ko:
+
+/tmp/m31/alsa-driver-1.0.9b_24a/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c;
+compiled for "2.6.13 SMP preempt 686 gcc-3.4".
+
+Checksums:
+
+eee42797c5a4b11d04ac61de26b7ab51  snd-hda-codec.ko
+c16bdc4c3f6bc1d77dae76bd752efffc  snd-hda-intel.ko
+
+Now we just have to tell Intervideo to give us their version of
+alsa-driver-1.0.9b_24a :-)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-29-06 13:05 junnu          New Issue                                    
-05-29-06 13:07 junnu          Issue Monitored: junnu                       
-05-31-06 19:30 Clemens LadischStatus                   new => resolved     
-05-31-06 19:30 Clemens LadischResolution               open => won't fix   
-05-31-06 19:30 Clemens LadischAssigned To               => Clemens Ladisch 
-05-31-06 19:30 Clemens LadischNote Added: 0010026                          
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
+05-11-06 00:44 vertex         Note Added: 0009755                          
+05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
+05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
+  
+05-29-06 23:33 taschenorakel  Note Added: 0010015                          
+05-30-06 19:11 vertex         Note Added: 0010021                          
+05-31-06 20:20 taschenorakel  Note Added: 0010028                          
 ======================================================================
