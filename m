@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not
-	functional using included alsa drivers
-Date: Thu, 1 Jun 2006 00:30:37 +0200
-Message-ID: <273fe6adb483c6543ddf04c44c8fa51f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001226]: Ego Sys NEON
+Date: Thu, 1 Jun 2006 01:12:18 +0200
+Message-ID: <29118024444685c0c50d1a62323eae49@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2ECB3144
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 52F81149
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Jun 2006 00:30:38 +0200 (MEST)
+	Thu,  1 Jun 2006 01:12:18 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,103 +25,81 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1226> 
 ======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
+Reported By:                nictuku
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1226
+Category:                   USB - usb-audio
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
+Distribution:               Slackware Current
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              06-01-2006 00:30 CEST
+Date Submitted:             07-01-2005 21:21 CEST
+Last Modified:              06-01-2006 01:12 CEST
 ======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
+Summary:                    Ego Sys NEON
 Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
-
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
-
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
-
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
-
-Please let me know if there is something more I can provide.
+hi, i have a ESI NeON (
+http://www.esi-pro.com/viewProduct.php?pid=42&page=1 ) i've tryed to make
+it work with alsa with no success, but strangely on the oss the 24-bit
+audio interface works. I just send this bug report to know if there's a
+way to make it work or if it's planned to put support on this hardware. if
+you need to test it feel free to contactme (nictuku@gmail.com)
+thanx
 ======================================================================
 
 ----------------------------------------------------------------------
- vertex - 05-31-06 23:23 
+ Clemens Ladisch - 05-31-06 19:23 
 ----------------------------------------------------------------------
-Mine is from Uniwill.
+What does "garbage" mean? Is there some noise, or is the original data
+completely lost?
+Does it occur at 44.1 kHz, at 48 kHz, or both?
+Does it work again if you restart the output?
+
+The device does not define a mixer control for input switching.  I guess
+this would be done with the HID interface.
 
 ----------------------------------------------------------------------
- taschenorakel - 06-01-06 00:30 
+ rzr - 06-01-06 01:12 
 ----------------------------------------------------------------------
-The mainboard of my notebook also is produced by Uniwill, but it is
-assembly by Nexoc. Quite curious which name the folder will get.
+I returned the device, so I can not tell you more than this :
 
-I contacted their German distributor. I am pretty sure that it is just a
-matter of time now until we get this working. The GPL is a strong license
-(specially in Germany) and I am pretty sure Intervideo knows that.
+The sound gets noisy after a few minutes of playback, the signal is still
+here but very distrorded and unacceptable...
+This also occurs on winxp, I updated the bios and plug an external power
+supply , it is still the same... but I briefly tested on some other
+computer and it seems to works ok...
+So I guess my USB 1.1 controler is causing troubles, hardware specs (
+http://rzr.online.fr/q/AmiloA )
+
+About the HiZ mic selector, I don't know so much on HID ... 
+
+Would a dump of a USB snoop help ? How can I help more ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-04-20-06 14:41 tiwai          Note Added: 0009375                          
-04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+07-01-05 21:21 nictuku        New Issue                                    
+07-01-05 21:21 nictuku        Distribution              => Slackware Current
+07-01-05 21:21 nictuku        Kernel Version            => 2.4             
+07-04-05 09:23 Clemens LadischNote Added: 0005382                          
+07-06-05 23:04 nictuku        Issue Monitored: nictuku                     
+07-06-05 23:06 nictuku        Note Added: 0005395                          
+07-06-05 23:09 nictuku        Issue End Monitor: nictuku                    
+07-23-05 00:32 nictuku        Note Added: 0005551                          
+07-25-05 11:05 Clemens LadischNote Added: 0005562                          
+08-04-05 18:09 nictuku        Note Added: 0005651                          
+05-27-06 03:04 rzr            File Added: neon-usb_0a92_00c1.zip                
    
-04-20-06 20:22 vertex         File Added: codec0.during.playback                
-   
-04-20-06 20:23 vertex         Note Added: 0009398                          
-04-21-06 16:50 tiwai          Note Added: 0009416                          
-04-21-06 16:51 tiwai          Note Added: 0009417                          
-04-21-06 16:54 tiwai          Note Added: 0009418                          
-04-21-06 18:56 vertex         Note Added: 0009428                          
-04-26-06 00:37 vertex         Note Added: 0009499                          
-05-11-06 00:44 vertex         Note Added: 0009755                          
-05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
-05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
-  
-05-29-06 23:33 taschenorakel  Note Added: 0010015                          
-05-30-06 19:11 vertex         Note Added: 0010021                          
-05-31-06 20:20 taschenorakel  Note Added: 0010028                          
-05-31-06 21:02 vertex         Note Added: 0010029                          
-05-31-06 21:06 vertex         Note Added: 0010030                          
-05-31-06 22:43 rlrevell       Note Added: 0010032                          
-05-31-06 22:51 rlrevell       Note Added: 0010033                          
-05-31-06 23:23 vertex         Note Added: 0010035                          
-06-01-06 00:30 taschenorakel  Note Added: 0010036                          
+05-27-06 03:06 rzr            Note Added: 0009981                          
+05-27-06 15:48 rzr            Note Edited: 0009981                         
+05-27-06 16:05 rzr            Note Edited: 0009981                         
+05-31-06 19:23 Clemens LadischNote Added: 0010025                          
+06-01-06 01:12 rzr            Note Added: 0010037                          
 ======================================================================
