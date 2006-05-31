@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002175]: Wish: alsa buffer to allow
-	suspend-resume without closing sound applications
-Date: Wed, 31 May 2006 22:40:36 +0200
-Message-ID: <7ae63505313506282c44a0d35e00f758@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002035]: Realtek 861 card not
+	functional using included alsa drivers
+Date: Wed, 31 May 2006 21:02:17 +0200
+Message-ID: <b2e293bcd74724b2dd075a7c968ddfcd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D69A137
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E776C11F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 May 2006 22:40:36 +0200 (MEST)
+	Wed, 31 May 2006 21:02:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,120 +26,116 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2175> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
 ======================================================================
-Reported By:                RichardNeill
-Assigned To:                
+Reported By:                vertex
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2175
-Category:                   1_OTHERS
+Issue ID:                   2035
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
-Date Submitted:             05-31-2006 03:13 CEST
-Last Modified:              05-31-2006 22:40 CEST
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              05-31-2006 21:02 CEST
 ======================================================================
-Summary:                    Wish:  alsa buffer to allow suspend-resume without
-closing sound applications
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
 Description: 
-SUMMARY
--------
-I propose a new feature which will be of great help to laptop users during
-suspend.
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-MOTIVATION
-----------
-When suspending a laptop and then resuming, it's usually necessary to
-remove the sound modules and reload them. Removing the modules can only
-occur if all sound applications are killed and then restarted. This is
-always annoying (eg restarting xmms), but particularly problematic in
-cases such as:
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-  - a sound server, such as Arts is running, maybe needing a KDE restart
-  - Mozilla (or similar) has at one time allowed a plugin to access sound.
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
 
-     but we don't want to lose the contents of 50 open tabs!
-  - the timidity service is providing a MIDI interface systemwide.
- 
-it's also very un user-friendly, especially to non-technical users.
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-I propose creating a buffer device, which sound apps use instead of
-/dev/dsp. Then buffer would cope gracefully with /dev/dsp disappearing and
-re-appearing again.
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
 
-
-DETAILS
--------
-
-I'm no kernel expert, but here is how I see it working. I'm only going to
-consider /dev/dsp for simplicity.
-
-1) At the moment, /dev/dsp is provided by snd_xxx. snd_xxx cannot be
-removed while /dev/dsp is open.
-
-2) I propose that instead, we have a new kernel module which provides
-/dev/abuffer/dsp:
-
-   Application -> /dev/abuffer/dsp -> /dev/dsp -> snd_xxx
-
-
-3) /dev/abuffer/dsp must do the following:
-
-    i) The file must always exist, and not go away.
-
-    ii) In normal use, it transfers data directly to /dev/dsp
-
-    iii) The kernel module which provides /dev/abuffer/dsp must not lock 
-/dev/dsp with "device is in use".
-
-    iv) When the snd_xxx module is unloaded, /dev/dsp will vanish. 
-At this point, /dev/abuffer/dsp must seamlessly redirect its input to
-/dev/null, and its output from /dev/zero. (or maybe it should block).
-
-    v)When snd_xxx is reloaded, /dev/abuffer/dsp reconnects seamlessly to
-/dev/dsp.
-
-
-4)Thus, the soundcard can be completely disconnected, and reset, while the
-application remains blisfully unaware. As far as the application is
-concerned. the file-handle for /dev/abuffer/dsp remains valid all the
-time. 
-
-During the period immediately pre/post-suspend (while the snd_xxx module
-is unloaded, but the application may still be running), writes to
-/dev/buffer/dsp are silently discarded, and reads result in a string of
-zeros. Or, it can block. 
-
-
-5) This has to be repeated for /dev/mixer and all the other sound
-devices.
-
-
-I hope this idea is useful; I'd certainly love to see it implemented! 
-
-Thanks very much - Richard
+Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-31-06 22:40 
+ taschenorakel - 05-31-06 20:20 
 ----------------------------------------------------------------------
-"I propose creating a buffer device, which sound apps use instead of
-/dev/dsp. Then buffer would cope gracefully with /dev/dsp disappearing and
-re-appearing again."
+GOOD NEWS: There is some version of snd-intel-hda which can produce sound
+with this notebook. Bundled with my notebook there was some CD-ROM labled
+with "Intervideo InstantOn"
+(http://www.kefk.net/Linux/Distributionen/Speziell/InterVideo/index.asp).
+It contains some mini Linux for quickly playing media files without
+booting a full operating system.
 
-Modern sound apps aren't supposed to use /dev/dsp at all - that is the
-legacy OSS API.  The interface to ALSA is via alsa-lib.
+The file C:\InstantON\lib_main contains a MIMIX filesystem containing this
+version of snd-intel-hda.ko:
 
-Can you verify the problem without any OSS apps running?
+/tmp/m31/alsa-driver-1.0.9b_24a/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c;
+compiled for "2.6.13 SMP preempt 686 gcc-3.4".
+
+Checksums:
+
+eee42797c5a4b11d04ac61de26b7ab51  snd-hda-codec.ko
+c16bdc4c3f6bc1d77dae76bd752efffc  snd-hda-intel.ko
+
+Now we just have to tell Intervideo to give us their version of
+alsa-driver-1.0.9b_24a :-)
+
+----------------------------------------------------------------------
+ vertex - 05-31-06 21:02 
+----------------------------------------------------------------------
+I have contacted someone with Intervideo OEM sales dept. She is going to
+try and get me in contact with someone in their engineering department. 
+If there is any problem with that, I have the main contact for their legal
+department. Seeing as how these drivers are released under the gpl, they
+are legally obligated to provide source code for their modifications.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-31-06 03:13 RichardNeill   New Issue                                    
-05-31-06 22:40 rlrevell       Note Added: 0010031                          
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
+05-11-06 00:44 vertex         Note Added: 0009755                          
+05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
+05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
+  
+05-29-06 23:33 taschenorakel  Note Added: 0010015                          
+05-30-06 19:11 vertex         Note Added: 0010021                          
+05-31-06 20:20 taschenorakel  Note Added: 0010028                          
+05-31-06 21:02 vertex         Note Added: 0010029                          
 ======================================================================
