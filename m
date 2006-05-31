@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002104]: No sound on Acer Travelmate
-	3012WTMI
-Date: Wed, 31 May 2006 19:50:56 +0200
-Message-ID: <d99b92e70490581cfaaf59631879bc41@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002147]: lack of full duplex operation
+	for ati-ixp chipset.
+Date: Wed, 31 May 2006 18:05:32 +0200
+Message-ID: <57937621826eb23ad56cce7a028f357f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 80147140
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0B7B144
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 May 2006 19:50:56 +0200 (MEST)
+	Wed, 31 May 2006 18:05:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,161 +26,118 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2104> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
 ======================================================================
-Reported By:                mcosta
+Reported By:                Gene Heskett
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2104
-Category:                   PCI - hda-intel
+Issue ID:                   2147
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               FC5, uptodate
+Kernel Version:             2.6.16-1.2111_FC5
 ======================================================================
-Date Submitted:             05-08-2006 16:08 CEST
-Last Modified:              05-31-2006 19:50 CEST
+Date Submitted:             05-23-2006 03:52 CEST
+Last Modified:              05-31-2006 18:05 CEST
 ======================================================================
-Summary:                    No sound on Acer Travelmate 3012WTMI
+Summary:                    lack of full duplex operation for ati-ixp chipset.
 Description: 
-Hello, I have a TM3012WTMI laptop and I can not hear any sound. I am
-running 2.6.1.6-11-smp kernel. I have compiled serveral versions of alsa
-drivers and I am in the same situation: no sound at all.
+skype, ekiga, audacity, and generally any program that needs to both
+transmit and receive, using isolated paths, fails in playback when
+recording.  In skype, I sound great at the far end, but reception may or
+may not work, with emphasis on the not.  What I hear in the phones, or in
+the speakers, sounds like what you would get if you took a sentence of
+spoken words, break it up into say 5ms pieces, and play them at maybe 10
+of these little snippets per second, so that the resultant sound is broken
+up to the point of no comprehension, and stretched in time by a
+considerable amount.
 
-I attach some information:
-lspci
-00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub (rev
-03)
-00:02.0 VGA compatible controller: Intel Corporation Mobile Integrated
-Graphics Controller (rev 03)
-00:02.1 Display controller: Intel Corporation Mobile Integrated Graphics
-Controller (rev 03)
-00:1b.0 Class 0403: Intel Corporation 82801G (ICH7 Family) High Definition
-Audio Controller (rev 02)
-00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 1 (rev 02)
-00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 2 (rev 02)
-00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 3 (rev 02)
-00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
-Port 4 (rev 02)
-00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #1
-(rev 02)
-00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #2
-(rev 02)
-00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #3
-(rev 02)
-00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #4
-(rev 02)
-00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI
-Controller (rev 02)
-00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev e2)
-00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
-Bridge (rev 02)
-00:1f.2 IDE interface: Intel Corporation 82801GBM/GHM (ICH7 Family) Serial
-ATA Storage Controllers cc=IDE (rev 02)
-00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus Controller
-(rev 02)
-02:00.0 Network controller: Intel Corporation: Unknown device 4222 (rev
-02)
-03:00.0 Ethernet controller: Broadcom Corporation NetLink BCM5789 Gigabit
-Ethernet PCI Express (rev 11)
-0a:09.0 CardBus bridge: Texas Instruments: Unknown device 8039
-0a:09.1 FireWire (IEEE 1394): Texas Instruments: Unknown device 803a
-0a:09.2 Unknown mass storage controller: Texas Instruments: Unknown device
-803b
+In audacity, simultanious playback, or play one track while recording
+another, likewise fails in that only very short snippets of the played
+track are output to the phones or speakers.
 
-hwinfo --sound:
-13: PCI 1b.0: 0403 Multimedia controller
-  [Created at pci.277]
-  UDI: /org/freedesktop/Hal/devices/pci_8086_27d8
-  Unique ID: u1Nb.NLLhYZ867B4
-  SysFS ID: /devices/pci0000:00/0000:00:1b.0
-  SysFS BusID: 0000:00:1b.0
-  Hardware Class: sound
-  Model: "Acer Incorporated [ALI] 82801G (ICH7 Family) High Definition
-Audio Controller"
-  Vendor: pci 0x8086 "Intel Corporation"
-  Device: pci 0x27d8 "82801G (ICH7 Family) High Definition Audio
-Controller"
-  SubVendor: pci 0x1025 "Acer Incorporated [ALI]"
-  SubDevice: pci 0x0098
-  Revision: 0x02
-  Driver: "HDA Intel"
-  Memory Range: 0xb0000000-0xb0003fff (rw,non-prefetchable)
-  IRQ: 66 (138 events)
-  Module Alias: "pci:v00008086d000027D8sv00001025sd00000098bc04sc03i00"
-  Driver Info #0:
-    Driver Status: snd_hda_intel is active
-    Driver Activation Cmd: "modprobe snd_hda_intel"
-  Config Status: cfg=no, avail=yes, need=no, active=unknown
-
-When the driver is loaded I get on /var/log/messages:
-
-ACPI: PCI interrupt for device 0000:00:1b.0 disabled
-ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 66
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
-ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2115: autoconfig:
-line_outs=0 (0x0/0x0/0x0/0x0/0x0)
-ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2119:    speaker_outs=0
-(0x0/0x0/0x0/0x0/0x0)
-ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2121:    hp=0x14,
-dig_out=0x1e, din_in=0x0
-ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2129:    inputs:
-mic=0x1a, fmic=0x0, line=0x0, fline=0x0, cd=0x0, aux=0x0
-
-Best regards.
-
-
-
+Likewise, ekiga suffers from this same effect, I'm told I sound great on
+teh other end, but I can't hear more than half a word occasionally.
 ======================================================================
 
 ----------------------------------------------------------------------
- useidel - 05-23-06 21:35 
+ Raymond - 05-30-06 03:46 
 ----------------------------------------------------------------------
-Any news? Anything I can do?
+strace -e trace=open aplay any.wav
 
-Thanks,
-Udo
+This tell you where do alsa-lib search and open those conf files ?
+
+The device "default" is used whenever you don't specify -D device for
+those alsa-util
+
+aplay -v any.wav
+
+Plug PCM: Direct Stream Mixing PCM                 <---  dmix
+Hardware PCM card 0 'ATI IXP' device 0 subdevice 0 <---- hw
+
+hw is the slave pcm of dmix in ATIIXP.conf
+
+
+Refer to the changelog in README.txt of audacity-src-1.2.4b
+
+Changes in 1.2.2:
+
+  * Added support for Software Playthrough (listen to what you're
+    recording while recording it, or while monitoring using a VU
+    meter) - this makes it possible, for example, to record using one
+    audio device while listening to it play through a separate device.
 
 ----------------------------------------------------------------------
- useidel - 05-31-06 19:50 
+ Raymond - 05-31-06 18:05 
 ----------------------------------------------------------------------
-Following a hint from the internet I tried
-options snd-hda-intel index=0 single_cmd=1 model=laptop-eapd
-but also without success.
+aplay -L 
+
+This list all PCMs defined 
+
+audacity seem not an sutiable application for testing full duplex of a
+sound card.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-08-06 16:08 mcosta         New Issue                                    
-05-09-06 17:35 lrupn          Note Added: 0009666                          
-05-09-06 23:28 useidel        Note Added: 0009695                          
-05-09-06 23:29 useidel        Note Edited: 0009695                         
-05-09-06 23:47 rlrevell       Note Added: 0009696                          
-05-09-06 23:56 useidel        Note Added: 0009697                          
-05-10-06 14:48 tiwai          Note Added: 0009715                          
-05-10-06 16:43 useidel        Note Added: 0009727                          
-05-10-06 16:50 tiwai          Note Added: 0009729                          
-05-10-06 16:52 mcosta         Note Added: 0009730                          
-05-10-06 17:00 mcosta         File Added: tm3012sound.txt                    
-05-10-06 17:03 mcosta         Note Added: 0009733                          
-05-10-06 17:19 tiwai          Note Added: 0009739                          
-05-10-06 17:19 tiwai          File Added: alc882-capture-adc-fix.diff           
-        
-05-10-06 17:48 mcosta         Note Added: 0009744                          
-05-10-06 18:52 useidel        File Added: proc.asound.card0.codec0              
-     
-05-10-06 18:53 useidel        File Added: proc.asound.card0.codec1              
-     
-05-10-06 18:53 useidel        File Added: alsactl.store                    
-05-10-06 19:07 useidel        Note Added: 0009749                          
-05-19-06 16:50 joppe          Issue Monitored: joppe                       
-05-23-06 21:35 useidel        Note Added: 0009952                          
-05-31-06 19:50 useidel        Note Added: 0010027                          
+05-23-06 03:52 Gene Heskett   New Issue                                    
+05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
+05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
+05-23-06 15:01 tiwai          Note Added: 0009934                          
+05-23-06 16:46 Gene Heskett   Note Added: 0009938                          
+05-23-06 17:24 tiwai          Note Added: 0009941                          
+05-23-06 18:07 Gene Heskett   Note Added: 0009943                          
+05-23-06 19:14 tiwai          Note Added: 0009947                          
+05-28-06 03:08 Gene Heskett   Note Added: 0009985                          
+05-28-06 03:20 Gene Heskett   Note Added: 0009986                          
+05-28-06 03:22 rlrevell       Note Added: 0009987                          
+05-28-06 03:58 Raymond        Note Added: 0009988                          
+05-28-06 04:04 Raymond        Note Edited: 0009988                         
+05-28-06 04:05 Raymond        Note Edited: 0009988                         
+05-28-06 04:24 rlrevell       Note Added: 0009989                          
+05-28-06 04:51 Gene Heskett   Note Added: 0009990                          
+05-28-06 05:10 rlrevell       Note Added: 0009991                          
+05-28-06 05:27 Gene Heskett   Note Added: 0009992                          
+05-28-06 05:34 rlrevell       Note Added: 0009993                          
+05-28-06 05:37 Gene Heskett   Note Added: 0009994                          
+05-28-06 06:13 rlrevell       Note Added: 0009995                          
+05-28-06 06:29 Gene Heskett   Note Added: 0009998                          
+05-28-06 06:35 rlrevell       Note Added: 0009999                          
+05-28-06 08:22 Raymond        Note Added: 0010000                          
+05-28-06 08:32 Raymond        Note Added: 0010001                          
+05-28-06 13:17 Gene Heskett   Note Added: 0010002                          
+05-29-06 03:13 Raymond        Note Added: 0010005                          
+05-29-06 04:24 Gene Heskett   Note Added: 0010006                          
+05-29-06 11:41 Raymond        Note Added: 0010010                          
+05-29-06 14:56 Raymond        Note Edited: 0010005                         
+05-29-06 15:34 Raymond        Note Added: 0010011                          
+05-29-06 15:55 Gene Heskett   Note Added: 0010012                          
+05-29-06 21:16 sprocketboy    Issue Monitored: sprocketboy                    
+05-29-06 21:24 sprocketboy    Note Added: 0010013                          
+05-30-06 03:46 Raymond        Note Added: 0010016                          
+05-31-06 18:05 Raymond        Note Added: 0010023                          
 ======================================================================
