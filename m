@@ -1,19 +1,16 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: driver submission procedure?
-Date: Wed, 31 May 2006 18:06:53 +0200
-Message-ID: <1149091613.8877.31.camel@johannes>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002104]: No sound on Acer Travelmate
+	3012WTMI
+Date: Wed, 31 May 2006 19:50:56 +0200
+Message-ID: <d99b92e70490581cfaaf59631879bc41@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1181984987=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D68AF140
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 80147140
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 May 2006 18:41:12 +0200 (MEST)
-Received: from [131.234.78.216] (helo=dhcp-78-216.uni-paderborn.de)
-	by sipsolutions.net with esmtpsa (TLS-1.0:RSA_ARCFOUR_MD5:16)
-	(Exim 4.62) (envelope-from <johannes@sipsolutions.net>)
-	id 1FlTDi-0000Bg-Ne
-	for alsa-devel@alsa-project.org; Wed, 31 May 2006 17:06:54 +0100
+	Wed, 31 May 2006 19:50:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,77 +24,163 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1181984987==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-Dl3rksTCq11YXQ4W2O42"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2104> 
+======================================================================
+Reported By:                mcosta
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2104
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             05-08-2006 16:08 CEST
+Last Modified:              05-31-2006 19:50 CEST
+======================================================================
+Summary:                    No sound on Acer Travelmate 3012WTMI
+Description: 
+Hello, I have a TM3012WTMI laptop and I can not hear any sound. I am
+running 2.6.1.6-11-smp kernel. I have compiled serveral versions of alsa
+drivers and I am in the same situation: no sound at all.
+
+I attach some information:
+lspci
+00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub (rev
+03)
+00:02.0 VGA compatible controller: Intel Corporation Mobile Integrated
+Graphics Controller (rev 03)
+00:02.1 Display controller: Intel Corporation Mobile Integrated Graphics
+Controller (rev 03)
+00:1b.0 Class 0403: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 02)
+00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 1 (rev 02)
+00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 2 (rev 02)
+00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 3 (rev 02)
+00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI Express
+Port 4 (rev 02)
+00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #1
+(rev 02)
+00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #2
+(rev 02)
+00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #3
+(rev 02)
+00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB UHCI #4
+(rev 02)
+00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2 EHCI
+Controller (rev 02)
+00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev e2)
+00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
+Bridge (rev 02)
+00:1f.2 IDE interface: Intel Corporation 82801GBM/GHM (ICH7 Family) Serial
+ATA Storage Controllers cc=IDE (rev 02)
+00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus Controller
+(rev 02)
+02:00.0 Network controller: Intel Corporation: Unknown device 4222 (rev
+02)
+03:00.0 Ethernet controller: Broadcom Corporation NetLink BCM5789 Gigabit
+Ethernet PCI Express (rev 11)
+0a:09.0 CardBus bridge: Texas Instruments: Unknown device 8039
+0a:09.1 FireWire (IEEE 1394): Texas Instruments: Unknown device 803a
+0a:09.2 Unknown mass storage controller: Texas Instruments: Unknown device
+803b
+
+hwinfo --sound:
+13: PCI 1b.0: 0403 Multimedia controller
+  [Created at pci.277]
+  UDI: /org/freedesktop/Hal/devices/pci_8086_27d8
+  Unique ID: u1Nb.NLLhYZ867B4
+  SysFS ID: /devices/pci0000:00/0000:00:1b.0
+  SysFS BusID: 0000:00:1b.0
+  Hardware Class: sound
+  Model: "Acer Incorporated [ALI] 82801G (ICH7 Family) High Definition
+Audio Controller"
+  Vendor: pci 0x8086 "Intel Corporation"
+  Device: pci 0x27d8 "82801G (ICH7 Family) High Definition Audio
+Controller"
+  SubVendor: pci 0x1025 "Acer Incorporated [ALI]"
+  SubDevice: pci 0x0098
+  Revision: 0x02
+  Driver: "HDA Intel"
+  Memory Range: 0xb0000000-0xb0003fff (rw,non-prefetchable)
+  IRQ: 66 (138 events)
+  Module Alias: "pci:v00008086d000027D8sv00001025sd00000098bc04sc03i00"
+  Driver Info #0:
+    Driver Status: snd_hda_intel is active
+    Driver Activation Cmd: "modprobe snd_hda_intel"
+  Config Status: cfg=no, avail=yes, need=no, active=unknown
+
+When the driver is loaded I get on /var/log/messages:
+
+ACPI: PCI interrupt for device 0000:00:1b.0 disabled
+ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI 22 (level, low) -> IRQ 66
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+hda_codec: Unknown model for ALC882, trying auto-probe from BIOS...
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2115: autoconfig:
+line_outs=0 (0x0/0x0/0x0/0x0/0x0)
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2119:    speaker_outs=0
+(0x0/0x0/0x0/0x0/0x0)
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2121:    hp=0x14,
+dig_out=0x1e, din_in=0x0
+ALSA /TM3012/CVS2/alsa-driver/pci/hda/hda_codec.c:2129:    inputs:
+mic=0x1a, fmic=0x0, line=0x0, fline=0x0, cd=0x0, aux=0x0
+
+Best regards.
 
 
---=-Dl3rksTCq11YXQ4W2O42
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-Hey,
+======================================================================
 
-I'll post a new round of patches that add snd-aoa (and this time adding
-also the critical part in two split patches), I held off because I had
-been working on headphone detection.
+----------------------------------------------------------------------
+ useidel - 05-23-06 21:35 
+----------------------------------------------------------------------
+Any news? Anything I can do?
 
-But the question I have now is: What's the procedure for submitting
-this? If it goes through alsa mercurial, in what form do I submit
-patches? Is it fine to submit patches that would apply against the linux
-kernel?
+Thanks,
+Udo
 
-Another thing is that I'll have a round of patches that change both
-snd-aoa and the kernel at the same time, so how should I submit those?
-Working with the alsa hg repository will be mostly impossible since
-those patches need to be applied in both spots at the same time...
+----------------------------------------------------------------------
+ useidel - 05-31-06 19:50 
+----------------------------------------------------------------------
+Following a hint from the internet I tried
+options snd-hda-intel index=0 single_cmd=1 model=laptop-eapd
+but also without success.
 
-Thoughts?
-
-johannes
-
---=-Dl3rksTCq11YXQ4W2O42
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIVAwUARH2/GqVg1VMiehFYAQLw4g/9Fecku6vso1ROCEDbLMnAAnSGFYDn8YJv
-yNDoxfkzA0udS9EIfQrJM6sF3uh3AYh/7FRCBuqxoUd/wGxkRJOeownEFjIcziSJ
-Ylfhj9JG7l21NBmlxr24oF3YQhw86IykCbxNEnmM9JKvIzhVrVDgfhJRQHlrR8r2
-UuNtaxFcQTx2WJg6RRhkdlngr7+IonKrnR9U7vRuynae8mQcggwns2IlF/fRainC
-ak4moRBaLGarC6BmApf2EFZFhr7PS370ct6/T1+TMw7AGehJmEiaTJHCovCjST8Q
-lPi/QJdQ+XEAiju0h+E8BnOoCOXIYWIgE1ooJQmOWcuPGjemttsoZXaj/cupeqcr
-/QdRIB1s4kotNQajrU+Zh+4EX3kAJ85PbrQguH76gPJHqgRuWqP71Ddq/z3OzGYf
-c+2ggNJug5XpIz+Fx5Fpi9Ku033TF9Wknh6FOArCZ8plbVKo6gho311mP4lgA8fL
-KcujUk9rpSm68fSSh86+ktVKmNdKYPxn7mv6KN7emELzaP0FIW+FA94KSFapGtju
-3mETWAZXHE9ZAqS1VXmwPwb3xopBOYdCPQL5d67nFzmJFT3AUabaGL0BCe3ro/KR
-iV4TQlXoFjc6A53j4EXsiccH5/1mc1IshcHLSusOnqRXvSVD03YzRyTkJPb0x/JN
-ICpofa4aR1A=
-=tH1h
------END PGP SIGNATURE-----
-
---=-Dl3rksTCq11YXQ4W2O42--
-
-
-
---===============1181984987==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1181984987==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1181984987==--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-08-06 16:08 mcosta         New Issue                                    
+05-09-06 17:35 lrupn          Note Added: 0009666                          
+05-09-06 23:28 useidel        Note Added: 0009695                          
+05-09-06 23:29 useidel        Note Edited: 0009695                         
+05-09-06 23:47 rlrevell       Note Added: 0009696                          
+05-09-06 23:56 useidel        Note Added: 0009697                          
+05-10-06 14:48 tiwai          Note Added: 0009715                          
+05-10-06 16:43 useidel        Note Added: 0009727                          
+05-10-06 16:50 tiwai          Note Added: 0009729                          
+05-10-06 16:52 mcosta         Note Added: 0009730                          
+05-10-06 17:00 mcosta         File Added: tm3012sound.txt                    
+05-10-06 17:03 mcosta         Note Added: 0009733                          
+05-10-06 17:19 tiwai          Note Added: 0009739                          
+05-10-06 17:19 tiwai          File Added: alc882-capture-adc-fix.diff           
+        
+05-10-06 17:48 mcosta         Note Added: 0009744                          
+05-10-06 18:52 useidel        File Added: proc.asound.card0.codec0              
+     
+05-10-06 18:53 useidel        File Added: proc.asound.card0.codec1              
+     
+05-10-06 18:53 useidel        File Added: alsactl.store                    
+05-10-06 19:07 useidel        Note Added: 0009749                          
+05-19-06 16:50 joppe          Issue Monitored: joppe                       
+05-23-06 21:35 useidel        Note Added: 0009952                          
+05-31-06 19:50 useidel        Note Added: 0010027                          
+======================================================================
