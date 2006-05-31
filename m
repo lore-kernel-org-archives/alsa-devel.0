@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002147]: lack of full duplex operation
-	for ati-ixp chipset.
-Date: Wed, 31 May 2006 18:05:32 +0200
-Message-ID: <57937621826eb23ad56cce7a028f357f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001226]: Ego Sys NEON
+Date: Wed, 31 May 2006 19:23:29 +0200
+Message-ID: <b5a5986ed026533d9fc44744ce9a660a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0B7B144
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D609140
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 May 2006 18:05:32 +0200 (MEST)
+	Wed, 31 May 2006 19:23:30 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,118 +25,78 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2147> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1226> 
 ======================================================================
-Reported By:                Gene Heskett
-Assigned To:                tiwai
+Reported By:                nictuku
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2147
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   1226
+Category:                   USB - usb-audio
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               FC5, uptodate
-Kernel Version:             2.6.16-1.2111_FC5
+Distribution:               Slackware Current
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             05-23-2006 03:52 CEST
-Last Modified:              05-31-2006 18:05 CEST
+Date Submitted:             07-01-2005 21:21 CEST
+Last Modified:              05-31-2006 19:23 CEST
 ======================================================================
-Summary:                    lack of full duplex operation for ati-ixp chipset.
+Summary:                    Ego Sys NEON
 Description: 
-skype, ekiga, audacity, and generally any program that needs to both
-transmit and receive, using isolated paths, fails in playback when
-recording.  In skype, I sound great at the far end, but reception may or
-may not work, with emphasis on the not.  What I hear in the phones, or in
-the speakers, sounds like what you would get if you took a sentence of
-spoken words, break it up into say 5ms pieces, and play them at maybe 10
-of these little snippets per second, so that the resultant sound is broken
-up to the point of no comprehension, and stretched in time by a
-considerable amount.
-
-In audacity, simultanious playback, or play one track while recording
-another, likewise fails in that only very short snippets of the played
-track are output to the phones or speakers.
-
-Likewise, ekiga suffers from this same effect, I'm told I sound great on
-teh other end, but I can't hear more than half a word occasionally.
+hi, i have a ESI NeON (
+http://www.esi-pro.com/viewProduct.php?pid=42&page=1 ) i've tryed to make
+it work with alsa with no success, but strangely on the oss the 24-bit
+audio interface works. I just send this bug report to know if there's a
+way to make it work or if it's planned to put support on this hardware. if
+you need to test it feel free to contactme (nictuku@gmail.com)
+thanx
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 05-30-06 03:46 
+ rzr - 05-27-06 16:05 
 ----------------------------------------------------------------------
-strace -e trace=open aplay any.wav
+Curently, neon is not fully supported by "snd-usb-audio" because : 
+* the sound output goes to garbage , a few minutes after playing music 
+* there are at least 2 capture audio chanels and alsamixer does show only
+one, (I want to use the HiZ input to plug a guitar).
 
-This tell you where do alsa-lib search and open those conf files ?
+I attached my current /proc/asound/NeON if it helps...
+I'll also drop notes at http://rzr.online.fr/q/MIDI
 
-The device "default" is used whenever you don't specify -D device for
-those alsa-util
-
-aplay -v any.wav
-
-Plug PCM: Direct Stream Mixing PCM                 <---  dmix
-Hardware PCM card 0 'ATI IXP' device 0 subdevice 0 <---- hw
-
-hw is the slave pcm of dmix in ATIIXP.conf
+Find me online for more details
 
 
-Refer to the changelog in README.txt of audacity-src-1.2.4b
-
-Changes in 1.2.2:
-
-  * Added support for Software Playthrough (listen to what you're
-    recording while recording it, or while monitoring using a VU
-    meter) - this makes it possible, for example, to record using one
-    audio device while listening to it play through a separate device.
 
 ----------------------------------------------------------------------
- Raymond - 05-31-06 18:05 
+ Clemens Ladisch - 05-31-06 19:23 
 ----------------------------------------------------------------------
-aplay -L 
+What does "garbage" mean? Is there some noise, or is the original data
+completely lost?
+Does it occur at 44.1 kHz, at 48 kHz, or both?
+Does it work again if you restart the output?
 
-This list all PCMs defined 
-
-audacity seem not an sutiable application for testing full duplex of a
-sound card.
+The device does not define a mixer control for input switching.  I guess
+this would be done with the HID interface.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-23-06 03:52 Gene Heskett   New Issue                                    
-05-23-06 03:52 Gene Heskett   Distribution              => FC5, uptodate   
-05-23-06 03:52 Gene Heskett   Kernel Version            => 2.6.16-1.2111_FC5
-05-23-06 15:01 tiwai          Note Added: 0009934                          
-05-23-06 16:46 Gene Heskett   Note Added: 0009938                          
-05-23-06 17:24 tiwai          Note Added: 0009941                          
-05-23-06 18:07 Gene Heskett   Note Added: 0009943                          
-05-23-06 19:14 tiwai          Note Added: 0009947                          
-05-28-06 03:08 Gene Heskett   Note Added: 0009985                          
-05-28-06 03:20 Gene Heskett   Note Added: 0009986                          
-05-28-06 03:22 rlrevell       Note Added: 0009987                          
-05-28-06 03:58 Raymond        Note Added: 0009988                          
-05-28-06 04:04 Raymond        Note Edited: 0009988                         
-05-28-06 04:05 Raymond        Note Edited: 0009988                         
-05-28-06 04:24 rlrevell       Note Added: 0009989                          
-05-28-06 04:51 Gene Heskett   Note Added: 0009990                          
-05-28-06 05:10 rlrevell       Note Added: 0009991                          
-05-28-06 05:27 Gene Heskett   Note Added: 0009992                          
-05-28-06 05:34 rlrevell       Note Added: 0009993                          
-05-28-06 05:37 Gene Heskett   Note Added: 0009994                          
-05-28-06 06:13 rlrevell       Note Added: 0009995                          
-05-28-06 06:29 Gene Heskett   Note Added: 0009998                          
-05-28-06 06:35 rlrevell       Note Added: 0009999                          
-05-28-06 08:22 Raymond        Note Added: 0010000                          
-05-28-06 08:32 Raymond        Note Added: 0010001                          
-05-28-06 13:17 Gene Heskett   Note Added: 0010002                          
-05-29-06 03:13 Raymond        Note Added: 0010005                          
-05-29-06 04:24 Gene Heskett   Note Added: 0010006                          
-05-29-06 11:41 Raymond        Note Added: 0010010                          
-05-29-06 14:56 Raymond        Note Edited: 0010005                         
-05-29-06 15:34 Raymond        Note Added: 0010011                          
-05-29-06 15:55 Gene Heskett   Note Added: 0010012                          
-05-29-06 21:16 sprocketboy    Issue Monitored: sprocketboy                    
-05-29-06 21:24 sprocketboy    Note Added: 0010013                          
-05-30-06 03:46 Raymond        Note Added: 0010016                          
-05-31-06 18:05 Raymond        Note Added: 0010023                          
+07-01-05 21:21 nictuku        New Issue                                    
+07-01-05 21:21 nictuku        Distribution              => Slackware Current
+07-01-05 21:21 nictuku        Kernel Version            => 2.4             
+07-04-05 09:23 Clemens LadischNote Added: 0005382                          
+07-06-05 23:04 nictuku        Issue Monitored: nictuku                     
+07-06-05 23:06 nictuku        Note Added: 0005395                          
+07-06-05 23:09 nictuku        Issue End Monitor: nictuku                    
+07-23-05 00:32 nictuku        Note Added: 0005551                          
+07-25-05 11:05 Clemens LadischNote Added: 0005562                          
+08-04-05 18:09 nictuku        Note Added: 0005651                          
+05-27-06 03:04 rzr            File Added: neon-usb_0a92_00c1.zip                
+   
+05-27-06 03:06 rzr            Note Added: 0009981                          
+05-27-06 15:48 rzr            Note Edited: 0009981                         
+05-27-06 16:05 rzr            Note Edited: 0009981                         
+05-31-06 19:23 Clemens LadischNote Added: 0010025                          
 ======================================================================
