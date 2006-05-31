@@ -1,11 +1,16 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: [RFC] rawmidi suspend/resume support
-Date: Wed, 31 May 2006 23:59:24 +0200
-Message-ID: <20060531235924.6bc1a911.pochini@shiny.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002035]: Realtek 861 card not
+	functional using included alsa drivers
+Date: Thu, 1 Jun 2006 00:30:37 +0200
+Message-ID: <273fe6adb483c6543ddf04c44c8fa51f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2ECB3144
+	for <alsa-devel@alsa-project.org>;
+	Thu,  1 Jun 2006 00:30:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,161 +20,109 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Does this patch make sense ?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+======================================================================
+Reported By:                vertex
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2035
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              06-01-2006 00:30 CEST
+======================================================================
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
+Description: 
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-It adds two functions to rawmidi.c: snd_rawmidi_suspend() and
-snd_rawmidi_resume() and it adds a new ops callback. Those functions
-pause or restart the tasklet respectively and call the driver's
-ops->power(down/up) function. This patch also prevents driver's ops->
-functions from being called while the card is supended.
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-(tested ok with the Gina 3G)
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
 
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
 
-diff -dupr alsa-kernel__orig/core/rawmidi.c alsa-kernel/core/rawmidi.c
---- alsa-kernel__orig/core/rawmidi.c	2006-05-17 23:17:58.000000000 +0200
-+++ alsa-kernel/core/rawmidi.c	2006-05-31 23:47:16.000000000 +0200
-@@ -155,17 +155,28 @@ static int snd_rawmidi_runtime_free(stru
- 
- static inline void snd_rawmidi_output_trigger(struct snd_rawmidi_substream *substream,int up)
- {
--	if (up) {
--		tasklet_hi_schedule(&substream->runtime->tasklet);
--	} else {
--		tasklet_kill(&substream->runtime->tasklet);
--		substream->ops->trigger(substream, 0);
-+	struct snd_card *card = substream->rmidi->card;
-+
-+	snd_power_lock(card);
-+	if (snd_power_wait(card, SNDRV_CTL_POWER_D0) >= 0) {
-+		if (up) {
-+			tasklet_hi_schedule(&substream->runtime->tasklet);
-+		} else {
-+			tasklet_kill(&substream->runtime->tasklet);
-+			substream->ops->trigger(substream, 0);
-+		}
- 	}
-+	snd_power_unlock(card);
- }
- 
- static void snd_rawmidi_input_trigger(struct snd_rawmidi_substream *substream, int up)
- {
--	substream->ops->trigger(substream, up);
-+	struct snd_card *card = substream->rmidi->card;
-+
-+	snd_power_lock(card);
-+	if (snd_power_wait(card, SNDRV_CTL_POWER_D0) >= 0)
-+		substream->ops->trigger(substream, up);
-+	snd_power_unlock(card);
- 	if (!up && substream->runtime->event)
- 		tasklet_kill(&substream->runtime->tasklet);
- }
-@@ -204,9 +215,14 @@ int snd_rawmidi_drain_output(struct snd_
- 	runtime->drain = 0;
- 	if (err != -ERESTARTSYS) {
- 		/* we need wait a while to make sure that Tx FIFOs are empty */
--		if (substream->ops->drain)
--			substream->ops->drain(substream);
--		else
-+		if (substream->ops->drain) {
-+			struct snd_card *card = substream->rmidi->card;
-+
-+			snd_power_lock(card);
-+			if (snd_power_wait(card, SNDRV_CTL_POWER_D0) >= 0)
-+				substream->ops->drain(substream);
-+			snd_power_unlock(card);
-+		} else
- 			msleep(50);
- 		snd_rawmidi_drop_output(substream);
- 	}
-@@ -1648,6 +1664,59 @@ void snd_rawmidi_set_ops(struct snd_rawm
- 	}
- }
- 
-+
-+#ifdef CONFIG_PM
-+
-+/**
-+ * snd_rawmidi_suspend
-+ * @substream: the rawmidi substream
-+ *
-+ * Suspend the given substream.
-+ */
-+int snd_rawmidi_suspend(struct snd_rawmidi_substream *substream)
-+{
-+	int err;
-+	struct snd_card *card = substream->rmidi->card;
-+
-+snd_printk("snd_rawmidi_suspend\n");
-+	err = 0;
-+	snd_power_lock(card);
-+	tasklet_disable(&substream->runtime->tasklet);
-+	if (substream->ops->power)
-+		err = substream->ops->power(substream, 0);
-+	snd_power_unlock(card);
-+	return err;
-+}
-+
-+EXPORT_SYMBOL(snd_rawmidi_suspend);
-+
-+
-+/**
-+ * snd_rawmidi_resume
-+ * @substream: the rawmidi substream
-+ *
-+ * Resume the given substream.
-+ */
-+int snd_rawmidi_resume(struct snd_rawmidi_substream *substream)
-+{
-+	int err;
-+	struct snd_card *card = substream->rmidi->card;
-+
-+snd_printk("snd_rawmidi_resume\n");
-+	err = 0;
-+	snd_power_lock(card);
-+	if (substream->ops->power)
-+		err = substream->ops->power(substream, 1);
-+	tasklet_enable(&substream->runtime->tasklet);
-+	snd_power_unlock(card);
-+	return err;
-+}
-+
-+EXPORT_SYMBOL(snd_rawmidi_resume);
-+
-+#endif /* CONFIG_PM */
-+
-+
- /*
-  *  ENTRY functions
-  */
-diff -dupr alsa-kernel__orig/include/rawmidi.h alsa-kernel/include/rawmidi.h
---- alsa-kernel__orig/include/rawmidi.h	2006-05-17 23:17:58.000000000 +0200
-+++ alsa-kernel/include/rawmidi.h	2006-05-28 19:57:49.000000000 +0200
-@@ -53,6 +53,7 @@ struct snd_rawmidi_ops {
- 	int (*close) (struct snd_rawmidi_substream * substream);
- 	void (*trigger) (struct snd_rawmidi_substream * substream, int up);
- 	void (*drain) (struct snd_rawmidi_substream * substream);
-+	int (*power) (struct snd_rawmidi_substream * substream, int state);
- };
- 
- struct snd_rawmidi_global_ops {
-@@ -182,5 +183,7 @@ long snd_rawmidi_kernel_read(struct snd_
- 			     unsigned char *buf, long count);
- long snd_rawmidi_kernel_write(struct snd_rawmidi_substream *substream,
- 			      const unsigned char *buf, long count);
-+int snd_rawmidi_suspend(struct snd_rawmidi_substream *substream);
-+int snd_rawmidi_resume(struct snd_rawmidi_substream *substream);
- 
- #endif /* __SOUND_RAWMIDI_H */
+Please let me know if there is something more I can provide.
+======================================================================
 
+----------------------------------------------------------------------
+ vertex - 05-31-06 23:23 
+----------------------------------------------------------------------
+Mine is from Uniwill.
 
+----------------------------------------------------------------------
+ taschenorakel - 06-01-06 00:30 
+----------------------------------------------------------------------
+The mainboard of my notebook also is produced by Uniwill, but it is
+assembly by Nexoc. Quite curious which name the folder will get.
 
+I contacted their German distributor. I am pretty sure that it is just a
+matter of time now until we get this working. The GPL is a strong license
+(specially in Germany) and I am pretty sure Intervideo knows that.
 
-
---
-Giuliano.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
+05-11-06 00:44 vertex         Note Added: 0009755                          
+05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
+05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
+  
+05-29-06 23:33 taschenorakel  Note Added: 0010015                          
+05-30-06 19:11 vertex         Note Added: 0010021                          
+05-31-06 20:20 taschenorakel  Note Added: 0010028                          
+05-31-06 21:02 vertex         Note Added: 0010029                          
+05-31-06 21:06 vertex         Note Added: 0010030                          
+05-31-06 22:43 rlrevell       Note Added: 0010032                          
+05-31-06 22:51 rlrevell       Note Added: 0010033                          
+05-31-06 23:23 vertex         Note Added: 0010035                          
+06-01-06 00:30 taschenorakel  Note Added: 0010036                          
+======================================================================
