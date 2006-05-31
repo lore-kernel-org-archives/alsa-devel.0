@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002175]: Wish: alsa buffer to allow
-	suspend-resume without closing sound applications
-Date: Wed, 31 May 2006 03:13:16 +0200
-Message-ID: <f572369ab24442c9c1d74f6eb34a147e@bugtrack.alsa-project.org>
+From: "Safira Benner" <bennesaf@intergengroup.com>
+Subject: Re: 645 highbo
+Date: Wed, 31 May 2006 01:13:14 -0700
+Message-ID: <000001c6848a$105d2190$37fba8c0@dif44>
+Reply-To: Safira Benner <bennesaf@intergengroup.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1187441087=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58B62146
-	for <alsa-devel@alsa-project.org>;
-	Wed, 31 May 2006 03:13:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,113 +15,105 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2175> 
-======================================================================
-Reported By:                RichardNeill
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2175
-Category:                   1_OTHERS
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             05-31-2006 03:13 CEST
-Last Modified:              05-31-2006 03:13 CEST
-======================================================================
-Summary:                    Wish:  alsa buffer to allow suspend-resume without
-closing sound applications
-Description: 
-SUMMARY
--------
-I propose a new feature which will be of great help to laptop users during
-suspend.
+--===============1187441087==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0001_01C6844F.63FE4990"
 
-MOTIVATION
-----------
-When suspending a laptop and then resuming, it's usually necessary to
-remove the sound modules and reload them. Removing the modules can only
-occur if all sound applications are killed and then restarted. This is
-always annoying (eg restarting xmms), but particularly problematic in
-cases such as:
+This is a multi-part message in MIME format.
 
-  - a sound server, such as Arts is running, maybe needing a KDE restart
-  - Mozilla (or similar) has at one time allowed a plugin to access sound.
+------=_NextPart_000_0001_01C6844F.63FE4990
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-     but we don't want to lose the contents of 50 open tabs!
-  - the timidity service is providing a MIDI interface systemwide.
- 
-it's also very un user-friendly, especially to non-technical users.
-
-I propose creating a buffer device, which sound apps use instead of
-/dev/dsp. Then buffer would cope gracefully with /dev/dsp disappearing and
-re-appearing again.
+Hi,=20
+C ? A L i S=20
+V ? A G R A=20
+L E V ? T R A
+P R O Z ^ C
+X ^ N A X
+V A L / U M=20
+M E R ? D i A
+A M B / E N
+S O M ^=20
+http://www.vokasihasol.com=20
 
 
-DETAILS
--------
-
-I'm no kernel expert, but here is how I see it working. I'm only going to
-consider /dev/dsp for simplicity.
-
-1) At the moment, /dev/dsp is provided by snd_xxx. snd_xxx cannot be
-removed while /dev/dsp is open.
-
-2) I propose that instead, we have a new kernel module which provides
-/dev/abuffer/dsp:
-
-   Application -> /dev/abuffer/dsp -> /dev/dsp -> snd_xxx
 
 
-3) /dev/abuffer/dsp must do the following:
-
-    i) The file must always exist, and not go away.
-
-    ii) In normal use, it transfers data directly to /dev/dsp
-
-    iii) The kernel module which provides /dev/abuffer/dsp must not lock 
-/dev/dsp with "device is in use".
-
-    iv) When the snd_xxx module is unloaded, /dev/dsp will vanish. 
-At this point, /dev/abuffer/dsp must seamlessly redirect its input to
-/dev/null, and its output from /dev/zero. (or maybe it should block).
-
-    v)When snd_xxx is reloaded, /dev/abuffer/dsp reconnects seamlessly to
-/dev/dsp.
+their journey across the plains below.=20
+The Lord of the Eagles would not take them anywhere near where men=20
+lived. They would shoot at us with their great bows of yew, he said,=20
+for they would think we were after their sheep. And at other times they=20
+would be right. No! we are glad to cheat the goblins of their sport, and
+glad to repay our thanks to you, but we will not risk ourselves for=20
 
 
-4)Thus, the soundcard can be completely disconnected, and reset, while the
-application remains blisfully unaware. As far as the application is
-concerned. the file-handle for /dev/abuffer/dsp remains valid all the
-time. 
+------=_NextPart_000_0001_01C6844F.63FE4990
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-During the period immediately pre/post-suspend (while the snd_xxx module
-is unloaded, but the application may still be running), writes to
-/dev/buffer/dsp are silently discarded, and reads result in a string of
-zeros. Or, it can block. 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV>Hi,
+<BR>
+<B>C ? A L i S </B><BR>
+<B> V ? A G R A </B><BR>
+L E V ? T R A<BR>
+P R O Z ^ C<BR>
+X ^ N A X<BR>
+<B>V A L / U M </B><BR>
+M E R ? D i A<BR>
+A M B / E N<BR>
+S O M ^
+<BR>
+<A href=3D"http://www.vokasihasol.com">http://www.vokasihasol.com</A>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+their journey across the plains below. <BR>   The Lord of the Eagles =
+would not take them anywhere near where men <BR>lived. They would shoot =
+at us with their great bows of yew, he said, <BR>for they would think we =
+were after their sheep. And at other times they <BR>would be right. No! =
+we are glad to cheat the goblins of their sport, and <BR>glad to repay =
+our thanks to you, but we will not risk ourselves for =
+<BR></DIV></BODY></HTML>
+------=_NextPart_000_0001_01C6844F.63FE4990--
 
 
-5) This has to be repeated for /dev/mixer and all the other sound
-devices.
 
 
-I hope this idea is useful; I'd certainly love to see it implemented! 
 
-Thanks very much - Richard
-======================================================================
+--===============1187441087==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-31-06 03:13 RichardNeill   New Issue                                    
-======================================================================
+
+--===============1187441087==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1187441087==--
