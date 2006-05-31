@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not
 	functional using included alsa drivers
-Date: Wed, 31 May 2006 21:06:33 +0200
-Message-ID: <b36c2e7adff537bd406a5f3ca88696a6@bugtrack.alsa-project.org>
+Date: Wed, 31 May 2006 22:43:41 +0200
+Message-ID: <13e9183a9d5578317a4efd5575f00cc6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B84EE3
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16C19138
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 May 2006 21:06:33 +0200 (MEST)
+	Wed, 31 May 2006 22:43:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              05-31-2006 21:06 CEST
+Last Modified:              05-31-2006 22:43 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -73,20 +73,16 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- vertex - 05-31-06 21:02 
-----------------------------------------------------------------------
-I have contacted someone with Intervideo OEM sales dept. She is going to
-try and get me in contact with someone in their engineering department. 
-If there is any problem with that, I have the main contact for their legal
-department. Seeing as how these drivers are released under the gpl, they
-are legally obligated to provide source code for their modifications.
-
-----------------------------------------------------------------------
  vertex - 05-31-06 21:06 
 ----------------------------------------------------------------------
 It looks like you can download the source on their page, but it does not
 look up-to-date. Look here:
 http://www.intervideo.com/jsp/oem/InstantON_GPL.jsp
+
+----------------------------------------------------------------------
+ rlrevell - 05-31-06 22:43 
+----------------------------------------------------------------------
+Which notebook is it, Fujitsu or Samsung?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -122,4 +118,5 @@ Date Modified  Username       Field                    Change
 05-31-06 20:20 taschenorakel  Note Added: 0010028                          
 05-31-06 21:02 vertex         Note Added: 0010029                          
 05-31-06 21:06 vertex         Note Added: 0010030                          
+05-31-06 22:43 rlrevell       Note Added: 0010032                          
 ======================================================================
