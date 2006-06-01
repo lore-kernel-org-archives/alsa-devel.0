@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002175]: Wish: alsa buffer to allow
 	suspend-resume without closing sound applications
-Date: Thu, 1 Jun 2006 04:56:45 +0200
-Message-ID: <79c96535be70654a4aebaa4bd4ca0497@bugtrack.alsa-project.org>
+Date: Thu, 1 Jun 2006 05:01:36 +0200
+Message-ID: <9639816986fc1fd27f7ba4beae12ac75@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B9BA013C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5422013C
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Jun 2006 04:56:45 +0200 (MEST)
+	Thu,  1 Jun 2006 05:01:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             05-31-2006 03:13 CEST
-Last Modified:              06-01-2006 04:56 CEST
+Last Modified:              06-01-2006 05:01 CEST
 ======================================================================
 Summary:                    Wish:  alsa buffer to allow suspend-resume without
 closing sound applications
@@ -126,13 +126,6 @@ Thanks very much - Richard
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 05-31-06 22:54 
-----------------------------------------------------------------------
-Also, with recent ALSA like 1.0.11 it should not be necessary to remove the
-ALSA modules in order to suspend as suspend/resume is supported.  What
-happens if you try to suspend without removing the ALSA modules?
-
-----------------------------------------------------------------------
  RichardNeill - 06-01-06 04:56 
 ----------------------------------------------------------------------
 I'm using 1.0.10, (Mandriva community 2006,kernel 2.6.14), and I did the
@@ -171,6 +164,16 @@ Also, despite using aoss where possible, there are still a few "legacy"
 apps in common use, eg "play". So it would be nice if the /dev/dsp devices
 coped with suspend too.
 
+----------------------------------------------------------------------
+ rlrevell - 06-01-06 05:01 
+----------------------------------------------------------------------
+1.0.10 is too old for debugging, please repeat the test with 1.0.11.
+
+"play" is trivial to fix - just use "aplay" instead.  The hard problems
+are Skype and Flash ;-)
+
+Anyway, /dev/dsp vs. ALSA really has nothing to do with this bug.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -178,4 +181,5 @@ Date Modified  Username       Field                    Change
 05-31-06 22:40 rlrevell       Note Added: 0010031                          
 05-31-06 22:54 rlrevell       Note Added: 0010034                          
 06-01-06 04:56 RichardNeill   Note Added: 0010040                          
+06-01-06 05:01 rlrevell       Note Added: 0010041                          
 ======================================================================
