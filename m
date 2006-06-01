@@ -1,17 +1,17 @@
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [RFC 5/8] snd-aoa: add codecs
-Date: Thu, 01 Jun 2006 13:58:49 +0200
-Message-ID: <20060601115848.075177000@sipsolutions.net>
+Subject: [RFC 4/8] snd-aoa: add i2sbus
+Date: Thu, 01 Jun 2006 13:58:48 +0200
+Message-ID: <20060601115847.420788000@sipsolutions.net>
 References: <20060601115844.343214000@sipsolutions.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A967C149
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 574CA140
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Jun 2006 15:06:03 +0200 (MEST)
-Content-Disposition: inline; filename=add-codecs.patch
+	Thu,  1 Jun 2006 15:05:57 +0200 (MEST)
+Content-Disposition: inline; filename=add-i2sbus.patch
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,2150 +25,1958 @@ To: alsa-devel@alsa-project.org
 Cc: linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds two of the most important codecs Apple uses in newer
-machines, namely the Onyx and the tas3004.
+This patch adds the required files for i2sbus (the Makefile hook and the
+Kconfig item were already added in the previous patch). i2sbus is the module
+that handles the i2s busses on newer Apple machines, currently only handling
+those machines that have all the required information in the device tree.
 
 --- /dev/null
-+++ b/sound/aoa/codecs/Makefile
-@@ -0,0 +1,2 @@
-+obj-$(CONFIG_SND_AOA_ONYX) += snd-aoa-codec-onyx.o
-+obj-$(CONFIG_SND_AOA_TAS) += snd-aoa-codec-tas.o
---- /dev/null
-+++ b/sound/aoa/codecs/snd-aoa-codec-onyx.h
-@@ -0,0 +1,76 @@
++++ b/sound/aoa/soundbus/i2sbus/i2sbus-control.h
+@@ -0,0 +1,37 @@
 +/*
-+ * Apple Onboard Audio driver for Onyx codec (header)
++ * i2sbus driver -- bus register definitions
 + *
 + * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
 + *
 + * GPL v2, can be found in COPYING.
 + */
-+#ifndef __SND_AOA_CODEC_ONYX_H
-+#define __SND_AOA_CODEC_ONYX_H
-+#include <stddef.h>
-+#include <linux/i2c.h>
-+#include <linux/i2c-dev.h>
-+#include <asm/pmac_low_i2c.h>
-+#include <asm/prom.h>
++#ifndef __I2SBUS_CONTROLREGS_H
++#define __I2SBUS_CONTROLREGS_H
 +
-+/* PCM3052 register definitions */
++/* i2s control registers, at least what we know about them */
 +
-+/* the attenuation registers take values from
-+ * -1 (0dB) to -127 (-63.0 dB) or others (muted) */
-+#define ONYX_REG_DAC_ATTEN_LEFT		65
-+#define FIRSTREGISTER			ONYX_REG_DAC_ATTEN_LEFT
-+#define ONYX_REG_DAC_ATTEN_RIGHT	66
++#define __PAD(m,n) u8 __pad##m[n]
++#define _PAD(line, n) __PAD(line, n)
++#define PAD(n) _PAD(__LINE__, (n))
++struct i2s_control_regs {
++	PAD(0x38);
++	__le32 fcr0;		/* 0x38 (unknown) */
++	__le32 cell_control;	/* 0x3c (fcr1) */
++	__le32 fcr2;		/* 0x40 (unknown) */
++	__le32 fcr3;		/* 0x44 (fcr3) */
++	__le32 clock_control;	/* 0x48 (unknown) */
++	PAD(4);
++	/* total size: 0x50 bytes */
++}  __attribute__((__packed__));
 +
-+#define ONYX_REG_CONTROL		67
-+#	define ONYX_MRST		(1<<7)
-+#	define ONYX_SRST		(1<<6)
-+#	define ONYX_ADPSV		(1<<5)
-+#	define ONYX_DAPSV		(1<<4)
-+#	define ONYX_SILICONVERSION	(1<<0)
-+/* all others reserved */
++#define CTRL_CLOCK_CELL_0_ENABLE	(1<<10)
++#define CTRL_CLOCK_CLOCK_0_ENABLE	(1<<12)
++#define CTRL_CLOCK_SWRESET_0		(1<<11)
++#define CTRL_CLOCK_INTF_0_ENABLE	(1<<13)
 +
-+#define ONYX_REG_DAC_CONTROL		68
-+#	define ONYX_OVR1		(1<<6)
-+#	define ONYX_MUTE_RIGHT		(1<<1)
-+#	define ONYX_MUTE_LEFT		(1<<0)
++#define CTRL_CLOCK_CELL_1_ENABLE	(1<<17)
++#define CTRL_CLOCK_CLOCK_1_ENABLE	(1<<18)
++#define CTRL_CLOCK_SWRESET_1		(1<<19)
++#define CTRL_CLOCK_INTF_1_ENABLE	(1<<20)
 +
-+#define ONYX_REG_DAC_DEEMPH		69
-+#	define ONYX_DIGDEEMPH_SHIFT	5
-+#	define ONYX_DIGDEEMPH_MASK	(3<<ONYX_DIGDEEMPH_SHIFT)
-+#	define ONYX_DIGDEEMPH_CTRL	(1<<4)
-+
-+#define ONYX_REG_DAC_FILTER		70
-+#	define ONYX_ROLLOFF_FAST	(1<<5)
-+#	define ONYX_DAC_FILTER_ALWAYS	(1<<2)
-+
-+#define	ONYX_REG_DAC_OUTPHASE		71
-+#	define ONYX_OUTPHASE_INVERTED	(1<<0)
-+
-+#define ONYX_REG_ADC_CONTROL		72
-+#	define ONYX_ADC_INPUT_MIC	(1<<5)
-+/* 8 + input gain in dB, valid range for input gain is -4 .. 20 dB */
-+#	define ONYX_ADC_PGA_GAIN_MASK	0x1f
-+
-+#define ONYX_REG_ADC_HPF_BYPASS		75
-+#	define ONYX_HPF_DISABLE		(1<<3)
-+#	define ONYX_ADC_HPF_ALWAYS	(1<<2)
-+
-+#define ONYX_REG_DIG_INFO1		77
-+#	define ONYX_MASK_DIN_TO_BPZ	(1<<7)
-+/* bits 1-5 control channel bits 1-5 */
-+#	define ONYX_DIGOUT_DISABLE	(1<<0)
-+
-+#define ONYX_REG_DIG_INFO2		78
-+/* controls channel bits 8-15 */
-+
-+#define ONYX_REG_DIG_INFO3		79
-+/* control channel bits 24-29, high 2 bits reserved */
-+
-+#define ONYX_REG_DIG_INFO4		80
-+#	define ONYX_VALIDL		(1<<7)
-+#	define ONYX_VALIDR		(1<<6)
-+#	define ONYX_SPDIF_ENABLE	(1<<5)
-+/* lower 4 bits control bits 32-35 of channel control and word length */
-+#	define ONYX_WORDLEN_MASK	(0xF)
-+
-+#endif /* __SND_AOA_CODEC_ONYX_H */
++#endif /* __I2SBUS_CONTROLREGS_H */
 --- /dev/null
-+++ b/sound/aoa/codecs/snd-aoa-codec-tas-gain-table.h
-@@ -0,0 +1,209 @@
++++ b/sound/aoa/soundbus/i2sbus/i2sbus-pcm.c
+@@ -0,0 +1,1008 @@
 +/*
-+ This is the program used to generate below table.
-+
-+#include <stdio.h>
-+#include <math.h>
-+int main() {
-+  int dB2;
-+  printf("/" "* This file is only included exactly once!\n");
-+  printf(" *\n");
-+  printf(" * If they'd only tell us that generating this table was\n");
-+  printf(" * as easy as calculating\n");
-+  printf(" *      hwvalue = 1048576.0*exp(0.057564628*dB*2)\n");
-+  printf(" * :) *" "/\n");
-+  printf("static int tas_gaintable[] = {\n");
-+  printf("	0x000000, /" "* -infinity dB *" "/\n");
-+  for (dB2=-140;dB2<=36;dB2++)
-+    printf("	0x%.6x, /" "* %-02.1f dB *" "/\n", (int)(1048576.0*exp(0.057564628*dB2)), dB2/2.0);
-+  printf("};\n\n");
-+}
-+
-+*/
-+
-+/* This file is only included exactly once!
-+ *
-+ * If they'd only tell us that generating this table was
-+ * as easy as calculating
-+ *      hwvalue = 1048576.0*exp(0.057564628*dB*2)
-+ * :) */
-+static int tas_gaintable[] = {
-+	0x000000, /* -infinity dB */
-+	0x00014b, /* -70.0 dB */
-+	0x00015f, /* -69.5 dB */
-+	0x000174, /* -69.0 dB */
-+	0x00018a, /* -68.5 dB */
-+	0x0001a1, /* -68.0 dB */
-+	0x0001ba, /* -67.5 dB */
-+	0x0001d4, /* -67.0 dB */
-+	0x0001f0, /* -66.5 dB */
-+	0x00020d, /* -66.0 dB */
-+	0x00022c, /* -65.5 dB */
-+	0x00024d, /* -65.0 dB */
-+	0x000270, /* -64.5 dB */
-+	0x000295, /* -64.0 dB */
-+	0x0002bc, /* -63.5 dB */
-+	0x0002e6, /* -63.0 dB */
-+	0x000312, /* -62.5 dB */
-+	0x000340, /* -62.0 dB */
-+	0x000372, /* -61.5 dB */
-+	0x0003a6, /* -61.0 dB */
-+	0x0003dd, /* -60.5 dB */
-+	0x000418, /* -60.0 dB */
-+	0x000456, /* -59.5 dB */
-+	0x000498, /* -59.0 dB */
-+	0x0004de, /* -58.5 dB */
-+	0x000528, /* -58.0 dB */
-+	0x000576, /* -57.5 dB */
-+	0x0005c9, /* -57.0 dB */
-+	0x000620, /* -56.5 dB */
-+	0x00067d, /* -56.0 dB */
-+	0x0006e0, /* -55.5 dB */
-+	0x000748, /* -55.0 dB */
-+	0x0007b7, /* -54.5 dB */
-+	0x00082c, /* -54.0 dB */
-+	0x0008a8, /* -53.5 dB */
-+	0x00092b, /* -53.0 dB */
-+	0x0009b6, /* -52.5 dB */
-+	0x000a49, /* -52.0 dB */
-+	0x000ae5, /* -51.5 dB */
-+	0x000b8b, /* -51.0 dB */
-+	0x000c3a, /* -50.5 dB */
-+	0x000cf3, /* -50.0 dB */
-+	0x000db8, /* -49.5 dB */
-+	0x000e88, /* -49.0 dB */
-+	0x000f64, /* -48.5 dB */
-+	0x00104e, /* -48.0 dB */
-+	0x001145, /* -47.5 dB */
-+	0x00124b, /* -47.0 dB */
-+	0x001361, /* -46.5 dB */
-+	0x001487, /* -46.0 dB */
-+	0x0015be, /* -45.5 dB */
-+	0x001708, /* -45.0 dB */
-+	0x001865, /* -44.5 dB */
-+	0x0019d8, /* -44.0 dB */
-+	0x001b60, /* -43.5 dB */
-+	0x001cff, /* -43.0 dB */
-+	0x001eb7, /* -42.5 dB */
-+	0x002089, /* -42.0 dB */
-+	0x002276, /* -41.5 dB */
-+	0x002481, /* -41.0 dB */
-+	0x0026ab, /* -40.5 dB */
-+	0x0028f5, /* -40.0 dB */
-+	0x002b63, /* -39.5 dB */
-+	0x002df5, /* -39.0 dB */
-+	0x0030ae, /* -38.5 dB */
-+	0x003390, /* -38.0 dB */
-+	0x00369e, /* -37.5 dB */
-+	0x0039db, /* -37.0 dB */
-+	0x003d49, /* -36.5 dB */
-+	0x0040ea, /* -36.0 dB */
-+	0x0044c3, /* -35.5 dB */
-+	0x0048d6, /* -35.0 dB */
-+	0x004d27, /* -34.5 dB */
-+	0x0051b9, /* -34.0 dB */
-+	0x005691, /* -33.5 dB */
-+	0x005bb2, /* -33.0 dB */
-+	0x006121, /* -32.5 dB */
-+	0x0066e3, /* -32.0 dB */
-+	0x006cfb, /* -31.5 dB */
-+	0x007370, /* -31.0 dB */
-+	0x007a48, /* -30.5 dB */
-+	0x008186, /* -30.0 dB */
-+	0x008933, /* -29.5 dB */
-+	0x009154, /* -29.0 dB */
-+	0x0099f1, /* -28.5 dB */
-+	0x00a310, /* -28.0 dB */
-+	0x00acba, /* -27.5 dB */
-+	0x00b6f6, /* -27.0 dB */
-+	0x00c1cd, /* -26.5 dB */
-+	0x00cd49, /* -26.0 dB */
-+	0x00d973, /* -25.5 dB */
-+	0x00e655, /* -25.0 dB */
-+	0x00f3fb, /* -24.5 dB */
-+	0x010270, /* -24.0 dB */
-+	0x0111c0, /* -23.5 dB */
-+	0x0121f9, /* -23.0 dB */
-+	0x013328, /* -22.5 dB */
-+	0x01455b, /* -22.0 dB */
-+	0x0158a2, /* -21.5 dB */
-+	0x016d0e, /* -21.0 dB */
-+	0x0182af, /* -20.5 dB */
-+	0x019999, /* -20.0 dB */
-+	0x01b1de, /* -19.5 dB */
-+	0x01cb94, /* -19.0 dB */
-+	0x01e6cf, /* -18.5 dB */
-+	0x0203a7, /* -18.0 dB */
-+	0x022235, /* -17.5 dB */
-+	0x024293, /* -17.0 dB */
-+	0x0264db, /* -16.5 dB */
-+	0x02892c, /* -16.0 dB */
-+	0x02afa3, /* -15.5 dB */
-+	0x02d862, /* -15.0 dB */
-+	0x03038a, /* -14.5 dB */
-+	0x033142, /* -14.0 dB */
-+	0x0361af, /* -13.5 dB */
-+	0x0394fa, /* -13.0 dB */
-+	0x03cb50, /* -12.5 dB */
-+	0x0404de, /* -12.0 dB */
-+	0x0441d5, /* -11.5 dB */
-+	0x048268, /* -11.0 dB */
-+	0x04c6d0, /* -10.5 dB */
-+	0x050f44, /* -10.0 dB */
-+	0x055c04, /* -9.5 dB */
-+	0x05ad50, /* -9.0 dB */
-+	0x06036e, /* -8.5 dB */
-+	0x065ea5, /* -8.0 dB */
-+	0x06bf44, /* -7.5 dB */
-+	0x07259d, /* -7.0 dB */
-+	0x079207, /* -6.5 dB */
-+	0x0804dc, /* -6.0 dB */
-+	0x087e80, /* -5.5 dB */
-+	0x08ff59, /* -5.0 dB */
-+	0x0987d5, /* -4.5 dB */
-+	0x0a1866, /* -4.0 dB */
-+	0x0ab189, /* -3.5 dB */
-+	0x0b53be, /* -3.0 dB */
-+	0x0bff91, /* -2.5 dB */
-+	0x0cb591, /* -2.0 dB */
-+	0x0d765a, /* -1.5 dB */
-+	0x0e4290, /* -1.0 dB */
-+	0x0f1adf, /* -0.5 dB */
-+	0x100000, /* 0.0 dB */
-+	0x10f2b4, /* 0.5 dB */
-+	0x11f3c9, /* 1.0 dB */
-+	0x13041a, /* 1.5 dB */
-+	0x14248e, /* 2.0 dB */
-+	0x15561a, /* 2.5 dB */
-+	0x1699c0, /* 3.0 dB */
-+	0x17f094, /* 3.5 dB */
-+	0x195bb8, /* 4.0 dB */
-+	0x1adc61, /* 4.5 dB */
-+	0x1c73d5, /* 5.0 dB */
-+	0x1e236d, /* 5.5 dB */
-+	0x1fec98, /* 6.0 dB */
-+	0x21d0d9, /* 6.5 dB */
-+	0x23d1cd, /* 7.0 dB */
-+	0x25f125, /* 7.5 dB */
-+	0x2830af, /* 8.0 dB */
-+	0x2a9254, /* 8.5 dB */
-+	0x2d1818, /* 9.0 dB */
-+	0x2fc420, /* 9.5 dB */
-+	0x3298b0, /* 10.0 dB */
-+	0x35982f, /* 10.5 dB */
-+	0x38c528, /* 11.0 dB */
-+	0x3c224c, /* 11.5 dB */
-+	0x3fb278, /* 12.0 dB */
-+	0x4378b0, /* 12.5 dB */
-+	0x477829, /* 13.0 dB */
-+	0x4bb446, /* 13.5 dB */
-+	0x5030a1, /* 14.0 dB */
-+	0x54f106, /* 14.5 dB */
-+	0x59f980, /* 15.0 dB */
-+	0x5f4e52, /* 15.5 dB */
-+	0x64f403, /* 16.0 dB */
-+	0x6aef5e, /* 16.5 dB */
-+	0x714575, /* 17.0 dB */
-+	0x77fbaa, /* 17.5 dB */
-+	0x7f17af, /* 18.0 dB */
-+};
-+
---- /dev/null
-+++ b/sound/aoa/codecs/snd-aoa-codec-tas.h
-@@ -0,0 +1,47 @@
-+/*
-+ * Apple Onboard Audio driver for tas codec (header)
++ * i2sbus driver -- pcm routines
 + *
 + * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
 + *
 + * GPL v2, can be found in COPYING.
 + */
-+#ifndef __SND_AOA_CODECTASH
-+#define __SND_AOA_CODECTASH
 +
-+#define TAS_REG_MCS	0x01	/* main control */
-+#	define TAS_MCS_FASTLOAD		(1<<7)
-+#	define TAS_MCS_SCLK64		(1<<6)
-+#	define TAS_MCS_SPORT_MODE_MASK	(3<<4)
-+#	define TAS_MCS_SPORT_MODE_I2S	(2<<4)
-+#	define TAS_MCS_SPORT_MODE_RJ	(1<<4)
-+#	define TAS_MCS_SPORT_MODE_LJ	(0<<4)
-+#	define TAS_MCS_SPORT_WL_MASK	(3<<0)
-+#	define TAS_MCS_SPORT_WL_16BIT	(0<<0)
-+#	define TAS_MCS_SPORT_WL_18BIT	(1<<0)
-+#	define TAS_MCS_SPORT_WL_20BIT	(2<<0)
-+#	define TAS_MCS_SPORT_WL_24BIT	(3<<0)
-+
-+#define TAS_REG_DRC	0x02
-+#define TAS_REG_VOL	0x04
-+#define TAS_REG_TREBLE	0x05
-+#define TAS_REG_BASS	0x06
-+#define TAS_REG_LMIX	0x07
-+#define TAS_REG_RMIX	0x08
-+
-+#define TAS_REG_ACR	0x40	/* analog control */
-+#	define TAS_ACR_B_MONAUREAL	(1<<7)
-+#	define TAS_ACR_B_MON_SEL_RIGHT	(1<<6)
-+#	define TAS_ACR_DEEMPH_MASK	(3<<2)
-+#	define TAS_ACR_DEEMPH_OFF	(0<<2)
-+#	define TAS_ACR_DEEMPH_48KHz	(1<<2)
-+#	define TAS_ACR_DEEMPH_44KHz	(2<<2)
-+#	define TAS_ACR_INPUT_B		(1<<1)
-+#	define TAS_ACR_ANALOG_PDOWN	(1<<0)
-+
-+#define TAS_REG_MCS2	0x43	/* main control 2 */
-+#	define TAS_MCS2_ALLPASS		(1<<1)
-+
-+#define TAS_REG_LEFT_BIQUAD6	0x10
-+#define TAS_REG_RIGHT_BIQUAD6	0x19
-+
-+#endif /* __SND_AOA_CODECTASH */
---- /dev/null
-+++ b/sound/aoa/codecs/snd-aoa-codec-onyx.c
-@@ -0,0 +1,1116 @@
-+/*
-+ * Apple Onboard Audio driver for Onyx codec
-+ *
-+ * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
-+ *
-+ * GPL v2, can be found in COPYING.
-+ *
-+ *
-+ * This is a driver for the pcm3052 codec chip (codenamed Onyx)
-+ * that is present in newer Apple hardware (with digital output).
-+ *
-+ * The Onyx codec has the following connections (listed by the bit
-+ * to be used in aoa_codec.connected):
-+ *  0: analog output
-+ *  1: digital output
-+ *  2: line input
-+ *  3: microphone input
-+ * Note that even though I know of no machine that has for example
-+ * the digital output connected but not the analog, I have handled
-+ * all the different cases in the code so that this driver may serve
-+ * as a good example of what to do.
-+ *
-+ * NOTE: This driver assumes that there's at most one chip to be
-+ * 	 used with one alsa card, in form of creating all kinds
-+ *	 of mixer elements without regard for their existence.
-+ *	 But snd-aoa assumes that there's at most one card, so
-+ *	 this means you can only have one onyx on a system. This
-+ *	 should probably be fixed by changing the assumption of
-+ *	 having just a single card on a system, and making the
-+ *	 'card' pointer accessible to anyone who needs it instead
-+ *	 of hiding it in the aoa_snd_* functions...
-+ *
-+ */
++#include <asm/io.h>
 +#include <linux/delay.h>
-+#include <linux/module.h>
-+MODULE_AUTHOR("Johannes Berg <johannes@sipsolutions.net>");
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("pcm3052 (onyx) codec driver for snd-aoa");
++/* So apparently there's a reason for requiring driver.h
++ * to be included first, even if I don't know it... */
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <asm/macio.h>
++#include <linux/pci.h>
++#include "../soundbus.h"
++#include "i2sbus.h"
 +
-+#include "snd-aoa-codec-onyx.h"
-+/* FIXME */
-+#include "../aoa.h"
-+#include "../soundbus/soundbus.h"
-+
-+
-+#define PFX "snd-aoa-codec-onyx: "
-+
-+struct onyx {
-+	/* cache registers 65 to 80, they are write-only! */
-+	u8			cache[16];
-+	struct i2c_client	i2c;
-+	struct aoa_codec	codec;
-+	u32			initialised:1,
-+				spdif_locked:1,
-+				analog_locked:1,
-+				original_mute:2;
-+	int			open_count;
-+	struct codec_info	*codec_info;
-+
-+	/* mutex serializes concurrent access to the device
-+	 * and this structure.
-+	 */
-+	struct mutex mutex;
-+};
-+#define codec_to_onyx(c) container_of(c, struct onyx, codec)
-+
-+/* both return 0 if all ok, else on error */
-+static int onyx_read_register(struct onyx *onyx, u8 reg, u8 *value)
++static inline void get_pcm_info(struct i2sbus_dev *i2sdev, int in,
++				struct pcm_info **pi, struct pcm_info **other)
 +{
-+	s32 v;
-+
-+	if (reg != ONYX_REG_CONTROL) {
-+		*value = onyx->cache[reg-FIRSTREGISTER];
-+		return 0;
++	if (in) {
++		if (pi)
++			*pi = &i2sdev->in;
++		if (other)
++			*other = &i2sdev->out;
++	} else {
++		if (pi)
++			*pi = &i2sdev->out;
++		if (other)
++			*other = &i2sdev->in;
 +	}
-+	v = i2c_smbus_read_byte_data(&onyx->i2c, reg);
-+	if (v < 0)
-+		return -1;
-+	*value = (u8)v;
-+	onyx->cache[ONYX_REG_CONTROL-FIRSTREGISTER] = *value;
-+	return 0;
 +}
 +
-+static int onyx_write_register(struct onyx *onyx, u8 reg, u8 value)
++static int clock_and_divisors(int mclk, int sclk, int rate, int *out)
 +{
-+	int result;
++	/* sclk must be derived from mclk! */
++	if (mclk % sclk)
++		return -1;
++	/* derive sclk register value */
++	if (i2s_sf_sclkdiv(mclk / sclk, out))
++		return -1;
 +
-+	result = i2c_smbus_write_byte_data(&onyx->i2c, reg, value);
-+	if (!result)
-+		onyx->cache[reg-FIRSTREGISTER] = value;
++	if (I2S_CLOCK_SPEED_18MHz % rate == 0) {
++		if ((I2S_CLOCK_SPEED_18MHz / rate) % mclk == 0) {
++			if (!i2s_sf_mclkdiv(I2S_CLOCK_SPEED_18MHz / rate / mclk, out)) {
++				*out |= I2S_SF_CLOCK_SOURCE_18MHz;
++				return 0;
++			}
++		}
++	}
++	if (I2S_CLOCK_SPEED_45MHz % rate == 0) {
++		if ((I2S_CLOCK_SPEED_45MHz / rate) % mclk == 0) {
++			if (!i2s_sf_mclkdiv(I2S_CLOCK_SPEED_45MHz / rate / mclk, out)) {
++				*out |= I2S_SF_CLOCK_SOURCE_45MHz;
++				return 0;
++			}
++		}
++	}
++	if (I2S_CLOCK_SPEED_49MHz % rate == 0) {
++		if ((I2S_CLOCK_SPEED_49MHz / rate) % mclk == 0) {
++			if (!i2s_sf_mclkdiv(I2S_CLOCK_SPEED_49MHz / rate / mclk, out)) {
++				*out |= I2S_SF_CLOCK_SOURCE_49MHz;
++				return 0;
++			}
++		}
++	}
++	return -1;
++}
++
++#define CHECK_RATE(rate)						\
++	do { if (rates & SNDRV_PCM_RATE_ ##rate) {			\
++		int dummy;						\
++		if (clock_and_divisors(sysclock_factor,			\
++				       bus_factor, rate, &dummy))	\
++			rates &= ~SNDRV_PCM_RATE_ ##rate;		\
++	} } while (0)
++
++static int i2sbus_pcm_open(struct i2sbus_dev *i2sdev, int in)
++{
++	struct pcm_info *pi, *other;
++	struct soundbus_dev *sdev;
++	int masks_inited = 0, err;
++	struct codec_info_item *cii;
++	struct snd_pcm_hardware *hw;
++	u64 formats = 0;
++	unsigned int rates = 0;
++	struct transfer_info v;
++	int result = 0;
++	int bus_factor = 0, sysclock_factor = 0;
++
++	mutex_lock(&i2sdev->lock);
++
++	get_pcm_info(i2sdev, in, &pi, &other);
++
++	hw = &pi->substream->runtime->hw;
++	sdev = &i2sdev->sound;
++
++	if (pi->active) {
++		/* alsa messed up */
++		result = -EBUSY;
++		goto out_unlock;
++	}
++
++	/* we now need to assign the hw */
++	list_for_each_entry(cii, &sdev->codec_list, list) {
++		struct transfer_info *ti = cii->codec->transfers;
++		bus_factor = cii->codec->bus_factor;
++		sysclock_factor = cii->codec->sysclock_factor;
++		while (ti->formats && ti->rates) {
++			v = *ti;
++			if (ti->transfer_in == in
++			    && cii->codec->usable(cii, ti, &v)) {
++				if (masks_inited) {
++					formats &= v.formats;
++					rates &= v.rates;
++				} else {
++					formats = v.formats;
++					rates = v.rates;
++					masks_inited = 1;
++				}
++			}
++			ti++;
++		}
++	}
++	if (!masks_inited || !bus_factor || !sysclock_factor) {
++		result = -ENODEV;
++		goto out_unlock;
++	}
++	/* bus dependent stuff */
++	hw->info = SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
++		   SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_RESUME;
++
++	CHECK_RATE(5512);
++	CHECK_RATE(8000);
++	CHECK_RATE(11025);
++	CHECK_RATE(16000);
++	CHECK_RATE(22050);
++	CHECK_RATE(32000);
++	CHECK_RATE(44100);
++	CHECK_RATE(48000);
++	CHECK_RATE(64000);
++	CHECK_RATE(88200);
++	CHECK_RATE(96000);
++	CHECK_RATE(176400);
++	CHECK_RATE(192000);
++	hw->rates = rates;
++
++	/* well. the codec might want 24 bits only, and we'll
++	 * ever only transfer 24 bits, but they are top-aligned!
++	 * So for alsa, we claim that we're doing full 32 bit
++	 * while in reality we'll ignore the lower 8 bits of
++	 * that when doing playback (they're transferred as 0
++	 * as far as I know, no codecs we have are 32-bit capable
++	 * so I can't really test) and when doing recording we'll
++	 * always have those lower 8 bits recorded as 0 */
++	if (formats & SNDRV_PCM_FMTBIT_S24_BE)
++		formats |= SNDRV_PCM_FMTBIT_S32_BE;
++	if (formats & SNDRV_PCM_FMTBIT_U24_BE)
++		formats |= SNDRV_PCM_FMTBIT_U32_BE;
++	/* now mask off what we can support. I suppose we could
++	 * also support S24_3LE and some similar formats, but I
++	 * doubt there's a codec that would be able to use that,
++	 * so we don't support it here. */
++	hw->formats = formats & (SNDRV_PCM_FMTBIT_S16_BE |
++				 SNDRV_PCM_FMTBIT_U16_BE |
++				 SNDRV_PCM_FMTBIT_S32_BE |
++				 SNDRV_PCM_FMTBIT_U32_BE);
++
++	/* we need to set the highest and lowest rate possible.
++	 * These are the highest and lowest rates alsa can
++	 * support properly in its bitfield.
++	 * Below, we'll use that to restrict to the rate
++	 * currently in use (if any). */
++	hw->rate_min = 5512;
++	hw->rate_max = 192000;
++	/* if the other stream is active, then we can only
++	 * support what it is currently using.
++	 * FIXME: I lied. This comment is wrong. We can support
++	 * anything that works with the same serial format, ie.
++	 * when recording 24 bit sound we can well play 16 bit
++	 * sound at the same time iff using the same transfer mode.
++	 */
++	if (other->active) {
++		/* FIXME: is this guaranteed by the alsa api? */
++		hw->formats &= (1ULL << i2sdev->format);
++		/* see above, restrict rates to the one we already have */
++		hw->rate_min = i2sdev->rate;
++		hw->rate_max = i2sdev->rate;
++	}
++
++	hw->channels_min = 2;
++	hw->channels_max = 2;
++	/* these are somewhat arbitrary */
++	hw->buffer_bytes_max = 131072;
++	hw->period_bytes_min = 256;
++	hw->period_bytes_max = 16384;
++	hw->periods_min = 3;
++	hw->periods_max = MAX_DBDMA_COMMANDS;
++	list_for_each_entry(cii, &sdev->codec_list, list) {
++		if (cii->codec->open) {
++			err = cii->codec->open(cii, pi->substream);
++			if (err) {
++				result = err;
++				goto out_unlock;
++			}
++		}
++	}
++
++ out_unlock:
++	mutex_unlock(&i2sdev->lock);
 +	return result;
 +}
 +
-+/* alsa stuff */
++#undef CHECK_RATE
 +
-+static int onyx_dev_register(struct snd_device *dev)
++static int i2sbus_pcm_close(struct i2sbus_dev *i2sdev, int in)
 +{
-+	return 0;
-+}
++	struct codec_info_item *cii;
++	struct pcm_info *pi;
++	int err = 0, tmp;
 +
-+static struct snd_device_ops ops = {
-+	.dev_register = onyx_dev_register,
-+};
++	mutex_lock(&i2sdev->lock);
 +
-+/* this is necessary because most alsa mixer programs
-+ * can't properly handle the negative range */
-+#define VOLUME_RANGE_SHIFT	128
++	get_pcm_info(i2sdev, in, &pi, NULL);
 +
-+static int onyx_snd_vol_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 2;
-+	uinfo->value.integer.min = -128 + VOLUME_RANGE_SHIFT;
-+	uinfo->value.integer.max = -1 + VOLUME_RANGE_SHIFT;
-+	return 0;
-+}
-+
-+static int onyx_snd_vol_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
-+	s8 l, r;
-+
-+	mutex_lock(&onyx->mutex);
-+	onyx_read_register(onyx, ONYX_REG_DAC_ATTEN_LEFT, &l);
-+	onyx_read_register(onyx, ONYX_REG_DAC_ATTEN_RIGHT, &r);
-+	mutex_unlock(&onyx->mutex);
-+
-+	ucontrol->value.integer.value[0] = l + VOLUME_RANGE_SHIFT;
-+	ucontrol->value.integer.value[1] = r + VOLUME_RANGE_SHIFT;
-+
-+	return 0;
-+}
-+
-+static int onyx_snd_vol_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
-+	s8 l, r;
-+
-+	mutex_lock(&onyx->mutex);
-+	onyx_read_register(onyx, ONYX_REG_DAC_ATTEN_LEFT, &l);
-+	onyx_read_register(onyx, ONYX_REG_DAC_ATTEN_RIGHT, &r);
-+
-+	if (l + VOLUME_RANGE_SHIFT == ucontrol->value.integer.value[0] &&
-+	    r + VOLUME_RANGE_SHIFT == ucontrol->value.integer.value[1]) {
-+		mutex_unlock(&onyx->mutex);
-+		return 0;
++	list_for_each_entry(cii, &i2sdev->sound.codec_list, list) {
++		if (cii->codec->close) {
++			tmp = cii->codec->close(cii, pi->substream);
++			if (tmp)
++				err = tmp;
++		}
 +	}
 +
-+	onyx_write_register(onyx, ONYX_REG_DAC_ATTEN_LEFT,
-+			    ucontrol->value.integer.value[0]
-+			     - VOLUME_RANGE_SHIFT);
-+	onyx_write_register(onyx, ONYX_REG_DAC_ATTEN_RIGHT,
-+			    ucontrol->value.integer.value[1]
-+			     - VOLUME_RANGE_SHIFT);
-+	mutex_unlock(&onyx->mutex);
-+
-+	return 1;
++	pi->substream = NULL;
++	pi->active = 0;
++	mutex_unlock(&i2sdev->lock);
++	return err;
 +}
 +
-+static struct snd_kcontrol_new volume_control = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Master Playback Volume",
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.info = onyx_snd_vol_info,
-+	.get = onyx_snd_vol_get,
-+	.put = onyx_snd_vol_put,
-+};
-+
-+/* like above, this is necessary because a lot
-+ * of alsa mixer programs don't handle ranges
-+ * that don't start at 0 properly.
-+ * even alsamixer is one of them... */
-+#define INPUTGAIN_RANGE_SHIFT	(-3)
-+
-+static int onyx_snd_inputgain_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
++static int i2sbus_hw_params(struct snd_pcm_substream *substream,
++			    struct snd_pcm_hw_params *params)
 +{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 3 + INPUTGAIN_RANGE_SHIFT;
-+	uinfo->value.integer.max = 28 + INPUTGAIN_RANGE_SHIFT;
++	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
++}
++
++static int i2sbus_hw_free(struct snd_pcm_substream *substream)
++{
++	snd_pcm_lib_free_pages(substream);
 +	return 0;
 +}
 +
-+static int onyx_snd_inputgain_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
++static int i2sbus_pcm_prepare(struct i2sbus_dev *i2sdev, int in)
 +{
-+	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
-+	u8 ig;
++	/* whee. Hard work now. The user has selected a bitrate
++	 * and bit format, so now we have to program our
++	 * I2S controller appropriately. */
++	struct snd_pcm_runtime *runtime;
++	struct dbdma_cmd *command;
++	int i, periodsize;
++	dma_addr_t offset;
++	struct bus_info bi;
++	struct codec_info_item *cii;
++	int sfr = 0;		/* serial format register */
++	int dws = 0;		/* data word sizes reg */
++	int input_16bit;
++	struct pcm_info *pi, *other;
++	int cnt;
++	int result = 0;
 +
-+	mutex_lock(&onyx->mutex);
-+	onyx_read_register(onyx, ONYX_REG_ADC_CONTROL, &ig);
-+	mutex_unlock(&onyx->mutex);
++	mutex_lock(&i2sdev->lock);
 +
-+	ucontrol->value.integer.value[0] =
-+		(ig & ONYX_ADC_PGA_GAIN_MASK) + INPUTGAIN_RANGE_SHIFT;
++	get_pcm_info(i2sdev, in, &pi, &other);
 +
-+	return 0;
-+}
-+
-+static int onyx_snd_inputgain_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
-+	u8 v, n;
-+
-+	mutex_lock(&onyx->mutex);
-+	onyx_read_register(onyx, ONYX_REG_ADC_CONTROL, &v);
-+	n = v;
-+	n &= ~ONYX_ADC_PGA_GAIN_MASK;
-+	n |= (ucontrol->value.integer.value[0] - INPUTGAIN_RANGE_SHIFT)
-+		& ONYX_ADC_PGA_GAIN_MASK;
-+	onyx_write_register(onyx, ONYX_REG_ADC_CONTROL, n);
-+	mutex_unlock(&onyx->mutex);
-+
-+	return n != v;
-+}
-+
-+static struct snd_kcontrol_new inputgain_control = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Master Capture Volume",
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.info = onyx_snd_inputgain_info,
-+	.get = onyx_snd_inputgain_get,
-+	.put = onyx_snd_inputgain_put,
-+};
-+
-+static int onyx_snd_capture_source_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	static char *texts[] = { "Line-In", "Microphone" };
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count = 1;
-+	uinfo->value.enumerated.items = 2;
-+	if (uinfo->value.enumerated.item > 1)
-+		uinfo->value.enumerated.item = 1;
-+	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
-+	return 0;
-+}
-+
-+static int onyx_snd_capture_source_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
-+	s8 v;
-+
-+	mutex_lock(&onyx->mutex);
-+	onyx_read_register(onyx, ONYX_REG_ADC_CONTROL, &v);
-+	mutex_unlock(&onyx->mutex);
-+
-+	ucontrol->value.enumerated.item[0] = !!(v&ONYX_ADC_INPUT_MIC);
-+
-+	return 0;
-+}
-+
-+static void onyx_set_capture_source(struct onyx *onyx, int mic)
-+{
-+	s8 v;
-+
-+	mutex_lock(&onyx->mutex);
-+	onyx_read_register(onyx, ONYX_REG_ADC_CONTROL, &v);
-+	v &= ~ONYX_ADC_INPUT_MIC;
-+	if (mic)
-+		v |= ONYX_ADC_INPUT_MIC;
-+	onyx_write_register(onyx, ONYX_REG_ADC_CONTROL, v);
-+	mutex_unlock(&onyx->mutex);
-+}
-+
-+static int onyx_snd_capture_source_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	onyx_set_capture_source(snd_kcontrol_chip(kcontrol),
-+				ucontrol->value.enumerated.item[0]);
-+	return 1;
-+}
-+
-+static struct snd_kcontrol_new capture_source_control = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	/* If we name this 'Input Source', it properly shows up in
-+	 * alsamixer as a selection, * but it's shown under the 
-+	 * 'Playback' category.
-+	 * If I name it 'Capture Source', it shows up in strange
-+	 * ways (two bools of which one can be selected at a
-+	 * time) but at least it's shown in the 'Capture'
-+	 * category.
-+	 * I was told that this was due to backward compatibility,
-+	 * but I don't understand then why the mangling is *not*
-+	 * done when I name it "Input Source".....
-+	 */
-+	.name = "Capture Source",
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.info = onyx_snd_capture_source_info,
-+	.get = onyx_snd_capture_source_get,
-+	.put = onyx_snd_capture_source_put,
-+};
-+
-+static int onyx_snd_mute_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count = 2;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 1;
-+	return 0;
-+}
-+
-+static int onyx_snd_mute_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
-+	u8 c;
-+
-+	mutex_lock(&onyx->mutex);
-+	onyx_read_register(onyx, ONYX_REG_DAC_CONTROL, &c);
-+	mutex_unlock(&onyx->mutex);
-+
-+	ucontrol->value.integer.value[0] = !(c & ONYX_MUTE_LEFT);
-+	ucontrol->value.integer.value[1] = !(c & ONYX_MUTE_RIGHT);
-+
-+	return 0;
-+}
-+
-+static int onyx_snd_mute_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
-+	u8 c;
-+	int err = -EBUSY;
-+
-+	mutex_lock(&onyx->mutex);
-+	if (onyx->analog_locked)
-+		goto out_unlock;
-+
-+	onyx_read_register(onyx, ONYX_REG_DAC_CONTROL, &c);
-+	c &= ~(ONYX_MUTE_RIGHT | ONYX_MUTE_LEFT);
-+	if (!ucontrol->value.integer.value[0])
-+		c |= ONYX_MUTE_LEFT;
-+	if (!ucontrol->value.integer.value[1])
-+		c |= ONYX_MUTE_RIGHT;
-+	err = onyx_write_register(onyx, ONYX_REG_DAC_CONTROL, c);
-+	if (err)
-+		goto out_unlock;
-+	/* FIXME: we could be checking if anything changed */
-+ out_unlock:
-+	mutex_unlock(&onyx->mutex);
-+
-+	return !err ? 1 : err;
-+}
-+
-+static struct snd_kcontrol_new mute_control = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Master Playback Switch",
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.info = onyx_snd_mute_info,
-+	.get = onyx_snd_mute_get,
-+	.put = onyx_snd_mute_put,
-+};
-+
-+
-+static int onyx_snd_single_bit_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 1;
-+	return 0;
-+}
-+
-+#define FLAG_POLARITY_INVERT	1
-+#define FLAG_SPDIFLOCK		2
-+
-+static int onyx_snd_single_bit_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
-+	u8 c;
-+	long int pv = kcontrol->private_value;
-+	u8 polarity = (pv >> 16) & FLAG_POLARITY_INVERT;
-+	u8 address = (pv >> 8) & 0xff;
-+	u8 mask = pv & 0xff;
-+
-+	mutex_lock(&onyx->mutex);
-+	onyx_read_register(onyx, address, &c);
-+	mutex_unlock(&onyx->mutex);
-+
-+	ucontrol->value.integer.value[0] = !!(c & mask) ^ polarity;
-+
-+	return 0;
-+}
-+
-+static int onyx_snd_single_bit_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
-+	u8 c;
-+	int err;
-+	long int pv = kcontrol->private_value;
-+	u8 polarity = (pv >> 16) & FLAG_POLARITY_INVERT;
-+	u8 spdiflock = (pv >> 16) & FLAG_SPDIFLOCK;
-+	u8 address = (pv >> 8) & 0xff;
-+	u8 mask = pv & 0xff;
-+
-+	mutex_lock(&onyx->mutex);
-+	if (spdiflock && onyx->spdif_locked) {
-+		/* even if alsamixer doesn't care.. */
-+		err = -EBUSY;
++	if (pi->dbdma_ring.running) {
++		result = -EBUSY;
 +		goto out_unlock;
 +	}
-+	onyx_read_register(onyx, address, &c);
-+	c &= ~(mask);
-+	if (!!ucontrol->value.integer.value[0] ^ polarity)
-+		c |= mask;
-+	err = onyx_write_register(onyx, address, c);
-+	if (err)
++
++	runtime = pi->substream->runtime;
++	pi->active = 1;
++	if (other->active &&
++	    ((i2sdev->format != runtime->format)
++	     || (i2sdev->rate != runtime->rate))) {
++		result = -EINVAL;
 +		goto out_unlock;
-+	/* FIXME: we could be checking if anything changed */
-+ out_unlock:
-+	mutex_unlock(&onyx->mutex);
-+
-+	return !err ? 1 : err;
-+}
-+
-+#define SINGLE_BIT(n, type, description, address, mask, flags)	 	\
-+static struct snd_kcontrol_new n##_control = {				\
-+	.iface = SNDRV_CTL_ELEM_IFACE_##type,				\
-+	.name = description,						\
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,			\
-+	.info = onyx_snd_single_bit_info,				\
-+	.get = onyx_snd_single_bit_get,					\
-+	.put = onyx_snd_single_bit_put,					\
-+	.private_value = (flags << 16) | (address << 8) | mask		\
-+}
-+
-+SINGLE_BIT(spdif,
-+	   MIXER,
-+	   SNDRV_CTL_NAME_IEC958("", PLAYBACK, SWITCH),
-+	   ONYX_REG_DIG_INFO4,
-+	   ONYX_SPDIF_ENABLE,
-+	   FLAG_SPDIFLOCK);
-+SINGLE_BIT(ovr1,
-+	   MIXER,
-+	   "Oversampling Rate",
-+	   ONYX_REG_DAC_CONTROL,
-+	   ONYX_OVR1,
-+	   0);
-+SINGLE_BIT(flt0,
-+	   MIXER,
-+	   "Fast Digital Filter Rolloff",
-+	   ONYX_REG_DAC_FILTER,
-+	   ONYX_ROLLOFF_FAST,
-+	   FLAG_POLARITY_INVERT);
-+SINGLE_BIT(hpf,
-+	   MIXER,
-+	   "Highpass Filter",
-+	   ONYX_REG_ADC_HPF_BYPASS,
-+	   ONYX_HPF_DISABLE,
-+	   FLAG_POLARITY_INVERT);
-+SINGLE_BIT(dm12,
-+	   MIXER,
-+	   "Digital De-Emphasis",
-+	   ONYX_REG_DAC_DEEMPH,
-+	   ONYX_DIGDEEMPH_CTRL,
-+	   0);
-+
-+static int onyx_spdif_info(struct snd_kcontrol *kcontrol,
-+			   struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-+	uinfo->count = 1;
-+	return 0;
-+}
-+
-+static int onyx_spdif_mask_get(struct snd_kcontrol *kcontrol,
-+			       struct snd_ctl_elem_value *ucontrol)
-+{
-+	/* datasheet page 30, all others are 0 */
-+	ucontrol->value.iec958.status[0] = 0x3e;
-+	ucontrol->value.iec958.status[1] = 0xff;
-+
-+	ucontrol->value.iec958.status[3] = 0x3f;
-+	ucontrol->value.iec958.status[4] = 0x0f;
-+	
-+	return 0;
-+}
-+
-+static struct snd_kcontrol_new onyx_spdif_mask = {
-+	.access =	SNDRV_CTL_ELEM_ACCESS_READ,
-+	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
-+	.name =		SNDRV_CTL_NAME_IEC958("",PLAYBACK,CON_MASK),
-+	.info =		onyx_spdif_info,
-+	.get =		onyx_spdif_mask_get,
-+};
-+
-+static int onyx_spdif_get(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
-+	u8 v;
-+
-+	mutex_lock(&onyx->mutex);
-+	onyx_read_register(onyx, ONYX_REG_DIG_INFO1, &v);
-+	ucontrol->value.iec958.status[0] = v & 0x3e;
-+
-+	onyx_read_register(onyx, ONYX_REG_DIG_INFO2, &v);
-+	ucontrol->value.iec958.status[1] = v;
-+
-+	onyx_read_register(onyx, ONYX_REG_DIG_INFO3, &v);
-+	ucontrol->value.iec958.status[3] = v & 0x3f;
-+
-+	onyx_read_register(onyx, ONYX_REG_DIG_INFO4, &v);
-+	ucontrol->value.iec958.status[4] = v & 0x0f;
-+	mutex_unlock(&onyx->mutex);
-+
-+	return 0;
-+}
-+
-+static int onyx_spdif_put(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct onyx *onyx = snd_kcontrol_chip(kcontrol);
-+	u8 v;
-+
-+	mutex_lock(&onyx->mutex);
-+	onyx_read_register(onyx, ONYX_REG_DIG_INFO1, &v);
-+	v = (v & ~0x3e) | (ucontrol->value.iec958.status[0] & 0x3e);
-+	onyx_write_register(onyx, ONYX_REG_DIG_INFO1, v);
-+
-+	v = ucontrol->value.iec958.status[1];
-+	onyx_write_register(onyx, ONYX_REG_DIG_INFO2, v);
-+
-+	onyx_read_register(onyx, ONYX_REG_DIG_INFO3, &v);
-+	v = (v & ~0x3f) | (ucontrol->value.iec958.status[3] & 0x3f);
-+	onyx_write_register(onyx, ONYX_REG_DIG_INFO3, v);
-+
-+	onyx_read_register(onyx, ONYX_REG_DIG_INFO4, &v);
-+	v = (v & ~0x0f) | (ucontrol->value.iec958.status[4] & 0x0f);
-+	onyx_write_register(onyx, ONYX_REG_DIG_INFO4, v);
-+	mutex_unlock(&onyx->mutex);
-+
-+	return 1;
-+}
-+
-+static struct snd_kcontrol_new onyx_spdif_ctrl = {
-+	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
-+	.name =		SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT),
-+	.info =		onyx_spdif_info,
-+	.get =		onyx_spdif_get,
-+	.put =		onyx_spdif_put,
-+};
-+
-+/* our registers */
-+
-+static u8 register_map[] = {
-+	ONYX_REG_DAC_ATTEN_LEFT,
-+	ONYX_REG_DAC_ATTEN_RIGHT,
-+	ONYX_REG_CONTROL,
-+	ONYX_REG_DAC_CONTROL,
-+	ONYX_REG_DAC_DEEMPH,
-+	ONYX_REG_DAC_FILTER,
-+	ONYX_REG_DAC_OUTPHASE,
-+	ONYX_REG_ADC_CONTROL,
-+	ONYX_REG_ADC_HPF_BYPASS,
-+	ONYX_REG_DIG_INFO1,
-+	ONYX_REG_DIG_INFO2,
-+	ONYX_REG_DIG_INFO3,
-+	ONYX_REG_DIG_INFO4
-+};
-+
-+static u8 initial_values[ARRAY_SIZE(register_map)] = {
-+	0x80, 0x80, /* muted */
-+	ONYX_MRST | ONYX_SRST, /* but handled specially! */
-+	ONYX_MUTE_LEFT | ONYX_MUTE_RIGHT,
-+	0, /* no deemphasis */
-+	ONYX_DAC_FILTER_ALWAYS,
-+	ONYX_OUTPHASE_INVERTED,
-+	(-1 /*dB*/ + 8) & 0xF, /* line in selected, -1 dB gain*/
-+	ONYX_ADC_HPF_ALWAYS,
-+	(1<<2),	/* pcm audio */
-+	2,	/* category: pcm coder */
-+	0,	/* sampling frequency 44.1 kHz, clock accuracy level II */
-+	1	/* 24 bit depth */
-+};
-+
-+/* reset registers of chip, either to initial or to previous values */
-+static int onyx_register_init(struct onyx *onyx)
-+{
-+	int i;
-+	u8 val;
-+	u8 regs[sizeof(initial_values)];
-+
-+	if (!onyx->initialised) {
-+		memcpy(regs, initial_values, sizeof(initial_values));
-+		if (onyx_read_register(onyx, ONYX_REG_CONTROL, &val))
-+			return -1;
-+		val &= ~ONYX_SILICONVERSION;
-+		val |= initial_values[3];
-+		regs[3] = val;
-+	} else {
-+		for (i=0; i<sizeof(register_map); i++)
-+			regs[i] = onyx->cache[register_map[i]-FIRSTREGISTER];
 +	}
 +
-+	for (i=0; i<sizeof(register_map); i++) {
-+		if (onyx_write_register(onyx, register_map[i], regs[i]))
-+			return -1;
++	i2sdev->format = runtime->format;
++	i2sdev->rate = runtime->rate;
++
++	periodsize = snd_pcm_lib_period_bytes(pi->substream);
++	pi->current_period = 0;
++
++	/* generate dbdma command ring first */
++	command = pi->dbdma_ring.cmds;
++	offset = runtime->dma_addr;
++	for (i = 0; i < pi->substream->runtime->periods;
++	     i++, command++, offset += periodsize) {
++		memset(command, 0, sizeof(struct dbdma_cmd));
++		command->command =
++		    cpu_to_le16((in ? INPUT_MORE : OUTPUT_MORE) | INTR_ALWAYS);
++		command->phy_addr = cpu_to_le32(offset);
++		command->req_count = cpu_to_le16(periodsize);
++		command->xfer_status = cpu_to_le16(0);
 +	}
-+	onyx->initialised = 1;
-+	return 0;
-+}
++	/* last one branches back to first */
++	command--;
++	command->command |= cpu_to_le16(BR_ALWAYS);
++	command->cmd_dep = cpu_to_le32(pi->dbdma_ring.bus_cmd_start);
 +
-+static struct transfer_info onyx_transfers[] = {
-+	/* this is first so we can skip it if no input is present...
-+	 * No hardware exists with that, but it's here as an example
-+	 * of what to do :) */
-+	{
-+		/* analog input */
-+		.formats = SNDRV_PCM_FMTBIT_S8 |
-+			   SNDRV_PCM_FMTBIT_S16_BE |
-+			   SNDRV_PCM_FMTBIT_S24_BE,
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.transfer_in = 1,
-+		.must_be_clock_source = 0,
-+		.tag = 0,
-+	},
-+	{
-+		/* if analog and digital are currently off, anything should go,
-+		 * so this entry describes everything we can do... */
-+		.formats = SNDRV_PCM_FMTBIT_S8 |
-+			   SNDRV_PCM_FMTBIT_S16_BE |
-+			   SNDRV_PCM_FMTBIT_S24_BE
-+#ifdef SNDRV_PCM_FMTBIT_COMPRESSED_16BE
-+			   | SNDRV_PCM_FMTBIT_COMPRESSED_16BE
-+#endif
-+		,
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.tag = 0,
-+	},
-+	{
-+		/* analog output */
-+		.formats = SNDRV_PCM_FMTBIT_S8 |
-+			   SNDRV_PCM_FMTBIT_S16_BE |
-+			   SNDRV_PCM_FMTBIT_S24_BE,
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.transfer_in = 0,
-+		.must_be_clock_source = 0,
-+		.tag = 1,
-+	},
-+	{
-+		/* digital pcm output, also possible for analog out */
-+		.formats = SNDRV_PCM_FMTBIT_S8 |
-+			   SNDRV_PCM_FMTBIT_S16_BE |
-+			   SNDRV_PCM_FMTBIT_S24_BE,
-+		.rates = SNDRV_PCM_RATE_32000 |
-+			 SNDRV_PCM_RATE_44100 |
-+			 SNDRV_PCM_RATE_48000,
-+		.transfer_in = 0,
-+		.must_be_clock_source = 0,
-+		.tag = 2,
-+	},
-+#ifdef SNDRV_PCM_FMTBIT_COMPRESSED_16BE
-+Once alsa gets supports for this kind of thing we can add it...
-+	{
-+		/* digital compressed output */
-+		.formats =  SNDRV_PCM_FMTBIT_COMPRESSED_16BE,
-+		.rates = SNDRV_PCM_RATE_32000 |
-+			 SNDRV_PCM_RATE_44100 |
-+			 SNDRV_PCM_RATE_48000,
-+		.tag = 2,
-+	},
-+#endif
-+	{}
-+};
-+
-+static int onyx_usable(struct codec_info_item *cii,
-+		       struct transfer_info *ti,
-+		       struct transfer_info *out)
-+{
-+	u8 v;
-+	struct onyx *onyx = cii->codec_data;
-+	int spdif_enabled, analog_enabled;
-+
-+	mutex_lock(&onyx->mutex);
-+	onyx_read_register(onyx, ONYX_REG_DIG_INFO4, &v);
-+	spdif_enabled = !!(v & ONYX_SPDIF_ENABLE);
-+	onyx_read_register(onyx, ONYX_REG_DAC_CONTROL, &v);
-+	analog_enabled = 
-+		(v & (ONYX_MUTE_RIGHT|ONYX_MUTE_LEFT))
-+		 != (ONYX_MUTE_RIGHT|ONYX_MUTE_LEFT);
-+	mutex_unlock(&onyx->mutex);
-+
-+	switch (ti->tag) {
-+	case 0: return 1;
-+	case 1:	return analog_enabled;
-+	case 2: return spdif_enabled;
-+	}
-+	return 1;
-+}
-+
-+static int onyx_prepare(struct codec_info_item *cii,
-+			struct bus_info *bi,
-+			struct snd_pcm_substream *substream)
-+{
-+	u8 v;
-+	struct onyx *onyx = cii->codec_data;
-+	int err = -EBUSY;
-+
-+	mutex_lock(&onyx->mutex);
-+
-+#ifdef SNDRV_PCM_FMTBIT_COMPRESSED_16BE
-+	if (substream->runtime->format == SNDRV_PCM_FMTBIT_COMPRESSED_16BE) {
-+		/* mute and lock analog output */
-+		onyx_read_register(onyx, ONYX_REG_DAC_CONTROL, &v);
-+		if (onyx_write_register(onyx
-+					ONYX_REG_DAC_CONTROL,
-+					v | ONYX_MUTE_RIGHT | ONYX_MUTE_LEFT))
++	/* ok, let's set the serial format and stuff */
++	switch (runtime->format) {
++	/* 16 bit formats */
++	case SNDRV_PCM_FORMAT_S16_BE:
++	case SNDRV_PCM_FORMAT_U16_BE:
++		/* FIXME: if we add different bus factors we need to
++		 * do more here!! */
++		bi.bus_factor = 0;
++		list_for_each_entry(cii, &i2sdev->sound.codec_list, list) {
++			bi.bus_factor = cii->codec->bus_factor;
++			break;
++		}
++		if (!bi.bus_factor) {
++			result = -ENODEV;
 +			goto out_unlock;
-+		onyx->analog_locked = 1;
-+		err = 0;
-+		goto out_unlock;
-+	}
-+#endif
-+	switch (substream->runtime->rate) {
-+	case 32000:
-+	case 44100:
-+	case 48000:
-+		/* these rates are ok for all outputs */
-+		/* FIXME: program spdif channel control bits here so that
-+		 *	  userspace doesn't have to if it only plays pcm! */
-+		err = 0;
-+		goto out_unlock;
++		}
++		input_16bit = 1;
++		break;
++	case SNDRV_PCM_FORMAT_S32_BE:
++	case SNDRV_PCM_FORMAT_U32_BE:
++		/* force 64x bus speed, otherwise the data cannot be
++		 * transferred quickly enough! */
++		bi.bus_factor = 64;
++		input_16bit = 0;
++		break;
 +	default:
-+		/* got some rate that the digital output can't do,
-+		 * so disable and lock it */
-+		onyx_read_register(cii->codec_data, ONYX_REG_DIG_INFO4, &v);
-+		if (onyx_write_register(onyx,
-+					ONYX_REG_DIG_INFO4,
-+					v & ~ONYX_SPDIF_ENABLE))
++		result = -EINVAL;
++		goto out_unlock;
++	}
++	/* we assume all sysclocks are the same! */
++	list_for_each_entry(cii, &i2sdev->sound.codec_list, list) {
++		bi.sysclock_factor = cii->codec->sysclock_factor;
++		break;
++	}
++
++	if (clock_and_divisors(bi.sysclock_factor,
++			       bi.bus_factor,
++			       runtime->rate,
++			       &sfr) < 0) {
++		result = -EINVAL;
++		goto out_unlock;
++	}
++	switch (bi.bus_factor) {
++	case 32:
++		sfr |= I2S_SF_SERIAL_FORMAT_I2S_32X;
++		break;
++	case 64:
++		sfr |= I2S_SF_SERIAL_FORMAT_I2S_64X;
++		break;
++	}
++	/* FIXME: THIS ASSUMES MASTER ALL THE TIME */
++	sfr |= I2S_SF_SCLK_MASTER;
++
++	list_for_each_entry(cii, &i2sdev->sound.codec_list, list) {
++		int err = 0;
++		if (cii->codec->prepare)
++			err = cii->codec->prepare(cii, &bi, pi->substream);
++		if (err) {
++			result = err;
 +			goto out_unlock;
-+		onyx->spdif_locked = 1;
-+		err = 0;
-+		goto out_unlock;
++		}
 +	}
++	/* codecs are fine with it, so set our clocks */
++	if (input_16bit)
++		dws =	(2 << I2S_DWS_NUM_CHANNELS_IN_SHIFT) |
++			(2 << I2S_DWS_NUM_CHANNELS_OUT_SHIFT) |
++			I2S_DWS_DATA_IN_16BIT | I2S_DWS_DATA_OUT_16BIT;
++	else
++		dws =	(2 << I2S_DWS_NUM_CHANNELS_IN_SHIFT) |
++			(2 << I2S_DWS_NUM_CHANNELS_OUT_SHIFT) |
++			I2S_DWS_DATA_IN_24BIT | I2S_DWS_DATA_OUT_24BIT;
 +
-+ out_unlock:
-+	mutex_unlock(&onyx->mutex);
++	/* early exit if already programmed correctly */
++	/* not locking these is fine since we touch them only in this function */
++	if (in_le32(&i2sdev->intfregs->serial_format) == sfr
++	 && in_le32(&i2sdev->intfregs->data_word_sizes) == dws)
++		goto out_unlock;
 +
-+	return err;
-+}
++	/* let's notify the codecs about clocks going away.
++	 * For now we only do mastering on the i2s cell... */
++	list_for_each_entry(cii, &i2sdev->sound.codec_list, list)
++		if (cii->codec->switch_clock)
++			cii->codec->switch_clock(cii, CLOCK_SWITCH_PREPARE_SLAVE);
 +
-+static int onyx_open(struct codec_info_item *cii,
-+		     struct snd_pcm_substream *substream)
-+{
-+	struct onyx *onyx = cii->codec_data;
++	i2sbus_control_enable(i2sdev->control, i2sdev);
++	i2sbus_control_cell(i2sdev->control, i2sdev, 1);
 +
-+	mutex_lock(&onyx->mutex);
-+	onyx->open_count++;
-+	mutex_unlock(&onyx->mutex);
++	out_le32(&i2sdev->intfregs->intr_ctl, I2S_PENDING_CLOCKS_STOPPED);
 +
-+	return 0;
-+}
++	i2sbus_control_clock(i2sdev->control, i2sdev, 0);
 +
-+static int onyx_close(struct codec_info_item *cii,
-+		      struct snd_pcm_substream *substream)
-+{
-+	struct onyx *onyx = cii->codec_data;
++	msleep(1);
 +
-+	mutex_lock(&onyx->mutex);
-+	onyx->open_count--;
-+	if (!onyx->open_count)
-+		onyx->spdif_locked = onyx->analog_locked = 0;
-+	mutex_unlock(&onyx->mutex);
-+
-+	return 0;
-+}
-+
-+static int onyx_switch_clock(struct codec_info_item *cii,
-+			     enum clock_switch what)
-+{
-+	struct onyx *onyx = cii->codec_data;
-+
-+	mutex_lock(&onyx->mutex);
-+	/* this *MUST* be more elaborate later... */
-+	switch (what) {
-+	case CLOCK_SWITCH_PREPARE_SLAVE:
-+		onyx->codec.gpio->methods->all_amps_off(onyx->codec.gpio);
-+		break;
-+	case CLOCK_SWITCH_SLAVE:
-+		onyx->codec.gpio->methods->all_amps_restore(onyx->codec.gpio);
-+		break;
-+	default: /* silence warning */
-+		break;
++	/* wait for clock stopped. This can apparently take a while... */
++	cnt = 100;
++	while (cnt-- &&
++	    !(in_le32(&i2sdev->intfregs->intr_ctl) & I2S_PENDING_CLOCKS_STOPPED)) {
++		msleep(5);
 +	}
-+	mutex_unlock(&onyx->mutex);
++	out_le32(&i2sdev->intfregs->intr_ctl, I2S_PENDING_CLOCKS_STOPPED);
 +
-+	return 0;
-+}
++	/* not locking these is fine since we touch them only in this function */
++	out_le32(&i2sdev->intfregs->serial_format, sfr);
++	out_le32(&i2sdev->intfregs->data_word_sizes, dws);
 +
-+#ifdef CONFIG_PM
++        i2sbus_control_enable(i2sdev->control, i2sdev);
++        i2sbus_control_cell(i2sdev->control, i2sdev, 1);
++        i2sbus_control_clock(i2sdev->control, i2sdev, 1);
++	msleep(1);
 +
-+static int onyx_suspend(struct codec_info_item *cii, pm_message_t state)
-+{
-+	struct onyx *onyx = cii->codec_data;
-+	u8 v;
-+	int err = -ENXIO;
++	list_for_each_entry(cii, &i2sdev->sound.codec_list, list)
++		if (cii->codec->switch_clock)
++			cii->codec->switch_clock(cii, CLOCK_SWITCH_SLAVE);
 +
-+	mutex_lock(&onyx->mutex);
-+	if (onyx_read_register(onyx, ONYX_REG_CONTROL, &v))
-+		goto out_unlock;
-+	onyx_write_register(onyx, ONYX_REG_CONTROL, v | ONYX_ADPSV | ONYX_DAPSV);
-+	/* Apple does a sleep here but the datasheet says to do it on resume */
-+	err = 0;
 + out_unlock:
-+	mutex_unlock(&onyx->mutex);
-+
-+	return err;
++	mutex_unlock(&i2sdev->lock);
++	return result;
 +}
 +
-+static int onyx_resume(struct codec_info_item *cii)
-+{
-+	struct onyx *onyx = cii->codec_data;
-+	u8 v;
-+	int err = -ENXIO;
-+
-+	mutex_lock(&onyx->mutex);
-+	/* take codec out of suspend */
-+	if (onyx_read_register(onyx, ONYX_REG_CONTROL, &v))
-+		goto out_unlock;
-+	onyx_write_register(onyx, ONYX_REG_CONTROL, v & ~(ONYX_ADPSV | ONYX_DAPSV));
-+	/* FIXME: should divide by sample rate, but 8k is the lowest we go */
-+	msleep(2205000/8000);
-+	/* reset all values */
-+	onyx_register_init(onyx);
-+	err = 0;
-+ out_unlock:
-+	mutex_unlock(&onyx->mutex);
-+
-+	return err;
-+}
-+
-+#endif /* CONFIG_PM */
-+
-+static struct codec_info onyx_codec_info = {
-+	.transfers = onyx_transfers,
-+	.sysclock_factor = 256,
-+	.bus_factor = 64,
-+	.owner = THIS_MODULE,
-+	.usable = onyx_usable,
-+	.prepare = onyx_prepare,
-+	.open = onyx_open,
-+	.close = onyx_close,
-+	.switch_clock = onyx_switch_clock,
-+#ifdef CONFIG_PM
-+	.suspend = onyx_suspend,
-+	.resume = onyx_resume,
-+#endif
++static struct dbdma_cmd STOP_CMD = {
++	.command = __constant_cpu_to_le16(DBDMA_STOP),
 +};
 +
-+static int onyx_init_codec(struct aoa_codec *codec)
++static int i2sbus_pcm_trigger(struct i2sbus_dev *i2sdev, int in, int cmd)
 +{
-+	struct onyx *onyx = codec_to_onyx(codec);
-+	struct snd_kcontrol *ctl;
-+	struct codec_info *ci = &onyx_codec_info;
-+	u8 v;
-+	int err;
++	struct codec_info_item *cii;
++	struct pcm_info *pi;
++	int timeout;
++	struct dbdma_cmd tmp;
++	int result = 0;
++	unsigned long flags;
 +
-+	if (!onyx->codec.gpio || !onyx->codec.gpio->methods) {
-+		printk(KERN_ERR PFX "gpios not assigned!!\n");
++	spin_lock_irqsave(&i2sdev->low_lock, flags);
++
++	get_pcm_info(i2sdev, in, &pi, NULL);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		if (pi->dbdma_ring.running) {
++			result = -EALREADY;
++			goto out_unlock;
++		}
++		list_for_each_entry(cii, &i2sdev->sound.codec_list, list)
++			if (cii->codec->start)
++				cii->codec->start(cii, pi->substream);
++		pi->dbdma_ring.running = 1;
++
++		/* reset dma engine */
++		out_le32(&pi->dbdma->control,
++			 0 | (RUN | PAUSE | FLUSH | WAKE) << 16);
++		timeout = 100;
++		while (in_le32(&pi->dbdma->status) & RUN && timeout--)
++			udelay(1);
++		if (timeout <= 0) {
++			printk(KERN_ERR
++			       "i2sbus: error waiting for dma reset\n");
++			result = -ENXIO;
++			goto out_unlock;
++		}
++
++		/* write dma command buffer address to the dbdma chip */
++		out_le32(&pi->dbdma->cmdptr, pi->dbdma_ring.bus_cmd_start);
++		/* post PCI write */
++		mb();
++		(void)in_le32(&pi->dbdma->status);
++
++		/* change first command to STOP */
++		tmp = *pi->dbdma_ring.cmds;
++		*pi->dbdma_ring.cmds = STOP_CMD;
++
++		/* set running state, remember that the first command is STOP */
++		out_le32(&pi->dbdma->control, RUN | (RUN << 16));
++		timeout = 100;
++		/* wait for STOP to be executed */
++		while (in_le32(&pi->dbdma->status) & ACTIVE && timeout--)
++			udelay(1);
++		if (timeout <= 0) {
++			printk(KERN_ERR "i2sbus: error waiting for dma stop\n");
++			result = -ENXIO;
++			goto out_unlock;
++		}
++		/* again, write dma command buffer address to the dbdma chip,
++		 * this time of the first real command */
++		*pi->dbdma_ring.cmds = tmp;
++		out_le32(&pi->dbdma->cmdptr, pi->dbdma_ring.bus_cmd_start);
++		/* post write */
++		mb();
++		(void)in_le32(&pi->dbdma->status);
++
++		/* reset dma engine again */
++		out_le32(&pi->dbdma->control,
++			 0 | (RUN | PAUSE | FLUSH | WAKE) << 16);
++		timeout = 100;
++		while (in_le32(&pi->dbdma->status) & RUN && timeout--)
++			udelay(1);
++		if (timeout <= 0) {
++			printk(KERN_ERR
++			       "i2sbus: error waiting for dma reset\n");
++			result = -ENXIO;
++			goto out_unlock;
++		}
++
++		/* wake up the chip with the next descriptor */
++		out_le32(&pi->dbdma->control,
++			 (RUN | WAKE) | ((RUN | WAKE) << 16));
++		/* get the frame count  */
++		pi->frame_count = in_le32(&i2sdev->intfregs->frame_count);
++
++		/* off you go! */
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		if (!pi->dbdma_ring.running) {
++			result = -EALREADY;
++			goto out_unlock;
++		}
++
++		/* turn off all relevant bits */
++		out_le32(&pi->dbdma->control,
++			 (RUN | WAKE | FLUSH | PAUSE) << 16);
++		{
++			/* FIXME: move to own function */
++			int timeout = 5000;
++			while ((in_le32(&pi->dbdma->status) & RUN)
++			       && --timeout > 0)
++				udelay(1);
++			if (!timeout)
++				printk(KERN_ERR
++				       "i2sbus: timed out turning off dbdma engine!\n");
++		}
++
++		pi->dbdma_ring.running = 0;
++		list_for_each_entry(cii, &i2sdev->sound.codec_list, list)
++			if (cii->codec->stop)
++				cii->codec->stop(cii, pi->substream);
++		break;
++	default:
++		result = -EINVAL;
++		goto out_unlock;
++	}
++
++ out_unlock:
++	spin_unlock_irqrestore(&i2sdev->low_lock, flags);
++	return result;
++}
++
++static snd_pcm_uframes_t i2sbus_pcm_pointer(struct i2sbus_dev *i2sdev, int in)
++{
++	struct pcm_info *pi;
++	u32 fc;
++
++	get_pcm_info(i2sdev, in, &pi, NULL);
++
++	fc = in_le32(&i2sdev->intfregs->frame_count);
++	fc = fc - pi->frame_count;
++
++	return (bytes_to_frames(pi->substream->runtime,
++			       pi->current_period *
++			       snd_pcm_lib_period_bytes(pi->substream)) + fc) % pi->substream->runtime->buffer_size;
++}
++
++static inline void handle_interrupt(struct i2sbus_dev *i2sdev, int in)
++{
++	struct pcm_info *pi;
++	u32 fc;
++	u32 delta;
++
++	spin_lock(&i2sdev->low_lock);
++	get_pcm_info(i2sdev, in, &pi, NULL);
++	if (!pi->substream) {
++		printk(KERN_INFO "i2sbus: got %s irq while not active!\n",
++		       in ? "rx" : "tx");
++		goto out_unlock;
++	}
++
++	fc = in_le32(&i2sdev->intfregs->frame_count);
++	/* a counter overflow does not change the calculation. */
++	delta = fc - pi->frame_count;
++
++	/* update current_period */
++	while (delta >= pi->substream->runtime->period_size) {
++		pi->current_period++;
++		delta = delta - pi->substream->runtime->period_size;
++	}
++
++	if (unlikely(delta)) {
++		/* Some interrupt came late, so check the dbdma.
++		 * This special case exists to syncronize the frame_count with the
++		 * dbdma transfers, but is hit every once in a while. */
++		int period;
++
++		period = (in_le32(&pi->dbdma->cmdptr) - pi->dbdma_ring.bus_cmd_start) / sizeof(struct dbdma_cmd);
++		pi->current_period = pi->current_period % pi->substream->runtime->periods;
++
++		while (pi->current_period != period) {
++			pi->current_period = (pi->current_period + 1) % pi->substream->runtime->periods;
++			/* Set delta to zero, as the frame_count value is too high (otherwise the code path
++			 * will not be executed).
++			 * This is to correct the fact that the frame_count is too low at the beginning
++			 * due to the dbdma's buffer. */
++			delta = 0;
++		}
++	}
++
++	pi->frame_count = fc - delta;
++	pi->current_period = pi->current_period % pi->substream->runtime->periods;
++
++	spin_unlock(&i2sdev->low_lock);
++	/* may call _trigger again, hence needs to be unlocked */
++	snd_pcm_period_elapsed(pi->substream);
++	return;
++ out_unlock:
++	spin_unlock(&i2sdev->low_lock);
++}
++
++irqreturn_t i2sbus_tx_intr(int irq, void *devid, struct pt_regs *regs)
++{
++	handle_interrupt((struct i2sbus_dev *)devid, 0);
++	return IRQ_HANDLED;
++}
++
++irqreturn_t i2sbus_rx_intr(int irq, void *devid, struct pt_regs * regs)
++{
++	handle_interrupt((struct i2sbus_dev *)devid, 1);
++	return IRQ_HANDLED;
++}
++
++static int i2sbus_playback_open(struct snd_pcm_substream *substream)
++{
++	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
++
++	if (!i2sdev)
 +		return -EINVAL;
-+	}
++	i2sdev->out.substream = substream;
++	return i2sbus_pcm_open(i2sdev, 0);
++}
 +
-+	onyx->codec.gpio->methods->set_hw_reset(onyx->codec.gpio, 0);
-+	msleep(1);
-+	onyx->codec.gpio->methods->set_hw_reset(onyx->codec.gpio, 1);
-+	msleep(1);
-+	onyx->codec.gpio->methods->set_hw_reset(onyx->codec.gpio, 0);
-+	msleep(1);
-+	
-+	if (onyx_register_init(onyx)) {
-+		printk(KERN_ERR PFX "failed to initialise onyx registers\n");
-+		return -ENODEV;
-+	}
++static int i2sbus_playback_close(struct snd_pcm_substream *substream)
++{
++	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
++	int err;
 +
-+	if (aoa_snd_device_new(SNDRV_DEV_LOWLEVEL, onyx, &ops)) {
-+		printk(KERN_ERR PFX "failed to create onyx snd device!\n");
-+		return -ENODEV;
-+	}
-+
-+	/* nothing connected? what a joke! */
-+	if ((onyx->codec.connected & 0xF) == 0)
-+		return -ENOTCONN;
-+
-+	/* if no inputs are present... */
-+	if ((onyx->codec.connected & 0xC) == 0) {
-+		if (!onyx->codec_info)
-+			onyx->codec_info = kmalloc(sizeof(struct codec_info), GFP_KERNEL);
-+		if (!onyx->codec_info)
-+			return -ENOMEM;
-+		ci = onyx->codec_info;
-+		*ci = onyx_codec_info;
-+		ci->transfers++;
-+	}
-+
-+	/* if no outputs are present... */
-+	if ((onyx->codec.connected & 3) == 0) {
-+		if (!onyx->codec_info)
-+			onyx->codec_info = kmalloc(sizeof(struct codec_info), GFP_KERNEL);
-+		if (!onyx->codec_info)
-+			return -ENOMEM;
-+		ci = onyx->codec_info;
-+		/* this is fine as there have to be inputs
-+		 * if we end up in this part of the code */
-+		*ci = onyx_codec_info;
-+		ci->transfers[1].formats = 0;
-+	}
-+
-+	if (onyx->codec.soundbus_dev->attach_codec(onyx->codec.soundbus_dev,
-+						   aoa_get_card(),
-+						   ci, onyx)) {
-+		printk(KERN_ERR PFX "error creating onyx pcm\n");
-+		return -ENODEV;
-+	}
-+#define ADDCTL(n)							\
-+	do {								\
-+		ctl = snd_ctl_new1(&n, onyx);				\
-+		if (ctl) {						\
-+			ctl->id.device =				\
-+				onyx->codec.soundbus_dev->pcm->device;	\
-+			err = aoa_snd_ctl_add(ctl);			\
-+			if (err)					\
-+				goto error;				\
-+		}							\
-+	} while (0)
-+
-+	if (onyx->codec.soundbus_dev->pcm) {
-+		/* give the user appropriate controls
-+		 * depending on what inputs are connected */
-+		if ((onyx->codec.connected & 0xC) == 0xC)
-+			ADDCTL(capture_source_control);
-+		else if (onyx->codec.connected & 4)
-+			onyx_set_capture_source(onyx, 0);
-+		else
-+			onyx_set_capture_source(onyx, 1);
-+		if (onyx->codec.connected & 0xC)
-+			ADDCTL(inputgain_control);
-+
-+		/* depending on what output is connected,
-+		 * give the user appropriate controls */
-+		if (onyx->codec.connected & 1) {
-+			ADDCTL(volume_control);
-+			ADDCTL(mute_control);
-+			ADDCTL(ovr1_control);
-+			ADDCTL(flt0_control);
-+			ADDCTL(hpf_control);
-+			ADDCTL(dm12_control);
-+			/* spdif control defaults to off */
-+		}
-+		if (onyx->codec.connected & 2) {
-+			ADDCTL(onyx_spdif_mask);
-+			ADDCTL(onyx_spdif_ctrl);
-+		}
-+		if ((onyx->codec.connected & 3) == 3)
-+			ADDCTL(spdif_control);
-+		/* if only S/PDIF is connected, enable it unconditionally */
-+		if ((onyx->codec.connected & 3) == 2) {
-+			onyx_read_register(onyx, ONYX_REG_DIG_INFO4, &v);
-+			v |= ONYX_SPDIF_ENABLE;
-+			onyx_write_register(onyx, ONYX_REG_DIG_INFO4, v);
-+		}
-+	}
-+#undef ADDCTL
-+	printk(KERN_INFO PFX "attached to onyx codec via i2c\n");
-+
-+	return 0;
-+ error:
-+	onyx->codec.soundbus_dev->detach_codec(onyx->codec.soundbus_dev, onyx);
-+	snd_device_free(aoa_get_card(), onyx);
++	if (!i2sdev)
++		return -EINVAL;
++	if (i2sdev->out.substream != substream)
++		return -EINVAL;
++	err = i2sbus_pcm_close(i2sdev, 0);
++	if (!err)
++		i2sdev->out.substream = NULL;
 +	return err;
 +}
 +
-+static void onyx_exit_codec(struct aoa_codec *codec)
++static int i2sbus_playback_prepare(struct snd_pcm_substream *substream)
 +{
-+	struct onyx *onyx = codec_to_onyx(codec);
++	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
 +
-+	if (!onyx->codec.soundbus_dev) {
-+		printk(KERN_ERR PFX "onyx_exit_codec called without soundbus_dev!\n");
-+		return;
-+	}
-+	onyx->codec.soundbus_dev->detach_codec(onyx->codec.soundbus_dev, onyx);
++	if (!i2sdev)
++		return -EINVAL;
++	if (i2sdev->out.substream != substream)
++		return -EINVAL;
++	return i2sbus_pcm_prepare(i2sdev, 0);
 +}
 +
-+static struct i2c_driver onyx_driver;
-+
-+static int onyx_create(struct i2c_adapter *adapter,
-+		       struct device_node *node,
-+		       int addr)
++static int i2sbus_playback_trigger(struct snd_pcm_substream *substream, int cmd)
 +{
-+	struct onyx *onyx;
-+	u8 dummy;
++	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
 +
-+	onyx = kzalloc(sizeof(struct onyx), GFP_KERNEL);
-+
-+	if (!onyx)
-+		return -ENOMEM;
-+
-+	mutex_init(&onyx->mutex);
-+	onyx->i2c.driver = &onyx_driver;
-+	onyx->i2c.adapter = adapter;
-+	onyx->i2c.addr = addr & 0x7f;
-+	strlcpy(onyx->i2c.name, "onyx audio codec", I2C_NAME_SIZE-1);
-+
-+	if (i2c_attach_client(&onyx->i2c)) {
-+		printk(KERN_ERR PFX "failed to attach to i2c\n");
-+		goto fail;
-+	}
-+
-+	/* we try to read from register ONYX_REG_CONTROL
-+	 * to check if the codec is present */
-+	if (onyx_read_register(onyx, ONYX_REG_CONTROL, &dummy) != 0) {
-+		i2c_detach_client(&onyx->i2c);
-+		printk(KERN_ERR PFX "failed to read control register\n");
-+		goto fail;
-+	}
-+
-+	strlcpy(onyx->codec.name, "onyx", MAX_CODEC_NAME_LEN-1);
-+	onyx->codec.owner = THIS_MODULE;
-+	onyx->codec.init = onyx_init_codec;
-+	onyx->codec.exit = onyx_exit_codec;
-+	onyx->codec.node = of_node_get(node);
-+
-+	if (aoa_codec_register(&onyx->codec)) {
-+		i2c_detach_client(&onyx->i2c);
-+		goto fail;
-+	}
-+	printk(KERN_DEBUG PFX "created and attached onyx instance\n");
-+	return 0;
-+ fail:
-+	kfree(onyx);
-+	return -EINVAL;
++	if (!i2sdev)
++		return -EINVAL;
++	if (i2sdev->out.substream != substream)
++		return -EINVAL;
++	return i2sbus_pcm_trigger(i2sdev, 0, cmd);
 +}
 +
-+static int onyx_i2c_attach(struct i2c_adapter *adapter)
++static snd_pcm_uframes_t i2sbus_playback_pointer(struct snd_pcm_substream
++						 *substream)
 +{
-+	struct device_node *busnode, *dev = NULL;
-+	struct pmac_i2c_bus *bus;
++	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
 +
-+	bus = pmac_i2c_adapter_to_bus(adapter);
-+	if (bus == NULL)
-+		return -ENODEV;
-+	busnode = pmac_i2c_get_bus_node(bus);
++	if (!i2sdev)
++		return -EINVAL;
++	if (i2sdev->out.substream != substream)
++		return 0;
++	return i2sbus_pcm_pointer(i2sdev, 0);
++}
 +
-+	while ((dev = of_get_next_child(busnode, dev)) != NULL) {
-+		if (device_is_compatible(dev, "pcm3052")) {
-+			u32 *addr;
-+			printk(KERN_DEBUG PFX "found pcm3052\n");
-+			addr = (u32 *) get_property(dev, "reg", NULL);
-+			if (!addr)
-+				return -ENODEV;
-+			return onyx_create(adapter, dev, (*addr)>>1);
++static struct snd_pcm_ops i2sbus_playback_ops = {
++	.open =		i2sbus_playback_open,
++	.close =	i2sbus_playback_close,
++	.ioctl =	snd_pcm_lib_ioctl,
++	.hw_params =	i2sbus_hw_params,
++	.hw_free =	i2sbus_hw_free,
++	.prepare =	i2sbus_playback_prepare,
++	.trigger =	i2sbus_playback_trigger,
++	.pointer =	i2sbus_playback_pointer,
++};
++
++static int i2sbus_record_open(struct snd_pcm_substream *substream)
++{
++	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
++
++	if (!i2sdev)
++		return -EINVAL;
++	i2sdev->in.substream = substream;
++	return i2sbus_pcm_open(i2sdev, 1);
++}
++
++static int i2sbus_record_close(struct snd_pcm_substream *substream)
++{
++	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
++	int err;
++
++	if (!i2sdev)
++		return -EINVAL;
++	if (i2sdev->in.substream != substream)
++		return -EINVAL;
++	err = i2sbus_pcm_close(i2sdev, 1);
++	if (!err)
++		i2sdev->in.substream = NULL;
++	return err;
++}
++
++static int i2sbus_record_prepare(struct snd_pcm_substream *substream)
++{
++	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
++
++	if (!i2sdev)
++		return -EINVAL;
++	if (i2sdev->in.substream != substream)
++		return -EINVAL;
++	return i2sbus_pcm_prepare(i2sdev, 1);
++}
++
++static int i2sbus_record_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
++
++	if (!i2sdev)
++		return -EINVAL;
++	if (i2sdev->in.substream != substream)
++		return -EINVAL;
++	return i2sbus_pcm_trigger(i2sdev, 1, cmd);
++}
++
++static snd_pcm_uframes_t i2sbus_record_pointer(struct snd_pcm_substream
++					       *substream)
++{
++	struct i2sbus_dev *i2sdev = snd_pcm_substream_chip(substream);
++
++	if (!i2sdev)
++		return -EINVAL;
++	if (i2sdev->in.substream != substream)
++		return 0;
++	return i2sbus_pcm_pointer(i2sdev, 1);
++}
++
++static struct snd_pcm_ops i2sbus_record_ops = {
++	.open =		i2sbus_record_open,
++	.close =	i2sbus_record_close,
++	.ioctl =	snd_pcm_lib_ioctl,
++	.hw_params =	i2sbus_hw_params,
++	.hw_free =	i2sbus_hw_free,
++	.prepare =	i2sbus_record_prepare,
++	.trigger =	i2sbus_record_trigger,
++	.pointer =	i2sbus_record_pointer,
++};
++
++static void i2sbus_private_free(struct snd_pcm *pcm)
++{
++	struct i2sbus_dev *i2sdev = snd_pcm_chip(pcm);
++	struct codec_info_item *p, *tmp;
++
++	i2sdev->sound.pcm = NULL;
++	i2sdev->out.created = 0;
++	i2sdev->in.created = 0;
++	list_for_each_entry_safe(p, tmp, &i2sdev->sound.codec_list, list) {
++		printk(KERN_ERR "i2sbus: a codec didn't unregister!\n");
++		list_del(&p->list);
++		module_put(p->codec->owner);
++		kfree(p);
++	}
++	soundbus_dev_put(&i2sdev->sound);
++	module_put(THIS_MODULE);
++}
++
++/* FIXME: this function needs an error handling strategy with labels */
++int
++i2sbus_attach_codec(struct soundbus_dev *dev, struct snd_card *card,
++		    struct codec_info *ci, void *data)
++{
++	int err, in = 0, out = 0;
++	struct transfer_info *tmp;
++	struct i2sbus_dev *i2sdev = soundbus_dev_to_i2sbus_dev(dev);
++	struct codec_info_item *cii;
++
++	if (!dev->pcmname || dev->pcmid == -1) {
++		printk(KERN_ERR "i2sbus: pcm name and id must be set!\n");
++	}
++
++	list_for_each_entry(cii, &dev->codec_list, list) {
++		if (cii->codec_data == data)
++			return -EALREADY;
++	}
++
++	if (!ci->transfers || !ci->transfers->formats
++	    || !ci->transfers->rates || !ci->usable)
++		return -EINVAL;
++
++	/* we currently code the i2s transfer on the clock, and support only
++	 * 32 and 64 */
++	if (ci->bus_factor != 32 && ci->bus_factor != 64)
++		return -EINVAL;
++
++	/* If you want to fix this, you need to keep track of what transport infos
++	 * are to be used, which codecs they belong to, and then fix all the
++	 * sysclock/busclock stuff above to depend on which is usable */
++	list_for_each_entry(cii, &dev->codec_list, list) {
++		if (cii->codec->sysclock_factor != ci->sysclock_factor) {
++			printk(KERN_DEBUG
++			       "cannot yet handle multiple different sysclocks!\n");
++			return -EINVAL;
++		}
++		if (cii->codec->bus_factor != ci->bus_factor) {
++			printk(KERN_DEBUG
++			       "cannot yet handle multiple different bus clocks!\n");
++			return -EINVAL;
 +		}
 +	}
 +
-+	/* if that didn't work, try desperate mode for older
-+	 * machines that have stuff missing from the device tree */
-+	
-+	if (!device_is_compatible(busnode, "k2-i2c"))
++	tmp = ci->transfers;
++	while (tmp->formats && tmp->rates) {
++		if (tmp->transfer_in)
++			in = 1;
++		else
++			out = 1;
++		tmp++;
++	}
++
++	cii = kzalloc(sizeof(struct codec_info_item), GFP_KERNEL);
++	if (!cii) {
++		printk(KERN_DEBUG "i2sbus: failed to allocate cii\n");
++		return -ENOMEM;
++	}
++
++	/* use the private data to point to the codec info */
++	cii->sdev = soundbus_dev_get(dev);
++	cii->codec = ci;
++	cii->codec_data = data;
++
++	if (!cii->sdev) {
++		printk(KERN_DEBUG
++		       "i2sbus: failed to get soundbus dev reference\n");
++		kfree(cii);
 +		return -ENODEV;
++	}
 +
-+	printk(KERN_DEBUG PFX "found k2-i2c, checking if onyx chip is on it\n");
-+	/* probe both possible addresses for the onyx chip */
-+	if (onyx_create(adapter, NULL, 0x46) == 0)
-+		return 0;
-+	return onyx_create(adapter, NULL, 0x47);
-+}
++	if (!try_module_get(THIS_MODULE)) {
++		printk(KERN_DEBUG "i2sbus: failed to get module reference!\n");
++		soundbus_dev_put(dev);
++		kfree(cii);
++		return -EBUSY;
++	}
 +
-+static int onyx_i2c_detach(struct i2c_client *client)
-+{
-+	struct onyx *onyx = container_of(client, struct onyx, i2c);
-+	int err;
++	if (!try_module_get(ci->owner)) {
++		printk(KERN_DEBUG
++		       "i2sbus: failed to get module reference to codec owner!\n");
++		module_put(THIS_MODULE);
++		soundbus_dev_put(dev);
++		kfree(cii);
++		return -EBUSY;
++	}
 +
-+	if ((err = i2c_detach_client(client)))
++	if (!dev->pcm) {
++		err = snd_pcm_new(card,
++				  dev->pcmname,
++				  dev->pcmid,
++				  0,
++				  0,
++				  &dev->pcm);
++		if (err) {
++			printk(KERN_DEBUG "i2sbus: failed to create pcm\n");
++			kfree(cii);
++			module_put(ci->owner);
++			soundbus_dev_put(dev);
++			module_put(THIS_MODULE);
++			return err;
++		}
++	}
++
++	/* ALSA yet again sucks.
++	 * If it is ever fixed, remove this line. See below. */
++	out = in = 1;
++
++	if (!i2sdev->out.created && out) {
++		if (dev->pcm->card != card) {
++			/* eh? */
++			printk(KERN_ERR
++			       "Can't attach same bus to different cards!\n");
++			module_put(ci->owner);
++			kfree(cii);
++			soundbus_dev_put(dev);
++			module_put(THIS_MODULE);
++			return -EINVAL;
++		}
++		if ((err =
++		     snd_pcm_new_stream(dev->pcm, SNDRV_PCM_STREAM_PLAYBACK, 1))) {
++			module_put(ci->owner);
++			kfree(cii);
++			soundbus_dev_put(dev);
++			module_put(THIS_MODULE);
++			return err;
++		}
++		snd_pcm_set_ops(dev->pcm, SNDRV_PCM_STREAM_PLAYBACK,
++				&i2sbus_playback_ops);
++		i2sdev->out.created = 1;
++	}
++
++	if (!i2sdev->in.created && in) {
++		if (dev->pcm->card != card) {
++			printk(KERN_ERR
++			       "Can't attach same bus to different cards!\n");
++			module_put(ci->owner);
++			kfree(cii);
++			soundbus_dev_put(dev);
++			module_put(THIS_MODULE);
++			return -EINVAL;
++		}
++		if ((err =
++		     snd_pcm_new_stream(dev->pcm, SNDRV_PCM_STREAM_CAPTURE, 1))) {
++			module_put(ci->owner);
++			kfree(cii);
++			soundbus_dev_put(dev);
++			module_put(THIS_MODULE);
++			return err;
++		}
++		snd_pcm_set_ops(dev->pcm, SNDRV_PCM_STREAM_CAPTURE,
++				&i2sbus_record_ops);
++		i2sdev->in.created = 1;
++	}
++
++	/* so we have to register the pcm after adding any substream
++	 * to it because alsa doesn't create the devices for the
++	 * substreams when we add them later.
++	 * Therefore, force in and out on both busses (above) and
++	 * register the pcm now instead of just after creating it.
++	 */
++	err = snd_device_register(card, dev->pcm);
++	if (err) {
++		printk(KERN_ERR "i2sbus: error registering new pcm\n");
++		module_put(ci->owner);
++		kfree(cii);
++		soundbus_dev_put(dev);
++		module_put(THIS_MODULE);
 +		return err;
-+	aoa_codec_unregister(&onyx->codec);
-+	of_node_put(onyx->codec.node);
-+	if (onyx->codec_info)
-+		kfree(onyx->codec_info);
-+	kfree(onyx);
++	}
++	/* no errors any more, so let's add this to our list */
++	list_add(&cii->list, &dev->codec_list);
++
++	dev->pcm->private_data = i2sdev;
++	dev->pcm->private_free = i2sbus_private_free;
++
++	/* well, we really should support scatter/gather DMA */
++	/* FIXME FIXME FIXME: If this fails, we BUG() when the alsa layer
++	 * later tries to allocate memory. Apparently we should be setting
++	 * some device pointer for that ...
++	 */
++	snd_pcm_lib_preallocate_pages_for_all(
++		dev->pcm, SNDRV_DMA_TYPE_DEV,
++		snd_dma_pci_data(macio_get_pci_dev(i2sdev->macio)),
++		64 * 1024, 64 * 1024);
++
 +	return 0;
 +}
 +
-+static struct i2c_driver onyx_driver = {
-+	.driver = {
-+		.name = "aoa_codec_onyx",
-+		.owner = THIS_MODULE,
-+	},
-+	.attach_adapter = onyx_i2c_attach,
-+	.detach_client = onyx_i2c_detach,
-+};
-+
-+static int __init onyx_init(void)
++void i2sbus_detach_codec(struct soundbus_dev *dev, void *data)
 +{
-+	return i2c_add_driver(&onyx_driver);
++	struct codec_info_item *cii = NULL, *i;
++
++	list_for_each_entry(i, &dev->codec_list, list) {
++		if (i->codec_data == data) {
++			cii = i;
++			break;
++		}
++	}
++	if (cii) {
++		list_del(&cii->list);
++		module_put(cii->codec->owner);
++		kfree(cii);
++	}
++	/* no more codecs, but still a pcm? */
++	if (list_empty(&dev->codec_list) && dev->pcm) {
++		/* the actual cleanup is done by the callback above! */
++		snd_device_free(dev->pcm->card, dev->pcm);
++	}
 +}
-+
-+static void __exit onyx_exit(void)
-+{
-+	i2c_del_driver(&onyx_driver);
-+}
-+
-+module_init(onyx_init);
-+module_exit(onyx_exit);
 --- /dev/null
-+++ b/sound/aoa/codecs/Kconfig
-@@ -0,0 +1,24 @@
-+config SND_AOA_ONYX
-+	tristate "support Onyx chip"
-+	depends on SND_AOA
-+	---help---
-+	This option enables support for the Onyx (pcm3052)
-+	codec chip found in the latest Apple machines
-+	(most of those with digital audio output).
-+
-+#config SND_AOA_TOPAZ
-+#	tristate "support Topaz chips"
-+#	depends on SND_AOA
-+#	---help---
-+#	This option enables support for the Topaz (CS84xx)
-+#	codec chips found in the latest Apple machines,
-+#	these chips do the digital input and output on
-+#	some PowerMacs.
-+
-+config SND_AOA_TAS
-+	tristate "support TAS chips"
-+	depends on SND_AOA
-+	---help---
-+	This option enables support for the tas chips
-+	found in a lot of Apple Machines, especially
-+	iBooks and PowerBooks without digital.
---- /dev/null
-+++ b/sound/aoa/codecs/snd-aoa-codec-tas.c
-@@ -0,0 +1,647 @@
++++ b/sound/aoa/soundbus/i2sbus/i2sbus-core.c
+@@ -0,0 +1,387 @@
 +/*
-+ * Apple Onboard Audio driver for tas codec
++ * i2sbus driver
 + *
 + * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
 + *
 + * GPL v2, can be found in COPYING.
-+ *
-+ * Open questions:
-+ *  - How to distinguish between 3004 and versions?
-+ *
-+ * FIXMEs:
-+ *  - This codec driver doesn't honour the 'connected'
-+ *    property of the aoa_codec struct, hence if
-+ *    it is used in machines where not everything is
-+ *    connected it will display wrong mixer elements.
-+ *  - Driver assumes that the microphone is always
-+ *    monaureal and connected to the right channel of
-+ *    the input. This should also be a codec-dependent
-+ *    flag, maybe the codec should have 3 different
-+ *    bits for the three different possibilities how
-+ *    it can be hooked up...
-+ *    But as long as I don't see any hardware hooked
-+ *    up that way...
-+ *  - As Apple notes in their code, the tas3004 seems
-+ *    to delay the right channel by one sample. You can
-+ *    see this when for example recording stereo in
-+ *    audacity, or recording the tas output via cable
-+ *    on another machine (use a sinus generator or so).
-+ *    I tried programming the BiQuads but couldn't
-+ *    make the delay work, maybe someone can read the
-+ *    datasheet and fix it. The relevant Apple comment
-+ *    is in AppleTAS3004Audio.cpp lines 1637 ff. Note
-+ *    that their comment describing how they program
-+ *    the filters sucks...
-+ *
-+ * Other things:
-+ *  - this should actually register *two* aoa_codec
-+ *    structs since it has two inputs. Then it must
-+ *    use the prepare callback to forbid running the
-+ *    secondary output on a different clock.
-+ *    Also, whatever bus knows how to do this must
-+ *    provide two soundbus_dev devices and the fabric
-+ *    must be able to link them correctly.
-+ *
-+ *    I don't even know if Apple ever uses the second
-+ *    port on the tas3004 though, I don't think their
-+ *    i2s controllers can even do it. OTOH, they all
-+ *    derive the clocks from common clocks, so it
-+ *    might just be possible. The framework allows the
-+ *    codec to refine the transfer_info items in the
-+ *    usable callback, so we can simply remove the
-+ *    rates the second instance is not using when it
-+ *    actually is in use.
-+ *    Maybe we'll need to make the sound busses have
-+ *    a 'clock group id' value so the codec can
-+ *    determine if the two outputs can be driven at
-+ *    the same time. But that is likely overkill, up
-+ *    to the fabric to not link them up incorrectly,
-+ *    and up to the hardware designer to not wire
-+ *    them up in some weird unusable way.
 + */
-+#include <stddef.h>
-+#include <linux/i2c.h>
-+#include <linux/i2c-dev.h>
-+#include <asm/pmac_low_i2c.h>
-+#include <asm/prom.h>
-+#include <linux/delay.h>
++
 +#include <linux/module.h>
-+MODULE_AUTHOR("Johannes Berg <johannes@sipsolutions.net>");
++#include <asm/macio.h>
++#include <asm/dbdma.h>
++#include <linux/pci.h>
++#include <linux/interrupt.h>
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <linux/dma-mapping.h>
++#include "../soundbus.h"
++#include "i2sbus.h"
++
 +MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("tas codec driver for snd-aoa");
++MODULE_AUTHOR("Johannes Berg <johannes@sipsolutions.net>");
++MODULE_DESCRIPTION("Apple Soundbus: I2S support");
++/* for auto-loading, declare that we handle this weird
++ * string that macio puts into the relevant device */
++MODULE_ALIAS("of:Ni2sTi2sC");
 +
-+#include "snd-aoa-codec-tas.h"
-+#include "snd-aoa-codec-tas-gain-table.h"
-+/* FIXME */
-+#include "../aoa.h"
-+#include "../soundbus/soundbus.h"
-+
-+
-+#define PFX "snd-aoa-codec-tas: "
-+
-+struct tas {
-+	struct aoa_codec	codec;
-+	struct i2c_client	i2c;
-+	u32			muted_l:1, muted_r:1,
-+				controls_created:1;
-+	u8			cached_volume_l, cached_volume_r;
-+	u8			mixer_l[3], mixer_r[3];
-+	u8			acr;
++static struct of_device_id i2sbus_match[] = {
++	{ .name = "i2s" },
++	{ }
 +};
 +
-+static struct tas *codec_to_tas(struct aoa_codec *codec)
++static int alloc_dbdma_descriptor_ring(struct i2sbus_dev *i2sdev,
++				       struct dbdma_command_mem *r,
++				       int numcmds)
 +{
-+	return container_of(codec, struct tas, codec);
-+}
-+
-+static inline int tas_write_reg(struct tas *tas, u8 reg, u8 len, u8 *data)
-+{
-+	if (len == 1)
-+		return i2c_smbus_write_byte_data(&tas->i2c, reg, *data);
-+	else
-+		return i2c_smbus_write_i2c_block_data(&tas->i2c, reg, len, data);
-+}
-+
-+static void tas_set_volume(struct tas *tas)
-+{
-+	u8 block[6];
-+	int tmp;
-+	u8 left, right;
-+
-+	left = tas->cached_volume_l;
-+	right = tas->cached_volume_r;
-+
-+	if (left > 177) left = 177;
-+	if (right > 177) right = 177;
-+
-+	if (tas->muted_l) left = 0;
-+	if (tas->muted_r) right = 0;
-+
-+	/* analysing the volume and mixer tables shows
-+	 * that they are similar enough when we shift
-+	 * the mixer table down by 4 bits. The error
-+	 * is miniscule, in just one item the error
-+	 * is 1, at a value of 0x07f17b (mixer table
-+	 * value is 0x07f17a) */
-+	tmp = tas_gaintable[left];
-+	block[0] = tmp>>20;
-+	block[1] = tmp>>12;
-+	block[2] = tmp>>4;
-+	tmp = tas_gaintable[right];
-+	block[3] = tmp>>20;
-+	block[4] = tmp>>12;
-+	block[5] = tmp>>4;
-+	tas_write_reg(tas, TAS_REG_VOL, 6, block);
-+}
-+
-+static void tas_set_mixer(struct tas *tas)
-+{
-+	u8 block[9];
-+	int tmp, i;
-+	u8 val;
-+
-+	for (i=0;i<3;i++) {
-+		val = tas->mixer_l[i];
-+		if (val > 177) val = 177;
-+		tmp = tas_gaintable[val];
-+		block[3*i+0] = tmp>>16;
-+		block[3*i+1] = tmp>>8;
-+		block[3*i+2] = tmp;
-+	}
-+	tas_write_reg(tas, TAS_REG_LMIX, 9, block);
-+
-+	for (i=0;i<3;i++) {
-+		val = tas->mixer_r[i];
-+		if (val > 177) val = 177;
-+		tmp = tas_gaintable[val];
-+		block[3*i+0] = tmp>>16;
-+		block[3*i+1] = tmp>>8;
-+		block[3*i+2] = tmp;
-+	}
-+	tas_write_reg(tas, TAS_REG_RMIX, 9, block);
-+}
-+
-+/* alsa stuff */
-+
-+static int tas_dev_register(struct snd_device *dev)
-+{
-+	return 0;
-+}
-+
-+static struct snd_device_ops ops = {
-+	.dev_register = tas_dev_register,
-+};
-+
-+static int tas_snd_vol_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 2;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 177;
-+	return 0;
-+}
-+
-+static int tas_snd_vol_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct tas *tas = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.integer.value[0] = tas->cached_volume_l;
-+	ucontrol->value.integer.value[1] = tas->cached_volume_r;
-+	return 0;
-+}
-+
-+static int tas_snd_vol_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct tas *tas = snd_kcontrol_chip(kcontrol);
-+
-+	if (tas->cached_volume_l == ucontrol->value.integer.value[0]
-+	 && tas->cached_volume_r == ucontrol->value.integer.value[1])
-+		return 0;
-+
-+	tas->cached_volume_l = ucontrol->value.integer.value[0];
-+	tas->cached_volume_r = ucontrol->value.integer.value[1];
-+	tas_set_volume(tas);
-+	return 1;
-+}
-+
-+static struct snd_kcontrol_new volume_control = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Master Playback Volume",
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.info = tas_snd_vol_info,
-+	.get = tas_snd_vol_get,
-+	.put = tas_snd_vol_put,
-+};
-+
-+static int tas_snd_mute_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count = 2;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 1;
-+	return 0;
-+}
-+
-+static int tas_snd_mute_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct tas *tas = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.integer.value[0] = !tas->muted_l;
-+	ucontrol->value.integer.value[1] = !tas->muted_r;
-+	return 0;
-+}
-+
-+static int tas_snd_mute_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct tas *tas = snd_kcontrol_chip(kcontrol);
-+
-+	if (tas->muted_l == !ucontrol->value.integer.value[0]
-+	 && tas->muted_r == !ucontrol->value.integer.value[1])
-+		return 0;
-+
-+	tas->muted_l = !ucontrol->value.integer.value[0];
-+	tas->muted_r = !ucontrol->value.integer.value[1];
-+	tas_set_volume(tas);
-+	return 1;
-+}
-+
-+static struct snd_kcontrol_new mute_control = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Master Playback Switch",
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.info = tas_snd_mute_info,
-+	.get = tas_snd_mute_get,
-+	.put = tas_snd_mute_put,
-+};
-+
-+static int tas_snd_mixer_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 2;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 177;
-+	return 0;
-+}
-+
-+static int tas_snd_mixer_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct tas *tas = snd_kcontrol_chip(kcontrol);
-+	int idx = kcontrol->private_value;
-+
-+	ucontrol->value.integer.value[0] = tas->mixer_l[idx];
-+	ucontrol->value.integer.value[1] = tas->mixer_r[idx];
-+
-+	return 0;
-+}
-+
-+static int tas_snd_mixer_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct tas *tas = snd_kcontrol_chip(kcontrol);
-+	int idx = kcontrol->private_value;
-+
-+	if (tas->mixer_l[idx] == ucontrol->value.integer.value[0]
-+	 && tas->mixer_r[idx] == ucontrol->value.integer.value[1])
-+		return 0;
-+
-+	tas->mixer_l[idx] = ucontrol->value.integer.value[0];
-+	tas->mixer_r[idx] = ucontrol->value.integer.value[1];
-+
-+	tas_set_mixer(tas);
-+	return 1;
-+}
-+
-+#define MIXER_CONTROL(n,descr,idx)			\
-+static struct snd_kcontrol_new n##_control = {		\
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,		\
-+	.name = descr " Playback Volume",		\
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,	\
-+	.info = tas_snd_mixer_info,			\
-+	.get = tas_snd_mixer_get,			\
-+	.put = tas_snd_mixer_put,			\
-+	.private_value = idx,				\
-+}
-+
-+MIXER_CONTROL(pcm1, "PCM1", 0);
-+MIXER_CONTROL(monitor, "Monitor", 2);
-+
-+static int tas_snd_capture_source_info(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	static char *texts[] = { "Line-In", "Microphone" };
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count = 1;
-+	uinfo->value.enumerated.items = 2;
-+	if (uinfo->value.enumerated.item > 1)
-+		uinfo->value.enumerated.item = 1;
-+	strcpy(uinfo->value.enumerated.name, texts[uinfo->value.enumerated.item]);
-+	return 0;
-+}
-+
-+static int tas_snd_capture_source_get(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct tas *tas = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.enumerated.item[0] = !!(tas->acr & TAS_ACR_INPUT_B);
-+	return 0;
-+}
-+
-+static int tas_snd_capture_source_put(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct tas *tas = snd_kcontrol_chip(kcontrol);
-+	int oldacr = tas->acr;
-+
-+	tas->acr &= ~TAS_ACR_INPUT_B;
-+	if (ucontrol->value.enumerated.item[0])
-+		tas->acr |= TAS_ACR_INPUT_B;
-+	if (oldacr == tas->acr)
-+		return 0;
-+	tas_write_reg(tas, TAS_REG_ACR, 1, &tas->acr);
-+	return 1;
-+}
-+
-+static struct snd_kcontrol_new capture_source_control = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	/* If we name this 'Input Source', it properly shows up in
-+	 * alsamixer as a selection, * but it's shown under the
-+	 * 'Playback' category.
-+	 * If I name it 'Capture Source', it shows up in strange
-+	 * ways (two bools of which one can be selected at a
-+	 * time) but at least it's shown in the 'Capture'
-+	 * category.
-+	 * I was told that this was due to backward compatibility,
-+	 * but I don't understand then why the mangling is *not*
-+	 * done when I name it "Input Source".....
++	/* one more for rounding */
++	r->size = (numcmds+1) * sizeof(struct dbdma_cmd);
++	/* We use the PCI APIs for now until the generic one gets fixed
++	 * enough or until we get some macio-specific versions
 +	 */
-+	.name = "Capture Source",
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.info = tas_snd_capture_source_info,
-+	.get = tas_snd_capture_source_get,
-+	.put = tas_snd_capture_source_put,
-+};
++	r->space = pci_alloc_consistent(macio_get_pci_dev(i2sdev->macio),
++					r->size,
++					&r->bus_addr);
 +
++	if (!r->space) return -ENOMEM;
 +
-+static struct transfer_info tas_transfers[] = {
-+	{
-+		/* input */
-+		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S16_BE |
-+			   SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S24_BE,
-+		.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
-+		.transfer_in = 1,
-+	},
-+	{
-+		/* output */
-+		.formats = SNDRV_PCM_FMTBIT_S16_BE | SNDRV_PCM_FMTBIT_S16_BE |
-+			   SNDRV_PCM_FMTBIT_S24_BE | SNDRV_PCM_FMTBIT_S24_BE,
-+		.rates = SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000,
-+		.transfer_in = 0,
-+	},
-+	{}
-+};
-+
-+static int tas_usable(struct codec_info_item *cii,
-+		      struct transfer_info *ti,
-+		      struct transfer_info *out)
-+{
-+	return 1;
-+}
-+
-+static int tas_reset_init(struct tas *tas)
-+{
-+	u8 tmp;
-+	tas->codec.gpio->methods->set_hw_reset(tas->codec.gpio, 0);
-+	msleep(1);
-+	tas->codec.gpio->methods->set_hw_reset(tas->codec.gpio, 1);
-+	msleep(1);
-+	tas->codec.gpio->methods->set_hw_reset(tas->codec.gpio, 0);
-+	msleep(1);
-+
-+	tas->acr &= ~TAS_ACR_ANALOG_PDOWN;
-+	tas->acr |= TAS_ACR_B_MONAUREAL | TAS_ACR_B_MON_SEL_RIGHT;
-+	if (tas_write_reg(tas, TAS_REG_ACR, 1, &tas->acr))
-+		return -ENODEV;
-+
-+	tmp = TAS_MCS_SCLK64 | TAS_MCS_SPORT_MODE_I2S | TAS_MCS_SPORT_WL_24BIT;
-+	if (tas_write_reg(tas, TAS_REG_MCS, 1, &tmp))
-+		return -ENODEV;
-+
-+	tmp = 0;
-+	if (tas_write_reg(tas, TAS_REG_MCS2, 1, &tmp))
-+		return -ENODEV;
++	memset(r->space, 0, r->size);
++	r->cmds = (void*)DBDMA_ALIGN(r->space);
++	r->bus_cmd_start = r->bus_addr +
++			   (dma_addr_t)((char*)r->cmds - (char*)r->space);
 +
 +	return 0;
 +}
 +
-+/* we are controlled via i2c and assume that is always up
-+ * If that wasn't the case, we'd have to suspend once
-+ * our i2c device is suspended, and then take note of that! */
-+static int tas_suspend(struct tas *tas)
++static void free_dbdma_descriptor_ring(struct i2sbus_dev *i2sdev,
++				       struct dbdma_command_mem *r)
 +{
-+	tas->acr |= TAS_ACR_ANALOG_PDOWN;
-+	tas_write_reg(tas, TAS_REG_ACR, 1, &tas->acr);
-+	return 0;
-+}
-+
-+static int tas_resume(struct tas *tas)
-+{
-+	/* reset codec */
-+	tas_reset_init(tas);
-+	tas_set_volume(tas);
-+	tas_set_mixer(tas);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int _tas_suspend(struct codec_info_item *cii, pm_message_t state)
-+{
-+	return tas_suspend(cii->codec_data);
-+}
-+
-+static int _tas_resume(struct codec_info_item *cii)
-+{
-+	return tas_resume(cii->codec_data);
-+}
-+#endif
-+
-+static struct codec_info tas_codec_info = {
-+	.transfers = tas_transfers,
-+	/* in theory, we can drive it at 512 too...
-+	 * but so far the framework doesn't allow
-+	 * for that and I don't see much point in it. */
-+	.sysclock_factor = 256,
-+	/* same here, could be 32 for just one 16 bit format */
-+	.bus_factor = 64,
-+	.owner = THIS_MODULE,
-+	.usable = tas_usable,
-+#ifdef CONFIG_PM
-+	.suspend = _tas_suspend,
-+	.resume = _tas_resume,
-+#endif
-+};
-+
-+static int tas_init_codec(struct aoa_codec *codec)
-+{
-+	struct tas *tas = codec_to_tas(codec);
-+	int err;
-+
-+	if (!tas->codec.gpio || !tas->codec.gpio->methods) {
-+		printk(KERN_ERR PFX "gpios not assigned!!\n");
-+		return -EINVAL;
-+	}
-+
-+	if (tas_reset_init(tas)) {
-+		printk(KERN_ERR PFX "tas failed to initialise\n");
-+		return -ENXIO;
-+	}
-+
-+	if (tas->codec.soundbus_dev->attach_codec(tas->codec.soundbus_dev,
-+						   aoa_get_card(),
-+						   &tas_codec_info, tas)) {
-+		printk(KERN_ERR PFX "error attaching tas to soundbus\n");
-+		return -ENODEV;
-+	}
-+
-+	if (aoa_snd_device_new(SNDRV_DEV_LOWLEVEL, tas, &ops)) {
-+		printk(KERN_ERR PFX "failed to create tas snd device!\n");
-+		return -ENODEV;
-+	}
-+	err = aoa_snd_ctl_add(snd_ctl_new1(&volume_control, tas));
-+	if (err)
-+		goto error;
-+
-+	err = aoa_snd_ctl_add(snd_ctl_new1(&mute_control, tas));
-+	if (err)
-+		goto error;
-+
-+	err = aoa_snd_ctl_add(snd_ctl_new1(&pcm1_control, tas));
-+	if (err)
-+		goto error;
-+
-+	err = aoa_snd_ctl_add(snd_ctl_new1(&monitor_control, tas));
-+	if (err)
-+		goto error;
-+
-+	err = aoa_snd_ctl_add(snd_ctl_new1(&capture_source_control, tas));
-+	if (err)
-+		goto error;
-+
-+	return 0;
-+ error:
-+	tas->codec.soundbus_dev->detach_codec(tas->codec.soundbus_dev, tas);
-+	snd_device_free(aoa_get_card(), tas);
-+	return err;
-+}
-+
-+static void tas_exit_codec(struct aoa_codec *codec)
-+{
-+	struct tas *tas = codec_to_tas(codec);
-+
-+	if (!tas->codec.soundbus_dev)
-+		return;
-+	tas->codec.soundbus_dev->detach_codec(tas->codec.soundbus_dev, tas);
-+}
++	if (!r->space) return;
 +	
-+
-+static struct i2c_driver tas_driver;
-+
-+static int tas_create(struct i2c_adapter *adapter,
-+		       struct device_node *node,
-+		       int addr)
-+{
-+	struct tas *tas;
-+
-+	tas = kzalloc(sizeof(struct tas), GFP_KERNEL);
-+
-+	if (!tas)
-+		return -ENOMEM;
-+
-+	tas->i2c.driver = &tas_driver;
-+	tas->i2c.adapter = adapter;
-+	tas->i2c.addr = (addr >> 1) & 0x7f;
-+	strlcpy(tas->i2c.name, "tas audio codec", I2C_NAME_SIZE-1);
-+
-+	if (i2c_attach_client(&tas->i2c)) {
-+		printk(KERN_ERR PFX "failed to attach to i2c\n");
-+		goto fail;
-+	}
-+
-+	strlcpy(tas->codec.name, "tas", MAX_CODEC_NAME_LEN-1);
-+	tas->codec.owner = THIS_MODULE;
-+	tas->codec.init = tas_init_codec;
-+	tas->codec.exit = tas_exit_codec;
-+	tas->codec.node = of_node_get(node);
-+
-+	if (aoa_codec_register(&tas->codec)) {
-+		goto detach;
-+	}
-+	printk(KERN_DEBUG "snd-aoa-codec-tas: created and attached tas instance\n");
-+	return 0;
-+ detach:
-+	i2c_detach_client(&tas->i2c);
-+ fail:
-+	kfree(tas);
-+	return -EINVAL;
++	pci_free_consistent(macio_get_pci_dev(i2sdev->macio),
++			    r->size, r->space, r->bus_addr);
 +}
 +
-+static int tas_i2c_attach(struct i2c_adapter *adapter)
++static void i2sbus_release_dev(struct device *dev)
 +{
-+	struct device_node *busnode, *dev = NULL;
-+	struct pmac_i2c_bus *bus;
++	struct i2sbus_dev *i2sdev;
++	int i;
 +
-+	bus = pmac_i2c_adapter_to_bus(adapter);
-+	if (bus == NULL)
++	i2sdev = container_of(dev, struct i2sbus_dev, sound.ofdev.dev);
++
++ 	if (i2sdev->intfregs) iounmap(i2sdev->intfregs);
++ 	if (i2sdev->out.dbdma) iounmap(i2sdev->out.dbdma);
++ 	if (i2sdev->in.dbdma) iounmap(i2sdev->in.dbdma);
++	for (i=0;i<3;i++)
++		if (i2sdev->allocated_resource[i])
++			release_resource(i2sdev->allocated_resource[i]);
++	free_dbdma_descriptor_ring(i2sdev, &i2sdev->out.dbdma_ring);
++	free_dbdma_descriptor_ring(i2sdev, &i2sdev->in.dbdma_ring);
++	for (i=0;i<3;i++)
++		free_irq(i2sdev->interrupts[i], i2sdev);
++	i2sbus_control_remove_dev(i2sdev->control, i2sdev);
++	mutex_destroy(&i2sdev->lock);
++	kfree(i2sdev);
++}
++
++static irqreturn_t i2sbus_bus_intr(int irq, void *devid, struct pt_regs *regs)
++{
++	struct i2sbus_dev *dev = devid;
++	u32 intreg;
++
++	spin_lock(&dev->low_lock);
++	intreg = in_le32(&dev->intfregs->intr_ctl);
++
++	printk(KERN_INFO "i2sbus: interrupt, intr reg is 0x%x!\n", intreg);
++
++	/* acknowledge interrupt reasons */
++	out_le32(&dev->intfregs->intr_ctl, intreg);
++
++	spin_unlock(&dev->low_lock);
++
++	return IRQ_HANDLED;
++}
++
++static int force;
++module_param(force, int, 0444);
++MODULE_PARM_DESC(force, "Force loading i2sbus even when"
++			" no layout-id property is present");
++
++/* FIXME: look at device node refcounting */
++static int i2sbus_add_dev(struct macio_dev *macio,
++			  struct i2sbus_control *control,
++			  struct device_node *np)
++{
++	struct i2sbus_dev *dev;
++	struct device_node *child = NULL, *sound = NULL;
++	int i;
++	static const char *rnames[] = { "i2sbus: %s (control)",
++					"i2sbus: %s (tx)",
++					"i2sbus: %s (rx)" };
++	static irqreturn_t (*ints[])(int irq, void *devid,
++				     struct pt_regs *regs) = {
++		i2sbus_bus_intr,
++		i2sbus_tx_intr,
++		i2sbus_rx_intr
++	};
++
++	if (strlen(np->name) != 5)
++		return 0;
++	if (strncmp(np->name, "i2s-", 4))
++		return 0;
++
++	if (np->n_intrs != 3)
++		return 0;
++
++	dev = kzalloc(sizeof(struct i2sbus_dev), GFP_KERNEL);
++	if (!dev)
++		return 0;
++
++	i = 0;
++	while ((child = of_get_next_child(np, child))) {
++		if (strcmp(child->name, "sound") == 0) {
++			i++;
++			sound = child;
++		}
++	}
++	if (i == 1) {
++		u32 *layout_id;
++		layout_id = (u32*) get_property(sound, "layout-id", NULL);
++		if (layout_id) {
++			snprintf(dev->sound.modalias, 32,
++				 "sound-layout-%d", *layout_id);
++			force = 1;
++		}
++	}
++	/* for the time being, until we can handle non-layout-id
++	 * things in some fabric, refuse to attach if there is no
++	 * layout-id property or we haven't been forced to attach.
++	 * When there are two i2s busses and only one has a layout-id,
++	 * then this depends on the order, but that isn't important
++	 * either as the second one in that case is just a modem. */
++	if (!force) {
++		kfree(dev);
 +		return -ENODEV;
-+	busnode = pmac_i2c_get_bus_node(bus);
++	}
 +
-+	while ((dev = of_get_next_child(busnode, dev)) != NULL) {
-+		if (device_is_compatible(dev, "tas3004")) {
-+			u32 *addr;
-+			printk(KERN_DEBUG PFX "found tas3004\n");
-+			addr = (u32 *) get_property(dev, "reg", NULL);
-+			if (!addr)
-+				return -ENODEV;
-+			return tas_create(adapter, dev, *addr);
++	mutex_init(&dev->lock);
++	spin_lock_init(&dev->low_lock);
++	dev->sound.ofdev.node = np;
++	dev->sound.ofdev.dma_mask = macio->ofdev.dma_mask;
++	dev->sound.ofdev.dev.dma_mask = &dev->sound.ofdev.dma_mask;
++	dev->sound.ofdev.dev.parent = &macio->ofdev.dev;
++	dev->sound.ofdev.dev.release = i2sbus_release_dev;
++	dev->sound.attach_codec = i2sbus_attach_codec;
++	dev->sound.detach_codec = i2sbus_detach_codec;
++	dev->sound.pcmid = -1;
++	dev->macio = macio;
++	dev->control = control;
++	dev->bus_number = np->name[4] - 'a';
++	INIT_LIST_HEAD(&dev->sound.codec_list);
++
++	for (i=0;i<3;i++) {
++		dev->interrupts[i] = -1;
++		snprintf(dev->rnames[i], sizeof(dev->rnames[i]), rnames[i], np->name);
++	}
++	for (i=0;i<3;i++) {
++		if (request_irq(np->intrs[i].line, ints[i], 0, dev->rnames[i], dev))
++			goto err;
++		dev->interrupts[i] = np->intrs[i].line;
++	}
++
++	for (i=0;i<3;i++) {
++		if (of_address_to_resource(np, i, &dev->resources[i]))
++			goto err;
++		/* if only we could use our resource dev->resources[i]...
++		 * but request_resource doesn't know about parents and
++		 * contained resources... */
++		dev->allocated_resource[i] = 
++			request_mem_region(dev->resources[i].start,
++					   dev->resources[i].end -
++					   dev->resources[i].start + 1,
++					   dev->rnames[i]);
++		if (!dev->allocated_resource[i]) {
++			printk(KERN_ERR "i2sbus: failed to claim resource %d!\n", i);
++			goto err;
++		}
++	}
++	/* should do sanity checking here about length of them */
++	dev->intfregs = ioremap(dev->resources[0].start,
++				dev->resources[0].end-dev->resources[0].start+1);
++	dev->out.dbdma = ioremap(dev->resources[1].start,
++			 	 dev->resources[1].end-dev->resources[1].start+1);
++	dev->in.dbdma = ioremap(dev->resources[2].start,
++				dev->resources[2].end-dev->resources[2].start+1);
++	if (!dev->intfregs || !dev->out.dbdma || !dev->in.dbdma)
++		goto err;
++
++	if (alloc_dbdma_descriptor_ring(dev, &dev->out.dbdma_ring,
++					MAX_DBDMA_COMMANDS))
++		goto err;
++	if (alloc_dbdma_descriptor_ring(dev, &dev->in.dbdma_ring,
++					MAX_DBDMA_COMMANDS))
++		goto err;
++
++	if (i2sbus_control_add_dev(dev->control, dev)) {
++		printk(KERN_ERR "i2sbus: control layer didn't like bus\n");
++		goto err;
++	}
++
++	if (soundbus_add_one(&dev->sound)) {
++		printk(KERN_DEBUG "i2sbus: device registration error!\n");
++		goto err;
++	}
++
++	/* enable this cell */
++	i2sbus_control_cell(dev->control, dev, 1);
++	i2sbus_control_enable(dev->control, dev);
++	i2sbus_control_clock(dev->control, dev, 1);
++
++	return 1;
++ err:
++	for (i=0;i<3;i++)
++		if (dev->interrupts[i] != -1)
++			free_irq(dev->interrupts[i], dev);
++	free_dbdma_descriptor_ring(dev, &dev->out.dbdma_ring);
++	free_dbdma_descriptor_ring(dev, &dev->in.dbdma_ring);
++	if (dev->intfregs) iounmap(dev->intfregs);
++	if (dev->out.dbdma) iounmap(dev->out.dbdma);
++	if (dev->in.dbdma) iounmap(dev->in.dbdma);
++	for (i=0;i<3;i++)
++		if (dev->allocated_resource[i])
++			release_resource(dev->allocated_resource[i]);
++	mutex_destroy(&dev->lock);
++	kfree(dev);
++	return 0;
++}
++
++static int i2sbus_probe(struct macio_dev* dev, const struct of_device_id *match)
++{
++	struct device_node *np = NULL;
++	int got = 0, err;
++	struct i2sbus_control *control = NULL;
++
++	err = i2sbus_control_init(dev, &control);
++	if (err)
++		return err;
++	if (!control) {
++		printk(KERN_ERR "i2sbus_control_init API breakage\n");
++		return -ENODEV;
++	}
++
++	while ((np = of_get_next_child(dev->ofdev.node, np))) {
++		if (device_is_compatible(np, "i2sbus") ||
++		    device_is_compatible(np, "i2s-modem")) {
++			got += i2sbus_add_dev(dev, control, np);
 +		}
 +	}
 +
-+	/* if that didn't work, try desperate mode for older
-+	 * machines that have stuff missing from the device tree */
-+
-+	if (!device_is_compatible(busnode, "keywest-i2c-bus"))
++	if (!got) {
++		/* found none, clean up */
++		i2sbus_control_destroy(control);
 +		return -ENODEV;
++	}
 +
-+	printk(KERN_DEBUG PFX "found keywest-i2c-bus, checking if tas chip is on it\n");
-+	/* can actually have address 0x34 as well... */
-+	return tas_create(adapter, NULL, 0x35);
-+}
++	dev->ofdev.dev.driver_data = control;
 +
-+static int tas_i2c_detach(struct i2c_client *client)
-+{
-+	struct tas *tas = container_of(client, struct tas, i2c);
-+	int err;
-+	u8 tmp = TAS_ACR_ANALOG_PDOWN;
-+
-+	if ((err = i2c_detach_client(client)))
-+		return err;
-+	aoa_codec_unregister(&tas->codec);
-+	of_node_put(tas->codec.node);
-+
-+	/* power down codec chip */
-+	tas_write_reg(tas, TAS_REG_ACR, 1, &tmp);
-+
-+	kfree(tas);
 +	return 0;
 +}
 +
-+static struct i2c_driver tas_driver = {
-+	.driver = {
-+		.name = "aoa_codec_tas",
-+		.owner = THIS_MODULE,
-+	},
-+	.attach_adapter = tas_i2c_attach,
-+	.detach_client = tas_i2c_detach,
++static int i2sbus_remove(struct macio_dev* dev)
++{
++	struct i2sbus_control *control = dev->ofdev.dev.driver_data;
++	struct i2sbus_dev *i2sdev, *tmp;
++
++	list_for_each_entry_safe(i2sdev, tmp, &control->list, item)
++		soundbus_remove_one(&i2sdev->sound);
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int i2sbus_suspend(struct macio_dev* dev, pm_message_t state)
++{
++	struct i2sbus_control *control = dev->ofdev.dev.driver_data;
++	struct codec_info_item *cii;
++	struct i2sbus_dev* i2sdev;
++	int err, ret = 0;
++
++	list_for_each_entry(i2sdev, &control->list, item) {
++		/* Notify Alsa */
++		if (i2sdev->sound.pcm) {
++			/* Suspend PCM streams */
++			snd_pcm_suspend_all(i2sdev->sound.pcm);
++			/* Probably useless as we handle
++			 * power transitions ourselves */
++			snd_power_change_state(i2sdev->sound.pcm->card,
++					       SNDRV_CTL_POWER_D3hot);
++		}
++		/* Notify codecs */
++		list_for_each_entry(cii, &i2sdev->sound.codec_list, list) {
++			err = 0;
++			if (cii->codec->suspend)
++				err = cii->codec->suspend(cii, state);
++			if (err)
++				ret = err;
++		}
++	}
++	return ret;
++}
++
++static int i2sbus_resume(struct macio_dev* dev)
++{
++	struct i2sbus_control *control = dev->ofdev.dev.driver_data;
++	struct codec_info_item *cii;
++	struct i2sbus_dev* i2sdev;
++	int err, ret = 0;
++
++	list_for_each_entry(i2sdev, &control->list, item) {
++		/* Notify codecs so they can re-initialize */
++		list_for_each_entry(cii, &i2sdev->sound.codec_list, list) {
++			err = 0;
++			if (cii->codec->resume)
++				err = cii->codec->resume(cii);
++			if (err)
++				ret = err;
++		}
++		/* Notify Alsa */
++		if (i2sdev->sound.pcm) {
++			/* Same comment as above, probably useless */
++			snd_power_change_state(i2sdev->sound.pcm->card,
++					       SNDRV_CTL_POWER_D0);
++		}
++	}
++
++	return ret;
++}
++#endif /* CONFIG_PM */
++
++static int i2sbus_shutdown(struct macio_dev* dev)
++{
++	return 0;
++}
++
++static struct macio_driver i2sbus_drv = {
++	.name = "soundbus-i2s",
++	.owner = THIS_MODULE,
++	.match_table = i2sbus_match,
++	.probe = i2sbus_probe,
++	.remove = i2sbus_remove,
++#ifdef CONFIG_PM
++	.suspend = i2sbus_suspend,
++	.resume = i2sbus_resume,
++#endif
++	.shutdown = i2sbus_shutdown,
 +};
 +
-+static int __init tas_init(void)
++static int __init soundbus_i2sbus_init(void)
 +{
-+	return i2c_add_driver(&tas_driver);
++	return macio_register_driver(&i2sbus_drv);
 +}
 +
-+static void __exit tas_exit(void)
++static void __exit soundbus_i2sbus_exit(void)
 +{
-+	i2c_del_driver(&tas_driver);
++	macio_unregister_driver(&i2sbus_drv);
 +}
 +
-+module_init(tas_init);
-+module_exit(tas_exit);
++module_init(soundbus_i2sbus_init);
++module_exit(soundbus_i2sbus_exit);
+--- /dev/null
++++ b/sound/aoa/soundbus/i2sbus/i2sbus-interface.h
+@@ -0,0 +1,187 @@
++/*
++ * i2sbus driver -- interface register definitions
++ *
++ * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
++ *
++ * GPL v2, can be found in COPYING.
++ */
++#ifndef __I2SBUS_INTERFACE_H
++#define __I2SBUS_INTERFACE_H
++
++/* i2s bus control registers, at least what we know about them */
++
++#define __PAD(m,n) u8 __pad##m[n]
++#define _PAD(line, n) __PAD(line, n)
++#define PAD(n) _PAD(__LINE__, (n))
++struct i2s_interface_regs {
++	__le32 intr_ctl;	/* 0x00 */
++	PAD(12);
++	__le32 serial_format;	/* 0x10 */
++	PAD(12);
++	__le32 codec_msg_out;	/* 0x20 */
++	PAD(12);
++	__le32 codec_msg_in;	/* 0x30 */
++	PAD(12);
++	__le32 frame_count;	/* 0x40 */
++	PAD(12);
++	__le32 frame_match;	/* 0x50 */
++	PAD(12);
++	__le32 data_word_sizes;	/* 0x60 */
++	PAD(12);
++	__le32 peak_level_sel;	/* 0x70 */
++	PAD(12);
++	__le32 peak_level_in0;	/* 0x80 */
++	PAD(12);
++	__le32 peak_level_in1;	/* 0x90 */
++	PAD(12);
++	/* total size: 0x100 bytes */
++}  __attribute__((__packed__));
++
++/* interrupt register is just a bitfield with
++ * interrupt enable and pending bits */
++#define I2S_REG_INTR_CTL		0x00
++#	define I2S_INT_FRAME_COUNT		(1<<31)
++#	define I2S_PENDING_FRAME_COUNT		(1<<30)
++#	define I2S_INT_MESSAGE_FLAG		(1<<29)
++#	define I2S_PENDING_MESSAGE_FLAG		(1<<28)
++#	define I2S_INT_NEW_PEAK			(1<<27)
++#	define I2S_PENDING_NEW_PEAK		(1<<26)
++#	define I2S_INT_CLOCKS_STOPPED		(1<<25)
++#	define I2S_PENDING_CLOCKS_STOPPED	(1<<24)
++#	define I2S_INT_EXTERNAL_SYNC_ERROR	(1<<23)
++#	define I2S_PENDING_EXTERNAL_SYNC_ERROR	(1<<22)
++#	define I2S_INT_EXTERNAL_SYNC_OK		(1<<21)
++#	define I2S_PENDING_EXTERNAL_SYNC_OK	(1<<20)
++#	define I2S_INT_NEW_SAMPLE_RATE		(1<<19)
++#	define I2S_PENDING_NEW_SAMPLE_RATE	(1<<18)
++#	define I2S_INT_STATUS_FLAG		(1<<17)
++#	define I2S_PENDING_STATUS_FLAG		(1<<16)
++
++/* serial format register is more interesting :)
++ * It contains:
++ *  - clock source
++ *  - MClk divisor
++ *  - SClk divisor
++ *  - SClk master flag
++ *  - serial format (sony, i2s 64x, i2s 32x, dav, silabs)
++ *  - external sample frequency interrupt (don't understand)
++ *  - external sample frequency
++ */
++#define I2S_REG_SERIAL_FORMAT		0x10
++/* clock source. You get either 18.432, 45.1584 or 49.1520 MHz */
++#	define I2S_SF_CLOCK_SOURCE_SHIFT	30
++#	define I2S_SF_CLOCK_SOURCE_MASK		(3<<I2S_SF_CLOCK_SOURCE_SHIFT)
++#	define I2S_SF_CLOCK_SOURCE_18MHz	(0<<I2S_SF_CLOCK_SOURCE_SHIFT)
++#	define I2S_SF_CLOCK_SOURCE_45MHz	(1<<I2S_SF_CLOCK_SOURCE_SHIFT)
++#	define I2S_SF_CLOCK_SOURCE_49MHz	(2<<I2S_SF_CLOCK_SOURCE_SHIFT)
++/* also, let's define the exact clock speeds here, in Hz */
++#define I2S_CLOCK_SPEED_18MHz	18432000
++#define I2S_CLOCK_SPEED_45MHz	45158400
++#define I2S_CLOCK_SPEED_49MHz	49152000
++/* MClk is the clock that drives the codec, usually called its 'system clock'.
++ * It is derived by taking only every 'divisor' tick of the clock.
++ */
++#	define I2S_SF_MCLKDIV_SHIFT		24
++#	define I2S_SF_MCLKDIV_MASK		(0x1F<<I2S_SF_MCLKDIV_SHIFT)
++#	define I2S_SF_MCLKDIV_1			(0x14<<I2S_SF_MCLKDIV_SHIFT)
++#	define I2S_SF_MCLKDIV_3			(0x13<<I2S_SF_MCLKDIV_SHIFT)
++#	define I2S_SF_MCLKDIV_5			(0x12<<I2S_SF_MCLKDIV_SHIFT)
++#	define I2S_SF_MCLKDIV_14		(0x0E<<I2S_SF_MCLKDIV_SHIFT)
++#	define I2S_SF_MCLKDIV_OTHER(div)	(((div/2-1)<<I2S_SF_MCLKDIV_SHIFT)&I2S_SF_MCLKDIV_MASK)
++static inline int i2s_sf_mclkdiv(int div, int *out)
++{
++	int d;
++
++	switch(div) {
++	case 1: *out |= I2S_SF_MCLKDIV_1; return 0;
++	case 3: *out |= I2S_SF_MCLKDIV_3; return 0;
++	case 5: *out |= I2S_SF_MCLKDIV_5; return 0;
++	case 14: *out |= I2S_SF_MCLKDIV_14; return 0;
++	default:
++		if (div%2) return -1;
++		d = div/2-1;
++		if (d == 0x14 || d == 0x13 || d == 0x12 || d == 0x0E)
++			return -1;
++		*out |= I2S_SF_MCLKDIV_OTHER(div);
++		return 0;
++	}
++}
++/* SClk is the clock that drives the i2s wire bus. Note that it is
++ * derived from the MClk above by taking only every 'divisor' tick
++ * of MClk.
++ */
++#	define I2S_SF_SCLKDIV_SHIFT		20
++#	define I2S_SF_SCLKDIV_MASK		(0xF<<I2S_SF_SCLKDIV_SHIFT)
++#	define I2S_SF_SCLKDIV_1			(8<<I2S_SF_SCLKDIV_SHIFT)
++#	define I2S_SF_SCLKDIV_3			(9<<I2S_SF_SCLKDIV_SHIFT)
++#	define I2S_SF_SCLKDIV_OTHER(div)	(((div/2-1)<<I2S_SF_SCLKDIV_SHIFT)&I2S_SF_SCLKDIV_MASK)
++static inline int i2s_sf_sclkdiv(int div, int *out)
++{
++	int d;
++
++	switch(div) {
++	case 1: *out |= I2S_SF_SCLKDIV_1; return 0;
++	case 3: *out |= I2S_SF_SCLKDIV_3; return 0;
++	default:
++		if (div%2) return -1;
++		d = div/2-1;
++		if (d == 8 || d == 9) return -1;
++		*out |= I2S_SF_SCLKDIV_OTHER(div);
++		return 0;
++	}
++}
++#	define I2S_SF_SCLK_MASTER		(1<<19)
++/* serial format is the way the data is put to the i2s wire bus */
++#	define I2S_SF_SERIAL_FORMAT_SHIFT	16
++#	define I2S_SF_SERIAL_FORMAT_MASK	(7<<I2S_SF_SERIAL_FORMAT_SHIFT)
++#	define I2S_SF_SERIAL_FORMAT_SONY	(0<<I2S_SF_SERIAL_FORMAT_SHIFT)
++#	define I2S_SF_SERIAL_FORMAT_I2S_64X	(1<<I2S_SF_SERIAL_FORMAT_SHIFT)
++#	define I2S_SF_SERIAL_FORMAT_I2S_32X	(2<<I2S_SF_SERIAL_FORMAT_SHIFT)
++#	define I2S_SF_SERIAL_FORMAT_I2S_DAV	(4<<I2S_SF_SERIAL_FORMAT_SHIFT)
++#	define I2S_SF_SERIAL_FORMAT_I2S_SILABS	(5<<I2S_SF_SERIAL_FORMAT_SHIFT)
++/* unknown */
++#	define I2S_SF_EXT_SAMPLE_FREQ_INT_SHIFT	12
++#	define I2S_SF_EXT_SAMPLE_FREQ_INT_MASK	(0xF<<I2S_SF_SAMPLE_FREQ_INT_SHIFT)
++/* probably gives external frequency? */
++#	define I2S_SF_EXT_SAMPLE_FREQ_MASK	0xFFF
++
++/* used to send codec messages, but how isn't clear */
++#define I2S_REG_CODEC_MSG_OUT		0x20
++
++/* used to receive codec messages, but how isn't clear */
++#define I2S_REG_CODEC_MSG_IN		0x30
++
++/* frame count reg isn't clear to me yet, but probably useful */
++#define I2S_REG_FRAME_COUNT		0x40
++
++/* program to some value, and get interrupt if frame count reaches it */
++#define I2S_REG_FRAME_MATCH		0x50
++
++/* this register describes how the bus transfers data */
++#define I2S_REG_DATA_WORD_SIZES		0x60
++/* number of interleaved input channels */
++#	define I2S_DWS_NUM_CHANNELS_IN_SHIFT	24
++#	define I2S_DWS_NUM_CHANNELS_IN_MASK	(0x1F<<I2S_DWS_NUM_CHANNELS_IN_SHIFT)
++/* word size of input data */
++#	define I2S_DWS_DATA_IN_SIZE_SHIFT	16
++#	define I2S_DWS_DATA_IN_16BIT		(0<<I2S_DWS_DATA_IN_SIZE_SHIFT)
++#	define I2S_DWS_DATA_IN_24BIT		(3<<I2S_DWS_DATA_IN_SIZE_SHIFT)
++/* number of interleaved output channels */
++#	define I2S_DWS_NUM_CHANNELS_OUT_SHIFT	8
++#	define I2S_DWS_NUM_CHANNELS_OUT_MASK	(0x1F<<I2S_DWS_NUM_CHANNELS_OUT_SHIFT)
++/* word size of output data */
++#	define I2S_DWS_DATA_OUT_SIZE_SHIFT	0
++#	define I2S_DWS_DATA_OUT_16BIT		(0<<I2S_DWS_DATA_OUT_SIZE_SHIFT)
++#	define I2S_DWS_DATA_OUT_24BIT		(3<<I2S_DWS_DATA_OUT_SIZE_SHIFT)
++
++
++/* unknown */
++#define I2S_REG_PEAK_LEVEL_SEL		0x70
++
++/* unknown */
++#define I2S_REG_PEAK_LEVEL_IN0		0x80
++
++/* unknown */
++#define I2S_REG_PEAK_LEVEL_IN1		0x90
++
++#endif /* __I2SBUS_INTERFACE_H */
+--- /dev/null
++++ b/sound/aoa/soundbus/i2sbus/i2sbus.h
+@@ -0,0 +1,114 @@
++/*
++ * i2sbus driver -- private definitions
++ *
++ * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
++ *
++ * GPL v2, can be found in COPYING.
++ */
++#ifndef __I2SBUS_H
++#define __I2SBUS_H
++#include <asm/dbdma.h>
++#include <linux/interrupt.h>
++#include <sound/pcm.h>
++#include <linux/spinlock.h>
++#include <linux/mutex.h>
++#include "i2sbus-interface.h"
++#include "i2sbus-control.h"
++/* FIXME */
++#include "../soundbus.h"
++/* should go away, see comment in i2sbus_add_dev */
++#include <asm/prom.h>
++
++struct i2sbus_control {
++	volatile struct i2s_control_regs __iomem *controlregs;
++	struct resource rsrc;
++	struct list_head list;
++};
++
++#define MAX_DBDMA_COMMANDS	32
++
++struct dbdma_command_mem {
++	dma_addr_t bus_addr;
++	dma_addr_t bus_cmd_start;
++	struct dbdma_cmd *cmds;
++	void *space;
++	int size;
++	u32 running:1;
++};
++
++struct pcm_info {
++	u32 created:1, /* has this direction been created with alsa? */
++	    active:1;  /* is this stream active? */
++	/* runtime information */
++	struct snd_pcm_substream *substream;
++	int current_period;
++	u32 frame_count;
++	struct dbdma_command_mem dbdma_ring;
++	volatile struct dbdma_regs __iomem *dbdma;
++};
++
++struct i2sbus_dev {
++	struct soundbus_dev sound;
++	struct macio_dev *macio;
++	struct i2sbus_control *control;
++	volatile struct i2s_interface_regs __iomem *intfregs;
++
++	struct resource resources[3];
++	struct resource *allocated_resource[3];
++	int interrupts[3];
++	char rnames[3][32];
++
++	/* info about currently active substreams */
++	struct pcm_info out, in;
++	snd_pcm_format_t format;
++	unsigned int rate;
++
++	/* list for a single controller */
++	struct list_head item;
++	/* number of bus on controller */
++	int bus_number;
++	/* for use by control layer */
++	struct pmf_function *enable,
++			    *cell_enable,
++			    *cell_disable,
++			    *clock_enable,
++			    *clock_disable;
++
++	/* locks */
++	/* spinlock for low-level interrupt locking */
++	spinlock_t low_lock;
++	/* mutex for high-level consistency */
++	struct mutex lock;
++};
++
++#define soundbus_dev_to_i2sbus_dev(sdev) \
++		container_of(sdev, struct i2sbus_dev, sound)
++
++/* pcm specific functions */
++extern int
++i2sbus_attach_codec(struct soundbus_dev *dev, struct snd_card *card,
++		    struct codec_info *ci, void *data);
++extern void
++i2sbus_detach_codec(struct soundbus_dev *dev, void *data);
++extern irqreturn_t
++i2sbus_tx_intr(int irq, void *devid, struct pt_regs *regs);
++extern irqreturn_t
++i2sbus_rx_intr(int irq, void *devid, struct pt_regs *regs);
++
++/* control specific functions */
++extern int i2sbus_control_init(struct macio_dev* dev,
++			       struct i2sbus_control **c);
++extern void i2sbus_control_destroy(struct i2sbus_control *c);
++extern int i2sbus_control_add_dev(struct i2sbus_control *c,
++				  struct i2sbus_dev *i2sdev);
++extern void i2sbus_control_remove_dev(struct i2sbus_control *c,
++				      struct i2sbus_dev *i2sdev);
++extern int i2sbus_control_enable(struct i2sbus_control *c,
++				 struct i2sbus_dev *i2sdev);
++extern int i2sbus_control_cell(struct i2sbus_control *c,
++			       struct i2sbus_dev *i2sdev,
++			       int enable);
++extern int i2sbus_control_clock(struct i2sbus_control *c,
++				struct i2sbus_dev *i2sdev,
++				int enable);
++#endif /* __I2SBUS_H */
+--- /dev/null
++++ b/sound/aoa/soundbus/i2sbus/Makefile
+@@ -0,0 +1,2 @@
++obj-$(CONFIG_SND_AOA_SOUNDBUS_I2S) += snd-aoa-i2sbus.o
++snd-aoa-i2sbus-objs := i2sbus-core.o i2sbus-pcm.o i2sbus-control.o
+--- /dev/null
++++ b/sound/aoa/soundbus/i2sbus/i2sbus-control.c
+@@ -0,0 +1,192 @@
++/*
++ * i2sbus driver -- bus control routines
++ *
++ * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
++ *
++ * GPL v2, can be found in COPYING.
++ */
++
++#include <asm/io.h>
++#include <linux/delay.h>
++#include <asm/prom.h>
++#include <asm/macio.h>
++#include <asm/pmac_feature.h>
++#include <asm/pmac_pfunc.h>
++#include "i2sbus.h"
++
++int i2sbus_control_init(struct macio_dev* dev, struct i2sbus_control **c)
++{
++	*c = kzalloc(sizeof(struct i2sbus_control), GFP_KERNEL);
++	if (!*c)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&(*c)->list);
++
++	if (of_address_to_resource(dev->ofdev.node, 0, &(*c)->rsrc))
++		goto err;
++	/* we really should be using feature calls instead of mapping
++	 * these registers. It's safe for now since no one else is
++	 * touching them... */
++	(*c)->controlregs = ioremap((*c)->rsrc.start,
++				    sizeof(struct i2s_control_regs));
++	if (!(*c)->controlregs)
++		goto err;
++
++	return 0;
++ err:
++	kfree(*c);
++	*c = NULL;
++	return -ENODEV;
++}
++
++void i2sbus_control_destroy(struct i2sbus_control *c)
++{
++	iounmap(c->controlregs);
++	kfree(c);
++}
++
++/* this is serialised externally */
++int i2sbus_control_add_dev(struct i2sbus_control *c,
++			   struct i2sbus_dev *i2sdev)
++{
++	struct device_node *np;
++
++	np = i2sdev->sound.ofdev.node;
++	i2sdev->enable = pmf_find_function(np, "enable");
++	i2sdev->cell_enable = pmf_find_function(np, "cell-enable");
++	i2sdev->clock_enable = pmf_find_function(np, "clock-enable");
++	i2sdev->cell_disable = pmf_find_function(np, "cell-disable");
++	i2sdev->clock_disable = pmf_find_function(np, "clock-disable");
++
++	/* if the bus number is not 0 or 1 we absolutely need to use
++	 * the platform functions -- there's nothing in Darwin that
++	 * would allow seeing a system behind what the FCRs are then,
++	 * and I don't want to go parsing a bunch of platform functions
++	 * by hand to try finding a system... */
++	if (i2sdev->bus_number != 0 && i2sdev->bus_number != 1 &&
++	    (!i2sdev->enable ||
++	     !i2sdev->cell_enable || !i2sdev->clock_enable ||
++	     !i2sdev->cell_disable || !i2sdev->clock_disable)) {
++		pmf_put_function(i2sdev->enable);
++		pmf_put_function(i2sdev->cell_enable);
++		pmf_put_function(i2sdev->clock_enable);
++		pmf_put_function(i2sdev->cell_disable);
++		pmf_put_function(i2sdev->clock_disable);
++		return -ENODEV;
++	}
++
++	list_add(&i2sdev->item, &c->list);
++
++	return 0;
++}
++
++void i2sbus_control_remove_dev(struct i2sbus_control *c,
++			       struct i2sbus_dev *i2sdev)
++{
++	/* this is serialised externally */
++	list_del(&i2sdev->item);
++	if (list_empty(&c->list))
++		i2sbus_control_destroy(c);
++}
++
++int i2sbus_control_enable(struct i2sbus_control *c,
++			  struct i2sbus_dev *i2sdev)
++{
++	struct pmf_args args = { .count = 0 };
++	int cc;
++
++	if (i2sdev->enable)
++		return pmf_call_one(i2sdev->enable, &args);
++
++	switch (i2sdev->bus_number) {
++	case 0:
++		cc = in_le32(&c->controlregs->cell_control);
++		out_le32(&c->controlregs->cell_control, cc | CTRL_CLOCK_INTF_0_ENABLE);
++		break;
++	case 1:
++		cc = in_le32(&c->controlregs->cell_control);
++		out_le32(&c->controlregs->cell_control, cc | CTRL_CLOCK_INTF_1_ENABLE);
++		break;
++	default:
++		return -ENODEV;
++	}
++	return 0;
++}
++
++int i2sbus_control_cell(struct i2sbus_control *c,
++			struct i2sbus_dev *i2sdev,
++			int enable)
++{
++	struct pmf_args args = { .count = 0 };
++	int cc;
++
++	switch (enable) {
++	case 0:
++		if (i2sdev->cell_disable)
++			return pmf_call_one(i2sdev->cell_disable, &args);
++		break;
++	case 1:
++		if (i2sdev->cell_enable)
++			return pmf_call_one(i2sdev->cell_enable, &args);
++		break;
++	default:
++		printk(KERN_ERR "i2sbus: INVALID CELL ENABLE VALUE\n");
++		return -ENODEV;
++	}
++	switch (i2sdev->bus_number) {
++	case 0:
++		cc = in_le32(&c->controlregs->cell_control);
++		cc &= ~CTRL_CLOCK_CELL_0_ENABLE;
++		cc |= enable * CTRL_CLOCK_CELL_0_ENABLE;
++		out_le32(&c->controlregs->cell_control, cc);
++		break;
++	case 1:
++		cc = in_le32(&c->controlregs->cell_control);
++		cc &= ~CTRL_CLOCK_CELL_1_ENABLE;
++		cc |= enable * CTRL_CLOCK_CELL_1_ENABLE;
++		out_le32(&c->controlregs->cell_control, cc);
++		break;
++	default:
++		return -ENODEV;
++	}
++	return 0;
++}
++
++int i2sbus_control_clock(struct i2sbus_control *c,
++			 struct i2sbus_dev *i2sdev,
++			 int enable)
++{
++	struct pmf_args args = { .count = 0 };
++	int cc;
++
++	switch (enable) {
++	case 0:
++		if (i2sdev->clock_disable)
++			return pmf_call_one(i2sdev->clock_disable, &args);
++		break;
++	case 1:
++		if (i2sdev->clock_enable)
++			return pmf_call_one(i2sdev->clock_enable, &args);
++		break;
++	default:
++		printk(KERN_ERR "i2sbus: INVALID CLOCK ENABLE VALUE\n");
++		return -ENODEV;
++	}
++	switch (i2sdev->bus_number) {
++	case 0:
++		cc = in_le32(&c->controlregs->cell_control);
++		cc &= ~CTRL_CLOCK_CLOCK_0_ENABLE;
++		cc |= enable * CTRL_CLOCK_CLOCK_0_ENABLE;
++		out_le32(&c->controlregs->cell_control, cc);
++		break;
++	case 1:
++		cc = in_le32(&c->controlregs->cell_control);
++		cc &= ~CTRL_CLOCK_CLOCK_1_ENABLE;
++		cc |= enable * CTRL_CLOCK_CLOCK_1_ENABLE;
++		out_le32(&c->controlregs->cell_control, cc);
++		break;
++	default:
++		return -ENODEV;
++	}
++	return 0;
++}
 
 --
