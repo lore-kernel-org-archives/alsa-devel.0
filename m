@@ -1,15 +1,17 @@
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [RFC 0/8] snd-aoa: add snd-aoa
-Date: Thu, 01 Jun 2006 13:58:44 +0200
-Message-ID: <20060601115844.343214000@sipsolutions.net>
+Subject: [RFC 1/8] snd-aoa: add aoa header files
+Date: Thu, 01 Jun 2006 13:58:45 +0200
+Message-ID: <20060601115845.153153000@sipsolutions.net>
+References: <20060601115844.343214000@sipsolutions.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5BCAD140
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C87B9140
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Jun 2006 15:06:12 +0200 (MEST)
+	Thu,  1 Jun 2006 15:06:08 +0200 (MEST)
+Content-Disposition: inline; filename=add-headers.patch
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,22 +25,225 @@ To: alsa-devel@alsa-project.org
 Cc: linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-The following patches would add snd-aoa to the Linux source tree. I'm
-posting them here in the spirit of getting review fairly early, it works
-fine for those machines it handles and even implements headphone/line-out
-detection now.
+This patch adds header files to use for communication between the various
+parts of aoa.
 
-One thing that still needs to be done is fix this on the mac-mini where
-apparently some things are missing from the device-tree, and on the
-PowerMac7,2/7,3 where the device tree has a bug that prevents the i2sbus
-module from working properly.
-
-Other than that, it replaces snd-powermac for all layout-id machines, and
-handles many more already, so once those two issues are fixed I'll also add
-a patch to this patchset that removes support for any machines with a
-layout-id from snd-powermac to allow snd-aoa and snd-powermac to coexist
-nicely.
-
-Any comments are appreciated.
+--- /dev/null
++++ b/sound/aoa/aoa-gpio.h
+@@ -0,0 +1,81 @@
++/*
++ * Apple Onboard Audio GPIO definitions
++ *
++ * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
++ *
++ * GPL v2, can be found in COPYING.
++ */
++
++#ifndef __AOA_GPIO_H
++#define __AOA_GPIO_H
++#include <linux/workqueue.h>
++#include <linux/mutex.h>
++#include <asm/prom.h>
++
++typedef void (*notify_func_t)(void *data);
++
++enum notify_type {
++	AOA_NOTIFY_HEADPHONE,
++	AOA_NOTIFY_LINE_IN,
++	AOA_NOTIFY_LINE_OUT,
++};
++
++struct gpio_runtime;
++struct gpio_methods {
++	/* for initialisation/de-initialisation of the GPIO layer */
++	void (*init)(struct gpio_runtime *rt);
++	void (*exit)(struct gpio_runtime *rt);
++
++	/* turn off headphone, speakers, lineout */
++	void (*all_amps_off)(struct gpio_runtime *rt);
++	/* turn headphone, speakers, lineout back to previous setting */
++	void (*all_amps_restore)(struct gpio_runtime *rt);
++
++	void (*set_headphone)(struct gpio_runtime *rt, int on);
++	void (*set_speakers)(struct gpio_runtime *rt, int on);
++	void (*set_lineout)(struct gpio_runtime *rt, int on);
++
++	int (*get_headphone)(struct gpio_runtime *rt);
++	int (*get_speakers)(struct gpio_runtime *rt);
++	int (*get_lineout)(struct gpio_runtime *rt);
++
++	void (*set_hw_reset)(struct gpio_runtime *rt, int on);
++
++	/* use this to be notified of any events. The notification
++	 * function is passed the data, and is called in process
++	 * context by the use of schedule_work.
++	 * The interface for it is that setting a function to NULL
++	 * removes it, and they return 0 if the operation succeeded,
++	 * and -EBUSY if the notification is already assigned by
++	 * someone else. */
++	int (*set_notify)(struct gpio_runtime *rt,
++			  enum notify_type type,
++			  notify_func_t notify,
++			  void *data);
++	/* returns 0 if not plugged in, 1 if plugged in
++	 * or a negative error code */
++	int (*get_detect)(struct gpio_runtime *rt,
++			  enum notify_type type);
++};
++
++struct gpio_notification {
++	notify_func_t notify;
++	void *data;
++	void *gpio_private;
++	struct work_struct work;
++	struct mutex mutex;
++};
++
++struct gpio_runtime {
++	/* to be assigned by fabric */
++	struct device_node *node;
++	/* since everyone needs this pointer anyway... */
++	struct gpio_methods *methods;
++	/* to be used by the gpio implementation */
++	int implementation_private;
++	struct gpio_notification headphone_notify;
++	struct gpio_notification line_in_notify;
++	struct gpio_notification line_out_notify;
++};
++
++#endif /* __AOA_GPIO_H */
+--- /dev/null
++++ b/sound/aoa/aoa.h
+@@ -0,0 +1,130 @@
++/*
++ * Apple Onboard Audio definitions
++ *
++ * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
++ *
++ * GPL v2, can be found in COPYING.
++ */
++
++#ifndef __AOA_H
++#define __AOA_H
++#include <asm/prom.h>
++#include <linux/module.h>
++/* So apparently there's a reason for requiring driver.h to be included first! */
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/asound.h>
++#include <sound/control.h>
++#include "aoa-gpio.h"
++#include "soundbus/soundbus.h"
++
++#define MAX_CODEC_NAME_LEN	32
++
++struct aoa_codec {
++	char	name[MAX_CODEC_NAME_LEN];
++
++	struct module *owner;
++
++	/* called when the fabric wants to init this codec.
++	 * Do alsa card manipulations from here. */
++	int (*init)(struct aoa_codec *codec);
++
++	/* called when the fabric is done with the codec.
++	 * The alsa card will be cleaned up so don't bother. */
++	void (*exit)(struct aoa_codec *codec);
++
++	/* May be NULL, but can be used by the fabric.
++	 * Refcounting is the codec driver's responsibility */
++	struct device_node *node;
++
++	/* assigned by fabric before init() is called, points
++	 * to the soundbus device. Cannot be NULL. */
++	struct soundbus_dev *soundbus_dev;
++
++	/* assigned by the fabric before init() is called, points
++	 * to the fabric's gpio runtime record for the relevant
++	 * device. */
++	struct gpio_runtime *gpio;
++
++	/* assigned by the fabric before init() is called, contains
++	 * a codec specific bitmask of what outputs and inputs are
++	 * actually connected */
++	u32 connected;
++
++	/* data the fabric can associate with this structure */
++	void *fabric_data;
++
++	/* private! */
++	struct list_head list;
++	struct aoa_fabric *fabric;
++};
++
++/* return 0 on success */
++extern int
++aoa_codec_register(struct aoa_codec *codec);
++extern void
++aoa_codec_unregister(struct aoa_codec *codec);
++
++#define MAX_LAYOUT_NAME_LEN	32
++
++struct aoa_fabric {
++	char	name[MAX_LAYOUT_NAME_LEN];
++
++	struct module *owner;
++
++	/* once codecs register, they are passed here after.
++	 * They are of course not initialised, since the
++	 * fabric is responsible for initialising some fields
++	 * in the codec structure! */
++	int (*found_codec)(struct aoa_codec *codec);
++	/* called for each codec when it is removed,
++	 * also in the case that aoa_fabric_unregister
++	 * is called and all codecs are removed
++	 * from this fabric.
++	 * Also called if found_codec returned 0 but
++	 * the codec couldn't initialise. */
++	void (*remove_codec)(struct aoa_codec *codec);
++	/* If found_codec returned 0, and the codec
++	 * could be initialised, this is called. */
++	void (*attached_codec)(struct aoa_codec *codec);
++};
++
++/* return 0 on success, -EEXIST if another fabric is
++ * registered, -EALREADY if the same fabric is registered.
++ * Passing NULL can be used to test for the presence
++ * of another fabric, if -EALREADY is returned there is
++ * no other fabric present.
++ * In the case that the function returns -EALREADY
++ * and the fabric passed is not NULL, all codecs
++ * that are not assigned yet are passed to the fabric
++ * again for reconsideration. */
++extern int
++aoa_fabric_register(struct aoa_fabric *fabric);
++
++/* it is vital to call this when the fabric exits!
++ * When calling, the remove_codec will be called
++ * for all codecs, unless it is NULL. */
++extern void
++aoa_fabric_unregister(struct aoa_fabric *fabric);
++
++/* if for some reason you want to get rid of a codec
++ * before the fabric is removed, use this.
++ * Note that remove_codec is called for it! */
++extern void
++aoa_fabric_unlink_codec(struct aoa_codec *codec);
++
++/* alsa help methods */
++struct aoa_card {
++	struct snd_card *alsa_card;
++};
++        
++extern int aoa_snd_device_new(snd_device_type_t type,
++	void * device_data, struct snd_device_ops * ops);
++extern struct snd_card *aoa_get_card(void);
++extern int aoa_snd_ctl_add(struct snd_kcontrol* control);
++
++/* GPIO stuff */
++extern struct gpio_methods *pmf_gpio_methods;
++/* extern struct gpio_methods *map_gpio_methods; */
++
++#endif /* __AOA_H */
 
 --
