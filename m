@@ -1,17 +1,17 @@
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [RFC 3/8] snd-aoa: add soundbus
-Date: Thu, 01 Jun 2006 13:58:47 +0200
-Message-ID: <20060601115846.852128000@sipsolutions.net>
+Subject: [RFC 2/8] snd-aoa: add aoa core
+Date: Thu, 01 Jun 2006 13:58:46 +0200
+Message-ID: <20060601115845.923706000@sipsolutions.net>
 References: <20060601115844.343214000@sipsolutions.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5A2C6140
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A837B149
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Jun 2006 15:06:06 +0200 (MEST)
-Content-Disposition: inline; filename=add-soundbus.patch
+	Thu,  1 Jun 2006 15:05:57 +0200 (MEST)
+Content-Disposition: inline; filename=add-core.patch
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,560 +25,523 @@ To: alsa-devel@alsa-project.org
 Cc: linuxppc-dev@ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the mostly generic soundbus that will be used for all the
-sound busses Apple machines have and provides just the hooks for automatic
-driver loading etc.
+This patch adds the core of aoa, in itself pretty useless, but providing
+useful functions to other modules.
 
 --- /dev/null
-+++ b/sound/aoa/soundbus/Kconfig
-@@ -0,0 +1,14 @@
-+config SND_AOA_SOUNDBUS
-+	tristate "Apple Soundbus support"
-+	depends on SOUND && SND_PCM && EXPERIMENTAL
-+	---help---
-+	This option enables the generic driver for the soundbus
-+	support on Apple machines.
-+	
-+	It is required for the sound bus implementations.
-+
-+config SND_AOA_SOUNDBUS_I2S
-+	tristate "I2S bus support"
-+	depends on SND_AOA_SOUNDBUS && PCI
-+	---help---
-+	This option enables support for Apple I2S busses.
++++ b/sound/aoa/core/Makefile
+@@ -0,0 +1,4 @@
++obj-$(CONFIG_SND_AOA) += snd-aoa.o
++snd-aoa-objs := snd-aoa-core.o \
++		snd-aoa-alsa.o \
++		snd-aoa-gpio-pmf.o
 --- /dev/null
-+++ b/sound/aoa/soundbus/Makefile
-@@ -0,0 +1,3 @@
-+obj-$(CONFIG_SND_AOA_SOUNDBUS) += snd-aoa-soundbus.o
-+snd-aoa-soundbus-objs := core.o sysfs.o
-+obj-$(CONFIG_SND_AOA_SOUNDBUS_I2S) += i2sbus/
---- /dev/null
-+++ b/sound/aoa/soundbus/soundbus.h
-@@ -0,0 +1,202 @@
++++ b/sound/aoa/core/snd-aoa-core.c
+@@ -0,0 +1,153 @@
 +/*
-+ * soundbus generic definitions
-+ *
-+ * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
-+ *
-+ * GPL v2, can be found in COPYING.
-+ */
-+#ifndef __SOUNDBUS_H
-+#define __SOUNDBUS_H
-+
-+#include <asm/of_device.h>
-+#include <sound/pcm.h>
-+#include <linux/list.h>
-+
-+
-+/* When switching from master to slave or the other way around,
-+ * you don't want to have the codec chip acting as clock source
-+ * while the bus still is.
-+ * More importantly, while switch from slave to master, you need
-+ * to turn off the chip's master function first, but then there's
-+ * no clock for a while and other chips might reset, so we notify
-+ * their drivers after having switched.
-+ * The constants here are codec-point of view, so when we switch
-+ * the soundbus to master we tell the codec we're going to switch
-+ * and give it CLOCK_SWITCH_PREPARE_SLAVE!
-+ */
-+enum clock_switch {
-+	CLOCK_SWITCH_PREPARE_SLAVE,
-+	CLOCK_SWITCH_PREPARE_MASTER,
-+	CLOCK_SWITCH_SLAVE,
-+	CLOCK_SWITCH_MASTER,
-+	CLOCK_SWITCH_NOTIFY,
-+};
-+
-+/* information on a transfer the codec can take */
-+struct transfer_info {
-+	u64 formats;		/* SNDRV_PCM_FMTBIT_* */
-+	unsigned int rates;	/* SNDRV_PCM_RATE_* */
-+	/* flags */
-+	u32 transfer_in:1, /* input = 1, output = 0 */
-+	    must_be_clock_source:1;
-+	/* for codecs to distinguish among their TIs */
-+	int tag;
-+};
-+
-+struct codec_info_item {
-+	struct codec_info *codec;
-+	void *codec_data;
-+	struct soundbus_dev *sdev;
-+	/* internal, to be used by the soundbus provider */
-+	struct list_head list;
-+};
-+
-+/* for prepare, where the codecs need to know
-+ * what we're going to drive the bus with */
-+struct bus_info {
-+	/* see below */
-+	int sysclock_factor;
-+	int bus_factor;
-+};
-+
-+/* information on the codec itself, plus function pointers */
-+struct codec_info {
-+	/* the module this lives in */
-+	struct module *owner;
-+
-+	/* supported transfer possibilities, array terminated by
-+	 * formats or rates being 0. */
-+	struct transfer_info *transfers;
-+
-+	/* Master clock speed factor
-+	 * to be used (master clock speed = sysclock_factor * sampling freq)
-+	 * Unused if the soundbus provider has no such notion.
-+	 */
-+	int sysclock_factor;
-+
-+	/* Bus factor, bus clock speed = bus_factor * sampling freq)
-+	 * Unused if the soundbus provider has no such notion.
-+	 */
-+	int bus_factor;
-+
-+	/* operations */
-+	/* clock switching, see above */
-+	int (*switch_clock)(struct codec_info_item *cii,
-+			    enum clock_switch clock);
-+
-+	/* called for each transfer_info when the user
-+	 * opens the pcm device to determine what the
-+	 * hardware can support at this point in time.
-+	 * That can depend on other user-switchable controls.
-+	 * Return 1 if usable, 0 if not.
-+	 * out points to another instance of a transfer_info
-+	 * which is initialised to the values in *ti, and
-+	 * it's format and rate values can be modified by
-+	 * the callback if it is necessary to further restrict
-+	 * the formats that can be used at the moment, for
-+	 * example when one codec has multiple logical codec
-+	 * info structs for multiple inputs.
-+	 */
-+	int (*usable)(struct codec_info_item *cii,
-+		      struct transfer_info *ti,
-+		      struct transfer_info *out);
-+
-+	/* called when pcm stream is opened, probably not implemented
-+	 * most of the time since it isn't too useful */
-+	int (*open)(struct codec_info_item *cii,
-+		    struct snd_pcm_substream *substream);
-+
-+	/* called when the pcm stream is closed, at this point
-+	 * the user choices can all be unlocked (see below) */
-+	int (*close)(struct codec_info_item *cii,
-+		     struct snd_pcm_substream *substream);
-+
-+	/* if the codec must forbid some user choices because
-+	 * they are not valid with the substream/transfer info,
-+	 * it must do so here. Example: no digital output for
-+	 * incompatible framerate, say 8KHz, on Onyx.
-+	 * If the selected stuff in the substream is NOT
-+	 * compatible, you have to reject this call! */
-+	int (*prepare)(struct codec_info_item *cii,
-+		       struct bus_info *bi,
-+		       struct snd_pcm_substream *substream);
-+
-+	/* start() is called before data is pushed to the codec.
-+	 * Note that start() must be atomic! */
-+	int (*start)(struct codec_info_item *cii,
-+		     struct snd_pcm_substream *substream);
-+
-+	/* stop() is called after data is no longer pushed to the codec.
-+	 * Note that stop() must be atomic! */
-+	int (*stop)(struct codec_info_item *cii,
-+		    struct snd_pcm_substream *substream);
-+
-+	int (*suspend)(struct codec_info_item *cii, pm_message_t state);
-+	int (*resume)(struct codec_info_item *cii);
-+};
-+
-+/* information on a soundbus device */
-+struct soundbus_dev {
-+	/* the bus it belongs to */
-+	struct list_head onbuslist;
-+
-+	/* the of device it represents */
-+	struct of_device ofdev;
-+
-+	/* what modules go by */
-+	char modalias[32];
-+
-+	/* These fields must be before attach_codec can be called.
-+	 * They should be set by the owner of the alsa card object
-+	 * that is needed, and whoever sets them must make sure
-+	 * that they are unique within that alsa card object. */
-+	char *pcmname;
-+	int pcmid;
-+
-+	/* this is assigned by the soundbus provider in attach_codec */
-+	struct snd_pcm *pcm;
-+
-+	/* operations */
-+	/* attach a codec to this soundbus, give the alsa
-+	 * card object the PCMs for this soundbus should be in.
-+	 * The 'data' pointer must be unique, it is used as the
-+	 * key for detach_codec(). */
-+	int (*attach_codec)(struct soundbus_dev *dev, struct snd_card *card,
-+			    struct codec_info *ci, void *data);
-+	void (*detach_codec)(struct soundbus_dev *dev, void *data);
-+	/* TODO: suspend/resume */
-+
-+	/* private for the soundbus provider */
-+	struct list_head codec_list;
-+	u32 have_out:1, have_in:1;
-+};
-+#define to_soundbus_device(d) container_of(d, struct soundbus_dev, ofdev.dev)
-+#define of_to_soundbus_device(d) container_of(d, struct soundbus_dev, ofdev)
-+
-+extern int soundbus_add_one(struct soundbus_dev *dev);
-+extern void soundbus_remove_one(struct soundbus_dev *dev);
-+
-+extern struct soundbus_dev *soundbus_dev_get(struct soundbus_dev *dev);
-+extern void soundbus_dev_put(struct soundbus_dev *dev);
-+
-+struct soundbus_driver {
-+	char *name;
-+	struct module *owner;
-+
-+	/* we don't implement any matching at all */
-+
-+	int	(*probe)(struct soundbus_dev* dev);
-+	int	(*remove)(struct soundbus_dev* dev);
-+
-+	int	(*suspend)(struct soundbus_dev* dev, pm_message_t state);
-+	int	(*resume)(struct soundbus_dev* dev);
-+	int	(*shutdown)(struct soundbus_dev* dev);
-+
-+	struct device_driver driver;
-+};
-+#define to_soundbus_driver(drv) container_of(drv,struct soundbus_driver, driver)
-+
-+extern int soundbus_register_driver(struct soundbus_driver *drv);
-+extern void soundbus_unregister_driver(struct soundbus_driver *drv);
-+
-+#endif /* __SOUNDBUS_H */
---- /dev/null
-+++ b/sound/aoa/soundbus/sysfs.c
-@@ -0,0 +1,67 @@
-+#include <linux/config.h>
-+#include <linux/kernel.h>
-+#include <linux/stat.h>
-+/* FIX UP */
-+#include "soundbus.h"
-+
-+#define soundbus_config_of_attr(field, format_string)			\
-+static ssize_t								\
-+field##_show (struct device *dev, struct device_attribute *attr,	\
-+              char *buf)						\
-+{									\
-+	struct soundbus_dev *mdev = to_soundbus_device (dev);		\
-+	return sprintf (buf, format_string, mdev->ofdev.node->field);	\
-+}
-+
-+static ssize_t
-+compatible_show (struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct of_device *of;
-+	char *compat;
-+	int cplen;
-+	int length = 0;
-+
-+	of = &to_soundbus_device (dev)->ofdev;
-+	compat = (char *) get_property(of->node, "compatible", &cplen);
-+	if (!compat) {
-+		*buf = '\0';
-+		return 0;
-+	}
-+	while (cplen > 0) {
-+		int l;
-+		length += sprintf (buf, "%s\n", compat);
-+		buf += length;
-+		l = strlen (compat) + 1;
-+		compat += l;
-+		cplen -= l;
-+	}
-+
-+	return length;
-+}
-+
-+static ssize_t modalias_show (struct device *dev, struct device_attribute *attr,
-+			      char *buf)
-+{
-+	struct soundbus_dev *sdev = to_soundbus_device(dev);
-+	struct of_device *of = &sdev->ofdev;
-+	int length;
-+
-+	if (strlen(sdev->modalias)) {
-+		length = snprintf (buf, 34, "%s\n", sdev->modalias);
-+	} else {
-+		length = sprintf (buf, "of:N%sT%s\n", of->node->name, of->node->type);
-+	}
-+
-+	return length;
-+}
-+
-+soundbus_config_of_attr (name, "%s\n");
-+soundbus_config_of_attr (type, "%s\n");
-+
-+struct device_attribute soundbus_dev_attrs[] = {
-+	__ATTR_RO(name),
-+	__ATTR_RO(type),
-+	__ATTR_RO(compatible),
-+	__ATTR_RO(modalias),
-+	__ATTR_NULL
-+};
---- /dev/null
-+++ b/sound/aoa/soundbus/core.c
-@@ -0,0 +1,250 @@
-+/*
-+ * soundbus
++ * Apple Onboard Audio driver core
 + *
 + * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
 + *
 + * GPL v2, can be found in COPYING.
 + */
 +
++#include <linux/init.h>
 +#include <linux/module.h>
-+#include "soundbus.h"
++#include <linux/list.h>
++#include "../aoa.h"
++#include "snd-aoa-alsa.h"
 +
++MODULE_DESCRIPTION("Apple Onboard Audio Sound Driver");
 +MODULE_AUTHOR("Johannes Berg <johannes@sipsolutions.net>");
 +MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Apple Soundbus");
 +
-+struct soundbus_dev *soundbus_dev_get(struct soundbus_dev *dev)
++/* We allow only one fabric. This simplifies things,
++ * and more don't really make that much sense */
++static struct aoa_fabric *fabric;
++static LIST_HEAD(codec_list);
++
++static void attach_codec_to_fabric(struct aoa_codec *c)
 +{
-+	struct device *tmp;
++	int err;
 +
-+	if (!dev)
-+		return NULL;
-+	tmp = get_device(&dev->ofdev.dev);
-+	if (tmp)
-+		return to_soundbus_device(tmp);
-+	else
-+		return NULL;
-+}
-+EXPORT_SYMBOL_GPL(soundbus_dev_get);
++	if (!try_module_get(c->owner))
++		return;
++	/* found_codec has to be assigned */
++	err = -ENOENT;
++	if (fabric->found_codec)
++		err = fabric->found_codec(c);
++	if (err) {
++		module_put(c->owner);
++		printk("snd-aoa: fabric didn't like codec %s\n", c->name);
++		return;
++	}
++	c->fabric = fabric;
 +
-+void soundbus_dev_put(struct soundbus_dev *dev)
-+{
-+	if (dev)
-+		put_device(&dev->ofdev.dev);
-+}
-+EXPORT_SYMBOL_GPL(soundbus_dev_put);
-+
-+static int soundbus_probe(struct device *dev)
-+{
-+	int error = -ENODEV;
-+	struct soundbus_driver *drv;
-+	struct soundbus_dev *soundbus_dev;
-+
-+	drv = to_soundbus_driver(dev->driver);
-+	soundbus_dev = to_soundbus_device(dev);
-+
-+	if (!drv->probe)
-+		return error;
-+
-+	soundbus_dev_get(soundbus_dev);
-+
-+	error = drv->probe(soundbus_dev);
-+	if (error)
-+		soundbus_dev_put(soundbus_dev);
-+
-+	return error;
++	err = 0;
++	if (c->init)
++		err = c->init(c);
++	if (err) {
++		printk("snd-aoa: codec %s didn't init\n", c->name);
++		c->fabric = NULL;
++		if (fabric->remove_codec)
++			fabric->remove_codec(c);
++		module_put(c->owner);
++		return;
++	}
++	if (fabric->attached_codec)
++		fabric->attached_codec(c);
 +}
 +
-+
-+static int soundbus_uevent(struct device *dev, char **envp, int num_envp,
-+			   char *buffer, int buffer_size)
++int aoa_codec_register(struct aoa_codec *codec)
 +{
-+	struct soundbus_dev * soundbus_dev;
-+	struct of_device * of;
-+	char *scratch, *compat, *compat2;
-+	int i = 0;
-+	int length, cplen, cplen2, seen = 0;
++	list_add(&codec->list, &codec_list);
++	if (fabric)
++		attach_codec_to_fabric(codec);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(aoa_codec_register);
 +
-+	if (!dev)
-+		return -ENODEV;
++void aoa_codec_unregister(struct aoa_codec *codec)
++{
++	list_del(&codec->list);
++	if (codec->fabric && codec->exit)
++		codec->exit(codec);
++	if (fabric && fabric->remove_codec)
++		fabric->remove_codec(codec);
++	codec->fabric = NULL;
++	module_put(codec->owner);
++}
++EXPORT_SYMBOL_GPL(aoa_codec_unregister);
 +
-+	soundbus_dev = to_soundbus_device(dev);
-+	if (!soundbus_dev)
-+		return -ENODEV;
++int aoa_fabric_register(struct aoa_fabric *new_fabric)
++{
++	struct aoa_codec *c;
++	int err;
 +
-+	of = &soundbus_dev->ofdev;
++	/* allow querying for presence of fabric
++	 * (i.e. do this test first!) */
++	if (new_fabric == fabric) {
++		err = -EALREADY;
++		goto attach;
++	}
++	if (fabric)
++		return -EEXIST;
++	if (!new_fabric)
++		return -EINVAL;
 +
-+	/* stuff we want to pass to /sbin/hotplug */
-+	envp[i++] = scratch = buffer;
-+	length = scnprintf (scratch, buffer_size, "OF_NAME=%s", of->node->name);
-+	++length;
-+	buffer_size -= length;
-+	if ((buffer_size <= 0) || (i >= num_envp))
-+		return -ENOMEM;
-+	scratch += length;
++	err = aoa_alsa_init(new_fabric->name, new_fabric->owner);
++	if (err)
++		return err;
 +
-+	envp[i++] = scratch;
-+	length = scnprintf (scratch, buffer_size, "OF_TYPE=%s", of->node->type);
-+	++length;
-+	buffer_size -= length;
-+	if ((buffer_size <= 0) || (i >= num_envp))
-+		return -ENOMEM;
-+	scratch += length;
++	fabric = new_fabric;
 +
-+	/* Since the compatible field can contain pretty much anything
-+	 * it's not really legal to split it out with commas. We split it
-+	 * up using a number of environment variables instead. */
++ attach:
++	list_for_each_entry(c, &codec_list, list) {
++		if (c->fabric != fabric)
++			attach_codec_to_fabric(c);
++	}
++	return err;
++}
++EXPORT_SYMBOL_GPL(aoa_fabric_register);
 +
-+	compat = (char *) get_property(of->node, "compatible", &cplen);
-+	compat2 = compat;
-+	cplen2= cplen;
-+	while (compat && cplen > 0) {
-+		envp[i++] = scratch;
-+		length = scnprintf (scratch, buffer_size,
-+				     "OF_COMPATIBLE_%d=%s", seen, compat);
-+		++length;
-+		buffer_size -= length;
-+		if ((buffer_size <= 0) || (i >= num_envp))
-+			return -ENOMEM;
-+		scratch += length;
-+		length = strlen (compat) + 1;
-+		compat += length;
-+		cplen -= length;
-+		seen++;
++void aoa_fabric_unregister(struct aoa_fabric *old_fabric)
++{
++	struct aoa_codec *c;
++
++	if (fabric != old_fabric)
++		return;
++
++	list_for_each_entry(c, &codec_list, list) {
++		if (c->fabric)
++			aoa_fabric_unlink_codec(c);
 +	}
 +
-+	envp[i++] = scratch;
-+	length = scnprintf (scratch, buffer_size, "OF_COMPATIBLE_N=%d", seen);
-+	++length;
-+	buffer_size -= length;
-+	if ((buffer_size <= 0) || (i >= num_envp))
-+		return -ENOMEM;
-+	scratch += length;
++	aoa_alsa_cleanup();
 +
-+	envp[i++] = scratch;
-+	length = scnprintf (scratch, buffer_size, "MODALIAS=%s",
-+			soundbus_dev->modalias);
++	fabric = NULL;
++}
++EXPORT_SYMBOL_GPL(aoa_fabric_unregister);
 +
-+	buffer_size -= length;
-+	if ((buffer_size <= 0) || (i >= num_envp))
-+		return -ENOMEM;
++void aoa_fabric_unlink_codec(struct aoa_codec *codec)
++{
++	if (!codec->fabric) {
++		printk(KERN_ERR "snd-aoa: fabric unassigned in aoa_fabric_unlink_codec\n");
++		dump_stack();
++		return;
++	}
++	if (codec->exit)
++		codec->exit(codec);
++	if (codec->fabric->remove_codec)
++		codec->fabric->remove_codec(codec);
++	codec->fabric = NULL;
++	module_put(codec->owner);
++}
++EXPORT_SYMBOL_GPL(aoa_fabric_unlink_codec);
 +
-+	envp[i] = NULL;
-+
++static int __init aoa_init(void)
++{
 +	return 0;
 +}
 +
-+static int soundbus_device_remove(struct device *dev)
++static void __exit aoa_exit(void)
 +{
-+	struct soundbus_dev * soundbus_dev = to_soundbus_device(dev);
-+	struct soundbus_driver * drv = to_soundbus_driver(dev->driver);
-+
-+	if (dev->driver && drv->remove)
-+		drv->remove(soundbus_dev);
-+	soundbus_dev_put(soundbus_dev);
-+
-+	return 0;
++	aoa_alsa_cleanup();
 +}
 +
-+static void soundbus_device_shutdown(struct device *dev)
-+{
-+	struct soundbus_dev * soundbus_dev = to_soundbus_device(dev);
-+	struct soundbus_driver * drv = to_soundbus_driver(dev->driver);
++module_init(aoa_init);
++module_exit(aoa_exit);
+--- /dev/null
++++ b/sound/aoa/core/snd-aoa-gpio-pmf.c
+@@ -0,0 +1,231 @@
++/*
++ * Apple Onboard Audio pmf GPIOs
++ *
++ * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
++ *
++ * GPL v2, can be found in COPYING.
++ */
 +
-+	if (dev->driver && drv->shutdown)
-+		drv->shutdown(soundbus_dev);
++#include <asm/pmac_feature.h>
++#include <asm/pmac_pfunc.h>
++#include "../aoa.h"
++
++#define PMF_GPIO(name, bit)					\
++static void pmf_gpio_set_##name(struct gpio_runtime *rt, int on)\
++{								\
++	struct pmf_args args = { .count = 1, .u[0].v = !on };	\
++								\
++	if (unlikely(!rt)) return;				\
++	pmf_call_function(rt->node, #name "-mute", &args);	\
++	rt->implementation_private &= ~(1<<bit);		\
++	rt->implementation_private |= (!!on << bit);		\
++}								\
++static int pmf_gpio_get_##name(struct gpio_runtime *rt)		\
++{								\
++	if (unlikely(!rt)) return 0;				\
++	return (rt->implementation_private>>bit)&1;		\
 +}
 +
-+#ifdef CONFIG_PM
++PMF_GPIO(headphone, 0);
++PMF_GPIO(amp, 1);
++PMF_GPIO(lineout, 2);
 +
-+static int soundbus_device_suspend(struct device *dev, pm_message_t state)
++static void pmf_gpio_set_hw_reset(struct gpio_runtime *rt, int on)
 +{
-+	struct soundbus_dev * soundbus_dev = to_soundbus_device(dev);
-+	struct soundbus_driver * drv = to_soundbus_driver(dev->driver);
++	struct pmf_args args = { .count = 1, .u[0].v = !!on };
 +
-+	if (dev->driver && drv->suspend)
-+		return drv->suspend(soundbus_dev, state);
-+	return 0;
++	if (unlikely(!rt)) return;
++	pmf_call_function(rt->node, "hw-reset", &args);
 +}
 +
-+static int soundbus_device_resume(struct device * dev)
++static void pmf_gpio_all_amps_off(struct gpio_runtime *rt)
 +{
-+	struct soundbus_dev * soundbus_dev = to_soundbus_device(dev);
-+	struct soundbus_driver * drv = to_soundbus_driver(dev->driver);
++	int saved;
 +
-+	if (dev->driver && drv->resume)
-+		return drv->resume(soundbus_dev);
-+	return 0;
++	if (unlikely(!rt)) return;
++	saved = rt->implementation_private;
++	pmf_gpio_set_headphone(rt, 0);
++	pmf_gpio_set_amp(rt, 0);
++	pmf_gpio_set_lineout(rt, 0);
++	rt->implementation_private = saved;
 +}
 +
-+#endif /* CONFIG_PM */
-+
-+extern struct device_attribute soundbus_dev_attrs[];
-+
-+static struct bus_type soundbus_bus_type = {
-+	.name		= "aoa-soundbus",
-+	.probe		= soundbus_probe,
-+	.uevent		= soundbus_uevent,
-+	.remove		= soundbus_device_remove,
-+	.shutdown	= soundbus_device_shutdown,
-+#ifdef CONFIG_PM
-+	.suspend	= soundbus_device_suspend,
-+	.resume		= soundbus_device_resume,
-+#endif
-+	.dev_attrs	= soundbus_dev_attrs,
-+};
-+
-+static int __init soundbus_init(void)
++static void pmf_gpio_all_amps_restore(struct gpio_runtime *rt)
 +{
-+	return bus_register(&soundbus_bus_type);
++	int s;
++
++	if (unlikely(!rt)) return;
++	s = rt->implementation_private;
++	pmf_gpio_set_headphone(rt, (s>>0)&1);
++	pmf_gpio_set_amp(rt, (s>>1)&1);
++	pmf_gpio_set_lineout(rt, (s>>2)&1);
 +}
 +
-+static void __exit soundbus_exit(void)
++static void pmf_handle_notify(void *data)
 +{
-+	bus_unregister(&soundbus_bus_type);
++	struct gpio_notification *notif = data;
++
++	mutex_lock(&notif->mutex);
++	if (notif->notify)
++		notif->notify(notif->data);
++	mutex_unlock(&notif->mutex);
 +}
 +
-+int soundbus_add_one(struct soundbus_dev *dev)
++static void pmf_gpio_init(struct gpio_runtime *rt)
 +{
-+	static int devcount;
++	pmf_gpio_all_amps_off(rt);
++	rt->implementation_private = 0;
++	INIT_WORK(&rt->headphone_notify.work, pmf_handle_notify, &rt->headphone_notify);
++	INIT_WORK(&rt->line_in_notify.work, pmf_handle_notify, &rt->line_in_notify);
++	INIT_WORK(&rt->line_out_notify.work, pmf_handle_notify, &rt->line_out_notify);
++	mutex_init(&rt->headphone_notify.mutex);
++	mutex_init(&rt->line_in_notify.mutex);
++	mutex_init(&rt->line_out_notify.mutex);
++}
 +
-+	/* sanity checks */
-+	if (!dev->attach_codec ||
-+	    !dev->ofdev.node ||
-+	    dev->pcmname ||
-+	    dev->pcmid != -1) {
-+		printk(KERN_ERR "soundbus: adding device failed sanity check!\n");
++static void pmf_gpio_exit(struct gpio_runtime *rt)
++{
++	pmf_gpio_all_amps_off(rt);
++	rt->implementation_private = 0;
++	if (rt->headphone_notify.gpio_private)
++		pmf_unregister_irq_client(rt->headphone_notify.gpio_private);
++	if (rt->line_in_notify.gpio_private)
++		pmf_unregister_irq_client(rt->line_in_notify.gpio_private);
++	if (rt->line_out_notify.gpio_private)
++		pmf_unregister_irq_client(rt->line_out_notify.gpio_private);
++	cancel_delayed_work(&rt->headphone_notify.work);
++	cancel_delayed_work(&rt->line_in_notify.work);
++	cancel_delayed_work(&rt->line_out_notify.work);
++	flush_scheduled_work();
++	mutex_destroy(&rt->headphone_notify.mutex);
++	mutex_destroy(&rt->line_in_notify.mutex);
++	mutex_destroy(&rt->line_out_notify.mutex);
++}
++
++void pmf_handle_notify_irq(void *data)
++{
++	struct gpio_notification *notif = data;
++
++	schedule_work(&notif->work);
++}
++
++static int pmf_set_notify(struct gpio_runtime *rt,
++			  enum notify_type type,
++			  notify_func_t notify,
++			  void *data)
++{
++	struct gpio_notification *notif;
++	notify_func_t old;
++	struct pmf_irq_client *irq_client;
++	char *name;
++	int err = -EBUSY;
++
++	switch (type) {
++	case AOA_NOTIFY_HEADPHONE:
++		notif = &rt->headphone_notify;
++		name = "headphone-detect";
++		break;
++	case AOA_NOTIFY_LINE_IN:
++		notif = &rt->line_in_notify;
++		name = "linein-detect";
++		break;
++	case AOA_NOTIFY_LINE_OUT:
++		notif = &rt->line_out_notify;
++		name = "lineout-detect";
++		break;
++	default:
 +		return -EINVAL;
 +	}
 +
-+	snprintf(dev->ofdev.dev.bus_id, BUS_ID_SIZE, "soundbus:%x", ++devcount);
-+	dev->ofdev.dev.bus = &soundbus_bus_type;
-+	return of_device_register(&dev->ofdev);
-+}
-+EXPORT_SYMBOL_GPL(soundbus_add_one);
++	mutex_lock(&notif->mutex);
 +
-+void soundbus_remove_one(struct soundbus_dev *dev)
++	old = notif->notify;
++
++	if (!old && !notify) {
++		err = 0;
++		goto out_unlock;
++	}
++
++	if (old && notify) {
++		if (old == notify && notif->data == data)
++			err = 0;
++		goto out_unlock;
++	}
++
++	if (old && !notify) {
++		irq_client = notif->gpio_private;
++		pmf_unregister_irq_client(irq_client);
++		kfree(irq_client);
++		notif->gpio_private = NULL;
++	}
++	if (!old && notify) {
++		irq_client = kzalloc(sizeof(struct pmf_irq_client),
++				     GFP_KERNEL);
++		irq_client->data = notif;
++		irq_client->handler = pmf_handle_notify_irq;
++		irq_client->owner = THIS_MODULE;
++		err = pmf_register_irq_client(rt->node,
++					      name,
++					      irq_client);
++		if (err) {
++			printk(KERN_ERR "snd-aoa: gpio layer failed to"
++					" register %s irq (%d)\n", name, err);
++			kfree(irq_client);
++			goto out_unlock;
++		}
++		notif->gpio_private = irq_client;
++	}
++	notif->notify = notify;
++	notif->data = data;
++
++	err = 0;
++ out_unlock:
++	mutex_unlock(&notif->mutex);
++	return err;
++}
++
++static int pmf_get_detect(struct gpio_runtime *rt,
++			  enum notify_type type)
 +{
-+	of_device_unregister(&dev->ofdev);
-+}
-+EXPORT_SYMBOL_GPL(soundbus_remove_one);
++	char *name;
++	int err = -EBUSY, ret;
++	struct pmf_args args = { .count = 1, .u[0].p = &ret };
 +
-+int soundbus_register_driver(struct soundbus_driver *drv)
++	switch (type) {
++	case AOA_NOTIFY_HEADPHONE:
++		name = "headphone-detect";
++		break;
++	case AOA_NOTIFY_LINE_IN:
++		name = "linein-detect";
++		break;
++	case AOA_NOTIFY_LINE_OUT:
++		name = "lineout-detect";
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	err = pmf_call_function(rt->node, name, &args);
++	if (err)
++		return err;
++	return ret;
++}
++
++static struct gpio_methods methods = {
++	.init			= pmf_gpio_init,
++	.exit			= pmf_gpio_exit,
++	.all_amps_off		= pmf_gpio_all_amps_off,
++	.all_amps_restore	= pmf_gpio_all_amps_restore,
++	.set_headphone		= pmf_gpio_set_headphone,
++	.set_speakers		= pmf_gpio_set_amp,
++	.set_lineout		= pmf_gpio_set_lineout,
++	.set_hw_reset		= pmf_gpio_set_hw_reset,
++	.get_headphone		= pmf_gpio_get_headphone,
++	.get_speakers		= pmf_gpio_get_amp,
++	.get_lineout		= pmf_gpio_get_lineout,
++	.set_notify		= pmf_set_notify,
++	.get_detect		= pmf_get_detect,
++};
++
++struct gpio_methods *pmf_gpio_methods = &methods;
++EXPORT_SYMBOL_GPL(pmf_gpio_methods);
+--- /dev/null
++++ b/sound/aoa/core/snd-aoa-alsa.h
+@@ -0,0 +1,17 @@
++/*
++ * Apple Onboard Audio Alsa private helpers
++ *
++ * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
++ *
++ * GPL v2, can be found in COPYING.
++ */
++
++#ifndef __SND_AOA_ALSA_H
++#define __SND_AOA_ALSA_H
++/* FIXME */
++#include "../aoa.h"
++
++extern int aoa_alsa_init(char *name, struct module *mod);
++extern void aoa_alsa_cleanup(void);
++
++#endif /* __SND_AOA_ALSA_H */
+--- /dev/null
++++ b/sound/aoa/core/snd-aoa-alsa.c
+@@ -0,0 +1,95 @@
++/*
++ * Apple Onboard Audio Alsa helpers
++ *
++ * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
++ *
++ * GPL v2, can be found in COPYING.
++ */
++#include <linux/module.h>
++#include "snd-aoa-alsa.h"
++
++static int index = -1;
++module_param(index, int, 0444);
++MODULE_PARM_DESC(index, "index for AOA sound card.");
++
++static struct aoa_card *aoa_card;
++
++int aoa_alsa_init(char *name, struct module *mod)
 +{
-+	/* initialize common driver fields */
-+	drv->driver.name = drv->name;
-+	drv->driver.bus = &soundbus_bus_type;
++	struct snd_card *alsa_card;
++	int err;
 +
-+	/* register with core */
-+	return driver_register(&drv->driver);
++	if (aoa_card)
++		/* cannot be EEXIST due to usage in aoa_fabric_register */
++		return -EBUSY;
++
++	alsa_card = snd_card_new(index, name, mod, sizeof(struct aoa_card));
++	if (!alsa_card)
++		return -ENOMEM;
++	aoa_card = alsa_card->private_data;
++	aoa_card->alsa_card = alsa_card;
++	strlcpy(alsa_card->driver, "AppleOnbdAudio", sizeof(alsa_card->driver)-1);
++	strlcpy(alsa_card->shortname, name, sizeof(alsa_card->shortname)-1);
++	strlcpy(alsa_card->longname, name, sizeof(alsa_card->longname)-1);
++	strlcpy(alsa_card->mixername, name, sizeof(alsa_card->mixername)-1);
++	err = snd_card_register(aoa_card->alsa_card);
++	if (err < 0) {
++		printk(KERN_ERR "snd-aoa: couldn't register alsa card\n");
++		snd_card_free(aoa_card->alsa_card);
++		aoa_card = NULL;
++		return err;
++	}
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(soundbus_register_driver);
 +
-+void soundbus_unregister_driver(struct soundbus_driver *drv)
++struct snd_card *aoa_get_card(void)
 +{
-+	driver_unregister(&drv->driver);
++	if (aoa_card)
++		return aoa_card->alsa_card;
++	return NULL;
 +}
-+EXPORT_SYMBOL_GPL(soundbus_unregister_driver);
++EXPORT_SYMBOL_GPL(aoa_get_card);
 +
-+module_init(soundbus_init);
-+module_exit(soundbus_exit);
++void aoa_alsa_cleanup(void)
++{
++	if (aoa_card) {
++		snd_card_free(aoa_card->alsa_card);
++		aoa_card = NULL;
++	}
++}
++
++int aoa_snd_device_new(snd_device_type_t type,
++        void * device_data, struct snd_device_ops * ops)
++{
++	struct snd_card *card = aoa_get_card();
++	int err;
++	
++	if (!card) return -ENOMEM;
++
++	err = snd_device_new(card, type, device_data, ops);
++	if (err) {
++		printk(KERN_ERR "snd-aoa: failed to create snd device (%d)\n", err);
++		return err;
++	}
++	err = snd_device_register(card, device_data);
++	if (err) {
++		printk(KERN_ERR "snd-aoa: failed to register snd device (%d)\n", err);
++		printk(KERN_ERR "snd-aoa: have you forgotten the dev_register callback?\n");
++		snd_device_free(card, device_data);
++	}
++	return err;
++}
++EXPORT_SYMBOL_GPL(aoa_snd_device_new);
++
++int aoa_snd_ctl_add(struct snd_kcontrol* control)
++{
++	int err;
++
++	if (!aoa_card) return -ENODEV;
++
++	err = snd_ctl_add(aoa_card->alsa_card, control);
++	if (err)
++		printk(KERN_ERR "snd-aoa: failed to add alsa control (%d)\n", err);
++	return err;
++}
++EXPORT_SYMBOL_GPL(aoa_snd_ctl_add);
 
 --
