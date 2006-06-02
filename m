@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel
 	82801FB/.../ = No sound (Benq 52-101)
-Date: Fri, 2 Jun 2006 19:29:18 +0200
-Message-ID: <abf09aa56877d41ff4ca7e7bf2527583@bugtrack.alsa-project.org>
+Date: Fri, 2 Jun 2006 19:40:52 +0200
+Message-ID: <6e28f5bc9c94b5ff1e557f1cd0c05a1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3B973E3
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1253120
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Jun 2006 19:29:19 +0200 (MEST)
+	Fri,  2 Jun 2006 19:40:52 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              06-02-2006 19:29 CEST
+Last Modified:              06-02-2006 19:40 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -75,12 +75,6 @@ has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-02-06 17:54 
-----------------------------------------------------------------------
-Off topic.  Please file a new bug and delete comment #0010049.  This bug
-report is about BenQ laptops.
-
-----------------------------------------------------------------------
  thoroughfare - 06-02-06 19:29 
 ----------------------------------------------------------------------
 Erm, I don't think his comment was really off-topic? I'm following this bug
@@ -88,6 +82,12 @@ because I have the exact same chipset in my Packard Bell Easynote A2808.
 
 Unfortunately few people run Linux on Packard Bells (actually manufactured
 by NEC).
+
+----------------------------------------------------------------------
+ rlrevell - 06-02-06 19:40 
+----------------------------------------------------------------------
+The contents of /proc/asound/card0/codec97#0/ac97#0-0 are exactly the same
+as #0004795?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -221,4 +221,5 @@ Date Modified  Username       Field                    Change
 06-02-06 17:54 rlrevell       Note Added: 0010050                          
 06-02-06 18:00 kickstart      Note Deleted: 0010049                        
 06-02-06 19:29 thoroughfare   Note Added: 0010051                          
+06-02-06 19:40 rlrevell       Note Added: 0010052                          
 ======================================================================
