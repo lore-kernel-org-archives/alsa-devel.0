@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Fri, 2 Jun 2006 20:08:37 +0200
-Message-ID: <f4e914a1fa87dc06d429eecd86a6674f@bugtrack.alsa-project.org>
+Date: Fri, 2 Jun 2006 20:35:25 +0200
+Message-ID: <dbf84a6fc92e1f24ccf80bb44fc26285@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8F6C2163
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A6F74EF
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Jun 2006 20:08:37 +0200 (MEST)
+	Fri,  2 Jun 2006 20:35:25 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-02-2006 20:08 CEST
+Last Modified:              06-02-2006 20:35 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
@@ -50,27 +50,24 @@ something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 05-23-06 09:07 
-----------------------------------------------------------------------
-There are many changes between 1.0.10 and 1.0.11
-
-http://hg-mirror.alsa-project.org/alsa-kernel?fl=f6db466336fa;file=pci/ens1370.c;style=gitweb
-
-I don't have this card but it seem that you may need this one 
-
-Summary: ens1371 - added extra delay for ac97 codec initialization
-
-http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=47c1677e748c;style=gitweb
-
-Have you try speaker-test or aplay ?
-
-
-
-----------------------------------------------------------------------
  bzbarsky - 06-02-06 20:08 
 ----------------------------------------------------------------------
 I tried 1.0.11 and it didn't help.  I'll upload the log files in case
 they're useful.
+
+----------------------------------------------------------------------
+ bzbarsky - 06-02-06 20:35 
+----------------------------------------------------------------------
+I did verify that the module I compiled has the patch at
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=47c1677e748c;style=gitweb
+
+I've verified that I have a Tyan Trinity 400 with onboard audio (S1854A)
+motherboard.  All I can find in my motherboard manual is "AC97 codec rev
+2.1".  The board manual is at ftp://ftp.tyan.com/manuals/m_s1854_202.pdf
+
+I don't see an obvious 48-pin square chip next to the es1373 chip...
+
+I did try both speaker-test and aplay.  Both produce no sound.  :(
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,4 +92,9 @@ Date Modified  Username       Field                    Change
 05-23-06 09:03 Raymond        Note Edited: 0009929                         
 05-23-06 09:07 Raymond        Note Edited: 0009929                         
 06-02-06 20:08 bzbarsky       Note Added: 0010053                          
+06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
+06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
+06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
+ 
+06-02-06 20:35 bzbarsky       Note Added: 0010054                          
 ======================================================================
