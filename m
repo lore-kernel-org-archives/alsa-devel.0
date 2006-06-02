@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel
 	82801FB/.../ = No sound (Benq 52-101)
-Date: Fri, 2 Jun 2006 17:37:32 +0200
-Message-ID: <8cbc3eb0a1fc3ac341bfdebdb42350e1@bugtrack.alsa-project.org>
+Date: Fri, 2 Jun 2006 17:54:49 +0200
+Message-ID: <3e619a170fab764245db3da111a62506@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 895DB15A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0484A15A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Jun 2006 17:37:32 +0200 (MEST)
+	Fri,  2 Jun 2006 17:54:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.14
 ======================================================================
 Date Submitted:             05-28-2005 08:49 CEST
-Last Modified:              06-02-2006 17:37 CEST
+Last Modified:              06-02-2006 17:54 CEST
 ======================================================================
 Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
 52-101)
@@ -75,21 +75,7 @@ has duplicate       0001931 Unknown AC97 codec, digital sound works
 ======================================================================
 
 ----------------------------------------------------------------------
- thoroughfare - 05-25-06 23:03 
-----------------------------------------------------------------------
-I tried calling Conexant's US documentation line from the UK - they seemed
-confused by:
-
-1) That I'm from the UK
-2) I was helping to make a Linux driver for their chip
-
-...so I got redirected to someone (a lady, can't remember her name), and
-she was out of the office so just got her voicemail.
-
-Can someone else give it another shot?
-
-----------------------------------------------------------------------
- kickstart - 06-02-06 17:37 
+ kickstart - 06-02-06 17:53 
 ----------------------------------------------------------------------
 Hi all,
 
@@ -186,6 +172,19 @@ I'll try to contact Packard Bell trying to get some info about the codec
 
 
 Note: Same problem on FreeBSD 6.1 and OpenBSD 3.9 !
+
+UPDATE: Searching 'CX20468 datasheet' on Google, I've found this
+datasheet:
+
+http://www.google.it/url?sa=U&start=10&q=http://www.alsa-project.org/alsa/ftp/manuals/conexant/100965aSmartAMC-AudioModemCodec.pdf&e=15235&ei=k12ARMTmAa-giAKgwvmjDQ
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 06-02-06 17:54 
+----------------------------------------------------------------------
+Off topic.  Please file a new bug and delete comment #0010049.  This bug
+report is about BenQ laptops.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -315,4 +314,6 @@ Date Modified  Username       Field                    Change
 05-19-06 08:07 fedukoff       Note Added: 0009873                          
 05-25-06 23:03 thoroughfare   Note Added: 0009969                          
 06-02-06 17:37 kickstart      Note Added: 0010049                          
+06-02-06 17:53 kickstart      Note Edited: 0010049                         
+06-02-06 17:54 rlrevell       Note Added: 0010050                          
 ======================================================================
