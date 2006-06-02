@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001213]: snd-via82xx on EPIA-M - 0
-	analog subsections not ready: no sound
-Date: Fri, 2 Jun 2006 09:52:03 +0200
-Message-ID: <70a2ecd85e8a4f62553a93b7f94353e0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002028]: cat /proc/asound/timers
+Date: Fri, 2 Jun 2006 13:02:35 +0200
+Message-ID: <044f5a651c029ed12381e4d7f1ef0ffa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CDAAF15E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57CDF156
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Jun 2006 09:52:03 +0200 (MEST)
+	Fri,  2 Jun 2006 13:02:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,146 +25,320 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1213> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2028> 
 ======================================================================
-Reported By:                shensche
+Reported By:                Raymond
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1213
-Category:                   PCI - via82xx
+Issue ID:                   2028
+Category:                   CORE - timer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian (derived Knoppix->Morphix->Kunnafonix)
-Kernel Version:             2.6.11.12, but also many other 2.4 and 2.6 kernels
+Status:                     feedback
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2199.nptl
 ======================================================================
-Date Submitted:             06-27-2005 12:22 CEST
-Last Modified:              06-02-2006 09:52 CEST
+Date Submitted:             04-17-2006 12:04 CEST
+Last Modified:              06-02-2006 13:02 CEST
 ======================================================================
-Summary:                    snd-via82xx on EPIA-M - 0 analog subsections not
-ready: no sound
+Summary:                    cat /proc/asound/timers
 Description: 
-i am working on a machine with an EPIA-M mainboard and the ICEensemble
-VT1616i sound chip (see attached lspci -v). unfortunately, i cannot hear
-any sound from it. it is always the same: the mixer settings seem ok,
-the applications play happily the files, but i cannot hear a thing. the
-speakers are ok, too.
+Do all subdevices of cards list in /proc/asound/timers ?
 
-the system is running kernel 2.6.11 with the kernel patches from Con
-Kolivas (-ck10) and ALSA. i also tried OSS (not the emu) on that kernel.
-i tried 2.4 kernels with Damn Small Linux and Knoppix 3.7 and 2.6.9
-=66rom Knoppix 3.7 and a custom 2.6.10-ck6.
-since ALSA 1.0.8 did not work, i installed 1.0.9b, including the libs
-and utils. during that upgrade, the mixer lost the possibility to change
-the DXS-settings. has this to do with the whitelist, introduced
-recently?
-
-i played around with lots of combinations of the options ac97_quirk and
-dxs_support when loading the kernel module.
-
-on the hardware side i disabled the front panel sockets for line-out and
-mic-in, just to be sure. and i often tried all three sockets for=20
-line-out, line-in and mic-in in the back to hear the output.
-
-the chip seems to share interrupt 10 with USB, so i unloaded uhci-hcd,
-but to no avail. i also dis-/enabled ACPI, reserved IRQ for non-PCI (now
-USB and sound share interrupt 5) in the BIOS. the BIOS was told that
-there was a/no PlugNPlay OS and the MC97 modem is disabled.
-the machine does not seem to have an APIC.
-
-i muted some IEC 958 settings in the mixer as read somewhere in the net,
-but that did not help either. and one of these settings always
-reenables itself as soon as i try to play a wav with aplay.
-
-i modified alsa-kernel/pci/ac97/ac97_codec.c to goto __ready_ok also
-when "0 analog subsections are ready" (weird message, btw) before line
-1960. another try was to increase the end_time in line 1953 by factor
-10. both did not yield a successful result, both being a shot in the
-blue.
+some of 64 playback subdevices of device 3 of card 0 and card 1 'intel8x0'
+is not listed
 
 
-i attached /etc/asound.state (after saving with alsactl store) and the
-output of dmesg. do not mind the oops from cowloop, i guess it is not
-important, because all the other kernels do not work as well.
-
-i read=20
-http://alsa-project.org/alsa-doc/doc-php/template.php?company=3DVIA&card=3D=
-=2E&chip=3DVIA82C686%2C+VIA8233%2C+VIA8233A%2C+VIA8235&module=3Dvia82xx
-alsa-kernel/Documentation/ALSA-Configuration.txt
-and many other forum entries
-
-but still something is going wrong. why are 0 analog subdevices ready?
-how to make them ready? where to wait? what to initialise?
-
-i will try to upgrade the BIOS, soon and try with MS Windows (if i manage
-to fit   it onto 1 GB)
-
+cat /proc/asound/timers
+G0: system timer : 10000.000us (10000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+P0-0-1: PCM capture 0-0-1 : SLAVE
+P0-0-2: PCM playback 0-0-2 : SLAVE
+P0-0-3: PCM capture 0-0-3 : SLAVE
+P0-0-4: PCM playback 0-0-4 : SLAVE
+P0-0-5: PCM capture 0-0-5 : SLAVE
+P0-0-6: PCM playback 0-0-6 : SLAVE
+P0-0-7: PCM capture 0-0-7 : SLAVE
+P0-0-8: PCM playback 0-0-8 : SLAVE
+P0-0-9: PCM capture 0-0-9 : SLAVE
+P0-0-10: PCM playback 0-0-10 : SLAVE
+P0-0-11: PCM capture 0-0-11 : SLAVE
+P0-0-12: PCM playback 0-0-12 : SLAVE
+P0-0-13: PCM capture 0-0-13 : SLAVE
+P0-0-14: PCM playback 0-0-14 : SLAVE
+P0-0-15: PCM capture 0-0-15 : SLAVE
+P0-0-16: PCM playback 0-0-16 : SLAVE
+P0-0-17: PCM capture 0-0-17 : SLAVE
+P0-0-18: PCM playback 0-0-18 : SLAVE
+P0-0-19: PCM capture 0-0-19 : SLAVE
+P0-0-20: PCM playback 0-0-20 : SLAVE
+P0-0-21: PCM capture 0-0-21 : SLAVE
+P0-0-22: PCM playback 0-0-22 : SLAVE
+P0-0-23: PCM capture 0-0-23 : SLAVE
+P0-0-24: PCM playback 0-0-24 : SLAVE
+P0-0-25: PCM capture 0-0-25 : SLAVE
+P0-0-26: PCM playback 0-0-26 : SLAVE
+P0-0-27: PCM capture 0-0-27 : SLAVE
+P0-0-28: PCM playback 0-0-28 : SLAVE
+P0-0-29: PCM capture 0-0-29 : SLAVE
+P0-0-30: PCM playback 0-0-30 : SLAVE
+P0-0-31: PCM capture 0-0-31 : SLAVE
+P0-0-32: PCM playback 0-0-32 : SLAVE
+P0-0-33: PCM capture 0-0-33 : SLAVE
+P0-0-34: PCM playback 0-0-34 : SLAVE
+P0-0-35: PCM capture 0-0-35 : SLAVE
+P0-0-36: PCM playback 0-0-36 : SLAVE
+P0-0-37: PCM capture 0-0-37 : SLAVE
+P0-0-38: PCM playback 0-0-38 : SLAVE
+P0-0-39: PCM capture 0-0-39 : SLAVE
+P0-0-40: PCM playback 0-0-40 : SLAVE
+P0-0-41: PCM capture 0-0-41 : SLAVE
+P0-0-42: PCM playback 0-0-42 : SLAVE
+P0-0-43: PCM capture 0-0-43 : SLAVE
+P0-0-44: PCM playback 0-0-44 : SLAVE
+P0-0-45: PCM capture 0-0-45 : SLAVE
+P0-0-46: PCM playback 0-0-46 : SLAVE
+P0-0-47: PCM capture 0-0-47 : SLAVE
+P0-0-48: PCM playback 0-0-48 : SLAVE
+P0-0-49: PCM capture 0-0-49 : SLAVE
+P0-0-50: PCM playback 0-0-50 : SLAVE
+P0-0-51: PCM capture 0-0-51 : SLAVE
+P0-0-52: PCM playback 0-0-52 : SLAVE
+P0-0-53: PCM capture 0-0-53 : SLAVE
+P0-0-54: PCM playback 0-0-54 : SLAVE
+P0-0-55: PCM capture 0-0-55 : SLAVE
+P0-0-56: PCM playback 0-0-56 : SLAVE
+P0-0-57: PCM capture 0-0-57 : SLAVE
+P0-0-58: PCM playback 0-0-58 : SLAVE
+P0-0-59: PCM capture 0-0-59 : SLAVE
+P0-0-60: PCM playback 0-0-60 : SLAVE
+P0-0-61: PCM capture 0-0-61 : SLAVE
+P0-0-62: PCM playback 0-0-62 : SLAVE
+P0-0-63: PCM capture 0-0-63 : SLAVE
+P0-1-0: PCM playback 0-1-0 : SLAVE
+P0-2-0: PCM playback 0-2-0 : SLAVE
+P0-2-2: PCM playback 0-2-2 : SLAVE
+P0-2-4: PCM playback 0-2-4 : SLAVE
+P0-2-6: PCM playback 0-2-6 : SLAVE
+P0-2-8: PCM playback 0-2-8 : SLAVE
+P0-2-10: PCM playback 0-2-10 : SLAVE
+P0-2-12: PCM playback 0-2-12 : SLAVE
+P0-2-14: PCM playback 0-2-14 : SLAVE
+P0-2-16: PCM playback 0-2-16 : SLAVE
+P0-2-18: PCM playback 0-2-18 : SLAVE
+P0-2-20: PCM playback 0-2-20 : SLAVE
+P0-2-22: PCM playback 0-2-22 : SLAVE
+P0-2-24: PCM playback 0-2-24 : SLAVE
+P0-2-26: PCM playback 0-2-26 : SLAVE
+P0-2-28: PCM playback 0-2-28 : SLAVE
+P0-2-30: PCM playback 0-2-30 : SLAVE
+P0-3-0: PCM playback 0-3-0 : SLAVE
+P0-3-2: PCM playback 0-3-2 : SLAVE
+P0-3-4: PCM playback 0-3-4 : SLAVE
+P0-3-6: PCM playback 0-3-6 : SLAVE
+P0-3-8: PCM playback 0-3-8 : SLAVE
+P0-3-10: PCM playback 0-3-10 : SLAVE
+P0-3-12: PCM playback 0-3-12 : SLAVE
+P0-3-14: PCM playback 0-3-14 : SLAVE
+P0-3-16: PCM playback 0-3-16 : SLAVE
+P0-3-18: PCM playback 0-3-18 : SLAVE
+P0-3-20: PCM playback 0-3-20 : SLAVE
+P0-3-22: PCM playback 0-3-22 : SLAVE
+P0-3-24: PCM playback 0-3-24 : SLAVE
+P0-3-26: PCM playback 0-3-26 : SLAVE
+P0-3-28: PCM playback 0-3-28 : SLAVE
+P0-3-30: PCM playback 0-3-30 : SLAVE
+P0-3-32: PCM playback 0-3-32 : SLAVE
+P0-3-34: PCM playback 0-3-34 : SLAVE
+P0-3-36: PCM playback 0-3-36 : SLAVE
+P0-3-38: PCM playback 0-3-38 : SLAVE
+P0-3-40: PCM playback 0-3-40 : SLAVE
+P0-3-42: PCM playback 0-3-42 : SLAVE
+P0-3-44: PCM playback 0-3-44 : SLAVE
+P0-3-46: PCM playback 0-3-46 : SLAVE
+P0-3-48: PCM playback 0-3-48 : SLAVE
+P0-3-50: PCM playback 0-3-50 : SLAVE
+P0-3-52: PCM playback 0-3-52 : SLAVE
+P0-3-54: PCM playback 0-3-54 : SLAVE
+P0-3-56: PCM playback 0-3-56 : SLAVE
+P0-3-58: PCM playback 0-3-58 : SLAVE
+P0-3-60: 
 ======================================================================
 
 ----------------------------------------------------------------------
- shensche - 07-21-05 17:29 
+ Raymond - 05-31-06 18:19 
 ----------------------------------------------------------------------
-nazdar!
+If I remove the creation of device 3, cat /proc/asound/timer can show both
+card 0 and card 1.
 
-ok, the manufacture and i concluded to consider it as faulty hardware. the
-machine will be sent back. unfortunately, getting the new mainboard will
-take a lot of time and i fear, i will be gone when it will arrive here. i
-will let you know if anything will happen.
+This seem that the 4K buffer is overflowed when there are too many
+subdevices 
 
 ----------------------------------------------------------------------
- wouter - 06-02-06 09:52 
+ Raymond - 06-02-06 13:02 
 ----------------------------------------------------------------------
-I have a Via Epia M-10000, I can't get the sound working either. I've been
-trying remote (!) for almost a year already (the machine itself is in
-Kuopio, Finland; I'm in Brussels, Belgium at the moment).
+This bug can be reproduced by using 8 snd-dummy
 
+cat /proc/asound/cards
+ 0 [Dummy          ]: Dummy - Dummy
+                      Dummy 1
+ 1 [Dummy_1        ]: Dummy - Dummy
+                      Dummy 2
+ 2 [Dummy_2        ]: Dummy - Dummy
+                      Dummy 3
+ 3 [Dummy_3        ]: Dummy - Dummy
+                      Dummy 4
+ 4 [Dummy_4        ]: Dummy - Dummy
+                      Dummy 5
+ 5 [Dummy_5        ]: Dummy - Dummy
+                      Dummy 6
+ 6 [Dummy_6        ]: Dummy - Dummy
+                      Dummy 7
+ 7 [Dummy_7        ]: Dummy - Dummy
+                      Dummy 8
 
-lspci:
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
-
-relevant dmesg output:
-ALSA sound/pci/ac97/ac97_codec.c:1996: AC'97 0 analog subsections not
-ready
-ALSA sound/core/pcm_lib.c:2537: capture read error (DMA or IRQ trouble?)
-ALSA sound/core/pcm_lib.c:2537: capture read error (DMA or IRQ trouble?)
-ALSA sound/core/pcm_lib.c:2537: capture read error (DMA or IRQ trouble?)
-[...]
+cat /proc/asound/timers
+G0: system timer : 10000.000us (10000000 ticks)
+P0-0-0: PCM playback 0-0-0 : SLAVE
+P0-0-1: PCM capture 0-0-1 : SLAVE
+P0-0-2: PCM playback 0-0-2 : SLAVE
+P0-0-3: PCM capture 0-0-3 : SLAVE
+P0-0-4: PCM playback 0-0-4 : SLAVE
+P0-0-5: PCM capture 0-0-5 : SLAVE
+P0-0-6: PCM playback 0-0-6 : SLAVE
+P0-0-7: PCM capture 0-0-7 : SLAVE
+P0-0-8: PCM playback 0-0-8 : SLAVE
+P0-0-9: PCM capture 0-0-9 : SLAVE
+P0-0-10: PCM playback 0-0-10 : SLAVE
+P0-0-11: PCM capture 0-0-11 : SLAVE
+P0-0-12: PCM playback 0-0-12 : SLAVE
+P0-0-13: PCM capture 0-0-13 : SLAVE
+P0-0-14: PCM playback 0-0-14 : SLAVE
+P0-0-15: PCM capture 0-0-15 : SLAVE
+P1-0-0: PCM playback 1-0-0 : SLAVE
+P1-0-1: PCM capture 1-0-1 : SLAVE
+P1-0-2: PCM playback 1-0-2 : SLAVE
+P1-0-3: PCM capture 1-0-3 : SLAVE
+P1-0-4: PCM playback 1-0-4 : SLAVE
+P1-0-5: PCM capture 1-0-5 : SLAVE
+P1-0-6: PCM playback 1-0-6 : SLAVE
+P1-0-7: PCM capture 1-0-7 : SLAVE
+P1-0-8: PCM playback 1-0-8 : SLAVE
+P1-0-9: PCM capture 1-0-9 : SLAVE
+P1-0-10: PCM playback 1-0-10 : SLAVE
+P1-0-11: PCM capture 1-0-11 : SLAVE
+P1-0-12: PCM playback 1-0-12 : SLAVE
+P1-0-13: PCM capture 1-0-13 : SLAVE
+P1-0-14: PCM playback 1-0-14 : SLAVE
+P1-0-15: PCM capture 1-0-15 : SLAVE
+P2-0-0: PCM playback 2-0-0 : SLAVE
+P2-0-1: PCM capture 2-0-1 : SLAVE
+P2-0-2: PCM playback 2-0-2 : SLAVE
+P2-0-3: PCM capture 2-0-3 : SLAVE
+P2-0-4: PCM playback 2-0-4 : SLAVE
+P2-0-5: PCM capture 2-0-5 : SLAVE
+P2-0-6: PCM playback 2-0-6 : SLAVE
+P2-0-7: PCM capture 2-0-7 : SLAVE
+P2-0-8: PCM playback 2-0-8 : SLAVE
+P2-0-9: PCM capture 2-0-9 : SLAVE
+P2-0-10: PCM playback 2-0-10 : SLAVE
+P2-0-11: PCM capture 2-0-11 : SLAVE
+P2-0-12: PCM playback 2-0-12 : SLAVE
+P2-0-13: PCM capture 2-0-13 : SLAVE
+P2-0-14: PCM playback 2-0-14 : SLAVE
+P2-0-15: PCM capture 2-0-15 : SLAVE
+P3-0-0: PCM playback 3-0-0 : SLAVE
+P3-0-1: PCM capture 3-0-1 : SLAVE
+P3-0-2: PCM playback 3-0-2 : SLAVE
+P3-0-3: PCM capture 3-0-3 : SLAVE
+P3-0-4: PCM playback 3-0-4 : SLAVE
+P3-0-5: PCM capture 3-0-5 : SLAVE
+P3-0-6: PCM playback 3-0-6 : SLAVE
+P3-0-7: PCM capture 3-0-7 : SLAVE
+P3-0-8: PCM playback 3-0-8 : SLAVE
+P3-0-9: PCM capture 3-0-9 : SLAVE
+P3-0-10: PCM playback 3-0-10 : SLAVE
+P3-0-11: PCM capture 3-0-11 : SLAVE
+P3-0-12: PCM playback 3-0-12 : SLAVE
+P3-0-13: PCM capture 3-0-13 : SLAVE
+P3-0-14: PCM playback 3-0-14 : SLAVE
+P3-0-15: PCM capture 3-0-15 : SLAVE
+P4-0-0: PCM playback 4-0-0 : SLAVE
+P4-0-1: PCM capture 4-0-1 : SLAVE
+P4-0-2: PCM playback 4-0-2 : SLAVE
+P4-0-3: PCM capture 4-0-3 : SLAVE
+P4-0-4: PCM playback 4-0-4 : SLAVE
+P4-0-5: PCM capture 4-0-5 : SLAVE
+P4-0-6: PCM playback 4-0-6 : SLAVE
+P4-0-7: PCM capture 4-0-7 : SLAVE
+P4-0-8: PCM playback 4-0-8 : SLAVE
+P4-0-9: PCM capture 4-0-9 : SLAVE
+P4-0-10: PCM playback 4-0-10 : SLAVE
+P4-0-11: PCM capture 4-0-11 : SLAVE
+P4-0-12: PCM playback 4-0-12 : SLAVE
+P4-0-13: PCM capture 4-0-13 : SLAVE
+P4-0-14: PCM playback 4-0-14 : SLAVE
+P4-0-15: PCM capture 4-0-15 : SLAVE
+P5-0-0: PCM playback 5-0-0 : SLAVE
+P5-0-1: PCM capture 5-0-1 : SLAVE
+P5-0-2: PCM playback 5-0-2 : SLAVE
+P5-0-3: PCM capture 5-0-3 : SLAVE
+P5-0-4: PCM playback 5-0-4 : SLAVE
+P5-0-5: PCM capture 5-0-5 : SLAVE
+P5-0-6: PCM playback 5-0-6 : SLAVE
+P5-0-7: PCM capture 5-0-7 : SLAVE
+P5-0-8: PCM playback 5-0-8 : SLAVE
+P5-0-9: PCM capture 5-0-9 : SLAVE
+P5-0-10: PCM playback 5-0-10 : SLAVE
+P5-0-11: PCM capture 5-0-11 : SLAVE
+P5-0-12: PCM playback 5-0-12 : SLAVE
+P5-0-13: PCM capture 5-0-13 : SLAVE
+P5-0-14: PCM playback 5-0-14 : SLAVE
+P5-0-15: PCM capture 5-0-15 : SLAVE
+P6-0-0: PCM playback 6-0-0 : SLAVE
+P6-0-1: PCM capture 6-0-1 : SLAVE
+P6-0-2: PCM playback 6-0-2 : SLAVE
+P6-0-3: PCM capture 6-0-3 : SLAVE
+P6-0-4: PCM playback 6-0-4 : SLAVE
+P6-0-5: PCM capture 6-0-5 : SLAVE
+P6-0-6: PCM playback 6-0-6 : SLAVE
+P6-0-7: PCM capture 6-0-7 : SLAVE
+P6-0-8: PCM playback 6-0-8 : SLAVE
+P6-0-9: PCM capture 6-0-9 : SLAVE
+P6-0-10: PCM playback 6-0-10 : SLAVE
+P6-0-11: PCM capture 6-0-11 : SLAVE
+P6-0-12: PCM playback 6-0-12 : SLAVE
+P6-0-13: PCM capture 6-0-13 : SLAVE
+P6-0-14: PCM playback 6-0-14 : SLAVE
+P6-0-15: PCM capture 6-0-15 : SLAVE
+P7-0-0: PCM playback 7-0-0 : SLAVE
+P7-0-1: PCM capture 7-0-1 : SLAVE
+P7-0-2: PCM playback 7-0-2 :
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-27-05 12:22 shensche       New Issue                                    
-06-27-05 12:22 shensche       File Added: asound.conf                      
-06-27-05 12:22 shensche       Distribution              => Debian (derived
-Knoppix->Morphix->Kunnafonix)
-06-27-05 12:22 shensche       Kernel Version            => 2.6.11.12, but also
-many other 2.4 and 2.6 kernels
-06-27-05 12:23 shensche       File Added: asound.state                     
-06-27-05 12:27 shensche       File Added: dmesg.full                       
-06-27-05 12:27 shensche       File Added: dmesg.oss                        
-06-27-05 12:28 shensche       File Added: lspci                            
-06-27-05 12:29 shensche       Issue Monitored: shensche                    
-06-27-05 12:36 shensche       Issue End Monitor: shensche                    
-06-28-05 11:31 shensche       File Added: proc_asound_card0_codec97#_ac97#0-0   
-                
-06-28-05 11:32 shensche       File Added:
-proc_asound_card0_codec97#_ac97#0-0+regs                    
-06-28-05 11:32 shensche       File Added: proc_asound_card0_via82xx             
-      
-06-28-05 11:32 shensche       File Added: proc_asound_cards                    
-06-28-05 11:33 shensche       File Added: proc_asound_version                   
-
-06-28-05 12:02 shensche       Note Added: 0005296                          
-06-28-05 20:19 shensche       Note Added: 0005300                          
-06-29-05 20:16 tiwai          Note Added: 0005310                          
-07-01-05 12:07 shensche       Note Added: 0005329                          
-07-01-05 12:11 shensche       Note Added: 0005330                          
-07-07-05 19:07 shensche       Note Added: 0005401                          
-07-08-05 11:46 tiwai          Note Added: 0005408                          
-07-08-05 12:34 shensche       Note Added: 0005419                          
-07-21-05 17:29 shensche       Note Added: 0005539                          
-06-02-06 09:52 wouter         Note Added: 0010046                          
+04-17-06 12:04 Raymond        New Issue                                    
+04-17-06 12:04 Raymond        Distribution              => Fedora Core 1   
+04-17-06 12:04 Raymond        Kernel Version            => 2.4.22-1.2199.nptl
+04-17-06 16:09 rlrevell       Status                   new => closed       
+04-17-06 16:09 rlrevell       Note Added: 0009310                          
+04-17-06 19:45 Raymond        Status                   closed => feedback  
+04-17-06 19:45 Raymond        Resolution               open => reopened    
+04-17-06 19:45 Raymond        Note Added: 0009317                          
+04-17-06 19:47 Raymond        Note Edited: 0009317                         
+04-17-06 19:57 rlrevell       Note Added: 0009318                          
+04-18-06 10:42 Raymond        Note Added: 0009327                          
+04-29-06 11:13 Raymond        Note Added: 0009541                          
+05-01-06 07:30 Raymond        Note Edited: 0009541                         
+05-01-06 07:36 Raymond        Note Edited: 0009541                         
+05-01-06 07:42 Raymond        Note Edited: 0009541                         
+05-01-06 12:10 Raymond        Note Edited: 0009541                         
+05-01-06 12:12 Raymond        Note Edited: 0009541                         
+05-31-06 18:11 Raymond        Note Deleted: 0009541                        
+05-31-06 18:19 Raymond        Issue Monitored: tiwai                       
+05-31-06 18:19 Raymond        Note Added: 0010024                          
+06-02-06 13:02 Raymond        Note Added: 0010047                          
 ======================================================================
