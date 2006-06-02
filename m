@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002028]: cat /proc/asound/timers
-Date: Fri, 2 Jun 2006 13:02:35 +0200
-Message-ID: <044f5a651c029ed12381e4d7f1ef0ffa@bugtrack.alsa-project.org>
+Date: Fri, 2 Jun 2006 13:08:32 +0200
+Message-ID: <23c939d84dbdfc11ec8eff898f5aa80a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57CDF156
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57E1E15A
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Jun 2006 13:02:36 +0200 (MEST)
+	Fri,  2 Jun 2006 13:08:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,12 +23,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2028> 
 ======================================================================
 Reported By:                Raymond
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   2028
@@ -36,12 +36,14 @@ Category:                   CORE - timer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               Fedora Core 1
 Kernel Version:             2.4.22-1.2199.nptl
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             04-17-2006 12:04 CEST
-Last Modified:              06-02-2006 13:02 CEST
+Last Modified:              06-02-2006 13:08 CEST
 ======================================================================
 Summary:                    cat /proc/asound/timers
 Description: 
@@ -166,15 +168,6 @@ P0-3-56: PCM playback 0-3-56 : SLAVE
 P0-3-58: PCM playback 0-3-58 : SLAVE
 P0-3-60: 
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 05-31-06 18:19 
-----------------------------------------------------------------------
-If I remove the creation of device 3, cat /proc/asound/timer can show both
-card 0 and card 1.
-
-This seem that the 4K buffer is overflowed when there are too many
-subdevices 
 
 ----------------------------------------------------------------------
  Raymond - 06-02-06 13:02 
@@ -317,6 +310,12 @@ P7-0-0: PCM playback 7-0-0 : SLAVE
 P7-0-1: PCM capture 7-0-1 : SLAVE
 P7-0-2: PCM playback 7-0-2 :
 
+----------------------------------------------------------------------
+ tiwai - 06-02-06 13:08 
+----------------------------------------------------------------------
+This problem was already fixed on HG version.
+There is no longer buffer size limit.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -341,4 +340,8 @@ Date Modified  Username       Field                    Change
 05-31-06 18:19 Raymond        Issue Monitored: tiwai                       
 05-31-06 18:19 Raymond        Note Added: 0010024                          
 06-02-06 13:02 Raymond        Note Added: 0010047                          
+06-02-06 13:08 tiwai          Status                   feedback => resolved
+06-02-06 13:08 tiwai          Resolution               reopened => fixed   
+06-02-06 13:08 tiwai          Assigned To               => tiwai           
+06-02-06 13:08 tiwai          Note Added: 0010048                          
 ======================================================================
