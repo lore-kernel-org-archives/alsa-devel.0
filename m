@@ -1,21 +1,15 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: [linuxsh-dev] [PATCH] Add support for Yamaha AICA
-	sound on	SEGA Dreamcast
-Date: Sat, 03 Jun 2006 17:38:05 +0100
-Message-ID: <1149352686.13122.29.camel__33705.4682583132$1149352717$gmane$org@localhost.localdomain>
-References: <1149201071.9032.13.camel@localhost.localdomain>
-	<1149334788.9065.5.camel@localhost.localdomain>
-	<1149347817.28744.12.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002151]: Card: HDA ULI M5461
+Date: Sat, 3 Jun 2006 18:51:20 +0200
+Message-ID: <20060603165120.04D19169@alsa.jcu.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sc-outsmtp1.homechoice.co.uk (sc-outsmtp1.homechoice.co.uk
-	[81.1.65.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 2A64A151
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 04D19169
 	for <alsa-devel@alsa-project.org>;
-	Sat,  3 Jun 2006 18:38:18 +0200 (MEST)
-In-Reply-To: <1149347817.28744.12.camel@mindpipe>
+	Sat,  3 Jun 2006 18:51:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,25 +19,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Paul Mundt <lethal@linux-sh.org>, linux-kernel@vger.kernel.org, linux-sh <linuxsh-dev@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-06-03 at 11:16 -0400, Lee Revell wrote:
-> On Sat, 2006-06-03 at 12:39 +0100, Adrian McMenamin wrote:
-> > On Thu, 2006-06-01 at 23:31 +0100, Adrian McMenamin wrote:
-> > > This adds sound for the Yamaha AICA "Super Intelligent Sound
-> > > Processor" (PCM) device on the SEGA Dreamcast
-> > > 
-> > > Signed off by Adrian McMenamin <adrian@mcmen.demon.co.uk>
-> > > 
-> > I've had no comments back on this - I am thinking of committing to the
-> > linux-sh cvs, though it really belongs in ALSA.
-> > 
-> > Any reason why I shouldn't?
-> > 
-> 
-> Did you fix all of the issues that were raised by Paul and Takashi-san?
-> 
-> Lee
-Those ones that were fixable, yes. At least I think so :)
+Analog Devices AD1986A (HDA ULI M5461) on ASUS P4RD1-MX mixer works incorrectly
+Message-ID: <9b892ed609a0d4fb455d52c37816be15@bugtrack.alsa-project.org>
+X-Priority: 3
+X-Mailer: PHPMailer [version 1.72]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2151> 
+======================================================================
+Reported By:                shadoweel
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2151
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.12 + alsa 1.0.11
+======================================================================
+Date Submitted:             05-23-2006 16:15 CEST
+Last Modified:              06-03-2006 18:51 CEST
+======================================================================
+Summary:                    Card: HDA ULI M5461                          
+Analog Devices AD1986A (HDA ULI M5461) on ASUS P4RD1-MX mixer works incorrectly
+Description: 
+Hangs for an hour with stock Ubuntu 2.6.12 kernel on azx_get_response
+timeout floods
+-No sound
+-Similar to #2099
+
+Loads with stock ubuntu kernel 2.6.12 +
+realtek-linux-audiopack-3.5-6.tar.bz2 following
+https://wiki.ubuntu.com/HdaIntelSoundHowto?highlight=%28sound%29
+-Sound, but distorted and very low volume
+-Only PCM slider in mixer, it works
+
+Loads with stock ubuntu kernel 2.6.12 + stock alsa 1.0.11
+(drivers,libs,oss,plugins,utils)
+-Clean sound at very high volume (which distorts at peaks)
+-Opening / touching the mixer immediately turns sound off (similar to
+#2103)
+-No master slider (only headphones/front)
+
+I have tried many models, without success. I have a AC'97 front panel with
+line out and mic. When the front panel works (with some models), I onlt
+get sound from the right speaker. The back panel has three jacks.
+======================================================================
+
+----------------------------------------------------------------------
+ shadoweel - 06-03-06 18:51 
+----------------------------------------------------------------------
+Loads with stock ubuntu kernel 2.6.15
+-Sound with a very loud high pitch noise
+-Opening / touching the mixer immediately turns sound off (similar to
+#2103)
+-No master slider (only headphones/front)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-23-06 16:15 shadoweel      New Issue                                    
+05-23-06 16:15 shadoweel      Distribution              => Ubuntu          
+05-23-06 16:15 shadoweel      Kernel Version            => 2.6.12 + alsa 1.0.11
+05-23-06 16:17 shadoweel      Issue Monitored: shadoweel                    
+06-03-06 18:51 shadoweel      Note Added: 0010063                          
+======================================================================
