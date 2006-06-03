@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001213]: snd-via82xx on EPIA-M - 0
-	analog subsections not ready: no sound
-Date: Sat, 3 Jun 2006 15:50:57 +0200
-Message-ID: <cf8e27e23e0fd2fdd6be17ebf670f407@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001603]: via8235 no sound since kernel
+	2.6.13
+Date: Sat, 3 Jun 2006 16:02:12 +0200
+Message-ID: <e6a3268cfc36329a97ab9e522edf64bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09940168
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2E099121
 	for <alsa-devel@alsa-project.org>;
-	Sat,  3 Jun 2006 15:50:57 +0200 (MEST)
+	Sat,  3 Jun 2006 16:02:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,146 +26,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1213> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1603> 
 ======================================================================
-Reported By:                shensche
-Assigned To:                
+Reported By:                picobyte
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1213
+Issue ID:                   1603
 Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian (derived Knoppix->Morphix->Kunnafonix)
-Kernel Version:             2.6.11.12, but also many other 2.4 and 2.6 kernels
+Status:                     feedback
+Distribution:               slackware 10.2
+Kernel Version:             2.6.13 - 2.6.14.2
 ======================================================================
-Date Submitted:             06-27-2005 12:22 CEST
-Last Modified:              06-03-2006 15:50 CEST
+Date Submitted:             11-27-2005 15:06 CET
+Last Modified:              06-03-2006 16:02 CEST
 ======================================================================
-Summary:                    snd-via82xx on EPIA-M - 0 analog subsections not
-ready: no sound
+Summary:                    via8235 no sound since kernel 2.6.13
 Description: 
-i am working on a machine with an EPIA-M mainboard and the ICEensemble
-VT1616i sound chip (see attached lspci -v). unfortunately, i cannot hear
-any sound from it. it is always the same: the mixer settings seem ok,
-the applications play happily the files, but i cannot hear a thing. the
-speakers are ok, too.
-
-the system is running kernel 2.6.11 with the kernel patches from Con
-Kolivas (-ck10) and ALSA. i also tried OSS (not the emu) on that kernel.
-i tried 2.4 kernels with Damn Small Linux and Knoppix 3.7 and 2.6.9
-=66rom Knoppix 3.7 and a custom 2.6.10-ck6.
-since ALSA 1.0.8 did not work, i installed 1.0.9b, including the libs
-and utils. during that upgrade, the mixer lost the possibility to change
-the DXS-settings. has this to do with the whitelist, introduced
-recently?
-
-i played around with lots of combinations of the options ac97_quirk and
-dxs_support when loading the kernel module.
-
-on the hardware side i disabled the front panel sockets for line-out and
-mic-in, just to be sure. and i often tried all three sockets for=20
-line-out, line-in and mic-in in the back to hear the output.
-
-the chip seems to share interrupt 10 with USB, so i unloaded uhci-hcd,
-but to no avail. i also dis-/enabled ACPI, reserved IRQ for non-PCI (now
-USB and sound share interrupt 5) in the BIOS. the BIOS was told that
-there was a/no PlugNPlay OS and the MC97 modem is disabled.
-the machine does not seem to have an APIC.
-
-i muted some IEC 958 settings in the mixer as read somewhere in the net,
-but that did not help either. and one of these settings always
-reenables itself as soon as i try to play a wav with aplay.
-
-i modified alsa-kernel/pci/ac97/ac97_codec.c to goto __ready_ok also
-when "0 analog subsections are ready" (weird message, btw) before line
-1960. another try was to increase the end_time in line 1953 by factor
-10. both did not yield a successful result, both being a shot in the
-blue.
-
-
-i attached /etc/asound.state (after saving with alsactl store) and the
-output of dmesg. do not mind the oops from cowloop, i guess it is not
-important, because all the other kernels do not work as well.
-
-i read=20
-http://alsa-project.org/alsa-doc/doc-php/template.php?company=3DVIA&card=3D=
-=2E&chip=3DVIA82C686%2C+VIA8233%2C+VIA8233A%2C+VIA8235&module=3Dvia82xx
-alsa-kernel/Documentation/ALSA-Configuration.txt
-and many other forum entries
-
-but still something is going wrong. why are 0 analog subdevices ready?
-how to make them ready? where to wait? what to initialise?
-
-i will try to upgrade the BIOS, soon and try with MS Windows (if i manage
-to fit   it onto 1 GB)
-
+I have no sound after a kernel upgrade. I seem to have lost it in 2.6.13.
+Sound was available in 2.6.12. 2.6.14.2 didn't give sound either. The
+problem is in 1.0.9b and 1.0.10. The modules are loaded as supposed
+without error messages and alsamixer is set to volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- wouter - 06-02-06 09:52 
+ picobyte - 03-04-06 14:23 
 ----------------------------------------------------------------------
-I have a Via Epia M-10000, I can't get the sound working either. I've been
-trying remote (!) for almost a year already (the machine itself is in
-Kuopio, Finland; I'm in Brussels, Belgium at the moment).
-
-
-lspci:
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
-
-relevant dmesg output:
-ALSA sound/pci/ac97/ac97_codec.c:1996: AC'97 0 analog subsections not
-ready
-ALSA sound/core/pcm_lib.c:2537: capture read error (DMA or IRQ trouble?)
-ALSA sound/core/pcm_lib.c:2537: capture read error (DMA or IRQ trouble?)
-ALSA sound/core/pcm_lib.c:2537: capture read error (DMA or IRQ trouble?)
-[...]
+I am sorry to have to report that the problem is back. I reinstalled
+alsa-1.0.10  by mistake by installing packages from the Slackware-current
+tree. reinstalling alsa-1.0.11-rc2 did not help. I posted the last message
+because I found out that the kernel version was not related to the
+problem.
 
 ----------------------------------------------------------------------
- picobyte - 06-03-06 15:50 
+ picobyte - 06-03-06 16:02 
 ----------------------------------------------------------------------
-I have a via 8235 also, not working. It used to work and somewhere in
-kernel upgrades and/or alsa upgrades it stopped working. I succesfully had
-it once in alsa 1.0.9b with an early 2.6 kernel (I am not sure which one
-exactly since I did a kernel upgrade quite often, but I think it worked
-from 2.6.0-2.6.10).
+I am afraid to have to report that it is still not working, running Alsa
+1.0.11 and kernel 2.6.16.19. Also I bought another sound device: A
+creative audigy platinum ex, which installs allright (the audigy device is
+shown when running alsaconf) but won't work.
+Can it be that the bug in via 8235 affects this device as well, or is the
+not-working via 8235 chosen as a sound system rather than the Audigy? The
+Audigy device seems to be the second choice of sound device: I can only
+access its mixer settings by doing a "alsamixer -c 2". Is there a way to
+reverse this order? Any other suggestions?
+TIA
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-27-05 12:22 shensche       New Issue                                    
-06-27-05 12:22 shensche       File Added: asound.conf                      
-06-27-05 12:22 shensche       Distribution              => Debian (derived
-Knoppix->Morphix->Kunnafonix)
-06-27-05 12:22 shensche       Kernel Version            => 2.6.11.12, but also
-many other 2.4 and 2.6 kernels
-06-27-05 12:23 shensche       File Added: asound.state                     
-06-27-05 12:27 shensche       File Added: dmesg.full                       
-06-27-05 12:27 shensche       File Added: dmesg.oss                        
-06-27-05 12:28 shensche       File Added: lspci                            
-06-27-05 12:29 shensche       Issue Monitored: shensche                    
-06-27-05 12:36 shensche       Issue End Monitor: shensche                    
-06-28-05 11:31 shensche       File Added: proc_asound_card0_codec97#_ac97#0-0   
-                
-06-28-05 11:32 shensche       File Added:
-proc_asound_card0_codec97#_ac97#0-0+regs                    
-06-28-05 11:32 shensche       File Added: proc_asound_card0_via82xx             
-      
-06-28-05 11:32 shensche       File Added: proc_asound_cards                    
-06-28-05 11:33 shensche       File Added: proc_asound_version                   
-
-06-28-05 12:02 shensche       Note Added: 0005296                          
-06-28-05 20:19 shensche       Note Added: 0005300                          
-06-29-05 20:16 tiwai          Note Added: 0005310                          
-07-01-05 12:07 shensche       Note Added: 0005329                          
-07-01-05 12:11 shensche       Note Added: 0005330                          
-07-07-05 19:07 shensche       Note Added: 0005401                          
-07-08-05 11:46 tiwai          Note Added: 0005408                          
-07-08-05 12:34 shensche       Note Added: 0005419                          
-07-21-05 17:29 shensche       Note Added: 0005539                          
-06-02-06 09:52 wouter         Note Added: 0010046                          
-06-03-06 15:50 picobyte       Note Added: 0010061                          
+11-27-05 15:06 picobyte       New Issue                                    
+11-27-05 15:06 picobyte       Distribution              => slackware 10.2  
+11-27-05 15:06 picobyte       Kernel Version            => 2.6.13 - 2.6.14.2
+12-31-05 03:38 rlrevell       Note Added: 0007330                          
+01-18-06 00:38 picobyte       Note Added: 0007704                          
+01-18-06 00:38 picobyte       Issue Monitored: picobyte                    
+01-18-06 00:39 picobyte       Issue End Monitor: picobyte                    
+01-18-06 00:41 picobyte       Note Edited: 0007704                         
+03-01-06 19:27 picobyte       Note Added: 0008287                          
+03-01-06 19:39 rlrevell       Status                   new => resolved     
+03-01-06 19:39 rlrevell       Fixed in Version          => 1.0.11rc3       
+03-01-06 19:39 rlrevell       Resolution               open => fixed       
+03-01-06 19:39 rlrevell       Assigned To               => rlrevell        
+03-04-06 14:23 picobyte       Status                   resolved => feedback
+03-04-06 14:23 picobyte       Resolution               fixed => reopened   
+03-04-06 14:23 picobyte       Note Added: 0008348                          
+06-03-06 16:02 picobyte       Note Added: 0010062                          
 ======================================================================
