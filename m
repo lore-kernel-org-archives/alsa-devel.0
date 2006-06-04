@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002131]: Sound works with distortion
-	on laptop Asus A6J series A6JC model (HDA Intel/Realtek ALC880)
-Date: Sat, 3 Jun 2006 19:47:29 +0200
-Message-ID: <7f2edb59fc4995abaa2735d98dc8b70a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002184]: nspluginviewer (only?) causes
+	oops sometimes
+Date: Sun, 4 Jun 2006 02:24:06 +0200
+Message-ID: <9f8b494d6f2b0fc94b7d5f1f438ceeb5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 096FF169
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27BF3152
 	for <alsa-devel@alsa-project.org>;
-	Sat,  3 Jun 2006 19:47:29 +0200 (MEST)
+	Sun,  4 Jun 2006 02:24:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,124 +24,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2131> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2184> 
 ======================================================================
-Reported By:                paulomatos
+Reported By:                fdoffizi01
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2131
+Issue ID:                   2184
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     assigned
-Distribution:               RHEL4/CentOS4
-Kernel Version:             2.6.9-34.EL
+Distribution:               Gentoo
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             05-17-2006 17:36 CEST
-Last Modified:              06-03-2006 19:47 CEST
+Date Submitted:             06-04-2006 02:24 CEST
+Last Modified:              06-04-2006 02:24 CEST
 ======================================================================
-Summary:                    Sound works with distortion on laptop Asus A6J
-series A6JC model (HDA Intel/Realtek ALC880)
+Summary:                    nspluginviewer (only?) causes oops sometimes
 Description: 
-Only thing I can play perfectly is wav format.
-All other things get distortion when volume reaches half way.
+After this crash can't restart alsasound modules/services, only reboot.
+Here dmesg output
 
-Here goes some information:
-[root@localhost ~]# lspci -vv  | grep -A24 ^00:1b.0
-00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-Definition Audio Controller (rev 02)
-        Subsystem: ASUSTeK Computer Inc.: Unknown device 1123
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size 08
-        Interrupt: pin A routed to IRQ 3
-        Region 0: Memory at febfc000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-[root@localhost ~]# lspci -nvv  | grep -A24 ^00:1b.0
-00:1b.0 Class 0403: 8086:27d8 (rev 02)
-        Subsystem: 1043:1123
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 0, Cache Line Size 08
-        Interrupt: pin A routed to IRQ 3
-        Region 0: Memory at febfc000 (64-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-                Address: 0000000000000000  Data: 0000
-        Capabilities: [70] Express Unknown type IRQ 0
-                Device: Supported: MaxPayload 128 bytes, PhantFunc 0,
-ExtTag-
-                Device: Latency L0s <64ns, L1 <1us
-                Device: Errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                Device: RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop+
-                Device: MaxPayload 128 bytes, MaxReadReq 128 bytes
-                Link: Supported Speed unknown, Width x0, ASPM unknown,
-Port 0
-                Link: Latency L0s <64ns, L1 <1us
-                Link: ASPM Disabled CommClk- ExtSynch-
-                Link: Speed unknown, Width x0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+Unable to handle kernel paging request at virtual address f8eaa1a8
+ printing eip:
+f9475689
+*pde = 1ff5b067
+*pte = 00000000
+Oops: 0002 [#1]
+PREEMPT SMP
+Modules linked in: snd_rtctimer snd_seq_oss snd_seq_midi_event snd_seq
+snd_seq_device snd_pcm_oss snd_mixer_oss rfcomm hidp l2cap arc4
+ieee80211_crypt_wep ohci_hcd e100 mii ohci1394 ieee1394 yenta_socket
+rsrc_nonstatic pcmcia_core ipw3945 ieee80211 ieee80211_crypt
+firmware_class nvidia i2c_i801 i2c_core ehci_hcd hci_usb bluetooth
+uhci_hcd snd_hda_intel snd_hda_codec snd_pcm snd_timer snd snd_page_alloc
+rtc usbcore realtime joydev
+CPU:    0
+EIP:    0060:[<f9475689>]    Tainted: PF     VLI
+EFLAGS: 00010287   (2.6.16-gentoo-r6 #3)
+EIP is at resample_expand+0x15b/0x1b9 [snd_pcm_oss]
+eax: f8eaa1a8   ebx: 00000000   ecx: 00000800   edx: 00000000
+esi: 000001ef   edi: 00000002   ebp: e0283ec4   esp: e0283e88
+ds: 007b   es: 007b   ss: 0068
+Process nspluginviewer (pid: 7184, threadinfo=e0282000 task=e2a19560)
+Stack: <0>00000b9b bfa1beb0 e6f73f04 d8d2e334 d8d2e320 00000002 00000000
+f8eaa1a8
+       f8e9d844 00000000 00000000 00000132 00001806 00000400 d8d2e2c0
+e0283eec
+       f9475998 d8d2e2c0 e6f73e00 e6f73f00 00000400 00001806 d8d2e2c0
+00000400
+Call Trace:
+ [<f9475998>] rate_transfer+0x32/0x3c [snd_pcm_oss]
+ [<f94742d8>] snd_pcm_plug_write_transfer+0x80/0xb1 [snd_pcm_oss]
+ [<f9471099>] snd_pcm_oss_write2+0x7a/0xc1 [snd_pcm_oss]
+ [<f9471246>] snd_pcm_oss_write1+0x166/0x1b5 [snd_pcm_oss]
+ [<c016211f>] vfs_write+0xa5/0x13c
+ [<c0162254>] sys_write+0x3b/0x63
+ [<c0102d23>] sysenter_past_esp+0x54/0x75
+Code: af 45 f0 99 f7 f9 8b 55 ec 01 c2 81 fa 00 80 ff ff 7d 07 ba 00 80 ff
+ff eb 0e 81 fa 00 80 00 00 b8 ff 7f 00 00 0f 4d d0 8b 45 e0 <66> 89 10 8b
+55 d4 8d 04 78 89 45 e0 8b 45 c4 8b 12 01 55 f0 ff
 
 ======================================================================
-
-----------------------------------------------------------------------
- paulomatos - 06-03-06 19:47 
-----------------------------------------------------------------------
-Any news on this?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-06 17:36 paulomatos     New Issue                                    
-05-17-06 17:36 paulomatos     File Added: asound.state                     
-05-17-06 17:36 paulomatos     Distribution              => RHEL4/CentOS4   
-05-17-06 17:36 paulomatos     Kernel Version            => 2.6.9-34.EL     
-05-17-06 17:37 paulomatos     File Added: codec0.txt                       
-05-17-06 17:37 paulomatos     File Added: codec1.txt                       
-05-17-06 17:38 paulomatos     File Added: oss_mixer.txt                    
-05-17-06 17:38 paulomatos     File Added: pcm0c.info.txt                    
-05-17-06 17:39 paulomatos     File Added: pcm0p.info.txt                    
-05-17-06 17:39 paulomatos     File Added: pcm1c.info.txt                    
-05-17-06 17:39 paulomatos     File Added: pcm2p.info.txt                    
-05-17-06 17:41 paulomatos     Issue Monitored: paulomatos                    
-05-24-06 13:59 fuman          Issue Monitored: fuman                       
-06-03-06 19:47 paulomatos     Note Added: 0010064                          
+06-04-06 02:24 fdoffizi01     New Issue                                    
+06-04-06 02:24 fdoffizi01     Distribution              => Gentoo          
+06-04-06 02:24 fdoffizi01     Kernel Version            => 2.6.16          
 ======================================================================
