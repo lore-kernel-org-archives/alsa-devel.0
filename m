@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Sun, 4 Jun 2006 23:37:05 +0200
-Message-ID: <ba5defda893086bac74f5486d6b5ee58@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002132]: No sound from speakers
+Date: Mon, 5 Jun 2006 01:30:00 +0200
+Message-ID: <fec93782cb19cfabc0ffc0045dc1d912@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 967C1120
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1417B13F
 	for <alsa-devel@alsa-project.org>;
-	Sun,  4 Jun 2006 23:37:05 +0200 (MEST)
+	Mon,  5 Jun 2006 01:30:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,60 +25,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
 ======================================================================
-Reported By:                carllivitt
-Assigned To:                tiwai
+Reported By:                bzbarsky
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2174
-Category:                   PCI - hda-intel
+Issue ID:                   2132
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-04-2006 23:37 CEST
+Date Submitted:             05-17-2006 19:54 CEST
+Last Modified:              06-05-2006 01:29 CEST
 ======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
+Summary:                    No sound from speakers
 Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
-
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
-
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
-
-I've also tried using the 'single_cmd=1' module loading option. 
-
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
-
+Alsa seems to detect the sound card, but when I try to actually play
+something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- carllivitt - 06-04-06 23:37 
+ Raymond - 06-03-06 02:44 
 ----------------------------------------------------------------------
-Hi, has anyone got any information/hints/fixes/patches etc for this
-problem?
+Refer to page 14 of the manual, AC97 codec seem to be near J21
 
-Thanks
-Carl
+----------------------------------------------------------------------
+ bzbarsky - 06-05-06 01:29 
+----------------------------------------------------------------------
+Ah, excellent.  That chip has two lines of text on it:
+
+  2K99AL
+  LM4548VH
+
+The second line is indeed a serial number for an ac97 codec chip.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
+05-17-06 19:54 bzbarsky       New Issue                                    
+05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
+05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
+05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
+05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
+05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
+05-17-06 19:56 bzbarsky       File Added: scsound.log                      
+05-17-06 19:57 bzbarsky       Note Added: 0009857                          
+05-20-06 05:31 Raymond        Note Added: 0009882                          
+05-20-06 21:43 bzbarsky       Note Added: 0009893                          
+05-21-06 03:41 Raymond        Note Added: 0009894                          
+05-21-06 03:48 Raymond        Note Edited: 0009894                         
+05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
+05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
+05-22-06 02:53 bzbarsky       Note Added: 0009901                          
+05-22-06 04:14 Raymond        Note Added: 0009902                          
+05-23-06 09:00 Raymond        Note Added: 0009929                          
+05-23-06 09:03 Raymond        Note Edited: 0009929                         
+05-23-06 09:07 Raymond        Note Edited: 0009929                         
+06-02-06 20:08 bzbarsky       Note Added: 0010053                          
+06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
+06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
+06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
+ 
+06-02-06 20:35 bzbarsky       Note Added: 0010054                          
+06-03-06 02:44 Raymond        Note Added: 0010058                          
+06-05-06 01:29 bzbarsky       Note Added: 0010066                          
 ======================================================================
