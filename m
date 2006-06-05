@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Mon, 5 Jun 2006 03:31:13 +0200
-Message-ID: <2d98fec8c85ff60f12388b82e8399cee@bugtrack.alsa-project.org>
+Date: Mon, 5 Jun 2006 03:57:39 +0200
+Message-ID: <852c8c0675bd3583e90838a4f945f340@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6375713F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C639C13F
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Jun 2006 03:31:13 +0200 (MEST)
+	Mon,  5 Jun 2006 03:57:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,23 +41,13 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-05-2006 03:31 CEST
+Last Modified:              06-05-2006 03:57 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
 Alsa seems to detect the sound card, but when I try to actually play
 something there is no sound from the speakers.
 ======================================================================
-
-----------------------------------------------------------------------
- bzbarsky - 06-05-06 01:29 
-----------------------------------------------------------------------
-Ah, excellent.  That chip has two lines of text on it:
-
-  2K99AL
-  LM4548VH
-
-The second line is indeed a serial number for an ac97 codec chip.
 
 ----------------------------------------------------------------------
  Raymond - 06-05-06 03:31 
@@ -74,6 +64,13 @@ According to datasheet, LM4548 should return
 
 7c: 4e53
 7e: 4300
+
+----------------------------------------------------------------------
+ bzbarsky - 06-05-06 03:57 
+----------------------------------------------------------------------
+dmesg output attached.  No obvious errors from the sound driver, but there
+are the messages from the tv card driver about parity issues... Not sure
+whether that's relevant.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -106,4 +103,6 @@ Date Modified  Username       Field                    Change
 06-03-06 02:44 Raymond        Note Added: 0010058                          
 06-05-06 01:29 bzbarsky       Note Added: 0010066                          
 06-05-06 03:31 Raymond        Note Added: 0010067                          
+06-05-06 03:56 bzbarsky       File Added: dmesg                            
+06-05-06 03:57 bzbarsky       Note Added: 0010068                          
 ======================================================================
