@@ -1,17 +1,16 @@
-From: Paul Mundt <lethal@linux-sh.org>
-Subject: Re: [PATCH] Add support for Yamaha AICA sound on SEGA
-	Dreamcast
-Date: Mon, 5 Jun 2006 12:53:18 +0300
-Message-ID: <20060605095318.GA30339@linux-sh.org>
-References: <1149201071.9032.13.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002181]: HDA modem SI3054 identified
+	but not working
+Date: Mon, 5 Jun 2006 13:54:17 +0200
+Message-ID: <e30e086d28e3e454341d365b94c9526e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1154212127=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from smtp1.pp.htv.fi (smtp1.pp.htv.fi [213.243.153.37])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A3C9151
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4ABD613F
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Jun 2006 11:53:20 +0200 (MEST)
-In-Reply-To: <1149201071.9032.13.camel@localhost.localdomain>
+	Mon,  5 Jun 2006 13:54:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,311 +20,111 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Lee Revell <rlrevell@joe-job.com>, linux-kernel@vger.kernel.org, linux-sh <linuxsh-dev@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1154212127==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="2oS5YaxWCcQjTEyO"
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2181> 
+======================================================================
+Reported By:                support-at-eeos
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2181
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Mandriva 2006.0
+Kernel Version:             2.6.12 / 2.6.16
+======================================================================
+Date Submitted:             06-02-2006 19:47 CEST
+Last Modified:              06-05-2006 13:54 CEST
+======================================================================
+Summary:                    HDA modem SI3054 identified but not working
+Description: 
+LAPTOP TARGA 856 WA MT34
+SOUNDCARD: ATI HDA SB 450 with integrated modem Agere Systems HDA
+(identified as SI3054)
+Alsa: 1.0.11 both on kernel 2.6.12 and 2.6.16.
+Module: snd_hda_intel, properly identified, sound works well.
+Slmodem: 2.9.11 last stable.
+Wvdial: 1.54.0
+Wvdial.conf: tried both with and without adding parameters X3 and Carrier
+Check = no
+ATTACHED: lspci -vv of sound device, aplay -l, cat
+/proc/asound/card0/codec#1, uname -a
 
+Modem properly identified as SI 3054 card 0 device 6 (see aplay -l output
+here below).
 
---2oS5YaxWCcQjTEyO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+PROBLEM:
+1) wvdial does not connect. wvdial tries to dial, without any audible
+effect, but always returns message  no carrier. 
+2) Modem volume cannot be controlled.
+3) alternative attempt with kppp return the same results
 
-On Thu, Jun 01, 2006 at 11:31:11PM +0100, Adrian McMenamin wrote:
->    obj-y +=3D last.o
-> diff -ruN a/linux-2.6.16.14/sound/sh/aica.c b/linux-2.6.16.14/sound/sh/ai=
-ca.c
-> --- a/linux-2.6.16.14/sound/sh/aica.c	1970-01-01 01:00:00.000000000 +0100
-> +++ b/linux-2.6.16.14/sound/sh/aica.c	2006-06-01 23:01:39.000000000 +0100
-> @@ -0,0 +1,692 @@
-> +/*
-> +* This code is licenced under=20
-> +* the General Public Licence
-> +* version 2
-> +*
-> +* Copyright Adrian McMenamin 2005, 2006
-> +* <adrian@mcmen.demon.co.uk>
-> +* See also http://newgolddream.dyndns.info/cgi-bin/cvsweb
-> +*=20
-> +*
-> +* This program is free software; you can redistribute it and/or modify
-> +* it under the terms of version 2 of the GNU General Public License as p=
-ublished by
-> +* the Free Software Foundation.
-> +*
-> +* This program is distributed in the hope that it will be useful,
-> +* but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +* GNU General Public License for more details.
-> +*
-> +* You should have received a copy of the GNU General Public License
-> +* along with this program; if not, write to the Free Software
-> +* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  =
-USA
-> +*
-> +*/
-> +
-> +
-Superfluous whitespace still..
+aplay -l gives
 
-> +/* Simple platform device */
-> +static struct platform_device *pd;
-> +static struct resource aica_memory_space[2] =3D {
-> +	{
-> +	 	.name =3D "AICA ARM CONTROL",
-> +	 	.start =3D ARM_RESET_REGISTER,
-> +	 	.flags =3D IORESOURCE_MEM,
-> +	 	.end =3D ARM_RESET_REGISTER + 3,
-> +	 },
-> +	{
-> +	 	.name =3D "AICA Sound RAM",
-> +	 	.start =3D SPU_MEMORY_BASE,
-> +	 	.flags =3D IORESOURCE_MEM,
-> +	 	.end =3D SPU_MEMORY_BASE + 0x200000 - 1,
-> +	 },
-> +};
-> +
-This is still a bit broken. These resources should be part of the
-platform device defined by the board-specific dreamcast code (see for
-example what things like microdev do for smc91x for an example), incase
-there are other AICA users in the future.
+card 0: SB [HDA ATI SB], device 6: Si3054 Modem [Si3054 Modem]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-> +/* SPU specific functions */
-> +/* spu_write_wait - wait for G2-SH FIFO to clear */
-> +static inline void spu_write_wait(void)
-> +{
-> +	int time_count;
-> +	time_count =3D 0;
-> +	while (1) {
-> +		if (!(readl(G2_FIFO) & 0x11))
-> +			break;
-> +		/* To ensure hardware failure doesn't wedge kernel */
-> +		time_count++;
-> +		if (time_count > 0x10000)
-> +			break;
-> +	}
-> +}
-> +
-> +/* spu_memset - write to memory in SPU address space */
-> +static void spu_memset(uint32_t toi, uint32_t what, int length)
-> +{
-> +	int i;
-> +	snd_assert(length % 4 =3D=3D 0, return);
-> +	spu_write_wait();
-> +	for (i =3D 0; i < length; i++) {
-> +		writel(what, toi + SPU_MEMORY_BASE);
-> +		toi++;
-> +		if (i && !(i % 8))
-> +			spu_write_wait();
-> +	}
-> +}
-> +
-You should not have the memory base hardcoded as you can already fetch it
-=66rom the memory resource. You should have an IORESOURCE_IO for the
-control registers, and an IORESOURCE_MEM for the SPU RAM, then fetch
-those from the platform device resources accordingly so that these remain
-configurable from the board-specific code.
+and 
 
-> +/* spu_memload - write to SPU address space */
-> +static void spu_memload(uint32_t toi, void __iomem * from, int length)
-> +{
-> +	uint32_t __iomem *froml =3D from;
-> +	uint32_t __iomem *to =3D
-> +	    (uint32_t __iomem *) (SPU_MEMORY_BASE + toi);
+cat /proc/asound/card0/codec#1
 
-Same here. Again, you really want your own spu_readl()/spu_writel() that
-hides this for you.
+[eeos@localhost ~]$ cat /proc/asound/card0/codec#1
+Codec: Generic 11c1 Si3054
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x100700
 
-> +/* spu_disable - set spu registers to stop sound output */
-> +static void spu_disable(void)
-> +{
-> +	int i;
-> +	uint32_t regval;
-> +	spu_write_wait();
-> +	regval =3D readl(ARM_RESET_REGISTER);
-> +	regval |=3D 1;
-> +	spu_write_wait();
-> +	writel(regval, ARM_RESET_REGISTER);
+LSPCI -VV
 
-Same thing here..
+[root@localhost eeos]# lspci -vv -s 00:14.2
+00:14.2 Audio device: ATI Technologies Inc SB450 HDA Audio (rev 01)
+        Subsystem: Micro-Star International Co., Ltd.: Unknown device
+0369
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64, cache line size 10
+        Interrupt: pin ? routed to IRQ 17
+        Region 0: Memory at febf8000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
 
-> +	for (i =3D 0; i < 64; i++) {
-> +		spu_write_wait();
-> +		regval =3D readl(SPU_REGISTER_BASE + (i * 0x80));
-> +		regval =3D (regval & ~0x4000) | 0x8000;
-> +		spu_write_wait();
-> +		writel(regval, SPU_REGISTER_BASE + (i * 0x80));
-> +	}
+UNAME -A
 
-And here..
+[root@localhost eeos]# uname -a
+Linux localhost 2.6.16-1mdk #1 Fri May 19 19:49:05 CEST 2006 i686 AMD
+Turion(tm) 64 Mobile Technology MT-34 unknown GNU/Linux
+======================================================================
 
-> +/* Halt the sound processor,
-> +   clear the memory,
-> +   load some default ARM7 code,
-> +   and then restart ARM7
-> +*/
+----------------------------------------------------------------------
+ support-at-eeos - 06-05-06 13:54 
+----------------------------------------------------------------------
+Microsoft Windows XP Home identifies the modem as AGERE SYSTEMS HDA MODEM
 
-Please use more conventional commenting styles, as opposed to inventing
-your own.
-
-> +static void spu_init(void)
-
-This can probably be inlined..
-
-> +/* aica_chn_start - write to spu to start playback */
-> +static void aica_chn_start(void)
-> +{
-> +	spu_write_wait();
-> +	writel(AICA_CMD_KICK | AICA_CMD_START,
-> +	       (uint32_t *) AICA_CONTROL_POINT);
-> +}
-> +
-> +/* aica_chn_halt - write to spu to halt playback */
-> +static void aica_chn_halt(void)
-> +{
-> +	spu_write_wait();
-> +	writel(AICA_CMD_KICK | AICA_CMD_STOP,
-> +	       (uint32_t *) AICA_CONTROL_POINT);
-> +}
-> +
-These too.
-
-> +static void startup_aica(struct snd_card_aica *dreamcastcard)
-> +{
-> +	spu_memload(AICA_CHANNEL0_CONTROL_OFFSET,
-> +		    (uint8_t *) dreamcastcard->channel,
-> +		    sizeof(struct aica_channel));
-> +	aica_chn_start();
-> +	return;
-> +}
-> +
-Pointless return.
-
-> +/* TO DO: set up to handle more than one pcm instance */
-> +static int __init snd_aicapcmchip(struct snd_card_aica
-> +				  *dreamcastcard, int pcm_index)
-> +{
-> +	struct snd_pcm *pcm;
-> +	int err;
-> +	/* AICA has no capture ability */
-> +	if ((err =3D
-> +	     snd_pcm_new(dreamcastcard->card, "AICA PCM", pcm_index, 1, 0,
-> +			 &pcm)) < 0)
-> +		return err;
-
-Again, move the assignment out of the if context.
-
-> +static int aica_pcmvolume_put(struct snd_kcontrol *kcontrol,
-> +			      struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_card_aica *dreamcastcard;
-> +	dreamcastcard =3D kcontrol->private_data;
-> +	if (unlikely(!dreamcastcard->channel)) {
-> +		return -ETXTBSY;	/* too soon */
-> +	} else
-> +	    if (unlikely(dreamcastcard->channel->vol =3D=3D
-> +			 ucontrol->value.integer.value[0]))
-> +		return 0;
-> +	else {
-
-This if/else mess is still painful to read, and your indentation level is
-broken, which doesn't make it any easier to follow. If you're returning
-anyways, then just kill the else in both cases.
-
-> +/* Fill up the members of the embedded device structure */
-> +static void populate_dreamcastaicadev(struct device *dev)
-> +{
-> +	dev->bus =3D &platform_bus_type;
-> +	dev->driver =3D &aica_driver;
-> +	driver_register(dev->driver);
-> +	device_bind_driver(dev);
-> +}
-> +
-This is still not something you should be doing yourself, use
-the platform_driver instead.
-
-> +static int __devinit add_aicamixer_controls(struct snd_card_aica
-> +					    *dreamcastcard)
-> +{
-> +	int err;
-> +	err =3D snd_ctl_add
-> +	    (dreamcastcard->card,
-> +	     snd_ctl_new1(&snd_aica_pcmvolume_control, dreamcastcard));
-
-More mangled whitespace. indent may have been responsible for it, you're
-still the one submitting the patch.
-
-> +	return 0;
-> +      freepcm:
-> +      freedreamcast:
-
-goto labels are still in bizzarely indented locations.
-
-> +static void __exit aica_exit(void)
-> +{
-> +	struct device_driver *drv =3D (&pd->dev)->driver;
-> +	flush_workqueue(aica_queue);
-> +	destroy_workqueue(aica_queue);
-> +	device_release_driver(&pd->dev);
-> +	driver_unregister(drv);
-> +	platform_device_unregister(pd);
-
-Your driver model handling really needs to be reworked a bit..
-
-> +	/* Kill any sound still playing and reset ARM7 to safe state */
-> +	spu_init();
-
-Perhaps spu_reset() is a bit more sensible of a name, spu_init() is a bit
-non-sensical to call from an exit routine..
-
-> diff -ruN a/linux-2.6.16.14/sound/sh/Kconfig b/linux-2.6.16.14/sound/sh/K=
-config
-> --- a/linux-2.6.16.14/sound/sh/Kconfig	1970-01-01 01:00:00.000000000 +0100
-> +++ b/linux-2.6.16.14/sound/sh/Kconfig	2006-06-01 22:59:14.000000000 +0100
-> @@ -0,0 +1,15 @@
-> +menu "SH (Super-H) devices"
-> +       depends on SND!=3Dn && SUPERH
-> +
-Please just use SuperH, it's not hyphenated, and it's more readable than
-just SH.
-
---2oS5YaxWCcQjTEyO
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.3 (GNU/Linux)
-
-iD8DBQFEg/8O1K+teJFxZ9wRAo22AJ9WZsoy7YjhBgHYdRQjsFOIbFVNLACgghLp
-MKu1ApfP1gzMt6zlt1Qz5L8=
-=u2DA
------END PGP SIGNATURE-----
-
---2oS5YaxWCcQjTEyO--
-
-
---===============1154212127==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1154212127==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1154212127==--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-02-06 19:47 support-at-eeosNew Issue                                    
+06-02-06 19:47 support-at-eeosDistribution              => Mandriva 2006.0 
+06-02-06 19:47 support-at-eeosKernel Version            => 2.6.12 / 2.6.16 
+06-02-06 19:48 support-at-eeosIssue Monitored: support-at-eeos                  
+ 
+06-05-06 13:54 support-at-eeosNote Added: 0010069                          
+======================================================================
