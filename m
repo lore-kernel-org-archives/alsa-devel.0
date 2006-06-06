@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - plugins 0001445]: jackplug and oss
-Date: Tue, 6 Jun 2006 11:20:29 +0200
-Message-ID: <fe247ac35562373d8c36e2e51a17ead5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002186]: ERROR: Failed to load
+	necessary drivers
+Date: Tue, 6 Jun 2006 11:58:25 +0200
+Message-ID: <6f82baff5c4c9082b87fe81d1f57e83c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CDE7146
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C934B155
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Jun 2006 11:20:29 +0200 (MEST)
+	Tue,  6 Jun 2006 11:58:25 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,122 +24,145 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1445> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2186> 
 ======================================================================
-Reported By:                FishB8
+Reported By:                doctor_evilz
 Assigned To:                
 ======================================================================
-Project:                    ALSA - plugins
-Issue ID:                   1445
-Category:                   PCM - jack
+Project:                    ALSA - driver
+Issue ID:                   2186
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             2.6.16-r9
 ======================================================================
-Date Submitted:             09-23-2005 17:23 CEST
-Last Modified:              06-06-2006 11:20 CEST
+Date Submitted:             06-06-2006 11:58 CEST
+Last Modified:              06-06-2006 11:58 CEST
 ======================================================================
-Summary:                    jackplug and oss
+Summary:                    ERROR: Failed to load necessary drivers
 Description: 
-I've tried setting up an asound.conf with a config for pcm.dsp0 so that I
-can use aoss. No big deal. But then I thought it would be cool to set the
-slave to pcm.jack. That way I could use aoss to route oss to jack using
-alsa instead of some of the hacks out there that only work half the time.
+How can I resolve this problem??
 
-No dice. It doesn't work. (Or at least I couldn't get it to work) Am I not
-understanding how to do this correctly, or is this just not possible the
-way things currently work?
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;Soundcard
+Selection&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+
+ &#9474; &#9474; 
+ &#9474; Following card(s) are found on your system. &#9474; 
+ &#9474; Choose a soundcard to configure: &#9474; 
+ &#9474;
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+&#9474; 
+ &#9474; &#9474; intel8x0 nVidia Corporation CK804 AC'97 Audio Controller
+(rev a2) &#9474; &#9474; 
+ &#9474; &#9474; legacy Probe legacy ISA (non-PnP) chips &#9474; &#9474; 
+ &#9474; &#9474; &#9474; &#9474; 
+ &#9474; &#9474; &#9474; &#9474; 
+ &#9474; &#9474; &#9474; &#9474; 
+ &#9474; &#9474; &#9474; &#9474; 
+ &#9474; &#9474; &#9474; &#9474; 
+ &#9474; &#9474; &#9474; &#9474; 
+ &#9474;
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+&#9474; 
+
+&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+
+ &#9474; < OK > <Cancel> &#9474; 
+
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+
+ 
+ 
+
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+
+ &#9474; &#9474; 
+ &#9474; Configuring snd-intel8x0 &#9474; 
+ &#9474; Do you want to modify /etc/modules.d/alsa? &#9474; 
+ &#9474; &#9474; 
+
+&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+
+ &#9474; < Yes > < No > &#9474; 
+
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+
+ 
+ 
+ 
+ 
+
+&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+
+ &#9474; &#9474; 
+ &#9474; &#9474; 
+ &#9474; OK, sound driver is configured. &#9474; 
+ &#9474; &#9474; 
+ &#9474; ALSA CONFIGURATOR &#9474; 
+ &#9474; &#9474; 
+ &#9474; will prepare the card for playing now. &#9474; 
+ &#9474; &#9474; 
+ &#9474; Now I'll run alsasound init script, then I'll use &#9474; 
+ &#9474; amixer to raise the default volumes. &#9474; 
+ &#9474; You can change the volume later via a mixer &#9474; 
+ &#9474; program such as alsamixer or gamix. &#9474; 
+ &#9474; &#9474; 
+
+&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;92%&#9472;&#9472;&#9508;
+
+ &#9474; < OK > &#9474; 
+
+&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+
+ 
+ 
+ 
+ Running modules-update... 
+ Loading driver... 
+ * Loading ALSA modules ... 
+ * Loading: snd-card-0 ... [ ok ] 
+ * Loading: snd-seq ... [ ok ] 
+ * ERROR: Failed to load necessary drivers [ ok ] 
+ * Restoring Mixer Levels ... 
+ * No mixer config in /etc/asound.state, you have to unmute your card! [
+ok ] 
+ Setting default volumes... 
+ amixer: Mixer attach default error: No such device 
+ Saving the mixer setup used for this in /etc/asound.state. 
+ /usr/sbin/alsactl: save_state:1163: No soundcards found... 
+ 
+ 
+ nel mio make.conf ho messo i seguenti dati: 
+ VIDEO_CARDS="nv" 
+ ALSA_CARDS="intel8x0" 
+ 
+ la scheda viene riconosciuta 
+ EvilZpc sbin # lspci -v | grep -i audio 
+ 00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
+Controller (rev a2) 
+ 
+ 
+ Moduli: 
+ EvilZpc sbin # lsmod 
+ Module Size Used by 
+ snd_seq 50592 0 
+ snd_intel8x0 33000 0 
+ snd_ac97_codec 99672 1 snd_intel8x0 
+ snd_ac97_bus 4480 1 snd_ac97_codec 
+ snd_pcm 80264 2 snd_intel8x0,snd_ac97_codec 
+ snd_timer 22024 2 snd_seq,snd_pcm 
+ snd 45520 5 snd_seq,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer 
+ snd_page_alloc 10640 2 snd_intel8x0,snd_pcm 
 ======================================================================
-
-----------------------------------------------------------------------
- FishB8 - 09-25-05 21:37 
-----------------------------------------------------------------------
-The applications I try to run work fine when the dsp0 slave.pcm is set to
-something like dmixer, but when I try assigning it to either jack or
-jackplug, (and the jack daemon is running) the applications will start up
-fine, but when I try to start playback they either segfault or do
-nothing.
-
-Alsa apps have no problem with the jack plugin. For instance if I change
-pcm.!default to jackplug, alsa apps will route their IO to jack ports
-without any problem.
-
-Here's my current config:
-
-pcm.!default {
-	type plug
-	slave.pcm "dmixer"
-}
-
-ctl.!default {
-	type hw
-	card 0
-}
-
-
-
-#Dmixer
-pcm.dmixer  {
-	type dmix
-	ipc_key 1024
-	slave {
-	    pcm "hw:0,0"
-	    period_size 1024
-	    buffer_size 8192
-	    rate 44100
-	}
-	bindings {
-	    0 0
-	    1 1
-	}
-}
-
-
-
-#OSS to Dmixer
-pcm.dsp0 {
-	type plug
-	slave.pcm "dmixer"
-}
-
-
-
-#JackPlug
-pcm.jackplug {
-	type plug
-	slave.pcm "jack"
-}
-
-pcm.jack {
-	type jack
-	playback_ports {
- 		0 alsa_pcm:playback_1
- 		1 alsa_pcm:playback_2
- 	}
- 	capture_ports {
- 		0 alsa_pcm:capture_1
-		1 alsa_pcm:capture_2
-	}
-}
-
-----------------------------------------------------------------------
- Raymond - 06-06-06 11:20 
-----------------------------------------------------------------------
-Your pcm.dsp0 has nothing to do with OSS, it just a customised form of
-dmix.
-
-With jack daemon is running, if your sound card does not support hardware
-mixing, all application have to used jack interface since jackd already
-used hw:0,0
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-05 17:23 FishB8         New Issue                                    
-09-24-05 16:58 b0ef           Note Added: 0006371                          
-09-25-05 21:37 FishB8         Note Added: 0006388                          
-06-06-06 11:20 Raymond        Note Added: 0010073                          
+06-06-06 11:58 doctor_evilz   New Issue                                    
+06-06-06 11:58 doctor_evilz   Kernel Version            => 2.6.16-r9       
 ======================================================================
