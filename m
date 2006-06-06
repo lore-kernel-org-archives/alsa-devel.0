@@ -1,11 +1,13 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: autoconf.h error cross compiling
-Date: Tue, 06 Jun 2006 16:20:09 -0400
-Message-ID: <1149625209.4072.57.camel@mindpipe>
+Subject: Re: OSS/ALSA issue
+Date: Tue, 06 Jun 2006 16:37:51 -0400
+Message-ID: <1149626271.4072.60.camel@mindpipe>
+References: <200606062157.43489.alien999999999@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <200606062157.43489.alien999999999@users.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,38 +17,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Alien <alien999999999@users.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am trying to cross compile alsa-lib 1.0.11 for a PPC 440 embedded
-system.  The build fails with this error:
+On Tue, 2006-06-06 at 21:57 +0200, Alien wrote:
+> as a result, the sound was played, all sound looped (also flash), and
+> a few 
+> hours later, my /var/log/kernel/warnings was > 600MB (kernel
+> warnings).
+> 
+> 
+> Now, we all know that:
+> 
+> 1. ALSA has hardware mixing if the chipset/driver supports it (i know
+> mine does).
+> 
+> 2. OSS does not do any multiple sounds
 
-Making all in instr
-mkdir .libs
- powerpc-440-linux-gnu-gcc -DHAVE_CONFIG_H -I. -I. -I../../include
--I../../include -D__ppc__ -g -O2 -MT fm.lo -MD -MP -MF .deps/fm.Tp
-o -c fm.c  -fPIC -DPIC -o .libs/fm.o
- powerpc-440-linux-gnu-gcc -DHAVE_CONFIG_H -I. -I. -I../../include
--I../../include -D__ppc__ -g -O2 -MT simple.lo -MD -MP -MF .deps/s
-imple.Tpo -c simple.c  -fPIC -DPIC -o .libs/simple.o
- powerpc-440-linux-gnu-gcc -DHAVE_CONFIG_H -I. -I. -I../../include
--I../../include -D__ppc__ -g -O2 -MT iwffff.lo -MD -MP -MF .deps/i
-wffff.Tpo -c iwffff.c  -fPIC -DPIC -o .libs/iwffff.o
-In file included
-from /opt/crosstool/gcc-3.4.2-glibc-2.3.2/powerpc-440-linux-gnu/lib/gcc/powerpc-440-linux-gnu/3.4.2/../../../../powe
-rpc-440-linux-gnu/sys-include/asm/types.h:40,
-                 from ../../include/sound/ainstr_iw.h:29,
-                 from iwffff.c:47:
-/opt/crosstool/gcc-3.4.2-glibc-2.3.2/powerpc-440-linux-gnu/lib/gcc/powerpc-440-linux-gnu/3.4.2/../../../../powerpc-440-linux-gnu/sys-
-include/linux/config.h:4:28: linux/autoconf.h: No such file or directory
-make[2]: *** [iwffff.lo] Error 1
-make[1]: *** [all-recursive] Error 1
-make: *** [all-recursive] Error 1
+It should work.  ALSA's OSS emulation supports mixing if the card has
+hardware mixing.  It is only in the case of software mixing that OSS
+emulation cannot support multiple open.
 
-Why is it looking for autoconf.h?  AFAICT that is a kernel header.  Do I
-merely have to copy it into the powerpc-440-linux-gnu/sys-include/linux/
-directory?
-
-Is the bug in my toolchain or alsa-lib?
+Sounds like a driver bug.  What do the kernel warnings say?
 
 Lee
