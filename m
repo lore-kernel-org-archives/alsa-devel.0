@@ -1,18 +1,15 @@
-From: "Casio, Inc." <casio@akoga.com>
-Subject: Casio Launches New Pathfinder Watch Site
-Date: Tue, 6 Jun 2006 16:49:30 -0400
-Message-ID: <20060606214931.555FA9948A@mail.perex.cz>
-Reply-To: casio@akoga.com
-Content-Type: multipart/mixed; boundary="===============1655287238=="
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Driver model ISA bus
+Date: Tue, 06 Jun 2006 23:54:02 +0200
+Message-ID: <4485F97A.6020205__20451.2918171988$1149632733$gmane$org@keyaccess.nl>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------060406030600070800050503"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6EC06149
+Received: from smtpq3.groni1.gr.home.nl (smtpq3.groni1.gr.home.nl
+	[213.51.130.202])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00202149
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Jun 2006 23:49:32 +0200 (MEST)
-Received: from akoga.com (unknown [63.86.221.33])
-	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	555FA9948A for <alsa-devel@alsa-project.org>;
-	Tue,  6 Jun 2006 23:49:31 +0200 (MEST)
+	Tue,  6 Jun 2006 23:54:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,222 +19,406 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Greg Kroah-Hartman <gregkh@suse.de>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
---===============1655287238==
-Content-Type: text/html;
-	charset="us-ascii"
+This is a multi-part message in MIME format.
+--------------060406030600070800050503
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi Greg.
+
+The below was sent a month ago and I haven't heard anything back. Saw 
+you saying "it's getting there" about this thing on the kernelnewbies 
+list but where's there?
+
+Signed-off-by: Rene Herman <rene.herman@keyaccess.nl>
+
+===
+During the recent "isa drivers using platform devices" discussion it was
+pointed out that (ALSA) ISA drivers ran into the problem of not having
+the option to fail driver load (device registration rather) upon not
+finding their hardware due to a probe() error not being passed up
+through the driver model. In the course of that, I suggested a seperate
+ISA bus might be best; Russell King agreed and suggested this bus could
+use the .match() method for the actual device discovery.
+
+The attached does this. For this old non (generically) discoverable ISA
+hardware only the driver itself can do discovery so as a difference with
+the platform_bus, this isa_bus also distributes match() up to the driver.
+
+As another difference: these devices only exist in the driver model due
+to the driver creating them because it might want to drive them, meaning
+that all device creation has been made internal as well.
+
+The usage model this provides is nice, and has been acked from the ALSA
+side by Takashi Iwai and Jaroslav Kysela. The ALSA driver module_init's
+now (for oldisa-only drivers) become:
+
+static int __init alsa_card_foo_init(void)
+{
+	return isa_register_driver(&snd_foo_isa_driver, SNDRV_CARDS);
+}
+
+static void __exit alsa_card_foo_exit(void)
+{
+	isa_unregister_driver(&snd_foo_isa_driver);
+}
+
+Quite like the other bus models therefore. This removes a lot of
+duplicated init code from the ALSA ISA drivers.
+
+The passed in isa_driver struct is the regular driver struct embedding a
+struct device_driver, the normal probe/remove/shutdown/suspend/resume
+callbacks, and as indicated that .match callback.
+
+The "SNDRV_CARDS" you see being passed in is a "unsigned int ndev"
+parameter, indicating how many devices to create and call our methods with.
+
+The platform_driver callbacks are called with a platform_device param;
+the isa_driver callbacks are being called with a "struct device *dev,
+unsigned int id" pair directly -- with the device creation completely
+internal to the bus it's much cleaner to not leak isa_dev's by passing
+them in at all. The id is the only thing we ever want other then the
+struct device * anyways, and it makes for nicer code in the callbacks as
+well.
+
+With this additional .match() callback ISA drivers have all options. If
+ALSA would want to keep the old non-load behaviour, it could stick all
+of the old .probe in .match, which would only keep them registered after
+everything was found to be present and accounted for. If it wanted the
+behaviour of always loading as it inadvertently did for a bit after the
+changeover to platform devices, it could just not provide a .match() and
+do everything in .probe() as before.
+
+If it, as Takashi Iwai already suggested earlier as a way of following
+the model from saner buses more closely, wants to load when a later bind
+could conceivably succeed, it could use .match() for the prerequisites
+(such as checking the user wants the card enabled and that port/irq/dma
+values have been passed in) and .probe() for everything else. This is
+the nicest model.
+
+To the code...
+
+This exports only two functions; isa_{,un}register_driver().
+
+isa_register_driver() register's the struct device_driver, and then
+loops over the passed in ndev creating devices and registering them.
+This causes the bus match method to be called for them, which is:
+
+int isa_bus_match(struct device *dev, struct device_driver *driver)
+{
+          struct isa_driver *isa_driver = to_isa_driver(driver);
+
+          if (dev->platform_data == isa_driver) {
+                  if (!isa_driver->match ||
+                          isa_driver->match(dev, to_isa_dev(dev)->id))
+                          return 1;
+                  dev->platform_data = NULL;
+          }
+          return 0;
+}
+
+The first thing this does is check if this device is in fact one of this
+driver's devices by seeing if the device's platform_data pointer is set
+to this driver. Platform devices compare strings, but we don't need to
+do that with everything being internal, so isa_register_driver() abuses
+dev->platform_data as a isa_driver pointer which we can then check here.
+I believe platform_data is available for this, but if rather not, moving
+the isa_driver pointer to the private struct isa_dev is ofcourse fine as
+well.
+
+Then, if the the driver did not provide a .match, it matches. If it did,
+the driver match() method is called to determine a match.
+
+If it did _not_ match, dev->platform_data is reset to indicate this to
+isa_register_driver which can then unregister the device again.
+
+If during all this, there's any error, or no devices matched at all
+everything is backed out again and the error, or -ENODEV, is returned.
+
+isa_unregister_driver() just unregisters the matched devices and the
+driver itself.
+
+More global points/questions...
+
+- I'm introducing include/linux/isa.h. It was available but is ofcourse
+a somewhat generic name. Moving more isa stuff over to it in time is
+ofcourse fine, so can I have it please? :)
+
+- I'm using device_initcall() and added the isa.o (dependent on
+CONFIG_ISA) after the base driver model things in the Makefile. Will
+this do, or I really need to stick it in drivers/base/init.c, inside
+#ifdef CONFIG_ISA? It's working fine.
+
+Lastly -- I also looked, a bit, into integrating with PnP. "Old ISA"
+could be another pnp_protocol, but this does not seem to be a good
+match, largely due to the same reason platform_devices weren't -- the
+devices do not have a life of their own outside the driver, meaning the
+pnp_protocol {get,set}_resources callbacks would need to callback into
+driver -- which again means you first need to _have_ that driver. Even
+if there's clean way around that, you only end up inventing fake but
+valid-form PnP IDs and generally catering to the PnP layer without any
+practical advantages over this very simple isa_bus. The thing I also
+suggested earlier about the user echoing values into /sys to set up the
+hardware from userspace first is... well, cute, but a horrible idea from
+a user standpoint.
+
+Comments ofcourse appreciated. Hope it's okay. As said, the usage model
+is nice at least.
+===
+
+Rene.
 
 
-<html>
-<head>
-</head>
-<body bgcolor="#000000" leftmargin="0" topmargin="0" rightmargin="0" bottommargin="0" marginwidth="0" marginheight="0">
-<table style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#FFFFFF;
-	font-size:11px;
-	font-weight:normal;
-	text-decoration:none;" width="623" cellpadding="0" cellspacing="0" border="0" bgcolor="#000000" align="center">
-	<tr>
-		<td align="left" style="padding-bottom:3px;padding-top:4px;" width="161"><img src="http://images.akoga.com/img/c/casio/0202/logo_pathfinder.gif" border="0" /></td>
-		<td align="right" valign="bottom" style="padding-bottom:3px;"><img src="http://images.akoga.com/img/c/casio/0202/logo_eupdate.gif" border="0" /></td>
-	</tr>
-	<tr>
-		<td colspan="2" bgcolor="#FFFFFF" style="margin-bottom:2px;margin-top:2px;"><img src="spacer.gif" width="1" height="3" border="0" /></td>
-	</td>
-	<tr>
-		<td colspan="2" style="padding-top:3px;"><img src="http://images.akoga.com/img/c/casio/0202/header.gif" border="0" /></td>
-	</tr>
-	<tr>
-		<td bgcolor="#8f302a" style="padding:6px;font-size:12px;"><strong>Featured Watch</strong></td>
-		<td bgcolor="#bb873c" style="padding:5px;padding-left:30px;font-size:15px;"><strong>New Pathfinder Site Launches</strong></td>
-	</tr>
-	<tr>
-		<td valign="top" bgcolor="#3b3b3b" width="161" style="padding-bottom:2px;">
-			<table style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#FFFFFF;
-	font-size:11px;
-	font-weight:normal;
-	text-decoration:none;" cellpadding="0" cellspacing="0" border="0" width="161">
-				<tr>
-					<td style="padding-left:10px;padding-right:10px;padding-top:10px;">
-						<table style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#FFFFFF;
-	font-size:11px;
-	font-weight:normal;
-	text-decoration:none;" cellpadding="0" cellspacing="0" border="0">
-							<tr>
-								<td><img src="http://images.akoga.com/img/c/casio/0202/img_watch.gif" border="" alt="PAW1200-1V" hspace="3"/></td>
-								<td><a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444740410E08.aspx' target="_blank" style="color:#FFFFFF"><strong>PAW1200-1V</strong></a><br />Pathfinder Atomic Solar Triple Sensor</td>
-							</tr>
-							<tr>
-								<td colspan="2"><a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444746440E08.aspx' target="_blank" style="color:#bb873c"><span style="color:#bb873c">Browse all of our watches</span></a></td>
-							</tr>
-							<tr>
-								<td style="border-bottom:1px dotted white;padding-top:15px;" colspan="2"><img src="spacer.gif" width="1" height="1" border="0" /></td>
-							</tr>
-						</table>					</td>
-				</tr>
-				<tr>
-					<td style="padding-left:10px;padding-right:10px;padding-top:15px;">
-						<table style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#FFFFFF;
-	font-size:11px;
-	font-weight:normal;
-	text-decoration:none;" cellpadding="0" cellspacing="0" border="0">
-							<tr>
-								<td style="font-size:12px;padding-bottom:4px;"><strong>Comparison Charts</strong></td>
-							</tr>
-							<tr>
-								<td>Compare watch features and find the perfect watch for your needs.</td>
-							</tr>
-							<tr>
-								<td style="padding-top:10px;"><a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E4147454447444B0E08.aspx' target="_blank"><img src="http://images.akoga.com/img/c/casio/0202/button_compare.gif" border="" alt="View Comparison Charts"/></a></td>
-							</tr>
-							<tr>
-								<td style="border-bottom:1px dotted white;padding-top:15px;"><img src="spacer.gif" width="1" height="1" border="0" /></td>
-							</tr>
-						</table>					</td>
-				</tr>
-				<tr>
-					<td style="padding-left:10px;padding-right:10px;padding-top:15px;">
-						<table style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#FFFFFF;
-	font-size:11px;
-	font-weight:normal;
-	text-decoration:none;" cellpadding="0" cellspacing="0" border="0">
-							<tr>
-								<td><img src="http://images.akoga.com/img/c/casio/0202/icon_warning.gif" border="0" align="left" hspace="5" />If you wish to subscribe to receive future emails from Casio please <a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E41474544474B400E08.aspx' target="_blank" style="color:#FFFFFF">click here</a> to register.</td>
-							</tr>
-						</table>					</td>
-				</tr>
-			</table>		</td>
-		<td valign="top" width="462" style="padding-left:25px;">
-			<table style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#FFFFFF;
-	font-size:11px;
-	font-weight:normal;
-	text-decoration:none;" cellpadding="0" cellspacing="0" border="0">
-				<tr>
-					<td style="padding-top:20px;">
-						<table style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#FFFFFF;
-	font-size:11px;
-	font-weight:normal;
-	text-decoration:none;" cellpadding="0" cellspacing="0" border="0">
-							<tr>
-								<td>The Pathfinder site, which launched April 7th, includes a number of rich media components. One key site feature involves a 360-degree animated tour of a watch. This media component is complemented by a number of interactive demonstrations showing how the solar-powered battery works as well has how the other components such as an altimeter, barometer, and depth gauge.<p>Read more below or <a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444443470E08.aspx' target="_blank" style="color:#FFFFFF">visit the site</a></td>
-								<td style="padding-left:10px;" valign="top"><img src="http://images.akoga.com/img/c/casio/0202/img_site.gif" border="0" /></td>
-							</tr>
-							<tr>
-								<td style="border-bottom:1px dotted white;padding-top:15px;" colspan="2"><img src="spacer.gif" width="1" height="1" border="0" /></td>
-							</tr>
-						</table>					</td>
-				</tr>
-				<tr>
-					<td style="padding-top:10px;">
-						<table style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#FFFFFF;
-	font-size:11px;
-	font-weight:normal;
-	text-decoration:none;" cellpadding="0" cellspacing="0" border="0">
-							<tr>
-								<td><span style="font-size:15px;font-weight:bold;">Interactive Customer Story</span><p><span style="color:#bb873c;font-size:15px;font-weight:bold;">Appalachian Trail</span><br />
-Read about how our Casio Pathfinder watch proved to be an essential tool on this 6 month trek.  Follow this customers journey along the Appalachian Trail and read about his experiences and how the Pathfinder watch assisted him along the way.<p><a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E4147454444414A0E08.aspx' target="_blank"><img src="http://images.akoga.com/img/c/casio/0202/button_read.gif" border="0" /></a></td>
-								<td style="padding-left:40px;padding-right:20px;" valign="top"><img src="http://images.akoga.com/img/c/casio/0202/img_john.gif" border="0" /></td>
-							</tr>
-							<tr>
-								<td style="border-bottom:1px dotted white;padding-top:15px;" colspan="2"><img src="spacer.gif" width="1" height="1" border="0" /></td>
-							</tr>
-						</table>					</td>
-				</tr>
-				<tr>
-					<td style="padding-top:10px;"><span style="font-size:15px;font-weight:bold;">Watch Features</span><p><img src="http://images.akoga.com/img/c/casio/0202/icon_atomic.gif" border="0" align="left"/><a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444444430E08.aspx' target="_blank" style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#bb873c;
-	font-size:14px;
-	font-weight:bold;
-	text-decoration:none;">Atomic Timekeeping</a><br /> Get split second accuracy with the Pathfinder&#146;s atomic timekeeping. Each day the watch receives a radio signal from the atomic transmitter in Fort Collins, Colorado. That signal resets the watch to the split second. It also automatically adjusts to Daylight Savings Time and Leap Year changes.<p><img src="http://images.akoga.com/img/c/casio/0202/icon_solar.gif" border="0" align="left"/><a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E41474544444A460E08.aspx' target="_blank" style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#bb873c;
-	font-size:14px;
-	font-weight:bold;
-	text-decoration:none;">Tough Solar</a><br /> You&#146;ll never have to change your battery again with Pathfinder&#146;s solar technology. The battery is automatically charged by light, either direct from the sun or from light sources inside. And it keeps that charge for the life of the watch. Light enters the watch through the sapphire crystal and dial, and hits a solar cell beneath the dial. Current is created and stored in the battery. The Pathfinder watch will continue to run under normal lighting conditions.<p><img src="http://images.akoga.com/img/c/casio/0202/icon_thermometer.gif" border="0" align="left"/><a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444542450E08.aspx' target="_blank" style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#bb873c;
-	font-size:14px;
-	font-weight:bold;
-	text-decoration:none;">Thermometer</a><br /> A built-in thermometer displays and checks the temperature every 5 minutes. The display can be converted from Celsius to Fahrenheit. Temperature ranges are from -10 to 60&#186;C (14 to 140&#186;F).<br /><br /><strong>Other features include:</strong><p>
-					<img src="http://images.akoga.com/img/c/casio/0202/icon_dot.gif" border="0" vspace="3" />&nbsp;&nbsp;<a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444541420E08.aspx' target="_blank" style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#bb873c;
-	font-size:14px;
-	font-weight:bold;
-	text-decoration:none;">Compass</a><br />
-					<img src="http://images.akoga.com/img/c/casio/0202/icon_dot.gif" border="0" vspace="3"/>&nbsp;&nbsp;<a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444547410E08.aspx' target="_blank" style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#bb873c;
-	font-size:14px;
-	font-weight:bold;
-	text-decoration:none;">Altimeter</a><br />
-					<img src="http://images.akoga.com/img/c/casio/0202/icon_dot.gif" border="0" vspace="3"/>&nbsp;&nbsp;<a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444545440E08.aspx' target="_blank" style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#bb873c;
-	font-size:14px;
-	font-weight:bold;
-	text-decoration:none;">Barometer</a><br />
-					<img src="http://images.akoga.com/img/c/casio/0202/icon_dot.gif" border="0" vspace="3"/>&nbsp;&nbsp;<a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E41474544454B4B0E08.aspx' target="_blank" style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#bb873c;
-	font-size:14px;
-	font-weight:bold;
-	text-decoration:none;">Tide Graph</a><br />
-					<img src="http://images.akoga.com/img/c/casio/0202/icon_dot.gif" border="0" vspace="3"/>&nbsp;&nbsp;<a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444A40400E08.aspx' target="_blank" style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#bb873c;
-	font-size:14px;
-	font-weight:bold;
-	text-decoration:none;">Depth Gauge</a><br />
-					<img src="http://images.akoga.com/img/c/casio/0202/icon_dot.gif" border="0" vspace="3"/>&nbsp;&nbsp;<a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444A46470E08.aspx' target="_blank" style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#bb873c;
-	font-size:14px;
-	font-weight:bold;
-	text-decoration:none;">Diving Log</a><br />
-					<img src="http://images.akoga.com/img/c/casio/0202/icon_dot.gif" border="0" vspace="3"/>&nbsp;&nbsp;<a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444A444A0E08.aspx' target="_blank" style="font-family:Trebuchet MS, Arial, sans-serif;
-	color:#bb873c;
-	font-size:14px;
-	font-weight:bold;
-	text-decoration:none;">Auto Light</a><br /><br /><br /></td>
-				</tr>
-			</table>		</td>
-	</tr>
-	<tr>
-		<td colspan="2" bgcolor="#bb873c" style="margin-bottom:2px;margin-top:2px;"><img src="http://images.akoga.com/img/c/casio/0202/spacer.gif" width="1" height="3" border="0" /></td>
-	</td>
-	<tr>
-		<td colspan="2" align="center" style="padding-top:5px;"><img src="http://images.akoga.com/img/c/casio/0202/footer.gif" border="0" usemap="#Map" /></td>
-	</td>
-	<tr>
-		<td colspan="2" align="center" style="padding-top:15px;font-family:Trebuchet MS, Arial, sans-serif;
-	color:#FFFFFF;
-	font-size:10px;
-	font-weight:normal;
-	text-decoration:none;">Casio, Inc.&nbsp;&nbsp;&#124;&nbsp;&nbsp;570 Mt. Pleasant Ave. Dover, NJ 07801&nbsp;&nbsp;&#124;&nbsp;&nbsp;phone: 973-361-5400&nbsp;&nbsp;&#124;&nbsp;&nbsp;fax: 973-531-8968</td>
-	</td>
+--------------060406030600070800050503
+Content-Type: text/plain;
+ name="isa_bus.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="isa_bus.diff"
 
-	</td>
-	</table>
+Index: local/drivers/base/isa.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ local/drivers/base/isa.c	2006-05-31 01:57:00.000000000 +0200
+@@ -0,0 +1,180 @@
++/*
++ * ISA bus.
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/isa.h>
++
++static struct device isa_bus = {
++	.bus_id		= "isa"
++};
++
++struct isa_dev {
++	struct device dev;
++	struct device *next;
++	unsigned int id;
++};
++
++#define to_isa_dev(x) container_of((x), struct isa_dev, dev)
++
++static int isa_bus_match(struct device *dev, struct device_driver *driver)
++{
++	struct isa_driver *isa_driver = to_isa_driver(driver);
++
++	if (dev->platform_data == isa_driver) {
++		if (!isa_driver->match ||
++			isa_driver->match(dev, to_isa_dev(dev)->id))
++			return 1;
++		dev->platform_data = NULL;
++	}
++	return 0;
++}
++
++static int isa_bus_probe(struct device *dev)
++{
++	struct isa_driver *isa_driver = dev->platform_data;
++
++	if (isa_driver->probe)
++		return isa_driver->probe(dev, to_isa_dev(dev)->id);
++
++	return 0;
++}
++
++static int isa_bus_remove(struct device *dev)
++{
++	struct isa_driver *isa_driver = dev->platform_data;
++
++	if (isa_driver->remove)
++		return isa_driver->remove(dev, to_isa_dev(dev)->id);
++
++	return 0;
++}
++
++static void isa_bus_shutdown(struct device *dev)
++{
++	struct isa_driver *isa_driver = dev->platform_data;
++
++	if (isa_driver->shutdown)
++		isa_driver->shutdown(dev, to_isa_dev(dev)->id);
++}
++
++static int isa_bus_suspend(struct device *dev, pm_message_t state)
++{
++	struct isa_driver *isa_driver = dev->platform_data;
++
++	if (isa_driver->suspend)
++		return isa_driver->suspend(dev, to_isa_dev(dev)->id, state);
++
++	return 0;
++}
++
++static int isa_bus_resume(struct device *dev)
++{
++	struct isa_driver *isa_driver = dev->platform_data;
++
++	if (isa_driver->resume)
++		return isa_driver->resume(dev, to_isa_dev(dev)->id);
++
++	return 0;
++}
++
++static struct bus_type isa_bus_type = {
++	.name		= "isa",
++	.match		= isa_bus_match,
++	.probe		= isa_bus_probe,
++	.remove		= isa_bus_remove,
++	.shutdown	= isa_bus_shutdown,
++	.suspend	= isa_bus_suspend,
++	.resume		= isa_bus_resume
++};
++
++static void isa_dev_release(struct device *dev)
++{
++	kfree(to_isa_dev(dev));
++}
++
++void isa_unregister_driver(struct isa_driver *isa_driver)
++{
++	struct device *dev = isa_driver->devices;
++
++	while (dev) {
++		struct device *tmp = to_isa_dev(dev)->next;
++		device_unregister(dev);
++		dev = tmp;
++	}
++	driver_unregister(&isa_driver->driver);
++}
++EXPORT_SYMBOL_GPL(isa_unregister_driver);
++
++int isa_register_driver(struct isa_driver *isa_driver, unsigned int ndev)
++{
++	int error;
++	unsigned int id;
++
++	isa_driver->driver.bus	= &isa_bus_type;
++	isa_driver->devices	= NULL;
++
++	error = driver_register(&isa_driver->driver);
++	if (error)
++		return error;
++
++	for (id = 0; id < ndev; id++) {
++		struct isa_dev *isa_dev;
++
++		isa_dev = kzalloc(sizeof *isa_dev, GFP_KERNEL);
++		if (!isa_dev) {
++			error = -ENOMEM;
++			break;
++		}
++
++		isa_dev->dev.parent	= &isa_bus;
++		isa_dev->dev.bus	= &isa_bus_type;
++
++		snprintf(isa_dev->dev.bus_id, BUS_ID_SIZE, "%s.%u",
++				isa_driver->driver.name, id);
++
++		isa_dev->dev.platform_data	= isa_driver;
++		isa_dev->dev.release		= isa_dev_release;
++		isa_dev->id			= id;
++
++		error = device_register(&isa_dev->dev);
++		if (error) {
++			put_device(&isa_dev->dev);
++			break;
++		}
++
++		if (isa_dev->dev.platform_data) {
++			isa_dev->next = isa_driver->devices;
++			isa_driver->devices = &isa_dev->dev;
++		} else
++			device_unregister(&isa_dev->dev);
++	}
++
++	if (!error && !isa_driver->devices)
++		error = -ENODEV;
++
++	if (error)
++		isa_unregister_driver(isa_driver);
++
++	return error;
++}
++EXPORT_SYMBOL_GPL(isa_register_driver);
++
++static int __init isa_bus_init(void)
++{
++	int error;
++
++	error = bus_register(&isa_bus_type);
++	if (!error) {
++		error = device_register(&isa_bus);
++		if (error)
++			bus_unregister(&isa_bus_type);
++	}
++	return error;
++}
++
++device_initcall(isa_bus_init);
+Index: local/include/linux/isa.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ local/include/linux/isa.h	2006-05-31 01:23:24.000000000 +0200
+@@ -0,0 +1,28 @@
++/*
++ * ISA bus.
++ */
++
++#ifndef __LINUX_ISA_H
++#define __LINUX_ISA_H
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++
++struct isa_driver {
++	int (*match)(struct device *, unsigned int);
++	int (*probe)(struct device *, unsigned int);
++	int (*remove)(struct device *, unsigned int);
++	void (*shutdown)(struct device *, unsigned int);
++	int (*suspend)(struct device *, unsigned int, pm_message_t);
++	int (*resume)(struct device *, unsigned int);
++
++	struct device_driver driver;
++	struct device *devices;
++};
++
++#define to_isa_driver(x) container_of((x), struct isa_driver, driver)
++
++int isa_register_driver(struct isa_driver *, unsigned int);
++void isa_unregister_driver(struct isa_driver *);
++
++#endif /* __LINUX_ISA_H */
+Index: local/drivers/base/Makefile
+===================================================================
+--- local.orig/drivers/base/Makefile	2006-05-31 01:22:52.000000000 +0200
++++ local/drivers/base/Makefile	2006-05-31 01:23:24.000000000 +0200
+@@ -5,6 +5,7 @@ obj-y			:= core.o sys.o bus.o dd.o \
+ 			   cpu.o firmware.o init.o map.o dmapool.o \
+ 			   attribute_container.o transport_class.o
+ obj-y			+= power/
++obj-$(CONFIG_ISA)	+= isa.o
+ obj-$(CONFIG_FW_LOADER)	+= firmware_class.o
+ obj-$(CONFIG_NUMA)	+= node.o
+ obj-$(CONFIG_MEMORY_HOTPLUG) += memory.o
 
-<map name="Map" id="Map"><area shape="rect" coords="282,0,362,12" href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444B43460E08.aspx' /><area shape="rect" coords="379,2,414,14" href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E400E414745444B41450E08.aspx' /></map><br><br><table width='500' border='0' align='center' cellpadding='2' cellspacing='3'><tr><td align='center'> <p align='center'>
-<div align='center'><a href='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E08.aspx'><img src='http://akoga.com/img.gif' width='531' height='80' border='0'></a>
-<br><img src='http://akoga.com/080E131E01135F161704171E32131E01135F02001D181711065C1D00150E434045444B440E43420E430E420E08.aspx'>
-<font color="#999999" face="arial, verdana" size="2">Casio, Inc. &#183; 570 Mt. Pleasant Ave. &#183; Dover, NJ 07801</font></p></td></tr></table></body>
-</html>
-
-
-
-
---===============1655287238==
+--------------060406030600070800050503
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1655287238==
+--------------060406030600070800050503
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -248,4 +429,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============1655287238==--
+--------------060406030600070800050503--
