@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
-	2.6.11 kernel
-Date: Tue, 6 Jun 2006 09:08:00 +0200
-Message-ID: <c1c1786348ccaf71ddafaf5829a1075d@bugtrack.alsa-project.org>
+Subject: [ALSA - plugins 0001445]: jackplug and oss
+Date: Tue, 6 Jun 2006 11:20:29 +0200
+Message-ID: <fe247ac35562373d8c36e2e51a17ead5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9082C127
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CDE7146
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Jun 2006 09:08:00 +0200 (MEST)
+	Tue,  6 Jun 2006 11:20:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,152 +25,120 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1445> 
 ======================================================================
-Reported By:                yafrank
-Assigned To:                perex
+Reported By:                FishB8
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   PCI - ens1371
+Project:                    ALSA - plugins
+Issue ID:                   1445
+Category:                   PCM - jack
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     feedback
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
+Status:                     new
 ======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              06-06-2006 09:07 CEST
+Date Submitted:             09-23-2005 17:23 CEST
+Last Modified:              06-06-2006 11:20 CEST
 ======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Summary:                    jackplug and oss
 Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+I've tried setting up an asound.conf with a config for pcm.dsp0 so that I
+can use aoss. No big deal. But then I thought it would be cool to set the
+slave to pcm.jack. That way I could use aoss to route oss to jack using
+alsa instead of some of the hacks out there that only work half the time.
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
-
-
+No dice. It doesn't work. (Or at least I couldn't get it to work) Am I not
+understanding how to do this correctly, or is this just not possible the
+way things currently work?
 ======================================================================
 
 ----------------------------------------------------------------------
- yafrank - 02-04-06 20:57 
+ FishB8 - 09-25-05 21:37 
 ----------------------------------------------------------------------
-I've tested the latest alsa-1.0.11rc3 driver with official 2.6.15.2 kernel
-in my fc4. It's still not work for me. Dmesg shows following message:
-...
-irq 5: nobody cared (try booting with the "irqpoll" option)
- [<c012c958>] __report_bad_irq+0x2b/0x69
- [<c012ca1a>] note_interrupt+0x6b/0x91
- [<c012c445>] __do_IRQ+0x90/0xcf
- [<c010420f>] do_IRQ+0x1d/0x28
- [<c0102d4a>] common_interrupt+0x1a/0x20
- [<c012c380>] handle_IRQ_event+0x15/0x4a
- [<c012c42b>] __do_IRQ+0x76/0xcf
- [<c010420f>] do_IRQ+0x1d/0x28
- [<c0102d4a>] common_interrupt+0x1a/0x20
- [<c012c380>] handle_IRQ_event+0x15/0x4a
- [<c012c42b>] __do_IRQ+0x76/0xcf
- [<c010f180>] do_page_fault+0x0/0x4a5
- [<c010420f>] do_IRQ+0x1d/0x28
- [<c0102d4a>] common_interrupt+0x1a/0x20
- [<c010f180>] do_page_fault+0x0/0x4a5
- [<c010f1e2>] do_page_fault+0x62/0x4a5
- [<c010f180>] do_page_fault+0x0/0x4a5
- [<c0102da7>] error_code+0x4f/0x54
-handlers:
-[<cc8f1c44>] (snd_audiopci_interrupt+0x0/0xd8 [snd_ens1371])
-Disabling IRQ #5
+The applications I try to run work fine when the dsp0 slave.pcm is set to
+something like dmixer, but when I try assigning it to either jack or
+jackplug, (and the jack daemon is running) the applications will start up
+fine, but when I try to start playback they either segfault or do
+nothing.
+
+Alsa apps have no problem with the jack plugin. For instance if I change
+pcm.!default to jackplug, alsa apps will route their IO to jack ports
+without any problem.
+
+Here's my current config:
+
+pcm.!default {
+	type plug
+	slave.pcm "dmixer"
+}
+
+ctl.!default {
+	type hw
+	card 0
+}
+
+
+
+#Dmixer
+pcm.dmixer  {
+	type dmix
+	ipc_key 1024
+	slave {
+	    pcm "hw:0,0"
+	    period_size 1024
+	    buffer_size 8192
+	    rate 44100
+	}
+	bindings {
+	    0 0
+	    1 1
+	}
+}
+
+
+
+#OSS to Dmixer
+pcm.dsp0 {
+	type plug
+	slave.pcm "dmixer"
+}
+
+
+
+#JackPlug
+pcm.jackplug {
+	type plug
+	slave.pcm "jack"
+}
+
+pcm.jack {
+	type jack
+	playback_ports {
+ 		0 alsa_pcm:playback_1
+ 		1 alsa_pcm:playback_2
+ 	}
+ 	capture_ports {
+ 		0 alsa_pcm:capture_1
+		1 alsa_pcm:capture_2
+	}
+}
 
 ----------------------------------------------------------------------
- Raymond - 06-06-06 09:07 
+ Raymond - 06-06-06 11:20 
 ----------------------------------------------------------------------
-Refer to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023#4445, 
+Your pcm.dsp0 has nothing to do with OSS, it just a customised form of
+dmix.
 
-snd_es1371_codec_read() and snd_es1371_codec_write() seem unable to
-read/write ac97 codec correctly
-
-similar to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132
+With jack daemon is running, if your sound card does not support hardware
+mixing, all application have to used jack interface since jackd already
+used hw:0,0
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-03-31-05 10:49 yafrank        Note Added: 0004277                          
-03-31-05 13:14 yafrank        Note Added: 0004279                          
-03-31-05 13:23 perex          Note Added: 0004280                          
-03-31-05 17:08 yafrank        Note Added: 0004282                          
-04-06-05 18:41 mmadore        Note Added: 0004350                          
-04-07-05 16:04 tiwai          Note Added: 0004357                          
-04-07-05 18:32 mmadore        Note Added: 0004362                          
-04-07-05 18:33 mmadore        File Added: asound.state                     
-04-07-05 18:37 mmadore        File Added: ac97#0-0                         
-04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
-04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
-04-12-05 06:02 yafrank        Note Added: 0004445                          
-04-12-05 16:29 tiwai          Note Added: 0004447                          
-04-12-05 19:46 yafrank        Note Added: 0004459                          
-04-12-05 20:00 yafrank        Note Added: 0004460                          
-04-12-05 21:11 mmadore        Note Added: 0004463                          
-04-12-05 21:12 mmadore        File Added: asound.state.new                    
-04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
-06-17-05 09:55 yafrank        Note Added: 0005065                          
-06-17-05 11:45 yafrank        Note Added: 0005067                          
-06-17-05 14:44 tiwai          Note Added: 0005073                          
-06-18-05 04:26 yafrank        Note Added: 0005082                          
-06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
-06-18-05 05:19 yafrank        Note Added: 0005083                          
-06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
-
-06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
-ens1371
-06-20-05 11:00 perex          Note Added: 0005095                          
-06-20-05 11:01 perex          Status                   new => assigned     
-06-20-05 11:01 perex          Assigned To               => perex           
-06-23-05 16:48 yafrank        Note Added: 0005191                          
-07-08-05 10:24 perex          Note Added: 0005405                          
-07-08-05 10:25 perex          Note Edited: 0005405                         
-07-11-05 13:45 yafrank        Note Added: 0005444                          
-07-11-05 16:47 yafrank        Note Added: 0005449                          
-07-11-05 22:52 gwennou        Note Added: 0005451                          
-09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
-09-01-05 10:51 yafrank        Note Added: 0005995                          
-09-01-05 18:15 tiwai          Note Added: 0005997                          
-09-04-05 02:09 bobcat98       Note Added: 0006034                          
-09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
-10-25-05 13:55 rufusplant     Note Added: 0006539                          
-10-25-05 15:12 tiwai          Note Added: 0006542                          
-11-14-05 10:01 perex          Status                   assigned => feedback
-11-15-05 16:21 yafrank        Note Added: 0006730                          
-11-28-05 05:18 rufusplant     Note Added: 0006853                          
-12-11-05 06:43 yafrank        Note Added: 0006975                          
-02-02-06 12:58 pearma         Note Added: 0007876                          
-02-02-06 17:38 yafrank        Note Deleted: 0006975                        
-02-04-06 10:43 pearma         Note Added: 0007915                          
-02-04-06 19:18 rlrevell       Status                   feedback => resolved
-02-04-06 19:18 rlrevell       Resolution               open => fixed       
-02-04-06 20:57 yafrank        Status                   resolved => feedback
-02-04-06 20:57 yafrank        Resolution               fixed => reopened   
-02-04-06 20:57 yafrank        Note Added: 0007925                          
-02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
-06-06-06 09:07 Raymond        Note Added: 0010072                          
+09-23-05 17:23 FishB8         New Issue                                    
+09-24-05 16:58 b0ef           Note Added: 0006371                          
+09-25-05 21:37 FishB8         Note Added: 0006388                          
+06-06-06 11:20 Raymond        Note Added: 0010073                          
 ======================================================================
