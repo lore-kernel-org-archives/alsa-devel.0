@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002186]: ERROR: Failed to load
-	necessary drivers
-Date: Tue, 6 Jun 2006 11:58:25 +0200
-Message-ID: <6f82baff5c4c9082b87fe81d1f57e83c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002181]: HDA modem SI3054 identified
+	but not working
+Date: Tue, 6 Jun 2006 12:08:57 +0200
+Message-ID: <43b0675e0494420d21a4713c3ba29cc6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C934B155
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7F052137
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Jun 2006 11:58:25 +0200 (MEST)
+	Tue,  6 Jun 2006 12:08:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,145 +24,117 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2186> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2181> 
 ======================================================================
-Reported By:                doctor_evilz
-Assigned To:                
+Reported By:                support-at-eeos
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2186
-Category:                   PCI - intel8x0
+Issue ID:                   2181
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.16-r9
+Status:                     assigned
+Distribution:               Mandriva 2006.0
+Kernel Version:             2.6.12 / 2.6.16
 ======================================================================
-Date Submitted:             06-06-2006 11:58 CEST
-Last Modified:              06-06-2006 11:58 CEST
+Date Submitted:             06-02-2006 19:47 CEST
+Last Modified:              06-06-2006 12:08 CEST
 ======================================================================
-Summary:                    ERROR: Failed to load necessary drivers
+Summary:                    HDA modem SI3054 identified but not working
 Description: 
-How can I resolve this problem??
+LAPTOP TARGA 856 WA MT34
+SOUNDCARD: ATI HDA SB 450 with integrated modem Agere Systems HDA
+(identified as SI3054)
+Alsa: 1.0.11 both on kernel 2.6.12 and 2.6.16.
+Module: snd_hda_intel, properly identified, sound works well.
+Slmodem: 2.9.11 last stable.
+Wvdial: 1.54.0
+Wvdial.conf: tried both with and without adding parameters X3 and Carrier
+Check = no
+ATTACHED: lspci -vv of sound device, aplay -l, cat
+/proc/asound/card0/codec#1, uname -a
 
-&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;Soundcard
-Selection&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+Modem properly identified as SI 3054 card 0 device 6 (see aplay -l output
+here below).
 
- &#9474; &#9474; 
- &#9474; Following card(s) are found on your system. &#9474; 
- &#9474; Choose a soundcard to configure: &#9474; 
- &#9474;
-&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
-&#9474; 
- &#9474; &#9474; intel8x0 nVidia Corporation CK804 AC'97 Audio Controller
-(rev a2) &#9474; &#9474; 
- &#9474; &#9474; legacy Probe legacy ISA (non-PnP) chips &#9474; &#9474; 
- &#9474; &#9474; &#9474; &#9474; 
- &#9474; &#9474; &#9474; &#9474; 
- &#9474; &#9474; &#9474; &#9474; 
- &#9474; &#9474; &#9474; &#9474; 
- &#9474; &#9474; &#9474; &#9474; 
- &#9474; &#9474; &#9474; &#9474; 
- &#9474;
-&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
-&#9474; 
+PROBLEM:
+1) wvdial does not connect. wvdial tries to dial, without any audible
+effect, but always returns message  no carrier. 
+2) Modem volume cannot be controlled.
+3) alternative attempt with kppp return the same results
 
-&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+aplay -l gives
 
- &#9474; < OK > <Cancel> &#9474; 
+card 0: SB [HDA ATI SB], device 6: Si3054 Modem [Si3054 Modem]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
+and 
 
- 
- 
+cat /proc/asound/card0/codec#1
 
-&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+[eeos@localhost ~]$ cat /proc/asound/card0/codec#1
+Codec: Generic 11c1 Si3054
+Address: 1
+Vendor Id: 0x11c13026
+Subsystem Id: 0x11c13026
+Revision Id: 0x100700
 
- &#9474; &#9474; 
- &#9474; Configuring snd-intel8x0 &#9474; 
- &#9474; Do you want to modify /etc/modules.d/alsa? &#9474; 
- &#9474; &#9474; 
+LSPCI -VV
 
-&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9508;
+[root@localhost eeos]# lspci -vv -s 00:14.2
+00:14.2 Audio device: ATI Technologies Inc SB450 HDA Audio (rev 01)
+        Subsystem: Micro-Star International Co., Ltd.: Unknown device
+0369
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 64, cache line size 10
+        Interrupt: pin ? routed to IRQ 17
+        Region 0: Memory at febf8000 (64-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+                Address: 0000000000000000  Data: 0000
 
- &#9474; < Yes > < No > &#9474; 
+UNAME -A
 
-&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
-
- 
- 
- 
- 
-
-&#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
-
- &#9474; &#9474; 
- &#9474; &#9474; 
- &#9474; OK, sound driver is configured. &#9474; 
- &#9474; &#9474; 
- &#9474; ALSA CONFIGURATOR &#9474; 
- &#9474; &#9474; 
- &#9474; will prepare the card for playing now. &#9474; 
- &#9474; &#9474; 
- &#9474; Now I'll run alsasound init script, then I'll use &#9474; 
- &#9474; amixer to raise the default volumes. &#9474; 
- &#9474; You can change the volume later via a mixer &#9474; 
- &#9474; program such as alsamixer or gamix. &#9474; 
- &#9474; &#9474; 
-
-&#9500;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;92%&#9472;&#9472;&#9508;
-
- &#9474; < OK > &#9474; 
-
-&#9492;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;
-
- 
- 
- 
- Running modules-update... 
- Loading driver... 
- * Loading ALSA modules ... 
- * Loading: snd-card-0 ... [ ok ] 
- * Loading: snd-seq ... [ ok ] 
- * ERROR: Failed to load necessary drivers [ ok ] 
- * Restoring Mixer Levels ... 
- * No mixer config in /etc/asound.state, you have to unmute your card! [
-ok ] 
- Setting default volumes... 
- amixer: Mixer attach default error: No such device 
- Saving the mixer setup used for this in /etc/asound.state. 
- /usr/sbin/alsactl: save_state:1163: No soundcards found... 
- 
- 
- nel mio make.conf ho messo i seguenti dati: 
- VIDEO_CARDS="nv" 
- ALSA_CARDS="intel8x0" 
- 
- la scheda viene riconosciuta 
- EvilZpc sbin # lspci -v | grep -i audio 
- 00:04.0 Multimedia audio controller: nVidia Corporation CK804 AC'97 Audio
-Controller (rev a2) 
- 
- 
- Moduli: 
- EvilZpc sbin # lsmod 
- Module Size Used by 
- snd_seq 50592 0 
- snd_intel8x0 33000 0 
- snd_ac97_codec 99672 1 snd_intel8x0 
- snd_ac97_bus 4480 1 snd_ac97_codec 
- snd_pcm 80264 2 snd_intel8x0,snd_ac97_codec 
- snd_timer 22024 2 snd_seq,snd_pcm 
- snd 45520 5 snd_seq,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer 
- snd_page_alloc 10640 2 snd_intel8x0,snd_pcm 
+[root@localhost eeos]# uname -a
+Linux localhost 2.6.16-1mdk #1 Fri May 19 19:49:05 CEST 2006 i686 AMD
+Turion(tm) 64 Mobile Technology MT-34 unknown GNU/Linux
 ======================================================================
+
+----------------------------------------------------------------------
+ support-at-eeos - 06-05-06 13:54 
+----------------------------------------------------------------------
+Microsoft Windows XP Home identifies the modem as AGERE SYSTEMS HDA MODEM
+
+----------------------------------------------------------------------
+ support-at-eeos - 06-06-06 12:08 
+----------------------------------------------------------------------
+2)Added copy of oem file (produced under MS windows XP Home)
+3)Added modem log (produced under MS Windows XP home)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-06 11:58 doctor_evilz   New Issue                                    
-06-06-06 11:58 doctor_evilz   Kernel Version            => 2.6.16-r9       
+06-02-06 19:47 support-at-eeosNew Issue                                    
+06-02-06 19:47 support-at-eeosDistribution              => Mandriva 2006.0 
+06-02-06 19:47 support-at-eeosKernel Version            => 2.6.12 / 2.6.16 
+06-02-06 19:48 support-at-eeosIssue Monitored: support-at-eeos                  
+ 
+06-05-06 13:54 support-at-eeosNote Added: 0010069                          
+06-06-06 12:00 support-at-eeosFile Added: oem4.inf                         
+06-06-06 12:03 support-at-eeosFile Added: ModemLog_Agere-Systems-HDA-Modem.txt  
+                 
+06-06-06 12:08 support-at-eeosNote Added: 0010074                          
 ======================================================================
