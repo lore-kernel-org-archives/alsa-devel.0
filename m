@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Tue, 6 Jun 2006 06:35:07 +0200
-Message-ID: <bb9160d50d646929a0ecef694e68ad5b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
+	2.6.11 kernel
+Date: Tue, 6 Jun 2006 09:08:00 +0200
+Message-ID: <c1c1786348ccaf71ddafaf5829a1075d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BBD0134
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9082C127
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Jun 2006 06:35:07 +0200 (MEST)
+	Tue,  6 Jun 2006 09:08:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,80 +26,152 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                bzbarsky
-Assigned To:                
+Reported By:                yafrank
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2132
+Issue ID:                   1023
 Category:                   PCI - ens1371
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15
+Status:                     feedback
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-06-2006 06:35 CEST
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              06-06-2006 09:07 CEST
 ======================================================================
-Summary:                    No sound from speakers
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
-Alsa seems to detect the sound card, but when I try to actually play
-something there is no sound from the speakers.
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
+
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- bzbarsky - 06-05-06 03:57 
+ yafrank - 02-04-06 20:57 
 ----------------------------------------------------------------------
-dmesg output attached.  No obvious errors from the sound driver, but there
-are the messages from the tv card driver about parity issues... Not sure
-whether that's relevant.
+I've tested the latest alsa-1.0.11rc3 driver with official 2.6.15.2 kernel
+in my fc4. It's still not work for me. Dmesg shows following message:
+...
+irq 5: nobody cared (try booting with the "irqpoll" option)
+ [<c012c958>] __report_bad_irq+0x2b/0x69
+ [<c012ca1a>] note_interrupt+0x6b/0x91
+ [<c012c445>] __do_IRQ+0x90/0xcf
+ [<c010420f>] do_IRQ+0x1d/0x28
+ [<c0102d4a>] common_interrupt+0x1a/0x20
+ [<c012c380>] handle_IRQ_event+0x15/0x4a
+ [<c012c42b>] __do_IRQ+0x76/0xcf
+ [<c010420f>] do_IRQ+0x1d/0x28
+ [<c0102d4a>] common_interrupt+0x1a/0x20
+ [<c012c380>] handle_IRQ_event+0x15/0x4a
+ [<c012c42b>] __do_IRQ+0x76/0xcf
+ [<c010f180>] do_page_fault+0x0/0x4a5
+ [<c010420f>] do_IRQ+0x1d/0x28
+ [<c0102d4a>] common_interrupt+0x1a/0x20
+ [<c010f180>] do_page_fault+0x0/0x4a5
+ [<c010f1e2>] do_page_fault+0x62/0x4a5
+ [<c010f180>] do_page_fault+0x0/0x4a5
+ [<c0102da7>] error_code+0x4f/0x54
+handlers:
+[<cc8f1c44>] (snd_audiopci_interrupt+0x0/0xd8 [snd_ens1371])
+Disabling IRQ #5
 
 ----------------------------------------------------------------------
- Raymond - 06-06-06 06:35 
+ Raymond - 06-06-06 09:07 
 ----------------------------------------------------------------------
-According to ac97#0-0+regs-1.0.11 , seem ac97 registers are shifted
+Refer to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023#4445, 
 
-0:00 = 0000
-0:02 = 0d50
+snd_es1371_codec_read() and snd_es1371_codec_write() seem unable to
+read/write ac97 codec correctly
 
-0:7c = 0000
-0:7e = 4e53
+similar to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-06 19:54 bzbarsky       New Issue                                    
-05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
-05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
-05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
-05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
-05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
-05-17-06 19:56 bzbarsky       File Added: scsound.log                      
-05-17-06 19:57 bzbarsky       Note Added: 0009857                          
-05-20-06 05:31 Raymond        Note Added: 0009882                          
-05-20-06 21:43 bzbarsky       Note Added: 0009893                          
-05-21-06 03:41 Raymond        Note Added: 0009894                          
-05-21-06 03:48 Raymond        Note Edited: 0009894                         
-05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
-05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
-05-22-06 02:53 bzbarsky       Note Added: 0009901                          
-05-22-06 04:14 Raymond        Note Added: 0009902                          
-05-23-06 09:00 Raymond        Note Added: 0009929                          
-05-23-06 09:03 Raymond        Note Edited: 0009929                         
-05-23-06 09:07 Raymond        Note Edited: 0009929                         
-06-02-06 20:08 bzbarsky       Note Added: 0010053                          
-06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
-06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
-06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
- 
-06-02-06 20:35 bzbarsky       Note Added: 0010054                          
-06-03-06 02:44 Raymond        Note Added: 0010058                          
-06-05-06 01:29 bzbarsky       Note Added: 0010066                          
-06-05-06 03:31 Raymond        Note Added: 0010067                          
-06-05-06 03:56 bzbarsky       File Added: dmesg                            
-06-05-06 03:57 bzbarsky       Note Added: 0010068                          
-06-06-06 06:35 Raymond        Note Added: 0010071                          
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
+04-12-05 21:11 mmadore        Note Added: 0004463                          
+04-12-05 21:12 mmadore        File Added: asound.state.new                    
+04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
+06-17-05 09:55 yafrank        Note Added: 0005065                          
+06-17-05 11:45 yafrank        Note Added: 0005067                          
+06-17-05 14:44 tiwai          Note Added: 0005073                          
+06-18-05 04:26 yafrank        Note Added: 0005082                          
+06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
+06-18-05 05:19 yafrank        Note Added: 0005083                          
+06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
+
+06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
+ens1371
+06-20-05 11:00 perex          Note Added: 0005095                          
+06-20-05 11:01 perex          Status                   new => assigned     
+06-20-05 11:01 perex          Assigned To               => perex           
+06-23-05 16:48 yafrank        Note Added: 0005191                          
+07-08-05 10:24 perex          Note Added: 0005405                          
+07-08-05 10:25 perex          Note Edited: 0005405                         
+07-11-05 13:45 yafrank        Note Added: 0005444                          
+07-11-05 16:47 yafrank        Note Added: 0005449                          
+07-11-05 22:52 gwennou        Note Added: 0005451                          
+09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
+09-01-05 10:51 yafrank        Note Added: 0005995                          
+09-01-05 18:15 tiwai          Note Added: 0005997                          
+09-04-05 02:09 bobcat98       Note Added: 0006034                          
+09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
+10-25-05 13:55 rufusplant     Note Added: 0006539                          
+10-25-05 15:12 tiwai          Note Added: 0006542                          
+11-14-05 10:01 perex          Status                   assigned => feedback
+11-15-05 16:21 yafrank        Note Added: 0006730                          
+11-28-05 05:18 rufusplant     Note Added: 0006853                          
+12-11-05 06:43 yafrank        Note Added: 0006975                          
+02-02-06 12:58 pearma         Note Added: 0007876                          
+02-02-06 17:38 yafrank        Note Deleted: 0006975                        
+02-04-06 10:43 pearma         Note Added: 0007915                          
+02-04-06 19:18 rlrevell       Status                   feedback => resolved
+02-04-06 19:18 rlrevell       Resolution               open => fixed       
+02-04-06 20:57 yafrank        Status                   resolved => feedback
+02-04-06 20:57 yafrank        Resolution               fixed => reopened   
+02-04-06 20:57 yafrank        Note Added: 0007925                          
+02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
+06-06-06 09:07 Raymond        Note Added: 0010072                          
 ======================================================================
