@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002151]: Card: HDA ULI M5461
-Date: Mon, 5 Jun 2006 21:59:57 +0200
-Message-ID: <20060605195958.43C0D129@alsa.jcu.cz>
+Subject: [ALSA - driver 0002132]: No sound from speakers
+Date: Tue, 6 Jun 2006 06:35:07 +0200
+Message-ID: <bb9160d50d646929a0ecef694e68ad5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43C0D129
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BBD0134
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Jun 2006 21:59:58 +0200 (MEST)
+	Tue,  6 Jun 2006 06:35:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,94 +22,83 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Analog Devices AD1986A (HDA ULI M5461) on ASUS P4RD1-MX mixer works incorrectly
-Message-ID: <2884d8a053da21b068a1113e55c17802@bugtrack.alsa-project.org>
-X-Priority: 3
-X-Mailer: PHPMailer [version 1.72]
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="iso-8859-1"
-
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2151> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
 ======================================================================
-Reported By:                shadoweel
-Assigned To:                tiwai
+Reported By:                bzbarsky
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2151
-Category:                   PCI - hda-intel
+Issue ID:                   2132
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.12 + alsa 1.0.11
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             05-23-2006 16:15 CEST
-Last Modified:              06-05-2006 21:59 CEST
+Date Submitted:             05-17-2006 19:54 CEST
+Last Modified:              06-06-2006 06:35 CEST
 ======================================================================
-Summary:                    Card: HDA ULI M5461                          
-Analog Devices AD1986A (HDA ULI M5461) on ASUS P4RD1-MX mixer works incorrectly
+Summary:                    No sound from speakers
 Description: 
-Hangs for an hour with stock Ubuntu 2.6.12 kernel on azx_get_response
-timeout floods
--No sound
--Similar to #2099
-
-Loads with stock ubuntu kernel 2.6.12 +
-realtek-linux-audiopack-3.5-6.tar.bz2 following
-https://wiki.ubuntu.com/HdaIntelSoundHowto?highlight=%28sound%29
--Sound, but distorted and very low volume
--Only PCM slider in mixer, it works
-
-Loads with stock ubuntu kernel 2.6.12 + stock alsa 1.0.11
-(drivers,libs,oss,plugins,utils)
--Clean sound at very high volume (which distorts at peaks)
--Opening / touching the mixer immediately turns sound off (similar to
-#2103)
--No master slider (only headphones/front)
-
-I have tried many models, without success. I have a AC'97 front panel with
-line out and mic. When the front panel works (with some models), I onlt
-get sound from the right speaker. The back panel has three jacks.
+Alsa seems to detect the sound card, but when I try to actually play
+something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- shadoweel - 06-03-06 18:51 
+ bzbarsky - 06-05-06 03:57 
 ----------------------------------------------------------------------
-Loads with stock ubuntu kernel 2.6.15
--Sound with a very loud high pitch noise
--Opening / touching the mixer immediately turns sound off (similar to
-#2103)
--No master slider (only headphones/front)
+dmesg output attached.  No obvious errors from the sound driver, but there
+are the messages from the tv card driver about parity issues... Not sure
+whether that's relevant.
 
 ----------------------------------------------------------------------
- gnat - 06-05-06 21:59 
+ Raymond - 06-06-06 06:35 
 ----------------------------------------------------------------------
-00:1d.0 Audio device: ALi Corporation High Definition Audio/AC'97 Host
-Controller (rev 02)
+According to ac97#0-0+regs-1.0.11 , seem ac97 registers are shifted
 
-On an asus board with FC5, no hangs, however I get no sound.
+0:00 = 0000
+0:02 = 0d50
 
-
-00:1d.0 0403: 10b9:5461 (rev 02)
-        Subsystem: 1043:818f
-        Flags: bus master, medium devsel, latency 64, IRQ 17
-        Memory at bbff8000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
+0:7c = 0000
+0:7e = 4e53
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-23-06 16:15 shadoweel      New Issue                                    
-05-23-06 16:15 shadoweel      Distribution              => Ubuntu          
-05-23-06 16:15 shadoweel      Kernel Version            => 2.6.12 + alsa 1.0.11
-05-23-06 16:17 shadoweel      Issue Monitored: shadoweel                    
-06-03-06 18:51 shadoweel      Note Added: 0010063                          
-06-05-06 21:59 gnat           Note Added: 0010070                          
+05-17-06 19:54 bzbarsky       New Issue                                    
+05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
+05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
+05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
+05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
+05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
+05-17-06 19:56 bzbarsky       File Added: scsound.log                      
+05-17-06 19:57 bzbarsky       Note Added: 0009857                          
+05-20-06 05:31 Raymond        Note Added: 0009882                          
+05-20-06 21:43 bzbarsky       Note Added: 0009893                          
+05-21-06 03:41 Raymond        Note Added: 0009894                          
+05-21-06 03:48 Raymond        Note Edited: 0009894                         
+05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
+05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
+05-22-06 02:53 bzbarsky       Note Added: 0009901                          
+05-22-06 04:14 Raymond        Note Added: 0009902                          
+05-23-06 09:00 Raymond        Note Added: 0009929                          
+05-23-06 09:03 Raymond        Note Edited: 0009929                         
+05-23-06 09:07 Raymond        Note Edited: 0009929                         
+06-02-06 20:08 bzbarsky       Note Added: 0010053                          
+06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
+06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
+06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
+ 
+06-02-06 20:35 bzbarsky       Note Added: 0010054                          
+06-03-06 02:44 Raymond        Note Added: 0010058                          
+06-05-06 01:29 bzbarsky       Note Added: 0010066                          
+06-05-06 03:31 Raymond        Note Added: 0010067                          
+06-05-06 03:56 bzbarsky       File Added: dmesg                            
+06-05-06 03:57 bzbarsky       Note Added: 0010068                          
+06-06-06 06:35 Raymond        Note Added: 0010071                          
 ======================================================================
