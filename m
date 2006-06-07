@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - liboss 0001716]: aoss not working with audacity
-Date: Wed, 7 Jun 2006 15:29:58 +0200
-Message-ID: <e070d54a61a7787f8baac19e788ac300@bugtrack.alsa-project.org>
+Date: Wed, 7 Jun 2006 15:41:43 +0200
+Message-ID: <ad5135743b73bf351909ae0be927d824@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D93B3169
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25FD0169
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 15:29:58 +0200 (MEST)
+	Wed,  7 Jun 2006 15:41:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -39,7 +39,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             01-04-2006 23:04 CET
-Last Modified:              06-07-2006 15:29 CEST
+Last Modified:              06-07-2006 15:41 CEST
 ======================================================================
 Summary:                    aoss not working with audacity
 Description: 
@@ -52,16 +52,19 @@ loaded.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-07-06 15:06 
-----------------------------------------------------------------------
-You have to configure --with-portaudio=v19 to support ALSA for audacity
-
-----------------------------------------------------------------------
  ajs1984 - 06-07-06 15:29 
 ----------------------------------------------------------------------
 I'm filing a bug report on aoss, it's (mostly) irrelevant that Audacity can
 be compiled to support ALSA. Thanks for the info though, I'll do this for
 the moment.
+
+----------------------------------------------------------------------
+ Raymond - 06-07-06 15:41 
+----------------------------------------------------------------------
+aoss / OSS emulation should also work for audacity-1.2.4b
+
+However some ALSA driver may need to specify period size by export
+PA_ALSA_PERIODSIZE
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -71,4 +74,5 @@ Date Modified  Username       Field                    Change
 01-04-06 23:06 ajs1984        Note Added: 0007458                          
 06-07-06 15:06 Raymond        Note Added: 0010082                          
 06-07-06 15:29 ajs1984        Note Added: 0010083                          
+06-07-06 15:41 Raymond        Note Added: 0010084                          
 ======================================================================
