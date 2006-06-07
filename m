@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
 	playback
-Date: Wed, 7 Jun 2006 18:09:39 +0200
-Message-ID: <089d120c6a4e8334f7434015ad4cbf55@bugtrack.alsa-project.org>
+Date: Wed, 7 Jun 2006 18:23:32 +0200
+Message-ID: <5b19ce699a378e3bf7543d7484b8fee5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D8D5169
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BBAAD14F
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 18:09:39 +0200 (MEST)
+	Wed,  7 Jun 2006 18:23:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian testing
 Kernel Version:             2.6.8-2-k7
 ======================================================================
 Date Submitted:             03-01-2005 06:28 CET
-Last Modified:              06-07-2006 18:09 CEST
+Last Modified:              06-07-2006 18:23 CEST
 ======================================================================
 Summary:                    System freeze at end of MIDI playback
 Description: 
@@ -64,30 +64,6 @@ output when the bug takes the whole system down?
 ======================================================================
 
 ----------------------------------------------------------------------
- skunk - 04-23-06 07:57 
-----------------------------------------------------------------------
-This bug is back with a vengeance.
-
-I am now running Ubuntu Dapper (kernel 2.6.15) on amd64. I'm using the
-same Sound Blaster Live! Value board as before, in conjunction with
-asfxload, aplaymidi, and (x)playmidi.
-
-Complete system freezes are frequent with MIDI playback. Usually it's at
-the end of a song, although on one occasion it happened in the middle.
-(The active instruments all held the note they were on---kind of a creepy
-effect, IMO.)
-
-I do notice that crashes are less frequent when I play midi through the
-AWE32 interface (using playmidi -a) rather than straight ALSA with
-aplaymidi. But, as I found out a few minutes ago, they still crop up from
-time to time.
-
-Is there a document somewhere detailing how I can get a useful trace on a
-crashed kernel, that might help the ALSA developers track down the
-problem? This bug is not terribly difficult to reproduce, and I really
-would like to be able to play MIDI files without worrying about it....
-
-----------------------------------------------------------------------
  pen - 06-07-06 18:09 
 ----------------------------------------------------------------------
 Having the same issue here (it seemed to be triggered by The GIMP - recent
@@ -97,6 +73,12 @@ it)
 Kernel - 2.6.15-23-k7 (Ubuntu Dapper)
 ALSA - 1.0.10-4ubuntu4
 Sound Card - Creative Sound Blaster Live! 5.1 Digital
+
+----------------------------------------------------------------------
+ rlrevell - 06-07-06 18:23 
+----------------------------------------------------------------------
+If you play back from a text console (aka without X running) does any Oops
+appear on the screen?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -108,4 +90,6 @@ Date Modified  Username       Field                    Change
 09-19-05 10:19 skunk          Note Added: 0006290                          
 04-23-06 07:57 skunk          Note Added: 0009441                          
 06-07-06 18:09 pen            Note Added: 0010085                          
+06-07-06 18:09 pen            Issue Monitored: pen                         
+06-07-06 18:23 rlrevell       Note Added: 0010086                          
 ======================================================================
