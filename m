@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001880]: Can not use alsamixer when
-	using CK804 and the iec598 volume has to be all the day down
-Date: Thu, 8 Jun 2006 00:23:45 +0200
-Message-ID: <7a0aacad4b33e07aad80877054686e2c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002192]: Very annoying acute sound
+	recorded from line-in with M5455 chip
+Date: Thu, 8 Jun 2006 00:25:44 +0200
+Message-ID: <9bccfebce02211434031267961e86bf9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 886AF160
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25594160
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Jun 2006 00:23:45 +0200 (MEST)
+	Thu,  8 Jun 2006 00:25:45 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,60 +26,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1880> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2192> 
 ======================================================================
-Reported By:                davegermiquet
-Assigned To:                perex
+Reported By:                ccasteyde
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1880
-Category:                   0_compilation problem_!!!
+Issue ID:                   2192
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Slackware 10.1
+Kernel Version:             2.6.17-rc6
 ======================================================================
-Date Submitted:             02-26-2006 06:31 CET
-Last Modified:              06-08-2006 00:23 CEST
+Date Submitted:             06-07-2006 20:42 CEST
+Last Modified:              06-08-2006 00:25 CEST
 ======================================================================
-Summary:                    Can not use alsamixer when using CK804  and the
-iec598 volume has to be all the day down
+Summary:                    Very annoying acute sound recorded from line-in with
+M5455 chip
 Description: 
-First the IEC958 P volume has to be all the way down for my Coax cable to
-work and the only option that works to get it running is
-
-mplayer -ao device=surround51
-
-mplayer -ao device=hw0,2 does not work.
-
-When that is ran surround works and i my coax works but I can not use alsa
-mixer to modify volumes it is like its inactive however volume controls
-work in kaffeine and amarok.
-
-Using revision 3 and motherboard a8ne-fm
-Have attached file
+I'm using an ULi integrated sound chip, which reports as a M5455 device,
+and which works very nice with the intel8x0 driver for playback, but
+recording sound from line-in input gives corrupted sound with a very acute
+background sound, except when source gives silence.
+I have another motherboard (very older, and still with intel8x0 compatible
+chip), and it gives the same result.
 ======================================================================
 
 ----------------------------------------------------------------------
- Human - 06-08-06 00:17 
+ rlrevell - 06-08-06 00:20 
 ----------------------------------------------------------------------
-Just a note on syntax if you're using mplayer 1.0pre6-3.3.5 or later:
-
-"mplayer -ao device=hw0,2" -> "mplayer -ao device=hw=0.2"
+arecord -f cd file.wav
 
 ----------------------------------------------------------------------
- rlrevell - 06-08-06 00:23 
+ ccasteyde - 06-08-06 00:25 
 ----------------------------------------------------------------------
-That is asinine.  Does anyone know why mplayer can't use the standard ALSA
-device syntax and has to invent its own bizarro scheme?
+Thanks. It works perfectly (with the warning saying:
+Warning: rate is not accurate (requested = 44100Hz, got = 48000Hz)
+         please, try the plug plugin)
+
+But the recorded sound is perfect. So it seems effectively to be related
+to OSS emulation only.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-26-06 06:31 davegermiquet  New Issue                                    
-02-26-06 06:31 davegermiquet  File Added: card.txt                         
-06-08-06 00:17 Human          Note Added: 0010100                          
-06-08-06 00:23 rlrevell       Note Added: 0010102                          
+06-07-06 20:42 ccasteyde      New Issue                                    
+06-07-06 20:42 ccasteyde      File Added: record000.wav.mp3                    
+06-07-06 20:42 ccasteyde      Distribution              => Slackware 10.1  
+06-07-06 20:42 ccasteyde      Kernel Version            => 2.6.17-rc6      
+06-07-06 21:16 ccasteyde      Note Added: 0010091                          
+06-07-06 21:24 rlrevell       Note Added: 0010092                          
+06-07-06 22:03 ccasteyde      Note Added: 0010093                          
+06-07-06 22:30 rlrevell       Note Added: 0010095                          
+06-07-06 23:49 ccasteyde      Note Added: 0010097                          
+06-08-06 00:05 ccasteyde      Note Added: 0010098                          
+06-08-06 00:20 rlrevell       Note Added: 0010101                          
+06-08-06 00:25 ccasteyde      Note Added: 0010103                          
 ======================================================================
