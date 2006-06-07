@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002190]: System crash on unplugging
-	Audigy 2 ZS Notebook CardBus card
-Date: Wed, 7 Jun 2006 19:47:46 +0200
-Message-ID: <5d90099c4f21a1c7a2e73ac259586de1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
+	playback
+Date: Wed, 7 Jun 2006 19:50:42 +0200
+Message-ID: <a934cb3695f41b8bb68ec1ac0f4a889a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D4E39106
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AECFF12A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 19:47:46 +0200 (MEST)
+	Wed,  7 Jun 2006 19:50:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,48 +24,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2190> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
 ======================================================================
-Reported By:                tsmithe
+Reported By:                skunk
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2190
+Issue ID:                   952
 Category:                   PCI - emu10k1
-Reproducibility:            always
+Reproducibility:            random
 Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu Dapper 6.06
-Kernel Version:             2.6.15
+Distribution:               Debian testing
+Kernel Version:             2.6.8-2-k7
 ======================================================================
-Date Submitted:             06-07-2006 19:47 CEST
-Last Modified:              06-07-2006 19:47 CEST
+Date Submitted:             03-01-2005 06:28 CET
+Last Modified:              06-07-2006 19:50 CEST
 ======================================================================
-Summary:                    System crash on unplugging Audigy 2 ZS Notebook
-CardBus card
+Summary:                    System freeze at end of MIDI playback
 Description: 
- System crash on unplugging Audigy 2 ZS Notebook CardBus card
-I am running Ubuntu Dapper 6.06, with the 2.6.15 kernel
-(including this driver). The driver works pretty well
-with my Audigy 2 ZS Notebook card, except that it
-doesn't seem to support hotplug. When I plug it in, the
-module is installed, and the card functions. However,
-the module continues to access the card when it is
-unplugged (nor does the module unload), and the kernel
-cannot handle this. The system falls over as it cannot
-run with a non-functioning kernel. All of my other
-devices that use hotplug work fine (CardBus, USB,
-whatever), so I can only deduce that this situation is
-a result of poor driver support.
+Hardware: Sound Blaster Live! Value
+Software: sfxload (for patch loading) and drvmidi (playback)
+
+I often play a list of MIDI files. On a number of occasions---either at
+the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
+The recurrence is rare enough to make this more an annoyance than a
+showstopper, but then, I haven't been too keen on ferreting out this bug.
+
+I am reporting this against ALSA from the 2.6.8 kernel, as that is what
+I'm using now (Debian official package) but the same problem arose with
+alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
+
+I could probably rig up something to start/stop MIDI playback repeatedly,
+with a debug-compiled driver, but is there any way to get useful debugging
+output when the bug takes the whole system down?
 ======================================================================
+
+----------------------------------------------------------------------
+ pen - 06-07-06 19:45 
+----------------------------------------------------------------------
+I can't get it to happen when I want it to (typical!) :-)
+
+Would the panic be in any of the logs (if so, which one?)
+
+----------------------------------------------------------------------
+ rlrevell - 06-07-06 19:50 
+----------------------------------------------------------------------
+Possibly in /var/log/kernel or /var/log/kern.log or whatever the hell your
+distro calls the kernel log.  But if the bug kills the machine it's likely
+that the panic does not make it to any log.
+
+If you can't trigger the bug from a text console, try doing something in X
+that would cause the bug, then switch quickly to a text console - you may
+be able to see an Oops that way.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 19:47 tsmithe        New Issue                                    
-06-07-06 19:47 tsmithe        Distribution              => Ubuntu Dapper 6.06
-06-07-06 19:47 tsmithe        Kernel Version            => 2.6.15          
+03-01-05 06:28 skunk          New Issue                                    
+03-01-05 06:28 skunk          Distribution              => Debian testing  
+03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
+09-19-05 10:10 jdthood        Note Added: 0006287                          
+09-19-05 10:19 skunk          Note Added: 0006290                          
+04-23-06 07:57 skunk          Note Added: 0009441                          
+06-07-06 18:09 pen            Note Added: 0010085                          
+06-07-06 18:09 pen            Issue Monitored: pen                         
+06-07-06 18:23 rlrevell       Note Added: 0010086                          
+06-07-06 19:45 pen            Note Added: 0010087                          
+06-07-06 19:50 rlrevell       Note Added: 0010088                          
 ======================================================================
