@@ -1,15 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001716]: aoss not working with audacity
-Date: Wed, 7 Jun 2006 15:06:47 +0200
-Message-ID: <3390e553cdcd1f580de05c94a384114b@bugtrack.alsa-project.org>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [RFC 12/12] snd-aoa: wire up aoa in sound/
+Date: Wed, 07 Jun 2006 15:09:21 +0200
+Message-ID: <20060607130918.936839000@sipsolutions.net>
+References: <20060607130909.584205000@sipsolutions.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37067169
+Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 832C3169
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 15:06:48 +0200 (MEST)
+	Wed,  7 Jun 2006 15:11:00 +0200 (MEST)
+Content-Disposition: inline; filename=wire-up.patch
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,55 +22,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
+Cc: linuxppc-dev@ozlabs.org, netstar@gatheringofgray.com
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds the necessary Kconfig and Makefile hooks to make aoa
+buildable inside the kernel tree.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1716> 
-======================================================================
-Reported By:                ajs1984
-Assigned To:                
-======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1716
-Category:                   
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             01-04-2006 23:04 CET
-Last Modified:              06-07-2006 15:06 CEST
-======================================================================
-Summary:                    aoss not working with audacity
-Description: 
-Following up from a recent LKML thread, I'm going to report a number of
-aoss incompatibilities with softwares on Linux.
+--- a/sound/Kconfig
++++ b/sound/Kconfig
+@@ -58,6 +58,8 @@ source "sound/pci/Kconfig"
+ 
+ source "sound/ppc/Kconfig"
+ 
++source "sound/aoa/Kconfig"
++
+ source "sound/arm/Kconfig"
+ 
+ source "sound/mips/Kconfig"
+--- a/sound/Makefile
++++ b/sound/Makefile
+@@ -4,7 +4,7 @@ #
+ obj-$(CONFIG_SOUND) += soundcore.o
+ obj-$(CONFIG_SOUND_PRIME) += oss/
+ obj-$(CONFIG_DMASOUND) += oss/
+-obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ synth/ usb/ sparc/ parisc/ pcmcia/ mips/
++obj-$(CONFIG_SND) += core/ i2c/ drivers/ isa/ pci/ ppc/ arm/ synth/ usb/ sparc/ parisc/ pcmcia/ mips/ aoa/
+ 
+ ifeq ($(CONFIG_SND),y)
+   obj-y += last.o
 
-First up is audacity, which has no ALSA port. snd-pcm/mixer-oss aren't
-loaded.
-
-======================================================================
-
-----------------------------------------------------------------------
- ajs1984 - 01-04-06 23:06 
-----------------------------------------------------------------------
-[alistair] 22:06 [~/bin/audacity] aoss ./audacity
-Pa_SetLatency: could not SNDCTL_DSP_SETFRAGMENT
-Pa_SetLatency: numBuffers = 2, framesPerBuffer = 512, powerOfTwo = 11
-Pa_SetupDeviceFormat: could not SNDCTL_DSP_SETFMT
-
-----------------------------------------------------------------------
- Raymond - 06-07-06 15:06 
-----------------------------------------------------------------------
-You have to configure --with-portaudio=v19 to support ALSA for audacity
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-04-06 23:04 ajs1984        New Issue                                    
-01-04-06 23:06 ajs1984        Note Added: 0007457                          
-01-04-06 23:06 ajs1984        Note Added: 0007458                          
-06-07-06 15:06 Raymond        Note Added: 0010082                          
-======================================================================
+--
