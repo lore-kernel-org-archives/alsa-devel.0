@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002167]: Not all channel useable /
 	Mixersettings on FujitsuSiemens Amilo M1437G (IntelHDA -
 	Realtec ALC880)
-Date: Wed, 7 Jun 2006 11:21:46 +0200
-Message-ID: <8c5d11af240d4689cc8c25a79673a010@bugtrack.alsa-project.org>
+Date: Wed, 7 Jun 2006 11:42:19 +0200
+Message-ID: <eb12cef9474db3661af937e755df9da0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D70B15E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 415AB114
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 11:21:46 +0200 (MEST)
+	Wed,  7 Jun 2006 11:42:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -43,7 +43,7 @@ Distribution:
 Kernel Version:             2.6.16
 ======================================================================
 Date Submitted:             05-27-2006 21:22 CEST
-Last Modified:              06-07-2006 11:21 CEST
+Last Modified:              06-07-2006 11:42 CEST
 ======================================================================
 Summary:                    Not all channel useable / Mixersettings on
 FujitsuSiemens Amilo M1437G (IntelHDA - Realtec ALC880)
@@ -104,6 +104,15 @@ HDA_INPUT),
 
 /* End of changed by der_sprengmeister@yahoo.com :-) */
 
+----------------------------------------------------------------------
+ der_sprengmeister - 06-07-06 11:42 
+----------------------------------------------------------------------
+Add On: The new 4 channels I found seems to be "real" channels for the
+model, because if I unmute them and volume-up, the noise get louder. It
+works for all 4 inputs. I think, most of them aren't connected to a jack,
+but one of them should be the line-in on the left side of the notebook (I
+hope).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -112,4 +121,5 @@ Date Modified  Username       Field                    Change
 05-27-06 21:24 der_sprengmeisterIssue Monitored: der_sprengmeister              
      
 06-07-06 11:21 der_sprengmeisterNote Added: 0010080                          
+06-07-06 11:42 der_sprengmeisterNote Added: 0010081                          
 ======================================================================
