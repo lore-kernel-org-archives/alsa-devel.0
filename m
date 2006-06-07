@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002192]: Very annoying acute sound
 	recorded from line-in with M5455 chip
-Date: Wed, 7 Jun 2006 21:16:09 +0200
-Message-ID: <7ae8c69f50fa12c1143105a8d8d233d8@bugtrack.alsa-project.org>
+Date: Wed, 7 Jun 2006 21:24:15 +0200
+Message-ID: <c114729035f8de8d088e647aa4c74850@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5ECAB162
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A91A2162
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 21:16:09 +0200 (MEST)
+	Wed,  7 Jun 2006 21:24:15 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Slackware 10.1
 Kernel Version:             2.6.17-rc6
 ======================================================================
 Date Submitted:             06-07-2006 20:42 CEST
-Last Modified:              06-07-2006 21:16 CEST
+Last Modified:              06-07-2006 21:24 CEST
 ======================================================================
 Summary:                    Very annoying acute sound recorded from line-in with
 M5455 chip
@@ -67,6 +67,12 @@ cannot record at 44,1kHz, either to have a working and transparent
 resampling. This bug may therefore be requalified to resampling code /
 library, since it simply doesn't work reliably.
 
+----------------------------------------------------------------------
+ rlrevell - 06-07-06 21:24 
+----------------------------------------------------------------------
+What was the exact command line you used to test it?  It sounds like an
+application bug.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -75,4 +81,5 @@ Date Modified  Username       Field                    Change
 06-07-06 20:42 ccasteyde      Distribution              => Slackware 10.1  
 06-07-06 20:42 ccasteyde      Kernel Version            => 2.6.17-rc6      
 06-07-06 21:16 ccasteyde      Note Added: 0010091                          
+06-07-06 21:24 rlrevell       Note Added: 0010092                          
 ======================================================================
