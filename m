@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
-	playback
-Date: Wed, 7 Jun 2006 19:45:22 +0200
-Message-ID: <cfadc283aa3f3698327d199b07f78388@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002189]: No sound on speakers,
+	low volume on the headphones, Packard bell V7900
+Date: Wed, 7 Jun 2006 19:47:01 +0200
+Message-ID: <72a4c841c5e64632c3a1c65fca306351@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C9C4C9
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A0459106
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 19:45:23 +0200 (MEST)
+	Wed,  7 Jun 2006 19:47:01 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,69 +24,130 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2189> 
 ======================================================================
-Reported By:                skunk
-Assigned To:                
+Reported By:                bettored
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   952
-Category:                   PCI - emu10k1
-Reproducibility:            random
-Severity:                   crash
+Issue ID:                   2189
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.8-2-k7
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.15-23-386
 ======================================================================
-Date Submitted:             03-01-2005 06:28 CET
-Last Modified:              06-07-2006 19:45 CEST
+Date Submitted:             06-07-2006 19:47 CEST
+Last Modified:              06-07-2006 19:47 CEST
 ======================================================================
-Summary:                    System freeze at end of MIDI playback
+Summary:                    No sound on speakers, low volume on the headphones,
+Packard bell V7900
 Description: 
-Hardware: Sound Blaster Live! Value
-Software: sfxload (for patch loading) and drvmidi (playback)
+Hi,
+I have a Packard Bell with a soundcard Realtek ALC260 HD Audio, with Intel
+hda-intel, with problems.
+I have no sound on speakers and very low on the headphones.
+In the alsamixer all is on.
+Recently i actualized to Alsa 1.0.11 but with same problem.
 
-I often play a list of MIDI files. On a number of occasions---either at
-the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
-The recurrence is rare enough to make this more an annoyance than a
-showstopper, but then, I haven't been too keen on ferreting out this bug.
+In the Volumen Control, i have two:
+1. HDA intel (alsa mixer)
+2. Realtek ALC260 (oss mixer)
+And it is correct.
 
-I am reporting this against ALSA from the 2.6.8 kernel, as that is what
-I'm using now (Debian official package) but the same problem arose with
-alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
+Here leave same test:
 
-I could probably rig up something to start/stop MIDI playback repeatedly,
-with a debug-compiled driver, but is there any way to get useful debugging
-output when the bug takes the whole system down?
+
+janek@janek-laptop:~$ lsmod | grep snd
+snd_hda_intel          19348  2
+snd_hda_codec         143152  1 snd_hda_intel
+snd_pcm_oss            43936  0
+snd_mixer_oss          18944  2 snd_pcm_oss
+snd_pcm                89352  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd_timer              25348  1 snd_pcm
+snd                    55396  8
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixe r_oss,snd_pcm,snd_timer
+soundcore              10208  2 snd
+snd_page_alloc         10760  2 snd_hda_intel,snd_pcm
+
+--------------------------------------------------------------------------------
+
+janek@janek-laptop:~$ lspci
+0000:00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub
+(rev 03)
+0000:00:01.0 PCI bridge: Intel Corporation Mobile PCI Express Graphics
+Port (rev 03)
+0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 02)
+0000:00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 1 (rev 02)
+0000:00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 2 (rev 02)
+0000:00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 3 (rev 02)
+0000:00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 4 (rev 02)
+0000:00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #1 (rev 02)
+0000:00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #2 (rev 02)
+0000:00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #3 (rev 02)
+0000:00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #4 (rev 02)
+0000:00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2
+EHCI Controller (rev 02)
+0000:00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev
+e2)
+0000:00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
+Bridge (rev 02)
+0000:00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
+Controller (rev 02)
+0000:00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus
+Controller (rev 02)
+0000:01:00.0 VGA compatible controller: ATI Technologies Inc: Unknown
+device 71c5
+0000:03:00.0 Network controller: Intel Corporation: Unknown device 4222
+(rev 02)
+0000:06:02.0 FireWire (IEEE 1394): O2 Micro, Inc.: Unknown device 00f7
+(rev 02)
+0000:06:02.2 0805: O2 Micro, Inc.: Unknown device 7120 (rev 01)
+0000:06:02.3 Mass storage controller: O2 Micro, Inc.: Unknown device 7130
+(rev 01)
+0000:06:08.0 Ethernet controller: Intel Corporation: Unknown device 1092
+(rev 02)
+
+
+-------------------------------------------------------------------------------
+
+janek@janek-laptop:~$ modinfo soundcore
+filename:       /lib/modules/2.6.15-23-386/kernel/sound/soundcore.ko
+description:    Core sound module
+author:         Alan Cox
+license:        GPL
+alias:          char-major-14-*
+vermagic:       2.6.15-23-386 preempt 486 gcc-4.0
+depends:
+srcversion:     DD426F1CCA2CC5F060F6F92
+
+
+---------------------------------------------------------------------------
+
+
+Thanks for your time 
+
+
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 06-07-06 18:23 
-----------------------------------------------------------------------
-If you play back from a text console (aka without X running) does any Oops
-appear on the screen?
-
-----------------------------------------------------------------------
- pen - 06-07-06 19:45 
-----------------------------------------------------------------------
-I can't get it to happen when I want it to (typical!) :-)
-
-Would the panic be in any of the logs (if so, which one?)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-01-05 06:28 skunk          New Issue                                    
-03-01-05 06:28 skunk          Distribution              => Debian testing  
-03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
-09-19-05 10:10 jdthood        Note Added: 0006287                          
-09-19-05 10:19 skunk          Note Added: 0006290                          
-04-23-06 07:57 skunk          Note Added: 0009441                          
-06-07-06 18:09 pen            Note Added: 0010085                          
-06-07-06 18:09 pen            Issue Monitored: pen                         
-06-07-06 18:23 rlrevell       Note Added: 0010086                          
-06-07-06 19:45 pen            Note Added: 0010087                          
+06-07-06 19:47 bettored       New Issue                                    
+06-07-06 19:47 bettored       Kernel Version            => 2.6.15-23-386   
 ======================================================================
