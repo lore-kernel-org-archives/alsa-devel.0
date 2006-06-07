@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0001716]: aoss not working with audacity
-Date: Wed, 7 Jun 2006 15:41:43 +0200
-Message-ID: <ad5135743b73bf351909ae0be927d824@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Wed, 7 Jun 2006 16:56:56 +0200
+Message-ID: <01ae4e69f0d6d6fa844d3727d3b9e708@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25FD0169
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8A19169
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 15:41:44 +0200 (MEST)
+	Wed,  7 Jun 2006 16:56:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,56 +24,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1716> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
 ======================================================================
-Reported By:                ajs1984
+Reported By:                Cimmo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   1716
-Category:                   
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             01-04-2006 23:04 CET
-Last Modified:              06-07-2006 15:41 CEST
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              06-07-2006 16:56 CEST
 ======================================================================
-Summary:                    aoss not working with audacity
+Summary:                    Alsa mixer lack of some functions
 Description: 
-Following up from a recent LKML thread, I'm going to report a number of
-aoss incompatibilities with softwares on Linux.
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
 
-First up is audacity, which has no ALSA port. snd-pcm/mixer-oss aren't
-loaded.
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
 
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
+
+thanx for attention
+Marco
 ======================================================================
-
-----------------------------------------------------------------------
- ajs1984 - 06-07-06 15:29 
-----------------------------------------------------------------------
-I'm filing a bug report on aoss, it's (mostly) irrelevant that Audacity can
-be compiled to support ALSA. Thanks for the info though, I'll do this for
-the moment.
-
-----------------------------------------------------------------------
- Raymond - 06-07-06 15:41 
-----------------------------------------------------------------------
-aoss / OSS emulation should also work for audacity-1.2.4b
-
-However some ALSA driver may need to specify period size by export
-PA_ALSA_PERIODSIZE
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-06 23:04 ajs1984        New Issue                                    
-01-04-06 23:06 ajs1984        Note Added: 0007457                          
-01-04-06 23:06 ajs1984        Note Added: 0007458                          
-06-07-06 15:06 Raymond        Note Added: 0010082                          
-06-07-06 15:29 ajs1984        Note Added: 0010083                          
-06-07-06 15:41 Raymond        Note Added: 0010084                          
+06-07-06 16:56 Cimmo          New Issue                                    
 ======================================================================
