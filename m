@@ -1,16 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002140]: No sound from mic on Fujitsu
-	Siemens Amilo M3438G
-Date: Wed, 7 Jun 2006 11:14:32 +0200
-Message-ID: <aebac2b41a7bcadff3c1960cbcbc3c01@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002167]: Not all channel useable /
+	Mixersettings on FujitsuSiemens Amilo M1437G (IntelHDA -
+	Realtec ALC880)
+Date: Wed, 7 Jun 2006 11:21:46 +0200
+Message-ID: <8c5d11af240d4689cc8c25a79673a010@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5ED9515E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D70B15E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 11:14:32 +0200 (MEST)
+	Wed,  7 Jun 2006 11:21:46 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,79 +27,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2140> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2167> 
 ======================================================================
-Reported By:                jacobs
+Reported By:                der_sprengmeister
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2140
+Issue ID:                   2167
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               OpenSuSE 10.1
-Kernel Version:             2.6.16.13
+Distribution:               
+Kernel Version:             2.6.16
 ======================================================================
-Date Submitted:             05-22-2006 10:17 CEST
-Last Modified:              06-07-2006 11:14 CEST
+Date Submitted:             05-27-2006 21:22 CEST
+Last Modified:              06-07-2006 11:21 CEST
 ======================================================================
-Summary:                    No sound from mic on Fujitsu Siemens Amilo M3438G
+Summary:                    Not all channel useable / Mixersettings on
+FujitsuSiemens Amilo M1437G (IntelHDA - Realtec ALC880)
 Description: 
-I own a Fujitsu Siemens Amilo M3438G notebook with an onboard Azalia 7.1
-SPDIF chipset/codec (see spec sheet at
-http://www.fujitsu-siemens.de/ps/db/notebook/ds_amilo_m3438g_m4438g_d.pdf).
-OpenSuSE 10.1 (Kernel 2.6.16.13) is installed; the module snd-hda-intel is
- loaded. Sound playback through the internal speakers and headphone does
-work but I am unable to get sound from the internal and external
-microphone. The alsamixer has three capture controls which all are set to
-capture and maximum volume. Each capture controls source is set to mic.
-The playback channel for mic is unmuted and also set to maximum volume but
-I just don't get a signal.
-
-I've tried to apply different model options to the snd-hda-intel module
-relating to the file ALSA-Configuration.txt without luck.
-
-This didn't work with OpenSuSE 10.0 (Kernel 2.6.13) either.
-
-If you need any technical information please let me know.
+Not all channel are available, nor the mixer shows the correct settings.
+For example: "Headphone" controlls the Internal speaker, many
+switches/controller (e.g. IEC958) is not available.
 ======================================================================
 
 ----------------------------------------------------------------------
- jacobs - 05-29-06 08:26 
+ der_sprengmeister - 06-07-06 11:21 
 ----------------------------------------------------------------------
-Hello el,
+I have improved changes on the z71v-model for Realtec ALC880 on Fujitsu
+Siemens AmiloM 1437G
 
-I've tried that but it doesn't give satisfying results. First of all the
-channels are assigned falsely, e.g. Front is actually the headphone. At
-least they were correct when I didn't pass model=auto to the module.
+new: Mic is now FrontMic
+     4 new inputs (but I don't know, what the inputs are)   :-(
+     (I hope, some other people can probe)
 
-Secondly I only get a signal from the microphone when I shout into it
-(=when it's loud) plus the sound quality is pretty bad.
+Here the new hack:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-----------------------------------------------------------------------
- der_sprengmeister - 06-07-06 11:14 
-----------------------------------------------------------------------
-Hello jacobs.
+#define ALC880_Z71V_HP_DAC 0x03
+                                                                          
+                                                                 
+/* fixed 2 channels */
+static struct hda_channel_mode alc880_2_jack_modes[1] = {
+        { 2, NULL }
+};
+                                                                          
+                                                                 
+/* changed by der_sprengmeister@yahoo.com :-) */ 
 
-Have you looked at my thread:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2167
+static struct snd_kcontrol_new alc880_z71v_mixer[] = {
 
-I have a solution fot the wrong mixer. It would be nice, if you could
-proof the inputs, because I have no microphones here
+	HDA_CODEC_VOLUME("Front Playback Volume", 0x0d, 0x0, HDA_OUTPUT),
+	HDA_BIND_MUTE("Front Playback Switch", 0x0d, 2, HDA_INPUT),
+	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
+	HDA_BIND_MUTE("Headphone Playback Switch", 0x0c, 2, HDA_INPUT),
+	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
+	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
+	HDA_CODEC_VOLUME("PC Speaker Playback Volume", 0x0b, 0x05, HDA_INPUT),
+	HDA_CODEC_MUTE("PC Speaker Playback Switch", 0x0b, 0x05, HDA_INPUT),
+        HDA_CODEC_VOLUME("FrontMic Playback Volume", 0x0b, 0x1,
+HDA_INPUT),
+        HDA_CODEC_MUTE("FrontMic Playback Switch", 0x0b, 0x1, HDA_INPUT),
+        HDA_CODEC_VOLUME("inp1 Playback Volume", 0x0b, 0x06, HDA_INPUT),
+        HDA_CODEC_MUTE("inp1 Playback Switch", 0x0b, 0x06, HDA_INPUT),
+	HDA_CODEC_VOLUME("inp2 Playback Volume", 0x0b, 0x02, HDA_INPUT),
+	HDA_CODEC_MUTE("inp2 Playback Switch", 0x0b, 0x02, HDA_INPUT),
+	HDA_CODEC_VOLUME("inp3 Playback Volume", 0x0b, 0x0, HDA_INPUT),
+	HDA_CODEC_MUTE("inp3 Playback Switch", 0x0b, 0x0, HDA_INPUT),
+        HDA_CODEC_VOLUME("inp4 Playback Volume", 0x0b, 0x07, HDA_INPUT),
+        HDA_CODEC_MUTE("inp4 Playback Switch", 0x0b, 0x07, HDA_INPUT),
+	{ } /* end */
+};
 
-Bye!
+
+/* End of changed by der_sprengmeister@yahoo.com :-) */
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-22-06 10:17 jacobs         New Issue                                    
-05-22-06 10:17 jacobs         Distribution              => OpenSuSE 10.1   
-05-22-06 10:17 jacobs         Kernel Version            => 2.6.16.13       
-05-23-06 07:35 jacobs         Issue Monitored: jacobs                      
-05-26-06 19:13 el             Issue Monitored: el                          
-05-26-06 19:26 el             Note Added: 0009979                          
-05-29-06 08:26 jacobs         Note Added: 0010007                          
-06-07-06 11:14 der_sprengmeisterNote Added: 0010079                          
+05-27-06 21:22 der_sprengmeisterNew Issue                                    
+05-27-06 21:22 der_sprengmeisterKernel Version            => 2.6.16          
+05-27-06 21:24 der_sprengmeisterIssue Monitored: der_sprengmeister              
+     
+06-07-06 11:21 der_sprengmeisterNote Added: 0010080                          
 ======================================================================
