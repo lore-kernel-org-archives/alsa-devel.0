@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002192]: Very annoying acute sound
 	recorded from line-in with M5455 chip
-Date: Wed, 7 Jun 2006 23:49:30 +0200
-Message-ID: <52de1f5696cbea94a1a37e553759e42b@bugtrack.alsa-project.org>
+Date: Thu, 8 Jun 2006 00:05:09 +0200
+Message-ID: <8b1f38cbcfc218b902d6b32cccaf1592@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AA0A157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCA0E157
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 23:49:30 +0200 (MEST)
+	Thu,  8 Jun 2006 00:05:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Slackware 10.1
 Kernel Version:             2.6.17-rc6
 ======================================================================
 Date Submitted:             06-07-2006 20:42 CEST
-Last Modified:              06-07-2006 23:49 CEST
+Last Modified:              06-08-2006 00:05 CEST
 ======================================================================
 Summary:                    Very annoying acute sound recorded from line-in with
 M5455 chip
@@ -56,11 +56,6 @@ chip), and it gives the same result.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-07-06 22:30 
-----------------------------------------------------------------------
-Does the problem only occur when using the OSS emulation layer?
-
-----------------------------------------------------------------------
  ccasteyde - 06-07-06 23:49 
 ----------------------------------------------------------------------
 Yes, it seems to be OSS related only.
@@ -68,6 +63,16 @@ I didn't try to get record using alsa device, since it seems to only
 understand OSS devices. However, I tried to record a film with mencoder,
 using hw.1 ALSA device and 44000 Hz, and it successfully record the film
 sound.
+
+----------------------------------------------------------------------
+ ccasteyde - 06-08-06 00:05 
+----------------------------------------------------------------------
+Hmm. Not so simple. I just noticed that mencoder doesn't use the audiorate
+option when I use ALSA device. It always use 48000Hz for audio sampling,
+and therefore I couldn't see the problem if there was any.
+
+I have no idea how to test ALSA recording with 44100Hz with the programs I
+use, sorry. If you have any idea, I could do the test.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -81,4 +86,5 @@ Date Modified  Username       Field                    Change
 06-07-06 22:03 ccasteyde      Note Added: 0010093                          
 06-07-06 22:30 rlrevell       Note Added: 0010095                          
 06-07-06 23:49 ccasteyde      Note Added: 0010097                          
+06-08-06 00:05 ccasteyde      Note Added: 0010098                          
 ======================================================================
