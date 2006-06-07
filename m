@@ -1,17 +1,16 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [RFC 07/12] snd-aoa: add tas codec
-Date: Wed, 07 Jun 2006 17:42:07 +0200
-Message-ID: <1149694927.3925.4.camel@johannes>
-References: <20060607130909.584205000@sipsolutions.net>
-	<20060607130914.735290000@sipsolutions.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
+	playback
+Date: Wed, 7 Jun 2006 18:09:39 +0200
+Message-ID: <089d120c6a4e8334f7434015ad4cbf55@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1449716556=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1207D169
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D8D5169
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 17:42:14 +0200 (MEST)
-In-Reply-To: <20060607130914.735290000@sipsolutions.net>
+	Wed,  7 Jun 2006 18:09:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,79 +21,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
-Cc: linuxppc-dev@ozlabs.org, netstar@gatheringofgray.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1449716556==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-qAsHBdp2bbyUDSGfVa8p"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
+======================================================================
+Reported By:                skunk
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   952
+Category:                   PCI - emu10k1
+Reproducibility:            random
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Debian testing
+Kernel Version:             2.6.8-2-k7
+======================================================================
+Date Submitted:             03-01-2005 06:28 CET
+Last Modified:              06-07-2006 18:09 CEST
+======================================================================
+Summary:                    System freeze at end of MIDI playback
+Description: 
+Hardware: Sound Blaster Live! Value
+Software: sfxload (for patch loading) and drvmidi (playback)
 
+I often play a list of MIDI files. On a number of occasions---either at
+the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
+The recurrence is rare enough to make this more an annoyance than a
+showstopper, but then, I haven't been too keen on ferreting out this bug.
 
---=-qAsHBdp2bbyUDSGfVa8p
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I am reporting this against ALSA from the 2.6.8 kernel, as that is what
+I'm using now (Debian official package) but the same problem arose with
+alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
 
-> +		/* older machines have no 'codec' node with a 'compatible'
-> +		 * property that says 'tas3004', they just have a 'deq'
-> +		 * node without any such property... */
-> +		if (strcmp(dev->name, "deq") =3D=3D 0) {
-> +			u32 *addr;
-> +			printk(KERN_DEBUG PFX "found 'deq' node\n");
-> +			addr =3D (u32 *) get_property(dev, "i2c-address", NULL);
-> +			if (!addr)
-> +				continue;
-> +			/* now, if the address doesn't match any of the two
-> +			 * that a tas3004 can have, we cannot handle this.
-> +			 * I doubt it ever happens but hey. */
-> +			if (*addr !=3D 0x34 && *addr !=3D 0x35)
+I could probably rig up something to start/stop MIDI playback repeatedly,
+with a debug-compiled driver, but is there any way to get useful debugging
+output when the bug takes the whole system down?
+======================================================================
 
-And I fixed the obvious bug here now.
+----------------------------------------------------------------------
+ skunk - 04-23-06 07:57 
+----------------------------------------------------------------------
+This bug is back with a vengeance.
 
-johannes
+I am now running Ubuntu Dapper (kernel 2.6.15) on amd64. I'm using the
+same Sound Blaster Live! Value board as before, in conjunction with
+asfxload, aplaymidi, and (x)playmidi.
 
---=-qAsHBdp2bbyUDSGfVa8p
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Complete system freezes are frequent with MIDI playback. Usually it's at
+the end of a song, although on one occasion it happened in the middle.
+(The active instruments all held the note they were on---kind of a creepy
+effect, IMO.)
 
------BEGIN PGP SIGNATURE-----
+I do notice that crashes are less frequent when I play midi through the
+AWE32 interface (using playmidi -a) rather than straight ALSA with
+aplaymidi. But, as I found out a few minutes ago, they still crop up from
+time to time.
 
-iQIVAwUARIbzy6Vg1VMiehFYAQKmAg//c/bHTg4/yEP/rubtOv/h+Q7vT/J42/Wv
-2D2mk7cXd0Z5NT9hvueG/4eizhJVcrqp4xTLTrzoZcTL4fmjPvpudpanMucOzgDO
-/nqsuN2s+sArwUhXMVWnden0XtNe1ABpAHMo9qJJuUK4v0A3yPZVhpIyxNZBsxFA
-PzDzfEq39b/TvYSOhCX947g3GQeYgxpe3cXxLIUePu1MwIcdNeGYIq6U6M+A0wAT
-cKtDYTHvbWU2I6gTTL+IRzI+3QTWTmc8kAECRsLMz3ySbppQNQGhB8QMSLWwZ9/s
-RMyDwaQMKXGtzCYDsXiu4npHB8UlR9upl47Jl2cUel7vjMAn1aZ0hhhFVpQ10hUX
-A6Kts7WV4j8DHdTsC/gG9guNNbYh2w+Px9XqOh4QSjMhQQvJmo/4KLOqn0XLTLJW
-oNbi7rkVjbxrnHr+RsqvQWhyLM2Ah8S1x8GalwOLFkDG7jyMlPohsaTgZQbkZtyR
-1DcbFyCxYdCEme9ALE9Y9EiMk0hUt++gPHaUPwz9l00PeSISfMdMnxbzRXJd0yfm
-QGoPWYX5CigE85H/rXlVwgyX23ynpIDKBlLBZaf6sgEEyL8iNghxREnrHm9WyIFE
-KfAcr95aXCIqbKKvA+NdExNw4tEXAE6UtetffzbTyHiyP9nS2xtW5P7i2urget8t
-vdyZgt6+hvw=
-=uV6g
------END PGP SIGNATURE-----
+Is there a document somewhere detailing how I can get a useful trace on a
+crashed kernel, that might help the ALSA developers track down the
+problem? This bug is not terribly difficult to reproduce, and I really
+would like to be able to play MIDI files without worrying about it....
 
---=-qAsHBdp2bbyUDSGfVa8p--
+----------------------------------------------------------------------
+ pen - 06-07-06 18:09 
+----------------------------------------------------------------------
+Having the same issue here (it seemed to be triggered by The GIMP - recent
+CVS builds have a MIDI controller, and the freezes stopped when I disabled
+it)
 
+Kernel - 2.6.15-23-k7 (Ubuntu Dapper)
+ALSA - 1.0.10-4ubuntu4
+Sound Card - Creative Sound Blaster Live! 5.1 Digital
 
-
---===============1449716556==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1449716556==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1449716556==--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-01-05 06:28 skunk          New Issue                                    
+03-01-05 06:28 skunk          Distribution              => Debian testing  
+03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
+09-19-05 10:10 jdthood        Note Added: 0006287                          
+09-19-05 10:19 skunk          Note Added: 0006290                          
+04-23-06 07:57 skunk          Note Added: 0009441                          
+06-07-06 18:09 pen            Note Added: 0010085                          
+======================================================================
