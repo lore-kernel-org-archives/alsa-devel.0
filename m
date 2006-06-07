@@ -1,17 +1,17 @@
 From: Johannes Berg <johannes@sipsolutions.net>
-Subject: [RFC 10/12] snd-aoa: add layout-id fabric
-Date: Wed, 07 Jun 2006 15:09:19 +0200
-Message-ID: <20060607130917.381530000@sipsolutions.net>
+Subject: [RFC 04/12] snd-aoa: add soundbus
+Date: Wed, 07 Jun 2006 15:09:13 +0200
+Message-ID: <20060607130912.595196000@sipsolutions.net>
 References: <20060607130909.584205000@sipsolutions.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from sipsolutions.net (crystal.sipsolutions.net [195.210.38.204])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 864A8169
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C2903169
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 15:11:05 +0200 (MEST)
-Content-Disposition: inline; filename=add-fabrics.patch
+	Wed,  7 Jun 2006 15:11:17 +0200 (MEST)
+Content-Disposition: inline; filename=add-soundbus.patch
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,1129 +25,536 @@ To: alsa-devel@alsa-project.org
 Cc: linuxppc-dev@ozlabs.org, netstar@gatheringofgray.com
 List-Id: alsa-devel@alsa-project.org
 
-The 'fabric' is the thing that pulls all of snd-aoa together, this patch
-adds the 'layout' or 'layout-id' fabric that keys off the 'layout-id'
-property in the device-tree to pull in the proper modules. It itself loads
-if an i2sbus is present with a layout-id (exported in modalias) that it can
-use.
+This patch adds the mostly generic soundbus that will be used for all the
+sound busses Apple machines have and provides just the hooks for automatic
+driver loading etc.
 
 --- /dev/null
-+++ b/sound/aoa/fabrics/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_SND_AOA_FABRIC_LAYOUT) += snd-aoa-fabric-layout.o
---- /dev/null
-+++ b/sound/aoa/fabrics/Kconfig
-@@ -0,0 +1,12 @@
-+config SND_AOA_FABRIC_LAYOUT
-+	tristate "layout-id fabric"
-+	depends SND_AOA
-+	select SND_AOA_SOUNDBUS
-+	select SND_AOA_SOUNDBUS_I2S
++++ b/sound/aoa/soundbus/Kconfig
+@@ -0,0 +1,14 @@
++config SND_AOA_SOUNDBUS
++	tristate "Apple Soundbus support"
++	depends on SOUND && SND_PCM && EXPERIMENTAL
 +	---help---
-+	This enables the layout-id fabric for the Apple Onboard
-+	Audio driver, the module holding it all together
-+	based on the device-tree's layout-id property.
++	This option enables the generic driver for the soundbus
++	support on Apple machines.
 +	
-+	If you are unsure and have a later Apple machine,
-+	compile it as a module.
++	It is required for the sound bus implementations.
++
++config SND_AOA_SOUNDBUS_I2S
++	tristate "I2S bus support"
++	depends on SND_AOA_SOUNDBUS && PCI
++	---help---
++	This option enables support for Apple I2S busses.
 --- /dev/null
-+++ b/sound/aoa/fabrics/snd-aoa-fabric-layout.c
-@@ -0,0 +1,1096 @@
++++ b/sound/aoa/soundbus/Makefile
+@@ -0,0 +1,3 @@
++obj-$(CONFIG_SND_AOA_SOUNDBUS) += snd-aoa-soundbus.o
++snd-aoa-soundbus-objs := core.o sysfs.o
++obj-$(CONFIG_SND_AOA_SOUNDBUS_I2S) += i2sbus/
+--- /dev/null
++++ b/sound/aoa/soundbus/soundbus.h
+@@ -0,0 +1,202 @@
 +/*
-+ * Apple Onboard Audio driver -- layout fabric
++ * soundbus generic definitions
 + *
 + * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
 + *
 + * GPL v2, can be found in COPYING.
++ */
++#ifndef __SOUNDBUS_H
++#define __SOUNDBUS_H
++
++#include <asm/of_device.h>
++#include <sound/pcm.h>
++#include <linux/list.h>
++
++
++/* When switching from master to slave or the other way around,
++ * you don't want to have the codec chip acting as clock source
++ * while the bus still is.
++ * More importantly, while switch from slave to master, you need
++ * to turn off the chip's master function first, but then there's
++ * no clock for a while and other chips might reset, so we notify
++ * their drivers after having switched.
++ * The constants here are codec-point of view, so when we switch
++ * the soundbus to master we tell the codec we're going to switch
++ * and give it CLOCK_SWITCH_PREPARE_SLAVE!
++ */
++enum clock_switch {
++	CLOCK_SWITCH_PREPARE_SLAVE,
++	CLOCK_SWITCH_PREPARE_MASTER,
++	CLOCK_SWITCH_SLAVE,
++	CLOCK_SWITCH_MASTER,
++	CLOCK_SWITCH_NOTIFY,
++};
++
++/* information on a transfer the codec can take */
++struct transfer_info {
++	u64 formats;		/* SNDRV_PCM_FMTBIT_* */
++	unsigned int rates;	/* SNDRV_PCM_RATE_* */
++	/* flags */
++	u32 transfer_in:1, /* input = 1, output = 0 */
++	    must_be_clock_source:1;
++	/* for codecs to distinguish among their TIs */
++	int tag;
++};
++
++struct codec_info_item {
++	struct codec_info *codec;
++	void *codec_data;
++	struct soundbus_dev *sdev;
++	/* internal, to be used by the soundbus provider */
++	struct list_head list;
++};
++
++/* for prepare, where the codecs need to know
++ * what we're going to drive the bus with */
++struct bus_info {
++	/* see below */
++	int sysclock_factor;
++	int bus_factor;
++};
++
++/* information on the codec itself, plus function pointers */
++struct codec_info {
++	/* the module this lives in */
++	struct module *owner;
++
++	/* supported transfer possibilities, array terminated by
++	 * formats or rates being 0. */
++	struct transfer_info *transfers;
++
++	/* Master clock speed factor
++	 * to be used (master clock speed = sysclock_factor * sampling freq)
++	 * Unused if the soundbus provider has no such notion.
++	 */
++	int sysclock_factor;
++
++	/* Bus factor, bus clock speed = bus_factor * sampling freq)
++	 * Unused if the soundbus provider has no such notion.
++	 */
++	int bus_factor;
++
++	/* operations */
++	/* clock switching, see above */
++	int (*switch_clock)(struct codec_info_item *cii,
++			    enum clock_switch clock);
++
++	/* called for each transfer_info when the user
++	 * opens the pcm device to determine what the
++	 * hardware can support at this point in time.
++	 * That can depend on other user-switchable controls.
++	 * Return 1 if usable, 0 if not.
++	 * out points to another instance of a transfer_info
++	 * which is initialised to the values in *ti, and
++	 * it's format and rate values can be modified by
++	 * the callback if it is necessary to further restrict
++	 * the formats that can be used at the moment, for
++	 * example when one codec has multiple logical codec
++	 * info structs for multiple inputs.
++	 */
++	int (*usable)(struct codec_info_item *cii,
++		      struct transfer_info *ti,
++		      struct transfer_info *out);
++
++	/* called when pcm stream is opened, probably not implemented
++	 * most of the time since it isn't too useful */
++	int (*open)(struct codec_info_item *cii,
++		    struct snd_pcm_substream *substream);
++
++	/* called when the pcm stream is closed, at this point
++	 * the user choices can all be unlocked (see below) */
++	int (*close)(struct codec_info_item *cii,
++		     struct snd_pcm_substream *substream);
++
++	/* if the codec must forbid some user choices because
++	 * they are not valid with the substream/transfer info,
++	 * it must do so here. Example: no digital output for
++	 * incompatible framerate, say 8KHz, on Onyx.
++	 * If the selected stuff in the substream is NOT
++	 * compatible, you have to reject this call! */
++	int (*prepare)(struct codec_info_item *cii,
++		       struct bus_info *bi,
++		       struct snd_pcm_substream *substream);
++
++	/* start() is called before data is pushed to the codec.
++	 * Note that start() must be atomic! */
++	int (*start)(struct codec_info_item *cii,
++		     struct snd_pcm_substream *substream);
++
++	/* stop() is called after data is no longer pushed to the codec.
++	 * Note that stop() must be atomic! */
++	int (*stop)(struct codec_info_item *cii,
++		    struct snd_pcm_substream *substream);
++
++	int (*suspend)(struct codec_info_item *cii, pm_message_t state);
++	int (*resume)(struct codec_info_item *cii);
++};
++
++/* information on a soundbus device */
++struct soundbus_dev {
++	/* the bus it belongs to */
++	struct list_head onbuslist;
++
++	/* the of device it represents */
++	struct of_device ofdev;
++
++	/* what modules go by */
++	char modalias[32];
++
++	/* These fields must be before attach_codec can be called.
++	 * They should be set by the owner of the alsa card object
++	 * that is needed, and whoever sets them must make sure
++	 * that they are unique within that alsa card object. */
++	char *pcmname;
++	int pcmid;
++
++	/* this is assigned by the soundbus provider in attach_codec */
++	struct snd_pcm *pcm;
++
++	/* operations */
++	/* attach a codec to this soundbus, give the alsa
++	 * card object the PCMs for this soundbus should be in.
++	 * The 'data' pointer must be unique, it is used as the
++	 * key for detach_codec(). */
++	int (*attach_codec)(struct soundbus_dev *dev, struct snd_card *card,
++			    struct codec_info *ci, void *data);
++	void (*detach_codec)(struct soundbus_dev *dev, void *data);
++	/* TODO: suspend/resume */
++
++	/* private for the soundbus provider */
++	struct list_head codec_list;
++	u32 have_out:1, have_in:1;
++};
++#define to_soundbus_device(d) container_of(d, struct soundbus_dev, ofdev.dev)
++#define of_to_soundbus_device(d) container_of(d, struct soundbus_dev, ofdev)
++
++extern int soundbus_add_one(struct soundbus_dev *dev);
++extern void soundbus_remove_one(struct soundbus_dev *dev);
++
++extern struct soundbus_dev *soundbus_dev_get(struct soundbus_dev *dev);
++extern void soundbus_dev_put(struct soundbus_dev *dev);
++
++struct soundbus_driver {
++	char *name;
++	struct module *owner;
++
++	/* we don't implement any matching at all */
++
++	int	(*probe)(struct soundbus_dev* dev);
++	int	(*remove)(struct soundbus_dev* dev);
++
++	int	(*suspend)(struct soundbus_dev* dev, pm_message_t state);
++	int	(*resume)(struct soundbus_dev* dev);
++	int	(*shutdown)(struct soundbus_dev* dev);
++
++	struct device_driver driver;
++};
++#define to_soundbus_driver(drv) container_of(drv,struct soundbus_driver, driver)
++
++extern int soundbus_register_driver(struct soundbus_driver *drv);
++extern void soundbus_unregister_driver(struct soundbus_driver *drv);
++
++#endif /* __SOUNDBUS_H */
+--- /dev/null
++++ b/sound/aoa/soundbus/sysfs.c
+@@ -0,0 +1,43 @@
++#include <linux/config.h>
++#include <linux/kernel.h>
++#include <linux/stat.h>
++/* FIX UP */
++#include "soundbus.h"
++
++#define soundbus_config_of_attr(field, format_string)			\
++static ssize_t								\
++field##_show (struct device *dev, struct device_attribute *attr,	\
++              char *buf)						\
++{									\
++	struct soundbus_dev *mdev = to_soundbus_device (dev);		\
++	return sprintf (buf, format_string, mdev->ofdev.node->field);	\
++}
++
++static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
++			     char *buf)
++{
++	struct soundbus_dev *sdev = to_soundbus_device(dev);
++	struct of_device *of = &sdev->ofdev;
++	int length;
++
++	if (*sdev->modalias) {
++		strlcpy(buf, sdev->modalias, sizeof(sdev->modalias) + 1);
++		strcat(buf, "\n");
++		length = strlen(buf);
++	} else {
++		length = sprintf(buf, "of:N%sT%s\n",
++				 of->node->name, of->node->type);
++	}
++
++	return length;
++}
++
++soundbus_config_of_attr (name, "%s\n");
++soundbus_config_of_attr (type, "%s\n");
++
++struct device_attribute soundbus_dev_attrs[] = {
++	__ATTR_RO(name),
++	__ATTR_RO(type),
++	__ATTR_RO(modalias),
++	__ATTR_NULL
++};
+--- /dev/null
++++ b/sound/aoa/soundbus/core.c
+@@ -0,0 +1,250 @@
++/*
++ * soundbus
 + *
++ * Copyright 2006 Johannes Berg <johannes@sipsolutions.net>
 + *
-+ * This fabric module looks for sound codecs
-+ * based on the layout-id property in the device tree.
-+ *
++ * GPL v2, can be found in COPYING.
 + */
 +
-+#include <asm/prom.h>
-+#include <linux/list.h>
 +#include <linux/module.h>
-+#include "../aoa.h"
-+#include "../soundbus/soundbus.h"
++#include "soundbus.h"
 +
 +MODULE_AUTHOR("Johannes Berg <johannes@sipsolutions.net>");
 +MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Layout-ID fabric for snd-aoa");
++MODULE_DESCRIPTION("Apple Soundbus");
 +
-+#define MAX_CODECS_PER_BUS	2
-+
-+/* These are the connections the layout fabric
-+ * knows about. It doesn't really care about the
-+ * input ones, but I thought I'd separate them
-+ * to give them proper names. The thing is that
-+ * Apple usually will distinguish the active output
-+ * by GPIOs, while the active input is set directly
-+ * on the codec. Hence we here tell the codec what
-+ * we think is connected. This information is hard-
-+ * coded below ... */
-+#define CC_SPEAKERS	(1<<0)
-+#define CC_HEADPHONE	(1<<1)
-+#define CC_LINEOUT	(1<<2)
-+#define CC_DIGITALOUT	(1<<3)
-+#define CC_LINEIN	(1<<4)
-+#define CC_MICROPHONE	(1<<5)
-+#define CC_DIGITALIN	(1<<6)
-+/* pretty bogus but users complain...
-+ * This is a flag saying that the LINEOUT
-+ * should be renamed to HEADPHONE.
-+ * be careful with input detection! */
-+#define CC_LINEOUT_LABELLED_HEADPHONE	(1<<7)
-+
-+struct codec_connection {
-+	/* CC_ flags from above */
-+	int connected;
-+	/* codec dependent bit to be set in the aoa_codec.connected field.
-+	 * This intentionally doesn't have any generic flags because the
-+	 * fabric has to know the codec anyway and all codecs might have
-+	 * different connectors */
-+	int codec_bit;
-+};
-+
-+struct codec_connect_info {
-+	char *name;
-+	struct codec_connection *connections;
-+};
-+
-+#define LAYOUT_FLAG_COMBO_LINEOUT_SPDIF	(1<<0)
-+
-+struct layout {
-+	unsigned int layout_id;
-+	struct codec_connect_info codecs[MAX_CODECS_PER_BUS];
-+	int flags;
-+	
-+	/* if busname is not assigned, we use 'Master' below,
-+	 * so that our layout table doesn't need to be filled
-+	 * too much.
-+	 * We only assign these two if we expect to find more
-+	 * than one soundbus, i.e. on those machines with
-+	 * multiple layout-ids */
-+	char *busname;
-+	int pcmid;
-+};
-+
-+MODULE_ALIAS("sound-layout-41");
-+MODULE_ALIAS("sound-layout-45");
-+MODULE_ALIAS("sound-layout-51");
-+MODULE_ALIAS("sound-layout-58");
-+MODULE_ALIAS("sound-layout-60");
-+MODULE_ALIAS("sound-layout-61");
-+MODULE_ALIAS("sound-layout-64");
-+MODULE_ALIAS("sound-layout-65");
-+MODULE_ALIAS("sound-layout-68");
-+MODULE_ALIAS("sound-layout-69");
-+MODULE_ALIAS("sound-layout-70");
-+MODULE_ALIAS("sound-layout-72");
-+MODULE_ALIAS("sound-layout-80");
-+MODULE_ALIAS("sound-layout-82");
-+MODULE_ALIAS("sound-layout-84");
-+MODULE_ALIAS("sound-layout-86");
-+MODULE_ALIAS("sound-layout-92");
-+
-+/* onyx with all but microphone connected */
-+static struct codec_connection onyx_connections_nomic[] = {
-+	{
-+		.connected = CC_SPEAKERS | CC_HEADPHONE | CC_LINEOUT,
-+		.codec_bit = 0,
-+	},
-+	{
-+		.connected = CC_DIGITALOUT,
-+		.codec_bit = 1,
-+	},
-+	{
-+		.connected = CC_LINEIN,
-+		.codec_bit = 2,
-+	},
-+	{} /* terminate array by .connected == 0 */
-+};
-+
-+/* onyx on machines without headphone */
-+static struct codec_connection onyx_connections_noheadphones[] = {
-+	{
-+		.connected = CC_SPEAKERS | CC_LINEOUT |
-+			     CC_LINEOUT_LABELLED_HEADPHONE,
-+		.codec_bit = 0,
-+	},
-+	{
-+		.connected = CC_DIGITALOUT,
-+		.codec_bit = 1,
-+	},
-+	/* FIXME: are these correct? probably not for all the machines
-+	 * below ... If not this will need separating. */
-+	{
-+		.connected = CC_LINEIN,
-+		.codec_bit = 2,
-+	},
-+	{
-+		.connected = CC_MICROPHONE,
-+		.codec_bit = 3,
-+	},
-+	{} /* terminate array by .connected == 0 */
-+};
-+
-+/* onyx on machines with real line-out */
-+static struct codec_connection onyx_connections_reallineout[] = {
-+	{
-+		.connected = CC_SPEAKERS | CC_LINEOUT | CC_HEADPHONE,
-+		.codec_bit = 0,
-+	},
-+	{
-+		.connected = CC_DIGITALOUT,
-+		.codec_bit = 1,
-+	},
-+	{
-+		.connected = CC_LINEIN,
-+		.codec_bit = 2,
-+	},
-+	{} /* terminate array by .connected == 0 */
-+};
-+
-+/* tas on machines without line out */
-+static struct codec_connection tas_connections_nolineout[] = {
-+	{
-+		.connected = CC_SPEAKERS | CC_HEADPHONE,
-+		.codec_bit = 0,
-+	},
-+	{
-+		.connected = CC_LINEIN,
-+		.codec_bit = 2,
-+	},
-+	{
-+		.connected = CC_MICROPHONE,
-+		.codec_bit = 3,
-+	},
-+	{} /* terminate array by .connected == 0 */
-+};
-+
-+/* tas on machines with neither line out nor line in */
-+static struct codec_connection tas_connections_noline[] = {
-+	{
-+		.connected = CC_SPEAKERS | CC_HEADPHONE,
-+		.codec_bit = 0,
-+	},
-+	{
-+		.connected = CC_MICROPHONE,
-+		.codec_bit = 3,
-+	},
-+	{} /* terminate array by .connected == 0 */
-+};
-+
-+/* tas on machines without microphone */
-+static struct codec_connection tas_connections_nomic[] = {
-+	{
-+		.connected = CC_SPEAKERS | CC_HEADPHONE | CC_LINEOUT,
-+		.codec_bit = 0,
-+	},
-+	{
-+		.connected = CC_LINEIN,
-+		.codec_bit = 2,
-+	},
-+	{} /* terminate array by .connected == 0 */
-+};
-+
-+/* tas on machines with everything connected */
-+static struct codec_connection tas_connections_all[] = {
-+	{
-+		.connected = CC_SPEAKERS | CC_HEADPHONE | CC_LINEOUT,
-+		.codec_bit = 0,
-+	},
-+	{
-+		.connected = CC_LINEIN,
-+		.codec_bit = 2,
-+	},
-+	{
-+		.connected = CC_MICROPHONE,
-+		.codec_bit = 3,
-+	},
-+	{} /* terminate array by .connected == 0 */
-+};
-+
-+static struct codec_connection toonie_connections[] = {
-+	{
-+		.connected = CC_SPEAKERS | CC_HEADPHONE,
-+		.codec_bit = 0,
-+	},
-+	{} /* terminate array by .connected == 0 */
-+};
-+
-+static struct codec_connection topaz_input[] = {
-+	{
-+		.connected = CC_DIGITALIN,
-+		.codec_bit = 0,
-+	},
-+	{} /* terminate array by .connected == 0 */
-+};
-+
-+static struct codec_connection topaz_output[] = {
-+	{
-+		.connected = CC_DIGITALOUT,
-+		.codec_bit = 1,
-+	},
-+	{} /* terminate array by .connected == 0 */
-+};
-+
-+static struct codec_connection topaz_inout[] = {
-+	{
-+		.connected = CC_DIGITALIN,
-+		.codec_bit = 0,
-+	},
-+	{
-+		.connected = CC_DIGITALOUT,
-+		.codec_bit = 1,
-+	},
-+	{} /* terminate array by .connected == 0 */
-+};
-+
-+static struct layout layouts[] = {
-+	/* last PowerBooks (15" Oct 2005) */
-+	{ .layout_id = 82,
-+	  .flags = LAYOUT_FLAG_COMBO_LINEOUT_SPDIF,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_noheadphones,
-+	  },
-+	  .codecs[1] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	},
-+	/* PowerMac9,1 */
-+	{ .layout_id = 60,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_reallineout,
-+	  },
-+	},
-+	/* PowerMac9,1 */
-+	{ .layout_id = 61,
-+	  .codecs[0] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	},
-+	/* PowerBook5,7 */
-+	{ .layout_id = 64,
-+	  .flags = LAYOUT_FLAG_COMBO_LINEOUT_SPDIF,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_noheadphones,
-+	  },
-+	},
-+	/* PowerBook5,7 */
-+	{ .layout_id = 65,
-+	  .codecs[0] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	},
-+	/* PowerBook5,9 [17" Oct 2005] */
-+	{ .layout_id = 84,
-+	  .flags = LAYOUT_FLAG_COMBO_LINEOUT_SPDIF,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_noheadphones,
-+	  },
-+	  .codecs[1] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	},
-+	/* PowerMac8,1 */
-+	{ .layout_id = 45,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_noheadphones,
-+	  },
-+	  .codecs[1] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	},
-+	/* Quad PowerMac (analog in, analog/digital out) */
-+	{ .layout_id = 68,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_nomic,
-+	  },
-+	},
-+	/* Quad PowerMac (digital in) */
-+	{ .layout_id = 69,
-+	  .codecs[0] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	  .busname = "digital in", .pcmid = 1 },
-+	/* Early 2005 PowerBook (PowerBook 5,6) */
-+	{ .layout_id = 70,
-+	  .codecs[0] = {
-+		.name = "tas",
-+		.connections = tas_connections_nolineout,
-+	  },
-+	},
-+	/* PowerBook 5,4 */
-+	{ .layout_id = 51,
-+	  .codecs[0] = {
-+		.name = "tas",
-+		.connections = tas_connections_nolineout,
-+	  },
-+	},
-+	/* PowerBook6,7 */
-+	{ .layout_id = 80,
-+	  .codecs[0] = {
-+		.name = "tas",
-+		.connections = tas_connections_noline,
-+	  },
-+	},
-+	/* PowerBook6,8 */
-+	{ .layout_id = 72,
-+	  .codecs[0] = {
-+		.name = "tas",
-+		.connections = tas_connections_nolineout,
-+	  },
-+	},
-+	/* PowerMac8,2 */
-+	{ .layout_id = 86,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_nomic,
-+	  },
-+	  .codecs[1] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	},
-+	/* PowerBook6,7 */
-+	{ .layout_id = 92,
-+	  .codecs[0] = {
-+		.name = "tas",
-+		.connections = tas_connections_nolineout,
-+	  },
-+	},
-+	/* PowerMac10,1 (Mac Mini) */
-+	{ .layout_id = 58,
-+	  .codecs[0] = {
-+		.name = "toonie",
-+		.connections = toonie_connections,
-+	  },
-+	},
-+	/* unknown, untested, but this comes from Apple */
-+	{ .layout_id = 41,
-+	  .codecs[0] = {
-+		.name = "tas",
-+		.connections = tas_connections_all,
-+	  },
-+	},
-+	{ .layout_id = 36,
-+	  .codecs[0] = {
-+		.name = "tas",
-+		.connections = tas_connections_nomic,
-+	  },
-+	  .codecs[1] = {
-+		.name = "topaz",
-+		.connections = topaz_inout,
-+	  },
-+	},
-+	{ .layout_id = 47,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_noheadphones,
-+	  },
-+	},
-+	{ .layout_id = 48,
-+	  .codecs[0] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	},
-+	{ .layout_id = 49,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_nomic,
-+	  },
-+	},
-+	{ .layout_id = 50,
-+	  .codecs[0] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	},
-+	{ .layout_id = 56,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_noheadphones,
-+	  },
-+	},
-+	{ .layout_id = 57,
-+	  .codecs[0] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	},
-+	{ .layout_id = 62,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_noheadphones,
-+	  },
-+	  .codecs[1] = {
-+		.name = "topaz",
-+		.connections = topaz_output,
-+	  },
-+	},
-+	{ .layout_id = 66,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_noheadphones,
-+	  },
-+	},
-+	{ .layout_id = 67,
-+	  .codecs[0] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	},
-+	{ .layout_id = 76,
-+	  .codecs[0] = {
-+		.name = "tas",
-+		.connections = tas_connections_nomic,
-+	  },
-+	  .codecs[1] = {
-+		.name = "topaz",
-+		.connections = topaz_inout,
-+	  },
-+	},
-+	{ .layout_id = 90,
-+	  .codecs[0] = {
-+		.name = "tas",
-+		.connections = tas_connections_noline,
-+	  },
-+	},
-+	{ .layout_id = 94,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		/* but it has an external mic?? how to select? */
-+		.connections = onyx_connections_noheadphones,
-+	  },
-+	},
-+	{ .layout_id = 96,
-+	  .codecs[0] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_noheadphones,
-+	  },
-+	},
-+	{ .layout_id = 98,
-+	  .codecs[0] = {
-+		.name = "toonie",
-+		.connections = toonie_connections,
-+	  },
-+	},
-+	{ .layout_id = 100,
-+	  .codecs[0] = {
-+		.name = "topaz",
-+		.connections = topaz_input,
-+	  },
-+	  .codecs[1] = {
-+		.name = "onyx",
-+		.connections = onyx_connections_noheadphones,
-+	  },
-+	},
-+	{}
-+};
-+
-+static struct layout *find_layout_by_id(unsigned int id)
++struct soundbus_dev *soundbus_dev_get(struct soundbus_dev *dev)
 +{
-+	struct layout *l;
++	struct device *tmp;
 +
-+	l = layouts;
-+	while (l->layout_id) {
-+		if (l->layout_id == id)
-+			return l;
-+		l++;
-+	}
-+	return NULL;
++	if (!dev)
++		return NULL;
++	tmp = get_device(&dev->ofdev.dev);
++	if (tmp)
++		return to_soundbus_device(tmp);
++	else
++		return NULL;
++}
++EXPORT_SYMBOL_GPL(soundbus_dev_get);
++
++void soundbus_dev_put(struct soundbus_dev *dev)
++{
++	if (dev)
++		put_device(&dev->ofdev.dev);
++}
++EXPORT_SYMBOL_GPL(soundbus_dev_put);
++
++static int soundbus_probe(struct device *dev)
++{
++	int error = -ENODEV;
++	struct soundbus_driver *drv;
++	struct soundbus_dev *soundbus_dev;
++
++	drv = to_soundbus_driver(dev->driver);
++	soundbus_dev = to_soundbus_device(dev);
++
++	if (!drv->probe)
++		return error;
++
++	soundbus_dev_get(soundbus_dev);
++
++	error = drv->probe(soundbus_dev);
++	if (error)
++		soundbus_dev_put(soundbus_dev);
++
++	return error;
 +}
 +
-+static void use_layout(struct layout *l)
-+{
-+	int i;
 +
-+	for (i=0; i<MAX_CODECS_PER_BUS; i++) {
-+		if (l->codecs[i].name) {
-+			request_module("snd-aoa-codec-%s", l->codecs[i].name);
-+		}
++static int soundbus_uevent(struct device *dev, char **envp, int num_envp,
++			   char *buffer, int buffer_size)
++{
++	struct soundbus_dev * soundbus_dev;
++	struct of_device * of;
++	char *scratch, *compat, *compat2;
++	int i = 0;
++	int length, cplen, cplen2, seen = 0;
++
++	if (!dev)
++		return -ENODEV;
++
++	soundbus_dev = to_soundbus_device(dev);
++	if (!soundbus_dev)
++		return -ENODEV;
++
++	of = &soundbus_dev->ofdev;
++
++	/* stuff we want to pass to /sbin/hotplug */
++	envp[i++] = scratch = buffer;
++	length = scnprintf (scratch, buffer_size, "OF_NAME=%s", of->node->name);
++	++length;
++	buffer_size -= length;
++	if ((buffer_size <= 0) || (i >= num_envp))
++		return -ENOMEM;
++	scratch += length;
++
++	envp[i++] = scratch;
++	length = scnprintf (scratch, buffer_size, "OF_TYPE=%s", of->node->type);
++	++length;
++	buffer_size -= length;
++	if ((buffer_size <= 0) || (i >= num_envp))
++		return -ENOMEM;
++	scratch += length;
++
++	/* Since the compatible field can contain pretty much anything
++	 * it's not really legal to split it out with commas. We split it
++	 * up using a number of environment variables instead. */
++
++	compat = (char *) get_property(of->node, "compatible", &cplen);
++	compat2 = compat;
++	cplen2= cplen;
++	while (compat && cplen > 0) {
++		envp[i++] = scratch;
++		length = scnprintf (scratch, buffer_size,
++				     "OF_COMPATIBLE_%d=%s", seen, compat);
++		++length;
++		buffer_size -= length;
++		if ((buffer_size <= 0) || (i >= num_envp))
++			return -ENOMEM;
++		scratch += length;
++		length = strlen (compat) + 1;
++		compat += length;
++		cplen -= length;
++		seen++;
 +	}
-+	/* now we wait for the codecs to call us back */
-+}
 +
-+struct layout_dev;
++	envp[i++] = scratch;
++	length = scnprintf (scratch, buffer_size, "OF_COMPATIBLE_N=%d", seen);
++	++length;
++	buffer_size -= length;
++	if ((buffer_size <= 0) || (i >= num_envp))
++		return -ENOMEM;
++	scratch += length;
 +
-+struct layout_dev_ptr {
-+	struct layout_dev *ptr;
-+};
++	envp[i++] = scratch;
++	length = scnprintf (scratch, buffer_size, "MODALIAS=%s",
++			soundbus_dev->modalias);
 +
-+struct layout_dev {
-+	struct list_head list;
-+	struct soundbus_dev *sdev;
-+	struct device_node *sound;
-+	struct aoa_codec *codecs[MAX_CODECS_PER_BUS];
-+	struct layout *layout;
-+	struct gpio_runtime gpio;
++	buffer_size -= length;
++	if ((buffer_size <= 0) || (i >= num_envp))
++		return -ENOMEM;
 +
-+	/* we need these for headphone/lineout detection */
-+	struct snd_kcontrol *headphone_ctrl;
-+	struct snd_kcontrol *lineout_ctrl;
-+	struct snd_kcontrol *speaker_ctrl;
-+	struct snd_kcontrol *headphone_detected_ctrl;
-+	struct snd_kcontrol *lineout_detected_ctrl;
++	envp[i] = NULL;
 +
-+	struct layout_dev_ptr selfptr_headphone;
-+	struct layout_dev_ptr selfptr_lineout;
-+
-+	u32 have_lineout_detect:1,
-+	    have_headphone_detect:1,
-+	    switch_on_headphone:1,
-+	    switch_on_lineout:1;
-+};
-+
-+static LIST_HEAD(layouts_list);
-+static int layouts_list_items;
-+/* this can go away but only if we allow multiple cards,
-+ * make the fabric handle all the card stuff, etc... */
-+static struct layout_dev *layout_device;
-+
-+static int control_info(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 1;
 +	return 0;
 +}
 +
-+#define AMP_CONTROL(n, description)					\
-+static int n##_control_get(struct snd_kcontrol *kcontrol,		\
-+			   struct snd_ctl_elem_value *ucontrol)		\
-+{									\
-+	struct gpio_runtime *gpio = snd_kcontrol_chip(kcontrol);	\
-+	if (gpio->methods && gpio->methods->get_##n)			\
-+		ucontrol->value.integer.value[0] =			\
-+			gpio->methods->get_##n(gpio);			\
-+	return 0;							\
-+}									\
-+static int n##_control_put(struct snd_kcontrol *kcontrol,		\
-+			   struct snd_ctl_elem_value *ucontrol)		\
-+{									\
-+	struct gpio_runtime *gpio = snd_kcontrol_chip(kcontrol);	\
-+	if (gpio->methods && gpio->methods->get_##n)			\
-+		gpio->methods->set_##n(gpio,				\
-+			ucontrol->value.integer.value[0]);		\
-+	return 1;							\
-+}									\
-+static struct snd_kcontrol_new n##_ctl = {				\
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,				\
-+	.name = description,						\
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,                      \
-+	.info = control_info,						\
-+	.get = n##_control_get,						\
-+	.put = n##_control_put,						\
-+}
-+
-+AMP_CONTROL(headphone, "Headphone Switch");
-+AMP_CONTROL(speakers, "Speakers Switch");
-+AMP_CONTROL(lineout, "Line-Out Switch");
-+
-+static int detect_choice_get(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
++static int soundbus_device_remove(struct device *dev)
 +{
-+	struct layout_dev *ldev = snd_kcontrol_chip(kcontrol);
++	struct soundbus_dev * soundbus_dev = to_soundbus_device(dev);
++	struct soundbus_driver * drv = to_soundbus_driver(dev->driver);
 +
-+	switch (kcontrol->private_value) {
-+	case 0:
-+		ucontrol->value.integer.value[0] = ldev->switch_on_headphone;
-+		break;
-+	case 1:
-+		ucontrol->value.integer.value[0] = ldev->switch_on_lineout;
-+		break;
-+	default:
-+		return -ENODEV;
-+	}
++	if (dev->driver && drv->remove)
++		drv->remove(soundbus_dev);
++	soundbus_dev_put(soundbus_dev);
++
 +	return 0;
 +}
 +
-+static int detect_choice_put(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
++static void soundbus_device_shutdown(struct device *dev)
 +{
-+	struct layout_dev *ldev = snd_kcontrol_chip(kcontrol);
++	struct soundbus_dev * soundbus_dev = to_soundbus_device(dev);
++	struct soundbus_driver * drv = to_soundbus_driver(dev->driver);
 +
-+	switch (kcontrol->private_value) {
-+	case 0:
-+		ldev->switch_on_headphone = !!ucontrol->value.integer.value[0];
-+		break;
-+	case 1:
-+		ldev->switch_on_lineout = !!ucontrol->value.integer.value[0];
-+		break;
-+	default:
-+		return -ENODEV;
-+	}
-+	return 1;
++	if (dev->driver && drv->shutdown)
++		drv->shutdown(soundbus_dev);
 +}
 +
-+static struct snd_kcontrol_new headphone_detect_choice = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Headphone Detect Autoswitch",
-+	.info = control_info,
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.get = detect_choice_get,
-+	.put = detect_choice_put,
-+	.private_value = 0,
-+};
++#ifdef CONFIG_PM
 +
-+static struct snd_kcontrol_new lineout_detect_choice = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Line-Out Detect Autoswitch",
-+	.info = control_info,
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+	.get = detect_choice_get,
-+	.put = detect_choice_put,
-+	.private_value = 1,
-+};
-+
-+static int detected_get(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
++static int soundbus_device_suspend(struct device *dev, pm_message_t state)
 +{
-+	struct layout_dev *ldev = snd_kcontrol_chip(kcontrol);
-+	int v;
++	struct soundbus_dev * soundbus_dev = to_soundbus_device(dev);
++	struct soundbus_driver * drv = to_soundbus_driver(dev->driver);
 +
-+	switch (kcontrol->private_value) {
-+	case 0:
-+		v = ldev->gpio.methods->get_detect(&ldev->gpio,
-+						   AOA_NOTIFY_HEADPHONE);
-+		break;
-+	case 1:
-+		v = ldev->gpio.methods->get_detect(&ldev->gpio,
-+						   AOA_NOTIFY_LINE_OUT);
-+		break;
-+	default:
-+		return -ENODEV;
-+	}
-+	ucontrol->value.integer.value[0] = v;
++	if (dev->driver && drv->suspend)
++		return drv->suspend(soundbus_dev, state);
 +	return 0;
 +}
 +
-+static struct snd_kcontrol_new headphone_detected = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Headphone Detected",
-+	.info = control_info,
-+	.access = SNDRV_CTL_ELEM_ACCESS_READ,
-+	.get = detected_get,
-+	.private_value = 0,
-+};
-+
-+static struct snd_kcontrol_new lineout_detected = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Line-Out Detected",
-+	.info = control_info,
-+	.access = SNDRV_CTL_ELEM_ACCESS_READ,
-+	.get = detected_get,
-+	.private_value = 1,
-+};
-+
-+static int check_codec(struct aoa_codec *codec, struct layout_dev *ldev, struct codec_connect_info *cci)
++static int soundbus_device_resume(struct device * dev)
 +{
-+	u32 *ref;
-+	char propname[32];
-+	struct codec_connection *cc;
++	struct soundbus_dev * soundbus_dev = to_soundbus_device(dev);
++	struct soundbus_driver * drv = to_soundbus_driver(dev->driver);
 +
-+	if (codec->node) {
-+		snprintf(propname, sizeof(propname), "platform-%s-codec-ref", codec->name);
-+		ref = (u32*)get_property(ldev->sound, propname, NULL);
-+		/* if the codec has a node, we require a reference */
-+		if (!ref) {
-+			printk(KERN_INFO "snd-aoa-fabric-layout: required property %s not present\n", propname);
-+			return -ENODEV;
-+		}
-+		if (*ref != codec->node->linux_phandle) {
-+			printk(KERN_INFO "snd-aoa-fabric-layout: %s doesn't match!\n", propname);
-+			return -ENODEV;
-+		}
-+	} else {
-+		if (layouts_list_items != 1) {
-+			printk(KERN_INFO "snd-aoa-fabric-layout: more than one soundbus, but no references. eek!\n");
-+			return -ENODEV;
-+		}
-+	}
-+	codec->soundbus_dev = ldev->sdev;
-+	codec->gpio = &ldev->gpio;
++	if (dev->driver && drv->resume)
++		return drv->resume(soundbus_dev);
++	return 0;
++}
 +
-+	cc = cci->connections;
-+	if (!cc)
++#endif /* CONFIG_PM */
++
++extern struct device_attribute soundbus_dev_attrs[];
++
++static struct bus_type soundbus_bus_type = {
++	.name		= "aoa-soundbus",
++	.probe		= soundbus_probe,
++	.uevent		= soundbus_uevent,
++	.remove		= soundbus_device_remove,
++	.shutdown	= soundbus_device_shutdown,
++#ifdef CONFIG_PM
++	.suspend	= soundbus_device_suspend,
++	.resume		= soundbus_device_resume,
++#endif
++	.dev_attrs	= soundbus_dev_attrs,
++};
++
++static int __init soundbus_init(void)
++{
++	return bus_register(&soundbus_bus_type);
++}
++
++static void __exit soundbus_exit(void)
++{
++	bus_unregister(&soundbus_bus_type);
++}
++
++int soundbus_add_one(struct soundbus_dev *dev)
++{
++	static int devcount;
++
++	/* sanity checks */
++	if (!dev->attach_codec ||
++	    !dev->ofdev.node ||
++	    dev->pcmname ||
++	    dev->pcmid != -1) {
++		printk(KERN_ERR "soundbus: adding device failed sanity check!\n");
 +		return -EINVAL;
-+
-+	printk(KERN_INFO "snd-aoa-fabric-layout: can use this codec\n");
-+
-+	codec->connected = 0;
-+	codec->fabric_data = cc;
-+
-+	while (cc->connected) {
-+		codec->connected |= 1<<cc->codec_bit;
-+		cc++;
 +	}
 +
-+	return 0;
++	snprintf(dev->ofdev.dev.bus_id, BUS_ID_SIZE, "soundbus:%x", ++devcount);
++	dev->ofdev.dev.bus = &soundbus_bus_type;
++	return of_device_register(&dev->ofdev);
 +}
++EXPORT_SYMBOL_GPL(soundbus_add_one);
 +
-+static int layout_found_codec(struct aoa_codec *codec)
++void soundbus_remove_one(struct soundbus_dev *dev)
 +{
-+	struct layout_dev *ldev;
-+	int i;
-+
-+	list_for_each_entry(ldev, &layouts_list, list) {
-+		for (i=0; i<MAX_CODECS_PER_BUS; i++) {
-+			if (!ldev->layout->codecs[i].name)
-+				continue;
-+			if (strcmp(ldev->layout->codecs[i].name, codec->name) == 0) {
-+				if (check_codec(codec, ldev, &ldev->layout->codecs[i]) == 0)
-+					return 0;
-+			}
-+		}
-+	}
-+	return -ENODEV;
++	of_device_unregister(&dev->ofdev);
 +}
++EXPORT_SYMBOL_GPL(soundbus_remove_one);
 +
-+static void layout_remove_codec(struct aoa_codec *codec)
++int soundbus_register_driver(struct soundbus_driver *drv)
 +{
-+	int i;
-+	/* here remove the codec from the layout dev's
-+	 * codec reference */
++	/* initialize common driver fields */
++	drv->driver.name = drv->name;
++	drv->driver.bus = &soundbus_bus_type;
 +
-+	codec->soundbus_dev = NULL;
-+	codec->gpio = NULL;
-+	for (i=0; i<MAX_CODECS_PER_BUS; i++) {
-+	}
++	/* register with core */
++	return driver_register(&drv->driver);
 +}
++EXPORT_SYMBOL_GPL(soundbus_register_driver);
 +
-+static void layout_notify(void *data)
++void soundbus_unregister_driver(struct soundbus_driver *drv)
 +{
-+	struct layout_dev_ptr *dptr = data;
-+	struct layout_dev *ldev;
-+	int v, update;
-+	struct snd_kcontrol *detected, *c;
-+	struct snd_card *card = aoa_get_card();
-+
-+	ldev = dptr->ptr;
-+	if (data == &ldev->selfptr_headphone) {
-+		v = ldev->gpio.methods->get_detect(&ldev->gpio, AOA_NOTIFY_HEADPHONE);
-+		detected = ldev->headphone_detected_ctrl;
-+		update = ldev->switch_on_headphone;
-+		if (update) {
-+			ldev->gpio.methods->set_speakers(&ldev->gpio, !v);
-+			ldev->gpio.methods->set_headphone(&ldev->gpio, v);
-+			ldev->gpio.methods->set_lineout(&ldev->gpio, 0);
-+		}
-+	} else if (data == &ldev->selfptr_lineout) {
-+		v = ldev->gpio.methods->get_detect(&ldev->gpio, AOA_NOTIFY_LINE_OUT);
-+		detected = ldev->lineout_detected_ctrl;
-+		update = ldev->switch_on_lineout;
-+		if (update) {
-+			ldev->gpio.methods->set_speakers(&ldev->gpio, !v);
-+			ldev->gpio.methods->set_headphone(&ldev->gpio, 0);
-+			ldev->gpio.methods->set_lineout(&ldev->gpio, v);
-+		}
-+	} else
-+		return;
-+
-+	if (detected)
-+		snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, &detected->id);
-+	if (update) {
-+		c = ldev->headphone_ctrl;
-+		if (c)
-+			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, &c->id);
-+		c = ldev->speaker_ctrl;
-+		if (c)
-+			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, &c->id);
-+		c = ldev->lineout_ctrl;
-+		if (c)
-+			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, &c->id);
-+	}
++	driver_unregister(&drv->driver);
 +}
++EXPORT_SYMBOL_GPL(soundbus_unregister_driver);
 +
-+static void layout_attached_codec(struct aoa_codec *codec)
-+{
-+	struct codec_connection *cc;
-+	struct snd_kcontrol *ctl;
-+	int headphones, lineout;
-+	struct layout_dev *ldev = layout_device;
-+
-+	/* need to add this codec to our codec array! */
-+
-+	cc = codec->fabric_data;
-+
-+	headphones = codec->gpio->methods->get_detect(codec->gpio,
-+						      AOA_NOTIFY_HEADPHONE);
-+ 	lineout = codec->gpio->methods->get_detect(codec->gpio,
-+						   AOA_NOTIFY_LINE_OUT);
-+
-+	while (cc->connected) {
-+		if (cc->connected & CC_SPEAKERS) {
-+			if (headphones <= 0 && lineout <= 0)
-+				ldev->gpio.methods->set_speakers(codec->gpio, 1);
-+			ctl = snd_ctl_new1(&speakers_ctl, codec->gpio);
-+			ldev->speaker_ctrl = ctl;
-+			aoa_snd_ctl_add(ctl);
-+		}
-+		if (cc->connected & CC_HEADPHONE) {
-+			if (headphones == 1)
-+				ldev->gpio.methods->set_headphone(codec->gpio, 1);
-+			ctl = snd_ctl_new1(&headphone_ctl, codec->gpio);
-+			ldev->headphone_ctrl = ctl;
-+			aoa_snd_ctl_add(ctl);
-+			ldev->have_headphone_detect =
-+				!ldev->gpio.methods
-+					->set_notify(&ldev->gpio,
-+						     AOA_NOTIFY_HEADPHONE,
-+						     layout_notify,
-+						     &ldev->selfptr_headphone);
-+			if (ldev->have_headphone_detect) {
-+				ctl = snd_ctl_new1(&headphone_detect_choice,
-+						   ldev);
-+				aoa_snd_ctl_add(ctl);
-+				ctl = snd_ctl_new1(&headphone_detected,
-+						   ldev);
-+				ldev->headphone_detected_ctrl = ctl;
-+				aoa_snd_ctl_add(ctl);
-+			}
-+		}
-+		if (cc->connected & CC_LINEOUT) {
-+			if (lineout == 1)
-+				ldev->gpio.methods->set_lineout(codec->gpio, 1);
-+			ctl = snd_ctl_new1(&lineout_ctl, codec->gpio);
-+			if (cc->connected & CC_LINEOUT_LABELLED_HEADPHONE)
-+				strlcpy(ctl->id.name,
-+					"Headphone Switch", sizeof(ctl->id.name));
-+			ldev->lineout_ctrl = ctl;
-+			aoa_snd_ctl_add(ctl);
-+			ldev->have_lineout_detect =
-+				!ldev->gpio.methods
-+					->set_notify(&ldev->gpio,
-+						     AOA_NOTIFY_LINE_OUT,
-+						     layout_notify,
-+						     &ldev->selfptr_lineout);
-+			if (ldev->have_lineout_detect) {
-+				ctl = snd_ctl_new1(&lineout_detect_choice,
-+						   ldev);
-+				if (cc->connected & CC_LINEOUT_LABELLED_HEADPHONE)
-+					strlcpy(ctl->id.name,
-+						"Headphone Detect Autoswitch",
-+						sizeof(ctl->id.name));
-+				aoa_snd_ctl_add(ctl);
-+				ctl = snd_ctl_new1(&lineout_detected,
-+						   ldev);
-+				if (cc->connected & CC_LINEOUT_LABELLED_HEADPHONE)
-+					strlcpy(ctl->id.name,
-+						"Headphone Detected",
-+						sizeof(ctl->id.name));
-+				ldev->lineout_detected_ctrl = ctl;
-+				aoa_snd_ctl_add(ctl);
-+			}
-+		}
-+		cc++;
-+	}
-+}
-+
-+static struct aoa_fabric layout_fabric = {
-+	.name = "SoundByLayout",
-+	.owner = THIS_MODULE,
-+	.found_codec = layout_found_codec,
-+	.remove_codec = layout_remove_codec,
-+	.attached_codec = layout_attached_codec,
-+};
-+
-+static int aoa_fabric_layout_probe(struct soundbus_dev *sdev)
-+{
-+	struct device_node *sound = NULL;
-+	unsigned int *layout_id;
-+	struct layout *layout;
-+	struct layout_dev *ldev = NULL;
-+	int err;
-+
-+	/* hm, currently we can only have one ... */
-+	if (layout_device)
-+		return -ENODEV;
-+
-+	/* by breaking out we keep a reference */
-+	while ((sound = of_get_next_child(sdev->ofdev.node, sound))) {
-+		if (sound->type && strcasecmp(sound->type, "soundchip") == 0)
-+			break;
-+	}
-+	if (!sound) return -ENODEV;
-+
-+	layout_id = (unsigned int *) get_property(sound, "layout-id", NULL);
-+	if (!layout_id)
-+		goto outnodev;
-+	printk(KERN_INFO "snd-aoa-fabric-layout: found bus with layout %d ", *layout_id);
-+
-+	layout = find_layout_by_id(*layout_id);
-+	if (!layout) {
-+		printk("(no idea how to handle)\n");
-+		goto outnodev;
-+	}
-+
-+	ldev = kzalloc(sizeof(struct layout_dev), GFP_KERNEL);
-+	if (!ldev)
-+		goto outnodev;
-+
-+	layout_device = ldev;
-+	ldev->sdev = sdev;
-+	ldev->sound = sound;
-+	ldev->layout = layout;
-+	ldev->gpio.node = sound->parent;
-+	switch (layout->layout_id) {
-+	case 41: /* that unknown machine no one seems to have */
-+	case 51: /* PowerBook5,4 */
-+	case 58: /* Mac Mini */
-+		ldev->gpio.methods = ftr_gpio_methods;
-+		break;
-+	default:
-+		ldev->gpio.methods = pmf_gpio_methods;
-+	}
-+	ldev->selfptr_headphone.ptr = ldev;
-+	ldev->selfptr_lineout.ptr = ldev;
-+	sdev->ofdev.dev.driver_data = ldev;
-+
-+	printk("(using)\n");
-+	list_add(&ldev->list, &layouts_list);
-+	layouts_list_items++;
-+
-+	/* assign these before registering ourselves, so
-+	 * callbacks that are done during registration
-+	 * already have the values */
-+	sdev->pcmid = ldev->layout->pcmid;
-+	if (ldev->layout->busname) {
-+		sdev->pcmname = ldev->layout->busname;
-+	} else {
-+		sdev->pcmname = "Master";
-+	}
-+
-+	ldev->gpio.methods->init(&ldev->gpio);
-+
-+	err = aoa_fabric_register(&layout_fabric);
-+	if (err && err != -EALREADY) {
-+		printk(KERN_INFO "snd-aoa-fabric-layout: can't use,"
-+				 " another fabric is active!\n");
-+		goto outlistdel;
-+	}
-+
-+	use_layout(layout);
-+	ldev->switch_on_headphone = 1;
-+	ldev->switch_on_lineout = 1;
-+	return 0;
-+ outlistdel:
-+	/* we won't be using these then... */
-+	ldev->gpio.methods->exit(&ldev->gpio);
-+	/* reset if we didn't use it */
-+	sdev->pcmname = NULL;
-+	sdev->pcmid = -1;
-+	list_del(&ldev->list);
-+	layouts_list_items--;
-+ outnodev:
-+ 	if (sound) of_node_put(sound);
-+ 	layout_device = NULL;
-+ 	if (ldev) kfree(ldev);
-+	return -ENODEV;
-+}
-+
-+static int aoa_fabric_layout_remove(struct soundbus_dev *sdev)
-+{
-+	struct layout_dev *ldev = sdev->ofdev.dev.driver_data;
-+	int i;
-+
-+	for (i=0; i<MAX_CODECS_PER_BUS; i++) {
-+		if (ldev->codecs[i]) {
-+			aoa_fabric_unlink_codec(ldev->codecs[i]);
-+		}
-+		ldev->codecs[i] = NULL;
-+	}
-+	list_del(&ldev->list);
-+	layouts_list_items--;
-+	of_node_put(ldev->sound);
-+
-+	ldev->gpio.methods->set_notify(&ldev->gpio,
-+				       AOA_NOTIFY_HEADPHONE,
-+				       NULL,
-+				       NULL);
-+	ldev->gpio.methods->set_notify(&ldev->gpio,
-+				       AOA_NOTIFY_LINE_OUT,
-+				       NULL,
-+				       NULL);
-+
-+	ldev->gpio.methods->exit(&ldev->gpio);
-+	layout_device = NULL;
-+	kfree(ldev);
-+	sdev->pcmid = -1;
-+	sdev->pcmname = NULL;
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int aoa_fabric_layout_suspend(struct soundbus_dev *sdev, pm_message_t state)
-+{
-+	struct layout_dev *ldev = sdev->ofdev.dev.driver_data;
-+
-+	printk("aoa_fabric_layout_suspend()\n");
-+
-+	if (ldev->gpio.methods && ldev->gpio.methods->all_amps_off)
-+		ldev->gpio.methods->all_amps_off(&ldev->gpio);
-+
-+	return 0;
-+}
-+
-+static int aoa_fabric_layout_resume(struct soundbus_dev *sdev)
-+{
-+	struct layout_dev *ldev = sdev->ofdev.dev.driver_data;
-+
-+	printk("aoa_fabric_layout_resume()\n");
-+
-+	if (ldev->gpio.methods && ldev->gpio.methods->all_amps_off)
-+		ldev->gpio.methods->all_amps_restore(&ldev->gpio);
-+
-+	return 0;
-+}
-+#endif
-+
-+static struct soundbus_driver aoa_soundbus_driver = {
-+	.name = "snd_aoa_soundbus_drv",
-+	.owner = THIS_MODULE,
-+	.probe = aoa_fabric_layout_probe,
-+	.remove = aoa_fabric_layout_remove,
-+#ifdef CONFIG_PM
-+	.suspend = aoa_fabric_layout_suspend,
-+	.resume = aoa_fabric_layout_resume,
-+#endif
-+};
-+
-+static int __init aoa_fabric_layout_init(void)
-+{
-+	int err;
-+
-+	err = soundbus_register_driver(&aoa_soundbus_driver);
-+	if (err)
-+		return err;
-+	return 0;
-+}
-+
-+static void __exit aoa_fabric_layout_exit(void)
-+{
-+	soundbus_unregister_driver(&aoa_soundbus_driver);
-+	aoa_fabric_unregister(&layout_fabric);
-+}
-+
-+module_init(aoa_fabric_layout_init);
-+module_exit(aoa_fabric_layout_exit);
++module_init(soundbus_init);
++module_exit(soundbus_exit);
 
 --
