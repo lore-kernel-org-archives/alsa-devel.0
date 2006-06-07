@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001756]: Detects soundcard,
-	alsamixer is ok, fiddled with switches, but no audio output
-Date: Wed, 7 Jun 2006 10:28:55 +0200
-Message-ID: <c07e623150ce1b6d62bb2d2ce99bc96b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001134]: alsa 1.0.9rc4 + intel
+	82801FB/.../ = No sound (Benq 52-101)
+Date: Wed, 7 Jun 2006 10:49:03 +0200
+Message-ID: <285f3a3ec91d01230cf00564bea77cd9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2046D15E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1F7115E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jun 2006 10:28:56 +0200 (MEST)
+	Wed,  7 Jun 2006 10:49:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,244 +26,372 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1756> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134> 
 ======================================================================
-Reported By:                rawsock
+Reported By:                liangalei
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1756
+Issue ID:                   1134
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Ubuntu Breezy Badger
-Kernel Version:             2.6.12-i686
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.14
 ======================================================================
-Date Submitted:             01-16-2006 18:51 CET
-Last Modified:              06-07-2006 10:28 CEST
+Date Submitted:             05-28-2005 08:49 CEST
+Last Modified:              06-07-2006 10:49 CEST
 ======================================================================
-Summary:                    Detects soundcard, alsamixer is ok, fiddled with
-switches, but no audio output
+Summary:                    alsa 1.0.9rc4 + intel 82801FB/.../ = No sound (Benq
+52-101)
 Description: 
-Tried switching External Amplifier, SPDIF output, Mic, PC Speaker, etc ...
-but to no avail. My laptop is a Packard Bell EasyNote A8, but the chipset
-seems pretty standard. The output of dmesg does not show any error while
-loading modules.
+My notebook is Benq 52-101, update FC3 to kernel 2.6.11-1.14_FC3
 
-On full volume settings, i can hear popping sounds when switching mic, pcm
-or lfe on/off. I can also hear the same loud pop when loading the sound
-module.
+alsamixer report: Card=intel ICH6, chip=Conexant id 3 (Question, Conexant
+just support modem's AC-97 or else provide whole sound ? )
 
-== lspci output
+alsaconf: can find "Intel Corp 82801FB/.../ ICH6 family AC'97 Audio", and
+will contine to "Have a lot fun".
 
-0000:00:00.0 Host bridge: Intel Corp. Mobile Memory Controller Hub (rev
-03)
-0000:00:02.0 VGA compatible controller: Intel Corp. Mobile Graphics
-Controller (rev 03)
-0000:00:02.1 Display controller: Intel Corp. Mobile Graphics Controller
-(rev 03)
-0000:00:1c.0 PCI bridge: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+I have ever, update linux kernel from 2.6.9 to 2.6.11(yum update, no
+recompiling), and alsa driver from 0.9.0/1.0.8/1.0.9rc3/4.
+
+Recomipling ALsa driver/lib/oss/tools/util.., with drive, ever try 
+----- ./configure --with-cards=azx (error: no this card)
+----- ./configure ; make; make install (no error report), not run
+./snddevices
+
+No sound ! So much days, so much test..... (if i915GM chipset + Conexant
+chip...(see below lspci), will be powered by alsa-1.0.9rc4 ? --- if still
+not, I will just wait for new alsa-driver.)
+
+thanks
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0001931 Unknown AC97 codec, digital sound works
+======================================================================
+
+----------------------------------------------------------------------
+ kickstart - 06-03-06 01:51 
+----------------------------------------------------------------------
+Hi all,
+
+I've Packard Bell A8810 running linux Slackware current, with the same
+problem.
+
+- My lspci:
+
+00:00.0 Host bridge: Intel Corporation Mobile 915GM/PM/GMS/910GML Express
+Processor to DRAM Controller (rev 03)
+00:02.0 VGA compatible controller: Intel Corporation Mobile
+915GM/GMS/910GML Express Graphics Controller (rev 03)
+00:02.1 Display controller: Intel Corporation Mobile 915GM/GMS/910GML
+Express Graphics Controller (rev 03)
+00:1c.0 PCI bridge: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family)
 PCI Express Port 1 (rev 04)
-0000:00:1d.0 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
+00:1d.0 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
 Family) USB UHCI #1 (rev 04)
-0000:00:1d.1 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
+00:1d.1 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
 Family) USB UHCI #2 (rev 04)
-0000:00:1d.2 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
+00:1d.2 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
 Family) USB UHCI #3 (rev 04)
-0000:00:1d.3 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
+00:1d.3 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
 Family) USB UHCI #4 (rev 04)
-0000:00:1d.7 USB Controller: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
+00:1d.7 USB Controller: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
 Family) USB2 EHCI Controller (rev 04)
-0000:00:1e.0 PCI bridge: Intel Corp. 82801 PCI Bridge (rev d4)
-0000:00:1e.2 Multimedia audio controller: Intel Corp.
+00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev d4)
+00:1e.2 Multimedia audio controller: Intel Corporation
 82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97 Audio Controller (rev 04)
-0000:00:1e.3 Modem: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97
+00:1e.3 Modem: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) AC'97
 Modem Controller (rev 04)
-0000:00:1f.0 ISA bridge: Intel Corp. 82801FBM (ICH6M) LPC Interface Bridge
-(rev 04)
-0000:00:1f.1 IDE interface: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
+00:1f.0 ISA bridge: Intel Corporation 82801FBM (ICH6M) LPC Interface
+Bridge (rev 04)
+00:1f.1 IDE interface: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
 Family) IDE Controller (rev 04)
-0000:00:1f.3 SMBus: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) SMBus
+00:1f.3 SMBus: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6 Family) SMBus
 Controller (rev 04)
-0000:06:01.0 CardBus bridge: Texas Instruments: Unknown device 8031
-0000:06:01.2 FireWire (IEEE 1394): Texas Instruments: Unknown device 8032
-0000:06:01.3 Unknown mass storage controller: Texas Instruments: Unknown
-device 8033
-0000:06:03.0 Network controller: Intel Corp. PRO/Wireless 2200BG (rev 05)
-0000:06:08.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+06:01.0 CardBus bridge: Texas Instruments PCIxx21/x515 Cardbus Controller
+06:01.2 FireWire (IEEE 1394): Texas Instruments OHCI Compliant IEEE 1394
+Host Controller
+06:01.3 Mass storage controller: Texas Instruments PCIxx21 Integrated
+FlashMedia Controller
+06:03.0 Network controller: Intel Corporation PRO/Wireless 2200BG (rev
+05)
+06:08.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
 RTL-8139/8139C/8139C+ (rev 10)
 
-== lsmod output
+- The audio codec seems to be a Conexant 20468-31 AC'97:
 
-snd_intel8x0           35036  2
-snd_ac97_codec         99136  1 snd_intel8x0
-snd_ac97_bus            2144  1 snd_ac97_codec
-snd_pcm_oss            56352  0
-snd_mixer_oss          20512  1 snd_pcm_oss
-snd_pcm                96776  3 snd_intel8x0,snd_ac97_codec,snd_pcm_oss
-snd_timer              26916  1 snd_pcm
-snd                    58756  10
-snd_intel8x0,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
-soundcore              10816  1 snd
-snd_page_alloc         10984  2 snd_intel8x0,snd_pcm
-binfmt_misc            12456  1
-rfcomm                 41816  0
-l2cap                  28196  5 rfcomm
-bluetooth              52452  4 rfcomm,l2cap
-speedstep_centrino      7600  1
-cpufreq_powersave       1696  0
-cpufreq_stats           5860  0
-cpufreq_userspace       4472  1
-cpufreq_ondemand        6300  0
-cpufreq_conservative     7332  0
-freq_table              4548  2 speedstep_centrino,cpufreq_stats
-pcmcia                 41548  2
-i915                   20576  1
-drm                    77204  2 i915
-tc1100_wmi              6660  0
-video                  16036  0
-battery                 9444  0
-container               4384  0
-button                  6480  0
-pcc_acpi               10848  0
-sony_acpi               5292  0
-ac                      4708  0
-dev_acpi               10916  0
-hotkey                 11300  0
-ipv6                  281856  8
-xfrm_user              20132  2
-xfrm4_tunnel            3748  0
-ipcomp                  8456  0
-esp4                    8192  0
-ah4                     6400  0
-af_packet              23560  2
-tsdev                   7808  0
-rtc                    14292  0
-ipw2200               110988  0
-ieee80211              34888  1 ipw2200
-ieee80211_crypt         6560  1 ieee80211
-firmware_class         11328  1 ipw2200
-ohci1394               37172  0
-yenta_socket           29228  2
-rsrc_nonstatic         14336  1 yenta_socket
-pcmcia_core            44976  3 pcmcia,yenta_socket,rsrc_nonstatic
-hw_random               5620  0
-shpchp                 48576  0
-pci_hotplug            31060  1 shpchp
-intel_agp              24284  1
-agpgart                36264  3 drm,intel_agp
-deflate                 4064  0
-zlib_deflate           24248  1 deflate
-twofish                47616  0
-serpent                20672  0
-aes                    29792  0
-blowfish                8352  0
-des                    17664  0
-sha256                 10944  0
-sha1                    2624  0
-crypto_null             2240  0
-af_key                 36144  0
-nls_cp437               5664  1
-ntfs                  109936  1
-joydev                 10272  0
-dm_mod                 61752  1
-sr_mod                 17828  0
-sbp2                   24740  0
-scsi_mod              144264  2 sr_mod,sbp2
-ieee1394              107704  2 ohci1394,sbp2
-psmouse                39556  0
-mousedev               12288  2
-parport_pc             37604  0
-lp                     11876  0
-parport                39176  2 parport_pc,lp
-md_mod                 76404  0
-reiserfs              280432  2
-thermal                13448  0
-processor              23456  2 speedstep_centrino,thermal
-fan                     4612  0
-usbhid                 40384  0
-8139cp                 23328  0
-8139too                28832  0
-mii                     6048  2 8139cp,8139too
-ehci_hcd               36968  0
-uhci_hcd               35120  0
-usbcore               136996  4 usbhid,ehci_hcd,uhci_hcd
-ide_cd                 43972  0
-cdrom                  41472  2 sr_mod,ide_cd
-ide_disk               18944  5
-ide_generic             1280  0
-piix                   11236  1
-generic                 5156  0
-ide_core              147956  5 ide_cd,ide_disk,ide_generic,piix,generic
-unix                   30416  668
-vga16fb                13448  0
-vgastate                9984  1 vga16fb
-cfbimgblt               2880  1 vga16fb
-cfbfillrect             4128  1 vga16fb
-cfbcopyarea             3872  1 vga16fb
-tileblit                2560  0
-font                    8096  0
+http://support.packardbell.com/it/item/index.php?i=spec_sound_cnx20468-31&ppn=PB30Q01306]
 
-== output of /proc/interrupts
+- Conexant info:
 
- 0:    1467003    IO-APIC-edge  timer
-  1:      27671    IO-APIC-edge  i8042
-  8:          1    IO-APIC-edge  rtc
-  9:        334   IO-APIC-level  acpi
- 12:     232936    IO-APIC-edge  i8042
- 14:     107773    IO-APIC-edge  ide0
- 16:      45563   IO-APIC-level  ipw2200, Intel ICH6
- 17:     101668   IO-APIC-level  uhci_hcd:usb4, yenta, ohci1394, eth1,
-i915@pci:0000:00:02.0
- 19:     359145   IO-APIC-level  uhci_hcd:usb3
- 20:          2   IO-APIC-level  uhci_hcd:usb1, ehci_hcd:usb5
- 21:          0   IO-APIC-level  uhci_hcd:usb2
-NMI:          0
-LOC:     192512
-ERR:          0
-MIS:          0
+http://www.conexant.com/products/entry.jsp?id=24
+
+This laptop seems quite similar to Benq JoyBook S53 and NEC Versa s940:
+
+http://forum.hardware.fr/hardwarefr/MiniPCPortablesPDA/Topic-Unique-NEC-Versa-S940-Packard-Bell-EasyNote-A5510-A7715-sujet-17891-1.htm
+http://www.nec-online.co.nz/Products/Product_Specs.asp?CID=9&RangeID=15&CatID=30&ModID=79
+
+Since this audio codec family seems to bee supported ( see
+sound/pci/ac97/ac97_codec.c ) with id = 0x43585428 Cx20468 , I've compiled
+a vanilla 2.6.16.19 kernel adding my ac97_codec_id taken from:
+
+cat /proc/asound/card0/codec97#0/ac97#0-0+regs
+
+<snip>
+0:7c = 4358
+0:7e = 5431
+
+My ID = 0x43585431 [ 0:7c + 0:7e value ]
+
+to sound/pci/ac97/ac97_codec.c
+
+<snip>
+{ 0x43585421, 0xffffffff, "HSD11246", NULL, NULL }, // SmartMC II
+{ 0x43585428, 0xfffffff8, "Cx20468",patch_conexant, NULL }, // SmartAMC
+fixme:
+{ 0x43585431, 0xffffffff, "Cx20468-31",patch_conexant, NULL }, // <--
+ADDED
+{ 0x44543031, 0xfffffff0, "DT0398", NULL, NULL },
+<snip>
+
+
+Now, cat /proc/asound/cards gives:
+
+ 0 [ICH6           ]: ICH4 - Intel ICH6
+                      Intel ICH6 with Cx20468-31 at 0xb0040800, irq 16
+
+but STILL NO SOUND!
+
+I'll try to contact Packard Bell trying to get some info about the codec
+...
+
+rlrevell: 
+
+Here is the output of 'cat /proc/asound/card0/codec97#0/ac97#0-0'
+BEFORE adding { 0x43585431, 0xffffffff, "Cx20468-31",patch_conexant, NULL
+}
+to sound/pci/ac97/ac97_codec.c
+-------------------------------------------------------------------------------
+0-0/0: Conexant id 31
+
+PCI Subsys Vendor: 0x152d
+PCI Subsys Device: 0x0745
+
+Revision         : 0x00
+Compat. Class    : 0x00
+Subsys. Vendor ID: 0x0000
+Subsys. ID       : 0x0000
+
+Capabilities     :
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : No 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=2 AMAP LDAC SDAC CDAC DSA=0 SPDIF
+Extended status  : PRL SPCV LDAC SDAC CDAC SPDIF=10/11
+SPDIF Control    : Consumer PCM Copyright Category=0x22 Generation=1
+Rate=48kHz
+Extended modem ID: codec=0 LIN1
+Modem status     : PRA(GPIO) PRB(res) PRC(ADC1) PRD(DAC1) PRE(ADC2)
+PRF(DAC2) PRG(HADC) PRH(HDAC)
+Line1 rate       : 48000Hz
+
+
+And this AFTER:
+
+-------------------------------------------------------------------------------
+0-0/0: Conexant Cx20468-31
+
+PCI Subsys Vendor: 0x152d
+PCI Subsys Device: 0x0745
+
+Revision         : 0x00
+Compat. Class    : 0x00
+Subsys. Vendor ID: 0x0000
+Subsys. ID       : 0x0000
+
+Capabilities     :
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : No 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=2 AMAP LDAC SDAC CDAC DSA=0 SPDIF
+Extended status  : PRL SPCV LDAC SDAC CDAC SPDIF=10/11
+SPDIF Control    : Consumer PCM Copyright Category=0x0 Generation=0
+Rate=48kHz
+Extended modem ID: codec=0 LIN1
+Modem status     : PRA(GPIO) PRB(res) PRC(ADC1) PRD(DAC1) PRE(ADC2)
+PRF(DAC2) PRG(HADC) PRH(HDAC)
+Line1 rate       : 48000Hz
 
 
 
-======================================================================
+
+Let me know if I'm off topic ....
 
 ----------------------------------------------------------------------
- thoroughfare - 04-18-06 22:21 
+ jmpmjmpm - 06-07-06 10:49 
 ----------------------------------------------------------------------
-This looks like a duplicate of bugs:
-
-#1931
-#1134
-
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=1931
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1134
-
-----------------------------------------------------------------------
- jmpmjmpm - 06-07-06 10:28 
-----------------------------------------------------------------------
-my bug submission 2185 is the same as this. My notebook is also an easynote
-a8202.
+No, your not and where is the alsa support?????
+This bug has died when the info to make it work was posted!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-16-06 18:51 rawsock        New Issue                                    
-01-16-06 18:51 rawsock        Distribution              => Ubuntu Breezy Badger
-01-16-06 18:51 rawsock        Kernel Version            => 2.6.12-i686     
-01-17-06 18:46 rawsock        File Added: proc_asound.tar.gz                    
-01-18-06 16:06 anhi1968       Note Added: 0007711                          
-02-14-06 22:17 anhi1968       Issue Monitored: anhi1968                    
-02-14-06 22:22 anhi1968       Note Added: 0008071                          
-02-14-06 22:35 anhi1968       Note Added: 0008072                          
-02-25-06 18:57 thoroughfare   Note Added: 0008190                          
-02-25-06 18:59 thoroughfare   Note Added: 0008191                          
-02-28-06 11:58 anhi1968       Issue End Monitor: anhi1968                    
-03-14-06 16:24 jamez          Note Added: 0008484                          
-03-14-06 21:41 rawsock        Note Added: 0008515                          
-04-10-06 16:59 jmpmjmpm       Note Added: 0009200                          
-04-18-06 22:21 thoroughfare   Note Added: 0009344                          
-05-03-06 16:59 kesiev         Issue Monitored: kesiev                      
-06-07-06 10:28 jmpmjmpm       Note Added: 0010077                          
+05-28-05 08:49 liangalei      New Issue                                    
+05-28-05 08:49 liangalei      Distribution              => Fedora Core 3   
+05-28-05 08:49 liangalei      Kernel Version            => 2.6.11-1.14     
+05-28-05 09:17 liangalei      Note Added: 0004759                          
+05-28-05 09:18 liangalei      Issue Monitored: liangalei                    
+05-30-05 03:29 liangalei      Note Added: 0004795                          
+06-01-05 16:58 tiwai          Note Added: 0004863                          
+06-01-05 17:04 tiwai          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+06-02-05 10:42 liangalei      Note Added: 0004875                          
+06-06-05 09:53 perex          Assigned To              perex =>            
+06-23-05 12:42 tiwai          Note Added: 0005182                          
+06-24-05 03:12 liangalei      File Added: asound.state                     
+06-24-05 03:13 liangalei      File Added: ac97#0-0                         
+06-24-05 03:14 liangalei      File Added: ac97#0-0+regs                    
+06-24-05 03:18 liangalei      Note Added: 0005202                          
+08-28-05 15:28 ybar           Note Added: 0005962                          
+11-29-05 05:59 derek          Issue Monitored: derek                       
+11-29-05 06:00 derek          Issue End Monitor: derek                     
+11-29-05 06:03 derek          Note Added: 0006870                          
+02-07-06 10:03 anhi1968       Issue Monitored: anhi1968                    
+02-17-06 22:22 gandhi         Note Added: 0008110                          
+02-17-06 23:26 gandhi         Issue Monitored: gandhi                      
+02-17-06 23:28 gandhi         Note Edited: 0008110                         
+02-17-06 23:43 gandhi         Note Edited: 0008110                         
+02-18-06 02:05 gandhi         Note Added: 0008112                          
+02-18-06 08:13 liangalei      Note Added: 0008116                          
+02-18-06 15:56 gandhi         Issue Monitored: tiwai                       
+02-18-06 15:56 gandhi         Note Added: 0008120                          
+02-28-06 12:02 anhi1968       Issue End Monitor: anhi1968                    
+03-03-06 08:29 robitech       Note Added: 0008336                          
+03-15-06 05:34 JProgrammer    Note Added: 0008526                          
+03-15-06 05:37 JProgrammer    Issue Monitored: JProgrammer                    
+03-15-06 06:39 Kooper         Note Added: 0008527                          
+03-15-06 11:40 tiwai          Note Added: 0008531                          
+03-15-06 11:53 Kooper         Note Added: 0008535                          
+03-15-06 12:13 JProgrammer    Note Added: 0008538                          
+03-15-06 12:18 tiwai          Note Added: 0008540                          
+03-15-06 23:48 JProgrammer    Note Added: 0008579                          
+03-16-06 15:04 tiwai          Note Added: 0008606                          
+03-16-06 15:05 tiwai          File Added: ac97-remove-modem.diff                
+   
+03-16-06 19:34 rlrevell       Relationship added       has duplicate 0001931
+03-17-06 04:10 Kooper         Note Added: 0008633                          
+03-17-06 12:07 tiwai          Note Added: 0008641                          
+03-17-06 12:32 Kooper         File Added: kooper-alsa-bugreport.tgz             
+      
+03-17-06 12:35 Kooper         Note Added: 0008644                          
+03-21-06 02:38 JProgrammer    Note Added: 0008736                          
+03-25-06 10:51 alessiodf      Note Added: 0008944                          
+03-26-06 20:12 alessiodf      Note Edited: 0008944                         
+03-26-06 20:15 alessiodf      Note Edited: 0008944                         
+03-30-06 15:47 trava          Note Added: 0009034                          
+04-07-06 13:05 kesiev         Note Added: 0009137                          
+04-07-06 13:06 kesiev         Note Edited: 0009137                         
+04-09-06 03:23 alt_ackbar     Note Added: 0009177                          
+04-11-06 11:34 kesiev         Issue Monitored: kesiev                      
+04-11-06 11:39 kesiev         Issue End Monitor: kesiev                    
+04-12-06 16:21 kesiev         Note Added: 0009246                          
+04-12-06 16:21 kesiev         File Added: qta058Ba.inf                     
+04-13-06 14:00 kesiev         Note Added: 0009259                          
+04-13-06 14:00 kesiev         File Added: windows-details.txt                   
+
+04-13-06 14:54 kesiev         Note Edited: 0009259                         
+04-13-06 15:34 kesiev         Issue Monitored: kesiev                      
+04-15-06 12:33 kesiev         Note Edited: 0009259                         
+04-15-06 12:33 kesiev         File Added: alsasound.conf                    
+04-18-06 09:35 fedukoff       Note Added: 0009326                          
+05-01-06 20:24 rawsock        Issue Monitored: rawsock                     
+05-03-06 15:55 fedukoff       Issue Monitored: fedukoff                    
+05-09-06 14:36 drseergio      Note Added: 0009658                          
+05-09-06 16:40 rlrevell       Note Added: 0009661                          
+05-09-06 17:16 drseergio      Note Added: 0009662                          
+05-09-06 17:19 drseergio      Note Edited: 0009662                         
+05-09-06 17:28 rlrevell       Note Added: 0009664                          
+05-09-06 17:31 drseergio      Note Edited: 0009662                         
+05-09-06 17:32 drseergio      Note Added: 0009665                          
+05-09-06 17:41 drseergio      Note Edited: 0009665                         
+05-09-06 17:49 rlrevell       Note Added: 0009667                          
+05-09-06 17:52 drseergio      Note Added: 0009668                          
+05-09-06 17:57 rlrevell       Note Added: 0009669                          
+05-09-06 18:00 drseergio      Note Added: 0009670                          
+05-09-06 18:33 fedukoff       Note Added: 0009672                          
+05-09-06 18:44 drseergio      Note Added: 0009673                          
+05-09-06 19:11 fedukoff       Note Added: 0009674                          
+05-09-06 19:12 rlrevell       Note Added: 0009675                          
+05-09-06 19:21 drseergio      Note Added: 0009676                          
+05-09-06 19:27 fedukoff       Note Added: 0009677                          
+05-09-06 19:28 rlrevell       Note Added: 0009678                          
+05-09-06 19:30 drseergio      Note Added: 0009679                          
+05-09-06 19:39 fedukoff       Note Added: 0009680                          
+05-09-06 19:42 rlrevell       Note Added: 0009681                          
+05-09-06 19:50 drseergio      Note Added: 0009682                          
+05-09-06 20:16 fedukoff       Note Added: 0009683                          
+05-09-06 20:17 rlrevell       Note Added: 0009684                          
+05-09-06 20:19 rlrevell       Note Added: 0009685                          
+05-09-06 20:28 drseergio      Note Added: 0009686                          
+05-09-06 20:29 fedukoff       Note Added: 0009687                          
+05-09-06 20:34 rlrevell       Note Added: 0009688                          
+05-09-06 22:07 fedukoff       Note Added: 0009691                          
+05-10-06 15:58 fedukoff       Note Added: 0009719                          
+05-10-06 17:10 rlrevell       Note Added: 0009735                          
+05-10-06 17:19 kesiev         Note Added: 0009738                          
+05-10-06 17:21 trava          Note Added: 0009740                          
+05-10-06 17:25 trava          Note Added: 0009741                          
+05-10-06 17:41 fedukoff       Note Added: 0009743                          
+05-10-06 18:03 fedukoff       Note Added: 0009745                          
+05-10-06 18:20 trava          Note Added: 0009746                          
+05-10-06 18:34 fedukoff       Note Added: 0009748                          
+05-11-06 08:15 fedukoff       Note Added: 0009759                          
+05-11-06 08:42 JProgrammer    Note Added: 0009760                          
+05-11-06 08:45 fedukoff       Note Added: 0009761                          
+05-11-06 18:25 fedukoff       Note Added: 0009764                          
+05-12-06 08:13 fedukoff       Note Added: 0009773                          
+05-12-06 08:14 fedukoff       Note Edited: 0009773                         
+05-15-06 14:15 fedukoff       Note Added: 0009822                          
+05-15-06 14:49 rlrevell       Note Added: 0009824                          
+05-15-06 14:57 fedukoff       Note Added: 0009825                          
+05-15-06 15:25 rlrevell       Note Added: 0009826                          
+05-18-06 12:45 fedukoff       Note Added: 0009866                          
+05-18-06 13:37 fedukoff       Note Added: 0009867                          
+05-18-06 13:48 fedukoff       Note Deleted: 0009822                        
+05-19-06 08:07 fedukoff       Note Added: 0009873                          
+05-25-06 23:03 thoroughfare   Note Added: 0009969                          
+06-02-06 17:37 kickstart      Note Added: 0010049                          
+06-02-06 17:53 kickstart      Note Edited: 0010049                         
+06-02-06 17:54 rlrevell       Note Added: 0010050                          
+06-02-06 18:00 kickstart      Note Deleted: 0010049                        
+06-02-06 19:29 thoroughfare   Note Added: 0010051                          
+06-02-06 19:40 rlrevell       Note Added: 0010052                          
+06-02-06 21:34 thoroughfare   Note Added: 0010056                          
+06-03-06 01:51 kickstart      Note Added: 0010057                          
+06-07-06 10:49 jmpmjmpm       Note Added: 0010078                          
 ======================================================================
