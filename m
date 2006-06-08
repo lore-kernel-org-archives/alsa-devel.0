@@ -1,14 +1,10 @@
-From: "Stefano D'Angelo" <zanga.mail@gmail.com>
-Subject: Fwd:  USB sound card driver - Line6 Toneport UX1
-Date: Fri, 9 Jun 2006 01:02:41 +0200
-Message-ID: <160c13350606081602g379c2368n35b799767c43d2ce@mail.gmail.com>
-References: <160c13350606080943v3171dc13je7160710b847de29@mail.gmail.com>
-	<20060608175748.GB5868@turing.informatik.uni-halle.de>
-	<160c13350606081602l697bd395t892a23b92ed8deab@mail.gmail.com>
+From: "Hank Ivy" <hankivy@hot.rr.com>
+Subject: Riptide cracklying noise
+Date: Thu, 8 Jun 2006 18:54:42 -0500
+Message-ID: <000001c68b56$ecb8f330$6401a8c0@your4dacd0ea75>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2035942650=="
+Content-Type: multipart/mixed; boundary="===============2145233857=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <160c13350606081602l697bd395t892a23b92ed8deab@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,101 +17,195 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---===============2035942650==
+This is a multi-part message in MIME format.
+
+--===============2145233857==
 Content-Type: multipart/alternative;
-	boundary="----=_Part_13055_27676710.1149807761425"
+	boundary="----=_NextPart_000_0001_01C68B2D.03E53520"
 
-------=_Part_13055_27676710.1149807761425
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0001_01C68B2D.03E53520
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
----------- Forwarded message ----------
-From: Stefano D'Angelo <zanga.mail@gmail.com>
-Date: 9-giu-2006 1.02
-Subject: Re: [Alsa-devel] USB sound card driver - Line6 Toneport UX1
-To: Clemens Ladisch <clemens@ladisch.de>
+I have a Riptide sound card in my system that produces a cracklying
+noise, even when it is muted.
+A detailed description of the sound card follows.
+The version of ALSA is 1.0.11.
 
+The card plays music (with the noise) for games (such as PySOL, or Rocks
+N Diamonds).
+(NOTE: Occasionally, when the sounds are changing for some events in
+Rocks N Diamonds the noise seems to go away momentarily.  I am not able
+to describe a pattern.)
+It can play a sound file (ripped ?) (with the noise) from an audio CD.
+When a mixer has the sound card muted, I still hear the cracklying
+noise.
+I hear the cracklying noise the same with two different head sets, and
+another set of speakers.
+The same head sets and speakers work without any noise in other
+computers.
 
+Does anyone else with a Riptide card have the same problem?
+How can I validate the firmware or loading of the firmware in the card?
+Is there a fuller description or list of working examples of the
+speaker-test command, than the man page?
 
-2006/6/8, Clemens Ladisch <clemens@ladisch.de>:
+----------------------------------------------------------
+DETAILED SOUND CARD DESCRIPTION
+Identification
+Vendor: Rockwell Semiconductor Systems
+Description: Master Riptide PCI Audio Controller
+Media class: MULTIMEDIA_AUDIO
 
-> Stefano D'Angelo wrote:
-> > where do I actually have to submit urbs?  In which callback?
->
-> The first time in the trigger callback, then in the URB's completion
-> callback.
->
->
-> HTH
-> Clemens
->
+Connection
+Bus: PCI
+Bus PCI #: 0
+PCI device #: 12
+PCI function #: 0
+Vendor ID: 4730
+Device ID: 17184
+Sub vendor ID: 4661
+Sub device ID: 17184
 
-I just can't get it working... here's the code I've written:
+Driver
+Module: snd-riptide
 
-static void snd_line6_tp_ux1_complete_playback_transfer (struct urb* urb,
-                                                         struct pt_regs*
-regs)
-{
-    snd_pcm_substream_t *substream = (snd_pcm_substream_t *)(urb->context);
-    struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);
-    snd_pcm_runtime_t *runtime = substream->runtime;
+---------------------------
 
-    urb->dev = chip->dev;
-    urb->transfer_dma = runtime->dma_addr;
-    urb->transfer_buffer = usb_buffer_alloc (urb->dev,
-LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2, GFP_KERNEL, &urb->transfer_dma);
-    memcpy (urb->transfer_buffer, runtime->dma_area + chip->playback_pos *
-2, LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);
-    urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
-
-    usb_submit_urb (urb, GFP_ATOMIC);
-
-    chip->playback_pos += LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 / 4;
-    snd_pcm_period_elapsed (substream);
-}
-
-don't care about freeing, etc. The problem is that it gives me a kind of
-beep sound for anything I play. No underruns, etc., just that sound!
-URBs' data seems to be correct and also the transfer seems to happen with no
-particular problem. (no error checking right now however).
-Another thing is this: I've seen that you decrement the hardware pointer
-when it reaches the end of a period, but when I try to do this, it gives me
-back garbage values, how is this possible?
-What do you think I should do?
-
-------=_Part_13055_27676710.1149807761425
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-<br><br>---------- Forwarded message ----------<br><span class="gmail_quote">From: <b class="gmail_sendername">Stefano D'Angelo</b> &lt;<a href="mailto:zanga.mail@gmail.com">zanga.mail@gmail.com</a>&gt;<br>Date: 9-giu-2006 
-1.02<br>Subject: Re: [Alsa-devel] USB sound card driver - Line6 Toneport UX1<br>To: Clemens Ladisch &lt;<a href="mailto:clemens@ladisch.de">clemens@ladisch.de</a>&gt;<br><br></span><div><br><br><div><span class="gmail_quote">
-2006/6/8, Clemens Ladisch &lt;<a href="mailto:clemens@ladisch.de" target="_blank" onclick="return top.js.OpenExtLink(window,event,this)">clemens@ladisch.de</a>&gt;:</span></div><div><span class="e" id="q_10bb5e1aa88fb86d_1">
-<blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-Stefano D'Angelo wrote:<br>&gt; where do I actually have to submit urbs?&nbsp;&nbsp;In which callback?<br><br>The first time in the trigger callback, then in the URB's completion<br>callback.<br><br><br>HTH<br>Clemens<br></blockquote>
-</span></div><div>
-</div><br>I just can't get it working... here's the code I've written:<br><br>static void snd_line6_tp_ux1_complete_playback_transfer (struct urb* urb,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct pt_regs* regs)
-<br>{<br>&nbsp;&nbsp;&nbsp; snd_pcm_substream_t *substream = (snd_pcm_substream_t *)(urb-&gt;context);<br>&nbsp;&nbsp;&nbsp; struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);<br>&nbsp;&nbsp;&nbsp; snd_pcm_runtime_t *runtime = substream-&gt;runtime;
-<br><br>&nbsp;&nbsp;&nbsp; urb-&gt;dev = chip-&gt;dev;<br>&nbsp;&nbsp;&nbsp; urb-&gt;transfer_dma = runtime-&gt;dma_addr;<br>&nbsp;&nbsp;&nbsp; urb-&gt;transfer_buffer = usb_buffer_alloc (urb-&gt;dev, LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2, GFP_KERNEL, &amp;urb-&gt;transfer_dma);
-<br>&nbsp;&nbsp;&nbsp; memcpy (urb-&gt;transfer_buffer, runtime-&gt;dma_area + chip-&gt;playback_pos * 2, LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);<br>&nbsp;&nbsp;&nbsp; urb-&gt;transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;<br><br>&nbsp;&nbsp;&nbsp; usb_submit_urb (urb, GFP_ATOMIC);
-<br><br>&nbsp;&nbsp;&nbsp; chip-&gt;playback_pos += LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 / 4;<br>&nbsp;&nbsp;&nbsp; snd_pcm_period_elapsed (substream);<br>}<br><br>don't care about freeing, etc. The problem is that it gives me a kind of beep sound for anything I play. No underruns, etc., just that sound!
-<br>URBs' data seems to be correct and also the transfer seems to happen with no particular problem. (no error checking right now however).<br>Another thing is this: I've seen that you decrement the hardware pointer when it reaches the end of a period, but when I try to do this, it gives me back garbage values, how is this possible?
-<br>What do you think I should do?<br>
-
-</div>
-
-------=_Part_13055_27676710.1149807761425--
+Henry (Hank) B. Ivy
+1-254-848-9570
+1004 Camden Ct
+Waco, TX 76712
 
 
---===============2035942650==
+------=_NextPart_000_0001_01C68B2D.03E53520
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
+6.0.4630.0">
+<TITLE>Riptide cracklying noise </TITLE>
+</HEAD>
+<BODY>
+<!-- Converted from text/rtf format -->
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">I have a Riptide sound card in my =
+system that produces a cracklying noise, even when it is muted.</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">A detailed description of the sound =
+card follows.</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">The version of ALSA is 1.0.11.</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">The card plays music (with the noise) =
+for games (such as PySOL, or Rocks N Diamonds).</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">(NOTE: Occasionally, when the sounds =
+are changing for some events in Rocks N Diamonds the noise seems to go =
+away momentarily.&nbsp; I am not able to describe a pattern.)</FONT></P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">It can play a sound file (ripped ?) =
+(with the noise) from an audio CD.</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">When a mixer has the sound card muted, =
+I still hear the cracklying noise.</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">I hear the cracklying noise the same =
+with two different head sets, and another set of speakers.</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">The same head sets and speakers work =
+without any noise in other computers.</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Does anyone else with a Riptide card =
+have the same problem?</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">How can I validate the firmware or =
+loading of the firmware in the card?</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Is there a fuller description or list =
+of working examples of the speaker-test command, than the man =
+page?</FONT>
+</P>
+
+<P><FONT SIZE=3D2 =
+FACE=3D"Arial">----------------------------------------------------------=
+</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">DETAILED SOUND CARD DESCRIPTION</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Identification</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Vendor: Rockwell Semiconductor =
+Systems</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Description: Master Riptide PCI Audio =
+Controller</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Media class: MULTIMEDIA_AUDIO</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Connection</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Bus: PCI</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Bus PCI #: 0</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">PCI device #: 12</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">PCI function #: 0</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Vendor ID: 4730</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Device ID: 17184</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Sub vendor ID: 4661</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Sub device ID: 17184</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Driver</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Module: snd-riptide</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">---------------------------</FONT>
+</P>
+
+<P><FONT SIZE=3D2 FACE=3D"Arial">Henry (Hank) B. Ivy</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">1-254-848-9570</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">1004 Camden Ct</FONT>
+
+<BR><FONT SIZE=3D2 FACE=3D"Arial">Waco, TX 76712</FONT>
+</P>
+
+</BODY>
+</HTML>
+------=_NextPart_000_0001_01C68B2D.03E53520--
+
+
+
+
+--===============2145233857==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2035942650==
+--===============2145233857==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -126,4 +216,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---===============2035942650==--
+--===============2145233857==--
