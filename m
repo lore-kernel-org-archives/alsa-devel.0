@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Thu, 8 Jun 2006 11:22:22 +0200
-Message-ID: <cada1c222860999b900345617ff63ce7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001646]: Wish for M-Audio AudioPhile
+	192 (AP192K) Support
+Date: Thu, 8 Jun 2006 17:15:38 +0200
+Message-ID: <c2a4c5972f6c44dd05cdeec8e1948c9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1467515E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D7E24171
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Jun 2006 11:22:22 +0200 (MEST)
+	Thu,  8 Jun 2006 17:15:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,63 +26,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1646> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                bobek
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1646
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-08-2006 11:22 CEST
+Date Submitted:             12-13-2005 11:38 CET
+Last Modified:              06-08-2006 17:15 CEST
 ======================================================================
-Summary:                    Alsa mixer lack of some functions
+Summary:                    Wish for M-Audio AudioPhile 192 (AP192K) Support
 Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
-
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
-
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
-
-thanx for attention
-Marco
+Could you add support for that soundcard? I have discussed this already
+with Jaroslav, he asked for photo of the card.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0001475 Support for M Audio Audiophile 192
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-08-06 02:52 
+ drycellbattery - 06-08-06 17:15 
 ----------------------------------------------------------------------
-alsamixer is just an utility which allow you to change the setting
-supported by the hardware (e.g audio chip/codec)
+Are bobek's images helpful for the developers? Is there any activity
+happening now? Unfortunately, I cannot contribute to the code but I could
+supplement more photos or make a svg schematic. I tried uploading a pic
+but got a memory related error so I will link them from my website:
+http://www.drycellbattery.tk/images/dsc00396.jpg
+http://www.drycellbattery.tk/images/dsc00397.jpg
+http://www.drycellbattery.tk/images/dsc00400.jpg
+http://www.drycellbattery.tk/images/dsc00401.jpg
+http://www.drycellbattery.tk/images/dsc00402.jpg
+http://www.drycellbattery.tk/images/dsc00403.jpg
+http://www.drycellbattery.tk/images/dsc00412.jpg
+http://www.drycellbattery.tk/images/dsc00413.jpg
 
-Some codecs are capble of duplicate front to rear but some cannot.
-
-Some chip/codecs has treble/bass control or even equalizer but most of the
-sound card don't
-
-----------------------------------------------------------------------
- Cimmo - 06-08-06 11:22 
-----------------------------------------------------------------------
-Yes of course!
-But I have a sound blaster live! 24 bit with CA0106 module, and I cannot
-duplicate front speakers to rear cannot change high and basses.
-
-that would be great!
+they're not very good as my camera and the lighting conditions weren't
+very good. Perhaps I can borrow my friend's digital slr sometime, but he
+lives in another city.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
+12-13-05 11:38 bobek          New Issue                                    
+12-13-05 11:38 bobek          File Added: ap192k-front.jpg                    
+12-13-05 11:39 bobek          File Added: ap192k-back.jpg                    
+03-14-06 17:30 rlrevell       Relationship added       related to 0001475  
+03-14-06 18:36 Dazed          Issue Monitored: Dazed                       
+06-08-06 16:51 drycellbattery Issue Monitored: drycellbattery                   
+
+06-08-06 17:15 drycellbattery Note Added: 0010113                          
 ======================================================================
