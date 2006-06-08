@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002108]: snd-hda-intel: Can only play
-	48000Hz via digital out. 44100 is garbled.
-Date: Thu, 8 Jun 2006 05:33:11 +0200
-Message-ID: <f13378b547127a118bdc9683d35d532a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000952]: System freeze at end of MIDI
+	playback
+Date: Thu, 8 Jun 2006 09:28:29 +0200
+Message-ID: <6341d7229545ba29ef27a220aeaf1f9e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C5986169
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB358170
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Jun 2006 05:33:11 +0200 (MEST)
+	Thu,  8 Jun 2006 09:28:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,79 +26,77 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2108> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=952> 
 ======================================================================
-Reported By:                WhereIsTheCloud
-Assigned To:                tiwai
+Reported By:                skunk
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2108
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
+Issue ID:                   952
+Category:                   PCI - emu10k1
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.15-1-686-smp
+Status:                     new
+Distribution:               Debian testing
+Kernel Version:             2.6.8-2-k7
 ======================================================================
-Date Submitted:             05-09-2006 00:28 CEST
-Last Modified:              06-08-2006 05:33 CEST
+Date Submitted:             03-01-2005 06:28 CET
+Last Modified:              06-08-2006 09:28 CEST
 ======================================================================
-Summary:                    snd-hda-intel: Can only play 48000Hz via digital
-out.  44100 is garbled.
+Summary:                    System freeze at end of MIDI playback
 Description: 
-Hi all.  I am having trouble getting my computer to play 44100Hz with my 
-digital AV reciever.  I have an ECS 945P-A (1.1) motherboard 
-(ICH7), with an onboard Realtek ALC880 8-channel audio CODEC, five 
-miniport(?) jacks, and one fiber optical connector.  I use the fiber
-optical 
-connector to connect the motherboard to my reciever.
+Hardware: Sound Blaster Live! Value
+Software: sfxload (for patch loading) and drvmidi (playback)
 
-I cannot get clean 44100 Hz PCM sound outputted.  48000 Hz plays fine. 
-Dmix converts everything to 48000. This is acceptable, but 44100->48000Hz
-upsampling degrades sound quality.
+I often play a list of MIDI files. On a number of occasions---either at
+the end of a MIDI song, or when I hit STOP---the computer has frozen hard.
+The recurrence is rare enough to make this more an annoyance than a
+showstopper, but then, I haven't been too keen on ferreting out this bug.
 
-If I dual boot to MS windows, I can select between 44100, 48000, and 96000
-Hz output, using the realtek drivers.  All work fine and my reciever
-reports getting the correct format, so it is NOT a hardware problem.
+I am reporting this against ALSA from the 2.6.8 kernel, as that is what
+I'm using now (Debian official package) but the same problem arose with
+alsa-driver 1.0.8 (as compiled by me) on 2.4.29.
 
-I'm not sure if this is a driver issue or a libasound issue.
-
-
-Thank you in advance for your help!
-
-Peter
+I could probably rig up something to start/stop MIDI playback repeatedly,
+with a debug-compiled driver, but is there any way to get useful debugging
+output when the bug takes the whole system down?
 ======================================================================
 
 ----------------------------------------------------------------------
- WhereIsTheCloud - 05-09-06 00:31 
+ rlrevell - 06-07-06 19:50 
 ----------------------------------------------------------------------
-HOWEVER, if I run:
-aplay -D plug:dmix test-48000.wav
-Playing WAVE 'test-48000.wav' : Signed 16 bit Little Endian, Rate 48000
-Hz, Stereo
+Possibly in /var/log/kernel or /var/log/kern.log or whatever the hell your
+distro calls the kernel log.  But if the bug kills the machine it's likely
+that the panic does not make it to any log.
 
-should read:
-
-HOWEVER, if I run:
-aplay -D hw:0,1 test-48000.wav
-Playing WAVE 'test-48000.wav' : Signed 16 bit Little Endian, Rate 48000
-Hz, Stereo
+If you can't trigger the bug from a text console, try doing something in X
+that would cause the bug, then switch quickly to a text console - you may
+be able to see an Oops that way.
 
 ----------------------------------------------------------------------
- legoguy - 06-08-06 05:33 
+ skunk - 06-08-06 09:28 
 ----------------------------------------------------------------------
-This applies to at least Audigy (original), ALC850, possibly others. Not
-being able to play 44100 over Digital Out (spdif) makes it impossible to
-use passthrough   to play DTS/AC3 on an external reciever with files that
-are 44100hz. 48000hz work fine though.
+A kernel panic message---good idea :-)
+
+    http://www.iskunk.org/tmp/alsa-kernel-panic.jpg (1.1 MB)
+
+(I tried to upload this here, but the PHP threw an "out of memory"
+error...)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-09-06 00:28 WhereIsTheCloudNew Issue                                    
-05-09-06 00:28 WhereIsTheCloudDistribution              => Debian          
-05-09-06 00:28 WhereIsTheCloudKernel Version            => 2.6.15-1-686-smp
-05-09-06 00:31 WhereIsTheCloudNote Added: 0009649                          
-06-08-06 05:33 legoguy        Note Added: 0010108                          
+03-01-05 06:28 skunk          New Issue                                    
+03-01-05 06:28 skunk          Distribution              => Debian testing  
+03-01-05 06:28 skunk          Kernel Version            => 2.6.8-2-k7      
+09-19-05 10:10 jdthood        Note Added: 0006287                          
+09-19-05 10:19 skunk          Note Added: 0006290                          
+04-23-06 07:57 skunk          Note Added: 0009441                          
+06-07-06 18:09 pen            Note Added: 0010085                          
+06-07-06 18:09 pen            Issue Monitored: pen                         
+06-07-06 18:23 rlrevell       Note Added: 0010086                          
+06-07-06 19:45 pen            Note Added: 0010087                          
+06-07-06 19:50 rlrevell       Note Added: 0010088                          
+06-08-06 09:28 skunk          Note Added: 0010109                          
 ======================================================================
