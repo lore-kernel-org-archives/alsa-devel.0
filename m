@@ -1,18 +1,15 @@
-From: "Kacper Wysocki" <kacperw@gmail.com>
-Subject: Re: es1938 kernel panic - buffer overrun on recording
-Date: Thu, 8 Jun 2006 13:25:56 -0400
-Message-ID: <367a23780606081025p10270a95y3adaa12aaad045cb@mail.gmail.com>
-References: <367a23780606061401h6edfb8bcvf9b77f24415aa45f@mail.gmail.com>
-	<1149727433.3151.1.camel@mindpipe>
-	<367a23780606080048i434393c2r37d9b4d7d8e46f48@mail.gmail.com>
-	<367a23780606080953i61c326d2u2b606e24a4621046@mail.gmail.com>
-	<s5h8xo760ke.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002194]: fglrx and snd_hda_intel
+Date: Thu, 8 Jun 2006 19:33:36 +0200
+Message-ID: <b73e964918a7310dcd367242f9c31dd1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h8xo760ke.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 82721172
+	for <alsa-devel@alsa-project.org>;
+	Thu,  8 Jun 2006 19:33:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,27 +19,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2006/6/8, Takashi Iwai <tiwai@suse.de>:
-> At Thu, 8 Jun 2006 12:53:09 -0400,
-> Kacper Wysocki wrote:
-> >
-> > 2006/6/8, Kacper Wysocki <kacperw@gmail.com>:
-> > > 2006/6/7, Lee Revell <rlrevell@joe-job.com>:
-> > > > On Tue, 2006-06-06 at 17:01 -0400, Kacper Wysocki wrote:
-> > > > > I'm running linux 2.6.16.5 and have a esssolo1 soundcard built into my
-> > > > > IBM Thinkpad 240. Anytime I try to record from the soundcard I get the
-> > > > > following message on the console:
-> > > > >
-> > > > > kernel panic - not syncing: Buffer above 16M boundry
-> > > > >
-> > > > > This is reproducible with for example 'sound-recorder foo.wav' [snip]
-> The error message comes from OSS essolo1 driver...
 
-Wow. I failed to notice that my system was loading the oss driver
-alongside the alsa driver. Thanks for spotting this for me. Sorry for
-the noise.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2194> 
+======================================================================
+Reported By:                emacspy
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2194
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.16-gentoo-r9
+======================================================================
+Date Submitted:             06-08-2006 19:33 CEST
+Last Modified:              06-08-2006 19:33 CEST
+======================================================================
+Summary:                    fglrx and snd_hda_intel
+Description: 
+Iam having a problem using snd_hda_intel with fglrx. In games sound lags
+but if I do a modprobe snd_hda_intel sound does not lag but video fps
+suffers greatly. I am not sure if this is a problem with fglrx or
+snd_hda_intel any input would be great.
+======================================================================
 
--Kacper
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-08-06 19:33 emacspy        New Issue                                    
+06-08-06 19:33 emacspy        Distribution              => gentoo          
+06-08-06 19:33 emacspy        Kernel Version            => 2.6.16-gentoo-r9
+======================================================================
