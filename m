@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001632]: suse 10.0, yast,
-	no ad1986a listed, in your soundcard list, NO AD1986A  listed,
-	.... asus, nothing, ....
-Date: Thu, 8 Jun 2006 03:32:02 +0200
-Message-ID: <4266922c55e7b83f85c56c7c6ff0198b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002193]: kernel module fails to load
+	for AD1986A chipset on ASUS A8N-VM
+Date: Thu, 8 Jun 2006 03:53:20 +0200
+Message-ID: <aeaeb0e00e9830a64239b199189384fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CBBD0F9
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E2FA6165
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Jun 2006 03:32:02 +0200 (MEST)
+	Thu,  8 Jun 2006 03:53:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,78 +24,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1632> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2193> 
 ======================================================================
-Reported By:                rsrtfm
-Assigned To:                
+Reported By:                rbenech
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1632
-Category:                   1_OTHERS
+Issue ID:                   2193
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     closed
-Distribution:               suse 10.0, super, opensuse
-Kernel Version:             2.6.13
-Resolution:                 open
-Fixed in Version:           
+Status:                     assigned
+Distribution:               OpenSuSE
+Kernel Version:             2.6.16.13-4-smp
 ======================================================================
-Date Submitted:             12-10-2005 04:29 CET
-Last Modified:              06-08-2006 03:32 CEST
+Date Submitted:             06-08-2006 03:09 CEST
+Last Modified:              06-08-2006 03:53 CEST
 ======================================================================
-Summary:                    suse 10.0,  yast, no ad1986a listed,  in your
-soundcard list,  NO AD1986A  listed,.... asus, nothing,....
+Summary:                    kernel module fails to load for AD1986A chipset on
+ASUS A8N-VM
 Description: 
-suse 10.0,  yast, no ad1986a listed,  in your soundcard list,  NO AD1986A 
-listed,.... asus, nothing,....
+With alsa-1.0.11-32, SuSE 10.1 Yast Hardware Sound detects hardware as
+"MCP51 High Definition Audio" but cannot complete setup.  With SuSE10
+(<alsa-1.0.11rc3), yast would not detect any card.
 
-plus,  nic, needs nforce , nvidia driver,  chipset supposed to do sound
-and nic,... but on asus board a8n-vm csm ,  6150, 430,....
+Similar to fixed issue #0001793. Dupe of issue #0001632, but
+miscategorized/flamed.
 
-anyway , should , list the ad1986a, and be able to select it.
+Tried all 'model=' and 'position_fix=' options I could find in other
+issues. Nothing allowed kernel module to load.
 
-so far I have no sound!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! it's been 4 weeks.
-ehm,...what did you say,.. I can't hear anything,....
-where do I donate , my money, and anger?
-thanks, Robert Schultz
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0001793 No sound on ASUS A8N-VM CSM
+I also tried OSS, module also failed to load...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-14-06 15:01 
+ rlrevell - 06-08-06 03:53 
 ----------------------------------------------------------------------
-Use ALSA 1.0.11rc3, or better CVS version.
+What error do you get from modprobe when the module fails to load?  It
+should be loadable even if the hardware is not recognized.
 
-----------------------------------------------------------------------
- rlrevell - 06-08-06 03:32 
-----------------------------------------------------------------------
-No response - presumably fixed
+What happens if you don't use yast and just do "modprobe snd-hda-intel" as
+root?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-10-05 04:29 rsrtfm         New Issue                                    
-12-10-05 04:29 rsrtfm         Distribution              => suse 10.0, super,
-opensuse
-12-10-05 04:29 rsrtfm         Kernel Version            => 2.6.13          
-12-12-05 04:59 juliancola     Note Added: 0006982                          
-02-04-06 02:15 rbenech        Issue Monitored: rbenech                     
-02-04-06 02:19 rbenech        Note Added: 0007907                          
-02-04-06 02:22 rbenech        Note Added: 0007908                          
-02-07-06 00:47 gerick         Issue Monitored: gerick                      
-02-08-06 13:12 simonckenyon   Issue Monitored: simonckenyon                    
-02-13-06 14:13 ukrcald        Note Added: 0008049                          
-02-13-06 22:28 ukrcald        Note Deleted: 0008049                        
-03-07-06 03:13 iaw4           Issue Monitored: iaw4                        
-03-13-06 17:39 rlrevell       Relationship added       has duplicate 0001793
-03-13-06 17:57 rlrevell       Note Added: 0008453                          
-03-14-06 15:01 tiwai          Note Added: 0008476                          
-06-08-06 03:32 rlrevell       Status                   new => closed       
-06-08-06 03:32 rlrevell       Note Added: 0010105                          
+06-08-06 03:09 rbenech        New Issue                                    
+06-08-06 03:09 rbenech        Distribution              => OpenSuSE        
+06-08-06 03:09 rbenech        Kernel Version            => 2.6.16.13-4-smp 
+06-08-06 03:53 rlrevell       Note Added: 0010106                          
 ======================================================================
