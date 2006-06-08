@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002140]: No sound from mic on Fujitsu
-	Siemens Amilo M3438G
-Date: Thu, 8 Jun 2006 22:04:13 +0200
-Message-ID: <a55d095ecf1c53ae1256904b24741cf8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001918]: No sound when I boot into
+	Linux
+Date: Thu, 8 Jun 2006 23:02:52 +0200
+Message-ID: <05aba3988c2c4d0e92e43b7ed0a56abe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB3B0179
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CC235177
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Jun 2006 22:04:13 +0200 (MEST)
+	Thu,  8 Jun 2006 23:02:52 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,105 +26,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2140> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1918> 
 ======================================================================
-Reported By:                jacobs
-Assigned To:                tiwai
+Reported By:                gordon3913
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2140
-Category:                   PCI - hda-intel
+Issue ID:                   1918
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               OpenSuSE 10.1
-Kernel Version:             2.6.16.13
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-22-2006 10:17 CEST
-Last Modified:              06-08-2006 22:04 CEST
+Date Submitted:             03-13-2006 03:04 CET
+Last Modified:              06-08-2006 23:02 CEST
 ======================================================================
-Summary:                    No sound from mic on Fujitsu Siemens Amilo M3438G
+Summary:                    No sound when I boot into Linux
 Description: 
-I own a Fujitsu Siemens Amilo M3438G notebook with an onboard Azalia 7.1
-SPDIF chipset/codec (see spec sheet at
-http://www.fujitsu-siemens.de/ps/db/notebook/ds_amilo_m3438g_m4438g_d.pdf).
-OpenSuSE 10.1 (Kernel 2.6.16.13) is installed; the module snd-hda-intel is
- loaded. Sound playback through the internal speakers and headphone does
-work but I am unable to get sound from the internal and external
-microphone. The alsamixer has three capture controls which all are set to
-capture and maximum volume. Each capture controls source is set to mic.
-The playback channel for mic is unmuted and also set to maximum volume but
-I just don't get a signal.
-
-I've tried to apply different model options to the snd-hda-intel module
-relating to the file ALSA-Configuration.txt without luck.
-
-This didn't work with OpenSuSE 10.0 (Kernel 2.6.13) either.
-
-If you need any technical information please let me know.
+I do not have sound every time that I boot into Linux
+When I run "alsaconf" and follow the prompts in a terminal my sound will
+work.
+Next time I start my computer - no sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- der_sprengmeister - 06-07-06 11:14 
+ gordon3913 - 04-25-06 02:45 
 ----------------------------------------------------------------------
-Hello jacobs.
-
-Have you looked at my thread:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2167
-
-I have a solution fot the wrong mixer. It would be nice, if you could
-proof the inputs, because I have no microphones here
-
-Bye!
+Tried "alsactl store" & "alsactl restore" but still does not work.
+I am running Suse 10.0 on a Shuttle MV4213(N) motherboard with sound by
+VIA AC'97 enhanced Audio Controller.
+I keep updating my Alsa software through Yast Online Update but still with
+no success.
+Is there something else I could try?
 
 ----------------------------------------------------------------------
- el - 06-08-06 22:04 
+ fabum - 06-08-06 23:02 
 ----------------------------------------------------------------------
-Hello again.
+I have same problem.
 
-@der_sprengmeister:
-I could not get the microphone to work with your patch.
-(Amilo M3438G, Kubuntu Dapper, Kernel 2.6.15-23, ALSA 1.0.11)
+Tried "alsactl sotre" e "restore", and did not have progress.
 
-@developers:
-I cannot get the mic to work with these models:
-default(no model option)
-3stack
-3stack-digout
-5stack
-5stack-digout
-w810
-z71v
-asus
-uniwill
-F1734
+I use debian 3.1 and alsa drivers 10.0.11-5
 
-models that work:
-6stack
-6stack-digout
-lg
-lg-lw
-auto
+I will try apt-get. If it works, I tell you all.
 
-Anyway, if the microphone works the volume is quite low. Is there any way
-to boost the volume? 
-
-Should I provide any additional technical information?
-Should I open a separate Issue for the autodetect-problem?
+[]s
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-22-06 10:17 jacobs         New Issue                                    
-05-22-06 10:17 jacobs         Distribution              => OpenSuSE 10.1   
-05-22-06 10:17 jacobs         Kernel Version            => 2.6.16.13       
-05-23-06 07:35 jacobs         Issue Monitored: jacobs                      
-05-26-06 19:13 el             Issue Monitored: el                          
-05-26-06 19:26 el             Note Added: 0009979                          
-05-29-06 08:26 jacobs         Note Added: 0010007                          
-06-07-06 11:14 der_sprengmeisterNote Added: 0010079                          
-06-07-06 11:48 der_sprengmeisterIssue Monitored: der_sprengmeister              
-     
-06-08-06 22:04 el             Note Added: 0010117                          
+03-13-06 03:04 gordon3913     New Issue                                    
+03-13-06 03:09 rlrevell       Note Added: 0008437                          
+04-25-06 02:45 gordon3913     Note Added: 0009482                          
+06-08-06 23:02 fabum          Note Added: 0010118                          
 ======================================================================
