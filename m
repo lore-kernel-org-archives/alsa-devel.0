@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002140]: No sound from mic on Fujitsu
-	Siemens Amilo M3438G
-Date: Fri, 9 Jun 2006 10:32:26 +0200
-Message-ID: <885f449c3ca0d7acc0229215b5ca5d48@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0001716]: aoss not working with audacity
+Date: Fri, 9 Jun 2006 11:01:39 +0200
+Message-ID: <52c40a21d56614e35e4506ed32f424f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48B6617B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0955B142
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jun 2006 10:32:26 +0200 (MEST)
+	Fri,  9 Jun 2006 11:01:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,75 +25,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2140> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1716> 
 ======================================================================
-Reported By:                jacobs
-Assigned To:                tiwai
+Reported By:                ajs1984
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2140
-Category:                   PCI - hda-intel
+Project:                    ALSA - liboss
+Issue ID:                   1716
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               OpenSuSE 10.1
-Kernel Version:             2.6.16.13
+Status:                     new
 ======================================================================
-Date Submitted:             05-22-2006 10:17 CEST
-Last Modified:              06-09-2006 10:32 CEST
+Date Submitted:             01-04-2006 23:04 CET
+Last Modified:              06-09-2006 11:01 CEST
 ======================================================================
-Summary:                    No sound from mic on Fujitsu Siemens Amilo M3438G
+Summary:                    aoss not working with audacity
 Description: 
-I own a Fujitsu Siemens Amilo M3438G notebook with an onboard Azalia 7.1
-SPDIF chipset/codec (see spec sheet at
-http://www.fujitsu-siemens.de/ps/db/notebook/ds_amilo_m3438g_m4438g_d.pdf).
-OpenSuSE 10.1 (Kernel 2.6.16.13) is installed; the module snd-hda-intel is
- loaded. Sound playback through the internal speakers and headphone does
-work but I am unable to get sound from the internal and external
-microphone. The alsamixer has three capture controls which all are set to
-capture and maximum volume. Each capture controls source is set to mic.
-The playback channel for mic is unmuted and also set to maximum volume but
-I just don't get a signal.
+Following up from a recent LKML thread, I'm going to report a number of
+aoss incompatibilities with softwares on Linux.
 
-I've tried to apply different model options to the snd-hda-intel module
-relating to the file ALSA-Configuration.txt without luck.
+First up is audacity, which has no ALSA port. snd-pcm/mixer-oss aren't
+loaded.
 
-This didn't work with OpenSuSE 10.0 (Kernel 2.6.13) either.
-
-If you need any technical information please let me know.
 ======================================================================
 
 ----------------------------------------------------------------------
- der_sprengmeister - 06-09-06 10:32 
+ ajs1984 - 06-09-06 10:04 
 ----------------------------------------------------------------------
-Hello el!
-
-Have you tried one of the 4 inputs I found in the second hack for your
-external Microphone?
+It's a bug _in aoss_. My soundcard is an Audidy 2 Platinum, I'm fairly sure
+that isn't the problem.
 
 ----------------------------------------------------------------------
- der_sprengmeister - 06-09-06 10:32 
+ Raymond - 06-09-06 11:01 
 ----------------------------------------------------------------------
-Hello el!
+I don't have this card, as you mention that your card have problems with
+oss application.
 
-Have you tried one of the 4 inputs I found in the second hack for your
-external Microphone?
+Can you listen the sound produced by the flash plugin of the web brower ?
+
+
+cat /proc/asound/pcm
+
+cat /proc/asound/cards
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-22-06 10:17 jacobs         New Issue                                    
-05-22-06 10:17 jacobs         Distribution              => OpenSuSE 10.1   
-05-22-06 10:17 jacobs         Kernel Version            => 2.6.16.13       
-05-23-06 07:35 jacobs         Issue Monitored: jacobs                      
-05-26-06 19:13 el             Issue Monitored: el                          
-05-26-06 19:26 el             Note Added: 0009979                          
-05-29-06 08:26 jacobs         Note Added: 0010007                          
-06-07-06 11:14 der_sprengmeisterNote Added: 0010079                          
-06-07-06 11:48 der_sprengmeisterIssue Monitored: der_sprengmeister              
-     
-06-08-06 22:04 el             Note Added: 0010117                          
-06-09-06 10:32 der_sprengmeisterNote Added: 0010136                          
-06-09-06 10:32 der_sprengmeisterNote Added: 0010137                          
+01-04-06 23:04 ajs1984        New Issue                                    
+01-04-06 23:06 ajs1984        Note Added: 0007457                          
+01-04-06 23:06 ajs1984        Note Added: 0007458                          
+06-07-06 15:06 Raymond        Note Added: 0010082                          
+06-07-06 15:29 ajs1984        Note Added: 0010083                          
+06-07-06 15:41 Raymond        Note Added: 0010084                          
+06-08-06 02:41 Raymond        Note Edited: 0010084                         
+06-08-06 02:42 Raymond        Note Edited: 0010084                         
+06-08-06 02:43 Raymond        Note Edited: 0010084                         
+06-09-06 07:01 Raymond        Note Added: 0010133                          
+06-09-06 10:04 ajs1984        Note Added: 0010135                          
+06-09-06 11:01 Raymond        Note Added: 0010138                          
 ======================================================================
