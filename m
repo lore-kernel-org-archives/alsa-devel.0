@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002196]: Trying to build/load ALSA to
-	support the laptop only at this point,
-	no base extender involved at all
-Date: Fri, 9 Jun 2006 03:39:14 +0200
-Message-ID: <9e35f9839a195d339e2ab22197163ca9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002193]: kernel module fails to load
+	for AD1986A chipset on ASUS A8N-VM
+Date: Fri, 9 Jun 2006 03:43:28 +0200
+Message-ID: <c239bef3b3582fc33987cf9efe3be440@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40AD9175
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E9A5127
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jun 2006 03:39:15 +0200 (MEST)
+	Fri,  9 Jun 2006 03:43:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,78 +26,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2196> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2193> 
 ======================================================================
-Reported By:                reconfigures
+Reported By:                rbenech
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2196
+Issue ID:                   2193
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.16-gentoo-r9
+Distribution:               OpenSuSE
+Kernel Version:             2.6.16.13-4-smp
 ======================================================================
-Date Submitted:             06-09-2006 03:29 CEST
-Last Modified:              06-09-2006 03:39 CEST
+Date Submitted:             06-08-2006 03:09 CEST
+Last Modified:              06-09-2006 03:43 CEST
 ======================================================================
-Summary:                    Trying to build/load ALSA to support the laptop only
-at this point, no base extender involved at all
+Summary:                    kernel module fails to load for AD1986A chipset on
+ASUS A8N-VM
 Description: 
-First action in dmesg:
+With alsa-1.0.11-32, SuSE 10.1 Yast Hardware Sound detects hardware as
+"MCP51 High Definition Audio" but cannot complete setup.  With SuSE10
+(<alsa-1.0.11rc3), yast would not detect any card.
 
-ALSA sound/pci/hda/hda_intel.c:634: codec_mask = 0x3
-ALSA sound/pci/hda/patch_realtek.c:3026: hda_codec: Unknown model for
-ALC260
-ALSA sound/pci/hda/hda_codec.c:2088: autoconfig: line_outs=0
-(0x0/0x0/0x0/0x0/0x0)
-ALSA sound/pci/hda/hda_codec.c:2092:    speaker_outs=0
-(0x0/0x0/0x0/0x0/0x0)
-ALSA sound/pci/hda/hda_codec.c:2094:    hp=0x10, dig_out=0x18,
-din_in=0x19
-ALSA sound/pci/hda/hda_codec.c:2102:    inputs: mic=0x12, fmic=0x13,
-line=0x14, fline=0x0, cd=0x16, aux=0x15
+Similar to fixed issue #0001793. Dupe of issue #0001632, but
+miscategorized/flamed.
 
+Tried all 'model=' and 'position_fix=' options I could find in other
+issues. Nothing allowed kernel module to load.
 
-Goes on into net and Reiser stuff but eventually....
-
-snd_page_alloc: exports duplicate symbol snd_dma_alloc_pages (owned by
-kernel)
-soundcore: exports duplicate symbol sound_class (owned by kernel)
-snd: exports duplicate symbol snd_major (owned by kernel)
-snd_timer: exports duplicate symbol snd_timer_open (owned by kernel)
-snd_pcm: exports duplicate symbol snd_pcm_new (owned by kernel)
-snd_hda_codec: exports duplicate symbol snd_hda_codec_read (owned by
-kernel)
-kobject_register failed for snd_hda_intel (-17)
- [<b0301aeb>] kobject_register+0x6b/0x80
- [<b0137f3f>] sys_init_module+0x170f/0x186d
- [<b030d940>] pci_bus_read_config_byte+0x0/0x90
- [<b012fe70>] autoremove_wake_function+0x0/0x60
- [<b0157fb5>] vfs_read+0xb5/0x190
- [<b015848b>] sys_read+0x4b/0x80
- [<b0102d27>] sysenter_past_esp+0x54/0x75
-
-
-All hell breaks loose after that regarding ALSA so a reboot is not just a
-good idea anymore
+I also tried OSS, module also failed to load...
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-09-06 03:39 
+ rbenech - 06-09-06 03:25 
 ----------------------------------------------------------------------
-It sounds like you have ALSA built into the kernel and are trying to
-install ALSA modules also.  This cannot work.
+This is an upgrade from SuSE 10.  I've been trying different things over
+the past few months like installing ALSA from CVS, so I probably borked
+something in the process.  I install packages with SuSe's YAST tool that
+uses a YUM repository to install .rpm packages directly from an Open SuSE
+mirror.  As mentioned above, I just now upgraded to alsa-1.0.11-35.  I
+don't have 'locate', but a recursive search of / didn't turn anything up. 
+I will try to remove and re-install the packages.  I'm looking thru SuSE
+documentation for any more clues...
+
+----------------------------------------------------------------------
+ rbenech - 06-09-06 03:43 
+----------------------------------------------------------------------
+what package would 'snd-hda-intel' be provided by?  I can't seem to find
+any providers?
+
+fyi - alsa package looks correct with files in /etc/alsa.d, /usr/bin,
+/usr/lib, etc...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-06 03:29 reconfigures   New Issue                                    
-06-09-06 03:29 reconfigures   Distribution              => Gentoo          
-06-09-06 03:29 reconfigures   Kernel Version            => 2.6.16-gentoo-r9
-06-09-06 03:30 reconfigures   Issue Monitored: reconfigures                    
-06-09-06 03:39 rlrevell       Note Added: 0010126                          
+06-08-06 03:09 rbenech        New Issue                                    
+06-08-06 03:09 rbenech        Distribution              => OpenSuSE        
+06-08-06 03:09 rbenech        Kernel Version            => 2.6.16.13-4-smp 
+06-08-06 03:53 rlrevell       Note Added: 0010106                          
+06-09-06 02:34 rbenech        Note Added: 0010120                          
+06-09-06 02:41 rlrevell       Note Added: 0010121                          
+06-09-06 02:51 rbenech        Note Added: 0010122                          
+06-09-06 02:57 rlrevell       Note Added: 0010123                          
+06-09-06 03:25 rbenech        Note Added: 0010124                          
+06-09-06 03:43 rbenech        Note Added: 0010127                          
 ======================================================================
