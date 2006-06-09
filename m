@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002140]: No sound from mic on Fujitsu
 	Siemens Amilo M3438G
-Date: Fri, 9 Jun 2006 10:32:12 +0200
-Message-ID: <c5aabf5731c86748f03ccaeb60c60d93@bugtrack.alsa-project.org>
+Date: Fri, 9 Jun 2006 10:32:26 +0200
+Message-ID: <885f449c3ca0d7acc0229215b5ca5d48@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8292017B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48B6617B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jun 2006 10:32:12 +0200 (MEST)
+	Fri,  9 Jun 2006 10:32:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -66,39 +66,12 @@ If you need any technical information please let me know.
 ======================================================================
 
 ----------------------------------------------------------------------
- el - 06-08-06 22:04 
+ der_sprengmeister - 06-09-06 10:32 
 ----------------------------------------------------------------------
-Hello again.
+Hello el!
 
-@der_sprengmeister:
-I could not get the microphone to work with your patch.
-(Amilo M3438G, Kubuntu Dapper, Kernel 2.6.15-23, ALSA 1.0.11)
-
-@developers:
-I cannot get the mic to work with these models:
-default(no model option)
-3stack
-3stack-digout
-5stack
-5stack-digout
-w810
-z71v
-asus
-uniwill
-F1734
-
-models that work:
-6stack
-6stack-digout
-lg
-lg-lw
-auto
-
-Anyway, if the microphone works the volume is quite low. Is there any way
-to boost the volume? 
-
-Should I provide any additional technical information?
-Should I open a separate Issue for the autodetect-problem?
+Have you tried one of the 4 inputs I found in the second hack for your
+external Microphone?
 
 ----------------------------------------------------------------------
  der_sprengmeister - 06-09-06 10:32 
@@ -123,4 +96,5 @@ Date Modified  Username       Field                    Change
      
 06-08-06 22:04 el             Note Added: 0010117                          
 06-09-06 10:32 der_sprengmeisterNote Added: 0010136                          
+06-09-06 10:32 der_sprengmeisterNote Added: 0010137                          
 ======================================================================
