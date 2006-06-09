@@ -2,16 +2,16 @@ From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002196]: Trying to build/load ALSA to
 	support the laptop only at this point,
 	no base extender involved at all
-Date: Fri, 9 Jun 2006 03:29:11 +0200
-Message-ID: <83cc0d9d5063f90b9997f8566cb43f01@bugtrack.alsa-project.org>
+Date: Fri, 9 Jun 2006 03:39:14 +0200
+Message-ID: <9e35f9839a195d339e2ab22197163ca9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8449E175
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 40AD9175
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jun 2006 03:29:11 +0200 (MEST)
+	Fri,  9 Jun 2006 03:39:15 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,7 +25,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2196> 
 ======================================================================
@@ -43,7 +43,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.16-gentoo-r9
 ======================================================================
 Date Submitted:             06-09-2006 03:29 CEST
-Last Modified:              06-09-2006 03:29 CEST
+Last Modified:              06-09-2006 03:39 CEST
 ======================================================================
 Summary:                    Trying to build/load ALSA to support the laptop only
 at this point, no base extender involved at all
@@ -87,10 +87,18 @@ All hell breaks loose after that regarding ALSA so a reboot is not just a
 good idea anymore
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 06-09-06 03:39 
+----------------------------------------------------------------------
+It sounds like you have ALSA built into the kernel and are trying to
+install ALSA modules also.  This cannot work.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 06-09-06 03:29 reconfigures   New Issue                                    
 06-09-06 03:29 reconfigures   Distribution              => Gentoo          
 06-09-06 03:29 reconfigures   Kernel Version            => 2.6.16-gentoo-r9
+06-09-06 03:30 reconfigures   Issue Monitored: reconfigures                    
+06-09-06 03:39 rlrevell       Note Added: 0010126                          
 ======================================================================
