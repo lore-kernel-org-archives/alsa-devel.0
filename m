@@ -1,10 +1,16 @@
-From: "Hank Ivy" <hankivy@hot.rr.com>
-Subject: Riptide cracklying noise
-Date: Thu, 8 Jun 2006 18:54:42 -0500
-Message-ID: <000001c68b56$ecb8f330$6401a8c0@your4dacd0ea75>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002193]: kernel module fails to load
+	for AD1986A chipset on ASUS A8N-VM
+Date: Fri, 9 Jun 2006 02:34:30 +0200
+Message-ID: <7e473673cbcc07a2c95388e1cd27ad93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2145233857=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 063AF176
+	for <alsa-devel@alsa-project.org>;
+	Fri,  9 Jun 2006 02:34:30 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,206 +20,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---===============2145233857==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C68B2D.03E53520"
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2193> 
+======================================================================
+Reported By:                rbenech
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2193
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               OpenSuSE
+Kernel Version:             2.6.16.13-4-smp
+======================================================================
+Date Submitted:             06-08-2006 03:09 CEST
+Last Modified:              06-09-2006 02:34 CEST
+======================================================================
+Summary:                    kernel module fails to load for AD1986A chipset on
+ASUS A8N-VM
+Description: 
+With alsa-1.0.11-32, SuSE 10.1 Yast Hardware Sound detects hardware as
+"MCP51 High Definition Audio" but cannot complete setup.  With SuSE10
+(<alsa-1.0.11rc3), yast would not detect any card.
 
-This is a multi-part message in MIME format.
+Similar to fixed issue #0001793. Dupe of issue #0001632, but
+miscategorized/flamed.
 
-------=_NextPart_000_0001_01C68B2D.03E53520
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Tried all 'model=' and 'position_fix=' options I could find in other
+issues. Nothing allowed kernel module to load.
 
-I have a Riptide sound card in my system that produces a cracklying
-noise, even when it is muted.
-A detailed description of the sound card follows.
-The version of ALSA is 1.0.11.
+I also tried OSS, module also failed to load...
+======================================================================
 
-The card plays music (with the noise) for games (such as PySOL, or Rocks
-N Diamonds).
-(NOTE: Occasionally, when the sounds are changing for some events in
-Rocks N Diamonds the noise seems to go away momentarily.  I am not able
-to describe a pattern.)
-It can play a sound file (ripped ?) (with the noise) from an audio CD.
-When a mixer has the sound card muted, I still hear the cracklying
-noise.
-I hear the cracklying noise the same with two different head sets, and
-another set of speakers.
-The same head sets and speakers work without any noise in other
-computers.
+----------------------------------------------------------------------
+ rlrevell - 06-08-06 03:53 
+----------------------------------------------------------------------
+What error do you get from modprobe when the module fails to load?  It
+should be loadable even if the hardware is not recognized.
 
-Does anyone else with a Riptide card have the same problem?
-How can I validate the firmware or loading of the firmware in the card?
-Is there a fuller description or list of working examples of the
-speaker-test command, than the man page?
+What happens if you don't use yast and just do "modprobe snd-hda-intel" as
+root?
 
-----------------------------------------------------------
-DETAILED SOUND CARD DESCRIPTION
-Identification
-Vendor: Rockwell Semiconductor Systems
-Description: Master Riptide PCI Audio Controller
-Media class: MULTIMEDIA_AUDIO
+----------------------------------------------------------------------
+ rbenech - 06-09-06 02:34 
+----------------------------------------------------------------------
+# modprobe snd-hda-intel
+FATAL: Module snd_hda_intel not found.
 
-Connection
-Bus: PCI
-Bus PCI #: 0
-PCI device #: 12
-PCI function #: 0
-Vendor ID: 4730
-Device ID: 17184
-Sub vendor ID: 4661
-Sub device ID: 17184
+do I have to run that command from a specific path?  do I need
+kernel-source package (i have it)?
 
-Driver
-Module: snd-riptide
-
----------------------------
-
-Henry (Hank) B. Ivy
-1-254-848-9570
-1004 Camden Ct
-Waco, TX 76712
-
-
-------=_NextPart_000_0001_01C68B2D.03E53520
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.0.4630.0">
-<TITLE>Riptide cracklying noise </TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/rtf format -->
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">I have a Riptide sound card in my =
-system that produces a cracklying noise, even when it is muted.</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">A detailed description of the sound =
-card follows.</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">The version of ALSA is 1.0.11.</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">The card plays music (with the noise) =
-for games (such as PySOL, or Rocks N Diamonds).</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">(NOTE: Occasionally, when the sounds =
-are changing for some events in Rocks N Diamonds the noise seems to go =
-away momentarily.&nbsp; I am not able to describe a pattern.)</FONT></P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">It can play a sound file (ripped ?) =
-(with the noise) from an audio CD.</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">When a mixer has the sound card muted, =
-I still hear the cracklying noise.</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">I hear the cracklying noise the same =
-with two different head sets, and another set of speakers.</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">The same head sets and speakers work =
-without any noise in other computers.</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Does anyone else with a Riptide card =
-have the same problem?</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">How can I validate the firmware or =
-loading of the firmware in the card?</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Is there a fuller description or list =
-of working examples of the speaker-test command, than the man =
-page?</FONT>
-</P>
-
-<P><FONT SIZE=3D2 =
-FACE=3D"Arial">----------------------------------------------------------=
-</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">DETAILED SOUND CARD DESCRIPTION</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Identification</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Vendor: Rockwell Semiconductor =
-Systems</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Description: Master Riptide PCI Audio =
-Controller</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Media class: MULTIMEDIA_AUDIO</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Connection</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Bus: PCI</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Bus PCI #: 0</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">PCI device #: 12</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">PCI function #: 0</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Vendor ID: 4730</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Device ID: 17184</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Sub vendor ID: 4661</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Sub device ID: 17184</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Driver</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Module: snd-riptide</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">---------------------------</FONT>
-</P>
-
-<P><FONT SIZE=3D2 FACE=3D"Arial">Henry (Hank) B. Ivy</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">1-254-848-9570</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">1004 Camden Ct</FONT>
-
-<BR><FONT SIZE=3D2 FACE=3D"Arial">Waco, TX 76712</FONT>
-</P>
-
-</BODY>
-</HTML>
-------=_NextPart_000_0001_01C68B2D.03E53520--
-
-
-
-
---===============2145233857==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2145233857==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============2145233857==--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-08-06 03:09 rbenech        New Issue                                    
+06-08-06 03:09 rbenech        Distribution              => OpenSuSE        
+06-08-06 03:09 rbenech        Kernel Version            => 2.6.16.13-4-smp 
+06-08-06 03:53 rlrevell       Note Added: 0010106                          
+06-09-06 02:34 rbenech        Note Added: 0010120                          
+======================================================================
