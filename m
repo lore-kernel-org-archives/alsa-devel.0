@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002193]: kernel module fails to load
 	for AD1986A chipset on ASUS A8N-VM
-Date: Fri, 9 Jun 2006 02:57:28 +0200
-Message-ID: <194288db1871ef7acf30812c42e39cca@bugtrack.alsa-project.org>
+Date: Fri, 9 Jun 2006 03:25:11 +0200
+Message-ID: <44b63f10666a64fe45e3bd38b3cb31c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D64C173
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0A37CBD
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jun 2006 02:57:28 +0200 (MEST)
+	Fri,  9 Jun 2006 03:25:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               OpenSuSE
 Kernel Version:             2.6.16.13-4-smp
 ======================================================================
 Date Submitted:             06-08-2006 03:09 CEST
-Last Modified:              06-09-2006 02:57 CEST
+Last Modified:              06-09-2006 03:25 CEST
 ======================================================================
 Summary:                    kernel module fails to load for AD1986A chipset on
 ASUS A8N-VM
@@ -61,15 +61,6 @@ I also tried OSS, module also failed to load...
 ======================================================================
 
 ----------------------------------------------------------------------
- rbenech - 06-09-06 02:51 
-----------------------------------------------------------------------
-i just verified that there arn't any aliases in /etc/modprobe.conf that
-contain 'alsa' or 'snd'... there does seem to be one for 'osst'...
-
-Also, I just upgraded to alsa-1.0.11-35 and will report back if that fixes
-anything...
-
-----------------------------------------------------------------------
  rlrevell - 06-09-06 02:57 
 ----------------------------------------------------------------------
 Don't bother with /etc/modprobe.conf, nothing in that file can help you if
@@ -78,6 +69,18 @@ the snd-hda-intel driver is not even present on your system.
 How did you install ALSA, from packages or self compiled?
 
 Does "locate snd-hda-intel" output anything?
+
+----------------------------------------------------------------------
+ rbenech - 06-09-06 03:25 
+----------------------------------------------------------------------
+This is an upgrade from SuSE 10.  I've been trying different things over
+the past few months like installing ALSA from CVS, so I probably borked
+something in the process.  I install packages with SuSe's YAST tool that
+uses a YUM repository to install .rpm packages directly from an Open SuSE
+mirror.  As mentioned above, I just now upgraded to alsa-1.0.11-35.  I
+don't have 'locate', but a recursive search of / didn't turn anything up. 
+I will try to remove and re-install the packages.  I'm looking thru SuSE
+documentation for any more clues...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -90,4 +93,5 @@ Date Modified  Username       Field                    Change
 06-09-06 02:41 rlrevell       Note Added: 0010121                          
 06-09-06 02:51 rbenech        Note Added: 0010122                          
 06-09-06 02:57 rlrevell       Note Added: 0010123                          
+06-09-06 03:25 rbenech        Note Added: 0010124                          
 ======================================================================
