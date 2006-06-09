@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002199]: No sound from M-AUDIO
-	Revolution 5.1
-Date: Fri, 9 Jun 2006 21:25:10 +0200
-Message-ID: <54256a7bcf53eb243a8ad391cb87dd0f@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Problem with ALSA on PPC
+Date: Fri, 09 Jun 2006 18:18:30 -0400
+Message-ID: <1149891511.3894.296.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 28E7E17C
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jun 2006 21:25:10 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,45 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2199> 
-======================================================================
-Reported By:                hlabs
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2199
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             06-09-2006 21:25 CEST
-Last Modified:              06-09-2006 21:25 CEST
-======================================================================
-Summary:                    No sound from M-AUDIO Revolution 5.1
-Description: 
-M-AUDIO Revo 5.1
-kernel 2.6.16
-alsa 1.0.11
+I am developing an ALSA application for an embedded PPC platform.  I
+have alsa-lib and alsa-utils installed and created the device nodes, and
+am attempting to test with the dummy driver, but no matter what I do,
+aplay fails to find a config.  It just returns "No such file or
+directory".
 
-I got sound only from front channel.
-Other channels doesn't works at all.
+~ # aplay -l
+**** List of PLAYBACK Hardware Devices ****
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL hw:0
+aplay: device_list:232: control open (0): No such file or directory
+ALSA lib control.c:816:(snd_ctl_open_noupdate) Invalid CTL hw:1
+aplay: device_list:232: control open (1): No such file or directory
 
-In alsamixer all outs unmuted and routed to pcm out.
+~ # aplay -D hw:0,0 /usr/share/sounds/alsa/Front_Center.wav 
+ALSA lib pcm.c:2146:(snd_pcm_open_noupdate) Unknown PCM hw:0,0
+aplay: main:548: audio open error: No such file or directory
 
-======================================================================
+I do not have strace on this platform.  How can I determine which file
+or directory is missing?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-09-06 21:25 hlabs          New Issue                                    
-======================================================================
+/usr/share/alsa/alsa.conf is present as well as the correct device node:
+
+~ # ls -al /dev/snd/pcmC0D0p 
+crw-rw----    1 root     29       116,  16 Jun  9 15:54 /dev/snd/pcmC0D0p
+
+What am I doing wrong?
+
+Lee
