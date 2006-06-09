@@ -1,16 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001918]: No sound when I boot into
-	Linux
-Date: Fri, 9 Jun 2006 18:34:07 +0200
-Message-ID: <1540fa3dcf0e9f3c1d278488f1c3856a@bugtrack.alsa-project.org>
+From: Remy Bruno <remy.bruno@trinnov.com>
+Subject: Bug in hdsp.c
+Date: Fri, 9 Jun 2006 18:49:02 +0200
+Message-ID: <20060609164902.GA26734@trinnov.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0971C183
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jun 2006 18:34:07 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,59 +16,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1918> 
-======================================================================
-Reported By:                gordon3913
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1918
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             03-13-2006 03:04 CET
-Last Modified:              06-09-2006 18:34 CEST
-======================================================================
-Summary:                    No sound when I boot into Linux
-Description: 
-I do not have sound every time that I boot into Linux
-When I run "alsaconf" and follow the prompts in a terminal my sound will
-work.
-Next time I start my computer - no sound.
-======================================================================
+There is a bug in the begining of function snd_hdsp_proc_read() of file
+alsa-kernel/pci/rme9652/hdsp.c: a pair of "{}" is missing after the first "if"
 
-----------------------------------------------------------------------
- rlrevell - 06-09-06 18:29 
-----------------------------------------------------------------------
-Sorry, this is not helpful, I need the diff between the good config and the
-bad config.
+if (hdsp_check_for_iobox (hdsp))
+        {
+		snd_iprintf(buffer, "No I/O box connected.\nPlease connect one and upload firmware.\n");
+		return;
+        }
 
-----------------------------------------------------------------------
- rlrevell - 06-09-06 18:34 
-----------------------------------------------------------------------
-Actually try raising the volumes of the "VIA DXS" channels
+The consequence was the "return" statement to be done systematically and so the
+file "hdsp" always seemed to be empty.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-13-06 03:04 gordon3913     New Issue                                    
-03-13-06 03:09 rlrevell       Note Added: 0008437                          
-04-25-06 02:45 gordon3913     Note Added: 0009482                          
-06-08-06 23:02 fabum          Note Added: 0010118                          
-06-09-06 00:03 rlrevell       Note Added: 0010119                          
-06-09-06 14:33 gordon39       Note Added: 0010140                          
-06-09-06 14:37 gordon39       Note Edited: 0010140                         
-06-09-06 18:29 rlrevell       Note Added: 0010141                          
-06-09-06 18:34 rlrevell       Note Added: 0010142                          
-======================================================================
+Regards,
+
+Remy BRUNO
