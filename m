@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002193]: kernel module fails to load
 	for AD1986A chipset on ASUS A8N-VM
-Date: Fri, 9 Jun 2006 03:43:28 +0200
-Message-ID: <c239bef3b3582fc33987cf9efe3be440@bugtrack.alsa-project.org>
+Date: Fri, 9 Jun 2006 03:51:57 +0200
+Message-ID: <6e074ade7944a44114ce2fb227912dc3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1E9A5127
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4949E175
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jun 2006 03:43:29 +0200 (MEST)
+	Fri,  9 Jun 2006 03:51:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               OpenSuSE
 Kernel Version:             2.6.16.13-4-smp
 ======================================================================
 Date Submitted:             06-08-2006 03:09 CEST
-Last Modified:              06-09-2006 03:43 CEST
+Last Modified:              06-09-2006 03:51 CEST
 ======================================================================
 Summary:                    kernel module fails to load for AD1986A chipset on
 ASUS A8N-VM
@@ -61,18 +61,6 @@ I also tried OSS, module also failed to load...
 ======================================================================
 
 ----------------------------------------------------------------------
- rbenech - 06-09-06 03:25 
-----------------------------------------------------------------------
-This is an upgrade from SuSE 10.  I've been trying different things over
-the past few months like installing ALSA from CVS, so I probably borked
-something in the process.  I install packages with SuSe's YAST tool that
-uses a YUM repository to install .rpm packages directly from an Open SuSE
-mirror.  As mentioned above, I just now upgraded to alsa-1.0.11-35.  I
-don't have 'locate', but a recursive search of / didn't turn anything up. 
-I will try to remove and re-install the packages.  I'm looking thru SuSE
-documentation for any more clues...
-
-----------------------------------------------------------------------
  rbenech - 06-09-06 03:43 
 ----------------------------------------------------------------------
 what package would 'snd-hda-intel' be provided by?  I can't seem to find
@@ -80,6 +68,15 @@ any providers?
 
 fyi - alsa package looks correct with files in /etc/alsa.d, /usr/bin,
 /usr/lib, etc...
+
+----------------------------------------------------------------------
+ rbenech - 06-09-06 03:51 
+----------------------------------------------------------------------
+attached README.SuSE for reference.  It explains how alsa is configured on
+SuSE.  It looks like since the Yast configuration tool won't complete
+(because module won't load), none of these files are being created.  Now
+to figure out how to get those kernel modules (they appear to come from
+the kernel package)...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -94,4 +91,6 @@ Date Modified  Username       Field                    Change
 06-09-06 02:57 rlrevell       Note Added: 0010123                          
 06-09-06 03:25 rbenech        Note Added: 0010124                          
 06-09-06 03:43 rbenech        Note Added: 0010127                          
+06-09-06 03:50 rbenech        File Added: README.SuSE                      
+06-09-06 03:51 rbenech        Note Added: 0010128                          
 ======================================================================
