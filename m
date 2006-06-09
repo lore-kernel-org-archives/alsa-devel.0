@@ -1,8 +1,8 @@
 From: Barry Scott <barry.scott@onelan.co.uk>
 Subject: Re: 2.6.17-rc6 sound drivers have section
 	mismatch	errors
-Date: Fri, 09 Jun 2006 15:08:42 +0100
-Message-ID: <448980EA.90208@onelan.co.uk>
+Date: Fri, 09 Jun 2006 17:08:55 +0100
+Message-ID: <44899D17.4050808@onelan.co.uk>
 References: <44895FE5.6040900@onelan.co.uk>	<s5hirnaechx.wl%tiwai@suse.de>
 	<s5h4pyueb00.wl%tiwai@suse.de>
 Mime-Version: 1.0
@@ -24,19 +24,7 @@ Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-> At Fri, 09 Jun 2006 14:31:54 +0200,
-> I wrote:
->   
->> At Fri, 09 Jun 2006 12:47:49 +0100,
->> Barry Scott wrote:
->>     
->>> I'm trying to build 2.6.17 as suggested on the user list to get Intel 
->>> HDA working.
->>> But, as reported by me on Linux Dev list, there a lot of problems with 
->>> section mismatch
->>> in a number of drivers including the sound drivers. Here are the sound 
->>> related messages:
->>>
+>
 >>> WARNING: sound/isa/sb/snd-sbawe.o - Section mismatch: reference to 
 >>> .init.text:snd_emu8000_new from .text between 'snd_sb16_probe' (at 
 >>> offset 0x440) and 'snd_sb16_nonpnp_remove'
@@ -51,14 +39,6 @@ Takashi Iwai wrote:
 >>>       
 >> The patch below should fix.
 >>     
->
-> Looks like it wasn't enough.  The fixed patch is below.
->
->
-> Takashi
->   
-
-Thanks I'm building now with your patch and one for megaraid.
-I'll report back once that all completes in a couple of hours.
+The patch fixed the warning for sound. Many thanks.
 
 Barry
