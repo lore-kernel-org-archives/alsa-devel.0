@@ -1,12 +1,15 @@
-From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
-Subject: AudioScience asihpi HPI + ALSA drivers released.
-Date: Fri, 9 Jun 2006 19:53:36 +1200
-Message-ID: <200606091953.37432.linux@blennerhassett.gen.nz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - liboss 0001716]: aoss not working with audacity
+Date: Fri, 9 Jun 2006 10:04:18 +0200
+Message-ID: <79ae8c0a517cdfd7fb43485442a0dd90@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D20A8175
+	for <alsa-devel@alsa-project.org>;
+	Fri,  9 Jun 2006 10:04:18 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,67 +19,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>, Delio Brignoli <dbrignoli@audioscience.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Get your smoking hot tarball here:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1716> 
+======================================================================
+Reported By:                ajs1984
+Assigned To:                
+======================================================================
+Project:                    ALSA - liboss
+Issue ID:                   1716
+Category:                   
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             01-04-2006 23:04 CET
+Last Modified:              06-09-2006 10:04 CEST
+======================================================================
+Summary:                    aoss not working with audacity
+Description: 
+Following up from a recent LKML thread, I'm going to report a number of
+aoss incompatibilities with softwares on Linux.
 
-http://www.audioscience.com/internet/download/asihpi_hpi300_alsa1.0.11.tar.bz2
-Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+First up is audacity, which has no ALSA port. snd-pcm/mixer-oss aren't
+loaded.
 
-This replaces the contents of alsa-driver/pci/asihpi.  It builds a single 
-module that supports both ALSA and HPI interfaces.
-This is such a major reorganisation of the code that it doesn't make sense (to 
-me anyway) to provide it as a patch against existing code.  Future minor 
-changes certainly will be submitted as patches.
+======================================================================
 
-Currently requires the hpi driver to have been installed in order to install 
-firmware (it doesn't depend on the hpi driver module at all though).
-http://www.audioscience.com/internet/download/hpklinux-3.00.tar.gz
+----------------------------------------------------------------------
+ Raymond - 06-09-06 07:01 
+----------------------------------------------------------------------
+> Pa_SetLatency: could not SNDCTL_DSP_SETFRAGMENT
+> Pa_SetLatency: numBuffers = 2, framesPerBuffer = 512, powerOfTwo = 11
+> Pa_SetupDeviceFormat: could not SNDCTL_DSP_SETFMT
 
-regards
- 
---
-Eliot Blennerhassett
-AudioScience
+Which sound card are you using ?
 
+It seem that your sound card does not support the specified format
 
-Release notes v3.00 Jun-05-2006
-Detailed Release notes here:
-http://www.audioscience.com/internet/download/drvnotes.txt
+----------------------------------------------------------------------
+ ajs1984 - 06-09-06 10:04 
+----------------------------------------------------------------------
+It's a bug _in aoss_. My soundcard is an Audidy 2 Platinum, I'm fairly sure
+that isn't the problem.
 
-Summary:
-
-	ASI4xxx - errata workarounds for Intel 9XX chipset based computers. Not 100% 
-guaranteed. 
-	          Users must test before deployment.
-	ASI50xx - 16-24 kHz not supported. 192 kHz channel assignment fixes.
-	ASI6044 - Now runs at 225 Mhz. This fixes lockups on some Intel 9XX chipset 
-based computers.
-	ASI6416 - MP2 encode speed up. 16-Play mode added. Fix bug in 44.1->48 kHz 
-sample rate converter.
-	ASI66xx - added.
-	Removed - ASI44xx, ASI4500, ASI4601, ASI8800.
-
-
-Details:
-	Linux Driver:
-		- various maintainer build enhancements
-		- firmware loading: better configure detection of directory,
-		- dsp bin placed in asihpi subdirectory
-		- RPM build uses configured firmware dir.
-		- update library version from 0.0.0  to 1.0.0:
-		- Add tone and silence detector APIs. Add async object and apis.
-		- Add AdapterEnumerateProperty
-		- Remove HPI_GetLastErrorDetail, gadwHpiSpecificError
-		- update hpimod.c for 2.4 kernel
-		- driver module improved cleanup after error during init
-		- asihpirec/play format option changed to -f
-		- asihpitest,asihpitune display correct control listing with disabled
-		  controls
-		- asihpi start script creates dev file even if driver loaded already by
-		  hotplug
-		- remove asihpireset from dist.  Split kernel out of hpios_linux.h
-		- use new SMP locking
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-04-06 23:04 ajs1984        New Issue                                    
+01-04-06 23:06 ajs1984        Note Added: 0007457                          
+01-04-06 23:06 ajs1984        Note Added: 0007458                          
+06-07-06 15:06 Raymond        Note Added: 0010082                          
+06-07-06 15:29 ajs1984        Note Added: 0010083                          
+06-07-06 15:41 Raymond        Note Added: 0010084                          
+06-08-06 02:41 Raymond        Note Edited: 0010084                         
+06-08-06 02:42 Raymond        Note Edited: 0010084                         
+06-08-06 02:43 Raymond        Note Edited: 0010084                         
+06-09-06 07:01 Raymond        Note Added: 0010133                          
+06-09-06 10:04 ajs1984        Note Added: 0010135                          
+======================================================================
