@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002193]: kernel module fails to load
 	for AD1986A chipset on ASUS A8N-VM
-Date: Fri, 9 Jun 2006 03:51:57 +0200
-Message-ID: <6e074ade7944a44114ce2fb227912dc3@bugtrack.alsa-project.org>
+Date: Fri, 9 Jun 2006 04:06:38 +0200
+Message-ID: <0c1cda4f9e4877edfaede50a224a0e6f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4949E175
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8A143175
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jun 2006 03:51:57 +0200 (MEST)
+	Fri,  9 Jun 2006 04:06:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               OpenSuSE
 Kernel Version:             2.6.16.13-4-smp
 ======================================================================
 Date Submitted:             06-08-2006 03:09 CEST
-Last Modified:              06-09-2006 03:51 CEST
+Last Modified:              06-09-2006 04:06 CEST
 ======================================================================
 Summary:                    kernel module fails to load for AD1986A chipset on
 ASUS A8N-VM
@@ -61,15 +61,6 @@ I also tried OSS, module also failed to load...
 ======================================================================
 
 ----------------------------------------------------------------------
- rbenech - 06-09-06 03:43 
-----------------------------------------------------------------------
-what package would 'snd-hda-intel' be provided by?  I can't seem to find
-any providers?
-
-fyi - alsa package looks correct with files in /etc/alsa.d, /usr/bin,
-/usr/lib, etc...
-
-----------------------------------------------------------------------
  rbenech - 06-09-06 03:51 
 ----------------------------------------------------------------------
 attached README.SuSE for reference.  It explains how alsa is configured on
@@ -77,6 +68,11 @@ SuSE.  It looks like since the Yast configuration tool won't complete
 (because module won't load), none of these files are being created.  Now
 to figure out how to get those kernel modules (they appear to come from
 the kernel package)...
+
+----------------------------------------------------------------------
+ rlrevell - 06-09-06 04:06 
+----------------------------------------------------------------------
+It should be part of the kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -93,4 +89,5 @@ Date Modified  Username       Field                    Change
 06-09-06 03:43 rbenech        Note Added: 0010127                          
 06-09-06 03:50 rbenech        File Added: README.SuSE                      
 06-09-06 03:51 rbenech        Note Added: 0010128                          
+06-09-06 04:06 rlrevell       Note Added: 0010129                          
 ======================================================================
