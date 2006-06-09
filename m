@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002198]: No sound out of the built in
-	speakers, but from headphones on a Apple MacBook Pro
-Date: Fri, 9 Jun 2006 12:09:41 +0200
-Message-ID: <882cbc59663bda602f09414a244e3281@bugtrack.alsa-project.org>
+From: Barry Scott <barry.scott@onelan.co.uk>
+Subject: 2.6.17-rc6 sound drivers have section mismatch errors
+Date: Fri, 09 Jun 2006 12:47:49 +0100
+Message-ID: <44895FE5.6040900@onelan.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 16F9C175
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jun 2006 12:09:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,48 +15,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I'm trying to build 2.6.17 as suggested on the user list to get Intel 
+HDA working.
+But, as reported by me on Linux Dev list, there a lot of problems with 
+section mismatch
+in a number of drivers including the sound drivers. Here are the sound 
+related messages:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2198> 
-======================================================================
-Reported By:                enlighter
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2198
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.16.16
-======================================================================
-Date Submitted:             06-09-2006 12:09 CEST
-Last Modified:              06-09-2006 12:09 CEST
-======================================================================
-Summary:                    No sound out of the built in speakers, but from
-headphones on a Apple MacBook Pro
-Description: 
-Hi,
+WARNING: sound/isa/sb/snd-sbawe.o - Section mismatch: reference to 
+.init.text:snd_emu8000_new from .text between 'snd_sb16_probe' (at 
+offset 0x440) and 'snd_sb16_nonpnp_remove'
+WARNING: sound/isa/snd-opl3sa2.o - Section mismatch: reference to 
+.init.text: from .text between 'snd_opl3sa2_pnp_cdetect' (at offset 
+0xe61) and 'snd_opl3sa2_pnp_detect'
+WARNING: sound/isa/snd-opl3sa2.o - Section mismatch: reference to 
+.init.text: from .text between 'snd_opl3sa2_pnp_detect' (at offset 
+0xf52) and 'snd_opl3sa2_put_single'
 
-this error occours on all macbook pros! (see www.mactel-linux.org). Sound
-comes only out of the headphones or out of line-out, but the internal
-speakers keep mute. I cannot unmute them using the mixer (alsamixer,
-kmix). I also tried a rc version of linux-2.6.17 with the same result.
+The Linux Dev folks are looking for someone to look at these problems.
 
-I also tried to load the snd-hda-intel module with "model=laptop" and
-"model=laptop-eapd".
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-09-06 12:09 enlighter      New Issue                                    
-06-09-06 12:09 enlighter      Distribution              => Gentoo Linux    
-06-09-06 12:09 enlighter      Kernel Version            => 2.6.16.16       
-======================================================================
+Barry
