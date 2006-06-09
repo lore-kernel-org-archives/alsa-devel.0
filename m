@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002197]: Kernel Oops playing on
-	M-Audio Revolution 5.1
-Date: Fri, 9 Jun 2006 04:43:27 +0200
-Message-ID: <ca181455c736f0269f745b08aaaeb71e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002194]: fglrx and snd_hda_intel
+Date: Fri, 9 Jun 2006 04:56:26 +0200
+Message-ID: <a9b6cafe96002b235dee87effe230248@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0DF9175
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1C718175
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jun 2006 04:43:27 +0200 (MEST)
+	Fri,  9 Jun 2006 04:56:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,82 +23,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2197> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2194> 
 ======================================================================
-Reported By:                admeralthrawn
-Assigned To:                
+Reported By:                emacspy
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2197
-Category:                   PCI - ice1724
+Issue ID:                   2194
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.16 with gentoo patchset (r9)
+Status:                     assigned
+Distribution:               gentoo
+Kernel Version:             2.6.16-gentoo-r9
 ======================================================================
-Date Submitted:             06-09-2006 04:43 CEST
-Last Modified:              06-09-2006 04:43 CEST
+Date Submitted:             06-08-2006 19:33 CEST
+Last Modified:              06-09-2006 04:56 CEST
 ======================================================================
-Summary:                    Kernel Oops playing on M-Audio Revolution 5.1
+Summary:                    fglrx and snd_hda_intel
 Description: 
-First time I play sound I get a kernel oops.  dmesg output:
-
-Unable to handle kernel NULL pointer dereference at 00000000000000b0 RIP:
-<ffffffff880a0c6d>{:snd_ice1724:snd_vt1724_playback_pro_open+29}
-PGD 793cf067 PUD 793ce067 PMD 0
-Oops: 0002 [1] SMP
-CPU 1
-Modules linked in: nvidia smbfs snd_seq snd_pcm_oss snd_mixer_oss
-snd_ice1724 snd_ice17xx_ak4xxx snd_ac97_codec snd_ac97_bus snd_ak4114
-snd_pcm snd_timer snd_page_alloc snd_ak4xxx_adda snd_mpu401_uart
-snd_rawmidi snd_seq_device snd soundcore ntfs i2c_nforce2 i2c_core
-Pid: 5502, comm: aplay Tainted: P      2.6.16-gentoo-r9 #4
-RIP: 0010:[<ffffffff880a0c6d>]
-<ffffffff880a0c6d>{:snd_ice1724:snd_vt1724_playback_pro_open+29}
-RSP: 0018:ffff81007854fd68  EFLAGS: 00010246
-RAX: ffffffff880ae940 RBX: ffff81007e69c400 RCX: 0000000000000003
-RDX: 0000000000000000 RSI: ffff8100793c6390 RDI: ffff81007e69c400
-RBP: ffff810079b0f400 R08: 00000000000f4240 R09: 0000000000000011
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff81007e69c600 R14: ffff81007c7b8980 R15: 0000000000000000
-FS:  00002b1f2882b1c0(0000) GS:ffff810002f65b40(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000000000b0 CR3: 0000000079b1a000 CR4: 00000000000006e0
-Process aplay (pid: 5502, threadinfo ffff81007854e000, task
-ffff81007fe982c0)
-Stack: 0000000000000000 ffff81007a0feae0 ffff81007e69c788
-ffffffff8806a8e1
-       ffff81007e69c7a8 ffff81007e69c400 ffff810000000000
-ffff81007fe982c0
-       ffffffff80128c20 ffff81007e69c7b0
-Call Trace: <ffffffff8806a8e1>{:snd_pcm:snd_pcm_open+353}
-       <ffffffff80128c20>{default_wake_function+0}
-<ffffffff8803c1eb>{:snd:snd_open+283}
-       <ffffffff80180259>{chrdev_open+393}
-<ffffffff801800d0>{chrdev_open+0}
-       <ffffffff801763dc>{__dentry_open+236}
-<ffffffff80176522>{nameidata_to_filp+34}
-       <ffffffff8017656a>{do_filp_open+42}
-<ffffffff8017670e>{get_unused_fd+110}
-       <ffffffff8017691a>{do_sys_open+90}
-<ffffffff8010ad86>{system_call+126}
-
-Code: 49 89 bc 24 b0 00 00 00 48 8b 05 44 dd 00 00 48 89 85 68 01
-RIP <ffffffff880a0c6d>{:snd_ice1724:snd_vt1724_playback_pro_open+29} RSP
-<ffff81007854fd68>
-CR2: 00000000000000b0 
+Iam having a problem using snd_hda_intel with fglrx. In games sound lags
+but if I do a modprobe snd_hda_intel sound does not lag but video fps
+suffers greatly. I am not sure if this is a problem with fglrx or
+snd_hda_intel any input would be great.
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 06-08-06 19:46 
+----------------------------------------------------------------------
+What sound driver is used if you do not use snd-hda-intel?
+
+If your games support OSS, does it make any difference if you use them in
+OSS or ALSA mode?
+
+----------------------------------------------------------------------
+ emacspy - 06-09-06 04:56 
+----------------------------------------------------------------------
+Here is my lsmod also OSS does not work at all Im using KDE if I set arts
+to use OSS I get no output .Ive tryed not using ARTS at all but the same
+lag effects occurs. Sometimes it goes away and everything works great but
+then it goes back to either sound or video lags. I know the sound and
+video are both integrated on my laptop but I have 2gigs of ram installed
+so it should not be a problem. Thanks for the help and also sometimes Ive
+been getting an error that cpu sound system overload in kde that just pops
+up not sure if any of this helps though.
+lsmod
+Module                  Size  Used by
+fglrx                 379628  8
+snd_pcm_oss            39968  0
+snd_mixer_oss          17664  1 snd_pcm_oss
+snd_seq_dummy           3844  0
+snd_seq_oss            34432  0
+snd_seq_midi_event      6912  1 snd_seq_oss
+snd_seq                50896  5
+snd_seq_dummy,snd_seq_oss,snd_seq_midi_event
+snd_seq_device          7692  3 snd_seq_dummy,snd_seq_oss,snd_seq
+snd_hda_intel          16404  6
+snd_hda_codec         144048  1 snd_hda_intel
+snd_pcm                80900  5 snd_pcm_oss,snd_hda_intel,snd_hda_codec
+snd_timer              21892  4 snd_seq,snd_pcm
+snd                    48356  18
+snd_pcm_oss,snd_mixer_oss,snd_seq_dummy,snd_seq_oss,snd_seq,snd_seq_device,snd_hda_intel,snd_hda_codec,snd_pcm,snd_timer
+soundcore               8672  1 snd
+snd_page_alloc          8968  2 snd_hda_intel,snd_pcm
+wlan_scan_sta          14080  1
+ath_pci                91684  0
+ath_rate_sample        12800  1 ath_pci
+wlan                  187740  4 wlan_scan_sta,ath_pci,ath_rate_sample
+ath_hal               188240  3 ath_pci,ath_rate_sample
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-09-06 04:43 admeralthrawn  New Issue                                    
-06-09-06 04:43 admeralthrawn  Distribution              => Gentoo          
-06-09-06 04:43 admeralthrawn  Kernel Version            => 2.6.16 with gentoo
-patchset (r9)
+06-08-06 19:33 emacspy        New Issue                                    
+06-08-06 19:33 emacspy        Distribution              => gentoo          
+06-08-06 19:33 emacspy        Kernel Version            => 2.6.16-gentoo-r9
+06-08-06 19:46 rlrevell       Note Added: 0010115                          
+06-09-06 04:56 emacspy        Note Added: 0010130                          
 ======================================================================
