@@ -1,20 +1,16 @@
-From: =?iso-2022-jp?B?GyRCI1MhJiNIGyhC?= <yamaguti232@yahoo.co.jp>
-Subject: =?iso-2022-jp?b?GyRCNS5KfSROOEBNVSRLNjskLBsoQg==?=
-Date: Sat, 10 Jun 2006 19:55:48 +0200 (MEST)
-Message-ID: <20060610175548.1484899417@mail.perex.cz>
-Reply-To: yamaguti232@yahoo.co.jp
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002199]: No sound from M-AUDIO
+	Revolution 5.1
+Date: Sun, 11 Jun 2006 00:06:47 +0200
+Message-ID: <bed6100f84cd0096d3f99c99b3f40005@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CACB415E
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9C77E167
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Jun 2006 19:55:51 +0200 (MEST)
-Received: from alsa-project.org (unknown [61.47.176.85])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	1484899417 for <alsa-devel@alsa-project.org>;
-	Sat, 10 Jun 2006 19:55:48 +0200 (MEST)
+	Sun, 11 Jun 2006 00:06:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,9 +23,82 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-このアドレスは間違っていたでしょうか。それとも...。
-しつこいなんて思われてもいいです。これで会えれば少しでも幸せを感じれるし、
-だめならそれまでだし。こうやってメールを書いている私は、普段にはなく積極的で
-自分でも驚いています。それだけこれまでの貴方の言葉が胸にしみているのです。
-少しは責任があるのですよ、貴方にも。
-安全な受信箱で待っています。http://www.from-land.com/tips
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2199> 
+======================================================================
+Reported By:                hlabs
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2199
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-09-2006 21:25 CEST
+Last Modified:              06-11-2006 00:06 CEST
+======================================================================
+Summary:                    No sound from M-AUDIO Revolution 5.1
+Description: 
+M-AUDIO Revo 5.1
+kernel 2.6.16
+alsa 1.0.11
+
+I got sound only from front channel.
+Other channels doesn't works at all.
+
+In alsamixer all outs unmuted and routed to pcm out.
+
+======================================================================
+
+----------------------------------------------------------------------
+ wollschaf - 06-11-06 00:06 
+----------------------------------------------------------------------
+It is not very clear what you intend to do with the other channels. 
+
+The channels themselves work, to use the surround channel as normal stero
+device I placed the following in my ~/.asoundrc
+
+pcm.!surround {
+  type plug
+  slave.pcm "dmixer2"
+}
+
+pcm.dmixer2  {
+        type dmix
+        ipc_key 1024
+        slave {
+                pcm "hw:0,2,1"
+                format S32_LE
+                period_time 0
+                period_size 2048
+                buffer_size 24756
+                rate 44100
+        }
+        bindings {
+                0 0
+                1 1
+        }
+}
+
+
+I used excessive buffer values as my PCI graphics card interferes with
+nonstop audio replay :(
+
+pcm "hw:0,2,0" is the center/sub channel.
+
+I have no experience using real multichannel audio, though.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-09-06 21:25 hlabs          New Issue                                    
+06-09-06 21:34 hlabs          Issue Monitored: hlabs                       
+06-11-06 00:06 wollschaf      Note Added: 0010149                          
+======================================================================
