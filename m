@@ -1,9 +1,11 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: snd-aoa: oss mixer emulation not working
-Date: Sat, 10 Jun 2006 11:41:39 +0200
-Message-ID: <1149932499.3864.40.camel@johannes.berg>
+From: jayakumar.alsa@gmail.com
+Subject: [PATCH 2.6.17-rc5 1/1] ALSA: cs5535audio trivial debug
+	printk
+Date: Sat, 10 Jun 2006 17:52:30 +0800
+Message-ID: <200606100952.k5A9qUMd016091@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1784412551=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,73 +16,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi, Jaroslav,
 
---===============1784412551==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="=-WQkjSCTJ4dNdxf5D82Rt"
+Following is a trivial patch to get more info for boards where
+the AC97_VENDOR_ID2 register (or others) time out.
 
+Thanks,
+Jaya Kumar
 
---=-WQkjSCTJ4dNdxf5D82Rt
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Jaya Kumar <jayakumar.alsa@gmail.com>
 
-Hi,
+---
+ 
+ cs5535audio.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Investigating a report from a user I notice that with my snd-aoa driver
-oss mixer emulation doesn't work, aumix for example just reports=20
+---
 
-aumx: no device found
-
-What do I have to do to make it work? Does it need config files or
-something first?
-
-johannes
-
---=-WQkjSCTJ4dNdxf5D82Rt
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIVAwUARIqT0KVg1VMiehFYAQJXZBAApJ+uo95R1Ac8bo4B52TYMPt1+cTxoEwI
-Fhxg122iBdCkowcdD1WvWcOeU7jG5WtvwPWP9ujweCvLKbsod458CPJqMwERlL41
-LpJhwKuV25kS8neeSvsA/eXPXnWC1ChtlkxC9OTa2FGQ557ql48J8Bt+XKTdWbjH
-91XFCarEMTIPbu3h0nUSrZPcCKw0/vr3PV82+7/qIk+vkvsDmEqN22/yfTdBO2v3
-nyzC+PNjRIanCB6bUbjxwenv3YgJlyvSrLYft7jA4kbl8GReuRKiSvsKhZj2ZaKS
-3syfyYgPkzWvbSXKmY39Wj2BG4vlXpLGGYFORA4Z/HhUbLr6NhQu4pV0O3barLoQ
-U0qNqznfJ7NNrjj7mQ+5Ks3MrFQTRXq2heDNdLrNxxNqrJwdKaoQS0IpZeQbYTJK
-VBMgxeg7jiOymHtzGjfhmbi9H83cwybeZipwco4o7L64MMh6YkU+PuUzpe2S+yCE
-jvUakEHfZX0imh/hOA0wf8NS+DiWIOEriHd2crDeafpEp2zwQG7aUhJJbro0tJ/+
-PIhkRO/ICdDkaFetrnAmie6VbQLGeZB3+MKDp9MT/zkfYytKdGr7G2ze+rGz+R3k
-+BJcT8t4YyzoF58WUf3SkM1yo0Yyyt1cVm1r1MbV5YFU8BWk1jj8H4zXHdpMoOrU
-zfzmgozwqHA=
-=KrP9
------END PGP SIGNATURE-----
-
---=-WQkjSCTJ4dNdxf5D82Rt--
-
-
-
---===============1784412551==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1784412551==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1784412551==--
+diff -X usbvideo.dontdiff -X linux-2.6.17-rc5/Documentation/dontdiff -uprN linux-2.6.17-rc5-ltv/sound/pci/cs5535audio/cs5535audio.c linux-2.6.17-rc5/sound/pci/cs5535audio/cs5535audio.c
+--- linux-2.6.17-rc5-ltv/sound/pci/cs5535audio/cs5535audio.c	2006-05-25 19:27:33.000000000 +0800
++++ linux-2.6.17-rc5/sound/pci/cs5535audio/cs5535audio.c	2006-06-10 16:32:24.000000000 +0800
+@@ -90,7 +90,8 @@ static unsigned short snd_cs5535audio_co
+ 		udelay(1);
+ 	} while (--timeout);
+ 	if (!timeout)
+-		snd_printk(KERN_ERR "Failure reading cs5535 codec\n");
++		snd_printk(KERN_ERR "Failure reading codec reg 0x%x,"
++					"Last value=0x%x\n", reg, val);
+ 
+ 	return (unsigned short) val;
+ }
