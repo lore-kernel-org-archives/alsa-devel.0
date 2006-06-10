@@ -1,15 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Sat, 10 Jun 2006 07:42:33 +0200
-Message-ID: <666ff670f00f5dbe78d33b465df1be6d@bugtrack.alsa-project.org>
+From: "Gerhard Pircher" <gerhard_pircher@gmx.net>
+Subject: Re: RFC: dma_mmap_coherent() for powerpc/ppc
+ architecture and ALSA?
+Date: Sat, 10 Jun 2006 10:22:23 +0200
+Message-ID: <20060610082223.321730@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA96C16C
-	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Jun 2006 07:42:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,106 +16,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>, benh@kernel.crashing.org
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+> -------- Original-Nachricht --------
+> Datum: Fri, 09 Jun 2006 20:46:32 -0400
+> Von: Lee Revell <rlrevell@joe-job.com>
+> An: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Betreff: Re: RFC: dma_mmap_coherent() for powerpc/ppc architecture and =
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
-======================================================================
-Reported By:                bzbarsky
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2132
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-10-2006 07:42 CEST
-======================================================================
-Summary:                    No sound from speakers
-Description: 
-Alsa seems to detect the sound card, but when I try to actually play
-something there is no sound from the speakers.
-======================================================================
+> ALSA?
+> =
 
-----------------------------------------------------------------------
- Raymond - 06-06-06 08:59 
-----------------------------------------------------------------------
-According to ac97#0-0+regs-1.0.11 , it seem that ac97 registers are
-shifted, 
+> On Sat, 2006-06-10 at 10:34 +1000, Benjamin Herrenschmidt wrote:
+> > > This leads me to the question, if there are any plans to include the =
 
-0:00 = 0000
-0:02 = 0d50
+> > > dma_mmap_coherent() function (for powerpc/ppc and/or any other
+> > > platform) in one of the next kernel versions and if an adapation of
+> > > the ALSA drivers is planned. Or is there a simple way (hack) to fix
+> > > this problem?
+> > =
 
-0:7c = 0000
-0:7e = 4e53
+> > You are welcome to do a patch implementing this :)
+> =
 
-This is similar to
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023#4445
+> Please cc: alsa-devel when you do so.
 
-what is the label printed on Ensoniq chip ?
+:)
 
-Do you get audio from your tv card (bt87x) ?
+Well, implementing the dma_mmap_coherent() function isn't the problem, beca=
+use it is already implemented for the ARM architecture. But as far as I und=
+erstand this would require a rewrite of all the ALSA drivers (or at least a=
+ rewrite of the ALSA's DMA helper functions).
+
+Original mail included for alsa-devel mailing list:
+
+> I'm trying to adapt Linux for the AmigaOne, which is a G3/G4 PPC desktop =
+
+> system with a non cache coherent northbridge (MAI ArticiaS), a VIA82C686B =
+
+> southbridge and the U-boot firmware. Due to the cache coherency problem I =
+
+> compiled in the CONFIG_NOT_COHERENT_CACHE option
+> (arch/ppc/kernel/dma-mapping.c) in the AmigaOne Linux kernel.
+
+> While that fixes the DMA data corruption problem, it causes a kernel oops =
+
+> or a complete system lookup after starting sound playback. With kernel
+> versions =3D<2.6.14 the oops messages refered to a BUG() entry in
+> mm/rmap.c. Therefore I tried out a newer kernel (2.6.16.15), where the
+> oops refers to the ALSA function snd_pcm_mmap_data_nopage() implemented
+> in pcm_native.c.
+
+> Well, after searching a while in some old linux kernel threads, I found
+> this thread here:
+> http://www.thisishull.net/showthread.php?t=3D22080&page=3D3&pp=3D10
+
+> Based on the information in this thread, I came to the conclusion that
+> ALSA simply won't work on non cache coherent architectures (except ARM),
+> because the generic DMA API was never expanded to support the
+> functionality required by ALSA (namely mapping dma pages into user space =
+> with dma_mmap_coherent()).
+
+> This leads me to the question, if there are any plans to include the
+> dma_mmap_coherent() function (for powerpc/ppc and/or any other platform)
+> in one of the next kernel versions and if an adapation of the ALSA
+> drivers is planned. Or is there a simple way (hack) to fix this problem?
+
+Gerhard
+
+-- =
 
 
 
-----------------------------------------------------------------------
- bzbarsky - 06-10-06 07:42 
-----------------------------------------------------------------------
-The Ensoniq chip says, assuming I'm looking at the right chip:
-
-CREATIVE
-ES1373
-1373-0001-04
-S     JC226A
-0006H    Kor
-
-I've never gotten the TV card sound working, really (in terms of physical
-wiring and such).  So I have no idea whether I get sound from that...
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-17-06 19:54 bzbarsky       New Issue                                    
-05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
-05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
-05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
-05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
-05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
-05-17-06 19:56 bzbarsky       File Added: scsound.log                      
-05-17-06 19:57 bzbarsky       Note Added: 0009857                          
-05-20-06 05:31 Raymond        Note Added: 0009882                          
-05-20-06 21:43 bzbarsky       Note Added: 0009893                          
-05-21-06 03:41 Raymond        Note Added: 0009894                          
-05-21-06 03:48 Raymond        Note Edited: 0009894                         
-05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
-05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
-05-22-06 02:53 bzbarsky       Note Added: 0009901                          
-05-22-06 04:14 Raymond        Note Added: 0009902                          
-05-23-06 09:00 Raymond        Note Added: 0009929                          
-05-23-06 09:03 Raymond        Note Edited: 0009929                         
-05-23-06 09:07 Raymond        Note Edited: 0009929                         
-06-02-06 20:08 bzbarsky       Note Added: 0010053                          
-06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
-06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
-06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
- 
-06-02-06 20:35 bzbarsky       Note Added: 0010054                          
-06-03-06 02:44 Raymond        Note Added: 0010058                          
-06-05-06 01:29 bzbarsky       Note Added: 0010066                          
-06-05-06 03:31 Raymond        Note Added: 0010067                          
-06-05-06 03:56 bzbarsky       File Added: dmesg                            
-06-05-06 03:57 bzbarsky       Note Added: 0010068                          
-06-06-06 06:35 Raymond        Note Added: 0010071                          
-06-06-06 06:43 Raymond        Note Edited: 0010071                         
-06-06-06 08:59 Raymond        Note Edited: 0010071                         
-06-10-06 07:42 bzbarsky       Note Added: 0010144                          
-======================================================================
+Der GMX SmartSurfer hilft bis zu 70% Ihrer Onlinekosten zu sparen!
+Ideal f=FCr Modem und ISDN: http://www.gmx.net/de/go/smartsurfer
