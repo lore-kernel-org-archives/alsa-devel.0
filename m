@@ -1,14 +1,10 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [alsa-cvslog] alsa-kernel: Control API - TLV
- implementation for additional	information like dB scale
-Date: Sat, 10 Jun 2006 10:24:26 +0100
-Message-ID: <448A8FCA.3020808@superbug.co.uk>
-References: <ALOGGER1149179663.38@alsa-project.org>
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: snd-aoa: oss mixer emulation not working
+Date: Sat, 10 Jun 2006 11:41:39 +0200
+Message-ID: <1149932499.3864.40.camel@johannes.berg>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1784412551=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <ALOGGER1149179663.38@alsa-project.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,102 +17,70 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> changeset:   4278:d194ae01b0ba9d5614ff29a82f4aacae9edd1212
-> tag:         tip
-> user:        perex
-> date:        Thu Jun  1 18:34:01 2006 +0200
-> files:       core/control.c include/asound.h include/control.h include/tlv.h pci/ca0106/ca0106_mixer.c
-> description:
-> Control API - TLV implementation for additional information like dB scale
-> 
-> This patch implements a TLV mechanism to transfer an additional information
-> like dB scale to the user space. The types might be extended in future.
-> 
-> Acked-by: Takashi Iwai <tiwai@suse.de>
-> 
-> 
-> +struct snd_ctl_tlv {
-> +        unsigned int numid;	/* control element numeric identification */
-> +        unsigned int length;	/* in bytes aligned to 4 */
-> +        unsigned int tlv[0];	/* first TLV */
-> +};
-> +
 
-> +static int snd_ctl_tlv_read(struct snd_card *card,
-> +                            struct snd_ctl_tlv __user *_tlv)
-> +{
-> +	struct snd_ctl_tlv tlv;
-> +	struct snd_kcontrol *kctl;
-> +	unsigned int len;
-> +	int err = 0;
-> +
-> +	if (copy_from_user(&tlv, _tlv, sizeof(tlv)))
-> +		return -EFAULT;
-> +        if (tlv.length < sizeof(unsigned int) * 3)
-> +                return -EINVAL;
-> +        down_read(&card->controls_rwsem);
-> +        kctl = snd_ctl_find_numid(card, tlv.numid);
-> +        if (kctl == NULL) {
-> +                err = -ENOENT;
-> +                goto __kctl_end;
-> +        }
-> +        if (kctl->tlv == NULL) {
-> +                err = -ENXIO;
-> +                goto __kctl_end;
-> +        }
-> +        len = kctl->tlv[1] + 2 * sizeof(unsigned int);
-> +        if (tlv.length < len) {
-> +                err = -ENOMEM;
-> +                goto __kctl_end;
-> +        }
-> +        if (copy_to_user(_tlv->tlv, kctl->tlv, len))
-> +        	err = -EFAULT;
-> +      __kctl_end:
-> +        up_read(&card->controls_rwsem);
-> +        return err;
-> +}
+--===============1784412551==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="=-WQkjSCTJ4dNdxf5D82Rt"
 
-I have been away for the last week, so I was not able to comment on this
-commit.
 
-How do you intend to expand this for requests for anything apart from
-db_scale? For example, how could we get it to return all the current
-"info" (min,max etc.) information instead of the db_scale? Or, are you
-keeping it simple, and make a general request for info from the numid,
-and receive a group of TLVs back for all the different information that
-the numid might contain? I.e. one gets the entire group of information,
-regardless of what is actually needed.
+--=-WQkjSCTJ4dNdxf5D82Rt
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-My intention was to place a TLV or multiple TLVs in the request to
-select the information needed, and then receive the TLVs in return.
+Hi,
 
-For example, audio professionals don't like any volume steps at all.
-They like continuous volume gain adjustment. For example, they request
-+1dB up, the software then gradually increases the actual gain in really
-small steps until a +1dB is reached. This permits totally click free
-volume adjustments. This is all achievable on any sound cards with DSP
-based volume control. (i.e. not cheep hardware based volume control with
-defined steps.). To achieve this, one would pass the raw linear gain
-values from the DSP control (.e.g. 32bit values), and then use some more
-complicated userland (alsa-lib), possibly floating point, conversion
-function to convert it to dB gain levels (e.g.linear to log conversion).
-In this case, one might want the raw linear gain via the
-snd_ctl_tlv_read IOCTL, instead of the stepwise value currently returned
-using the current snd_ca0106_volume_get API. In which case, one would
-need a TLV in the request, to differentiate it from the db_scale request.
+Investigating a report from a user I notice that with my snd-aoa driver
+oss mixer emulation doesn't work, aumix for example just reports=20
 
-What I am trying to say, is that your "simplification" of the API, has
-resulted in this sort of functionality being excluded, so I would need
-to implement yet another IOCTL to support it! My whole point of using
-the full request/response TLV api, was to not restrict us. I was also
-intending to maybe use the TLVs to set values, as well as just get
-values. For example, another way to implement the "continuous gain"
-feature would be to use the TLV api to set a flag, so that the 32bit
-values are returned via the current snd_ca0106_volume_get(), but only
-for this particular mixer open/close cycle, for backward compatibility
-with the current api.
+aumx: no device found
 
-Do you prefer separate new IOCTLs for all these features?
+What do I have to do to make it work? Does it need config files or
+something first?
 
-James
+johannes
+
+--=-WQkjSCTJ4dNdxf5D82Rt
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIVAwUARIqT0KVg1VMiehFYAQJXZBAApJ+uo95R1Ac8bo4B52TYMPt1+cTxoEwI
+Fhxg122iBdCkowcdD1WvWcOeU7jG5WtvwPWP9ujweCvLKbsod458CPJqMwERlL41
+LpJhwKuV25kS8neeSvsA/eXPXnWC1ChtlkxC9OTa2FGQ557ql48J8Bt+XKTdWbjH
+91XFCarEMTIPbu3h0nUSrZPcCKw0/vr3PV82+7/qIk+vkvsDmEqN22/yfTdBO2v3
+nyzC+PNjRIanCB6bUbjxwenv3YgJlyvSrLYft7jA4kbl8GReuRKiSvsKhZj2ZaKS
+3syfyYgPkzWvbSXKmY39Wj2BG4vlXpLGGYFORA4Z/HhUbLr6NhQu4pV0O3barLoQ
+U0qNqznfJ7NNrjj7mQ+5Ks3MrFQTRXq2heDNdLrNxxNqrJwdKaoQS0IpZeQbYTJK
+VBMgxeg7jiOymHtzGjfhmbi9H83cwybeZipwco4o7L64MMh6YkU+PuUzpe2S+yCE
+jvUakEHfZX0imh/hOA0wf8NS+DiWIOEriHd2crDeafpEp2zwQG7aUhJJbro0tJ/+
+PIhkRO/ICdDkaFetrnAmie6VbQLGeZB3+MKDp9MT/zkfYytKdGr7G2ze+rGz+R3k
++BJcT8t4YyzoF58WUf3SkM1yo0Yyyt1cVm1r1MbV5YFU8BWk1jj8H4zXHdpMoOrU
+zfzmgozwqHA=
+=KrP9
+-----END PGP SIGNATURE-----
+
+--=-WQkjSCTJ4dNdxf5D82Rt--
+
+
+
+--===============1784412551==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1784412551==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1784412551==--
