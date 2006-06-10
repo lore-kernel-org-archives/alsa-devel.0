@@ -1,12 +1,14 @@
-From: "Gerhard Pircher" <gerhard_pircher@gmx.net>
-Subject: Re: RFC: dma_mmap_coherent() for powerpc/ppc
- architecture and ALSA?
-Date: Sat, 10 Jun 2006 10:22:23 +0200
-Message-ID: <20060610082223.321730@gmx.net>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [alsa-cvslog] alsa-kernel: Control API - TLV
+ implementation for additional	information like dB scale
+Date: Sat, 10 Jun 2006 10:24:26 +0100
+Message-ID: <448A8FCA.3020808@superbug.co.uk>
+References: <ALOGGER1149179663.38@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <ALOGGER1149179663.38@alsa-project.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,79 +18,105 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Lee Revell <rlrevell@joe-job.com>, benh@kernel.crashing.org
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> -------- Original-Nachricht --------
-> Datum: Fri, 09 Jun 2006 20:46:32 -0400
-> Von: Lee Revell <rlrevell@joe-job.com>
-> An: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Betreff: Re: RFC: dma_mmap_coherent() for powerpc/ppc architecture and =
+Jaroslav Kysela wrote:
+> changeset:   4278:d194ae01b0ba9d5614ff29a82f4aacae9edd1212
+> tag:         tip
+> user:        perex
+> date:        Thu Jun  1 18:34:01 2006 +0200
+> files:       core/control.c include/asound.h include/control.h include/tlv.h pci/ca0106/ca0106_mixer.c
+> description:
+> Control API - TLV implementation for additional information like dB scale
+> 
+> This patch implements a TLV mechanism to transfer an additional information
+> like dB scale to the user space. The types might be extended in future.
+> 
+> Acked-by: Takashi Iwai <tiwai@suse.de>
+> 
+> 
+> +struct snd_ctl_tlv {
+> +        unsigned int numid;	/* control element numeric identification */
+> +        unsigned int length;	/* in bytes aligned to 4 */
+> +        unsigned int tlv[0];	/* first TLV */
+> +};
+> +
 
-> ALSA?
-> =
+> +static int snd_ctl_tlv_read(struct snd_card *card,
+> +                            struct snd_ctl_tlv __user *_tlv)
+> +{
+> +	struct snd_ctl_tlv tlv;
+> +	struct snd_kcontrol *kctl;
+> +	unsigned int len;
+> +	int err = 0;
+> +
+> +	if (copy_from_user(&tlv, _tlv, sizeof(tlv)))
+> +		return -EFAULT;
+> +        if (tlv.length < sizeof(unsigned int) * 3)
+> +                return -EINVAL;
+> +        down_read(&card->controls_rwsem);
+> +        kctl = snd_ctl_find_numid(card, tlv.numid);
+> +        if (kctl == NULL) {
+> +                err = -ENOENT;
+> +                goto __kctl_end;
+> +        }
+> +        if (kctl->tlv == NULL) {
+> +                err = -ENXIO;
+> +                goto __kctl_end;
+> +        }
+> +        len = kctl->tlv[1] + 2 * sizeof(unsigned int);
+> +        if (tlv.length < len) {
+> +                err = -ENOMEM;
+> +                goto __kctl_end;
+> +        }
+> +        if (copy_to_user(_tlv->tlv, kctl->tlv, len))
+> +        	err = -EFAULT;
+> +      __kctl_end:
+> +        up_read(&card->controls_rwsem);
+> +        return err;
+> +}
 
-> On Sat, 2006-06-10 at 10:34 +1000, Benjamin Herrenschmidt wrote:
-> > > This leads me to the question, if there are any plans to include the =
+I have been away for the last week, so I was not able to comment on this
+commit.
 
-> > > dma_mmap_coherent() function (for powerpc/ppc and/or any other
-> > > platform) in one of the next kernel versions and if an adapation of
-> > > the ALSA drivers is planned. Or is there a simple way (hack) to fix
-> > > this problem?
-> > =
+How do you intend to expand this for requests for anything apart from
+db_scale? For example, how could we get it to return all the current
+"info" (min,max etc.) information instead of the db_scale? Or, are you
+keeping it simple, and make a general request for info from the numid,
+and receive a group of TLVs back for all the different information that
+the numid might contain? I.e. one gets the entire group of information,
+regardless of what is actually needed.
 
-> > You are welcome to do a patch implementing this :)
-> =
+My intention was to place a TLV or multiple TLVs in the request to
+select the information needed, and then receive the TLVs in return.
 
-> Please cc: alsa-devel when you do so.
+For example, audio professionals don't like any volume steps at all.
+They like continuous volume gain adjustment. For example, they request
++1dB up, the software then gradually increases the actual gain in really
+small steps until a +1dB is reached. This permits totally click free
+volume adjustments. This is all achievable on any sound cards with DSP
+based volume control. (i.e. not cheep hardware based volume control with
+defined steps.). To achieve this, one would pass the raw linear gain
+values from the DSP control (.e.g. 32bit values), and then use some more
+complicated userland (alsa-lib), possibly floating point, conversion
+function to convert it to dB gain levels (e.g.linear to log conversion).
+In this case, one might want the raw linear gain via the
+snd_ctl_tlv_read IOCTL, instead of the stepwise value currently returned
+using the current snd_ca0106_volume_get API. In which case, one would
+need a TLV in the request, to differentiate it from the db_scale request.
 
-:)
+What I am trying to say, is that your "simplification" of the API, has
+resulted in this sort of functionality being excluded, so I would need
+to implement yet another IOCTL to support it! My whole point of using
+the full request/response TLV api, was to not restrict us. I was also
+intending to maybe use the TLVs to set values, as well as just get
+values. For example, another way to implement the "continuous gain"
+feature would be to use the TLV api to set a flag, so that the 32bit
+values are returned via the current snd_ca0106_volume_get(), but only
+for this particular mixer open/close cycle, for backward compatibility
+with the current api.
 
-Well, implementing the dma_mmap_coherent() function isn't the problem, beca=
-use it is already implemented for the ARM architecture. But as far as I und=
-erstand this would require a rewrite of all the ALSA drivers (or at least a=
- rewrite of the ALSA's DMA helper functions).
+Do you prefer separate new IOCTLs for all these features?
 
-Original mail included for alsa-devel mailing list:
-
-> I'm trying to adapt Linux for the AmigaOne, which is a G3/G4 PPC desktop =
-
-> system with a non cache coherent northbridge (MAI ArticiaS), a VIA82C686B =
-
-> southbridge and the U-boot firmware. Due to the cache coherency problem I =
-
-> compiled in the CONFIG_NOT_COHERENT_CACHE option
-> (arch/ppc/kernel/dma-mapping.c) in the AmigaOne Linux kernel.
-
-> While that fixes the DMA data corruption problem, it causes a kernel oops =
-
-> or a complete system lookup after starting sound playback. With kernel
-> versions =3D<2.6.14 the oops messages refered to a BUG() entry in
-> mm/rmap.c. Therefore I tried out a newer kernel (2.6.16.15), where the
-> oops refers to the ALSA function snd_pcm_mmap_data_nopage() implemented
-> in pcm_native.c.
-
-> Well, after searching a while in some old linux kernel threads, I found
-> this thread here:
-> http://www.thisishull.net/showthread.php?t=3D22080&page=3D3&pp=3D10
-
-> Based on the information in this thread, I came to the conclusion that
-> ALSA simply won't work on non cache coherent architectures (except ARM),
-> because the generic DMA API was never expanded to support the
-> functionality required by ALSA (namely mapping dma pages into user space =
-> with dma_mmap_coherent()).
-
-> This leads me to the question, if there are any plans to include the
-> dma_mmap_coherent() function (for powerpc/ppc and/or any other platform)
-> in one of the next kernel versions and if an adapation of the ALSA
-> drivers is planned. Or is there a simple way (hack) to fix this problem?
-
-Gerhard
-
--- =
-
-
-
-Der GMX SmartSurfer hilft bis zu 70% Ihrer Onlinekosten zu sparen!
-Ideal f=FCr Modem und ISDN: http://www.gmx.net/de/go/smartsurfer
+James
