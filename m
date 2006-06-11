@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not
-	functional using included alsa drivers
-Date: Sun, 11 Jun 2006 11:56:06 +0200
-Message-ID: <90fb3af555862a6a1ed7a5111d10ff56@bugtrack.alsa-project.org>
+From: John Rigg <ad@sound-man.co.uk>
+Subject: open /dev/snd/seq failed
+Date: Sun, 11 Jun 2006 14:21:57 +0100
+Message-ID: <E1FpPt7-0001Z8-7E@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D44C8144
-	for <alsa-devel@alsa-project.org>;
-	Sun, 11 Jun 2006 11:56:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,119 +15,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I just compiled alsa-lib, alsa-tools and alsa-utils 1.0.11
+on a new Debian Etch amd64 installation and keep getting the following error
+message from apps that try to connect to the sequencer:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
-======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
-======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              06-11-2006 11:56 CEST
-======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
-Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
+ALSA lib seq_hw.c:457:(snd_seq_hw_open) open /dev/snd/seq failed: No such file
+or directory
+can't open sequencer
 
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+This is with Debian 2.6.15-1 kernel and with kernel.org 2.6.16.20 (compiled
+using Debian .config but with CONFIG_PREEMPT=y).
 
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
+Contents of /dev/snd:
 
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+controlC0 controlC1 controlC2 midiC0D0 midiC1D0 midiC2D0
+pcmC0D0c pcmC0D0p pcmC1D0c pcmC1D0p pcmC2D0c pcmC2D0p timer
 
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
+lsmod:
 
-Please let me know if there is something more I can provide.
-======================================================================
+snd_ice1712            67360  0 
+snd_ice17xx_ak4xxx      6720  1 snd_ice1712
+snd_ak4xxx_adda         9216  2 snd_ice1712,snd_ice17xx_ak4xxx
+snd_cs8427             12672  1 snd_ice1712
+snd_ac97_codec        103868  1 snd_ice1712
+snd_pcm                96008  2 snd_ice1712,snd_ac97_codec
+snd_timer              27336  1 snd_pcm
+snd_page_alloc         13904  1 snd_pcm
+snd_ac97_bus            4928  1 snd_ac97_codec
+snd_i2c                 8192  2 snd_ice1712,snd_cs8427
+snd_mpu401_uart        10432  1 snd_ice1712
+snd_rawmidi            29664  1 snd_mpu401_uart
+snd_seq_device         11792  1 snd_rawmidi
+joydev                 13120  0 
+evdev                  13952  0 
+shpchp                 47008  0 
+snd                    62304  10 snd_ice1712,snd_ak4xxx_adda,snd_cs8427,snd_ac97_codec,snd_pcm,snd_timer,snd_i2c,snd_mpu401_uart,snd_rawmidi,snd_seq_device
 
-----------------------------------------------------------------------
- taschenorakel - 06-10-06 14:04 
-----------------------------------------------------------------------
-Alex Wu(Tung-Peng) from InterVideo send me their variant of the ALSA driver
-today. Got it working using some crude hacks. Going to create a proper
-patch (which is non-trivial considering the amount of changes Realtek made
-for InterVideo).
+There are three ice1712 cards (Delta 1010s) installed.
+The kernel config contains the following:
 
-----------------------------------------------------------------------
- jlpedrosa - 06-11-06 11:56 
-----------------------------------------------------------------------
-Hi
+# Linux kernel version: 2.6.15-1-amd64-k8-smp
+...
+CONFIG_SND=m
+CONFIG_SND_AC97_CODEC=m
+CONFIG_SND_AC97_BUS=m
+CONFIG_SND_TIMER=m
+CONFIG_SND_PCM=m
+CONFIG_SND_HWDEP=m
+CONFIG_SND_RAWMIDI=m
+CONFIG_SND_SEQUENCER=m
+CONFIG_SND_SEQ_DUMMY=m
+CONFIG_SND_OSSEMUL=y
+CONFIG_SND_MIXER_OSS=m
+CONFIG_SND_PCM_OSS=m
+CONFIG_SND_SEQUENCER_OSS=y
+CONFIG_SND_RTCTIMER=m
+CONFIG_SND_SEQ_RTCTIMER_DEFAULT=y
+# CONFIG_SND_VERBOSE_PRINTK is not set
+# CONFIG_SND_DEBUG is not set
+CONFIG_SND_GENERIC_DRIVER=y
+#
+# Generic devices
+#
+CONFIG_SND_MPU401_UART=m
+CONFIG_SND_OPL3_LIB=m
+CONFIG_SND_VX_LIB=m
+CONFIG_SND_DUMMY=m
+CONFIG_SND_VIRMIDI=m
+CONFIG_SND_MTPAV=m
+CONFIG_SND_SERIAL_U16550=m
+CONFIG_SND_MPU401=m
+...
 
-I have the same problem  with a new laptop (atech) with the same audio
-hardware, lspci gives me lspci:
-Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller
-(rev 02)
+Everything (jackd, Ardour) works fine except the sequencer.
+Although this is AMD64 SMP the RTCs sync properly (two single core
+Opterons, not dual core). Any ideas?
 
-I'm Using suse 10.1 wich uses almost the last alsa-driver, (rc4 i think)
-but i tried with the last. I opened the driver and saw the posibilities:
-auto, last... but none of them worked. 
-If can i help making any tests or whatever, don't doubt, just ask.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-04-20-06 14:41 tiwai          Note Added: 0009375                          
-04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
-   
-04-20-06 20:22 vertex         File Added: codec0.during.playback                
-   
-04-20-06 20:23 vertex         Note Added: 0009398                          
-04-21-06 16:50 tiwai          Note Added: 0009416                          
-04-21-06 16:51 tiwai          Note Added: 0009417                          
-04-21-06 16:54 tiwai          Note Added: 0009418                          
-04-21-06 18:56 vertex         Note Added: 0009428                          
-04-26-06 00:37 vertex         Note Added: 0009499                          
-05-11-06 00:44 vertex         Note Added: 0009755                          
-05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
-05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
-  
-05-29-06 23:33 taschenorakel  Note Added: 0010015                          
-05-30-06 19:11 vertex         Note Added: 0010021                          
-05-31-06 20:20 taschenorakel  Note Added: 0010028                          
-05-31-06 21:02 vertex         Note Added: 0010029                          
-05-31-06 21:06 vertex         Note Added: 0010030                          
-05-31-06 22:43 rlrevell       Note Added: 0010032                          
-05-31-06 22:51 rlrevell       Note Added: 0010033                          
-05-31-06 23:23 vertex         Note Added: 0010035                          
-06-01-06 00:30 taschenorakel  Note Added: 0010036                          
-06-10-06 14:04 taschenorakel  Note Added: 0010146                          
-06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
-======================================================================
+John
