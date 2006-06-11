@@ -1,15 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Mon, 12 Jun 2006 05:26:06 +0200
-Message-ID: <f3cb7997bb09419f0dff08b923a2b0f7@bugtrack.alsa-project.org>
+From: "Stefano D'Angelo" <zanga.mail@gmail.com>
+Subject: Re: USB sound card driver - Line6 Toneport UX1
+Date: Sun, 11 Jun 2006 11:35:11 +0200
+Message-ID: <160c13350606110235s273c663p24ac5205ff4b9511@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1721007098=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 70977144
-	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 05:26:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,116 +14,199 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+--===============1721007098==
+Content-Type: multipart/alternative;
+	boundary="----=_Part_233_5984856.1150018511341"
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
-======================================================================
-Reported By:                bzbarsky
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2132
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-12-2006 05:26 CEST
-======================================================================
-Summary:                    No sound from speakers
-Description: 
-Alsa seems to detect the sound card, but when I try to actually play
-something there is no sound from the speakers.
-======================================================================
+------=_Part_233_5984856.1150018511341
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-----------------------------------------------------------------------
- Raymond - 06-12-06 05:23 
-----------------------------------------------------------------------
-It seem that some delay is needed to wait for those flags changed
+>
+> Stefano D'Angelo wrote:
+> >    urb->transfer_dma = runtime->dma_addr;
+>
+> This will always play the data at the beginning of the buffer.
 
 
-			/* wait for not busy (state 0) first to avoid
-			   transition states */
-			for (t = 0; t < POLL_COUNT; t++) {
-				if ((inl(ES_REG(ensoniq, 1371_SMPRATE)) & 0x00870000) ==
-				    0x00000000)
-					break;
-+                          /* add delay */
-			}
-			/* wait for a SAFE time to write addr/data and then do it, dammit */
-			for (t = 0; t < POLL_COUNT; t++) {
-				if ((inl(ES_REG(ensoniq, 1371_SMPRATE)) & 0x00870000) ==
-				    0x00010000)
-					break;
-+                          /* add delay */
-			}
-			outl(ES_1371_CODEC_READS(reg), ES_REG(ensoniq, 1371_CODEC));
+fixed
+
+>    urb->transfer_buffer = usb_buffer_alloc (urb->dev,
+> > LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2, GFP_KERNEL,
+> &urb->transfer_dma);
+>
+> This buffer should be allocated when the URB is allocated.
 
 
+fixed
 
-----------------------------------------------------------------------
- rlrevell - 06-12-06 05:26 
-----------------------------------------------------------------------
-What if you use the *_p variants of outl, outw, etc?
+>    memcpy (urb->transfer_buffer, runtime->dma_area + chip->playback_pos *
+> > 2, LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);
+>
+> I hope the buffer size is a multiple of PACKET_SIZE_OUT * 2.
 
-man 2 outl_p
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-17-06 19:54 bzbarsky       New Issue                                    
-05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
-05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
-05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
-05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
-05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
-05-17-06 19:56 bzbarsky       File Added: scsound.log                      
-05-17-06 19:57 bzbarsky       Note Added: 0009857                          
-05-20-06 05:31 Raymond        Note Added: 0009882                          
-05-20-06 21:43 bzbarsky       Note Added: 0009893                          
-05-21-06 03:41 Raymond        Note Added: 0009894                          
-05-21-06 03:48 Raymond        Note Edited: 0009894                         
-05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
-05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
-05-22-06 02:53 bzbarsky       Note Added: 0009901                          
-05-22-06 04:14 Raymond        Note Added: 0009902                          
-05-23-06 09:00 Raymond        Note Added: 0009929                          
-05-23-06 09:03 Raymond        Note Edited: 0009929                         
-05-23-06 09:07 Raymond        Note Edited: 0009929                         
-06-02-06 20:08 bzbarsky       Note Added: 0010053                          
-06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
-06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
-06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
- 
-06-02-06 20:35 bzbarsky       Note Added: 0010054                          
-06-03-06 02:44 Raymond        Note Added: 0010058                          
-06-05-06 01:29 bzbarsky       Note Added: 0010066                          
-06-05-06 03:31 Raymond        Note Added: 0010067                          
-06-05-06 03:56 bzbarsky       File Added: dmesg                            
-06-05-06 03:57 bzbarsky       Note Added: 0010068                          
-06-06-06 06:35 Raymond        Note Added: 0010071                          
-06-06-06 06:43 Raymond        Note Edited: 0010071                         
-06-06-06 08:59 Raymond        Note Edited: 0010071                         
-06-10-06 07:42 bzbarsky       Note Added: 0010144                          
-06-11-06 05:24 Raymond        Note Added: 0010150                          
-06-11-06 05:29 Raymond        Note Edited: 0010150                         
-06-11-06 22:37 bzbarsky       File Added: dmesg+kprint                     
-06-11-06 22:37 bzbarsky       File Added: codec_lines.txt                    
-06-11-06 22:38 bzbarsky       Note Added: 0010154                          
-06-12-06 03:31 Raymond        Note Added: 0010157                          
-06-12-06 03:41 rlrevell       Note Added: 0010158                          
-06-12-06 04:36 bzbarsky       Note Added: 0010161                          
-06-12-06 05:18 Raymond        Note Added: 0010164                          
-06-12-06 05:20 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:26 rlrevell       Note Added: 0010165                          
-======================================================================
+it is
+
+>    urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
+>
+> Why the NO_TRANSFER_DMA_MAP?  You shouldn't need to do such
+> optimizations in the first version of the driver.
+
+
+ok
+
+>    snd_pcm_period_elapsed (substream);
+>
+> What is the period size?
+
+
+period size is 96 = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 (double
+buffering) / 2 (16 bit data), so everytime an urb is sent a period is
+elapsed.
+
+Here is how I'm doing right now but I still got the same beep for everything
+I play (when I used the copy () callback it kind of worked, is perphaps
+possible that the soundcard doesn't support dma transfers?):
+
+
+static void snd_line6_tp_ux1_complete_playback_transfer (struct urb* urb,
+                                                         struct pt_regs*
+regs)
+{
+    snd_pcm_substream_t *substream = (snd_pcm_substream_t *)(urb->context);
+    struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);
+    snd_pcm_runtime_t *runtime = substream->runtime;
+
+    chip->playback_pos += LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 / 2;
+    if (chip->playback_pos == runtime->buffer_size) {
+        chip->playback_pos -= runtime->buffer_size;
+
+    }
+
+    memcpy (urb->transfer_buffer, runtime->dma_area + chip->playback_pos *
+2, LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);
+
+    snd_pcm_period_elapsed (substream);
+
+    usb_submit_urb (urb, GFP_ATOMIC);
+}
+
+static int snd_line6_tp_ux1_pcm_trigger (snd_pcm_substream_t *substream,
+                                         int cmd)
+
+{
+    struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);
+    snd_pcm_runtime_t *runtime = substream->runtime;
+    static struct urb* urb;
+
+    switch (cmd) {
+    case SNDRV_PCM_TRIGGER_START:
+        urb = usb_alloc_urb (2, GFP_ATOMIC);
+        urb->dev = chip->dev;
+        urb->pipe = usb_sndisocpipe (urb->dev, 1);
+        urb->complete = snd_line6_tp_ux1_complete_playback_transfer;
+        urb->context = substream;
+
+        urb->transfer_dma = runtime->dma_addr;
+        urb->transfer_buffer = usb_buffer_alloc (urb->dev,
+                 LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2, GFP_ATOMIC,
+                 &urb->transfer_dma);
+        memcpy (urb->transfer_buffer, runtime->dma_area,
+                            LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);
+
+        urb->transfer_flags = URB_ISO_ASAP; // | URB_NO_TRANSFER_DMA_MAP;
+        urb->interval = 1;
+        urb->number_of_packets = 2;
+        urb->iso_frame_desc[0].offset = 0;
+        urb->iso_frame_desc[0].length = urb->iso_frame_desc[1].offset =
+        urb->iso_frame_desc[1].length =
+                                 LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT;
+        chip->playback_pos = 0;
+        usb_submit_urb (urb, GFP_KERNEL);
+            break;
+    case SNDRV_PCM_TRIGGER_STOP:
+        usb_buffer_free (chip->dev,
+
+                         LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2,
+                         urb->transfer_buffer, urb->transfer_dma);
+        usb_free_urb (urb);
+            break;
+    default:
+            return -EINVAL;
+        break;
+    }
+
+    return 0;
+}
+
+Thanks,
+Stefano
+
+------=_Part_233_5984856.1150018511341
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+<div><span class="q"><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+Stefano D'Angelo wrote:<br>&gt;&nbsp;&nbsp;&nbsp;&nbsp;urb-&gt;transfer_dma = runtime-&gt;dma_addr;<br><br>This will always play the data at the beginning of the buffer.</blockquote></span></div><div><div><br>fixed <br></div></div><div><span class="q">
+<br><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+&gt;&nbsp;&nbsp;&nbsp;&nbsp;urb-&gt;transfer_buffer = usb_buffer_alloc (urb-&gt;dev,<br>&gt; LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2, GFP_KERNEL, &amp;urb-&gt;transfer_dma);<br><br>This buffer should be allocated when the URB is allocated.
+</blockquote></span></div><div><div><br>fixed <br></div></div><div><span class="q"><br><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">&gt;&nbsp;&nbsp;&nbsp;&nbsp;memcpy (urb-&gt;transfer_buffer, runtime-&gt;dma_area + chip-&gt;playback_pos *
+<br>&gt; 2, LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);<br><br>I hope the buffer size is a multiple of PACKET_SIZE_OUT * 2.</blockquote></span></div><div><div><br>it is <br></div></div><div><span class="q"><br><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+
+&gt;&nbsp;&nbsp;&nbsp;&nbsp;urb-&gt;transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;<br><br>Why the NO_TRANSFER_DMA_MAP?&nbsp;&nbsp;You shouldn't need to do such<br>optimizations in the first version of the driver.</blockquote></span></div><div>
+<div><br>ok <br>
+</div></div><div><span class="q"><br><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">&gt;&nbsp;&nbsp;&nbsp;&nbsp;snd_pcm_period_elapsed (substream);<br><br>What is the period size?
+</blockquote>
+</span></div><div><br>period size is 96 = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 (double buffering) / 2 (16 bit data), so everytime an urb is sent a period is elapsed.<br><br>Here
+is how I'm doing right now but I still got the same beep for everything
+I play (when I used the copy () callback it kind of worked, is perphaps
+possible that the soundcard doesn't support dma transfers?):
+</div><div><span class="q"><br><br>static void snd_line6_tp_ux1_complete_playback_transfer (struct urb* urb,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct pt_regs* regs)<br>{<br>&nbsp;&nbsp;&nbsp; snd_pcm_substream_t *substream = (snd_pcm_substream_t *)(urb-&gt;context);
+<br>&nbsp;&nbsp;&nbsp; struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);<br>&nbsp;&nbsp;&nbsp; snd_pcm_runtime_t *runtime = substream-&gt;runtime;<br><br></span></div><div>&nbsp;&nbsp;&nbsp; chip-&gt;playback_pos += LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 / 2;
+<br>
+&nbsp;&nbsp;&nbsp; if (chip-&gt;playback_pos == runtime-&gt;buffer_size) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; chip-&gt;playback_pos -= runtime-&gt;buffer_size;</div><div><span class="q"><br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; memcpy (urb-&gt;transfer_buffer, runtime-&gt;dma_area + chip-&gt;playback_pos * 2, LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);
+<br><br></span></div><div><span class="q">&nbsp;&nbsp;&nbsp; snd_pcm_period_elapsed (substream);<br><br></span></div><div><span class="q">&nbsp;&nbsp;&nbsp; usb_submit_urb (urb, GFP_ATOMIC);<br>}<br><br></span></div><div>static int snd_line6_tp_ux1_pcm_trigger (snd_pcm_substream_t *substream,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int cmd)
+</div><div><span class="q"><br>{<br>&nbsp;&nbsp;&nbsp; struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);<br>&nbsp;&nbsp;&nbsp; snd_pcm_runtime_t *runtime = substream-&gt;runtime;<br></span></div><div>&nbsp;&nbsp;&nbsp; static struct urb* urb;<br><br>
+&nbsp;&nbsp;&nbsp; switch (cmd) {<br>&nbsp;&nbsp;&nbsp; case SNDRV_PCM_TRIGGER_START:
+<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb = usb_alloc_urb (2, GFP_ATOMIC);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;dev = chip-&gt;dev;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;pipe = usb_sndisocpipe (urb-&gt;dev, 1);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;complete = snd_line6_tp_ux1_complete_playback_transfer;
+<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;context = substream;</div><div><span class="q"><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;transfer_dma = runtime-&gt;dma_addr;<br></span></div><div><span class="q">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;transfer_buffer = usb_buffer_alloc (urb-&gt;dev,
+<br></span></div><div>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2, GFP_ATOMIC,
+<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;urb-&gt;transfer_dma);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; memcpy (urb-&gt;transfer_buffer, runtime-&gt;dma_area,<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);</div><div><span class="q"><br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;transfer_flags = URB_ISO_ASAP; // | URB_NO_TRANSFER_DMA_MAP;
+<br></span></div><div>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;interval = 1;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;number_of_packets = 2;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;iso_frame_desc[0].offset = 0;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;iso_frame_desc[0].length = urb-&gt;iso_frame_desc[1].offset =
+<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;iso_frame_desc[1].length =
+<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; chip-&gt;playback_pos = 0;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; usb_submit_urb (urb, GFP_KERNEL);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp;&nbsp; case SNDRV_PCM_TRIGGER_STOP:<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; usb_buffer_free (chip-&gt;dev,
+</div><div><span class="q"><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2,<br></span></div>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; urb-&gt;transfer_buffer, urb-&gt;transfer_dma);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; usb_free_urb (urb);<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp;&nbsp; default:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return -EINVAL;
+<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; return 0;<br>}<br><br>Thanks,<br>Stefano
+
+------=_Part_233_5984856.1150018511341--
+
+
+--===============1721007098==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1721007098==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============1721007098==--
