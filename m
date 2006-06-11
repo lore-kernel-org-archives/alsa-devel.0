@@ -1,13 +1,16 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Reminder [Fwd: Alsadriver ca0106]
-Date: Sun, 11 Jun 2006 10:12:21 +0100
-Message-ID: <448BDE75.80804@superbug.co.uk>
-References: <448BC98F.3080105@mnet-online.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002035]: Realtek 861 card not
+	functional using included alsa drivers
+Date: Sun, 11 Jun 2006 11:56:06 +0200
+Message-ID: <90fb3af555862a6a1ed7a5111d10ff56@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <448BC98F.3080105@mnet-online.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D44C8144
+	for <alsa-devel@alsa-project.org>;
+	Sun, 11 Jun 2006 11:56:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,40 +20,119 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: simon.lewis@mnet-online.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Simon Lewis wrote:
-> 
-> -------- Original-Nachricht --------
-> Betreff: 	Alsadriver ca0106
-> Datum: 	Tue, 06 Jun 2006 20:48:00 +0200
-> Von: 	Simon Lewis <simon.lewis@mnet-online.de>
-> Antwort an: 	simon.lewis@mnet-online.de
-> An: 	alsa-devel@lists.sourceforge.net
-> 
-> 
-> 
-> Hello Alsa Development
-> 
-> I have a Creative Labs Soundblaster 7.1 Live 24bit sound card.
-> 
-> Yast (SuseLINUX 10.1) correctly installs the ca0106 driver for this card.
-> 
-> However, I do not have a Input level control for the line/mic jack in either;
->        - alsamixer, alsamixergui, kmix or gnome-alsamixer.
-> 
-> Is this simply a configuration problem or a bug with the driver?
-> 
-> I notice that ca0106.conf does not have an input definition.
-> 
 
-Your version of the snd-ca0106 driver probably does not have them.
-The input levels are fixed at 0dB in your version.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+======================================================================
+Reported By:                vertex
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2035
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
+======================================================================
+Date Submitted:             04-18-2006 20:00 CEST
+Last Modified:              06-11-2006 11:56 CEST
+======================================================================
+Summary:                    Realtek 861 card not functional using included alsa
+drivers
+Description: 
+I am using the FC5 drivers to begin with.  The packages are labeled version
+1.0.11rc2.  There are only a few options when I run alsamixer. Using the
+stock drivers, I have these options:
 
-cat /proc/asound/version   to find out which version you have.
-In the most up to date alsa-driver, one will see input gain controls. I
-have only just implemented them.
+Headphone switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
 
-James
+I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
+these channels when I run alsamixer:
+
+Front switch
+CD level
+Mic level
+Input Source switch(Mic/CD)
+
+I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
+about the 861), but they did not build.  In fact, the install script
+overwrote my asound libraries requiring a package replacement to get back
+to a sane state.
+
+Please let me know if there is something more I can provide.
+======================================================================
+
+----------------------------------------------------------------------
+ taschenorakel - 06-10-06 14:04 
+----------------------------------------------------------------------
+Alex Wu(Tung-Peng) from InterVideo send me their variant of the ALSA driver
+today. Got it working using some crude hacks. Going to create a proper
+patch (which is non-trivial considering the amount of changes Realtek made
+for InterVideo).
+
+----------------------------------------------------------------------
+ jlpedrosa - 06-11-06 11:56 
+----------------------------------------------------------------------
+Hi
+
+I have the same problem  with a new laptop (atech) with the same audio
+hardware, lspci gives me lspci:
+Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller
+(rev 02)
+
+I'm Using suse 10.1 wich uses almost the last alsa-driver, (rc4 i think)
+but i tried with the last. I opened the driver and saw the posibilities:
+auto, last... but none of them worked. 
+If can i help making any tests or whatever, don't doubt, just ask.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-18-06 20:00 vertex         New Issue                                    
+04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
+04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
+04-18-06 20:09 rlrevell       Note Added: 0009339                          
+04-18-06 20:25 pzad           Note Added: 0009340                          
+04-18-06 20:40 vertex         Note Added: 0009342                          
+04-18-06 20:50 vertex         Note Added: 0009343                          
+04-18-06 22:25 rlrevell       Note Added: 0009345                          
+04-18-06 22:32 vertex         Note Added: 0009346                          
+04-18-06 22:45 rlrevell       Note Added: 0009347                          
+04-18-06 23:02 vertex         Note Added: 0009348                          
+04-20-06 14:41 tiwai          Note Added: 0009375                          
+04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
+   
+04-20-06 20:22 vertex         File Added: codec0.during.playback                
+   
+04-20-06 20:23 vertex         Note Added: 0009398                          
+04-21-06 16:50 tiwai          Note Added: 0009416                          
+04-21-06 16:51 tiwai          Note Added: 0009417                          
+04-21-06 16:54 tiwai          Note Added: 0009418                          
+04-21-06 18:56 vertex         Note Added: 0009428                          
+04-26-06 00:37 vertex         Note Added: 0009499                          
+05-11-06 00:44 vertex         Note Added: 0009755                          
+05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
+05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
+  
+05-29-06 23:33 taschenorakel  Note Added: 0010015                          
+05-30-06 19:11 vertex         Note Added: 0010021                          
+05-31-06 20:20 taschenorakel  Note Added: 0010028                          
+05-31-06 21:02 vertex         Note Added: 0010029                          
+05-31-06 21:06 vertex         Note Added: 0010030                          
+05-31-06 22:43 rlrevell       Note Added: 0010032                          
+05-31-06 22:51 rlrevell       Note Added: 0010033                          
+05-31-06 23:23 vertex         Note Added: 0010035                          
+06-01-06 00:30 taschenorakel  Note Added: 0010036                          
+06-10-06 14:04 taschenorakel  Note Added: 0010146                          
+06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
+======================================================================
