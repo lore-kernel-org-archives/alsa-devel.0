@@ -1,13 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: open /dev/snd/seq failed
-Date: Sun, 11 Jun 2006 13:11:00 -0400
-Message-ID: <1150045861.14253.119.camel@mindpipe>
-References: <E1FpPt7-0001Z8-7E@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002199]: No sound from M-AUDIO
+	Revolution 5.1
+Date: Sun, 11 Jun 2006 19:40:57 +0200
+Message-ID: <226d19487a9a157c6b6ade8cb361b1db@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <E1FpPt7-0001Z8-7E@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC06510A
+	for <alsa-devel@alsa-project.org>;
+	Sun, 11 Jun 2006 19:40:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,29 +20,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: John Rigg <ad@sound-man.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2006-06-11 at 14:21 +0100, John Rigg wrote:
-> snd_ice1712            67360  0 
-> snd_ice17xx_ak4xxx      6720  1 snd_ice1712
-> snd_ak4xxx_adda         9216  2 snd_ice1712,snd_ice17xx_ak4xxx
-> snd_cs8427             12672  1 snd_ice1712
-> snd_ac97_codec        103868  1 snd_ice1712
-> snd_pcm                96008  2 snd_ice1712,snd_ac97_codec
-> snd_timer              27336  1 snd_pcm
-> snd_page_alloc         13904  1 snd_pcm
-> snd_ac97_bus            4928  1 snd_ac97_codec
-> snd_i2c                 8192  2 snd_ice1712,snd_cs8427
-> snd_mpu401_uart        10432  1 snd_ice1712
-> snd_rawmidi            29664  1 snd_mpu401_uart
-> snd_seq_device         11792  1 snd_rawmidi
-> joydev                 13120  0 
-> evdev                  13952  0 
-> shpchp                 47008  0 
-> snd                    62304  10 snd_ice1712,snd_ak4xxx_adda,snd_cs8427,snd_ac97_codec,snd_pcm,snd_timer,snd_i2c,snd_mpu401_uart,snd_rawmidi,snd_seq_device
 
-Of course it won't work, snd-seq-midi is not loaded.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2199> 
+======================================================================
+Reported By:                hlabs
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2199
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             06-09-2006 21:25 CEST
+Last Modified:              06-11-2006 19:40 CEST
+======================================================================
+Summary:                    No sound from M-AUDIO Revolution 5.1
+Description: 
+M-AUDIO Revo 5.1
+kernel 2.6.16
+alsa 1.0.11
 
-Lee
+I got sound only from front channel.
+Other channels doesn't works at all.
+
+In alsamixer all outs unmuted and routed to pcm out.
+
+======================================================================
+
+----------------------------------------------------------------------
+ wollschaf - 06-11-06 00:06 
+----------------------------------------------------------------------
+It is not very clear what you intend to do with the other channels. 
+
+The channels themselves work, to use the surround channel as normal stero
+device I placed the following in my ~/.asoundrc
+
+pcm.!surround {
+  type plug
+  slave.pcm "dmixer2"
+}
+
+pcm.dmixer2  {
+        type dmix
+        ipc_key 1024
+        slave {
+                pcm "hw:0,2,1"
+                format S32_LE
+                period_time 0
+                period_size 2048
+                buffer_size 24756
+                rate 44100
+        }
+        bindings {
+                0 0
+                1 1
+        }
+}
+
+
+I used excessive buffer values as my PCI graphics card interferes with
+nonstop audio replay :(
+
+pcm "hw:0,2,0" is the center/sub channel.
+
+I have no experience using real multichannel audio, though.
+
+----------------------------------------------------------------------
+ hlabs - 06-11-06 19:40 
+----------------------------------------------------------------------
+Thanks a lot !
+
+Also working HP out is necessary to me.
+And what device corresponds to HP output ?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-09-06 21:25 hlabs          New Issue                                    
+06-09-06 21:34 hlabs          Issue Monitored: hlabs                       
+06-11-06 00:06 wollschaf      Note Added: 0010149                          
+06-11-06 19:40 hlabs          Note Added: 0010152                          
+======================================================================
