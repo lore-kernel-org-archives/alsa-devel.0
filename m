@@ -1,15 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002200]: PCM channel doesn't exist!
-Date: Sun, 11 Jun 2006 17:50:18 +0200
-Message-ID: <17b30fd839a325516e2cd13d1cbcc4d0@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: open /dev/snd/seq failed
+Date: Sun, 11 Jun 2006 13:11:00 -0400
+Message-ID: <1150045861.14253.119.camel@mindpipe>
+References: <E1FpPt7-0001Z8-7E@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3343D152
-	for <alsa-devel@alsa-project.org>;
-	Sun, 11 Jun 2006 17:50:19 +0200 (MEST)
+In-Reply-To: <E1FpPt7-0001Z8-7E@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,42 +17,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: John Rigg <ad@sound-man.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2006-06-11 at 14:21 +0100, John Rigg wrote:
+> snd_ice1712            67360  0 
+> snd_ice17xx_ak4xxx      6720  1 snd_ice1712
+> snd_ak4xxx_adda         9216  2 snd_ice1712,snd_ice17xx_ak4xxx
+> snd_cs8427             12672  1 snd_ice1712
+> snd_ac97_codec        103868  1 snd_ice1712
+> snd_pcm                96008  2 snd_ice1712,snd_ac97_codec
+> snd_timer              27336  1 snd_pcm
+> snd_page_alloc         13904  1 snd_pcm
+> snd_ac97_bus            4928  1 snd_ac97_codec
+> snd_i2c                 8192  2 snd_ice1712,snd_cs8427
+> snd_mpu401_uart        10432  1 snd_ice1712
+> snd_rawmidi            29664  1 snd_mpu401_uart
+> snd_seq_device         11792  1 snd_rawmidi
+> joydev                 13120  0 
+> evdev                  13952  0 
+> shpchp                 47008  0 
+> snd                    62304  10 snd_ice1712,snd_ak4xxx_adda,snd_cs8427,snd_ac97_codec,snd_pcm,snd_timer,snd_i2c,snd_mpu401_uart,snd_rawmidi,snd_seq_device
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2200> 
-======================================================================
-Reported By:                quetzyg
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2200
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.6.16.20 (but any version >= 2.6.16 should be
-enough to reproduce this)
-======================================================================
-Date Submitted:             06-11-2006 17:50 CEST
-Last Modified:              06-11-2006 17:50 CEST
-======================================================================
-Summary:                    PCM channel doesn't exist!
-Description: 
-Since the early release candidates of ALSA 1.0.11, up to the final version,
-I seem to have lost the PCM channel from alsamixer.
-======================================================================
+Of course it won't work, snd-seq-midi is not loaded.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-11-06 17:50 quetzyg        New Issue                                    
-06-11-06 17:50 quetzyg        Distribution              => Slackware       
-06-11-06 17:50 quetzyg        Kernel Version            => 2.6.16.20 (but any
-version >= 2.6.16 should be enough to reproduce this)
-======================================================================
+Lee
