@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002142]: no more microphone
-Date: Mon, 12 Jun 2006 17:03:49 +0200
-Message-ID: <85c18b26c16ffc763d76ad401c698bca@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0002203]: Segmentation fault and exact
+	rate : nan (0/0)
+Date: Mon, 12 Jun 2006 17:19:42 +0200
+Message-ID: <7b6c389af68f5365ca58aebaa9bb92cb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D895152
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 482A8152
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 17:03:49 +0200 (MEST)
+	Mon, 12 Jun 2006 17:19:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,90 +26,144 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2142> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2203> 
 ======================================================================
-Reported By:                piem
-Assigned To:                tiwai
+Reported By:                Raymond
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2142
-Category:                   PPC - powermac
+Project:                    ALSA - lib
+Issue ID:                   2203
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.17-rc3
 ======================================================================
-Date Submitted:             05-22-2006 12:12 CEST
-Last Modified:              06-12-2006 17:03 CEST
+Date Submitted:             06-12-2006 16:44 CEST
+Last Modified:              06-12-2006 17:19 CEST
 ======================================================================
-Summary:                    no more microphone
+Summary:                    Segmentation fault and exact rate   : nan (0/0)
 Description: 
-I haven't been able to access the microphone on my iBook G4 since at least
-2.6.12 and up to 2.6.17-rc3. The chip is a Snapper, and microphone
-recording used to be supported. Debian package alsa-utils 1.0.11-2 is
-installed.
+Running two instance of aplay in two different terminals, the second
+instance of aplay segmentation fault.
 
-$ cat /proc/asound/cards
- 0 [Snapper        ]: PMac Snapper - PowerMac Snapper
-                      PowerMac Snapper (Dev 38) Sub-frame 0
 
-$ cat /proc/cpuinfo 
-processor       : 0
-cpu             : 7447A, altivec supported
-clock           : 533.333000MHz
-revision        : 0.1 (pvr 8003 0101)
-bogomips        : 36.73
-timebase        : 18432000
-platform        : PowerMac
-machine         : PowerBook6,5
-motherboard     : PowerBook6,5 MacRISC3 Power Macintosh 
-detected as     : 287 (iBook G4)
-pmac flags      : 0000001b
-L2 cache        : 512K unified
-pmac-generation : NewWorld
+aplay -v -Ddefault:1 *.wav
+
+Playing WAVE 'test.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+Plug PCM: Rate conversion PCM (48000, sformat=U8)
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : U8
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 8
+  buffer_size  : 2730
+  period_size  : 170
+  period_time  : 21333
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 170
+  xfer_align   : 170
+  start_threshold  : 2720
+  stop_threshold   : 2730
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 178913280
+Slave: Route conversion PCM (sformat=S16_LE)
+  Transformation table:
+    0 <- 0
+    1 <- 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : U8
+  subformat    : STD
+  channels     : 1
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 8
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 21333
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: Direct Stream Mixing PCM
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 21333
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Hardware PCM card 1 'Intel 82801BA-ICH2' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 0
+  exact rate   : nan (0/0)
+  msbits       : 0
+  buffer_size  : 16384
+  period_size  : 0
+  period_time  : 0
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 0
+  sleep_min    : 0
+  avail_min    : 0
+  xfer_align   : 0
+  start_threshold  : 0
+  stop_threshold   : 0
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Mono
+Segmentation fault
 
 ======================================================================
 
 ----------------------------------------------------------------------
- bz31 - 06-10-06 18:56 
+ rlrevell - 06-12-06 17:19 
 ----------------------------------------------------------------------
-Hi,
-
-I found how to record !
-I must use two channels. One channel doesn't work.
-
-Using rec:
-$ rec -c 2 test.wav
-$ play test.wav
-
-Using audacity:
-Edit ---> Preferences --> Channels: 2(stereo)
-Then I can record from microphone
-
-Note: In audacity, when recording, I see 
-L
-R -----
-the input level meter.
-Only Right channel R works.
-The Left channel dosen't works. Maybe this is why we can't record mono
-sound.
-
-----------------------------------------------------------------------
- piem - 06-12-06 17:03 
-----------------------------------------------------------------------
-i know the microphone is mono, but i still can't capture at all.
-
-Bin, what kernel / alsa versions are you using?
+Please post the gdb backtrace
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-22-06 12:12 piem           New Issue                                    
-05-22-06 12:12 piem           Distribution              => Debian          
-05-22-06 12:12 piem           Kernel Version            => 2.6.17-rc3      
-06-10-06 09:38 bz31           Issue Monitored: bz31                        
-06-10-06 18:56 bz31           Note Added: 0010147                          
-06-12-06 17:03 piem           Note Added: 0010170                          
+06-12-06 16:44 Raymond        New Issue                                    
+06-12-06 17:19 rlrevell       Note Added: 0010171                          
 ======================================================================
