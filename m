@@ -1,15 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Mon, 12 Jun 2006 13:23:11 +0200
-Message-ID: <8dd4fd15eb055803590ba4dcb0a49067@bugtrack.alsa-project.org>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: Problem with ALSA on PPC
+Date: Mon, 12 Jun 2006 12:41:36 +0100
+Message-ID: <1150112496.21190.38.camel@localhost.localdomain>
+References: <1149891511.3894.296.camel@mindpipe>
+	<1149902770.13569.10.camel@mindpipe>
+	<1149933605.5081.1.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 638C414E
-	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 13:23:11 +0200 (MEST)
+In-Reply-To: <1149933605.5081.1.camel@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,102 +19,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 2006-06-10 at 11:00 +0100, Adrian McMenamin wrote:
+> On Fri, 2006-06-09 at 21:26 -0400, Lee Revell wrote:
+> > On Fri, 2006-06-09 at 18:18 -0400, Lee Revell wrote:
+> > > I do not have strace on this platform.  How can I determine which file
+> > > or directory is missing?
+> > > 
+> > > /usr/share/alsa/alsa.conf is present as well as the correct device
+> > > node:
+> > > 
+> > > ~ # ls -al /dev/snd/pcmC0D0p 
+> > > crw-rw----    1 root     29       116,  16 Jun  9
+> > > 15:54 /dev/snd/pcmC0D0p
+> > > 
+> > > What am I doing wrong?
+> > > 
+> > 
+> > I found the problem by installing strace on the PPC board.  alsa-lib is
+> > looking for its config files using the original path from the build
+> > host.  Either my build environment is still incorrect or it's a bug -
+> > probably the former ;-)
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
-======================================================================
-Reported By:                bzbarsky
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2132
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-12-2006 13:23 CEST
-======================================================================
-Summary:                    No sound from speakers
-Description: 
-Alsa seems to detect the sound card, but when I try to actually play
-something there is no sound from the speakers.
-======================================================================
+Fwiw, I've been using OE 
 
-----------------------------------------------------------------------
- rlrevell - 06-12-06 05:26 
-----------------------------------------------------------------------
-What if you use the *_p variants of outl, outw, etc?
+http://www.openembedded.org/
 
-man 2 outl_p
+to do all my embedded (non x86) ALSA user space building. It's quite
+simple and I've not had any issues wih building alsa-* yet. It even
+creates the device nodes and puts all the config files in the correct
+place in your target file system.
 
-----------------------------------------------------------------------
- Raymond - 06-12-06 13:23 
-----------------------------------------------------------------------
-The other thing which may need to be fixed after you fixed the read/write
-codec
 
-1) disable creation of rear device when codec is stereo
-2) disable SPDIF if ES1373 is on S1854A
-3) LM4548 may need patch
+> 
+> I had/have a very similar problem with the Dreamcast - I can only use
+> the oss emulation
+> 
+> Asking about here didn't get me an answer so I await any answers to your
+> problem with anticipation...
+> 
+> / # aplay -l
+> **** List of PLAYBACK Hardware Devices ****
+> aplay: device_list:230: control open (0): Invalid argument
+> 
+> 
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-17-06 19:54 bzbarsky       New Issue                                    
-05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
-05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
-05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
-05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
-05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
-05-17-06 19:56 bzbarsky       File Added: scsound.log                      
-05-17-06 19:57 bzbarsky       Note Added: 0009857                          
-05-20-06 05:31 Raymond        Note Added: 0009882                          
-05-20-06 21:43 bzbarsky       Note Added: 0009893                          
-05-21-06 03:41 Raymond        Note Added: 0009894                          
-05-21-06 03:48 Raymond        Note Edited: 0009894                         
-05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
-05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
-05-22-06 02:53 bzbarsky       Note Added: 0009901                          
-05-22-06 04:14 Raymond        Note Added: 0009902                          
-05-23-06 09:00 Raymond        Note Added: 0009929                          
-05-23-06 09:03 Raymond        Note Edited: 0009929                         
-05-23-06 09:07 Raymond        Note Edited: 0009929                         
-06-02-06 20:08 bzbarsky       Note Added: 0010053                          
-06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
-06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
-06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
- 
-06-02-06 20:35 bzbarsky       Note Added: 0010054                          
-06-03-06 02:44 Raymond        Note Added: 0010058                          
-06-05-06 01:29 bzbarsky       Note Added: 0010066                          
-06-05-06 03:31 Raymond        Note Added: 0010067                          
-06-05-06 03:56 bzbarsky       File Added: dmesg                            
-06-05-06 03:57 bzbarsky       Note Added: 0010068                          
-06-06-06 06:35 Raymond        Note Added: 0010071                          
-06-06-06 06:43 Raymond        Note Edited: 0010071                         
-06-06-06 08:59 Raymond        Note Edited: 0010071                         
-06-10-06 07:42 bzbarsky       Note Added: 0010144                          
-06-11-06 05:24 Raymond        Note Added: 0010150                          
-06-11-06 05:29 Raymond        Note Edited: 0010150                         
-06-11-06 22:37 bzbarsky       File Added: dmesg+kprint                     
-06-11-06 22:37 bzbarsky       File Added: codec_lines.txt                    
-06-11-06 22:38 bzbarsky       Note Added: 0010154                          
-06-12-06 03:31 Raymond        Note Added: 0010157                          
-06-12-06 03:41 rlrevell       Note Added: 0010158                          
-06-12-06 04:36 bzbarsky       Note Added: 0010161                          
-06-12-06 05:18 Raymond        Note Added: 0010164                          
-06-12-06 05:20 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:26 rlrevell       Note Added: 0010165                          
-06-12-06 13:23 Raymond        Note Added: 0010168                          
-======================================================================
+I've had a similar issue in the past. I could see the alsa device nodes
+under /dev/snd and could see the pcms in /proc/asound/pcm, although I
+had error messages like this when opening the devices in alsa mode. OSS
+mode worked fine.
+
+It turned out that my alsa nodes were not in the target file
+systems  /etc/device_table file. After adding them to this file and
+rebooting, alsa worked fine.  
+
+HTH
+
+Liam 
