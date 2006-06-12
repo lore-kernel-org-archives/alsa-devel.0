@@ -1,16 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002202]: model is not autodetected
-	correctly
-Date: Mon, 12 Jun 2006 09:45:12 +0200
-Message-ID: <d4e84f8a885be4be0abaa6768b4f79a0@bugtrack.alsa-project.org>
+From: John Rigg <ad@sound-man.co.uk>
+Subject: Re: open /dev/snd/seq failed
+Date: Mon, 12 Jun 2006 09:09:51 +0100
+Message-ID: <20060612080951.GA2632@localhost.localdomain>
+References: <E1FpPt7-0001Z8-7E@localhost.localdomain>
+	<1150045861.14253.119.camel@mindpipe>
+	<20060611183043.GA6409@localhost.localdomain>
+	<1150055462.14253.162.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6EE2144
-	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 09:45:12 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <1150055462.14253.162.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,59 +21,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Jun 11, 2006 at 03:51:01PM -0400, Lee Revell wrote:
+> I can't see why udev does not load this module on demand when the
+> sequencer is first used.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2202> 
-======================================================================
-Reported By:                el
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2202
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Kubuntu Dapper
-Kernel Version:             2.6.15-23
-======================================================================
-Date Submitted:             06-12-2006 09:45 CEST
-Last Modified:              06-12-2006 09:45 CEST
-======================================================================
-Summary:                    model is not autodetected correctly
-Description: 
-I am using a Fujitsu-Siemens Amilo M3438G (Datasheet here:
-http://www.fujitsu-siemens.com/Resources/59/562938810.pdf )
+Debian testing and unstable kernels are now using initramfs instead
+of initrd. According to initramfs docs there are possible issues
+with hotplug. I fixed the problem temporarily by adding snd_seq_midi
+to /etc/modules, but I'll try changing back to initrd.
 
-When I load the module via modprobe snd-hda-intel I get the following
-controls in alsamixer: 
-playback: PCM, Headphones, Internal Speaker, CD, Mic
-capture: 3x Capture
-I can not get the Microphone to work, no matter what I select as Input
-Source for the Capture channels.
-
-When I use modprobe snd-hda-intel model=auto I get
-playback: PCM, front(controls headphones), side(controls internal
-speaker), center, lfe, internal mic, mic, ...
-capture: 3x Capture
-The Microphone (Internal, or external if connected) works when I unmute
-the first capture channel and set its input source to Front Mic.
-Sometimes the center channel controls the speaker at the bottom of the
-laptop, sometimes it doesnt, seems kind of random.
-
-Documentation states, that model=auto is the default, but as you can see
-it is not
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-12-06 09:45 el             New Issue                                    
-06-12-06 09:45 el             Distribution              => Kubuntu Dapper  
-06-12-06 09:45 el             Kernel Version            => 2.6.15-23       
-======================================================================
+John
