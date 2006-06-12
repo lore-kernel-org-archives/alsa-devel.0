@@ -1,15 +1,16 @@
-From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
-Subject: Re: Problem with ALSA on PPC
-Date: Mon, 12 Jun 2006 12:41:36 +0100
-Message-ID: <1150112496.21190.38.camel@localhost.localdomain>
-References: <1149891511.3894.296.camel@mindpipe>
-	<1149902770.13569.10.camel@mindpipe>
-	<1149933605.5081.1.camel@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002140]: No sound from mic on Fujitsu
+	Siemens Amilo M3438G
+Date: Mon, 12 Jun 2006 15:19:25 +0200
+Message-ID: <e2a1cd7ae1a242ae5d330a174476d3d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1149933605.5081.1.camel@localhost.localdomain>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC5E2144
+	for <alsa-devel@alsa-project.org>;
+	Mon, 12 Jun 2006 15:19:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,63 +20,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2006-06-10 at 11:00 +0100, Adrian McMenamin wrote:
-> On Fri, 2006-06-09 at 21:26 -0400, Lee Revell wrote:
-> > On Fri, 2006-06-09 at 18:18 -0400, Lee Revell wrote:
-> > > I do not have strace on this platform.  How can I determine which file
-> > > or directory is missing?
-> > > 
-> > > /usr/share/alsa/alsa.conf is present as well as the correct device
-> > > node:
-> > > 
-> > > ~ # ls -al /dev/snd/pcmC0D0p 
-> > > crw-rw----    1 root     29       116,  16 Jun  9
-> > > 15:54 /dev/snd/pcmC0D0p
-> > > 
-> > > What am I doing wrong?
-> > > 
-> > 
-> > I found the problem by installing strace on the PPC board.  alsa-lib is
-> > looking for its config files using the original path from the build
-> > host.  Either my build environment is still incorrect or it's a bug -
-> > probably the former ;-)
 
-Fwiw, I've been using OE 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2140> 
+======================================================================
+Reported By:                jacobs
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2140
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               OpenSuSE 10.1
+Kernel Version:             2.6.16.13
+======================================================================
+Date Submitted:             05-22-2006 10:17 CEST
+Last Modified:              06-12-2006 15:19 CEST
+======================================================================
+Summary:                    No sound from mic on Fujitsu Siemens Amilo M3438G
+Description: 
+I own a Fujitsu Siemens Amilo M3438G notebook with an onboard Azalia 7.1
+SPDIF chipset/codec (see spec sheet at
+http://www.fujitsu-siemens.de/ps/db/notebook/ds_amilo_m3438g_m4438g_d.pdf).
+OpenSuSE 10.1 (Kernel 2.6.16.13) is installed; the module snd-hda-intel is
+ loaded. Sound playback through the internal speakers and headphone does
+work but I am unable to get sound from the internal and external
+microphone. The alsamixer has three capture controls which all are set to
+capture and maximum volume. Each capture controls source is set to mic.
+The playback channel for mic is unmuted and also set to maximum volume but
+I just don't get a signal.
 
-http://www.openembedded.org/
+I've tried to apply different model options to the snd-hda-intel module
+relating to the file ALSA-Configuration.txt without luck.
 
-to do all my embedded (non x86) ALSA user space building. It's quite
-simple and I've not had any issues wih building alsa-* yet. It even
-creates the device nodes and puts all the config files in the correct
-place in your target file system.
+This didn't work with OpenSuSE 10.0 (Kernel 2.6.13) either.
 
+If you need any technical information please let me know.
+======================================================================
 
-> 
-> I had/have a very similar problem with the Dreamcast - I can only use
-> the oss emulation
-> 
-> Asking about here didn't get me an answer so I await any answers to your
-> problem with anticipation...
-> 
-> / # aplay -l
-> **** List of PLAYBACK Hardware Devices ****
-> aplay: device_list:230: control open (0): Invalid argument
-> 
-> 
+----------------------------------------------------------------------
+ el - 06-12-06 09:19 
+----------------------------------------------------------------------
+Yes, but no sound except static on them.
 
-I've had a similar issue in the past. I could see the alsa device nodes
-under /dev/snd and could see the pcms in /proc/asound/pcm, although I
-had error messages like this when opening the devices in alsa mode. OSS
-mode worked fine.
+----------------------------------------------------------------------
+ der_sprengmeister - 06-12-06 15:19 
+----------------------------------------------------------------------
+Hi el!
 
-It turned out that my alsa nodes were not in the target file
-systems  /etc/device_table file. After adding them to this file and
-rebooting, alsa worked fine.  
+Shit, sorry.
 
-HTH
+Another Question: Is your Subwoofer working? And if yes: Which model do
+you use? model=auto?
 
-Liam 
+I think, the soundcard-models are all the same in these Amilo-Notebooks,
+if you have a 3438/4438 or 1437/1438/1439. Do you agree?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-22-06 10:17 jacobs         New Issue                                    
+05-22-06 10:17 jacobs         Distribution              => OpenSuSE 10.1   
+05-22-06 10:17 jacobs         Kernel Version            => 2.6.16.13       
+05-23-06 07:35 jacobs         Issue Monitored: jacobs                      
+05-26-06 19:13 el             Issue Monitored: el                          
+05-26-06 19:26 el             Note Added: 0009979                          
+05-29-06 08:26 jacobs         Note Added: 0010007                          
+06-07-06 11:14 der_sprengmeisterNote Added: 0010079                          
+06-07-06 11:48 der_sprengmeisterIssue Monitored: der_sprengmeister              
+     
+06-08-06 22:04 el             Note Added: 0010117                          
+06-09-06 10:32 der_sprengmeisterNote Added: 0010136                          
+06-09-06 10:32 der_sprengmeisterNote Added: 0010137                          
+06-12-06 09:19 el             Note Added: 0010166                          
+06-12-06 15:05 der_sprengmeisterNote Deleted: 0010137                        
+06-12-06 15:19 der_sprengmeisterNote Added: 0010169                          
+======================================================================
