@@ -1,16 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Mon, 12 Jun 2006 23:58:02 +0200
-Message-ID: <66e3b81cd25b452848c8a5047ff8b9ed@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Problem with ALSA on PPC
+Date: Mon, 12 Jun 2006 18:33:10 -0400
+Message-ID: <1150151590.3062.61.camel@mindpipe>
+References: <1149891511.3894.296.camel@mindpipe>
+	<1149902770.13569.10.camel@mindpipe>
+	<1149933605.5081.1.camel@localhost.localdomain>
+	<1150112496.21190.38.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D0753163
-	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 23:58:02 +0200 (MEST)
+In-Reply-To: <1150112496.21190.38.camel@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,78 +20,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Cc: Adrian McMenamin <adrian@mcmen.demon.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-06-12 at 12:41 +0100, Liam Girdwood wrote:
+> Fwiw, I've been using OE 
+> 
+> http://www.openembedded.org/
+> 
+> to do all my embedded (non x86) ALSA user space building. It's quite
+> simple and I've not had any issues wih building alsa-* yet. It even
+> creates the device nodes and puts all the config files in the correct
+> place in your target file system. 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
-======================================================================
-Reported By:                carllivitt
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2174
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
-======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-12-2006 23:58 CEST
-======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
-Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
+I use Kegel's crosstool:
 
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
+http://www.kegel.com/crosstool/
 
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
+and modified scripts from the board vendor.  I can't easily switch as
+this is what everyone else in the shop uses.
 
-I've also tried using the 'single_cmd=1' module loading option. 
+I guess OE solves this problem by building in a chroot or something?  I
+cannot see a way to prevent alsa-lib from prepending $PREFIX to the
+location of the config files.
 
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
-
-======================================================================
-
-----------------------------------------------------------------------
- carllivitt - 06-12-06 23:49 
-----------------------------------------------------------------------
-Ok, thanks for all your help. What's the best way for me to find out when a
-patch has been worked out... or will someone just post here?
-
-----------------------------------------------------------------------
- rlrevell - 06-12-06 23:58 
-----------------------------------------------------------------------
-When it's fixed someone will update this bug report.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
-06-12-06 21:51 carllivitt     Note Added: 0010174                          
-06-12-06 22:03 rlrevell       Note Added: 0010175                          
-06-12-06 22:52 carllivitt     Note Added: 0010176                          
-06-12-06 22:54 rlrevell       Note Added: 0010177                          
-06-12-06 23:10 carllivitt     Note Added: 0010178                          
-06-12-06 23:14 rlrevell       Note Added: 0010179                          
-06-12-06 23:29 carllivitt     Note Added: 0010180                          
-06-12-06 23:35 rlrevell       Note Added: 0010181                          
-06-12-06 23:49 carllivitt     Note Added: 0010182                          
-06-12-06 23:58 rlrevell       Note Added: 0010183                          
-======================================================================
+Lee
