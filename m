@@ -1,14 +1,16 @@
-From: "Gerhard Pircher" <gerhard_pircher@gmx.net>
-Subject: Re: RFC: dma_mmap_coherent() for powerpc/ppc
- architecture and ALSA?
-Date: Mon, 12 Jun 2006 16:42:54 +0200
-Message-ID: <20060612144254.305930@gmx.net>
-References: <20060610082223.321730@gmx.net> <s5hbqsyd4uz.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002203]: Segmentation fault and exact
+	rate : nan (0/0)
+Date: Mon, 12 Jun 2006 16:44:13 +0200
+Message-ID: <163bbf2f1715ac19173949f5618aa8e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hbqsyd4uz.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FACA144
+	for <alsa-devel@alsa-project.org>;
+	Mon, 12 Jun 2006 16:44:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,51 +20,144 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linuxppc-dev@ozlabs.org, rlrevell@joe-job.com, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, benh@kernel.crashing.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-> -------- Original-Nachricht --------
-> Datum: Mon, 12 Jun 2006 12:51:16 +0200
-> Von: Takashi Iwai <tiwai@suse.de>
-> An: Gerhard Pircher <gerhard_pircher@gmx.net>
-> Betreff: Re: RFC: dma_mmap_coherent() for powerpc/ppc architecture and
-> ALSA?
-> =
-
-> > Well, implementing the dma_mmap_coherent() function isn't the
-> > problem, because it is already implemented for the ARM
-> > architecture.
-> =
-
-> Actually, I wrote dma_coherent_mmap patch long time ago but it has
-> been left forgotten.  The patch attached below seems applicable to
-> 2.6.17 tree, but I'm not sure whether it still works properly.
-> It's untested on most of architectures.
-
-Thanks, that helps me a lot!
-
-> > But as far as I understand this would require a rewrite of all the
-> > ALSA drivers (or at least a rewrite of the ALSA's DMA helper
-> > functions).
-> =
-
-> Yes.  The change of ALSA side has been also on my tree.  But it was
-> still pending since I'm not satisfied with the design yet.
-> If you're interested in it, let me know.  I'll post the patch.
-
-Yes, please! Then I can test, if the dma_mmap_coherent() patch works on
-my non cache coherent powerpc machine. Do you think the DMA Layer/ALSA patc=
-hes will go upstream in one of the next ALSA/Linux kernel versions?
-
-Thanks!
-
-Gerhard
-
--- =
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2203> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2203
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             06-12-2006 16:44 CEST
+Last Modified:              06-12-2006 16:44 CEST
+======================================================================
+Summary:                    Segmentation fault and exact rate   : nan (0/0)
+Description: 
+Running two instance of aplay in two different terminals, the second
+instance of aplay segmentation fault.
 
 
+aplay -v -Ddefault:1 *.wav
 
-Der GMX SmartSurfer hilft bis zu 70% Ihrer Onlinekosten zu sparen!
-Ideal f=FCr Modem und ISDN: http://www.gmx.net/de/go/smartsurfer
+Playing WAVE 'test.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+Plug PCM: Rate conversion PCM (48000, sformat=U8)
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : U8
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 8
+  buffer_size  : 2730
+  period_size  : 170
+  period_time  : 21333
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 170
+  xfer_align   : 170
+  start_threshold  : 2720
+  stop_threshold   : 2730
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 178913280
+Slave: Route conversion PCM (sformat=S16_LE)
+  Transformation table:
+    0 <- 0
+    1 <- 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : U8
+  subformat    : STD
+  channels     : 1
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 8
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 21333
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: Direct Stream Mixing PCM
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 21333
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Hardware PCM card 1 'Intel 82801BA-ICH2' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 0
+  exact rate   : nan (0/0)
+  msbits       : 0
+  buffer_size  : 16384
+  period_size  : 0
+  period_time  : 0
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 0
+  sleep_min    : 0
+  avail_min    : 0
+  xfer_align   : 0
+  start_threshold  : 0
+  stop_threshold   : 0
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Mono
+Segmentation fault
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-12-06 16:44 Raymond        New Issue                                    
+======================================================================
