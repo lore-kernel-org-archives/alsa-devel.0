@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002174]: No sound at all using
 	snd-hda-intel / alsa-1.0.11
-Date: Mon, 12 Jun 2006 23:10:59 +0200
-Message-ID: <f20122fb926488bc4cbf24921b60dcb8@bugtrack.alsa-project.org>
+Date: Mon, 12 Jun 2006 23:14:42 +0200
+Message-ID: <3e21efab0a821b0790cc1e4fec96da11@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA3C4152
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 854F6152
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 23:10:59 +0200 (MEST)
+	Mon, 12 Jun 2006 23:14:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
 Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-12-2006 23:10 CEST
+Last Modified:              06-12-2006 23:14 CEST
 ======================================================================
 Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
@@ -64,13 +64,6 @@ were unresolved symbols that I couldn't resolve. I'm back to using the
 1.0.11 version.
 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 06-12-06 22:54 
-----------------------------------------------------------------------
-Check /proc/asound/card0/codec* to find out which codec you have then try
-all the models listed for that codec in the docs.  It's easy, just rmmod
-snd-hda-intel and modprobe again with each model.
 
 ----------------------------------------------------------------------
  carllivitt - 06-12-06 23:10 
@@ -191,6 +184,12 @@ Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
 
 Any ideas???
 
+----------------------------------------------------------------------
+ rlrevell - 06-12-06 23:14 
+----------------------------------------------------------------------
+It's a driver bug, apparently your codec is not supported.  You'll have to
+wait for a fix.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -204,4 +203,5 @@ Date Modified  Username       Field                    Change
 06-12-06 22:52 carllivitt     Note Added: 0010176                          
 06-12-06 22:54 rlrevell       Note Added: 0010177                          
 06-12-06 23:10 carllivitt     Note Added: 0010178                          
+06-12-06 23:14 rlrevell       Note Added: 0010179                          
 ======================================================================
