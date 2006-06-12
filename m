@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002174]: No sound at all using
 	snd-hda-intel / alsa-1.0.11
-Date: Mon, 12 Jun 2006 21:51:55 +0200
-Message-ID: <df2b5ab7c62dc49c85a94efbda6c2e38@bugtrack.alsa-project.org>
+Date: Mon, 12 Jun 2006 22:03:17 +0200
+Message-ID: <8335a5dce7c5cd9a38076bef842acdd4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25A67152
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57FAF152
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 21:51:56 +0200 (MEST)
+	Mon, 12 Jun 2006 22:03:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
 Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-12-2006 21:51 CEST
+Last Modified:              06-12-2006 22:03 CEST
 ======================================================================
 Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
@@ -66,15 +66,6 @@ were unresolved symbols that I couldn't resolve. I'm back to using the
 ======================================================================
 
 ----------------------------------------------------------------------
- carllivitt - 06-04-06 23:37 
-----------------------------------------------------------------------
-Hi, has anyone got any information/hints/fixes/patches etc for this
-problem?
-
-Thanks
-Carl
-
-----------------------------------------------------------------------
  carllivitt - 06-12-06 21:51 
 ----------------------------------------------------------------------
 An update - still stumped.
@@ -87,6 +78,15 @@ they are similarly silent.
 
 I've still got no sound! Help!
 
+----------------------------------------------------------------------
+ rlrevell - 06-12-06 22:03 
+----------------------------------------------------------------------
+Did you try the model options for your codec as described in
+ALSA-Configuration.txt?
+
+Also ALSA CVS is no longer updated - you have to use the Hg repository
+(see alsa-devel archive for instructions)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -96,4 +96,5 @@ Date Modified  Username       Field                    Change
 06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
 06-04-06 23:37 carllivitt     Note Added: 0010065                          
 06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
 ======================================================================
