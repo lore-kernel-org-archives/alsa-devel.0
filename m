@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002201]: Duplicate of Issue 0001622 -
 	Sound freezes after less a second of play
-Date: Mon, 12 Jun 2006 04:15:16 +0200
-Message-ID: <690d82d14bd83bd8da88fb226dc406ab@bugtrack.alsa-project.org>
+Date: Mon, 12 Jun 2006 04:34:57 +0200
+Message-ID: <5ed5ba02b33373686bc809541fdf24e3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5AFFA149
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE366149
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 04:15:16 +0200 (MEST)
+	Mon, 12 Jun 2006 04:34:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               OpenSuSE
 Kernel Version:             2.6.16.13-4-smp
 ======================================================================
 Date Submitted:             06-12-2006 02:55 CEST
-Last Modified:              06-12-2006 04:15 CEST
+Last Modified:              06-12-2006 04:34 CEST
 ======================================================================
 Summary:                    Duplicate of Issue 0001622 - Sound freezes after
 less a second of play
@@ -54,15 +54,15 @@ sound chip. Glady I will provide any information asked.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-12-06 03:07 
-----------------------------------------------------------------------
-What is the output of "cat /proc/asound/version"?
-
-----------------------------------------------------------------------
  ggeorgak - 06-12-06 04:15 
 ----------------------------------------------------------------------
 Advanced Linux Sound Architecture Driver Version 1.0.11rc3 (Sun Jan 22
 09:27:15 2006 UTC).
+
+----------------------------------------------------------------------
+ rlrevell - 06-12-06 04:34 
+----------------------------------------------------------------------
+I believe this was fixed in 1.0.11.  You will have to upgrade.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -73,4 +73,5 @@ Date Modified  Username       Field                    Change
 06-12-06 02:56 ggeorgak       Issue Monitored: ggeorgak                    
 06-12-06 03:07 rlrevell       Note Added: 0010156                          
 06-12-06 04:15 ggeorgak       Note Added: 0010159                          
+06-12-06 04:34 rlrevell       Note Added: 0010160                          
 ======================================================================
