@@ -1,12 +1,16 @@
-From: "Sam Revitch" <sam.revitch@gmail.com>
-Subject: stateful reconnect with snd-usb-audio
-Date: Mon, 12 Jun 2006 14:05:15 -0700
-Message-ID: <8d4807d50606121405n51edef2au3de163b01029aaf5@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Mon, 12 Jun 2006 23:10:59 +0200
+Message-ID: <f20122fb926488bc4cbf24921b60dcb8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA3C4152
+	for <alsa-devel@alsa-project.org>;
+	Mon, 12 Jun 2006 23:10:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,56 +20,188 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi everybody,
 
-I'd like to solicit the ALSA brain trust for tips and opinions on how
-one might go about implementing a new feature.  With some (most?) of
-the ALSA driver code base, it is possible, or at least someone
-intended for it to be possible to leave an MP3 player or such running
-across a suspend-to-RAM or suspend-to-disk operation, and have it pick
-up exactly where it left off on resume.  To see this in action is just
-cool, there's no getting around it.  A notable exception to this  is
-the snd-usb-audio driver, under which devices seem to be disconnected
-and re-enumerated as entirely new cards, rather than having their
-state explicitly backed up and restored with the assumption that the
-hardware will be present on resume.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
+======================================================================
+Reported By:                carllivitt
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2174
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
+======================================================================
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              06-12-2006 23:10 CEST
+======================================================================
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
+Description: 
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
 
-I searched hard and couldn't find any prior efforts to address this
-problem, so it seemed worthwhile to ask about.
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
 
-There are two possibilities that seem promising:
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
 
-1. Rework snd-usb-audio to support a timely reconnect operation.  If a
-card is unplugged and reconnected within some period of time, its
-prior state will be restored and it will be reassociated with open
-file handles.  Active playback/capture operations may continue without
-reopening the device, with only the reconnection/reconfiguration
-delay.
+I've also tried using the 'single_cmd=1' module loading option. 
 
-2. Support reconnection at the alsa-lib layer.  I couldn't find
-anything that does this already.  Somehow all playback/capture file
-descriptors would need to be closed on command and
-reopened/reconfigured when a replacement device is identified.
-Anybody know of an easy way to do this with dmix?  Otherwise it seems
-like alsa-lib would be stuck funneling playback through an
-aserver/jackd process and that would be undesirable.
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
 
-Opinions?  Does one seem like it would be more robust, more reusable,
-or more work than the other?
+======================================================================
 
-As another individual pointed out a few months ago, there are some
-other problems with snd-usb-audio similar to those described above.
-If a certain usb audio device has open file handles and is
-disconnected or the system is suspended,
-snd_usb_audio_disconnect()->snd_card_free() will block in the khubd
-context while ALSA waits for the file handles to be closed, preventing
-khubd from doing anything else useful like processing probe requests.
-Using snd_card_free_in_thread() can be just as bad as it uses
-schedule_work() and blocks one of the "events" threads.  A hang in
-either context can cause problems for a resume-from-RAM operation.
+----------------------------------------------------------------------
+ rlrevell - 06-12-06 22:54 
+----------------------------------------------------------------------
+Check /proc/asound/card0/codec* to find out which codec you have then try
+all the models listed for that codec in the docs.  It's easy, just rmmod
+snd-hda-intel and modprobe again with each model.
 
-Thanks.
--Sam Revitch
+----------------------------------------------------------------------
+ carllivitt - 06-12-06 23:10 
+----------------------------------------------------------------------
+Aha! Thankyou, but it still doesn't work. None of the module model options
+worked.  I just tried each in turn, playing a sound after each.
+
+I checked /proc/asound/card0/codec#0 and this is what it reported:
+
+[root@localhost Documentation]# cat /proc/asound/card0/codec#0
+Codec: Generic 14f1 ID 5047
+Address: 0
+Vendor Id: 0x14f15047
+Subsystem Id: 0x1179ff31
+Revision Id: 0x100000
+Default PCM: rates 0x040, bits 0x02, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+Node 0x10 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1e 0x1e]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x11 [Audio Output] wcaps 0x611: Stereo Digital
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x12 [Audio Input] wcaps 0x100d1b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x0e, stepsize=0x05, mute=1
+  Amp-In vals:  [0x8e 0x8e] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
+0x80] [0x80 0x80]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+  Connection: 6
+     0x19 0x14 0x15* 0x1a 0x16 0x10
+Node 0x13 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1e 0x1e]
+  Pincap 0x081001c: OUT HP
+  Pin Default 0xc3111010: [Both] Speaker at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0xc0: OUT HP
+  Power: 0x0
+  Connection: 3
+     0x19* 0x10 0x16
+Node 0x14 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x0833c: IN OUT HP
+  Pin Default 0x03811011: [Jack] Line In at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+  Connection: 2
+     0x19* 0x16
+Node 0x15 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x0833c: IN OUT HP
+  Pin Default 0x03a11012: [Jack] Mic at Ext Left
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+  Connection: 3
+     0x1c 0x19* 0x16
+Node 0x16 [Pin Complex] wcaps 0x400401: Stereo
+  Pincap 0x0860: IN
+  Pin Default 0x99330100: [Fixed] CD at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x20: IN
+  Power: 0x0
+Node 0x17 [Pin Complex] wcaps 0x400481: Stereo
+  Pincap 0x08324: IN
+  Pin Default 0xb7a00100: [Fixed] Mic at Oth Mobile-In
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x00:
+  Power: 0x0
+Node 0x18 [Pin Complex] wcaps 0x400701: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x21440100: [Jack] SPDIF Out at Sep Rear
+    Conn = RCA, Color = Unknown
+  Pin-ctls: 0x00:
+  Power: 0x0
+  Connection: 1
+     0x11
+Node 0x19 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-In vals:  [0x07 0x07] [0x07 0x07] [0x80 0x80] [0x17 0x17]
+  Power: 0x0
+  Connection: 4
+     0x10 0x1b 0x1a 0x16
+Node 0x1a [Audio Selector] wcaps 0x30050d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x1f, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Power: 0x0
+  Connection: 3
+     0x15* 0x14 0x17
+Node 0x1b [Audio Selector] wcaps 0x300501: Stereo
+  Power: 0x0
+  Connection: 2
+     0x14* 0x15
+Node 0x1c [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x17, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  PCM: rates 0x040, bits 0x02, types 0x1
+  Power: 0x0
+Node 0x1d [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x1f, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x1f 0x1f]
+  Pincap 0x08314: OUT
+  Pin Default 0x90100112: [Fixed] Speaker at Int N/A
+    Conn = Unknown, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Power: 0x0
+  Connection: 3
+     0x1c 0x19* 0x16
+Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
+
+
+Any ideas???
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
+06-12-06 22:52 carllivitt     Note Added: 0010176                          
+06-12-06 22:54 rlrevell       Note Added: 0010177                          
+06-12-06 23:10 carllivitt     Note Added: 0010178                          
+======================================================================
