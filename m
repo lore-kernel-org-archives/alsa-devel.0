@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002142]: no more microphone
-Date: Mon, 12 Jun 2006 19:08:09 +0200
-Message-ID: <c2b93ca7fd9ab2715b41dde723fdaa8c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Mon, 12 Jun 2006 21:51:55 +0200
+Message-ID: <df2b5ab7c62dc49c85a94efbda6c2e38@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 58469150
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25A67152
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 19:08:09 +0200 (MEST)
+	Mon, 12 Jun 2006 21:51:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,81 +26,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2142> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
 ======================================================================
-Reported By:                piem
+Reported By:                carllivitt
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2142
-Category:                   PPC - powermac
+Issue ID:                   2174
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.17-rc3
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
-Date Submitted:             05-22-2006 12:12 CEST
-Last Modified:              06-12-2006 19:08 CEST
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              06-12-2006 21:51 CEST
 ======================================================================
-Summary:                    no more microphone
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
-I haven't been able to access the microphone on my iBook G4 since at least
-2.6.12 and up to 2.6.17-rc3. The chip is a Snapper, and microphone
-recording used to be supported. Debian package alsa-utils 1.0.11-2 is
-installed.
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
 
-$ cat /proc/asound/cards
- 0 [Snapper        ]: PMac Snapper - PowerMac Snapper
-                      PowerMac Snapper (Dev 38) Sub-frame 0
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
 
-$ cat /proc/cpuinfo 
-processor       : 0
-cpu             : 7447A, altivec supported
-clock           : 533.333000MHz
-revision        : 0.1 (pvr 8003 0101)
-bogomips        : 36.73
-timebase        : 18432000
-platform        : PowerMac
-machine         : PowerBook6,5
-motherboard     : PowerBook6,5 MacRISC3 Power Macintosh 
-detected as     : 287 (iBook G4)
-pmac flags      : 0000001b
-L2 cache        : 512K unified
-pmac-generation : NewWorld
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
+
+I've also tried using the 'single_cmd=1' module loading option. 
+
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- piem - 06-12-06 17:03 
+ carllivitt - 06-04-06 23:37 
 ----------------------------------------------------------------------
-i know the microphone is mono, but i still can't capture at all.
+Hi, has anyone got any information/hints/fixes/patches etc for this
+problem?
 
-Bin, what kernel / alsa versions are you using?
+Thanks
+Carl
 
 ----------------------------------------------------------------------
- bz31 - 06-12-06 19:08 
+ carllivitt - 06-12-06 21:51 
 ----------------------------------------------------------------------
-Alsa from debian unstable and vanilla kernel 2.6.17-rc6 on a ibook g4
-1.2Ghz 12".
+An update - still stumped.
 
-A picture of my alsamixer setting : 
-http://bz31.tuxfamily.org/dokuwiki/lib/exe/detail.php?id=debian%3Aunstable_sur_apple_ibook_g4_1.2ghz&cache=cache&media=debian:alsamixer.jpg
+I've rolled my own kernel (2.6.16.20) and tried the snd-hda-intel drivers
+that are included with the kernel - no luck. Still silence.
 
-I've just tested with 
-arecord -c 2 test.wav
-aplay test.wav
-It works for me.
+I've also tried the CVS build of alsa (dated today, 12th June 2006) and
+they are similarly silent.
+
+I've still got no sound! Help!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-22-06 12:12 piem           New Issue                                    
-05-22-06 12:12 piem           Distribution              => Debian          
-05-22-06 12:12 piem           Kernel Version            => 2.6.17-rc3      
-06-10-06 09:38 bz31           Issue Monitored: bz31                        
-06-10-06 18:56 bz31           Note Added: 0010147                          
-06-12-06 17:03 piem           Note Added: 0010170                          
-06-12-06 19:08 bz31           Note Added: 0010173                          
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
 ======================================================================
