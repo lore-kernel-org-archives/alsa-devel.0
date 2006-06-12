@@ -1,16 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002203]: Segmentation fault and exact
-	rate : nan (0/0)
-Date: Mon, 12 Jun 2006 16:44:13 +0200
-Message-ID: <163bbf2f1715ac19173949f5618aa8e9@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: open /dev/snd/seq failed
+Date: Mon, 12 Jun 2006 10:51:02 -0400
+Message-ID: <1150123863.22720.30.camel@mindpipe>
+References: <E1FpPt7-0001Z8-7E@localhost.localdomain>
+	<1150045861.14253.119.camel@mindpipe>
+	<20060611183043.GA6409@localhost.localdomain>
+	<1150055462.14253.162.camel@mindpipe>
+	<20060612080951.GA2632@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3FACA144
-	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 16:44:17 +0200 (MEST)
+In-Reply-To: <20060612080951.GA2632@localhost.localdomain>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,144 +21,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: John Rigg <ad@sound-man.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-06-12 at 09:09 +0100, John Rigg wrote:
+> On Sun, Jun 11, 2006 at 03:51:01PM -0400, Lee Revell wrote:
+> > I can't see why udev does not load this module on demand when the
+> > sequencer is first used.
+> 
+> Debian testing and unstable kernels are now using initramfs instead
+> of initrd. According to initramfs docs there are possible issues
+> with hotplug. I fixed the problem temporarily by adding snd_seq_midi
+> to /etc/modules, but I'll try changing back to initrd.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2203> 
-======================================================================
-Reported By:                Raymond
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2203
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             06-12-2006 16:44 CEST
-Last Modified:              06-12-2006 16:44 CEST
-======================================================================
-Summary:                    Segmentation fault and exact rate   : nan (0/0)
-Description: 
-Running two instance of aplay in two different terminals, the second
-instance of aplay segmentation fault.
+What do initramfs and initrd have to do with it?  I do not use either
+one, and snd-seq-midi does not autoload for me.
 
-
-aplay -v -Ddefault:1 *.wav
-
-Playing WAVE 'test.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-Plug PCM: Rate conversion PCM (48000, sformat=U8)
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : U8
-  subformat    : STD
-  channels     : 1
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 8
-  buffer_size  : 2730
-  period_size  : 170
-  period_time  : 21333
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 170
-  xfer_align   : 170
-  start_threshold  : 2720
-  stop_threshold   : 2730
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 178913280
-Slave: Route conversion PCM (sformat=S16_LE)
-  Transformation table:
-    0 <- 0
-    1 <- 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : U8
-  subformat    : STD
-  channels     : 1
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 8
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 16384
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Slave: Direct Stream Mixing PCM
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 16384
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Hardware PCM card 1 'Intel 82801BA-ICH2' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 0
-  exact rate   : nan (0/0)
-  msbits       : 0
-  buffer_size  : 16384
-  period_size  : 0
-  period_time  : 0
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 0
-  sleep_min    : 0
-  avail_min    : 0
-  xfer_align   : 0
-  start_threshold  : 0
-  stop_threshold   : 0
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Mono
-Segmentation fault
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-12-06 16:44 Raymond        New Issue                                    
-======================================================================
+Lee
