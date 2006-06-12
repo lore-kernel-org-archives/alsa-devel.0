@@ -1,16 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Mon, 12 Jun 2006 22:54:53 +0200
-Message-ID: <1172bc1c2e9684b79f5d6948aa0d63a6@bugtrack.alsa-project.org>
+From: "Sam Revitch" <sam.revitch@gmail.com>
+Subject: stateful reconnect with snd-usb-audio
+Date: Mon, 12 Jun 2006 14:05:15 -0700
+Message-ID: <8d4807d50606121405n51edef2au3de163b01029aaf5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 99AE4152
-	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 22:54:53 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,77 +16,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi everybody,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
-======================================================================
-Reported By:                carllivitt
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2174
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
-======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-12-2006 22:54 CEST
-======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
-Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
+I'd like to solicit the ALSA brain trust for tips and opinions on how
+one might go about implementing a new feature.  With some (most?) of
+the ALSA driver code base, it is possible, or at least someone
+intended for it to be possible to leave an MP3 player or such running
+across a suspend-to-RAM or suspend-to-disk operation, and have it pick
+up exactly where it left off on resume.  To see this in action is just
+cool, there's no getting around it.  A notable exception to this  is
+the snd-usb-audio driver, under which devices seem to be disconnected
+and re-enumerated as entirely new cards, rather than having their
+state explicitly backed up and restored with the assumption that the
+hardware will be present on resume.
 
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
+I searched hard and couldn't find any prior efforts to address this
+problem, so it seemed worthwhile to ask about.
 
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
+There are two possibilities that seem promising:
 
-I've also tried using the 'single_cmd=1' module loading option. 
+1. Rework snd-usb-audio to support a timely reconnect operation.  If a
+card is unplugged and reconnected within some period of time, its
+prior state will be restored and it will be reassociated with open
+file handles.  Active playback/capture operations may continue without
+reopening the device, with only the reconnection/reconfiguration
+delay.
 
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
+2. Support reconnection at the alsa-lib layer.  I couldn't find
+anything that does this already.  Somehow all playback/capture file
+descriptors would need to be closed on command and
+reopened/reconfigured when a replacement device is identified.
+Anybody know of an easy way to do this with dmix?  Otherwise it seems
+like alsa-lib would be stuck funneling playback through an
+aserver/jackd process and that would be undesirable.
 
-======================================================================
+Opinions?  Does one seem like it would be more robust, more reusable,
+or more work than the other?
 
-----------------------------------------------------------------------
- carllivitt - 06-12-06 22:52 
-----------------------------------------------------------------------
-I've now got the latest hg build  - the modules are built and working
-fine... except of course there is no sound ;)
+As another individual pointed out a few months ago, there are some
+other problems with snd-usb-audio similar to those described above.
+If a certain usb audio device has open file handles and is
+disconnected or the system is suspended,
+snd_usb_audio_disconnect()->snd_card_free() will block in the khubd
+context while ALSA waits for the file handles to be closed, preventing
+khubd from doing anything else useful like processing probe requests.
+Using snd_card_free_in_thread() can be just as bad as it uses
+schedule_work() and blocks one of the "events" threads.  A hang in
+either context can cause problems for a resume-from-RAM operation.
 
-How do I determine which model I have (other than trying each one in
-turn)?
-
-----------------------------------------------------------------------
- rlrevell - 06-12-06 22:54 
-----------------------------------------------------------------------
-Check /proc/asound/card0/codec* to find out which codec you have then try
-all the models listed for that codec in the docs.  It's easy, just rmmod
-snd-hda-intel and modprobe again with each model.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
-06-12-06 21:51 carllivitt     Note Added: 0010174                          
-06-12-06 22:03 rlrevell       Note Added: 0010175                          
-06-12-06 22:52 carllivitt     Note Added: 0010176                          
-06-12-06 22:54 rlrevell       Note Added: 0010177                          
-======================================================================
+Thanks.
+-Sam Revitch
