@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002174]: No sound at all using
 	snd-hda-intel / alsa-1.0.11
-Date: Mon, 12 Jun 2006 23:35:28 +0200
-Message-ID: <182850e41142a9be66cf92572d2f3f68@bugtrack.alsa-project.org>
+Date: Mon, 12 Jun 2006 23:49:27 +0200
+Message-ID: <95fe576b073941ea05c2620b9ef422ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D62AA152
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1FC7215C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 23:35:28 +0200 (MEST)
+	Mon, 12 Jun 2006 23:49:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
 Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-12-2006 23:35 CEST
+Last Modified:              06-12-2006 23:49 CEST
 ======================================================================
 Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
@@ -66,15 +66,15 @@ were unresolved symbols that I couldn't resolve. I'm back to using the
 ======================================================================
 
 ----------------------------------------------------------------------
- carllivitt - 06-12-06 23:29 
-----------------------------------------------------------------------
-Do I need to pass any details to anyone / anywhere or will it be picked up
-from here?
-
-----------------------------------------------------------------------
  rlrevell - 06-12-06 23:35 
 ----------------------------------------------------------------------
 No, you've provided enough info.
+
+----------------------------------------------------------------------
+ carllivitt - 06-12-06 23:49 
+----------------------------------------------------------------------
+Ok, thanks for all your help. What's the best way for me to find out when a
+patch has been worked out... or will someone just post here?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -92,4 +92,5 @@ Date Modified  Username       Field                    Change
 06-12-06 23:14 rlrevell       Note Added: 0010179                          
 06-12-06 23:29 carllivitt     Note Added: 0010180                          
 06-12-06 23:35 rlrevell       Note Added: 0010181                          
+06-12-06 23:49 carllivitt     Note Added: 0010182                          
 ======================================================================
