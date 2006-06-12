@@ -1,10 +1,16 @@
-From: "Stefano D'Angelo" <zanga.mail@gmail.com>
-Subject: Re: USB sound card driver - Line6 Toneport UX1
-Date: Sun, 11 Jun 2006 11:35:11 +0200
-Message-ID: <160c13350606110235s273c663p24ac5205ff4b9511@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002140]: No sound from mic on Fujitsu
+	Siemens Amilo M3438G
+Date: Mon, 12 Jun 2006 09:19:46 +0200
+Message-ID: <7d043ebbc1f3af3f264522ee386449a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1721007098=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 92ED1148
+	for <alsa-devel@alsa-project.org>;
+	Mon, 12 Jun 2006 09:19:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,199 +20,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1721007098==
-Content-Type: multipart/alternative;
-	boundary="----=_Part_233_5984856.1150018511341"
 
-------=_Part_233_5984856.1150018511341
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2140> 
+======================================================================
+Reported By:                jacobs
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2140
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               OpenSuSE 10.1
+Kernel Version:             2.6.16.13
+======================================================================
+Date Submitted:             05-22-2006 10:17 CEST
+Last Modified:              06-12-2006 09:19 CEST
+======================================================================
+Summary:                    No sound from mic on Fujitsu Siemens Amilo M3438G
+Description: 
+I own a Fujitsu Siemens Amilo M3438G notebook with an onboard Azalia 7.1
+SPDIF chipset/codec (see spec sheet at
+http://www.fujitsu-siemens.de/ps/db/notebook/ds_amilo_m3438g_m4438g_d.pdf).
+OpenSuSE 10.1 (Kernel 2.6.16.13) is installed; the module snd-hda-intel is
+ loaded. Sound playback through the internal speakers and headphone does
+work but I am unable to get sound from the internal and external
+microphone. The alsamixer has three capture controls which all are set to
+capture and maximum volume. Each capture controls source is set to mic.
+The playback channel for mic is unmuted and also set to maximum volume but
+I just don't get a signal.
 
->
-> Stefano D'Angelo wrote:
-> >    urb->transfer_dma = runtime->dma_addr;
->
-> This will always play the data at the beginning of the buffer.
+I've tried to apply different model options to the snd-hda-intel module
+relating to the file ALSA-Configuration.txt without luck.
 
+This didn't work with OpenSuSE 10.0 (Kernel 2.6.13) either.
 
-fixed
+If you need any technical information please let me know.
+======================================================================
 
->    urb->transfer_buffer = usb_buffer_alloc (urb->dev,
-> > LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2, GFP_KERNEL,
-> &urb->transfer_dma);
->
-> This buffer should be allocated when the URB is allocated.
+----------------------------------------------------------------------
+ der_sprengmeister - 06-09-06 10:32 
+----------------------------------------------------------------------
+Hello el!
 
+Have you tried one of the 4 inputs I found in the second hack for your
+external Microphone?
 
-fixed
+----------------------------------------------------------------------
+ el - 06-12-06 09:19 
+----------------------------------------------------------------------
+Yes, but no sound except static on them.
 
->    memcpy (urb->transfer_buffer, runtime->dma_area + chip->playback_pos *
-> > 2, LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);
->
-> I hope the buffer size is a multiple of PACKET_SIZE_OUT * 2.
-
-
-it is
-
->    urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
->
-> Why the NO_TRANSFER_DMA_MAP?  You shouldn't need to do such
-> optimizations in the first version of the driver.
-
-
-ok
-
->    snd_pcm_period_elapsed (substream);
->
-> What is the period size?
-
-
-period size is 96 = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 (double
-buffering) / 2 (16 bit data), so everytime an urb is sent a period is
-elapsed.
-
-Here is how I'm doing right now but I still got the same beep for everything
-I play (when I used the copy () callback it kind of worked, is perphaps
-possible that the soundcard doesn't support dma transfers?):
-
-
-static void snd_line6_tp_ux1_complete_playback_transfer (struct urb* urb,
-                                                         struct pt_regs*
-regs)
-{
-    snd_pcm_substream_t *substream = (snd_pcm_substream_t *)(urb->context);
-    struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);
-    snd_pcm_runtime_t *runtime = substream->runtime;
-
-    chip->playback_pos += LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 / 2;
-    if (chip->playback_pos == runtime->buffer_size) {
-        chip->playback_pos -= runtime->buffer_size;
-
-    }
-
-    memcpy (urb->transfer_buffer, runtime->dma_area + chip->playback_pos *
-2, LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);
-
-    snd_pcm_period_elapsed (substream);
-
-    usb_submit_urb (urb, GFP_ATOMIC);
-}
-
-static int snd_line6_tp_ux1_pcm_trigger (snd_pcm_substream_t *substream,
-                                         int cmd)
-
-{
-    struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);
-    snd_pcm_runtime_t *runtime = substream->runtime;
-    static struct urb* urb;
-
-    switch (cmd) {
-    case SNDRV_PCM_TRIGGER_START:
-        urb = usb_alloc_urb (2, GFP_ATOMIC);
-        urb->dev = chip->dev;
-        urb->pipe = usb_sndisocpipe (urb->dev, 1);
-        urb->complete = snd_line6_tp_ux1_complete_playback_transfer;
-        urb->context = substream;
-
-        urb->transfer_dma = runtime->dma_addr;
-        urb->transfer_buffer = usb_buffer_alloc (urb->dev,
-                 LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2, GFP_ATOMIC,
-                 &urb->transfer_dma);
-        memcpy (urb->transfer_buffer, runtime->dma_area,
-                            LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);
-
-        urb->transfer_flags = URB_ISO_ASAP; // | URB_NO_TRANSFER_DMA_MAP;
-        urb->interval = 1;
-        urb->number_of_packets = 2;
-        urb->iso_frame_desc[0].offset = 0;
-        urb->iso_frame_desc[0].length = urb->iso_frame_desc[1].offset =
-        urb->iso_frame_desc[1].length =
-                                 LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT;
-        chip->playback_pos = 0;
-        usb_submit_urb (urb, GFP_KERNEL);
-            break;
-    case SNDRV_PCM_TRIGGER_STOP:
-        usb_buffer_free (chip->dev,
-
-                         LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2,
-                         urb->transfer_buffer, urb->transfer_dma);
-        usb_free_urb (urb);
-            break;
-    default:
-            return -EINVAL;
-        break;
-    }
-
-    return 0;
-}
-
-Thanks,
-Stefano
-
-------=_Part_233_5984856.1150018511341
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-<div><span class="q"><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-Stefano D'Angelo wrote:<br>&gt;&nbsp;&nbsp;&nbsp;&nbsp;urb-&gt;transfer_dma = runtime-&gt;dma_addr;<br><br>This will always play the data at the beginning of the buffer.</blockquote></span></div><div><div><br>fixed <br></div></div><div><span class="q">
-<br><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-&gt;&nbsp;&nbsp;&nbsp;&nbsp;urb-&gt;transfer_buffer = usb_buffer_alloc (urb-&gt;dev,<br>&gt; LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2, GFP_KERNEL, &amp;urb-&gt;transfer_dma);<br><br>This buffer should be allocated when the URB is allocated.
-</blockquote></span></div><div><div><br>fixed <br></div></div><div><span class="q"><br><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">&gt;&nbsp;&nbsp;&nbsp;&nbsp;memcpy (urb-&gt;transfer_buffer, runtime-&gt;dma_area + chip-&gt;playback_pos *
-<br>&gt; 2, LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);<br><br>I hope the buffer size is a multiple of PACKET_SIZE_OUT * 2.</blockquote></span></div><div><div><br>it is <br></div></div><div><span class="q"><br><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-
-&gt;&nbsp;&nbsp;&nbsp;&nbsp;urb-&gt;transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;<br><br>Why the NO_TRANSFER_DMA_MAP?&nbsp;&nbsp;You shouldn't need to do such<br>optimizations in the first version of the driver.</blockquote></span></div><div>
-<div><br>ok <br>
-</div></div><div><span class="q"><br><blockquote class="gmail_quote" style="border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">&gt;&nbsp;&nbsp;&nbsp;&nbsp;snd_pcm_period_elapsed (substream);<br><br>What is the period size?
-</blockquote>
-</span></div><div><br>period size is 96 = LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 (double buffering) / 2 (16 bit data), so everytime an urb is sent a period is elapsed.<br><br>Here
-is how I'm doing right now but I still got the same beep for everything
-I play (when I used the copy () callback it kind of worked, is perphaps
-possible that the soundcard doesn't support dma transfers?):
-</div><div><span class="q"><br><br>static void snd_line6_tp_ux1_complete_playback_transfer (struct urb* urb,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; struct pt_regs* regs)<br>{<br>&nbsp;&nbsp;&nbsp; snd_pcm_substream_t *substream = (snd_pcm_substream_t *)(urb-&gt;context);
-<br>&nbsp;&nbsp;&nbsp; struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);<br>&nbsp;&nbsp;&nbsp; snd_pcm_runtime_t *runtime = substream-&gt;runtime;<br><br></span></div><div>&nbsp;&nbsp;&nbsp; chip-&gt;playback_pos += LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2 / 2;
-<br>
-&nbsp;&nbsp;&nbsp; if (chip-&gt;playback_pos == runtime-&gt;buffer_size) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; chip-&gt;playback_pos -= runtime-&gt;buffer_size;</div><div><span class="q"><br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; memcpy (urb-&gt;transfer_buffer, runtime-&gt;dma_area + chip-&gt;playback_pos * 2, LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);
-<br><br></span></div><div><span class="q">&nbsp;&nbsp;&nbsp; snd_pcm_period_elapsed (substream);<br><br></span></div><div><span class="q">&nbsp;&nbsp;&nbsp; usb_submit_urb (urb, GFP_ATOMIC);<br>}<br><br></span></div><div>static int snd_line6_tp_ux1_pcm_trigger (snd_pcm_substream_t *substream,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int cmd)
-</div><div><span class="q"><br>{<br>&nbsp;&nbsp;&nbsp; struct snd_line6_tp_ux1 *chip = snd_pcm_substream_chip (substream);<br>&nbsp;&nbsp;&nbsp; snd_pcm_runtime_t *runtime = substream-&gt;runtime;<br></span></div><div>&nbsp;&nbsp;&nbsp; static struct urb* urb;<br><br>
-&nbsp;&nbsp;&nbsp; switch (cmd) {<br>&nbsp;&nbsp;&nbsp; case SNDRV_PCM_TRIGGER_START:
-<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb = usb_alloc_urb (2, GFP_ATOMIC);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;dev = chip-&gt;dev;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;pipe = usb_sndisocpipe (urb-&gt;dev, 1);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;complete = snd_line6_tp_ux1_complete_playback_transfer;
-<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;context = substream;</div><div><span class="q"><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;transfer_dma = runtime-&gt;dma_addr;<br></span></div><div><span class="q">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;transfer_buffer = usb_buffer_alloc (urb-&gt;dev,
-<br></span></div><div>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2, GFP_ATOMIC,
-<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;urb-&gt;transfer_dma);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; memcpy (urb-&gt;transfer_buffer, runtime-&gt;dma_area,<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2);</div><div><span class="q"><br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;transfer_flags = URB_ISO_ASAP; // | URB_NO_TRANSFER_DMA_MAP;
-<br></span></div><div>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;interval = 1;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;number_of_packets = 2;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;iso_frame_desc[0].offset = 0;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;iso_frame_desc[0].length = urb-&gt;iso_frame_desc[1].offset =
-<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; urb-&gt;iso_frame_desc[1].length =
-<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; chip-&gt;playback_pos = 0;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; usb_submit_urb (urb, GFP_KERNEL);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp;&nbsp; case SNDRV_PCM_TRIGGER_STOP:<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; usb_buffer_free (chip-&gt;dev,
-</div><div><span class="q"><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LINE6_TP_UX1_48000_16_PACKET_SIZE_OUT * 2,<br></span></div>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; urb-&gt;transfer_buffer, urb-&gt;transfer_dma);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; usb_free_urb (urb);<br>
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp;&nbsp; default:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return -EINVAL;
-<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; return 0;<br>}<br><br>Thanks,<br>Stefano
-
-------=_Part_233_5984856.1150018511341--
-
-
---===============1721007098==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1721007098==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1721007098==--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-22-06 10:17 jacobs         New Issue                                    
+05-22-06 10:17 jacobs         Distribution              => OpenSuSE 10.1   
+05-22-06 10:17 jacobs         Kernel Version            => 2.6.16.13       
+05-23-06 07:35 jacobs         Issue Monitored: jacobs                      
+05-26-06 19:13 el             Issue Monitored: el                          
+05-26-06 19:26 el             Note Added: 0009979                          
+05-29-06 08:26 jacobs         Note Added: 0010007                          
+06-07-06 11:14 der_sprengmeisterNote Added: 0010079                          
+06-07-06 11:48 der_sprengmeisterIssue Monitored: der_sprengmeister              
+     
+06-08-06 22:04 el             Note Added: 0010117                          
+06-09-06 10:32 der_sprengmeisterNote Added: 0010136                          
+06-09-06 10:32 der_sprengmeisterNote Added: 0010137                          
+06-12-06 09:19 el             Note Added: 0010166                          
+======================================================================
