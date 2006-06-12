@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Mon, 12 Jun 2006 03:31:53 +0200
-Message-ID: <50bce2307c7397d2d34b5daecc8cfe14@bugtrack.alsa-project.org>
+Date: Mon, 12 Jun 2006 03:41:07 +0200
+Message-ID: <60d12ab5b3c3e6e6986392721226888a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A92D3149
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 925B0148
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 03:31:53 +0200 (MEST)
+	Mon, 12 Jun 2006 03:41:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,19 +41,13 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-12-2006 03:31 CEST
+Last Modified:              06-12-2006 03:41 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
 Alsa seems to detect the sound card, but when I try to actually play
 something there is no sound from the speakers.
 ======================================================================
-
-----------------------------------------------------------------------
- bzbarsky - 06-11-06 22:38 
-----------------------------------------------------------------------
-Attached the new dmesg output with those changes, as well as the same
-output grepped for "codec".
 
 ----------------------------------------------------------------------
  Raymond - 06-12-06 03:31 
@@ -77,6 +71,15 @@ What is the purpose of adding cond_resched() in
 snd_es1371_wait_src_ready() ?
 
 http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=48487b6ce515;style=gitweb
+
+----------------------------------------------------------------------
+ rlrevell - 06-12-06 03:41 
+----------------------------------------------------------------------
+Same as any cond_resched() - so that other processes are not excessively
+delayed on !PREEMPT kernels.
+
+It seems that the reads need to be throttled.  Try replacing cond_resched
+with msleep.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -121,4 +124,5 @@ Date Modified  Username       Field                    Change
 06-11-06 22:37 bzbarsky       File Added: codec_lines.txt                    
 06-11-06 22:38 bzbarsky       Note Added: 0010154                          
 06-12-06 03:31 Raymond        Note Added: 0010157                          
+06-12-06 03:41 rlrevell       Note Added: 0010158                          
 ======================================================================
