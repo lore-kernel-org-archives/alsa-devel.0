@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002106]: Sound card snd-hda-intel
-	emits NO sound
-Date: Mon, 12 Jun 2006 13:17:16 +0200
-Message-ID: <ecd5fb1559312238c425bf7e8c186ad1@bugtrack.alsa-project.org>
+From: Meelis Roos <mroos@linux.ee>
+Subject: snd-cs4281 and default buffer size
+Date: Mon, 12 Jun 2006 14:17:28 +0300 (EEST)
+Message-ID: <Pine.SOC.4.61.0606121409370.24571@math.ut.ee>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE897155
-	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jun 2006 13:17:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,157 +15,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Yesterday I struggled with Skype on IBM X20. This laptop has CS4281 
+onboard that didn't work in 2.6.16 but is working in 2.6.17-rc*. Mplayer 
+and most other applications work OK, with both native ALSA and 
+snd_pcm_oss emulation.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2106> 
-======================================================================
-Reported By:                louisvd
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2106
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2111_FC5smp
-======================================================================
-Date Submitted:             05-08-2006 21:00 CEST
-Last Modified:              06-12-2006 13:17 CEST
-======================================================================
-Summary:                    Sound card snd-hda-intel emits NO sound
-Description: 
-Hi
+But Skype had very distorted and chopped sound. Some googling showed 
+that people use the following two lines to change (increase?) the 
+buffer sizes in OSS emulation to get it to work. These 2 lines fixed it 
+for me too:
 
-I was merrily running Fedora Core 4 and after upgrading the kernel to
-2.6.16 my sound no longer worked under Linux (it works under Windows). 
-After a lot of battling I figured I may as well upgrade to FC5 now.  A
-clean install, out of the box, and the sound STILL did not work.  I've
-applied every available patch to date and no luck.  Tonight I installed
-the Alsa 1.0.11 driver, lib and util tarballs -- all installed
-successfully -- but there is STILL no sound produced.
+echo "skype 256 65535 direct block" > /proc/asound/card0/pcm0p/oss
+echo "skype 256 65535 direct block" > /proc/asound/card0/pcm0c/oss
 
-Everything LOOKS normal.  There are no errors that I can detect.  In the X
-and console versions of Alsamixer I have ALL the devices displayed and
-unmuted with the volumes at max. I've removed the sound lines from
-modprobe.conf and am running with alsasound and that didn't help either --
-even though it says the driver has been loaded.
+But this seems to be needed only for some sound drivers, other work wine 
+out of the box (there's been a lot of discussion about this in Skype 
+forum).
 
-FYI, the OSS Volume control calls it a Realtek ALC260.  lspci refers to it
-as Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller
-(rev 01).
+Leaving aside the weak sound support in Skype, why do some drivers need 
+increasing the buffers and some don't?
 
-
-Please help.
-======================================================================
-
-----------------------------------------------------------------------
- jstraw - 05-12-06 20:05 
-----------------------------------------------------------------------
-I have been having the same problem.
-
-I applied the patch and installed the new alsa driver:
-
-$ cat /proc/asound/version 
-Advanced Linux Sound Architecture Driver Version 1.0.11.
-Compiled on May 12 2006 for kernel 2.6.16-1.2111_FC5smp (SMP).
-
-$ cat /etc/modprobe.conf
-alias eth0 tg3
-alias scsi_hostadapter ata_piix
-alias snd-card-0 snd-hda-intel
-options snd-card-0 index=0
-options snd-hda-intel index=0
-remove snd-hda-intel { /usr/sbin/alsactl store 0 >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-hda-intel
-
-
-The model doesn't get set:
-
-$ cat /sys/module/snd_hda_intel/parameters/*
-N
-<NULL>
-0
-<NULL>
-0
--1
-N
-
-But I do get sound!
-
-----------------------------------------------------------------------
- godeater - 06-12-06 13:17 
-----------------------------------------------------------------------
-I'd been having a similar issue here - again with the HP dc7600 small form
-factor desktop PC.
-
-I'm running gentoo, the kernel is 2.6.16-gentoo-r9 (latest in portage at
-time of writing). I've been unable to get any sound at all from the kernel
-driver for intel-hda, and the alsa-driver that's current in portage was
-similarly unsuccessful.
-
-I've now got it working by downloading alsa-driver version 1.0.11rc5 and
-installing it manually.
-
-/etc/modules.d/alsa looks like this :
-alias /dev/mixer snd-mixer-oss
-alias /dev/dsp snd-pcm-oss
-alias /dev/midi snd-seq-oss
-
-# Set this to the correct number of cards.
-
-# --- BEGIN: Generated by ALSACONF, do not edit. ---
-# --- ALSACONF version 1.0.11 ---
-alias snd-card-0 snd-hda-intel
-alias sound-slot-0 snd-hda-intel
-# --- END: Generated by ALSACONF, do not edit. ---
-
-options snd-hda-intel model=auto index=0 position_fix=1
-options snd-card-0 index=0
-options snd-pcm-oss dsp_map=0
-
-lcpci -nv for the sound portion looks like this :
-00:1b.0 0403: 8086:27d8 (rev 01)
-        Subsystem: 103c:3011
-        Flags: bus master, fast devsel, latency 0, IRQ 217
-        Memory at e04c0000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-Hope this helps - let me know if there's anything else I need to report :)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-08-06 21:00 louisvd        New Issue                                    
-05-08-06 21:00 louisvd        Distribution              => Fedora Core 5   
-05-08-06 21:00 louisvd        Kernel Version            => 2.6.16-1.2111_FC5smp
-05-10-06 16:16 tiwai          Note Added: 0009722                          
-05-10-06 16:52 louisvd        Note Added: 0009731                          
-05-10-06 16:55 tiwai          Note Added: 0009732                          
-05-10-06 20:02 louisvd        Note Added: 0009751                          
-05-12-06 00:40 louisvd        Note Added: 0009770                          
-05-12-06 10:31 UMMO           Issue Monitored: UMMO                        
-05-12-06 16:11 tiwai          Note Added: 0009778                          
-05-12-06 17:18 louisvd        Note Added: 0009782                          
-05-12-06 17:36 tiwai          Note Added: 0009783                          
-05-12-06 17:54 UMMO           Issue End Monitor: UMMO                      
-05-12-06 17:58 louisvd        Note Added: 0009784                          
-05-12-06 18:34 tiwai          Note Added: 0009786                          
-05-12-06 18:34 tiwai          File Added: alc260-hp-init-fix.diff               
-    
-05-12-06 19:46 jstraw         Issue Monitored: jstraw                      
-05-12-06 20:05 jstraw         Note Added: 0009789                          
-05-19-06 16:39 joppe          Issue Monitored: joppe                       
-06-12-06 13:17 godeater       Note Added: 0010167                          
-======================================================================
+-- 
+Meelis Roos (mroos@linux.ee)
