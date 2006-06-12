@@ -1,15 +1,20 @@
-From: Barry Scott <barry.scott@onelan.co.uk>
-Subject: Re: 2.6.17-rc6 sound drivers have section
-	mismatch	errors
-Date: Mon, 12 Jun 2006 11:29:44 +0100
-Message-ID: <448D4218.6010900@onelan.co.uk>
-References: <44895FE5.6040900@onelan.co.uk>	<s5hirnaechx.wl%tiwai@suse.de>	<s5h4pyueb00.wl%tiwai@suse.de>	<44899D17.4050808@onelan.co.uk>
-	<s5hirn6d8hn.wl%tiwai@suse.de>
+From: =?iso-2022-jp?B?YXBwbGVz?= <apples@21cn.com>
+Subject: =?iso-2022-jp?b?GyRCPVAycSQkN08hSk4iIUtKVD04SXQbKEI=?=
+Date: Mon, 12 Jun 2006 12:44:14 +0200 (MEST)
+Message-ID: <20060612104414.178F19948F@mail.perex.cz>
+Reply-To: yongyuanaini_@163.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hirn6d8hn.wl%tiwai@suse.de>
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 32E37155
+	for <alsa-devel@alsa-project.org>;
+	Mon, 12 Jun 2006 12:44:17 +0200 (MEST)
+Received: from alsa-project.org (unknown [222.169.111.254])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	178F19948F for <alsa-devel@alsa-project.org>;
+	Mon, 12 Jun 2006 12:44:14 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,43 +24,13 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Fri, 09 Jun 2006 17:08:55 +0100,
-> Barry Scott wrote:
->   
->> Takashi Iwai wrote:
->>     
->>>>> WARNING: sound/isa/sb/snd-sbawe.o - Section mismatch: reference to 
->>>>> .init.text:snd_emu8000_new from .text between 'snd_sb16_probe' (at 
->>>>> offset 0x440) and 'snd_sb16_nonpnp_remove'
->>>>> WARNING: sound/isa/snd-opl3sa2.o - Section mismatch: reference to 
->>>>> .init.text: from .text between 'snd_opl3sa2_pnp_cdetect' (at offset 
->>>>> 0xe61) and 'snd_opl3sa2_pnp_detect'
->>>>> WARNING: sound/isa/snd-opl3sa2.o - Section mismatch: reference to 
->>>>> .init.text: from .text between 'snd_opl3sa2_pnp_detect' (at offset 
->>>>> 0xf52) and 'snd_opl3sa2_put_single'
->>>>>
->>>>> The Linux Dev folks are looking for someone to look at these problems.
->>>>>       
->>>>>           
->>>> The patch below should fix.
->>>>     
->>>>         
->> The patch fixed the warning for sound. Many thanks.
->>     
->
-> Thanks for confirmation.  The patch is already in ALSA HG tree.
->
->
-> Takashi
->   
-Where is Alsa HG tree?
+結婚後久しぶりに会ったライバル同級生から
+「貴方、終わったわね」
+人妻は悔しさでいっぱい・・・。
+http://11487.com/
 
-When will you submit the patch to linux to fix the 2.7.17-rc6 build 
-problems?
-
-Barry
+aaaa194768574875
+pizzzz@eyou.com
