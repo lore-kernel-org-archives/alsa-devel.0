@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002174]: No sound at all using
 	snd-hda-intel / alsa-1.0.11
-Date: Tue, 13 Jun 2006 18:53:12 +0200
-Message-ID: <f62eb25fe5a2c54c1f2d277a9c021bb7@bugtrack.alsa-project.org>
+Date: Tue, 13 Jun 2006 18:58:50 +0200
+Message-ID: <6599f91fb5d53089f166c08dcf243e94@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BB6F187
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B1611187
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jun 2006 18:53:12 +0200 (MEST)
+	Tue, 13 Jun 2006 18:58:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
 Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-13-2006 18:53 CEST
+Last Modified:              06-13-2006 18:58 CEST
 ======================================================================
 Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
@@ -66,11 +66,6 @@ were unresolved symbols that I couldn't resolve. I'm back to using the
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-13-06 18:13 
-----------------------------------------------------------------------
-Please attach the lspci -nv output - don't post it inline.
-
-----------------------------------------------------------------------
  jlpedrosa - 06-13-06 18:53 
 ----------------------------------------------------------------------
 do you get any strange message from sound module in dmseg? 
@@ -82,6 +77,19 @@ and i don't get master volume in alsamixer or kmixer...
 but mi mic works perpectly amarok don't crashes (just dont sounds but
 reproduces it)... maybe it the same issue..
 it's opened here also #0002335
+
+----------------------------------------------------------------------
+ rlrevell - 06-13-06 18:58 
+----------------------------------------------------------------------
+jlpedrosa, I do not see an issue #2335 in the ALSA bug tracker.
+
+Did you try all the models for ALC861 listed in ALSA-Configuration.txt?
+
+        ALC861  
+          3stack        3-jack  
+          3stack-dig    3-jack with SPDIF I/O
+          6stack-dig    6-jack with SPDIF I/O
+          auto          auto-config reading BIOS (default)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -104,4 +112,5 @@ Date Modified  Username       Field                    Change
 06-13-06 15:33 godeater       Note Added: 0010193                          
 06-13-06 18:13 rlrevell       Note Added: 0010198                          
 06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
+06-13-06 18:58 rlrevell       Note Added: 0010200                          
 ======================================================================
