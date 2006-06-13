@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Tue, 13 Jun 2006 15:33:13 +0200
-Message-ID: <26ddf55e27b476e9735313d6e79eb89c@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: stateful reconnect with snd-usb-audio
+Date: Tue, 13 Jun 2006 15:53:11 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0606131549190.10493@tm8103.perex-int.cz>
+References: <8d4807d50606121405n51edef2au3de163b01029aaf5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD140169
-	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jun 2006 15:33:13 +0200 (MEST)
+In-Reply-To: <8d4807d50606121405n51edef2au3de163b01029aaf5@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,80 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Sam Revitch <sam.revitch@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 12 Jun 2006, Sam Revitch wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
-======================================================================
-Reported By:                carllivitt
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2174
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
-======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-13-2006 15:33 CEST
-======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
-Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
+> Opinions?  Does one seem like it would be more robust, more reusable,
+> or more work than the other?
 
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
+How other drivers work? Network, video? I've not checked the code, but
+I guess they don't care, too.
 
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
+> As another individual pointed out a few months ago, there are some
+> other problems with snd-usb-audio similar to those described above.
+> If a certain usb audio device has open file handles and is
+> disconnected or the system is suspended,
+> snd_usb_audio_disconnect()->snd_card_free() will block in the khubd
+> context while ALSA waits for the file handles to be closed, preventing
+> khubd from doing anything else useful like processing probe requests.
+> Using snd_card_free_in_thread() can be just as bad as it uses
+> schedule_work() and blocks one of the "events" threads.  A hang in
+> either context can cause problems for a resume-from-RAM operation.
 
-I've also tried using the 'single_cmd=1' module loading option. 
+Do you suggest a better solution? The original idea was to free slot (card 
+number) before a next probe to guarantee that reconnect will grab this 
+slot.
 
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
+					Thanks,
+						Jaroslav
 
-======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 06-12-06 23:58 
-----------------------------------------------------------------------
-When it's fixed someone will update this bug report.
-
-----------------------------------------------------------------------
- godeater - 06-13-06 15:33 
-----------------------------------------------------------------------
-An lspci -nv is quite useful in determining the subsystem id. If you can
-just cut out the bit referring to your sound card it would reduce the
-amount of hunting through that we'd have to do as well (00:1b.0)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
-06-12-06 21:51 carllivitt     Note Added: 0010174                          
-06-12-06 22:03 rlrevell       Note Added: 0010175                          
-06-12-06 22:52 carllivitt     Note Added: 0010176                          
-06-12-06 22:54 rlrevell       Note Added: 0010177                          
-06-12-06 23:10 carllivitt     Note Added: 0010178                          
-06-12-06 23:14 rlrevell       Note Added: 0010179                          
-06-12-06 23:29 carllivitt     Note Added: 0010180                          
-06-12-06 23:35 rlrevell       Note Added: 0010181                          
-06-12-06 23:49 carllivitt     Note Added: 0010182                          
-06-12-06 23:58 rlrevell       Note Added: 0010183                          
-06-13-06 15:33 godeater       Note Added: 0010193                          
-======================================================================
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
