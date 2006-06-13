@@ -1,19 +1,15 @@
-From: "Michael Yarbrough" <rlkcglxkkeag@creativeclayworks.com>
-Subject: had
-Date: Mon, 12 Jun 2006 19:12:56 -0400
-Message-ID: <002e01c68e75$fa2a227e$5a456347@arh.xbw>
+From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
+Subject: Re: AudioScience asihpi HPI + ALSA drivers released.
+Date: Tue, 13 Jun 2006 12:11:42 +1200
+Message-ID: <200606131211.46584.linux@blennerhassett.gen.nz>
+References: <200606091953.37432.linux@blennerhassett.gen.nz>
+	<s5hzmgmcv5o.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1201846026=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 30E77163
-	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jun 2006 01:14:46 +0200 (MEST)
-Received: from pool-71-99-108-111.tampfl.dsl-w.verizon.net
-	(pool-71-99-108-111.tampfl.dsl-w.verizon.net [71.99.108.111])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	9D4A2994EE for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jun 2006 01:14:42 +0200 (MEST)
+In-Reply-To: <s5hzmgmcv5o.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,657 +19,211 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
-
---===============1201846026==
-Content-Type: multipart/related; type="multipart/alternative";
-	boundary="----=_NextPart_000_002A_01C68E54.731881FA"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_002B_01C68E54.7318821B"
-
-
-------=_NextPart_001_002B_01C68E54.7318821B
-Content-Type: text/plain;
-	charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-
-
-
-
-
-
-
-
-------=_NextPart_001_002B_01C68E54.7318821B
-Content-Type: text/html;
-	charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dwindows-1252">
-<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001001c68e75$fa2a1ea0$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001101c68e75$fa2a1ec1$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001201c68e75$fa2a1ee2$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001301c68e75$fa2a1f03$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001401c68e75$fa2a1f24$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001501c68e75$fa2a1f45$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001601c68e75$fa2a1f66$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001701c68e75$fa2a1f87$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001801c68e75$fa2a1fa8$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001901c68e75$fa2a1fc9$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001a01c68e75$fa2a1fea$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001b01c68e75$fa2a200b$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001c01c68e75$fa2a202c$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001d01c68e75$fa2a204d$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001e01c68e75$fa2a206e$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:001f01c68e75$fa2a208f$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:002001c68e75$fa2a20b0$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:002101c68e75$fa2a20d1$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:002201c68e75$fa2a20f2$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:002301c68e75$fa2a2113$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:002401c68e75$fa2a2134$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:002501c68e75$fa2a2155$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:002601c68e75$fa2a2176$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:002701c68e75$fa2a2197$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:002801c68e75$fa2a21b8$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0><IMG alt=3D"" hspace=3D0=20
-src=3D"cid:002901c68e75$fa2a21d9$5a456347@arh.xbw" align=3Dbaseline=20
-border=3D0></FONT></DIV></BODY></HTML>
-
-------=_NextPart_001_002B_01C68E54.7318821B--
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="propagandize.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001001c68e75$fa2a1ea0$5a456347@arh.xbw>
-
-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
-coKzzugEAQA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="eulogy.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001101c68e75$fa2a1ec1$5a456347@arh.xbw>
-
-R0lGODdhDADRAIQAAC1Y5/NoJgo6KS8lt1uEOw014vx+aQ1Svv4xuozeQB4LmAb+ASwIO1Y4YQ6U
-5UmhG/vq+7C7phweHB8bE1NcSouMlHJlfzw7ItbMxQAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
-DADRAAAF/iAkjmRpnmiqrmzrvnAsz3TNRlIp5SKu+qad8MdDAY3F01GZtDlruElJ2pNMIqMjjkIZ
-cbOS4xUMmVQgFQq2CrFcIJfIGuLDSDDSOfAysdDJaHd/T4SFhoeIiYqLjIZbEn4kFRY4kVNXgiUR
-E2FNIhRWSyNhlJ4VVKJllo2sra6vsLGysySQJBigE10mF10YF6sQdhg9VCN2Qjslw8e8uxRvy6AS
-F8S019jZ2odmOMm2PqkQX+JhdKbR3skRF2fnJsapu+/LYN/B2ym4nH3WWHgWiO0jhgVYiV50mEnK
-Y8dEOIVZpBAzSAKhwH7CKEywJmKfFQoc84kcSbKkSSL0OzTlEBfO0zuWK122ZHIOg00SLXfMe+ny
-ZCsc7l5WyRSuCjQ2a3yYEcoTQ1F60J6KATVIi7KkSajOSRECADs=
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="booze.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001201c68e75$fa2a1ee2$5a456347@arh.xbw>
-
-R0lGODdhGwDRAOMAAEyEp07inmTKFvOGeJCPtPvq+xweHLC7pjw7Ih8bE3Jlf4uMlNbMxVNcSgAA
-AAAAACwAAAAAGwDRAAAE/rDISau9OOvNu/9gKI5kaZ5oqq5s674wZ8zzYVB2ketIYiSKyU53E952
-hoWEgQgSjbjjjZG8DG002rOgmDUZUMnwOWQsGj7ldk2egidocZGdyy0SUXlYvwOCmQ16gnxFDGg/
-TjGKi4pzhj5+cngUPkQzS5GPYDYJB0ZSBUVNFQiBNg2BEqigUwZvE3dEQ52sBVQWdTcJSme5l1Sv
-Yng5CggFCAe5oRKjFKVPwMO1tplom6JAbctLhwkNbzsLrm1zjObn6Onq6+zt7u/w8fLzDeODclkG
-ClhZDYljbO4hmxQQIBslCNQANFhGQqyC+Qwky5KgYg2IuIocSMCgIyqM/hWGqCHCwEbHkwzLUdqX
-rwE/GiznyZxJs6bNmzhz6tzJs+fOjxI62arnbYICHwiCCdrILBCTIMAKAK0g1J8te0ypKFBKQUEg
-jlfziUHwYyQFKkyvvvrjiQtBqtmaqjKGtsBDC13W1jOQVMJRvm0tLDB2gonZEad8Kl7MuLHjxzJf
-8r0mhCxgMXngGNuxUY04T4HpgCoQ12GQ0GUabG7FVUcUGt4o37KSOSRr2nsyJ+w6rHZmG56roFY5
-6IBlZJghKy7ni0bfKASZj55rW+g2Qr6JAJW+xhBhI0jyvIxtm7QS7px3ZeRizJ5dabAklgdW6s+o
-MarLH+PYzckYrZmJjaPcgAQWaOCBCCao4Aoj5RCRRMR9As4cV0QoR35rVJhBDuppeE95JnkYUGaq
-iWjQHt5QqOKGKq4ox0kd+VbPHpKl8uGCOM6Tz3PcQLLVh+Uc9QYD1YAFkEpANTPBM0eGhEdUFMTS
-ZB6ziaeSSlm5J0xASKaipFxT2pIXJj9qQhKMFH1zVjdqWkKDjShEAAA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="spinach.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001301c68e75$fa2a1f03$5a456347@arh.xbw>
-
-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
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="solemnity.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001401c68e75$fa2a1f24$5a456347@arh.xbw>
-
-R0lGODdhbAELAIQAAELFrt4Y8hiB53UK2lRIAWDN+SV49Vk22gL3jJrSwP8Vhvvq+4uMlBweHHJl
-fx8bEzw7ItbMxbC7plNcSlZHRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
-bAELAAAF2+AijmRpnmiqrmzrvnAsz3Rt33iu73zv/8CgcEgsGo/IpHLJbDqf0Kh0Sq1acYwG48rt
-er/gl+PRgDwi4bR6zSZJGnA4BE2KNG729wIyGU0aDw4mY2USIoQQhm2LjI03en4QPnl3EXQTkhEP
-WyMMZwtjC55ooY6mp6gnkCJ6b38UdwsRf4Eis4B9srEkDQ67Ig2KDJInDrkjxqnKy42rs5JvgpB8
-spt7fREQgigSZBCcdiOrnYB0ouXM6epgb3EPE2hv8ZUNdJZ2dN0q0bXhrL8kMJUQuK6gwSIhAAA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="reticence.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001501c68e75$fa2a1f45$5a456347@arh.xbw>
-
-R0lGODdhKgALAIQAAHwmy4TJv28QOSLlWsNnaaq7AA0TpakkAuSUy843sLC01nw4nzynsHXJldCM
-/Dk3uDpEy+Du7+LShK6gvF5RcDXNqdUKUIWAGhtQp/vq+wAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
-KgALAAAFGGAmjmRpnmiqrmzrvnAsz3Rt33iu73y/hwA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="deacon.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001601c68e75$fa2a1f66$5a456347@arh.xbw>
-
-R0lGODdhGwADAIQAAEbEtlH/yULcmXjm3OYGwDPB1XOH8ejNoHdL0A8HIKNO5Fmg5CPiwb1bp5lB
-rVl1bvvq+7C7phweHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
-GwADAAAFEiAkjuQYSaV4qmm7pm/UwiithgA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="wrangle.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001701c68e75$fa2a1f87$5a456347@arh.xbw>
-
-R0lGODdhHAADAIQAALwUPdzCLyDPPGzXt8FNwfqxA0F28igIux1mwlvNv+mJ1Cdml1eGZpPzPkq0
-iwyvPRweHPvq+9bMxbC7pouMlB8bEzw7IlNcSnJlfwAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
-HAADAAAFJCAUSWJkjlCqnuw5pahkThQpm3c7Vm9pXTtK5Ge6WHSnCgYSAgA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="beaker.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001801c68e75$fa2a1fa8$5a456347@arh.xbw>
-
-R0lGODdhoAADAOMAAOuKDPj+Fvvq+4uMlB8bE9bMxRweHLC7pjw7InJlf1NcSgAAAAAAAAAAAAAA
-AAAAACwAAAAAoAADAAAEO1AMIooR+FzM8+ZaJ45kaZ5oqq5sC27GgQ1IlyQZdedu7//AIKuAUGAU
-tQJh0NEUBEWBE2oUWq/Y7CgCADs=
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="corpulent.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001901c68e75$fa2a1fc9$5a456347@arh.xbw>
-
-R0lGODdhBwADAIQAAFXm7T89AZpm8C4OpWlrBHn5VoFSnF7fvLdBgjCQugPlofAl3vLAROPuUohX
-vo3Rt+NTCX+y6TxpK76au3idoRmOxviBh/vq+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
-BwADAAAFBuAljmRphgA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="hostilities.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001a01c68e75$fa2a1fea$5a456347@arh.xbw>
-
-R0lGODdhGgADAOMAADWIuZYOM+V8ktqUL4pE2BlzdH+zc5iab5YWsLmFAC+7ielRmBw3FPvq+wAA
-AAAAACwAAAAAGgADAAAECbDJSau9OOvNIwA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="nobleman.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001b01c68e75$fa2a200b$5a456347@arh.xbw>
-
-R0lGODdhDgADAOMAAHTnksYOQRoIcS46+sAfLyDiExI7I3hTuou8Jcpz0znnu8yuyfvq+wAAAAAA
-AAAAACwAAAAADgADAAAEB5DJSau92EYAOw==
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="Braille.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001c01c68e75$fa2a202c$5a456347@arh.xbw>
-
-R0lGODdhMwADAIAAACihN/vq+ywAAAAAMwADAAACCoyPqcvtD6OctBYAOw==
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="ceaselessly.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001d01c68e75$fa2a204d$5a456347@arh.xbw>
-
-R0lGODdhMAADAIQAADBtAxhF1lt//ERihxNvLqWROGdocL5BNKeJ+uegQ8nQsM3p9qRFdaGJ2Cic
-R1dC2Y+pQf9ngzQPDC72rXHAfiKNaBgxrY7SN2b61Pvq+wAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
-MAADAAAFD2AmjmRpnmiqrmzrvjAaAgA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="burnt.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001e01c68e75$fa2a206e$5a456347@arh.xbw>
-
-R0lGODdhLQADAIAAAPvq+wAAACwAAAAALQADAAACCoSPqcvtD6OcswAAOw==
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="deductible.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <001f01c68e75$fa2a208f$5a456347@arh.xbw>
-
-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
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="immunity.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <002001c68e75$fa2a20b0$5a456347@arh.xbw>
-
-R0lGODdhGwC/AIQAAJw77AfY8FiCpw15X53VMIyIEDL24Oi/1xybpi0qZrvHoqjOepkn/EA0dqDR
-TNFe1Pvq+9bMxbC7phweHFNcSh8bE3Jlfzw7IouMlImKnSye+AAAAAAAAAAAAAAAAAAAACwAAAAA
-GwC/AAAF/iAkjmRpnmiqrmzrvnAsz3Rt33iu73zv/8CgcEgsGo/IpHLJbDqf0Kh0Sq1ar9isMeKS
-TFKRr3c1Ro3LJMqkYoGUL5TSZO61rCWieKSCGcNNZxNtFhUiXBAREV4UhYBiX26QJV4XE3iTjyJl
-hxJ9X4SOkZpfEXp8ZWwlYaKipWttZV6HIxUTGZBoWrq7NLM2qy25mF1faxiRanOkahVxhsx2IqB1
-rH8RF20Q1rWI0bKtE5yFYYcYX3CZ4MpziJKx6WPkI1zyrZWswH8QFBd5evcXvEhAUytRsguzoEni
-xTCHmlnCXEygkI2ViFfIBJXAELCRRUPYqJngo+3YRxEY/ip8m9Qo5ShHEfetqWXpJISUMS0lKhVH
-2DULEV2OkCVrJ8aIqUiw8bKuodOnUKNKnUpVxTplmipNCPhy6MJcEkjerAn268KkKGGZJYGmHqar
-aw0tZGv2kkW3dOk6+3jBpLRCZcN1HWXS3LGySYVJ0Mr1Y8yqTTRAphFoGLGTj09UzosIGgSxGjd7
-FWENm4WeW0UpJiX4pspCpwGnGw1MVIVrYQfOflnPJcVCFEV3Ld0mZT9zwvF5vtim9uTn0GUgtAmD
-H/UXm101m3ehllhCW62/+ZcN2992XChQ4BKvdVhDhqKFseCr/VWUFSqgy7qGdmtE7VwSzyUVjZdH
-P2HgG3ENa3j4tclBh4AXUE0SRmfhhRhmqOGGHLIQAgA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="naturalize.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <002101c68e75$fa2a20d1$5a456347@arh.xbw>
-
-R0lGODdhDwC/AOMAAGGqcO4zXmHlpj4qfnCmTdUg6/vq+9bMxRweHLC7pjw7Ih8bE4uMlHJlf1Nc
-SomKnSwAAAAADwC/AAAE/tDISau9OOvNu/9gKI5kaZ5oqq5s675wLM90bd94rs9HdyCVniUBDCoW
-iAXDgGhSEoqGpLEwECsJ4aEBvD4Zi4XC0S1OiAnJ1XtGpA8K4A9LRSjQBqTQuuuf9hpzHGwaTW4I
-ZA1wVW1WCFIGUVhlWkNlE2CMapcGP2kUc16eFkgPZnV+L4RBRasYro2OGV6wm7avrWaWnUQHvr5P
-QA5EhojBqcjJysvMIQcOSAuKFwfSPc8LgBKSFGOs2mCsu6AI2gmaE9zpDhbV09jaEthJDvHN9yPE
-TQqzp3nxbBKcu8CmQQN2lordIWhG0DgJCB8eWOJwkyF0+DLS4NeBgRYyLAsiTni2jR0cSO3KqcFo
-gGIxJxWq/NgTj5E3Aw44PpFHxo49jUCDCh1KFEMEADs=
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="visualize.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <002201c68e75$fa2a20f2$5a456347@arh.xbw>
-
-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
-6EynOtfJzna6853wjKc852mGIAAAOw==
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="conjugal.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <002301c68e75$fa2a2113$5a456347@arh.xbw>
-
-R0lGODdhBgC/AOMAAPTmBLOj6+3zJ/EGjCpmsa6Wh3jekleBwfvq+wAAAAAAAAAAAAAAAAAAAAAA
-AAAAACwAAAAABgC/AAAEJBDJSau9OOvNu/9gKI5kaZ5oqq5s675wLM90bd94ru987/+iCAA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="nominal.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <002401c68e75$fa2a2134$5a456347@arh.xbw>
-
-R0lGODdhQgCOAIQAAMLE8yVbDaaa16o6c7QfyVB6hMUbJTFHl8008syQz0VTlDh470Ufivvq+9bM
-xRweHLC7pnJlfx8bE1NcSjw7IouMlImKnQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
-QgCOAAAF/mAjjmRpnmiqrmzrvnAsz3Rt33iu73zv/8CgcEgsGo/IpHJJdJicrId0+oA8YlaY40ra
-vrIi8JfrEofJLLE18pBARI5Je2ICOyiSdkUUyVOcUyRSYyNrDX0iFHR3ESVgFI2HEg1bThN0Zg2Z
-KmpcWZVhkyR2cGyUDxFQmmirhGevW1SsYBUSEoqeFHqto6ycZGCfD6qqsFWwb5K8hb4pna8NiiIT
-FI5XW29318e1pyVeZcCeXHFSf9Z8flZvfQ8UyXnFokz09fb3+PlI4CsTfqpy9JGI0ChOtQbUXEjY
-0wCVCAkO7uRZmM5dsVZrbDEcQQfasRYRMLnTNAlSulOW/joyW9UIEYoI1filmRSS5qJS21KdyBKs
-WYMKx2SygPjOzbuftnCF0UWxF69NCN3A8YliAiKr25J9SuZyZU8TFM6N+NiiVjWgi4LqOvWmm9Ov
-A1VyPOjC4RaG7d4dy5vM67gSeahwpCqwsOHDiBMrXsyYB1QshNHReAyDcp3Iv/pIUFlOQqOMCzXv
-AS13RGdTlORsDrfIZLTWEQyxaTnJCmywi/Ikup1mmIhuoJBacfJ1+O95U6EARRmqxTN+6/5iFNdw
-CvRtspz7RspcuHSe292a3i6MmPbckaQxggsevYlLlNa+nkY3s61Iqdt8/n4FNP4SqqFWjkWNFWjg
-gQgm/qjggjtAMAF4G2UhDQkLWREhGhauNNhFK0AEHnlXiDcdiL2QOJZVL1Qg0ioJ8dIUQiK1KAyL
-B4lRQVEvUDBaf1dQBAZMY72RhY8Y9rjjCBTpWBdxPK7igB2+3fjKcGaA96QnooiYAjjg0SeGSUry
-Qk2VXIxZZhuBtcBlkw8FdJwD84ixWZFIullFRHEsOR0zaGymUid0nhEicn2toGSXgw203TIIbcNo
-QJ7NoCKCEB3oIIOYZqrpppx26umnoIYq6qiklmrqqaimymEOskhhmQtC/VIZdTe86pQrLLWRTGel
-VXROIKfBESCjvTFD227x/cccfI/cpl6FmN361DZQ2ECA3Ck6GaMcRNtFZBuuX8UimCNMHXmdUFbU
-t8IzrQRHyTdc1Ubtm+RVYKu0cE3Y4nhtTQKOemDmZm+0Gk4rrDkc8vXQMMHmF+m9qUYs8cQUI7iq
-DLH+4AXE9iDqQl5M/uRbV2eIJtrBD6OiUXVVoBItKMxyoQg21rTkkEsAx3azvCzBiooqdtx3Wcjt
-hufGXx47V+4ycnDInqNnFMemmvFOu6+G4RotNbEq0NwNGJG+CE2+sGXNtQoKZyHjogbzEixceVhA
-cMV012333XjnrffefPftt6YhAAA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="flawless.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <002501c68e75$fa2a2155$5a456347@arh.xbw>
-
-R0lGODdhAQCOAIQAAFL9ASPmRzi6c5wxk3s3ggJKKdd1NQIUKWyvi22nwif6wCkdpnBVYeTyk3du
-y/lwFSNHilhKn4K2Tw4k9tBL8fvq+xweHB8bE9bMxbC7plNcSjw7InJlfwAAAAAAAAAAACwAAAAA
-AQCOAAAFIGAljmQpWiVKXliJXWYsz5lmwXMub5fF6ZULJ0MkAmMhADs=
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="dismount.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <002601c68e75$fa2a2176$5a456347@arh.xbw>
-
-R0lGODdhEgCOAIQAAEGSYdyv2nkW9rY7A9RqdLCXRNN9+am3Q3b1LSuzJ4/0ufvq+9bMxRweHLC7
-pnJlfx8bE4uMlFNcSjw7IomKnQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
-EgCOAAAF/uAijmRpnmiqrmzrvnAsz3Rtx0xzr47ePxBIBCgUMSSN3uK3eDQeTYhoIln6GgyrSJnL
-KpVaba6RvG51YqwWzEZTFxRzGHxE7+74FnSEhOwXEhANE1lFgBMLDEUPUEeIEYgLSSKQgCNfOjmX
-diIPiFx2YJSToJt8EA6UkZMLlQsThCOGEoiKEU1VJH+ADX4igmRkecPExS5ZL5ovoi3BiX25z71Q
-YG8ME3vWQqDIDlJdRgygwcLKpuBGiWpLEcpvh1NVtguCDHWDyHW+xvz9/jAOJgja14NcLEm3EmEL
-0+lbg4QkmFlqQgZbN05LRjCIEOghwy2JkIkI9DFjBCmmfCRKKPQgy7Uqohg4adSRIDkIK//p3Mmz
-p8+fQIMKHRpDIg+MJN5tIhLtSLRN8ha+eroJ2Ul14kyIKoUy4rqrXfZBTbSPSg+RVoj8OUK0rdue
-qaLgU+EwiwSqJTI9QYsCTcBeEE9kigtEhd5UV1OgATIolbm3kCNLnkx5ZwgAOw==
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="excruciating.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <002701c68e75$fa2a2197$5a456347@arh.xbw>
-
-R0lGODdhFwCOAIQAAE/ojokXc9r6dMSyJtoGyc625CBjBZ25xiv/eWbeFPEu/YC3FPORD2dWwo4w
-yPvq+7C7phweHB8bE1NcSnJlfzw7ItbMxYuMlImKnQAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA
-FwCOAAAF/uAjjmRpnmiqrmzrvnAsz3Rt33iui1BU9y3JxAQsUSSRikVkqVBKxZElspwMeRKojzSl
-LEeRsJZYiUgu3DEXIjo+qhW1NMK+ZKdK+eiYZO/+gIE4fjSEKmciEU8PEhgtFEM9cRAShimUD5BZ
-kJYpEk2UEBUQnSgTbqc+pSd2cRcRkVNvPrImirNoq4K7vL04XzOytTBRMmF0WxYTZk89R4gjQEUV
-Q00UzplZ0aq0VCJ2RcXS3dvhWzzcs1/gW8Wy09VO5iVIGMnLEs3t5779/v8ASywDxmQCknzACMJa
-xAThG4Nfrjy4MEqbCCclqImwiKgCGnUl7CTC8k3bsG0bikXgQ0IHJAmRD67QsUDTysVFFthofDPR
-4oMeSywgFCXhE4l89HAaNGNQ4oyPAaNKnUq1qtWrWLNqlUrQBZCTXtO1YPbTx7GHTKXgeyNPrEZr
-F6uVHOcS0xSCPehOOSYGLLuyLnneldJ2VlyVcWJWI1sESc0weVSa2Uq5suXLmDNr3sy5s+fPoG+E
-AAA7
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="poverty.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <002801c68e75$fa2a21b8$5a456347@arh.xbw>
-
-R0lGODdh7QCOAKUAAL5jkPBCPC8x7zmlW7/PW99B2fU57lYvBjXpL4BKjnQJ8gT5NUEoZjBiDIwi
-2+gBHML2VbBNhbeCb+cDuXZ3wml8vJ695QXtRxF6aexiawkkYvvq+9bMxRweHLC7pjw7Ih8bE4uM
-lHJlf1NcSomKnVZHRwtNMkh/Qw9J3wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAA7QCOAAAG/sCNcEgsGo/IpHLJ
-bDqf0Kh0Sq1ar9isdsvter/gsHhMLpvP6LR6zW673/C4fE6v2+/4vH7P7/v/gIGCg4SFhoeIiYqL
-jI2Oj5CRhxxTlEyWcpiSfxwdT50boEugHp5EokqlW6Com3uqUbCpnrJQtVe3hhwfIB0gIRu/Qh0i
-QiCau73CpSIgwkUcI77FzM4jQtUg10LR0xul0h3isKrZwKriHSPbwR5E6cy+7rDNHR+a37SmsN0g
-1OrEkvkCBs/TiGLD3PVjd+cDwmYbRFwr9eEbiCIOhUBkFvEixmu7RFAMlXFkSCEfQDrkWG6fvmIb
-9eXD5nFIS5gXVXWitK5I/ktsplKG+sVxQ8aOM8t5DOFR6Ek8ljiIoHVRYlWGobhNncl1yE4hTEtZ
-Yppv7MWvG8J2oPQzqUu3xtwd9CkTbicR+IBy1bmWGwex3LTKhAVCbjG0HmraYQoipaljHxJ7iFyE
-seO9prxmLiWr7UxUnN+Sq/uT3rVjdDHv/TAw9ehQmfWCdXa5rcSvndKJy9PBHdeDFw/Ghu277S20
-as2WnQ3b7GtRxgeb6pTYSPTPviES4asXcQh+vfW25fCrYnOvvBWynl0xhDpo4XeRHm5Upcj3J8GR
-ROh05XRP1G0gjWrcGeOPEaSIBmB4ZG23oFxBgUTUf+ot2BUvwKC0zQjm/t1RT2ThbUAMbBkS8SFn
-r0EjzYHZINSiVyv+M0QvUk0zH1c0RtSXEb2QoKBGvVDmoEY2chNjVyeG12Nm7p0Szj2uTJFLLmSE
-0GGUWCYxJX1j7FJilmCmJqYZ+oVp5plompFXmlysuQiXUSQYxVFG7UjlFrqlU0crjsBpS11PWDmE
-PRmKcCUYd8KRaCLEyGOkL9uYU0RBUxX2qDYI7uPQNhkJtAxACF36TzPPjBnKipECVAKo/fwjTagd
-2RMVqkCRStBukIyoXX+jIjUkR7vax6NhooR3VEywargfsIrZFBuv+fRa37IjntJXT9Pmp2tOfjLa
-nZ3cyuasaog1K2Ax/pYWVl1WoWwFmLXOvWVdZuUuBxhyhe2oGV6aWVLda4si8lZuuqn268B50mcl
-eUIcJNFsjQ2YC2i9yTsmwXqmSDGVk7WG8W4Adyvwt5iwZbF4CJec6cPffPABMAHCBV+84g7Jjb4m
-y4bvxNmdhTOBIh8ir1ACVpSiZgYTzeERGM6IWoDydUUEr0fbrGzRBmfrX6buNKi00QhLIm83smY9
-Ywc+6vzkmlNh4vIQSXpAZatmjwujOFAeTTeVJz5adoo5sin44IQXbvjhiCeu+OKMN16ICY5HLvme
-k1fuBJ+zaAkn0TOGgPnNUyQctN2xjI40LqbjEbDV8yLRYM1erN66/hSyd1G7HB9Soifdp3oDC+co
-22pMiT3RE2TOvbNIjDNfkp48O3s3aqmkyctYvah1LQT38ZpHy7yocXxVfIT7ZTvhtK5tq1GH4fHF
-00Tkh8TsEbVAa/536s+v9X3KntQTeXWBlviwcjCc9K9UbbgLJtw3G7Rw4C/qMJfMwEMJQX0mIOPa
-2clIVy8HQhBlJJsNA9NyjB01aYTVUeASruPBOHTsU7BxFp8oEqKDiSsjL5PNC89hIaBUjYMJi6HN
-WLiZigmxLEW8YJ6wwRoEpu9be+rZBc3iHVVox4ZdYQrDuiPFEaoFduJCS1aq+KMpinBBVLSTTMRI
-ib8AqXvPsVPz/tYQILKIAlpOOV8wknWdGWHrgl0L1/5+WLOvHRB/IOQK1eKXkf+t53cbqkgdJZhI
-SA5ljmvoWzDWwrvoAUUTfSTSAk3RN34ciZBSIxuUrhcytfluOkd6XvbWBiR7+GY9WDSlNz5nOUH4
-xiJUuF0vIzGiXRDQCSLA5DDBlBhILfOZ0IymNKdJzWpa85qSWGUXeInNQkymm5OzlIm4dz2SKIOH
-0liV957RqtSB0w0su9n7+ofDh3BLRvr7Xy/eyYfXwYZf8mROVNzVFyKOxZ38XMMtdnhEVVhGYmUs
-kNQSaodauBEp+IrZdeLoL4RSFA3+nCQ98RKfR0bUFI706EfN/hDPWgqJd3FrJVcW0sOVykGcZ/jl
-umw6h2+moZjAI9wJoqTNnCrjmDxNqlKXytSmOvWpUI2qVKdK1apa9apYzapWt8rVrnr1q2ANq1jH
-StaymvWsaG2Ce5RJh7WSNS8fQs0lMhkkuWYiDblgDVuxIExrwUcVRNPk6dBAHU8ATxbyORB8LpE6
-biJqOI7NQl+dRxwAVRA1VwQjGQobipLtk5571cJkr7CVd4yDVadc3i+EBw1etCYb0EutXvT0jtIa
-oaUi2g3vnOSNuSTkeUB5VW3pI5yAArOA38slKblHWzN8dlxFWSRM1IcRe+ZDWIMs43aC9CX32FU2
-9hsC1ZbS/hRhFWW7hLIJiEAHu5v4CropExD80tCkg7XRhPlC3sQEsxwSnoeEMqVLM5K1tCHhC17M
-sdRc6vUuAR+IPB80hkqGE8pKLgigEyXDQrNXxBTl4qGAkmhoEpkaf05UxLGhWERGgJsg3smhweGh
-V1jzsmZVeIKaeq1KrbDhmeLXw5ANUUuUk1HtciNfMxGBi2yMRub0S6DlMW5WJoZkdCzxG3A71I0L
-pJMu7rgKuISveO0D5L+SRB8S4o99AjQgzPljLUIBTFDviN0xl88opTIkld5sTKs9GKcWTg2bH+Tf
-yHrBtiT2ZN1iBSK5qTZUMC3SJkHZi/fU8pg02u3dFJuWXxTTkmOVxgpimzjHLZNS0poMnOVGqwZW
-ly6tgzAxrPkwlWTN+ta4zrWud83rXvv618AOtrCHTexiG/vYyE62spfN7GY7u9goeLa0p03talv7
-2tjOtra3ze1ue/vbkQsCADs=
-
-------=_NextPart_000_002A_01C68E54.731881FA
-Content-Type: image/gif;
-	name="parish.gif"
-Content-Transfer-Encoding: base64
-Content-ID: <002901c68e75$fa2a21d9$5a456347@arh.xbw>
-
-R0lGODdhPQCOAMIAAO9blS36HrRsLtTUbF1qIvvq+8zAtQAAACwAAAAAPQCOAAADbVi63P4wykmr
-vTjrzbv/YCiOZGmeaKqubOu+cCzPdG3feK7vfO//wKBwSCwaj8ikcslsOp/QqHRKrVqvIQN2y+16
-v+CweEwum8/otHrNbrvf8Lh8Tq/b7/i8fs/v+/+AgYKDhIWGh4iJiouMgwkAOw==
-
-------=_NextPart_000_002A_01C68E54.731881FA--
-
-
-
---===============1201846026==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1201846026==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1201846026==--
+Thanks for comitting the changes.
+
+On Sat, 10 Jun 2006 01:31, Takashi Iwai wrote:
+> At Fri, 9 Jun 2006 19:53:36 +1200,
+>
+> Eliot Blennerhassett wrote:
+> > Get your smoking hot tarball here:
+> >
+> > http://www.audioscience.com/internet/download/asihpi_hpi300_alsa1.0.11.ta
+> >r.bz2 Signed-off-by: Eliot Blennerhassett
+> > <eblennerhassett@audioscience.com>
+> >
+> > This replaces the contents of alsa-driver/pci/asihpi.  It builds a single
+> > module that supports both ALSA and HPI interfaces.
+> > This is such a major reorganisation of the code that it doesn't make
+> > sense (to me anyway) to provide it as a patch against existing code. 
+> > Future minor changes certainly will be submitted as patches.
+>
+> Thanks, I committed to HG tree with a minor fix for
+> '#if HPI_GENERATE_FUNCTIONS' replaced with ifdef.
+
+Thanks.   Applied to our source.
+>
+> > Currently requires the hpi driver to have been installed in order to
+> > install firmware (it doesn't depend on the hpi driver module at all
+> > though).
+> > http://www.audioscience.com/internet/download/hpklinux-3.00.tar.gz
+>
+> How about split the firmware data from the driver code?
+> Usually the driver data needs more frequent updates than the firmware
+> data.
+
+I have added our firmware to (my copy of) alsa-firmware.  Here is the package:
+http://www.audioscience.com/internet/download/asihpi_alsa-firmware.tar.bz2
+
+This has modified copies of alsa-firmware/configure.in and Makefile.am
+plus a new asihpi subdirectory.
+Future updates will only require the actual firmware files to be updated.
+
+regards
+
+Eliot
+================================
+Here is the hg diff of the textual parts of the changes.  The binaries are in 
+the tarball referenced above.
+
+Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+
+
+diff -r 646538e52e78 Makefile.am
+--- a/Makefile.am       Fri May 12 15:37:26 2006 +0200
++++ b/Makefile.am       Tue Jun 13 12:08:59 2006 +1200
+@@ -1,6 +1,6 @@ AUTOMAKE_OPTIONS = 1.3 foreign
+ AUTOMAKE_OPTIONS = 1.3 foreign
+
+-SUBDIRS = hdsploader mixartloader pcxhrloader usx2yloader vxloader echoaudio
++SUBDIRS = hdsploader mixartloader pcxhrloader usx2yloader vxloader echoaudio 
+asihpi
+
+ EXTRA_DIST = depcomp
+
+diff -r 646538e52e78 configure.in
+--- a/configure.in      Fri May 12 15:37:26 2006 +0200
++++ b/configure.in      Tue Jun 13 12:08:59 2006 +1200
+@@ -43,4 +43,5 @@ AC_OUTPUT(Makefile \
+          usx2yloader/Makefile \
+          vxloader/Makefile \
+          pcxhrloader/Makefile \
+-         echoaudio/Makefile)
++         echoaudio/Makefile \
++         asihpi/Makefile)
+diff -r 646538e52e78 asihpi/Makefile.am
+--- /dev/null   Thu Jan 01 00:00:00 1970 +0000
++++ b/asihpi/Makefile.am        Tue Jun 13 12:08:59 2006 +1200
+@@ -0,0 +1,24 @@
++MYNAME = asihpi
++
++dsp_files = \
++       dsp2400.bin\
++       dsp4100.bin\
++       dsp4300.bin\
++       dsp5000.bin\
++       dsp6200.bin\
++       dsp6205.bin\
++       dsp6413.bin\
++       dsp6600.bin\
++       dsp8713.bin
++
++dsp_txt_files = $(subst bin,txt,$(dsp_files))
++
++EXTRA_DIST = $(dsp_files) $(dsp_txt_files)
++
++if USE_HOTPLUG
++hotplugfwdir = @HOTPLUGFWDIR@/asihpi
++hotplugfw_DATA = $(dsp_files)  $(dsp_txt_files)
++else
++hotplugfwdir =
++hotplugfw_DATA =
++endif
+diff -r 646538e52e78 asihpi/dsp2400.bin
+Binary file asihpi/dsp2400.bin has changed
+diff -r 646538e52e78 asihpi/dsp2400.txt
+--- /dev/null   Thu Jan 01 00:00:00 1970 +0000
++++ b/asihpi/dsp2400.txt        Tue Jun 13 12:08:59 2006 +1200
+@@ -0,0 +1,2 @@
++AX2400, version 037, size 161740, checksum 0xC531A066
++
+\ No newline at end of file
+diff -r 646538e52e78 asihpi/dsp4100.bin
+Binary file asihpi/dsp4100.bin has changed
+diff -r 646538e52e78 asihpi/dsp4100.txt
+--- /dev/null   Thu Jan 01 00:00:00 1970 +0000
++++ b/asihpi/dsp4100.txt        Tue Jun 13 12:08:59 2006 +1200
+@@ -0,0 +1,2 @@
++AX4100, version 422, size 144572, checksum 0xFFF3CB0E
++
+\ No newline at end of file
+diff -r 646538e52e78 asihpi/dsp4300.bin
+Binary file asihpi/dsp4300.bin has changed
+diff -r 646538e52e78 asihpi/dsp4300.txt
+--- /dev/null   Thu Jan 01 00:00:00 1970 +0000
++++ b/asihpi/dsp4300.txt        Tue Jun 13 12:08:59 2006 +1200
+@@ -0,0 +1,2 @@
++AX4300, version 457, size 179636, checksum 0xFF11770C
++
+\ No newline at end of file
+diff -r 646538e52e78 asihpi/dsp5000.bin
+Binary file asihpi/dsp5000.bin has changed
+diff -r 646538e52e78 asihpi/dsp5000.txt
+--- /dev/null   Thu Jan 01 00:00:00 1970 +0000
++++ b/asihpi/dsp5000.txt        Tue Jun 13 12:08:59 2006 +1200
+@@ -0,0 +1,2 @@
++AX5000, version 016, size 157480, checksum 0x7543ACBC
++
+\ No newline at end of file
+diff -r 646538e52e78 asihpi/dsp6200.bin
+Binary file asihpi/dsp6200.bin has changed
+diff -r 646538e52e78 asihpi/dsp6200.txt
+--- /dev/null   Thu Jan 01 00:00:00 1970 +0000
++++ b/asihpi/dsp6200.txt        Tue Jun 13 12:08:59 2006 +1200
+@@ -0,0 +1,2 @@
++AX6200, version 103, size 755608, checksum 0x100AECB7
++
+\ No newline at end of file
+diff -r 646538e52e78 asihpi/dsp6205.bin
+Binary file asihpi/dsp6205.bin has changed
+diff -r 646538e52e78 asihpi/dsp6205.txt
+--- /dev/null   Thu Jan 01 00:00:00 1970 +0000
++++ b/asihpi/dsp6205.txt        Tue Jun 13 12:08:59 2006 +1200
+@@ -0,0 +1,2 @@
++AX6205, version 005, size 58216, checksum 0xCF6280C7
++
+\ No newline at end of file
+diff -r 646538e52e78 asihpi/dsp6413.bin
+Binary file asihpi/dsp6413.bin has changed
+diff -r 646538e52e78 asihpi/dsp6413.txt
+--- /dev/null   Thu Jan 01 00:00:00 1970 +0000
++++ b/asihpi/dsp6413.txt        Tue Jun 13 12:08:59 2006 +1200
+@@ -0,0 +1,2 @@
++AX6413, version 022, size 616296, checksum 0x1D3FE447
++
+\ No newline at end of file
+diff -r 646538e52e78 asihpi/dsp6600.bin
+Binary file asihpi/dsp6600.bin has changed
+diff -r 646538e52e78 asihpi/dsp6600.txt
+--- /dev/null   Thu Jan 01 00:00:00 1970 +0000
++++ b/asihpi/dsp6600.txt        Tue Jun 13 12:08:59 2006 +1200
+@@ -0,0 +1,2 @@
++AX6600, version 018, size 612588, checksum 0x67D43A43
++
+\ No newline at end of file
+diff -r 646538e52e78 asihpi/dsp8713.bin
+Binary file asihpi/dsp8713.bin has changed
+diff -r 646538e52e78 asihpi/dsp8713.txt
+--- /dev/null   Thu Jan 01 00:00:00 1970 +0000
++++ b/asihpi/dsp8713.txt        Tue Jun 13 12:08:59 2006 +1200
+@@ -0,0 +1,2 @@
++AX8713, version 025, size 112616, checksum 0xD3DA2D00
++
+\ No newline at end of file
+diff -r 646538e52e78 asihpi/licence.txt
+--- /dev/null   Thu Jan 01 00:00:00 1970 +0000
++++ b/asihpi/licence.txt        Tue Jun 13 12:08:59 2006 +1200
+@@ -0,0 +1,20 @@
++GENERAL
++=======
++
++This directory contains the firmware data files for use with asihpi driver.
++These files should be installed for use by hotplug firmware loader.
++
++
++DEFINITION OF FIRMWARE
++======================
++
++Verbatim copying and distribution of the firmware are permitted
++worldwide, without royalty, in any medium, provided this notice is
++preserved.
++
++
++COPYRIGHT
++=========
++
++Copyright (c) 2005 Audioscience <support@audioscience.com>
++Distributable under GPL.
+\ No newline at end of file
