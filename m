@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001389]: snd-ens1371 / es1938 Creative
 	Ectiva silent playout + new line-in capture failure
-Date: Tue, 13 Jun 2006 06:43:03 +0200
-Message-ID: <f55e1c71c9c1f38d9e8da81bb8ad80d3@bugtrack.alsa-project.org>
+Date: Tue, 13 Jun 2006 07:05:09 +0200
+Message-ID: <ac1a3835911bc5375542f1459fb7d2ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2772812B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 961A0142
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jun 2006 06:43:04 +0200 (MEST)
+	Tue, 13 Jun 2006 07:05:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Modified Redhat 9.0
 Kernel Version:             2.4.24 self compiled
 ======================================================================
 Date Submitted:             09-01-2005 20:32 CEST
-Last Modified:              06-13-2006 06:43 CEST
+Last Modified:              06-13-2006 07:05 CEST
 ======================================================================
 Summary:                    snd-ens1371 / es1938 Creative Ectiva silent playout
 + new line-in capture failure
@@ -88,17 +88,6 @@ Audigy 2 Value also works fine using snd-emu10k1 with same configuration
 (I included this card info to rule out basic config problems).
 
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-13-06 05:06 
-----------------------------------------------------------------------
-If you snd-ens1371 is configured as card 2
-
-Please post the output of
-
-cat /proc/asound/card2/codec97#0/ac97#0-0
-
-cat /proc/asound/card2/codec97#0/ac97#0-0+regs
 
 ----------------------------------------------------------------------
  wood - 06-13-06 06:43 
@@ -257,6 +246,17 @@ Mono output      : MIX
 Mic select       : Mic1
 ADC/DAC loopback : off
 
+----------------------------------------------------------------------
+ Raymond - 06-13-06 07:05 
+----------------------------------------------------------------------
+Refer to https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132, it seem
+that snd_es1371_codec_read() only work on first
+read and subsequent read return incorrect value.
+
+Please post the output of
+
+cat /proc/asound/card2/codec97#0/ac97#0-0+regs
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -265,4 +265,5 @@ Date Modified  Username       Field                    Change
 09-01-05 20:32 wood           Kernel Version            => 2.4.24 self compiled
 06-13-06 05:06 Raymond        Note Added: 0010186                          
 06-13-06 06:43 wood           Note Added: 0010188                          
+06-13-06 07:05 Raymond        Note Added: 0010189                          
 ======================================================================
