@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001395]: USB sound device does not work
-Date: Tue, 13 Jun 2006 13:22:27 +0200
-Message-ID: <645f657b221f6985be605340e1085ac4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Tue, 13 Jun 2006 15:33:13 +0200
+Message-ID: <26ddf55e27b476e9735313d6e79eb89c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50AB4175
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CD140169
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jun 2006 13:22:27 +0200 (MEST)
+	Tue, 13 Jun 2006 15:33:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,60 +26,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1395> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
 ======================================================================
-Reported By:                draft
-Assigned To:                Clemens Ladisch
+Reported By:                carllivitt
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1395
-Category:                   USB - usb-audio
+Issue ID:                   2174
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.12-1.1398_FC4
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
-Date Submitted:             09-03-2005 19:12 CEST
-Last Modified:              06-13-2006 13:22 CEST
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              06-13-2006 15:33 CEST
 ======================================================================
-Summary:                    USB sound device does not work
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
-The device is a (lsusb): Bus 001 Device 003: ID 0e6a:0310 Megawin
-Technology Co., Ltd. According to the manual, it is fully compliant with
-USB audio device class spec v 1.0, fully compliant with USB DCD for HID
-spec v. 1.11 and supports more than 44.1Khz sample frequency. However,
-this device does not work with snd_usb_audio. Xmms gives an immediate
-Feedback, that the device is not configured properly. Aplay does not
-output any message, but there is no sound. The fancy fedora sound card
-detection setup does not work either.
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
 
-dmesg:
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
 
-ALSA /usr/src/alsa-driver-1.0.10rc1/usb/usbaudio.c:1212: current rate
-33024 is different from the runtime rate 46875
-usbcore: registered new driver snd-usb-audio
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
 
-Tested alsa driver versions: 1.0.10rc1, 1.09b
+I've also tried using the 'single_cmd=1' module loading option. 
+
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- csuwi1 - 06-13-06 13:22 
+ rlrevell - 06-12-06 23:58 
 ----------------------------------------------------------------------
-I have a pair of these speakers with similar issues. I have tried to set up
-rate conversion using asoundrc with no joy.
+When it's fixed someone will update this bug report.
 
-If it helps I can plug the speakers into a machine with internet access
-and provide an account so you can experiment.
-
-Alsa version: 1.0.10rc3
+----------------------------------------------------------------------
+ godeater - 06-13-06 15:33 
+----------------------------------------------------------------------
+An lspci -nv is quite useful in determining the subsystem id. If you can
+just cut out the bit referring to your sound card it would reduce the
+amount of hunting through that we'd have to do as well (00:1b.0)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-03-05 19:12 draft          New Issue                                    
-09-03-05 19:12 draft          Distribution              => Fedora Core 4   
-09-03-05 19:12 draft          Kernel Version            => 2.6.12-1.1398_FC4
-06-13-06 13:22 csuwi1         Note Added: 0010192                          
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
+06-12-06 22:52 carllivitt     Note Added: 0010176                          
+06-12-06 22:54 rlrevell       Note Added: 0010177                          
+06-12-06 23:10 carllivitt     Note Added: 0010178                          
+06-12-06 23:14 rlrevell       Note Added: 0010179                          
+06-12-06 23:29 carllivitt     Note Added: 0010180                          
+06-12-06 23:35 rlrevell       Note Added: 0010181                          
+06-12-06 23:49 carllivitt     Note Added: 0010182                          
+06-12-06 23:58 rlrevell       Note Added: 0010183                          
+06-13-06 15:33 godeater       Note Added: 0010193                          
 ======================================================================
