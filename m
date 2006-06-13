@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Tue, 13 Jun 2006 07:20:27 +0200
-Message-ID: <b70bb367ce06bcd9943299a664b57006@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002205]: Everything seems ok,
+	but there's no sound
+Date: Tue, 13 Jun 2006 11:31:47 +0200
+Message-ID: <f79affbb80aecaf869ba7cf101077308@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2FA614E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AEFC0175
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jun 2006 07:20:27 +0200 (MEST)
+	Tue, 13 Jun 2006 11:31:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,100 +24,36 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2205> 
 ======================================================================
-Reported By:                bzbarsky
-Assigned To:                
+Reported By:                rematch
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2132
-Category:                   PCI - ens1371
+Issue ID:                   2205
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-13-2006 07:20 CEST
+Date Submitted:             06-13-2006 11:31 CEST
+Last Modified:              06-13-2006 11:31 CEST
 ======================================================================
-Summary:                    No sound from speakers
+Summary:                    Everything seems ok, but there's no sound
 Description: 
-Alsa seems to detect the sound card, but when I try to actually play
-something there is no sound from the speakers.
+After loading snd-hda-intel modul, there's no sound on my acer travelmate
+3012 laptop. 
+OS is debian sid, kernel 2.6.16.20 SMP, alsa version 1.0.11.
+
 ======================================================================
-
-----------------------------------------------------------------------
- bzbarsky - 06-13-06 05:39 
-----------------------------------------------------------------------
-Hmm... how would I tell?  I assume you want me to add some sort of logging,
-but what kind?
-
-----------------------------------------------------------------------
- Raymond - 06-13-06 07:20 
-----------------------------------------------------------------------
-wood https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1389#10188 and
-rufusplant https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023#6853
-reported that the bug (no
-sound) was introduced after 1.0.8rc1
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-06 19:54 bzbarsky       New Issue                                    
-05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
-05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
-05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
-05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
-05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
-05-17-06 19:56 bzbarsky       File Added: scsound.log                      
-05-17-06 19:57 bzbarsky       Note Added: 0009857                          
-05-20-06 05:31 Raymond        Note Added: 0009882                          
-05-20-06 21:43 bzbarsky       Note Added: 0009893                          
-05-21-06 03:41 Raymond        Note Added: 0009894                          
-05-21-06 03:48 Raymond        Note Edited: 0009894                         
-05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
-05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
-05-22-06 02:53 bzbarsky       Note Added: 0009901                          
-05-22-06 04:14 Raymond        Note Added: 0009902                          
-05-23-06 09:00 Raymond        Note Added: 0009929                          
-05-23-06 09:03 Raymond        Note Edited: 0009929                         
-05-23-06 09:07 Raymond        Note Edited: 0009929                         
-06-02-06 20:08 bzbarsky       Note Added: 0010053                          
-06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
-06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
-06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
- 
-06-02-06 20:35 bzbarsky       Note Added: 0010054                          
-06-03-06 02:44 Raymond        Note Added: 0010058                          
-06-05-06 01:29 bzbarsky       Note Added: 0010066                          
-06-05-06 03:31 Raymond        Note Added: 0010067                          
-06-05-06 03:56 bzbarsky       File Added: dmesg                            
-06-05-06 03:57 bzbarsky       Note Added: 0010068                          
-06-06-06 06:35 Raymond        Note Added: 0010071                          
-06-06-06 06:43 Raymond        Note Edited: 0010071                         
-06-06-06 08:59 Raymond        Note Edited: 0010071                         
-06-10-06 07:42 bzbarsky       Note Added: 0010144                          
-06-11-06 05:24 Raymond        Note Added: 0010150                          
-06-11-06 05:29 Raymond        Note Edited: 0010150                         
-06-11-06 22:37 bzbarsky       File Added: dmesg+kprint                     
-06-11-06 22:37 bzbarsky       File Added: codec_lines.txt                    
-06-11-06 22:38 bzbarsky       Note Added: 0010154                          
-06-12-06 03:31 Raymond        Note Added: 0010157                          
-06-12-06 03:41 rlrevell       Note Added: 0010158                          
-06-12-06 04:36 bzbarsky       Note Added: 0010161                          
-06-12-06 05:18 Raymond        Note Added: 0010164                          
-06-12-06 05:20 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:26 rlrevell       Note Added: 0010165                          
-06-12-06 13:23 Raymond        Note Added: 0010168                          
-06-12-06 18:12 bzbarsky       Note Added: 0010172                          
-06-13-06 04:43 Raymond        Note Added: 0010185                          
-06-13-06 04:45 Raymond        Note Edited: 0010185                         
-06-13-06 05:39 bzbarsky       Note Added: 0010187                          
-06-13-06 07:20 Raymond        Note Added: 0010190                          
+06-13-06 11:31 rematch        New Issue                                    
 ======================================================================
