@@ -1,16 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001389]: snd-ens1371 / es1938 Creative
-	Ectiva silent playout + new line-in capture failure
-Date: Tue, 13 Jun 2006 16:59:56 +0200
-Message-ID: <a3d0668a5153a2ac55bf130398f71632@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Problem with ALSA on PPC
+Date: Tue, 13 Jun 2006 11:45:14 -0400
+Message-ID: <1150213515.3062.111.camel@mindpipe>
+References: <1149891511.3894.296.camel@mindpipe>
+	<1149902770.13569.10.camel@mindpipe>
+	<1149933605.5081.1.camel@localhost.localdomain>
+	<1149958755.14253.24.camel@mindpipe> <s5h7j3md4bf.wl%tiwai@suse.de>
+	<1150149444.3062.55.camel@mindpipe>  <s5hver5bdp5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DE715169
-	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jun 2006 16:59:56 +0200 (MEST)
+In-Reply-To: <s5hver5bdp5.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,104 +21,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Adrian McMenamin <adrian@mcmen.demon.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-06-13 at 11:35 +0200, Takashi Iwai wrote:
+> At Mon, 12 Jun 2006 17:57:23 -0400,
+> Lee Revell wrote:
+> > How can I build alsa-lib with a non-standard --prefix, but at runtime
+> > have it look for its config files in the standard location?  IOW how do
+> > I prevent the --prefix from being prepended?
+> 
+> How about specifying --datadir=/usr/share explicitly?
+> The default config directory is $DATADIR/alsa/alsa.conf.
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1389> 
-======================================================================
-Reported By:                wood
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1389
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Modified Redhat 9.0
-Kernel Version:             2.4.24 self compiled
-======================================================================
-Date Submitted:             09-01-2005 20:32 CEST
-Last Modified:              06-13-2006 16:59 CEST
-======================================================================
-Summary:                    snd-ens1371 / es1938 Creative Ectiva silent playout
-+ new line-in capture failure
-Description: 
-Soundcard: Creative Soundblaster PCI (Ectiva) Model:CT4730
-Chip Label: Creative EV1938
+Won't that cause "make install" to install into /usr/share/alsa on the
+build host?
 
-Platform: Stable 2.4.24 Linux kernel on VIA MiniITX ME6000/M10000
-          w/ multiple soundcards. ALSA compiled from source
-          works with VIA motherboard Audio
-          and some other Creative PCI soundcards. Need a stable ALSA
-driver
-          for this soundcard.
-
-Problem:
-The snd-ens1371 module loads correctly as 3rd sound device (First audio
-device is VIA 8235 from motherboard, 2nd is PCSP).
-
-Alsamixer -c 2 shows a reasonable set of
-controls. Playout either with OSS emulation (play) or ALSA player
-(aplay) plays WAV files but only silence for both 1.0.9 and 1.0.10rc1
-releases.  
-On ALSA 1.0.9 codebase,the Master Volume does not always show in
-alsamixer. 
-In 1.0.10rc1 it does always show.
-ALSO:
-  On ALSA 1.0.9 code, the Line-In capture works under both OSS Emulation
-and with ALSA arecord.
-On the latest development release ALSA 1.0.10rc1, the Line-In
-capture no longer works. So a new problem has been introduced from .9 to
-.10.
-
-
-Other info:
-Native OSS driver es1371 works fine with this card. But I want to switch
-to ALSA.
-
-Earlier model Creative PCI128, Model CT4750 loads snd-ens1371 and
-works fine with both tested ALSA releases using same platform
-configuration.
-
-Audigy 2 Value also works fine using snd-emu10k1 with same configuration
-(I included this card info to rule out basic config problems).
-
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-13-06 16:51 
-----------------------------------------------------------------------
-Do your CT4750 have 4 channels codec ?
-
-Do your CT4730 have 2 channels codec ?
-
-----------------------------------------------------------------------
- wood - 06-13-06 16:59 
-----------------------------------------------------------------------
-Q.Do your CT4750 have 4 channels codec ?
-Q. Do your CT4730 have 2 channels codec ?
-
-Raymond,
-I only have the CT4730.
-How would I know if it has a 2 channel codec?
-Tom
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-01-05 20:32 wood           New Issue                                    
-09-01-05 20:32 wood           Distribution              => Modified Redhat 9.0
-09-01-05 20:32 wood           Kernel Version            => 2.4.24 self compiled
-06-13-06 05:06 Raymond        Note Added: 0010186                          
-06-13-06 06:43 wood           Note Added: 0010188                          
-06-13-06 07:05 Raymond        Note Added: 0010189                          
-06-13-06 07:28 Raymond        Note Edited: 0010189                         
-06-13-06 16:26 wood           Note Added: 0010194                          
-06-13-06 16:51 Raymond        Note Added: 0010196                          
-06-13-06 16:59 wood           Note Added: 0010197                          
-======================================================================
+Lee
