@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001389]: snd-ens1371 / es1938 Creative
-	Ectiva silent playout + new line-in capture failure
-Date: Tue, 13 Jun 2006 19:05:31 +0200
-Message-ID: <22252d1bc0e2aedd92e5fca0428b41ea@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Tue, 13 Jun 2006 19:17:27 +0200
+Message-ID: <1c868d05072523a37038b558302d558a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3955410A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0C1ED14F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jun 2006 19:05:32 +0200 (MEST)
+	Tue, 13 Jun 2006 19:17:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,109 +26,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1389> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
 ======================================================================
-Reported By:                wood
-Assigned To:                
+Reported By:                carllivitt
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1389
-Category:                   PCI - ens1371
+Issue ID:                   2174
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Modified Redhat 9.0
-Kernel Version:             2.4.24 self compiled
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
-Date Submitted:             09-01-2005 20:32 CEST
-Last Modified:              06-13-2006 19:05 CEST
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              06-13-2006 19:17 CEST
 ======================================================================
-Summary:                    snd-ens1371 / es1938 Creative Ectiva silent playout
-+ new line-in capture failure
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
-Soundcard: Creative Soundblaster PCI (Ectiva) Model:CT4730
-Chip Label: Creative EV1938
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
 
-Platform: Stable 2.4.24 Linux kernel on VIA MiniITX ME6000/M10000
-          w/ multiple soundcards. ALSA compiled from source
-          works with VIA motherboard Audio
-          and some other Creative PCI soundcards. Need a stable ALSA
-driver
-          for this soundcard.
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
 
-Problem:
-The snd-ens1371 module loads correctly as 3rd sound device (First audio
-device is VIA 8235 from motherboard, 2nd is PCSP).
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
 
-Alsamixer -c 2 shows a reasonable set of
-controls. Playout either with OSS emulation (play) or ALSA player
-(aplay) plays WAV files but only silence for both 1.0.9 and 1.0.10rc1
-releases.  
-On ALSA 1.0.9 codebase,the Master Volume does not always show in
-alsamixer. 
-In 1.0.10rc1 it does always show.
-ALSO:
-  On ALSA 1.0.9 code, the Line-In capture works under both OSS Emulation
-and with ALSA arecord.
-On the latest development release ALSA 1.0.10rc1, the Line-In
-capture no longer works. So a new problem has been introduced from .9 to
-.10.
+I've also tried using the 'single_cmd=1' module loading option. 
 
-
-Other info:
-Native OSS driver es1371 works fine with this card. But I want to switch
-to ALSA.
-
-Earlier model Creative PCI128, Model CT4750 loads snd-ens1371 and
-works fine with both tested ALSA releases using same platform
-configuration.
-
-Audigy 2 Value also works fine using snd-emu10k1 with same configuration
-(I included this card info to rule out basic config problems).
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- wood - 06-13-06 16:59 
+ rlrevell - 06-13-06 18:58 
 ----------------------------------------------------------------------
-Q.Do your CT4750 have 4 channels codec ?
-Q. Do your CT4730 have 2 channels codec ?
+jlpedrosa, I do not see an issue #2335 in the ALSA bug tracker.
 
-Raymond,
-I only have the CT4730.
-How would I know if it has a 2 channel codec?
-Tom
+Did you try all the models for ALC861 listed in ALSA-Configuration.txt?
+
+        ALC861  
+          3stack        3-jack  
+          3stack-dig    3-jack with SPDIF I/O
+          6stack-dig    6-jack with SPDIF I/O
+          auto          auto-config reading BIOS (default)
 
 ----------------------------------------------------------------------
- Raymond - 06-13-06 19:05 
+ jlpedrosa - 06-13-06 19:17 
 ----------------------------------------------------------------------
-If your sound card support 4 channels, it usually has 4 color jacks :-
-green,pink,blue and black jacks
+hummm sorry... it was 0002035. yes i tried those three.. also i opened a
+driver i saw... and tried model_last.. but none of them working..
+i'm on suse 10.1 wich i think uses... 11(rc4), but i tried the last from
+alsa
 
-It seem that your sound card have STAC970x stereo codec but
-snd_ens1371_codec_read() unable to read correct value
+lspci gives exactly the same line (maybe with -v won't be the same).
 
-Add two printk statements as described in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132#10150 to trace the
-read/write of codec registers 
-
-Do you really have 3 ALSA sound drivers ?
-
-cat /proc/asound/cards
+sorry for the mistake
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-01-05 20:32 wood           New Issue                                    
-09-01-05 20:32 wood           Distribution              => Modified Redhat 9.0
-09-01-05 20:32 wood           Kernel Version            => 2.4.24 self compiled
-06-13-06 05:06 Raymond        Note Added: 0010186                          
-06-13-06 06:43 wood           Note Added: 0010188                          
-06-13-06 07:05 Raymond        Note Added: 0010189                          
-06-13-06 07:28 Raymond        Note Edited: 0010189                         
-06-13-06 16:26 wood           Note Added: 0010194                          
-06-13-06 16:51 Raymond        Note Added: 0010196                          
-06-13-06 16:59 wood           Note Added: 0010197                          
-06-13-06 19:05 Raymond        Note Added: 0010201                          
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
+06-12-06 22:52 carllivitt     Note Added: 0010176                          
+06-12-06 22:54 rlrevell       Note Added: 0010177                          
+06-12-06 23:10 carllivitt     Note Added: 0010178                          
+06-12-06 23:14 rlrevell       Note Added: 0010179                          
+06-12-06 23:29 carllivitt     Note Added: 0010180                          
+06-12-06 23:35 rlrevell       Note Added: 0010181                          
+06-12-06 23:49 carllivitt     Note Added: 0010182                          
+06-12-06 23:58 rlrevell       Note Added: 0010183                          
+06-13-06 15:33 godeater       Note Added: 0010193                          
+06-13-06 18:13 rlrevell       Note Added: 0010198                          
+06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
+06-13-06 18:58 rlrevell       Note Added: 0010200                          
+06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
 ======================================================================
