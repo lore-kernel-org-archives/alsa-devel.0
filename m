@@ -1,16 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001389]: snd-ens1371 / es1938 Creative
-	Ectiva silent playout + new line-in capture failure
-Date: Tue, 13 Jun 2006 19:46:11 +0200
-Message-ID: <c4a53459aa5af81cf1a96433343e07f8@bugtrack.alsa-project.org>
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Problem with ALSA on PPC
+Date: Tue, 13 Jun 2006 19:09:35 +0100
+Message-ID: <1150222175.5111.2.camel@localhost.localdomain>
+References: <1149891511.3894.296.camel@mindpipe>
+	<1149902770.13569.10.camel@mindpipe>
+	<1149933605.5081.1.camel@localhost.localdomain>
+	<1150159211.3062.81.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5104171
-	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jun 2006 19:46:11 +0200 (MEST)
+In-Reply-To: <1150159211.3062.81.camel@mindpipe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,132 +20,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-06-12 at 20:40 -0400, Lee Revell wrote:
+> On Sat, 2006-06-10 at 11:00 +0100, Adrian McMenamin wrote:
+> > I had/have a very similar problem with the Dreamcast - I can only use
+> > the oss emulation
+> > 
+> > Asking about here didn't get me an answer so I await any answers to
+> > your
+> > problem with anticipation...
+> > 
+> > / # aplay -l
+> > **** List of PLAYBACK Hardware Devices ****
+> > aplay: device_list:230: control open (0): Invalid argument
+> > 
+> 
+> Adrian,
+> 
+> I looked at the strace source and it seems that Super-H is supported:
+> 
+> $ ls packages/strace-4.5.14/linux/sh
+> errnoent.h  ioctlent.h  signalent.h  syscallent.h
+> 
+> Have you tried it?
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1389> 
-======================================================================
-Reported By:                wood
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1389
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Modified Redhat 9.0
-Kernel Version:             2.4.24 self compiled
-======================================================================
-Date Submitted:             09-01-2005 20:32 CEST
-Last Modified:              06-13-2006 19:46 CEST
-======================================================================
-Summary:                    snd-ens1371 / es1938 Creative Ectiva silent playout
-+ new line-in capture failure
-Description: 
-Soundcard: Creative Soundblaster PCI (Ectiva) Model:CT4730
-Chip Label: Creative EV1938
+I haven't actually. Struggling with other SH kernel problems at the
+moment, but I'll have a look
 
-Platform: Stable 2.4.24 Linux kernel on VIA MiniITX ME6000/M10000
-          w/ multiple soundcards. ALSA compiled from source
-          works with VIA motherboard Audio
-          and some other Creative PCI soundcards. Need a stable ALSA
-driver
-          for this soundcard.
-
-Problem:
-The snd-ens1371 module loads correctly as 3rd sound device (First audio
-device is VIA 8235 from motherboard, 2nd is PCSP).
-
-Alsamixer -c 2 shows a reasonable set of
-controls. Playout either with OSS emulation (play) or ALSA player
-(aplay) plays WAV files but only silence for both 1.0.9 and 1.0.10rc1
-releases.  
-On ALSA 1.0.9 codebase,the Master Volume does not always show in
-alsamixer. 
-In 1.0.10rc1 it does always show.
-ALSO:
-  On ALSA 1.0.9 code, the Line-In capture works under both OSS Emulation
-and with ALSA arecord.
-On the latest development release ALSA 1.0.10rc1, the Line-In
-capture no longer works. So a new problem has been introduced from .9 to
-.10.
-
-
-Other info:
-Native OSS driver es1371 works fine with this card. But I want to switch
-to ALSA.
-
-Earlier model Creative PCI128, Model CT4750 loads snd-ens1371 and
-works fine with both tested ALSA releases using same platform
-configuration.
-
-Audigy 2 Value also works fine using snd-emu10k1 with same configuration
-(I included this card info to rule out basic config problems).
-
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-13-06 19:05 
-----------------------------------------------------------------------
-If your sound card support 4 channels, it usually has 4 color jacks :-
-green,pink,blue and black jacks
-
-It seem that your sound card have STAC970x stereo codec but
-snd_ens1371_codec_read() unable to read correct value
-
-Add two printk statements as described in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132#10150 to trace the
-read/write of codec registers 
-
-Do you really have 3 ALSA sound drivers ?
-
-cat /proc/asound/cards
-
-----------------------------------------------------------------------
- wood - 06-13-06 19:46 
-----------------------------------------------------------------------
-Raymond,
- This sound card has one stereo audio output,
-one mic input and one line input (green,pink,blue).
-It also has a MIDI connector. It does NOT have an
-extra black output. So I guess it is a 2 channel codec.
-
-Yes I really do have 3 sound drivers( 2 cards plus PC Speaker). This is
-an
-embedded device that is based on heavy audio processing.
-
-: cat /proc/asound/cards
- 0 [V8235          ]: VIA8233 - VIA 8235
-                      VIA 8235 with VT1616i at 0xd400, irq 12
- 1 [pcsp           ]: PC-Speaker - pcsp
-                      Internal PC-Speaker at port 0x61, irq 0
- 2 [AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
-                      Ensoniq AudioPCI ENS1371 at 0xe000, irq 10
-
-
-
-
-I cannot work further on this for about a week. So I will try your printk
-suggestions later on.  Thanks.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-01-05 20:32 wood           New Issue                                    
-09-01-05 20:32 wood           Distribution              => Modified Redhat 9.0
-09-01-05 20:32 wood           Kernel Version            => 2.4.24 self compiled
-06-13-06 05:06 Raymond        Note Added: 0010186                          
-06-13-06 06:43 wood           Note Added: 0010188                          
-06-13-06 07:05 Raymond        Note Added: 0010189                          
-06-13-06 07:28 Raymond        Note Edited: 0010189                         
-06-13-06 16:26 wood           Note Added: 0010194                          
-06-13-06 16:51 Raymond        Note Added: 0010196                          
-06-13-06 16:59 wood           Note Added: 0010197                          
-06-13-06 19:05 Raymond        Note Added: 0010201                          
-06-13-06 19:46 wood           Note Added: 0010203                          
-======================================================================
+> Lee
