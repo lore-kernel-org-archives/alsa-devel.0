@@ -1,22 +1,16 @@
-From: "ntrujk ixzvwrtz" <nqpzagh@webmd.net>
-Subject: Re: Market Headlines H-Y-W-I Waking up with the
-	chickens.
-Date: Thu, 15 Jun 2006 05:20:42 +0800
-Message-ID: <20132.5474227362$1150320073@news.gmane.org>
+From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
+Subject: Re:
+	=?iso-8859-1?q?=5BPATCH=5D_Better_detection_of_defau?=
+	=?iso-8859-1?q?lt_firmware=09installation_directory?=
+Date: Thu, 15 Jun 2006 09:26:26 +1200
+Message-ID: <200606150926.28116.linux@blennerhassett.gen.nz>
+References: <200606141006.41323.linux@blennerhassett.gen.nz>
+	<s5h3be89exq.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_D8HkEoZfuhzVgTz"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 36341194
-	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jun 2006 23:20:44 +0200 (MEST)
-Received: from webmd.net (unknown [221.219.192.189])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	C244499430 for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jun 2006 23:20:39 +0200 (MEST)
-Received: from 221.219.192.189 by webmd.net for <alsa-devel@alsa-project.org>,
-	<alsa@boatus.com> ; Thu, 15 Jun 2006 05:20:42 +0800
+In-Reply-To: <s5h3be89exq.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,49 +20,165 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org, alsa@boatus.com
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-(H_Y_W_I.PK)- H o l l y w o o d  I n t e r m e d i a t e, Inc.
-We Strongly believe in this companies Performance, with its 5th stright day of climb
- This one did very well during last mar keting campa ign. Very Well! 
+--Boundary-00=_D8HkEoZfuhzVgTz
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+On Wed, 14 Jun 2006 23:04, Takashi Iwai wrote:
+> > 
+
+> The patch seems broken but the change suggested looks OK.
+> Could you also change README together?
+
+Attached complete files this time.  The patch was the output of 'hg diff'
+Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+
+Also Hg Makefile.am seems to be still missing asihpi from SUBDIRS
+SUBDIRS = hdsploader mixartloader pcxhrloader usx2yloader vxloader \
+echoaudio asihpi
+
+regards
+
+Eliot
+
+--Boundary-00=_D8HkEoZfuhzVgTz
+Content-Type: text/plain;
+  charset="iso-8859-1";
+  name="configure.in"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="configure.in"
+
+AC_PREREQ(2.53)
+AC_INIT(hdsploader/tobin.c)
+AM_INIT_AUTOMAKE(alsa-firmware, 1.0.11)
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_HEADER_STDC
+
+echo $VERSION > $srcdir/version
+
+AC_ARG_ENABLE(loader,
+  [  --disable-loader        Disable the old ALSA fw loader support],
+  [loader="$enableval"],[loader=yes])
+AC_ARG_ENABLE(hotplug,
+  [  --disable-hotplug       Disable the hotplug fw loader support],
+  [hotplug="$enableval"],[hotplug=yes])
+AC_ARG_ENABLE(buildfw,
+  [  --enable-buildfw        Enable building fw from source files],
+  [buildfw="$enableval"],[buildfw=no])
+
+AC_PATH_PROGS(AS31, as31)
+AS31_FLAGS="-Fhex"
+AC_SUBST(AS31_FLAGS)
+
+if test x"${AS31}" = x"";  then
+  buildfw=false
+fi
+
+AM_CONDITIONAL(USE_LOADER, test "$loader" = "yes")
+AM_CONDITIONAL(USE_HOTPLUG, test "$hotplug" = "yes")
+AM_CONDITIONAL(BUILD_FW, test "$buildfw" = "yes")
+
+AC_MSG_CHECKING(firmware installation directory)
+# where to put the firmware. If none of these is right, can specify where
+# --with-hotplug-dir
+if test -d /lib/firmware ; then
+	detected_fwdir="/lib/firmware/"
+elif test -d /lib/hotplug/firmware ; then
+	detected_fwdir="/lib/hotplug/firmware/"
+elif test -d /usr/lib/hotplug/firmware ; then
+	detected_fwdir="/usr/lib/hotplug/firmware/"
+else
+	detected_fwdir="/lib/firmware/"
+fi
+
+AC_ARG_WITH(hotplug-dir,
+  [  --with-hotplug-dir      Specify the hotplug firmware directory],
+  [hotplugfwdir="$withval"],
+  [hotplugfwdir="$detected_fwdir"])
+HOTPLUGFWDIR="$hotplugfwdir"
+AC_SUBST(HOTPLUGFWDIR)
+AC_MSG_RESULT($HOTPLUGFWDIR)
+
+AC_OUTPUT(Makefile \
+	  hdsploader/Makefile \
+	  mixartloader/Makefile \
+	  usx2yloader/Makefile \
+	  vxloader/Makefile \
+	  pcxhrloader/Makefile \
+	  echoaudio/Makefile \
+	  asihpi/Makefile) 
+
+--Boundary-00=_D8HkEoZfuhzVgTz
+Content-Type: text/plain;
+  charset="iso-8859-1";
+  name="README"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="README"
+
+GENERAL
+=======
+
+This package contains the firmware binaries for each loader program
+included in alsa-tools package.  The firmware data can be used by each
+ALSA firmware loader program like vxloader, or passed through the
+hotplug firmware-loading mechanism.
 
 
-See Hot NEWS Just released
+HOTPLUG FIRMWARE LOADER SUPPORT
+===============================
 
-Today was just the begining
+The recent ALSA driver supports the hotplug firmware loader.
+As default, the package will install firmware data to the places for
+both the old ALSA fw loader and the hotplug fw loader.  To disable
+the installation of old ALSA fw loader data (if both ALSA and hotplug
+fw loaders are available), pass --disable-loader to configure.
+Similarly, to disable the hotplug fw loader data, pass
+--disable-hotplug option.
 
-S Y M B O L : H-Y-W-I.PK
-Current Price: $ 0.90
-This is a real company with real potential
+For the old ALSA fw loader, specify the same prefix option given to
+the alsa-tools configure script, too, in order to keep the
+installation directories consistent.
 
-
-Before we start with the profile of H-Y-W-I.PK we would like to mention something very important: There is a Big PR Campaign starting on Monday . And it will go all week so it would be best to get in NOW.
-
-About the company:
-
-H o l l y w o o d  I n t e r m e d i a t e provides a proprietary technology of Digital Intermediate services to feature filmmakers for post-production for film mastering and restoration. This technology gives the filmmakers total creative control over the look of their productions. Whether shooting on film or acquiring in HD or SD video, H o l l y w o o d  I n t e r m e d i a t e puts a powerful cluster of digital tools at the director's disposal to achieve stunning results on the big screen. Matchframe Digital Intermediate, a division of H o l l y w o o d  I n t e r m e d i a t e, Inc., packages a full array of post-production services with negative handling expertise and cost-effective 2K digital intermediate and 35mm film out systems. The Digital Intermediate process eliminates current post-production redundancies by creating a single high-resolution master file from which all versio
- ns can be made, including all theatrical and High Definition formats. By creating a single
-  master file with resolution higher than the current High Definition broadcast standards, the DI master file enables cinema and television distributors to extract and archive all current and future cinema and television formats including Digital Cinema, Television and High Definition.
-
-Red H0t News:
-
-H o l l y w o o d  I n t e r m e d i a t e a provider of digital intermediate film mastering services, announced today that that its Matchframe Digital Intermediate (MDI) division is completing a digital intermediate for Chad Lowe's directorial debut, "Beautiful Ohio," starring William Hurt and Rita Wilson. READ MORE THIS IS HUGE
-
-H o l l y w o o d  I n t e r m e d i a t e Expands the Creative Palette for Independent Filmmakers GLENDALE, CA--(MARKET WIRE)--May 31, 2006 -- H o l l y w o o d  I n t e r m e d i a t e, Inc. A provider of digital intermediate film mastering services, announced today that its Matchframe Digital Intermediate division is currently providing full digital intermediate services for Super 16MM productions.
-
-H o l l y w o o d  I n t e r m e d i a t e, Inc. (H-Y-W-I.PK - News), a provider of digital intermediate film mastering services, announced that High Definition preview masters as part of its normal digital intermediate service offerings and workflow.
-
-"Typically, in current post-production workflow, HD dailies masters are edited into high quality preview masters including color timing, dirt removal, opticals and visual effects," said David Waters, H o l l y w o o d  I n t e r m e d i a t e president. "Unfortunately, none of these processes translate to the theatrical release of the film as they must all be duplicated or repeated in either a higher resolution digital format, or photo chemical process."
-
-H o l l y w o o d  I n t e r m e d i a t e gives Motion Picture producers the ability to scan their selected original camera negative at 2k or 4k film resolution, conform a high resolution digital master for theatrical and broadcast release including dirt removal, opticals and visual effects, and output a High Definition preview master to be used for preview screenings and focus groups that can be deployed in any worldwide theater location.
-
-"The challenge for completing the final editorial decisions on a motion picture are balanced between the ability to display the highest resolution picture for a test audience, and the costs and time in having to re-master your film based on a test audience response," said Jim Delany, H o l l y w o o d  I n t e r m e d i a t e COO.
+The default directory for hotplug firmware data files is /lib/firmware.
+(or if existing /lib/hotplug/firmware or /usr/lib/hotplug/firmware are 
+found they are used)
+You can change to another path via --with-hotplug-dir option.
 
 
-If you want to play the marrket get in on H_Y_W_I
+LICENSE AND COPYRIGHT
+=====================
 
------------------------
-Till the cows come home.   You say potayto, I say potahto. There's no time like the present.   That's a whole new can of worms.   Rise and shine. Waking up with the chickens. You throw filth on the living and flowers on the dead.Pin a rose on your nose. Water doesn't run uphill.   Were you born in a barn? Stubborn as a mule.   What's good for the goose is good for the gander. Shit happens.   As uneasy as a cat near water.   Take time to smell the roses. There is always next year.   A place in the sun.   Want my place in the sun. 
+The files contained in this package is regarded as the example data
+for each alsa-tools program.  Hence, their copyright and license
+follow basically to the definition of alsa-tools programs.  The
+detailed license and copyright is found in README of each
+subdirectory.
 
-She has a green thumb. Run to seed.  Ugly as a mud fence. Up a tree. Sweet as honey.   Your barking up the wrong tree. Wet behind the ears. Your barking up the wrong tree. Waking up with the chickens. Put that in your pipe and smoke it.   Some like carrots others like cabbage. You throw filth on the living and flowers on the dead.Pin a rose on your nose. Weed out. Raking in the dough. Weed it out.  A thorn in my side.   Welcome to my garden.  Seed money. Thick as a brick.   Raking in the dough.
+--Boundary-00=_D8HkEoZfuhzVgTz
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--Boundary-00=_D8HkEoZfuhzVgTz
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--Boundary-00=_D8HkEoZfuhzVgTz--
