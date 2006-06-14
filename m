@@ -1,16 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002159]: ac3 passthrough not working
-	on recent versions
-Date: Wed, 14 Jun 2006 22:32:09 +0200
-Message-ID: <df312651699da182b2173c1a1bb2dd8d@bugtrack.alsa-project.org>
+From: Norbert Preining <preining@logic.at>
+Subject: alsa 1.0.11, 2.6.17-rc6-mm2, kernel BUG
+Date: Wed, 14 Jun 2006 23:05:53 +0200
+Message-ID: <20060614210553.GC13054@gamma.logic.tuwien.ac.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB2CC19D
-	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jun 2006 22:32:09 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,80 +16,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi all!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
-======================================================================
-Reported By:                nikke
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2159
-Category:                   PCI - ymfpci
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15
-======================================================================
-Date Submitted:             05-24-2006 23:44 CEST
-Last Modified:              06-14-2006 22:32 CEST
-======================================================================
-Summary:                    ac3 passthrough not working on recent versions
-Description: 
-Using the following AC3 passthrough with mplayer works:
-Linux 2.4.31
-alsa-driver 1.0.8-7 (debian stable packaged)
+I have 2.6.17-rc6-mm2 running, and I wanted to try alsa drivers 1.0.11
+final to get my hda-intel sound device running.
 
-Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
-kernel and
-alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
-stays quiet.
+I compiled the drivers (changing system_utsname.xxx to utsname()->xxx)
+and wanted to load the modules, but when I load the module snd:
+BUG: unable to handle kernel paging request at virtual address 07400041
+ printing eip:
+c01c1509
+*pde =3D 00000000
+Oops: 0000 [#1]
+8K_STACKS PREEMPT SMP =
 
-The only change is booting with different kernels, no other config or
-hardware is touched, so this must be a driver regression.
+last sysfs file: /devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+Modules linked in: snd_timer snd snd_page_alloc isofs zlib_inflate udf usb_=
+storage ipt_MASQUERADE iptable_nat ip_nat ip_conntrack ip_tables x_tables i=
+2c_i801 joydev i2c_core
+CPU:    0
+EIP:    0060:[<c01c1509>]    Not tainted VLI
+EFLAGS: 00010286   (2.6.17-rc6-mm2 #10) =
 
-The card is YMF-754 based, connected with coax spdif to my HK reciever.
+EIP is at kref_get+0x6/0x3d
+eax: 07400041   ebx: 07400041   ecx: 00000005   edx: 00000000
+esi: f6dde604   edi: f6dde60a   ebp: f388af60   esp: d58bbe00
+ds: 007b   es: 007b   ss: 0068
+Process modprobe (pid: 11478, threadinfo=3Dd58ba000 task=3Dd95b6000)
+Stack: 00000007 d95b6114 e5a63aa0 e5a63aa0 07400029 c01c0b17 f6dde580 c0220=
+966 =
 
-If you need more info, just tell me and I'll dig it up.
-======================================================================
+       c0220ce9 000000d0 dffff4c0 dfffd2c0 c03634d8 c01c0b17 dfead1c0 c01c0=
+e52 =
 
-----------------------------------------------------------------------
- Raymond - 06-02-06 04:25 
-----------------------------------------------------------------------
-You may need to revert some patch related to SPDIF to find out the cause
+       d58ba000 f6dde617 d95b6000 00000000 ffffffea f6dde580 fffffff4 dfead=
+1c0 =
+
+Call Trace:
+ [<c01c0b17>] kobject_get+0xf/0x13
+ [<c0220966>] class_device_get+0xe/0x14
+ [<c0220ce9>] class_device_add+0x54/0x3a8
+ [<c02210cc>] class_device_create+0x7f/0x9f
+ [<f899c1cd>] snd_register_device+0x129/0x153 [snd]
+ [<f88f3107>] alsa_timer_init+0x107/0x170 [snd_timer]
+ [<c0133846>] sys_init_module+0x16b7/0x188d
+ [<c02f4c5b>] syscall_call+0x7/0xb
+Code: 10 e9 8e 31 c0 89 f0 83 7e 28 00 0f 85 a8 fc ff ff e9 82 fc ff ff 83 =
+c4 3c
+ 5b 5e 5f 5d c3 c7 00 01 00 00 00 c3 53 83 ec 10 89 c3 <8b> 00 85 c0 75 29 =
+c7 44
+ 24 0c 11 fc 2f c0 c7 44 24 08 20 00 00 =
+
+EIP: [<c01c1509>] kref_get+0x6/0x3d SS:ESP 0068:d58bbe00
+ =
 
 
-http://hg-mirror.alsa-project.org/alsa-kernel?fl=25ac64e78c4c;file=pci/ymfpci/ymfpci_main.c;style=gitweb
+Does this ring a bell for someone?
 
+Best wishes
 
+Norbert
 
-----------------------------------------------------------------------
- nikke - 06-14-06 22:32 
-----------------------------------------------------------------------
-I tried using a debian 2.6.8 kernel, and then AC3 passthrough works.
-/proc/asound/version says ALSA 1.0.4 ...
-
-Using a 2.6.14 kernel did not work (ALSA 1.0.10rc1).
-
-So, any possibility of getting a list of what patches has been added to
-ymfpci between v 1.0.4 (that works) and v 1.0.10rc1? It would help
-narrowing down the candidates quite a bit...
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-24-06 23:44 nikke          New Issue                                    
-05-24-06 23:44 nikke          Distribution              => Debian          
-05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
-05-24-06 23:47 nikke          Issue Monitored: nikke                       
-06-02-06 04:23 Raymond        Note Added: 0010045                          
-06-02-06 04:25 Raymond        Note Edited: 0010045                         
-06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
-06-14-06 22:32 nikke          Note Added: 0010216                          
-======================================================================
+---------------------------------------------------------------------------=
+----
+Dr. Norbert Preining <preining AT logic DOT at>             Universit=E0 di=
+ Siena
+gpg DSA: 0x09C5B094      fp: 14DF 2E6C 0307 BE6D AD76  A9C0 D2BF 4AA3 09C5 =
+B094
+---------------------------------------------------------------------------=
+----
+SWANIBOST (adj.)
+Complete shagged out after a hard day having income tax explained to
+you.
+			--- Douglas Adams, The Meaning of Liff
