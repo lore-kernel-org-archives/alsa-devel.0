@@ -1,12 +1,16 @@
-From: CARON Dominique <d.caron@LPTA.univ-montp2.fr>
-Subject: Sound Card On Dell Precision 380 (Intel ICH7)
-Date: Wed, 14 Jun 2006 20:41:35 +0200
-Message-ID: <20060614204135.i1iikwsok80kwwgw@www.lpta.univ-montp2.fr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002159]: ac3 passthrough not working
+	on recent versions
+Date: Wed, 14 Jun 2006 22:32:09 +0200
+Message-ID: <df312651699da182b2173c1a1bb2dd8d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB2CC19D
+	for <alsa-devel@alsa-project.org>;
+	Wed, 14 Jun 2006 22:32:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,79 +20,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-Thank's to you for your wonderfull work...
-I've some problem to have sound on My Dell Precision 380.
-Here are some infos:
 
-lspci : (just sound card)
-00:1b.0 Class 0403: Intel Corp. 82801G (ICH7 Family) High Definition  =
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
+======================================================================
+Reported By:                nikke
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2159
+Category:                   PCI - ymfpci
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             05-24-2006 23:44 CEST
+Last Modified:              06-14-2006 22:32 CEST
+======================================================================
+Summary:                    ac3 passthrough not working on recent versions
+Description: 
+Using the following AC3 passthrough with mplayer works:
+Linux 2.4.31
+alsa-driver 1.0.8-7 (debian stable packaged)
 
-Audio Controller (rev 01)
-         Subsystem: Dell: Unknown device 01a8
-         Flags: fast devsel, IRQ 169
-         Memory at febfc000 (64-bit, non-prefetchable) [size=3D16K]
-         Capabilities: [50] Power Management version 2
-         Capabilities: [60] Message Signalled Interrupts: 64bit+  =
+Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
+kernel and
+alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
+stays quiet.
 
-Queue=3D0/0 Enable-
-         Capabilities: [70] Express Unknown type IRQ 0
-         Capabilities: [100] Virtual Channel
-         Capabilities: [130] Unknown (5)
+The only change is booting with different kernels, no other config or
+hardware is touched, so this must be a driver regression.
 
+The card is YMF-754 based, connected with coax spdif to my HK reciever.
 
-The true identifier of the pci chipset is : 27d8 (but I add it to the  =
+If you need more info, just tell me and I'll dig it up.
+======================================================================
 
-pci.ids file to be more clear)...
-
-I'm Running on RHEL4 (aka Scientific Linux 4) with 2.6.9-34.0.1.ELsmp
-After make some changes (only one) in include/adriver.h about gft_p to  =
-
-turn around the bad RHEL kernel version number, I was able to compile  =
-
-your last alsa-driver release (alsa-driver-1.0.11-1)...
-But Still My sound card want sound !!
-
-When i modprobe snd-hda-intel, dmesg show me :
-
-ACPI: PCI interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 169
-PCI: Setting latency timer of device 0000:00:1b.0 to 64
-ALSA  =
-
-/var/tmp/bach-build/BUILD/alsa-driver-1.0.11/pci/hda/../../alsa-kernel/pci/=
-hda/hda_intel.c:1539: hda-intel: no codecs  =
-
-found!
-
-
-I'd (average) the same message with the Dell snd-hda-intel driver  =
-
-(snd-hda-intel-1.0.6p-8)
-which is probably anything but an alsa-driver in a previous release),  =
-
-and also with the original snd-azx from RHEL (which is also an alsa  =
-
-driver!)...
-
-It sound like the chip attached to the ICH7 hub (the famous Dell:  =
-
-Unknown device 01a8) is not recognize .. is'nt it ?
-
-May this can help you ...if you can't help me ;-).
-
-Best regards and sorry for my frenglish
+----------------------------------------------------------------------
+ Raymond - 06-02-06 04:25 
+----------------------------------------------------------------------
+You may need to revert some patch related to SPDIF to find out the cause
 
 
--- =
+http://hg-mirror.alsa-project.org/alsa-kernel?fl=25ac64e78c4c;file=pci/ymfpci/ymfpci_main.c;style=gitweb
 
-CARON Dominique         UNIVERSITE DE MONTPELLIER II
-http://www.lpta.univ-montp2.fr/caron/
-  ---- PLEASE NO WORD ATTACHMENTS:
-http://www.gnu.org/philosophy/no-word-attachments.fr.html
 
-----------------------------------------------------------------
-Ce message vous a =E9t=E9 transmis gr=E2ce =E0 IMP, le WebMail de HORDE
-(www.horde.org).
+
+----------------------------------------------------------------------
+ nikke - 06-14-06 22:32 
+----------------------------------------------------------------------
+I tried using a debian 2.6.8 kernel, and then AC3 passthrough works.
+/proc/asound/version says ALSA 1.0.4 ...
+
+Using a 2.6.14 kernel did not work (ALSA 1.0.10rc1).
+
+So, any possibility of getting a list of what patches has been added to
+ymfpci between v 1.0.4 (that works) and v 1.0.10rc1? It would help
+narrowing down the candidates quite a bit...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-24-06 23:44 nikke          New Issue                                    
+05-24-06 23:44 nikke          Distribution              => Debian          
+05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
+05-24-06 23:47 nikke          Issue Monitored: nikke                       
+06-02-06 04:23 Raymond        Note Added: 0010045                          
+06-02-06 04:25 Raymond        Note Edited: 0010045                         
+06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
+06-14-06 22:32 nikke          Note Added: 0010216                          
+======================================================================
