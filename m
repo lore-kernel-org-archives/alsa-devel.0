@@ -1,17 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002210]: poll() behaving anomalously,
-	returning alternate streams on each interrupt,
-	playback then capture but never both together
-Date: Thu, 15 Jun 2006 00:31:36 +0200
-Message-ID: <0466cce52affca0125fe1576415c4f3c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002140]: No sound from mic on Fujitsu
+	Siemens Amilo M3438G
+Date: Thu, 15 Jun 2006 00:44:38 +0200
+Message-ID: <d57e7e82eedabc182237c2b3440c0342@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0257619F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53B531A1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jun 2006 00:31:36 +0200 (MEST)
+	Thu, 15 Jun 2006 00:44:38 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,50 +26,95 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2210> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2140> 
 ======================================================================
-Reported By:                cmorgan
-Assigned To:                perex
+Reported By:                jacobs
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2210
-Category:                   0_compilation problem_!!!
+Issue ID:                   2140
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.16-2-amd64-k8 (Debian 2.6.16-14)
+Distribution:               OpenSuSE 10.1
+Kernel Version:             2.6.16.13
 ======================================================================
-Date Submitted:             06-14-2006 23:56 CEST
-Last Modified:              06-15-2006 00:31 CEST
+Date Submitted:             05-22-2006 10:17 CEST
+Last Modified:              06-15-2006 00:44 CEST
 ======================================================================
-Summary:                    poll() behaving anomalously, returning alternate
-streams on each interrupt, playback then capture but never both together
+Summary:                    No sound from mic on Fujitsu Siemens Amilo M3438G
 Description: 
-poll() behaving anomalously, returning alternate streams on each interrupt,
-playback then capture but never both together.  Causes jack audio server
-to be unable to play back audio.
+I own a Fujitsu Siemens Amilo M3438G notebook with an onboard Azalia 7.1
+SPDIF chipset/codec (see spec sheet at
+http://www.fujitsu-siemens.de/ps/db/notebook/ds_amilo_m3438g_m4438g_d.pdf).
+OpenSuSE 10.1 (Kernel 2.6.16.13) is installed; the module snd-hda-intel is
+ loaded. Sound playback through the internal speakers and headphone does
+work but I am unable to get sound from the internal and external
+microphone. The alsamixer has three capture controls which all are set to
+capture and maximum volume. Each capture controls source is set to mic.
+The playback channel for mic is unmuted and also set to maximum volume but
+I just don't get a signal.
 
-Running jack with the alsa plugin and giving it the -P option puts the
-jack alsa driver into playback only mode.  This makes jack work again.
+I've tried to apply different model options to the snd-hda-intel module
+relating to the file ALSA-Configuration.txt without luck.
+
+This didn't work with OpenSuSE 10.0 (Kernel 2.6.13) either.
+
+If you need any technical information please let me know.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-15-06 00:31 
+ der_sprengmeister - 06-12-06 15:19 
 ----------------------------------------------------------------------
-That's normal behavior - on most sound cards the capture and playback are
-independent.  JACK should handle it.  I think it might be a bug in JACK.
+Hi el!
 
-What exactly are the symptoms - "it doesn't work" is not helpful.  Please
-post the exact error messages.
+Shit, sorry.
+
+Another Question: Is your Subwoofer working? And if yes: Which model do
+you use? model=auto?
+
+I think, the soundcard-models are all the same in these Amilo-Notebooks,
+if you have a 3438/4438 or 1437/1438/1439. Do you agree?
+
+----------------------------------------------------------------------
+ el - 06-15-06 00:44 
+----------------------------------------------------------------------
+I had the Subwoofer working about five times (if it works it is controlled
+by the "center" channel) in the past six months. I can't tell in which
+configuration this happened since I tried numerous different
+distributions, alsa-versions, model-options, ... Anyway, I never had it
+working for more than one session. It was always gone after a reboot.
+Seemed to be totally random anyway.
+
+Today (actually yesterday by now ;) I tried to get it to work again, so I
+started trying out different models again. Played around a bit, but
+without success. Then I rebooted and logged in. Then KDE froze and my
+laptop emitted an incredibly loud and non-stopping beep.
+Don't know what exactly I fucked up, don't care either. Maybe I'll
+reinstall next week
+
+This is el, signing off.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-14-06 23:56 cmorgan        New Issue                                    
-06-14-06 23:56 cmorgan        Distribution              => Debian          
-06-14-06 23:56 cmorgan        Kernel Version            => 2.6.16-2-amd64-k8
-(Debian 2.6.16-14)
-06-15-06 00:31 rlrevell       Note Added: 0010217                          
+05-22-06 10:17 jacobs         New Issue                                    
+05-22-06 10:17 jacobs         Distribution              => OpenSuSE 10.1   
+05-22-06 10:17 jacobs         Kernel Version            => 2.6.16.13       
+05-23-06 07:35 jacobs         Issue Monitored: jacobs                      
+05-26-06 19:13 el             Issue Monitored: el                          
+05-26-06 19:26 el             Note Added: 0009979                          
+05-29-06 08:26 jacobs         Note Added: 0010007                          
+06-07-06 11:14 der_sprengmeisterNote Added: 0010079                          
+06-07-06 11:48 der_sprengmeisterIssue Monitored: der_sprengmeister              
+     
+06-08-06 22:04 el             Note Added: 0010117                          
+06-09-06 10:32 der_sprengmeisterNote Added: 0010136                          
+06-09-06 10:32 der_sprengmeisterNote Added: 0010137                          
+06-12-06 09:19 el             Note Added: 0010166                          
+06-12-06 15:05 der_sprengmeisterNote Deleted: 0010137                        
+06-12-06 15:19 der_sprengmeisterNote Added: 0010169                          
+06-15-06 00:44 el             Note Added: 0010218                          
 ======================================================================
