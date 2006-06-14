@@ -1,19 +1,11 @@
-From: "Sam Revitch" <sam.revitch@gmail.com>
-Subject: Re: stateful reconnect with snd-usb-audio
-Date: Wed, 14 Jun 2006 10:20:57 -0700
-Message-ID: <8d4807d50606141020w8e29a50t6b97528d7e82a0c5@mail.gmail.com>
-References: <8d4807d50606121405n51edef2au3de163b01029aaf5@mail.gmail.com>
-	<s5h1wts9eae.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0606141330280.10637@tm8103.perex-int.cz>
-	<s5hy7w07wvx.wl%tiwai@suse.de> <s5hr71r97rz.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0606141543260.10637@tm8103.perex-int.cz>
-	<s5hodwv961d.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0606141645450.10637@tm8103.perex-int.cz>
+From: CARON Dominique <d.caron@LPTA.univ-montp2.fr>
+Subject: Sound Card On Dell Precision 380 (Intel ICH7)
+Date: Wed, 14 Jun 2006 20:41:35 +0200
+Message-ID: <20060614204135.i1iikwsok80kwwgw@www.lpta.univ-montp2.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0606141645450.10637@tm8103.perex-int.cz>
 Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,35 +16,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Anyway, re-reading the quote above, it sounds more like a problem
-> happening only via suspend.  Then, this might be solved automatically
-> if the proper suspend/resume is implemented on usb-audio driver.
+Hi all,
+Thank's to you for your wonderfull work...
+I've some problem to have sound on My Dell Precision 380.
+Here are some infos:
 
-> I'm not sure how alsa-lib can decide if device has been disconnected
-> permanently or temporary. But if you mean "closing the file descriptor
-> in the first time when -ENODEV occurs", it makes a lot of sense for
-> alsa-lib and yes, it should be there.
+lspci : (just sound card)
+00:1b.0 Class 0403: Intel Corp. 82801G (ICH7 Family) High Definition  =
 
-Thanks for replies.
+Audio Controller (rev 01)
+         Subsystem: Dell: Unknown device 01a8
+         Flags: fast devsel, IRQ 169
+         Memory at febfc000 (64-bit, non-prefetchable) [size=3D16K]
+         Capabilities: [50] Power Management version 2
+         Capabilities: [60] Message Signalled Interrupts: 64bit+  =
 
-The problem with usb_audio_disconnect() getting stuck isn't specific
-to suspend, although the part of it that I care about right now is.
-That function shouldn't be waiting for handles to be closed, as
-somebody can execute a DoS attack on khubd by sending SIGSTOP to any
-process that has the sound driver open.
+Queue=3D0/0 Enable-
+         Capabilities: [70] Express Unknown type IRQ 0
+         Capabilities: [100] Virtual Channel
+         Capabilities: [130] Unknown (5)
 
-Perhaps the snd_device dev_disconnect and dev_unregister routines for
-the various abstract layers need to be changed so that sysfs/procfs
-entries are removed in dev_disconnect?  This way it might be possible
-to release a slot without freeing anything that might be in use.
 
-As for implementing suspend/resume methods for snd-usb-audio, doesn't
-that require explicit support from the device for retaining state in
-some sort of low power 0.5mA mode?  I don't know whether the card I'm
-using even supports that.
+The true identifier of the pci chipset is : 27d8 (but I add it to the  =
 
--Sam Revitch
+pci.ids file to be more clear)...
+
+I'm Running on RHEL4 (aka Scientific Linux 4) with 2.6.9-34.0.1.ELsmp
+After make some changes (only one) in include/adriver.h about gft_p to  =
+
+turn around the bad RHEL kernel version number, I was able to compile  =
+
+your last alsa-driver release (alsa-driver-1.0.11-1)...
+But Still My sound card want sound !!
+
+When i modprobe snd-hda-intel, dmesg show me :
+
+ACPI: PCI interrupt 0000:00:1b.0[A] -> GSI 16 (level, low) -> IRQ 169
+PCI: Setting latency timer of device 0000:00:1b.0 to 64
+ALSA  =
+
+/var/tmp/bach-build/BUILD/alsa-driver-1.0.11/pci/hda/../../alsa-kernel/pci/=
+hda/hda_intel.c:1539: hda-intel: no codecs  =
+
+found!
+
+
+I'd (average) the same message with the Dell snd-hda-intel driver  =
+
+(snd-hda-intel-1.0.6p-8)
+which is probably anything but an alsa-driver in a previous release),  =
+
+and also with the original snd-azx from RHEL (which is also an alsa  =
+
+driver!)...
+
+It sound like the chip attached to the ICH7 hub (the famous Dell:  =
+
+Unknown device 01a8) is not recognize .. is'nt it ?
+
+May this can help you ...if you can't help me ;-).
+
+Best regards and sorry for my frenglish
+
+
+-- =
+
+CARON Dominique         UNIVERSITE DE MONTPELLIER II
+http://www.lpta.univ-montp2.fr/caron/
+  ---- PLEASE NO WORD ATTACHMENTS:
+http://www.gnu.org/philosophy/no-word-attachments.fr.html
+
+----------------------------------------------------------------
+Ce message vous a =E9t=E9 transmis gr=E2ce =E0 IMP, le WebMail de HORDE
+(www.horde.org).
