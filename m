@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Wed, 14 Jun 2006 10:21:51 +0200
-Message-ID: <19ec847bccc37efb7542840184c01001@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002209]: via8235 alc650f weak sound
+	from front
+Date: Wed, 14 Jun 2006 11:14:44 +0200
+Message-ID: <c68ec84f5364f17e55231220674982fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAAE6CB
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73193179
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jun 2006 10:21:51 +0200 (MEST)
+	Wed, 14 Jun 2006 11:14:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,95 +24,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2209> 
 ======================================================================
-Reported By:                carllivitt
-Assigned To:                tiwai
+Reported By:                norbert
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2174
-Category:                   PCI - hda-intel
+Issue ID:                   2209
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-14-2006 10:21 CEST
+Date Submitted:             06-14-2006 11:14 CEST
+Last Modified:              06-14-2006 11:14 CEST
 ======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
+Summary:                    via8235 alc650f weak sound from front
 Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
+only if I press my ear at the speaker I can hear what was loud and clear
+before...(I guess alsa 1.09,suse 10.0)
 
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
+rear,lfe and center no sound is put out (or inaudible).
 
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
+(speaker-test -c 6 -t sine -f 800)
 
-I've also tried using the 'single_cmd=1' module loading option. 
-
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
-
+more info needed?
+norbert
 ======================================================================
-
-----------------------------------------------------------------------
- carllivitt - 06-14-06 10:12 
-----------------------------------------------------------------------
-I've uploaded the soundcard portion of lspci -nv. The output is copied here
-for reference:
-
-00:1b.0 0403: 8086:27d8 (rev 02)
-        Subsystem: 1179:ff31
-        Flags: bus master, fast devsel, latency 0, IRQ 21
-        Memory at b0000000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
-
-----------------------------------------------------------------------
- carllivitt - 06-14-06 10:21 
-----------------------------------------------------------------------
-I've uploaded the contents of the file /proc/asound/card0/codec#0 as a file
-called codec0.txt.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
-06-12-06 21:51 carllivitt     Note Added: 0010174                          
-06-12-06 22:03 rlrevell       Note Added: 0010175                          
-06-12-06 22:52 carllivitt     Note Added: 0010176                          
-06-12-06 22:54 rlrevell       Note Added: 0010177                          
-06-12-06 23:10 carllivitt     Note Added: 0010178                          
-06-12-06 23:14 rlrevell       Note Added: 0010179                          
-06-12-06 23:29 carllivitt     Note Added: 0010180                          
-06-12-06 23:35 rlrevell       Note Added: 0010181                          
-06-12-06 23:49 carllivitt     Note Added: 0010182                          
-06-12-06 23:58 rlrevell       Note Added: 0010183                          
-06-13-06 15:33 godeater       Note Added: 0010193                          
-06-13-06 18:13 rlrevell       Note Added: 0010198                          
-06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
-06-13-06 18:58 rlrevell       Note Added: 0010200                          
-06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
-06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
-06-14-06 10:12 carllivitt     Note Added: 0010207                          
-06-14-06 10:21 carllivitt     File Added: codec0.txt                       
-06-14-06 10:21 carllivitt     Note Added: 0010208                          
+06-14-06 11:14 norbert        New Issue                                    
 ======================================================================
