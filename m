@@ -1,15 +1,16 @@
-From: "Roswitha Bonaparte" <roswebonapart@acrasoft.com>
-Subject: Re: xudok 564
-Date: Tue, 13 Jun 2006 23:10:12 -0700
-Message-ID: <000001c68f79$328416d0$707aa8c0@yly9>
-Reply-To: Roswitha Bonaparte <roswebonapart@acrasoft.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Wed, 14 Jun 2006 10:12:21 +0200
+Message-ID: <9d025344625743e55738bd637b7fad94@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0186233527=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from acrasoft.com (bl6-142-56.dsl.telepac.pt [82.155.142.56])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id 490DF188
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DF6418F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jun 2006 08:10:11 +0200 (MEST)
+	Wed, 14 Jun 2006 10:12:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,309 +23,100 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---===============0186233527==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C68F3E.86253ED0"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0001_01C68F3E.86253ED0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-VALlU
-fn=20
-M fr
-lp=20
-om on
-sm=20
-ly $=20
-ot=20
-1,2
-cp=20
-1
-Me
-an=20
-ridia
-Proza
-mw=20
-c
-Xa
-bj=20
-nax
-Levit
-od=20
-ra
-Ambi
-uj=20
-en
-So
-rt=20
-ma
-C
-sg=20
-lALlS fr
-jh=20
-om o
-bd=20
-nly $=20
-qn=20
-3,7
-jr=20
-5
-V
-yb=20
-lAGRA fr
-dc=20
-om onl
-mh=20
-y $
-tq=20
-3,3
-zm=20
-3
-
-
-Sav
-rh=20
-e o
-lk=20
-ver 50
-qn=20
-% w
-yp=20
-ith u
-pr=20
-s http://www.punganrundes.com
-=20
-  _____ =20
-
-There lies all that is left of Dale, said Balin. The mountains=20
-sides were green with woods and all the sheltered valley rich and=20
-pleasant in the days when the bells rang in that town. He looked both=20
-sad and grim as he said this: he had been one of Thorins companions on=20
-the day the Dragon came. They did not dare to follow the river much=20
-further to. wards the Gate; but they went on beyond the end of the=20
-
-
-------=_NextPart_000_0001_01C68F3E.86253ED0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi<BR>
-<BR>VALlU<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> fn </DIV>M fr<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> lp </DIV>om on<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> sm </DIV>ly $ <DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> ot </DIV>1,2<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> cp </DIV>1<BR>
-Me<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> an </DIV>ridia<BR>
-Proza<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> mw </DIV>c<BR>
-Xa<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> bj </DIV>nax<BR>
-Levit<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> od </DIV>ra<BR>
-Ambi<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> uj </DIV>en<BR>
-So<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> rt </DIV>ma<BR>
-C<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> sg </DIV>lALlS fr<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> jh </DIV>om o<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> bd </DIV>nly $ <DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> qn </DIV>3,7<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> jr </DIV>5<BR>
-V<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> yb </DIV>lAGRA fr<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> dc </DIV>om onl<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> mh </DIV>y $<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> tq </DIV> 3,3<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> zm </DIV>3<BR>
-<BR>
-<DIV>Sav<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> rh </DIV>e o<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> lk </DIV>ver 50<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> qn </DIV>% w<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> yp </DIV>ith u<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> pr </DIV>s <A =
-href=3D"http://www.punganrundes.com">http://www.punganrundes.com</A></DIV=
-></DIV>
-<DIV>&nbsp;</DIV><HR><DIV><FONT face=3DArial size=3D2>   There lies all =
-that is left of Dale, said Balin. The mountains <BR>sides were green =
-with woods and all the sheltered valley rich and <BR>pleasant in the =
-days when the bells rang in that town. He looked both <BR>sad and grim =
-as he said this: he had been one of Thorins companions on <BR>the day =
-the Dragon came. They did not dare to follow the river much <BR>further =
-to. wards the Gate; but they went on beyond the end of the =
-<BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C68F3E.86253ED0--
-
-
-
-
-
---===============0186233527==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0186233527==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0186233527==--
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
+======================================================================
+Reported By:                carllivitt
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2174
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
+======================================================================
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              06-14-2006 10:12 CEST
+======================================================================
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
+Description: 
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
+
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
+
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
+
+I've also tried using the 'single_cmd=1' module loading option. 
+
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
+
+======================================================================
+
+----------------------------------------------------------------------
+ jlpedrosa - 06-13-06 19:17 
+----------------------------------------------------------------------
+hummm sorry... it was 0002035. yes i tried those three.. also i opened a
+driver i saw... and tried model_last.. but none of them working..
+i'm on suse 10.1 wich i think uses... 11(rc4), but i tried the last from
+alsa
+
+lspci gives exactly the same line (maybe with -v won't be the same).
+
+sorry for the mistake
+
+----------------------------------------------------------------------
+ carllivitt - 06-14-06 10:12 
+----------------------------------------------------------------------
+I've uploaded the soundcard portion of lspci -nv. The output is copied here
+for reference:
+
+00:1b.0 0403: 8086:27d8 (rev 02)
+        Subsystem: 1179:ff31
+        Flags: bus master, fast devsel, latency 0, IRQ 21
+        Memory at b0000000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
+06-12-06 22:52 carllivitt     Note Added: 0010176                          
+06-12-06 22:54 rlrevell       Note Added: 0010177                          
+06-12-06 23:10 carllivitt     Note Added: 0010178                          
+06-12-06 23:14 rlrevell       Note Added: 0010179                          
+06-12-06 23:29 carllivitt     Note Added: 0010180                          
+06-12-06 23:35 rlrevell       Note Added: 0010181                          
+06-12-06 23:49 carllivitt     Note Added: 0010182                          
+06-12-06 23:58 rlrevell       Note Added: 0010183                          
+06-13-06 15:33 godeater       Note Added: 0010193                          
+06-13-06 18:13 rlrevell       Note Added: 0010198                          
+06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
+06-13-06 18:58 rlrevell       Note Added: 0010200                          
+06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
+06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
+06-14-06 10:12 carllivitt     Note Added: 0010207                          
+======================================================================
