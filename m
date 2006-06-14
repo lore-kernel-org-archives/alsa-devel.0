@@ -1,18 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: stateful reconnect with snd-usb-audio
-Date: Wed, 14 Jun 2006 16:50:05 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0606141645450.10637@tm8103.perex-int.cz>
-References: <8d4807d50606121405n51edef2au3de163b01029aaf5@mail.gmail.com>
-	<s5h1wts9eae.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0606141330280.10637@tm8103.perex-int.cz>
-	<s5hy7w07wvx.wl%tiwai@suse.de> <s5hr71r97rz.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0606141543260.10637@tm8103.perex-int.cz>
-	<s5hodwv961d.wl%tiwai@suse.de>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: Re: Porting ARM ALSA driver to 2.6.16 kernel
+Date: Wed, 14 Jun 2006 16:13:35 +0100
+Message-ID: <1150298015.25027.60.camel@localhost.localdomain>
+References: <200606140830.55570.wille@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hodwv961d.wl%tiwai@suse.de>
+In-Reply-To: <200606140830.55570.wille@freescale.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -22,29 +17,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Sam Revitch <sam.revitch@gmail.com>, alsa-devel@lists.sourceforge.net
+To: wille@freescale.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 14 Jun 2006, Takashi Iwai wrote:
-
-> > Yes, but we have a problem when an user remove an hotplug device, if 
-> > apps do not check the state of file descriptor. After disconnect, 
-> > read()/write() syscalls return immediately with -ENODEV and poll() with 
-> > POLLERR | POLLNVAL, thus it should be possible to close the disconnected 
-> > devices ASAP.
+On Wed, 2006-06-14 at 08:30 -0600, Ross Wille wrote:
+> Hi,
 > 
-> Then such a thing should be implemented in alsa-lib, not in app
-> codes.
+> I have an ALSA sound driver working on an ARM platform running on a 
+> 2.6.10 kernel.  But when I ported this driver to the 2.6.16.19 kernel 
+> it does not work.  The device nodes show up, but when I try to call any 
+> of the OSS-emulation ioctls (for example, SNDCTL_DSP_SETFMT) I get a 
+> -EINVAL return code from the ioctl call and a "No usable accesses" 
+> error gets printed to the console.  (I do have OSS emulation enabled in 
+> the kernel.)
+> 
 
-I'm not sure how alsa-lib can decide if device has been disconnected
-permanently or temporary. But if you mean "closing the file descriptor
-in the first time when -ENODEV occurs", it makes a lot of sense for 
-alsa-lib and yes, it should be there.
+The only problem I've experienced lately with ALSA on ARM is this gcc
+optimisation bug:-
 
-						Jaroslav
+http://gcc.gnu.org/bugzilla/show_bug.cgi?id=27363
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+This only applies to gcc 4.1.0 (it's fixed in 4.1.1) and caused the
+SNDRV_PCM_FORMAT_* refinement (in sound/core/pcm_native.c) to break.
+
+A few things to also check:-
+
+ o Does aplay/arecord and alsamixer work (they don't use OSS
+emulation) ?
+ o Does the Dummy driver work ?
+
+HTH
+
+Liam
