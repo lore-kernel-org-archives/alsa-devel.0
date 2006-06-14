@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002209]: via8235 alc650f weak sound
-	from front
-Date: Wed, 14 Jun 2006 11:14:44 +0200
-Message-ID: <c68ec84f5364f17e55231220674982fd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002204]: Roland UA-20 "advanced
+	driver" mode doesn't work
+Date: Wed, 14 Jun 2006 11:33:18 +0200
+Message-ID: <a6730c0dc58b99141ef3ea83a9bc6214@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 73193179
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB91E193
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jun 2006 11:14:44 +0200 (MEST)
+	Wed, 14 Jun 2006 11:33:18 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,41 +24,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2209> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2204> 
 ======================================================================
-Reported By:                norbert
-Assigned To:                
+Reported By:                ldk_linux
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2209
-Category:                   PCI - via82xx
+Issue ID:                   2204
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Ubuntu Dapper
+Kernel Version:             2.6.16 patched with alsa drivers version 1.0.11
 ======================================================================
-Date Submitted:             06-14-2006 11:14 CEST
-Last Modified:              06-14-2006 11:14 CEST
+Date Submitted:             06-12-2006 18:47 CEST
+Last Modified:              06-14-2006 11:33 CEST
 ======================================================================
-Summary:                    via8235 alc650f weak sound from front
+Summary:                    Roland UA-20 "advanced driver" mode doesn't work
 Description: 
-only if I press my ear at the speaker I can hear what was loud and clear
-before...(I guess alsa 1.09,suse 10.0)
+With the module sound-usb-audio in 1.0.11 my Roland UA-20 doesn't work in
+"advanced driver" mode. I think the cause is the fix inserted in
+1.0.11rc1, because once restored the old quirk code in usbquirks.h (see
+the attached patch, applies to 1.0.11) the unit works again.
 
-rear,lfe and center no sound is put out (or inaudible).
-
-(speaker-test -c 6 -t sine -f 800)
-
-more info needed?
-norbert
+I wonder if there's a way to make all versions of the UA-20 work with a
+single driver.
 ======================================================================
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 06-13-06 16:43 
+----------------------------------------------------------------------
+The fix in 1.0.11rc1 hardcodes the sample format because that version of
+the device doesn't have some descriptors required to autodetect it. 
+Apparently, it uses a sample format slightly different from yours.
+
+Please post the output of "lsusb -v" for your device.
+
+----------------------------------------------------------------------
+ ldk_linux - 06-14-06 11:33 
+----------------------------------------------------------------------
+Ok. The attached file lsusb.txt contains the output of lsusb -v on my
+machine with the unit connected and in advanced driver mode.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-14-06 11:14 norbert        New Issue                                    
+06-12-06 18:47 ldk_linux      New Issue                                    
+06-12-06 18:47 ldk_linux      File Added: UA-20_with_Alsa_1.0.11.diff           
+        
+06-12-06 18:47 ldk_linux      Distribution              => Ubuntu Dapper   
+06-12-06 18:47 ldk_linux      Kernel Version            => 2.6.16 patched with
+alsa drivers version 1.0.11
+06-13-06 16:14 ldk_linux      Issue Monitored: ldk_linux                    
+06-13-06 16:43 Clemens LadischNote Added: 0010195                          
+06-14-06 11:32 ldk_linux      File Added: lsusb.txt                        
+06-14-06 11:33 ldk_linux      Note Added: 0010209                          
 ======================================================================
