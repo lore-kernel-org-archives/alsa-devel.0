@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002174]: No sound at all using
 	snd-hda-intel / alsa-1.0.11
-Date: Wed, 14 Jun 2006 10:12:21 +0200
-Message-ID: <9d025344625743e55738bd637b7fad94@bugtrack.alsa-project.org>
+Date: Wed, 14 Jun 2006 10:21:51 +0200
+Message-ID: <19ec847bccc37efb7542840184c01001@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8DF6418F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EAAE6CB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jun 2006 10:12:21 +0200 (MEST)
+	Wed, 14 Jun 2006 10:21:51 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
 Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-14-2006 10:12 CEST
+Last Modified:              06-14-2006 10:21 CEST
 ======================================================================
 Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
@@ -66,18 +66,6 @@ were unresolved symbols that I couldn't resolve. I'm back to using the
 ======================================================================
 
 ----------------------------------------------------------------------
- jlpedrosa - 06-13-06 19:17 
-----------------------------------------------------------------------
-hummm sorry... it was 0002035. yes i tried those three.. also i opened a
-driver i saw... and tried model_last.. but none of them working..
-i'm on suse 10.1 wich i think uses... 11(rc4), but i tried the last from
-alsa
-
-lspci gives exactly the same line (maybe with -v won't be the same).
-
-sorry for the mistake
-
-----------------------------------------------------------------------
  carllivitt - 06-14-06 10:12 
 ----------------------------------------------------------------------
 I've uploaded the soundcard portion of lspci -nv. The output is copied here
@@ -93,6 +81,12 @@ Enable-
         Capabilities: [70] Express Unknown type IRQ 0
         Capabilities: [100] Virtual Channel
         Capabilities: [130] Unknown (5)
+
+----------------------------------------------------------------------
+ carllivitt - 06-14-06 10:21 
+----------------------------------------------------------------------
+I've uploaded the contents of the file /proc/asound/card0/codec#0 as a file
+called codec0.txt.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -119,4 +113,6 @@ Date Modified  Username       Field                    Change
 06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
 06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
 06-14-06 10:12 carllivitt     Note Added: 0010207                          
+06-14-06 10:21 carllivitt     File Added: codec0.txt                       
+06-14-06 10:21 carllivitt     Note Added: 0010208                          
 ======================================================================
