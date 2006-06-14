@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002140]: No sound from mic on Fujitsu
 	Siemens Amilo M3438G
-Date: Thu, 15 Jun 2006 00:44:38 +0200
-Message-ID: <d57e7e82eedabc182237c2b3440c0342@bugtrack.alsa-project.org>
+Date: Thu, 15 Jun 2006 00:57:34 +0200
+Message-ID: <5cb60de05d6ca65e07ba599be545f6f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 53B531A1
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 099E51A1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jun 2006 00:44:38 +0200 (MEST)
+	Thu, 15 Jun 2006 00:57:34 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               OpenSuSE 10.1
 Kernel Version:             2.6.16.13
 ======================================================================
 Date Submitted:             05-22-2006 10:17 CEST
-Last Modified:              06-15-2006 00:44 CEST
+Last Modified:              06-15-2006 00:57 CEST
 ======================================================================
 Summary:                    No sound from mic on Fujitsu Siemens Amilo M3438G
 Description: 
@@ -66,19 +66,6 @@ If you need any technical information please let me know.
 ======================================================================
 
 ----------------------------------------------------------------------
- der_sprengmeister - 06-12-06 15:19 
-----------------------------------------------------------------------
-Hi el!
-
-Shit, sorry.
-
-Another Question: Is your Subwoofer working? And if yes: Which model do
-you use? model=auto?
-
-I think, the soundcard-models are all the same in these Amilo-Notebooks,
-if you have a 3438/4438 or 1437/1438/1439. Do you agree?
-
-----------------------------------------------------------------------
  el - 06-15-06 00:44 
 ----------------------------------------------------------------------
 I had the Subwoofer working about five times (if it works it is controlled
@@ -96,6 +83,15 @@ Don't know what exactly I fucked up, don't care either. Maybe I'll
 reinstall next week
 
 This is el, signing off.
+
+----------------------------------------------------------------------
+ rlrevell - 06-15-06 00:57 
+----------------------------------------------------------------------
+KDE's ALSA support is terrible.  Most distros save ALSA mixer settings
+using "alsactl store/restore" but KDE also tries to save the mixer
+settings itself and seems to often get it wrong.
+
+There's somewhere in the KDE settings you can disable this.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -117,4 +113,5 @@ Date Modified  Username       Field                    Change
 06-12-06 15:05 der_sprengmeisterNote Deleted: 0010137                        
 06-12-06 15:19 der_sprengmeisterNote Added: 0010169                          
 06-15-06 00:44 el             Note Added: 0010218                          
+06-15-06 00:57 rlrevell       Note Added: 0010219                          
 ======================================================================
