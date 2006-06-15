@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Thu, 15 Jun 2006 02:53:19 +0200
-Message-ID: <38cec0dfd815f65e8e10fb72cf83bf66@bugtrack.alsa-project.org>
+Date: Thu, 15 Jun 2006 02:59:36 +0200
+Message-ID: <9d50fde7acb350edb35fc95a0b01f533@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EE2851A1
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42DFB1A3
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jun 2006 02:53:19 +0200 (MEST)
+	Thu, 15 Jun 2006 02:59:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,22 +41,13 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-15-2006 02:53 CEST
+Last Modified:              06-15-2006 02:59 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
 Alsa seems to detect the sound card, but when I try to actually play
 something there is no sound from the speakers.
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-15-06 02:36 
-----------------------------------------------------------------------
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1389#10188 is a hack by
-wood for his STAC970x, it would not work for
-your card since the codec is different. 
-
-His hack is not a real fix of the bug
 
 ----------------------------------------------------------------------
  Raymond - 06-15-06 02:53 
@@ -76,6 +67,13 @@ After writing the address to codec register.
 
 It is strange that the current code check the undocumented bit in smprate
 register to determine the codec data is ready to read
+
+----------------------------------------------------------------------
+ bzbarsky - 06-15-06 02:59 
+----------------------------------------------------------------------
+I modified his hack, of course; s/special_card/1/ to be exact.
+
+Is the last comment (the one with all the #defines) directed at me?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -139,4 +137,5 @@ Date Modified  Username       Field                    Change
 06-15-06 02:27 bzbarsky       Note Edited: 0010220                         
 06-15-06 02:36 Raymond        Note Added: 0010223                          
 06-15-06 02:53 Raymond        Note Added: 0010225                          
+06-15-06 02:59 bzbarsky       Note Added: 0010226                          
 ======================================================================
