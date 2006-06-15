@@ -1,15 +1,17 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Thu, 15 Jun 2006 02:36:09 +0200
-Message-ID: <469b1df6f6d9238e20b13fad0a135b28@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002210]: poll() behaving anomalously,
+	returning alternate streams on each interrupt,
+	playback then capture but never both together
+Date: Thu, 15 Jun 2006 02:47:15 +0200
+Message-ID: <28549e55d9ba1f15e02836750e92049b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4DFDD1A3
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0CE6F15D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jun 2006 02:36:10 +0200 (MEST)
+	Thu, 15 Jun 2006 02:47:15 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,114 +27,106 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2210> 
 ======================================================================
-Reported By:                bzbarsky
-Assigned To:                
+Reported By:                cmorgan
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2132
-Category:                   PCI - ens1371
+Issue ID:                   2210
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.16-2-amd64-k8 (Debian 2.6.16-14)
 ======================================================================
-Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-15-2006 02:36 CEST
+Date Submitted:             06-14-2006 23:56 CEST
+Last Modified:              06-15-2006 02:47 CEST
 ======================================================================
-Summary:                    No sound from speakers
+Summary:                    poll() behaving anomalously, returning alternate
+streams on each interrupt, playback then capture but never both together
 Description: 
-Alsa seems to detect the sound card, but when I try to actually play
-something there is no sound from the speakers.
+poll() behaving anomalously, returning alternate streams on each interrupt,
+playback then capture but never both together.  Causes jack audio server
+to be unable to play back audio.
+
+Running jack with the alsa plugin and giving it the -P option puts the
+jack alsa driver into playback only mode.  This makes jack work again.
 ======================================================================
 
 ----------------------------------------------------------------------
- bzbarsky - 06-15-06 02:27 
+ rlrevell - 06-15-06 00:31 
 ----------------------------------------------------------------------
-I'm really not worrying about the TV card till after I get the sound chip
-working.  ;)
+That's normal behavior - on most sound cards the capture and playback are
+independent.  JACK should handle it.  I think it might be a bug in JACK.
 
-I tried making the change from
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1389#10188 but that
-didn't seem to help.  I _think_ I made the change
-correctly, but I'm not 100% sure.
-
-I tried compiling 1.0.8rc1, but that fails to compile (claims a syntax
-error in the linux/pci.h header)....
-
-
+What exactly are the symptoms - "it doesn't work" is not helpful.  Please
+post the exact error messages.
 
 ----------------------------------------------------------------------
- Raymond - 06-15-06 02:36 
+ cmorgan - 06-15-06 02:47 
 ----------------------------------------------------------------------
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1389#10188 is a hack by
-wood for his STAC970x, it would not work for
-your card since the codec is different. 
+I apologize for not providing more information.  I haven't developed with
+alsa before so its tough to know what is enough information to provide.
 
-His hack is not a real fix of the bug
+Here is the trace from the case where jackd is poll()ing on playback and
+capture:
+
+1150332186452694: checked 1 fds, 22954 usecs since poll entered
+capture: revents & POLLERR, setting xrun_detected
+1150332186452694 capture stream ready
+capture_avail == -EPIPE, setting xrun_detected
+playback_avail == -EPIPE, setting xrun_detected
+xrun_detected, calling alsa_driver_xrun_recovery() and returning 0
+
+1150332186529668: checked 2 fds, 20899 usecs since poll entered
+1150332186529668 playback stream ready
+1150332186529668 capture stream timed out
+
+1150332186556790: checked 1 fds, 27109 usecs since poll entered
+capture: revents & POLLERR, setting xrun_detected
+1150332186556790 capture stream ready
+capture_avail == -EPIPE, setting xrun_detected
+playback_avail == -EPIPE, setting xrun_detected
+xrun_detected, calling alsa_driver_xrun_recovery() and returning 0
+
+1150332186636694: checked 2 fds, 23851 usecs since poll entered
+...
+
+
+
+and the one from just playback:
+
+1150332304773422: checked 1 fds, 21313 usecs since poll entered
+1150332304773422 playback stream ready
+wakeup complete, avail = 1024, pavail = 1024 cavail = 2147483647
+
+1150332304794754: checked 1 fds, 21318 usecs since poll entered
+1150332304794754 playback stream ready
+wakeup complete, avail = 1024, pavail = 1024 cavail = 2147483647
+
+1150332304816085: checked 1 fds, 21315 usecs since poll entered
+1150332304816085 playback stream ready
+wakeup complete, avail = 1024, pavail = 1024 cavail = 2147483647
+
+1150332304837422: checked 1 fds, 21320 usecs since poll entered
+...
+
+
+So, in the case of just playback jack doesn't detect an xrun every other
+poll() and works like it should
+
+Chris
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-06 19:54 bzbarsky       New Issue                                    
-05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
-05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
-05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
-05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
-05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
-05-17-06 19:56 bzbarsky       File Added: scsound.log                      
-05-17-06 19:57 bzbarsky       Note Added: 0009857                          
-05-20-06 05:31 Raymond        Note Added: 0009882                          
-05-20-06 21:43 bzbarsky       Note Added: 0009893                          
-05-21-06 03:41 Raymond        Note Added: 0009894                          
-05-21-06 03:48 Raymond        Note Edited: 0009894                         
-05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
-05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
-05-22-06 02:53 bzbarsky       Note Added: 0009901                          
-05-22-06 04:14 Raymond        Note Added: 0009902                          
-05-23-06 09:00 Raymond        Note Added: 0009929                          
-05-23-06 09:03 Raymond        Note Edited: 0009929                         
-05-23-06 09:07 Raymond        Note Edited: 0009929                         
-06-02-06 20:08 bzbarsky       Note Added: 0010053                          
-06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
-06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
-06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
- 
-06-02-06 20:35 bzbarsky       Note Added: 0010054                          
-06-03-06 02:44 Raymond        Note Added: 0010058                          
-06-05-06 01:29 bzbarsky       Note Added: 0010066                          
-06-05-06 03:31 Raymond        Note Added: 0010067                          
-06-05-06 03:56 bzbarsky       File Added: dmesg                            
-06-05-06 03:57 bzbarsky       Note Added: 0010068                          
-06-06-06 06:35 Raymond        Note Added: 0010071                          
-06-06-06 06:43 Raymond        Note Edited: 0010071                         
-06-06-06 08:59 Raymond        Note Edited: 0010071                         
-06-10-06 07:42 bzbarsky       Note Added: 0010144                          
-06-11-06 05:24 Raymond        Note Added: 0010150                          
-06-11-06 05:29 Raymond        Note Edited: 0010150                         
-06-11-06 22:37 bzbarsky       File Added: dmesg+kprint                     
-06-11-06 22:37 bzbarsky       File Added: codec_lines.txt                    
-06-11-06 22:38 bzbarsky       Note Added: 0010154                          
-06-12-06 03:31 Raymond        Note Added: 0010157                          
-06-12-06 03:41 rlrevell       Note Added: 0010158                          
-06-12-06 04:36 bzbarsky       Note Added: 0010161                          
-06-12-06 05:18 Raymond        Note Added: 0010164                          
-06-12-06 05:20 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:26 rlrevell       Note Added: 0010165                          
-06-12-06 13:23 Raymond        Note Added: 0010168                          
-06-12-06 18:12 bzbarsky       Note Added: 0010172                          
-06-13-06 04:43 Raymond        Note Added: 0010185                          
-06-13-06 04:45 Raymond        Note Edited: 0010185                         
-06-13-06 05:39 bzbarsky       Note Added: 0010187                          
-06-13-06 07:20 Raymond        Note Added: 0010190                          
-06-13-06 07:25 Raymond        Note Edited: 0010190                         
-06-14-06 05:00 Raymond        Note Added: 0010204                          
-06-15-06 02:16 bzbarsky       Note Added: 0010220                          
-06-15-06 02:27 bzbarsky       Note Edited: 0010220                         
-06-15-06 02:36 Raymond        Note Added: 0010223                          
+06-14-06 23:56 cmorgan        New Issue                                    
+06-14-06 23:56 cmorgan        Distribution              => Debian          
+06-14-06 23:56 cmorgan        Kernel Version            => 2.6.16-2-amd64-k8
+(Debian 2.6.16-14)
+06-15-06 00:31 rlrevell       Note Added: 0010217                          
+06-15-06 02:47 cmorgan        Note Added: 0010224                          
 ======================================================================
