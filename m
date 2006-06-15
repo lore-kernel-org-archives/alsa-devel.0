@@ -1,19 +1,15 @@
-From: "Kin Manseau" <mansea@arrudasampaio.com>
-Subject: Re: yosek 169
-Date: Wed, 14 Jun 2006 18:05:59 -0700
-Message-ID: <000001c69017$dd17a640$92d4a8c0@ltj1>
-Reply-To: Kin Manseau <mansea@arrudasampaio.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002132]: No sound from speakers
+Date: Thu, 15 Jun 2006 03:19:48 +0200
+Message-ID: <e6bd658812efac0216538e7d893f3a35@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1852317511=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BA91919A
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 955A316B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jun 2006 03:06:30 +0200 (MEST)
-Received: from fitchratings.com (34.110.98-84.rev.gaoland.net [84.98.110.34])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	DCA519941C for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jun 2006 03:06:25 +0200 (MEST)
+	Thu, 15 Jun 2006 03:19:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,309 +22,108 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---===============1852317511==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01C68FDD.30B8CE40"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0001_01C68FDD.30B8CE40
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Som
-ul=20
-a
-VlAGR
-jt=20
-A fr
-aa=20
-om o
-ii=20
-nly $
-om=20
-3,3
-rx=20
-3
-Levit
-mo=20
-ra
-Proz
-as=20
-ac
-C
-cz=20
-lALlS fr
-ve=20
-om o
-vh=20
-nly $=20
-wu=20
-3,7
-mn=20
-5
-Xan
-fr=20
-ax
-Mer
-xa=20
-idia
-VALlU
-rd=20
-M fro
-ka=20
-m o
-wi=20
-nly $
-ts=20
-1,2
-ah=20
-1
-Amb
-cz=20
-ien
-
-
-Sav
-bc=20
-e ove
-qj=20
-r 5
-rj=20
-0% w
-tj=20
-ith u
-ce=20
-s http://www.lopmentalon.com
-=20
-  _____ =20
-
-key-hole. Durin, Durin! said Thorin. He was the father of the=20
-fathers of the eldest race of Dwarves, the Longbeards, and my first=20
-ancestor: I am his heir. Then what is Durins Day? asked Elrond.=20
-The first day of the dwarves New Year, said Thorin, is as all=20
-should know the first, day of the last moon of Autumn on the threshold=20
-of Winter. We still call it Durins Day when the last moon of Autumn and=20
-
-
-------=_NextPart_000_0001_01C68FDD.30B8CE40
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV>Hi<BR>
-<BR>Som<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> ul </DIV>a<BR>
-VlAGR<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> jt </DIV>A fr<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> aa </DIV>om o<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> ii </DIV>nly $<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> om </DIV> 3,3<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> rx </DIV>3<BR>
-Levit<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> mo </DIV>ra<BR>
-Proz<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> as </DIV>ac<BR>
-C<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> cz </DIV>lALlS fr<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> ve </DIV>om o<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> vh </DIV>nly $ <DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> wu </DIV>3,7<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> mn </DIV>5<BR>
-Xan<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> fr </DIV>ax<BR>
-Mer<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> xa </DIV>idia<BR>
-VALlU<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> rd </DIV>M fro<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> ka </DIV>m o<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> wi </DIV>nly $<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> ts </DIV> 1,2<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> ah </DIV>1<BR>
-Amb<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> cz </DIV>ien<BR>
-<BR>
-<DIV>Sav<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> bc </DIV>e ove<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> qj </DIV>r 5<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> rj </DIV>0% w<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> tj </DIV>ith u<DIV STYLE =3D "=20
-
-MARGIN: 0px;
-
-FLOAT
-:
-RIGHT"> ce </DIV>s <A =
-href=3D"http://www.lopmentalon.com">http://www.lopmentalon.com</A></DIV><=
-/DIV>
-<DIV>&nbsp;</DIV><HR><DIV><FONT face=3DArial size=3D2>key-hole. Durin, =
-Durin! said Thorin. He was the father of the <BR>fathers of the eldest =
-race of Dwarves, the Longbeards, and my first <BR>ancestor: I am his =
-heir. Then what is Durins Day? asked Elrond. <BR>   The first day of the =
-dwarves New Year, said Thorin, is as all <BR>should know the first, day =
-of the last moon of Autumn on the threshold <BR>of Winter. We still call =
-it Durins Day when the last moon of Autumn and =
-<BR></FONT></DIV></BODY></HTML>
-------=_NextPart_000_0001_01C68FDD.30B8CE40--
-
-
-
-
-
---===============1852317511==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1852317511==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1852317511==--
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
+======================================================================
+Reported By:                bzbarsky
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2132
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 4
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             05-17-2006 19:54 CEST
+Last Modified:              06-15-2006 03:19 CEST
+======================================================================
+Summary:                    No sound from speakers
+Description: 
+Alsa seems to detect the sound card, but when I try to actually play
+something there is no sound from the speakers.
+======================================================================
+
+----------------------------------------------------------------------
+ bzbarsky - 06-15-06 02:59 
+----------------------------------------------------------------------
+I modified his hack, of course; s/special_card/1/ to be exact.
+
+Is the last comment (the one with all the #defines) directed at me?
+
+----------------------------------------------------------------------
+ Raymond - 06-15-06 03:19 
+----------------------------------------------------------------------
+What's the error when compiling 1.0.8rc1 ?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-17-06 19:54 bzbarsky       New Issue                                    
+05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
+05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
+05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
+05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
+05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
+05-17-06 19:56 bzbarsky       File Added: scsound.log                      
+05-17-06 19:57 bzbarsky       Note Added: 0009857                          
+05-20-06 05:31 Raymond        Note Added: 0009882                          
+05-20-06 21:43 bzbarsky       Note Added: 0009893                          
+05-21-06 03:41 Raymond        Note Added: 0009894                          
+05-21-06 03:48 Raymond        Note Edited: 0009894                         
+05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
+05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
+05-22-06 02:53 bzbarsky       Note Added: 0009901                          
+05-22-06 04:14 Raymond        Note Added: 0009902                          
+05-23-06 09:00 Raymond        Note Added: 0009929                          
+05-23-06 09:03 Raymond        Note Edited: 0009929                         
+05-23-06 09:07 Raymond        Note Edited: 0009929                         
+06-02-06 20:08 bzbarsky       Note Added: 0010053                          
+06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
+06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
+06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
+ 
+06-02-06 20:35 bzbarsky       Note Added: 0010054                          
+06-03-06 02:44 Raymond        Note Added: 0010058                          
+06-05-06 01:29 bzbarsky       Note Added: 0010066                          
+06-05-06 03:31 Raymond        Note Added: 0010067                          
+06-05-06 03:56 bzbarsky       File Added: dmesg                            
+06-05-06 03:57 bzbarsky       Note Added: 0010068                          
+06-06-06 06:35 Raymond        Note Added: 0010071                          
+06-06-06 06:43 Raymond        Note Edited: 0010071                         
+06-06-06 08:59 Raymond        Note Edited: 0010071                         
+06-10-06 07:42 bzbarsky       Note Added: 0010144                          
+06-11-06 05:24 Raymond        Note Added: 0010150                          
+06-11-06 05:29 Raymond        Note Edited: 0010150                         
+06-11-06 22:37 bzbarsky       File Added: dmesg+kprint                     
+06-11-06 22:37 bzbarsky       File Added: codec_lines.txt                    
+06-11-06 22:38 bzbarsky       Note Added: 0010154                          
+06-12-06 03:31 Raymond        Note Added: 0010157                          
+06-12-06 03:41 rlrevell       Note Added: 0010158                          
+06-12-06 04:36 bzbarsky       Note Added: 0010161                          
+06-12-06 05:18 Raymond        Note Added: 0010164                          
+06-12-06 05:20 Raymond        Note Edited: 0010164                         
+06-12-06 05:23 Raymond        Note Edited: 0010164                         
+06-12-06 05:23 Raymond        Note Edited: 0010164                         
+06-12-06 05:26 rlrevell       Note Added: 0010165                          
+06-12-06 13:23 Raymond        Note Added: 0010168                          
+06-12-06 18:12 bzbarsky       Note Added: 0010172                          
+06-13-06 04:43 Raymond        Note Added: 0010185                          
+06-13-06 04:45 Raymond        Note Edited: 0010185                         
+06-13-06 05:39 bzbarsky       Note Added: 0010187                          
+06-13-06 07:20 Raymond        Note Added: 0010190                          
+06-13-06 07:25 Raymond        Note Edited: 0010190                         
+06-14-06 05:00 Raymond        Note Added: 0010204                          
+06-15-06 02:16 bzbarsky       Note Added: 0010220                          
+06-15-06 02:27 bzbarsky       Note Edited: 0010220                         
+06-15-06 02:36 Raymond        Note Added: 0010223                          
+06-15-06 02:53 Raymond        Note Added: 0010225                          
+06-15-06 02:59 bzbarsky       Note Added: 0010226                          
+06-15-06 03:03 Raymond        Note Edited: 0010225                         
+06-15-06 03:19 Raymond        Note Added: 0010227                          
+======================================================================
