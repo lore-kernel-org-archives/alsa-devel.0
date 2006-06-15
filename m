@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Thu, 15 Jun 2006 08:06:36 +0200
-Message-ID: <4134aa00ecb4731ab4df2bcb3c4dd1fa@bugtrack.alsa-project.org>
+Date: Thu, 15 Jun 2006 08:59:35 +0200
+Message-ID: <3cee88c1640e64368556c7e8b4dff4ff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 41D50196
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 033FD18E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jun 2006 08:06:36 +0200 (MEST)
+	Thu, 15 Jun 2006 08:59:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-15-2006 08:06 CEST
+Last Modified:              06-15-2006 08:59 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
@@ -50,32 +50,29 @@ something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-15-06 06:02 
-----------------------------------------------------------------------
-if snd_es1371_codec_read() work, ac97->id should equal to 0x4e534300 for
-LM4548 on your ES1373
-
-The purpose of wood's hack is to force snd_ac97_cmix_new_stereo() to
-create kcontrols of the mute switches and set the correct low/high range
-of the playback volume switches for those stereo playback volume kcontrols
-
-
-Based on the info from codec_lines.txt, the corresponding hack (not fix)
-
-special_card = ((ac97->id == 0x0d504e53) ||
-                 ac97->id == 0x43004e53)) && (strstr(pfx,"Playback"));
-
-It still depends on snd_es1371_codec_write() work as expected to change
-the volume
-
-
-
-----------------------------------------------------------------------
  bzbarsky - 06-15-06 08:06 
 ----------------------------------------------------------------------
 My point was that I just set special_card to 1.  That did not help.  The
 0:7c and 0:7e registers still had the wrong values, assuming that 4e53 and
 4300 are the right values.
+
+----------------------------------------------------------------------
+ Raymond - 06-15-06 08:59 
+----------------------------------------------------------------------
+alsa-driver-1.0.8rc1 (ens1371) can be configured and compiled without any
+error on linux-2.4.22-1.2199.nptl , this means the compilation error is
+specific to kernel 2.6.x
+
+wood's hack don't fix read/write codec bug, it just create the mute switch
+and volume switch(low/high) BY FORCE since snd_ac97_try_bit() and
+check_volume_resolution() fail as snd_es1371_codec_read() return wrong
+value
+
+When wood unmute and change the volume using amixer/alsamixer, wood can
+hear sound from ens1371 ONLY when snd_es1371_codec_write() work.
+
+If snd_es1371_codec_write cannot change the codec registers of LM4548, you
+cannot hear any sound since all volume are muted by default
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -150,4 +147,5 @@ Date Modified  Username       Field                    Change
 06-15-06 05:59 Raymond        Note Edited: 0010232                         
 06-15-06 06:02 Raymond        Note Edited: 0010232                         
 06-15-06 08:06 bzbarsky       Note Added: 0010234                          
+06-15-06 08:59 Raymond        Note Added: 0010235                          
 ======================================================================
