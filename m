@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Thu, 15 Jun 2006 04:19:46 +0200
-Message-ID: <ba291313e7dfcafecb62c99d2345bdc7@bugtrack.alsa-project.org>
+Date: Thu, 15 Jun 2006 05:54:47 +0200
+Message-ID: <da7f46365c40759c605f74ddf5b5e60d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8258B193
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6FC4D1A8
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jun 2006 04:19:46 +0200 (MEST)
+	Thu, 15 Jun 2006 05:54:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,19 +41,13 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-15-2006 04:19 CEST
+Last Modified:              06-15-2006 05:54 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
 Alsa seems to detect the sound card, but when I try to actually play
 something there is no sound from the speakers.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 06-15-06 03:55 
-----------------------------------------------------------------------
-Raymond, please express comments like 10225 in the form of a patch. 
-Otherwise it's too confusing to people who are not programmers.
 
 ----------------------------------------------------------------------
  bzbarsky - 06-15-06 04:19 
@@ -65,6 +59,22 @@ In file included from
                  from
 /home/bzbarsky/alsa-driver-1.0.8rc1/acore/sgbuf.c:15:
 include/linux/pci.h:460: error: syntax error before numeric constant
+
+----------------------------------------------------------------------
+ Raymond - 06-15-06 05:54 
+----------------------------------------------------------------------
+if snd_es1371_codec_read() work, ac97->id should equal to 0x4e534c00 for
+LM4548 on your ES1373
+
+The purpose of wood's hack is to force snd_ac97_cmix_new_stereo() to
+create kcontrols of the mute switches and set the correct low/high range
+of the playback volume switches for those stereo playback volume kcontrols
+
+
+Based on the info from codec_lines.txt, the corresponding hack (not fix)
+
+special_card = ((ac97->id == 0x0d504e53) ||
+                 ac97->id == 0x43004e53)) && (strstr(pfx,"Playback"));
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -134,4 +144,5 @@ Date Modified  Username       Field                    Change
 06-15-06 03:53 rlrevell       Note Added: 0010228                          
 06-15-06 03:55 rlrevell       Note Added: 0010229                          
 06-15-06 04:19 bzbarsky       Note Added: 0010231                          
+06-15-06 05:54 Raymond        Note Added: 0010232                          
 ======================================================================
