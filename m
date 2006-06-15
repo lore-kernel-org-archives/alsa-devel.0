@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002208]: No sound from Laptop
-Date: Thu, 15 Jun 2006 17:50:22 +0200
-Message-ID: <b977b761eef6b4f1020f95cf34422478@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001728]: Modification of volume
+	control for M-Audio Revolution 5.1
+Date: Thu, 15 Jun 2006 19:47:41 +0200
+Message-ID: <781e26f108492de2137a1611e094e0ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 81C48191
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2F82A179
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jun 2006 17:50:22 +0200 (MEST)
+	Thu, 15 Jun 2006 19:47:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,55 +24,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2208> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1728> 
 ======================================================================
-Reported By:                paragn
-Assigned To:                rlrevell
+Reported By:                cyan
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2208
-Category:                   alsamixer
-Reproducibility:            have not tried
-Severity:                   major
+Project:                    ALSA - driver
+Issue ID:                   1728
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               gentoo testing
+Kernel Version:             2.6.14-gentoo-r5
 ======================================================================
-Date Submitted:             06-14-2006 07:25 CEST
-Last Modified:              06-15-2006 17:50 CEST
+Date Submitted:             01-09-2006 23:35 CET
+Last Modified:              06-15-2006 19:47 CEST
 ======================================================================
-Summary:                    No sound from Laptop
+Summary:                    Modification of volume control for M-Audio
+Revolution 5.1
 Description: 
-On newly installed FC5 OS on IBM R52 laptop, i am not able to listen a
-sound. The problem happened when i played with alsamixer. I want to check
-what Headphone Jack Sense and Line Jack Sense functions are? i was able to
-listen thru' headphone as well as laptop's speaker but after making a lot
-of changes like mutting headphone/mutting other controls/unmutting them
-and each time executing alsactl store. I lost my sound.
+In Alsamixer (and KMix) is not possible to change volume of both chanels at
+once. Slides with names "DAC" and "DAC1" corresponds to left and right
+chanel. 
+I would like to make a suggestion to merge them together.
 ======================================================================
 
 ----------------------------------------------------------------------
- paragn - 06-15-06 06:06 
+ alinja - 02-02-06 15:15 
 ----------------------------------------------------------------------
-thanks it worked
+Is second this suggestion. I consider the current implementation with
+independent channel volumes broken (especially as there is no master
+volume). I already had decided to make a similar patch, but I'm glad I
+found this.
 
 ----------------------------------------------------------------------
- rlrevell - 06-15-06 17:50 
+ alinja - 06-15-06 19:47 
 ----------------------------------------------------------------------
-Bad mixer settings
+Sorry that I add this a bit late... I hacked up a modification that allows
+per-card configuration of the mixer settings. I also changed the main
+channel name to PCM on revolution 7.1. I have only tested this on my 7.1,
+I hope I ot thing right on the other cards.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-14-06 07:25 paragn         New Issue                                    
-06-14-06 07:25 paragn         File Added: scsound.log                      
-06-14-06 07:30 rlrevell       Note Added: 0010206                          
-06-15-06 06:06 paragn         Note Added: 0010233                          
-06-15-06 17:50 rlrevell       Status                   new => resolved     
-06-15-06 17:50 rlrevell       Resolution               open => fixed       
-06-15-06 17:50 rlrevell       Assigned To               => rlrevell        
-06-15-06 17:50 rlrevell       Note Added: 0010241                          
+01-09-06 23:35 cyan           New Issue                                    
+01-09-06 23:35 cyan           Distribution              => gentoo testing  
+01-09-06 23:35 cyan           Kernel Version            => 2.6.14-gentoo-r5
+01-14-06 22:31 wollschaf      Note Added: 0007656                          
+01-25-06 00:07 wollschaf      Issue Monitored: wollschaf                    
+01-25-06 00:09 wollschaf      File Added: ak4xxx-adda-stereomixer.patch         
+          
+01-25-06 00:29 wollschaf      Note Added: 0007776                          
+01-27-06 15:20 tiwai          Note Added: 0007804                          
+02-02-06 15:15 alinja         Note Added: 0007877                          
+03-28-06 14:22 alinja         Issue Monitored: alinja                      
+06-15-06 19:41 alinja         File Added: ak4xx-volumes.patch                   
+
+06-15-06 19:47 alinja         Note Added: 0010242                          
 ======================================================================
