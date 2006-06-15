@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Thu, 15 Jun 2006 03:19:48 +0200
-Message-ID: <e6bd658812efac0216538e7d893f3a35@bugtrack.alsa-project.org>
+Date: Thu, 15 Jun 2006 03:53:06 +0200
+Message-ID: <771749c586b940bd47dc50bd707399b7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 955A316B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 13B5E193
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jun 2006 03:19:48 +0200 (MEST)
+	Thu, 15 Jun 2006 03:53:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-15-2006 03:19 CEST
+Last Modified:              06-15-2006 03:53 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
@@ -50,16 +50,15 @@ something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- bzbarsky - 06-15-06 02:59 
-----------------------------------------------------------------------
-I modified his hack, of course; s/special_card/1/ to be exact.
-
-Is the last comment (the one with all the #defines) directed at me?
-
-----------------------------------------------------------------------
  Raymond - 06-15-06 03:19 
 ----------------------------------------------------------------------
 What's the error when compiling 1.0.8rc1 ?
+
+----------------------------------------------------------------------
+ rlrevell - 06-15-06 03:53 
+----------------------------------------------------------------------
+You cannot compile an old ALSA against a kernel with a newer version.  This
+has never worked and cannot work.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -126,4 +125,5 @@ Date Modified  Username       Field                    Change
 06-15-06 02:59 bzbarsky       Note Added: 0010226                          
 06-15-06 03:03 Raymond        Note Edited: 0010225                         
 06-15-06 03:19 Raymond        Note Added: 0010227                          
+06-15-06 03:53 rlrevell       Note Added: 0010228                          
 ======================================================================
