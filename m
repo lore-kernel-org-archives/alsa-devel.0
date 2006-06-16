@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002159]: ac3 passthrough not working
 	on recent versions
-Date: Fri, 16 Jun 2006 13:01:21 +0200
-Message-ID: <df282669f9a5d9c626ebdc4c52799e1c@bugtrack.alsa-project.org>
+Date: Fri, 16 Jun 2006 13:26:42 +0200
+Message-ID: <ca71afc566bf375c200dd32e1df43284@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 938D818B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 83B1118B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jun 2006 13:01:21 +0200 (MEST)
+	Fri, 16 Jun 2006 13:26:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-24-2006 23:44 CEST
-Last Modified:              06-16-2006 13:01 CEST
+Last Modified:              06-16-2006 13:26 CEST
 ======================================================================
 Summary:                    ac3 passthrough not working on recent versions
 Description: 
@@ -64,107 +64,15 @@ If you need more info, just tell me and I'll dig it up.
 ======================================================================
 
 ----------------------------------------------------------------------
- nikke - 06-15-06 23:43 
+ Mimosius - 06-16-06 13:16 
 ----------------------------------------------------------------------
-This is on a 2.6.15 kernel with ALSA 1.0.11.
-
-lspci -vn:
-0000:02:06.0 0401: 1073:0012
-        Subsystem: 1073:0012
-        Flags: bus master, medium devsel, latency 64, IRQ 177
-        Memory at faff8000 (32-bit, non-prefetchable) [size=32K]
-        I/O ports at ecc0 [size=64]
-        I/O ports at ecb8 [size=4]
-        Capabilities: [50] Power Management version 1
-
-cat /proc/asound/cards:
- 0 [YMF754         ]: YMF754 - Yamaha DS-1E (YMF754)
-                      Yamaha DS-1E (YMF754) at 0xfaff8000, irq 177
-
-cat /proc/asound/pcm:
-00-03: YMFPCI - PCM2 : YMFPCI - Direct Recording : capture 1
-00-02: YMFPCI - Rear : YMFPCI - Rear PCM : playback 1
-00-01: YMFPCI - IEC958 : YMFPCI - IEC958 : playback 1
-00-00: YMFPCI : YMFPCI : playback 32 : capture 1
-
-
-cat /proc/asound/card0/codec97#0/ac97#0-0+regs (identical output
-regardless of idle, playing pcm or playing ac3):
-0:00 = 6940
-0:02 = 0303
-0:04 = 9f1f
-0:06 = 801f
-0:08 = 0000
-0:0a = 801e
-0:0c = 801f
-0:0e = 801f
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 0303
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0080
-0:2a = 0080
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 0000
-0:38 = 9f9f
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 8000
-0:74 = 0380
-0:76 = abba
-0:78 = 9381
-0:7a = 0000
-0:7c = 8384
-0:7e = 7608
-
-----------------------------------------------------------------------
- Mimosius - 06-16-06 13:01 
-----------------------------------------------------------------------
-I've started from 1.0.9b and applied patch by patch up to 1.0.11rc2. I
-figured out, that this patch from Clemens Ladisch
+I've started from 1.0.9b and applied patch by patch up to 1.0.11. I figured
+out, that this patch from Clemens Ladisch
 http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=218164651eb8;style=gitweb
 breaks the AC3-passthrough.
 
 playing mp3 or ac3 the AC97 register are filled with the same values, but
-there is a difference between version 1.0.11rc2, which comes with my SUSE
+there is a difference between version 1.0.11, which comes with my SUSE
 10.1 Kernel, and my patched 1.0.9b without Clemens patch:
 
 --- ac97-1.0.11-ac3     2006-06-15 22:17:15.000000000 +0200
@@ -206,8 +114,7 @@ there is a difference between version 1.0.11rc2, which comes with my SUSE
  0:76 = abba
  0:78 = 9381
 
-and here the diff of the ymfpci registers from 1.0.11rc2 and
-1.0.9b(patched)
+and here the diff of the ymfpci registers from 1.0.11 and 1.0.9b(patched)
 --- ymfpci-1.0.11-ac3   2006-06-15 22:17:20.000000000 +0200
 +++ ymfpci-1.0.9_patched-ac3    2006-06-16 12:47:54.000000000 +0200
 @@ -24,7 +24,7 @@
@@ -277,6 +184,22 @@ and here the diff of the ymfpci registers from 1.0.11rc2 and
 so AC3 works for me at the moment :) , but thats not the solution. I hope
 Clemens will review his patch.
 
+
+
+----------------------------------------------------------------------
+ Raymond - 06-16-06 13:26 
+----------------------------------------------------------------------
+Are you really sure that the patch "ymfpci: add per-voice volume controls"
+break AC3 passthrough, the purpose of that patch is to implement pcm
+volume control per substream using the hardware mixing of ymfpci
+
+Please note that STAC9708 has no SPDIF control registers, there is no need
+to compare ac97 registers
+
+You should compare those ymfpci register
+
+cat /proc/asound/card0/ymfpci
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -293,4 +216,6 @@ Date Modified  Username       Field                    Change
 06-15-06 11:03 Mimosius       Note Added: 0010237                          
 06-15-06 23:43 nikke          Note Added: 0010246                          
 06-16-06 13:01 Mimosius       Note Added: 0010250                          
+06-16-06 13:16 Mimosius       Note Edited: 0010250                         
+06-16-06 13:26 Raymond        Note Added: 0010251                          
 ======================================================================
