@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0002203]: Segmentation fault and exact
-	rate : nan (0/0)
-Date: Fri, 16 Jun 2006 18:55:40 +0200
-Message-ID: <b7ece7ea1db0a4a3814befa5932f7432@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002108]: snd-hda-intel: Can only play
+	48000Hz via digital out. 44100 is garbled.
+Date: Fri, 16 Jun 2006 19:03:08 +0200
+Message-ID: <7a11c71ee31846d00f88f353a56361ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B36E181
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F6DF165
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jun 2006 18:55:40 +0200 (MEST)
+	Fri, 16 Jun 2006 19:03:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,237 +24,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2203> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2108> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                perex
+Reported By:                WhereIsTheCloud
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   2203
-Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Project:                    ALSA - driver
+Issue ID:                   2108
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.15-1-686-smp
 ======================================================================
-Date Submitted:             06-12-2006 16:44 CEST
-Last Modified:              06-16-2006 18:55 CEST
+Date Submitted:             05-09-2006 00:28 CEST
+Last Modified:              06-16-2006 19:03 CEST
 ======================================================================
-Summary:                    Segmentation fault and exact rate   : nan (0/0)
+Summary:                    snd-hda-intel: Can only play 48000Hz via digital
+out.  44100 is garbled.
 Description: 
-Running two instance of aplay in two different terminals, the second
-instance of aplay segmentation fault.
+Hi all.  I am having trouble getting my computer to play 44100Hz with my 
+digital AV reciever.  I have an ECS 945P-A (1.1) motherboard 
+(ICH7), with an onboard Realtek ALC880 8-channel audio CODEC, five 
+miniport(?) jacks, and one fiber optical connector.  I use the fiber
+optical 
+connector to connect the motherboard to my reciever.
+
+I cannot get clean 44100 Hz PCM sound outputted.  48000 Hz plays fine. 
+Dmix converts everything to 48000. This is acceptable, but 44100->48000Hz
+upsampling degrades sound quality.
+
+If I dual boot to MS windows, I can select between 44100, 48000, and 96000
+Hz output, using the realtek drivers.  All work fine and my reciever
+reports getting the correct format, so it is NOT a hardware problem.
+
+I'm not sure if this is a driver issue or a libasound issue.
 
 
-aplay -v -Ddefault:1 *.wav
+Thank you in advance for your help!
 
-Playing WAVE 'test.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
-Plug PCM: Rate conversion PCM (48000, sformat=U8)
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : U8
-  subformat    : STD
-  channels     : 1
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 8
-  buffer_size  : 2730
-  period_size  : 170
-  period_time  : 21333
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 170
-  xfer_align   : 170
-  start_threshold  : 2720
-  stop_threshold   : 2730
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 178913280
-Slave: Route conversion PCM (sformat=S16_LE)
-  Transformation table:
-    0 <- 0
-    1 <- 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : U8
-  subformat    : STD
-  channels     : 1
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 8
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 16384
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Slave: Direct Stream Mixing PCM
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 16384
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Hardware PCM card 1 'Intel 82801BA-ICH2' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 0
-  exact rate   : nan (0/0)
-  msbits       : 0
-  buffer_size  : 16384
-  period_size  : 0
-  period_time  : 0
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 0
-  sleep_min    : 0
-  avail_min    : 0
-  xfer_align   : 0
-  start_threshold  : 0
-  stop_threshold   : 0
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Mono
-Segmentation fault
-
+Peter
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-16-06 11:27 
+ legoguy - 06-08-06 05:33 
 ----------------------------------------------------------------------
-second instance of arecord also behave the same, it seem that pcm return by
-snd_pcm_direct_open_secondary_client() cannot passed into snd_pcm_dump()
-
-
- arecord -v -Ddefault:1 -d10 -f cd test1.wav
-Recording WAVE 'test1.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Stereo
-Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
-Its setup is:
-  stream       : CAPTURE
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 15052
-  period_size  : 940
-  period_time  : 21333
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 940
-  xfer_align   : 940
-  start_threshold  : 1
-  stop_threshold   : 15052
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 986447872
-Slave: Direct Snoop PCM
-Its setup is:
-  stream       : CAPTURE
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 16384
-  period_size  : 1024
-  period_time  : 21333
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 1024
-  xfer_align   : 1024
-  start_threshold  : 1
-  stop_threshold   : 16384
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-Hardware PCM card 1 'Intel 82801BA-ICH2' device 0 subdevice 0
-Its setup is:
-  stream       : CAPTURE
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 0
-  exact rate   : nan (0/0)
-  msbits       : 0
-  buffer_size  : 16384
-  period_size  : 0
-  period_time  : 0
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 0
-  sleep_min    : 0
-  avail_min    : 0
-  xfer_align   : 0
-  start_threshold  : 0
-  stop_threshold   : 0
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
+This applies to at least Audigy (original), ALC850, possibly others. Not
+being able to play 44100 over Digital Out (spdif) makes it impossible to
+use passthrough   to play DTS/AC3 on an external reciever with files that
+are 44100hz. 48000hz work fine though.
 
 ----------------------------------------------------------------------
- tiwai - 06-16-06 18:55 
+ tiwai - 06-16-06 19:03 
 ----------------------------------------------------------------------
-The missing uniniaizlied fields in the slave PCM are fixed on HG repo now.
+Don't mix up this with audigy.  It's a totally different problem.  Emu10k1
+seems to have a hardware problem for non-48k samples.
+
+The driver *does* support other rates.  The fact that the rate is fixed to
+48k is due to the default configuration of alsa-lib.  If you want to use
+another rate, you can change the configuration.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-12-06 16:44 Raymond        New Issue                                    
-06-12-06 17:19 rlrevell       Note Added: 0010171                          
-06-13-06 04:13 Raymond        Note Added: 0010184                          
-06-14-06 14:14 Raymond        Note Added: 0010211                          
-06-16-06 11:27 Raymond        Note Added: 0010249                          
-06-16-06 18:55 tiwai          Status                   assigned => resolved
-06-16-06 18:55 tiwai          Resolution               open => fixed       
-06-16-06 18:55 tiwai          Note Added: 0010257                          
+05-09-06 00:28 WhereIsTheCloudNew Issue                                    
+05-09-06 00:28 WhereIsTheCloudDistribution              => Debian          
+05-09-06 00:28 WhereIsTheCloudKernel Version            => 2.6.15-1-686-smp
+05-09-06 00:31 WhereIsTheCloudNote Added: 0009649                          
+06-08-06 05:33 legoguy        Note Added: 0010108                          
+06-16-06 19:03 tiwai          Note Added: 0010258                          
 ======================================================================
