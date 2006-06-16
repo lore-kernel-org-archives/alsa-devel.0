@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002214]: Problem recording sound from
 	an USB device.
-Date: Fri, 16 Jun 2006 23:53:46 +0200
-Message-ID: <32ec3926cda8c92c6e8cfdbfc78e1ee0@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 00:08:01 +0200
+Message-ID: <edef4ad308e8c2ded523a01da9686738@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DCA2E181
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC99D181
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jun 2006 23:53:46 +0200 (MEST)
+	Sat, 17 Jun 2006 00:08:01 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.16-r9
 ======================================================================
 Date Submitted:             06-16-2006 23:41 CEST
-Last Modified:              06-16-2006 23:53 CEST
+Last Modified:              06-17-2006 00:08 CEST
 ======================================================================
 Summary:                    Problem recording sound from an USB device.
 Description: 
@@ -94,6 +94,12 @@ usbaudio: unregister dsp 14,19
 usbaudio: unregister mixer 14,16
 usbaudio: unregister mixer 14,32
 
+----------------------------------------------------------------------
+ rlrevell - 06-17-06 00:08 
+----------------------------------------------------------------------
+Those messages are from the OSS USB audio driver.  You should be using the
+ALSA USB audio driver, snd-usb-audio.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -101,4 +107,6 @@ Date Modified  Username       Field                    Change
 06-16-06 23:41 nbaggus        Distribution              => gentoo          
 06-16-06 23:41 nbaggus        Kernel Version            => 2.6.16-r9       
 06-16-06 23:53 nbaggus        Note Added: 0010260                          
+06-16-06 23:53 nbaggus        Issue Monitored: nbaggus                     
+06-17-06 00:08 rlrevell       Note Added: 0010261                          
 ======================================================================
