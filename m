@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Fri, 16 Jun 2006 14:14:19 +0200
-Message-ID: <c720656eae58e16d9843f4fcfd826b7c@bugtrack.alsa-project.org>
+Date: Fri, 16 Jun 2006 14:19:35 +0200
+Message-ID: <fe7a338847041e027ba494ec243ad7e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5A1219A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 529C7178
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jun 2006 14:14:19 +0200 (MEST)
+	Fri, 16 Jun 2006 14:19:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-16-2006 14:14 CEST
+Last Modified:              06-16-2006 14:19 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,14 +117,6 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-15-06 17:49 
-----------------------------------------------------------------------
-How did you install ALSA?  Did you use a third party RPM?
-
-Those errors mean that the ALSA modules were not compiled for the kernel
-you have running.
-
-----------------------------------------------------------------------
  friser - 06-16-06 14:14 
 ----------------------------------------------------------------------
 No, I didn't use rpm
@@ -149,6 +141,11 @@ alsaconf?
 
 thanks
 
+----------------------------------------------------------------------
+ friser - 06-16-06 14:19 
+----------------------------------------------------------------------
+I've attached modprobe.conf file
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -162,4 +159,7 @@ Date Modified  Username       Field                    Change
 06-15-06 10:10 friser         Note Added: 0010236                          
 06-15-06 17:50 rlrevell       Note Added: 0010240                          
 06-16-06 14:14 friser         Note Added: 0010253                          
+06-16-06 14:15 friser         File Added: alsa-output.txt                    
+06-16-06 14:18 friser         File Added: modprobe.conf                    
+06-16-06 14:19 friser         Note Added: 0010254                          
 ======================================================================
