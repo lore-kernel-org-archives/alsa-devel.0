@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002213]: hda-intel: no sound on nForce
-	ALC880 (10de:026c)
-Date: Fri, 16 Jun 2006 20:55:12 +0200
-Message-ID: <da03b284955bc4dc9e0c8248bdf9ef34@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002214]: Problem recording sound from
+	an USB device.
+Date: Fri, 16 Jun 2006 23:41:19 +0200
+Message-ID: <29a10952ef50ab4ffe0e9493ef20f8ff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 91386185
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 541F9181
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jun 2006 20:55:12 +0200 (MEST)
+	Fri, 16 Jun 2006 23:41:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,46 +26,40 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2213> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2214> 
 ======================================================================
-Reported By:                gmaynard
-Assigned To:                tiwai
+Reported By:                nbaggus
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2213
-Category:                   PCI - hda-intel
+Issue ID:                   2214
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.16.20
+Distribution:               gentoo
+Kernel Version:             2.6.16-r9
 ======================================================================
-Date Submitted:             06-16-2006 20:55 CEST
-Last Modified:              06-16-2006 20:55 CEST
+Date Submitted:             06-16-2006 23:41 CEST
+Last Modified:              06-16-2006 23:41 CEST
 ======================================================================
-Summary:                    hda-intel: no sound on nForce ALC880 (10de:026c)
+Summary:                    Problem recording sound from an USB device.
 Description: 
-aplay says: "underrun!!! (at least 0.033 ms long)" continuously.  First
-sound played causes:
+Equipment used: yealink usb Cyber phone
+Sound applications just hang when trying to read from the device.
 
-  hda-intel: Invalid position buffer, using LPIB read method instead.
+(kphone, arecord etc.) 
+This is equivalent to bug 1903, except that now the kernel standard
+version is used and not a whole range of alsa-driver kits.
 
-in kmsg.  Dumping the results of azx_pcm_pointer shows pos to always be 0,
-even after that.  No change with model, position_fix, single_cmd
-parameters, or either 2.6.12rc3 and 2.6.16.20 kernels (always using ALSA
-1.0.11).
-
-(The motherboard is Gigabyte "GA-K8N51PVM9-RH", nForce 430 based.)
-
-Similar to #2174, but that has no mention of aplay messages or kernel
-logs, and is Intel.
 
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-16-06 20:55 gmaynard       New Issue                                    
-06-16-06 20:55 gmaynard       Kernel Version            => 2.6.16.20       
+06-16-06 23:41 nbaggus        New Issue                                    
+06-16-06 23:41 nbaggus        Distribution              => gentoo          
+06-16-06 23:41 nbaggus        Kernel Version            => 2.6.16-r9       
 ======================================================================
