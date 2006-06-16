@@ -1,16 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [alsa-cvslog] alsa-kernel: Control API - TLV
- implementation for additional information like dB scale
-Date: Fri, 16 Jun 2006 13:00:57 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0606161250460.9342@tm8103.perex-int.cz>
-References: <ALOGGER1149179663.38@alsa-project.org>
-	<448A8FCA.3020808@superbug.co.uk>
-	<s5hpshb964m.wl%tiwai@suse.de> <s5hk67h74ym.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002159]: ac3 passthrough not working
+	on recent versions
+Date: Fri, 16 Jun 2006 13:01:21 +0200
+Message-ID: <df282669f9a5d9c626ebdc4c52799e1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hk67h74ym.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 938D818B
+	for <alsa-devel@alsa-project.org>;
+	Fri, 16 Jun 2006 13:01:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,185 +20,277 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 16 Jun 2006, Takashi Iwai wrote:
 
-> At Wed, 14 Jun 2006 16:14:17 +0200,
-> I wrote:
-> > 
-> > > What I am trying to say, is that your "simplification" of the API, has
-> > > resulted in this sort of functionality being excluded, so I would need
-> > > to implement yet another IOCTL to support it! My whole point of using
-> > > the full request/response TLV api, was to not restrict us. I was also
-> > > intending to maybe use the TLVs to set values, as well as just get
-> > > values. For example, another way to implement the "continuous gain"
-> > > feature would be to use the TLV api to set a flag, so that the 32bit
-> > > values are returned via the current snd_ca0106_volume_get(), but only
-> > > for this particular mixer open/close cycle, for backward compatibility
-> > > with the current api.
-> > > 
-> > > Do you prefer separate new IOCTLs for all these features?
-> > 
-> > We can modify the implementation.  For example, the patch like one
-> > below.  tlv_rw callback is completely free for own implementation.
-> > Each callback is in change of reading/writing the given user-space
-> > pointer arbitrarily.
-> 
-> After reconsideration, I found it's better to split the ioctl.
-> It's not nice that the caller has no idea whether the driver actually
-> reads the value or not.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
+======================================================================
+Reported By:                nikke
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2159
+Category:                   PCI - ymfpci
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15
+======================================================================
+Date Submitted:             05-24-2006 23:44 CEST
+Last Modified:              06-16-2006 13:01 CEST
+======================================================================
+Summary:                    ac3 passthrough not working on recent versions
+Description: 
+Using the following AC3 passthrough with mplayer works:
+Linux 2.4.31
+alsa-driver 1.0.8-7 (debian stable packaged)
 
-Yes, r/w ops should be splited (it's the reason why I used TLV_READ for 
-ioctl).
+Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
+kernel and
+alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
+stays quiet.
 
-> Still I feel that the implementation of the callback is OK -- keep the
-> core stuff as small and simple as possible, and let callbacks parse
-> the user-pointer.
+The only change is booting with different kernels, no other config or
+hardware is touched, so this must be a driver regression.
 
-I have some cleanup in my tree to reduce memory usage. See bellow. Also, 
-while implementing, I realized that it might be worth to add 
-SNDRV_CTL_ELEM_ACCESS_TLV_READ and SNDRV_CTL_ELEM_ACCESS_TLV_WRITE flags 
-for control elements. Comments?
+The card is YMF-754 based, connected with coax spdif to my HK reciever.
 
-					Jaroslav
+If you need more info, just tell me and I'll dig it up.
+======================================================================
 
-diff -r 08577d0b45ef core/control.c
---- a/core/control.c	Tue Jun 13 12:01:14 2006 +0200
-+++ b/core/control.c	Fri Jun 16 12:57:54 2006 +0200
-@@ -241,7 +241,7 @@ struct snd_kcontrol *snd_ctl_new1(const 
- 	kctl.info = ncontrol->info;
- 	kctl.get = ncontrol->get;
- 	kctl.put = ncontrol->put;
--	kctl.tlv = ncontrol->tlv;
-+	kctl.tlv.p = ncontrol->tlv.p;
- 	kctl.private_value = ncontrol->private_value;
- 	kctl.private_data = private_data;
- 	return snd_ctl_new(&kctl, access);
-@@ -1068,8 +1068,9 @@ static int snd_ctl_subscribe_events(stru
- 	return 0;
- }
- 
--static int snd_ctl_tlv_read(struct snd_card *card,
--                            struct snd_ctl_tlv __user *_tlv)
-+static int snd_ctl_tlv_ioctl(struct snd_card *card,
-+                             struct snd_ctl_tlv __user *_tlv,
-+                             int write_flag)
- {
- 	struct snd_ctl_tlv tlv;
- 	struct snd_kcontrol *kctl;
-@@ -1086,17 +1087,26 @@ static int snd_ctl_tlv_read(struct snd_c
-                 err = -ENOENT;
-                 goto __kctl_end;
-         }
--        if (kctl->tlv == NULL) {
--                err = -ENXIO;
--                goto __kctl_end;
--        }
--        len = kctl->tlv[1] + 2 * sizeof(unsigned int);
--        if (tlv.length < len) {
--                err = -ENOMEM;
--                goto __kctl_end;
--        }
--        if (copy_to_user(_tlv->tlv, kctl->tlv, len))
--        	err = -EFAULT;
-+        if (kctl->tlv.p == NULL) {
-+		err = -ENXIO;
-+		goto __kctl_end;
-+	}
-+	if (kctl->vd[tlv.numid - kctl->id.numid].access &
-+	    SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK) {
-+		err = kctl->tlv.c(kctl, write_flag, tlv.length, _tlv->tlv); 
-+	} else {
-+	        if (write_flag) {
-+	                err = -ENXIO;
-+                        goto __kctl_end;
-+                }
-+		len = kctl->tlv.p[1] + 2 * sizeof(unsigned int);
-+		if (tlv.length < len) {
-+			err = -ENOMEM;
-+			goto __kctl_end;
-+		}
-+		if (copy_to_user(_tlv->tlv, kctl->tlv.p, len))
-+			err = -EFAULT;
-+	}
-       __kctl_end:
-         up_read(&card->controls_rwsem);
-         return err;
-@@ -1141,7 +1151,9 @@ static long snd_ctl_ioctl(struct file *f
- 	case SNDRV_CTL_IOCTL_SUBSCRIBE_EVENTS:
- 		return snd_ctl_subscribe_events(ctl, ip);
-         case SNDRV_CTL_IOCTL_TLV_READ:
--                return snd_ctl_tlv_read(card, argp);
-+                return snd_ctl_tlv_ioctl(card, argp, 0);
-+        case SNDRV_CTL_IOCTL_TLV_WRITE:
-+                return snd_ctl_tlv_ioctl(card, argp, 1);
- 	case SNDRV_CTL_IOCTL_POWER:
- 		return -ENOPROTOOPT;
- 	case SNDRV_CTL_IOCTL_POWER_STATE:
-diff -r 08577d0b45ef include/asound.h
---- a/include/asound.h	Tue Jun 13 12:01:14 2006 +0200
-+++ b/include/asound.h	Fri Jun 16 12:57:54 2006 +0200
-@@ -731,6 +731,7 @@ typedef int __bitwise snd_ctl_elem_iface
- #define SNDRV_CTL_ELEM_ACCESS_INACTIVE		(1<<8)	/* control does actually nothing, but may be updated */
- #define SNDRV_CTL_ELEM_ACCESS_LOCK		(1<<9)	/* write lock */
- #define SNDRV_CTL_ELEM_ACCESS_OWNER		(1<<10)	/* write lock owner */
-+#define SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK	(1<<28)	/* kernel use a TLV callback */ 
- #define SNDRV_CTL_ELEM_ACCESS_USER		(1<<29) /* user space element */
- #define SNDRV_CTL_ELEM_ACCESS_DINDIRECT		(1<<30)	/* indirect access for matrix dimensions in the info structure */
- #define SNDRV_CTL_ELEM_ACCESS_INDIRECT		(1<<31)	/* indirect access for element value in the value structure */
-@@ -838,6 +839,7 @@ enum {
- 	SNDRV_CTL_IOCTL_ELEM_REPLACE = _IOWR('U', 0x18, struct snd_ctl_elem_info),
- 	SNDRV_CTL_IOCTL_ELEM_REMOVE = _IOWR('U', 0x19, struct snd_ctl_elem_id),
- 	SNDRV_CTL_IOCTL_TLV_READ = _IOWR('U', 0x1a, struct snd_ctl_tlv),
-+	SNDRV_CTL_IOCTL_TLV_WRITE = _IOWR('U', 0x1b, struct snd_ctl_tlv),
- 	SNDRV_CTL_IOCTL_HWDEP_NEXT_DEVICE = _IOWR('U', 0x20, int),
- 	SNDRV_CTL_IOCTL_HWDEP_INFO = _IOR('U', 0x21, struct snd_hwdep_info),
- 	SNDRV_CTL_IOCTL_PCM_NEXT_DEVICE = _IOR('U', 0x30, int),
-diff -r 08577d0b45ef include/control.h
---- a/include/control.h	Tue Jun 13 12:01:14 2006 +0200
-+++ b/include/control.h	Fri Jun 16 12:57:54 2006 +0200
-@@ -30,6 +30,11 @@ typedef int (snd_kcontrol_info_t) (struc
- typedef int (snd_kcontrol_info_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_info * uinfo);
- typedef int (snd_kcontrol_get_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_value * ucontrol);
- typedef int (snd_kcontrol_put_t) (struct snd_kcontrol * kcontrol, struct snd_ctl_elem_value * ucontrol);
-+typedef int (snd_kcontrol_tlv_rw_t)(struct snd_kcontrol *kcontrol,
-+				    int write_flag,
-+				    unsigned int size,
-+				    unsigned int __user *tlv);
-+
- 
- struct snd_kcontrol_new {
- 	snd_ctl_elem_iface_t iface;	/* interface identifier */
-@@ -42,7 +47,10 @@ struct snd_kcontrol_new {
- 	snd_kcontrol_info_t *info;
- 	snd_kcontrol_get_t *get;
- 	snd_kcontrol_put_t *put;
--	unsigned int *tlv;
-+	union {
-+        	snd_kcontrol_tlv_rw_t *c;
-+        	unsigned int *p;
-+        } tlv;
- 	unsigned long private_value;
- };
- 
-@@ -59,7 +67,11 @@ struct snd_kcontrol {
- 	snd_kcontrol_info_t *info;
- 	snd_kcontrol_get_t *get;
- 	snd_kcontrol_put_t *put;
--	unsigned int *tlv;
-+	snd_kcontrol_tlv_rw_t *tlv_rw;
-+	union {
-+	        snd_kcontrol_tlv_rw_t *c;
-+        	unsigned int *p;
-+        } tlv;
- 	unsigned long private_value;
- 	void *private_data;
- 	void (*private_free)(struct snd_kcontrol *kcontrol);
+----------------------------------------------------------------------
+ nikke - 06-15-06 23:43 
+----------------------------------------------------------------------
+This is on a 2.6.15 kernel with ALSA 1.0.11.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+lspci -vn:
+0000:02:06.0 0401: 1073:0012
+        Subsystem: 1073:0012
+        Flags: bus master, medium devsel, latency 64, IRQ 177
+        Memory at faff8000 (32-bit, non-prefetchable) [size=32K]
+        I/O ports at ecc0 [size=64]
+        I/O ports at ecb8 [size=4]
+        Capabilities: [50] Power Management version 1
+
+cat /proc/asound/cards:
+ 0 [YMF754         ]: YMF754 - Yamaha DS-1E (YMF754)
+                      Yamaha DS-1E (YMF754) at 0xfaff8000, irq 177
+
+cat /proc/asound/pcm:
+00-03: YMFPCI - PCM2 : YMFPCI - Direct Recording : capture 1
+00-02: YMFPCI - Rear : YMFPCI - Rear PCM : playback 1
+00-01: YMFPCI - IEC958 : YMFPCI - IEC958 : playback 1
+00-00: YMFPCI : YMFPCI : playback 32 : capture 1
+
+
+cat /proc/asound/card0/codec97#0/ac97#0-0+regs (identical output
+regardless of idle, playing pcm or playing ac3):
+0:00 = 6940
+0:02 = 0303
+0:04 = 9f1f
+0:06 = 801f
+0:08 = 0000
+0:0a = 801e
+0:0c = 801f
+0:0e = 801f
+0:10 = 9f1f
+0:12 = 9f1f
+0:14 = 9f1f
+0:16 = 9f1f
+0:18 = 0303
+0:1a = 0000
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0000
+0:24 = 0000
+0:26 = 800f
+0:28 = 0080
+0:2a = 0080
+0:2c = 0000
+0:2e = 0000
+0:30 = 0000
+0:32 = 0000
+0:34 = 0000
+0:36 = 0000
+0:38 = 9f9f
+0:3a = 0000
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0000
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 0000
+0:66 = 0000
+0:68 = 0000
+0:6a = 0000
+0:6c = 0000
+0:6e = 0000
+0:70 = 0000
+0:72 = 8000
+0:74 = 0380
+0:76 = abba
+0:78 = 9381
+0:7a = 0000
+0:7c = 8384
+0:7e = 7608
+
+----------------------------------------------------------------------
+ Mimosius - 06-16-06 13:01 
+----------------------------------------------------------------------
+I've started from 1.0.9b and applied patch by patch up to 1.0.11rc2. I
+figured out, that this patch from Clemens Ladisch
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=218164651eb8;style=gitweb
+breaks the AC3-passthrough.
+
+playing mp3 or ac3 the AC97 register are filled with the same values, but
+there is a difference between version 1.0.11rc2, which comes with my SUSE
+10.1 Kernel, and my patched 1.0.9b without Clemens patch:
+
+--- ac97-1.0.11-ac3     2006-06-15 22:17:15.000000000 +0200
++++ ac97-1.0.9_patched-ac3      2006-06-16 12:49:49.000000000 +0200
+@@ -6,18 +6,18 @@
+ 0:0a = 801e
+ 0:0c = 801f
+ 0:0e = 801f
+-0:10 = 0808
++0:10 = 9f1f
+ 0:12 = 9f1f
+ 0:14 = 9f1f
+ 0:16 = 9f1f
+ 0:18 = 9f1f
+-0:1a = 0505
+-0:1c = 0101
++0:1a = 0000
++0:1c = 0000
+ 0:1e = 0000
+-0:20 = 0200
++0:20 = 0000
+ 0:22 = 0000
+ 0:24 = 0000
+-0:26 = 800f
++0:26 = 000f
+ 0:28 = 0080
+ 0:2a = 0080
+ 0:2c = 0000
+@@ -53,9 +53,9 @@
+ 0:68 = 0000
+ 0:6a = 0000
+ 0:6c = 0000
+-0:6e = 0004
++0:6e = 0008
+ 0:70 = 0000
+-0:72 = 8000
++0:72 = ffef
+ 0:74 = 0380
+ 0:76 = abba
+ 0:78 = 9381
+
+and here the diff of the ymfpci registers from 1.0.11rc2 and
+1.0.9b(patched)
+--- ymfpci-1.0.11-ac3   2006-06-15 22:17:20.000000000 +0200
++++ ymfpci-1.0.9_patched-ac3    2006-06-16 12:47:54.000000000 +0200
+@@ -24,7 +24,7 @@
+ 0054: ff00ff
+ 0058: 555500ff
+ 005c: 0000
+-0060: 807e0808
++0060: 807e0000
+ 0064: 7e7608
+ 0068: 7fffff
+ 006c: 0000
+@@ -32,26 +32,26 @@
+ 0074: 0000
+ 0078: 0000
+ 007c: 0000
+-0080: 0000
++0080: 3fff3fff
+ 0084: 3fff3fff
+-0088: 0000
++0088: 3fff3fff
+ 008c: 0000
+-0090: 3fff3fff
++0090: 0000
+ 0094: 0000
+ 0098: 0000
+ 009c: 0000
+ 00a0: 0000
+ 00a4: 3fff3fff
+-00a8: 0000
++00a8: 3fff3fff
+ 00ac: 3fff3fff
+ 00b0: 0000
+ 00b4: 0000
+ 00b8: 0000
+ 00bc: 0000
+ 00c0: 0000
+-00c4: 45a7
++00c4: 5fff
+ 00c8: 0000
+-00cc: 0002
++00cc: 0001
+ 00d0: 0000
+ 00d4: 0000
+ 00d8: 0000
+@@ -65,7 +65,7 @@
+ 00f8: 0000
+ 00fc: 0000
+ 0100: 0003
+-0104: 0001
++0104: 0000
+ 0108: 40000003
+ 010c: 25a01
+ 0110: 0001
+@@ -86,7 +86,7 @@
+ 014c: 0100
+ 0150: 0000
+ 0154: 0018
+-0158: 3db70000
+-015c: 3db73e00
+-0160: 3db73f00
+-0164: 3db74000
++0158: 13810000
++015c: 13813e00
++0160: 13813f00
++0164: 13814000
+
+so AC3 works for me at the moment :) , but thats not the solution. I hope
+Clemens will review his patch.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-24-06 23:44 nikke          New Issue                                    
+05-24-06 23:44 nikke          Distribution              => Debian          
+05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
+05-24-06 23:47 nikke          Issue Monitored: nikke                       
+06-02-06 04:23 Raymond        Note Added: 0010045                          
+06-02-06 04:25 Raymond        Note Edited: 0010045                         
+06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
+06-14-06 22:32 nikke          Note Added: 0010216                          
+06-15-06 02:18 Raymond        Note Added: 0010221                          
+06-15-06 02:27 Raymond        Note Edited: 0010221                         
+06-15-06 11:03 Mimosius       Note Added: 0010237                          
+06-15-06 23:43 nikke          Note Added: 0010246                          
+06-16-06 13:01 Mimosius       Note Added: 0010250                          
+======================================================================
