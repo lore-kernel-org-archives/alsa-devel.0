@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Fri, 16 Jun 2006 03:53:31 +0200
-Message-ID: <c152c5239efd07c474a3888e6153c213@bugtrack.alsa-project.org>
+Date: Fri, 16 Jun 2006 04:31:43 +0200
+Message-ID: <3c8a4f63bcb4d0d823e3c5aa877f5198@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8CAB18C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A5B68192
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jun 2006 03:53:31 +0200 (MEST)
+	Fri, 16 Jun 2006 04:31:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-16-2006 03:53 CEST
+Last Modified:              06-16-2006 04:31 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
@@ -50,27 +50,33 @@ something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-15-06 17:07 
+ Raymond - 06-16-06 04:10 
 ----------------------------------------------------------------------
-"alsa-driver-1.0.8rc1 (ens1371) can be configured and compiled without any
-error on linux-2.4.22-1.2199.nptl"
+Either 
 
-Because ALSA 1.0.8-rc1 is NEWER than kernel 2.4.22.  ALSA is backwards
-compatible with older kernels.  But it's impossible to be forwards
-compatible - it would require predicting the future.
+try Live CD (ALSA before 1.0.8rc1)
 
-ALSA 1.0.8-rc1 cannot possibly work with a NEWER kernel.  It can work with
-OLDER kernels.
+or
 
-This has never worked and cannot be made to work - give it up.
-
-----------------------------------------------------------------------
- Raymond - 06-16-06 03:53 
-----------------------------------------------------------------------
 You may try those undocumented (not mentioned in ALSA-configuration.txt)
 module parameters 
 
 spdif=-1
+
+
+Do the values of those ac97 registers changes when you unmute and change
+the volume by alsamixer/amixer ?
+
+
+
+----------------------------------------------------------------------
+ Raymond - 06-16-06 04:31 
+----------------------------------------------------------------------
+Since ens137x does not support modem, those controls of "Caller ID" and
+"off hook" will not be created when you add AC97_SCAP_SKIP_MODEM
+
+	ac97.scaps = AC97_SCAP_AUDIO | AC97_SCAP_SKIP_MODEM;
+	if ((err = snd_ac97_mixer(pbus, &ac97, &ensoniq->u.es1371.ac97)) < 0)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -149,4 +155,7 @@ Date Modified  Username       Field                    Change
 06-15-06 09:09 Raymond        Note Edited: 0010235                         
 06-15-06 17:07 rlrevell       Note Added: 0010239                          
 06-16-06 03:53 Raymond        Note Added: 0010247                          
+06-16-06 03:56 Raymond        Note Edited: 0010247                         
+06-16-06 04:10 Raymond        Note Edited: 0010247                         
+06-16-06 04:31 Raymond        Note Added: 0010248                          
 ======================================================================
