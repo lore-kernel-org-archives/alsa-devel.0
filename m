@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002159]: ac3 passthrough not working
-	on recent versions
-Date: Thu, 15 Jun 2006 23:43:21 +0200
-Message-ID: <c660b2dd6de0b6a43400b3f6df00d32a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002132]: No sound from speakers
+Date: Fri, 16 Jun 2006 03:53:31 +0200
+Message-ID: <c152c5239efd07c474a3888e6153c213@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63E3118B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8CAB18C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jun 2006 23:43:21 +0200 (MEST)
+	Fri, 16 Jun 2006 03:53:31 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,370 +25,128 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
 ======================================================================
-Reported By:                nikke
+Reported By:                bzbarsky
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2159
-Category:                   PCI - ymfpci
+Issue ID:                   2132
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
+Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             05-24-2006 23:44 CEST
-Last Modified:              06-15-2006 23:43 CEST
+Date Submitted:             05-17-2006 19:54 CEST
+Last Modified:              06-16-2006 03:53 CEST
 ======================================================================
-Summary:                    ac3 passthrough not working on recent versions
+Summary:                    No sound from speakers
 Description: 
-Using the following AC3 passthrough with mplayer works:
-Linux 2.4.31
-alsa-driver 1.0.8-7 (debian stable packaged)
-
-Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
-kernel and
-alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
-stays quiet.
-
-The only change is booting with different kernels, no other config or
-hardware is touched, so this must be a driver regression.
-
-The card is YMF-754 based, connected with coax spdif to my HK reciever.
-
-If you need more info, just tell me and I'll dig it up.
+Alsa seems to detect the sound card, but when I try to actually play
+something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- Mimosius - 06-15-06 11:03 
+ rlrevell - 06-15-06 17:07 
 ----------------------------------------------------------------------
-Hi,
+"alsa-driver-1.0.8rc1 (ens1371) can be configured and compiled without any
+error on linux-2.4.22-1.2199.nptl"
 
-I've exactly the same problem. Passthrough since 1.0.10* seems to be
-broken, 1.0.9 instead works great.
+Because ALSA 1.0.8-rc1 is NEWER than kernel 2.4.22.  ALSA is backwards
+compatible with older kernels.  But it's impossible to be forwards
+compatible - it would require predicting the future.
 
-output of "cat ac97#0-0+regs (playing AC3, using ac3dec -C)"
+ALSA 1.0.8-rc1 cannot possibly work with a NEWER kernel.  It can work with
+OLDER kernels.
 
-0:00 = 6940
-0:02 = 9f1f
-0:04 = 9f1f
-0:06 = 801f
-0:08 = 0000
-0:0a = 801e
-0:0c = 801f
-0:0e = 801f
-0:10 = 0808
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 9f1f
-0:1a = 0505
-0:1c = 0101
-0:1e = 0000
-0:20 = 0200
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0080
-0:2a = 0080
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 0000
-0:38 = 9f9f
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0004
-0:70 = 0000
-0:72 = 8000
-0:74 = 0380
-0:76 = abba
-0:78 = 9381
-0:7a = 0000
-0:7c = 8384
-0:7e = 7608
-
-
-output of "cat /proc/asound/card0/ymfpci (playing AC3, using ac3dec -C)"
-YMFPCI
-
-0000: 0002
-0004: 0000
-0008: 0000
-000c: 0000
-0010: 0000
-0014: 0000
-0018: 0003
-001c: 8202
-0020: 8202
-0024: 8202
-0028: 80008202
-002c: 0000
-0030: 0000
-0034: 0004
-0038: 0000
-003c: 000c
-0040: 0000
-0044: 0000
-0048: 0000
-004c: 0000
-0050: 0000
-0054: ff00ff
-0058: 555500ff
-005c: 0000
-0060: 807e800f
-0064: 7e7608
-0068: 7fffff
-006c: 0000
-0070: 0012
-0074: 0000
-0078: 0000
-007c: 0000
-0080: 0000
-0084: 3fff3fff
-0088: 0000
-008c: 0000
-0090: 3fff3fff
-0094: 0000
-0098: 0000
-009c: 0000
-00a0: 0000
-00a4: 3fff3fff
-00a8: 0000
-00ac: 3fff3fff
-00b0: 0000
-00b4: 0000
-00b8: 0000
-00bc: 0000
-00c0: 0000
-00c4: 5fff
-00c8: 0000
-00cc: 0001
-00d0: 0000
-00d4: 0000
-00d8: 0000
-00dc: 0000
-00e0: 0000
-00e4: 0000
-00e8: 0000
-00ec: 0000
-00f0: 0000
-00f4: 0000
-00f8: 0000
-00fc: 0000
-0100: 0003
-0104: 0001
-0108: 40000003
-010c: 4200043
-0110: 002a
-0114: 0001
-0118: 0000
-011c: 0000
-0120: 0000
-0124: 0000
-0128: 0000
-012c: 0000
-0130: 0000
-0134: 0000
-0138: 0000
-013c: 0000
-0140: 001e
-0144: 0004
-0148: 0004
-014c: 0100
-0150: 0000
-0154: 0018
-0158: 3c468000
-015c: 3c46be00
-0160: 3c46bf00
-0164: 3c46c000
-
-there is no ac97 register change playing MP3 then AC3
-diff -u <(cat /proc/asound/card0/codec97#0/ac97#0-0+regs) <(sleep 5; cat
-/proc/asound/card0/codec97#0/ac97#0-0+regs)
-doesn't output anything
-
-
-register change of /proc/asound/card0/ymfpci (playing MP3 then AC3)
-
-diff -u <(cat /proc/asound/card0/ymfpci) <(sleep 5; cat
-/proc/asound/card0/ymfpci)
---- /dev/fd/63  2006-06-15 10:49:46.356867225 +0200
-+++ /dev/fd/62  2006-06-15 10:49:46.348866702 +0200
-@@ -6,11 +6,11 @@
- 000c: 0000
- 0010: 0000
- 0014: 0000
--0018: 0001
--001c: 8200
--0020: 0200
--0024: 0200
--0028: 80000200
-+0018: 0003
-+001c: 8202
-+0020: 8202
-+0024: 8202
-+0028: 80008202
- 002c: 0000
- 0030: 0000
- 0034: 0004
-@@ -28,7 +28,7 @@
- 0064: 7e7608
- 0068: 7fffff
- 006c: 0000
--0070: 0002
-+0070: 0012
- 0074: 0000
- 0078: 0000
- 007c: 0000
-@@ -64,9 +64,9 @@
- 00f4: 0000
- 00f8: 0000
- 00fc: 0000
--0100: 0000
--0104: 0000
--0108: 0000
-+0100: 0003
-+0104: 0001
-+0108: 40000003
- 010c: 4200043
- 0110: 002a
- 0114: 0001
+This has never worked and cannot be made to work - give it up.
 
 ----------------------------------------------------------------------
- nikke - 06-15-06 23:43 
+ Raymond - 06-16-06 03:53 
 ----------------------------------------------------------------------
-This is on a 2.6.15 kernel with ALSA 1.0.11.
+You may try those undocumented (not mentioned in ALSA-configuration.txt)
+module parameters 
 
-lspci -vn:
-0000:02:06.0 0401: 1073:0012
-        Subsystem: 1073:0012
-        Flags: bus master, medium devsel, latency 64, IRQ 177
-        Memory at faff8000 (32-bit, non-prefetchable) [size=32K]
-        I/O ports at ecc0 [size=64]
-        I/O ports at ecb8 [size=4]
-        Capabilities: [50] Power Management version 1
-
-cat /proc/asound/cards:
- 0 [YMF754         ]: YMF754 - Yamaha DS-1E (YMF754)
-                      Yamaha DS-1E (YMF754) at 0xfaff8000, irq 177
-
-cat /proc/asound/pcm:
-00-03: YMFPCI - PCM2 : YMFPCI - Direct Recording : capture 1
-00-02: YMFPCI - Rear : YMFPCI - Rear PCM : playback 1
-00-01: YMFPCI - IEC958 : YMFPCI - IEC958 : playback 1
-00-00: YMFPCI : YMFPCI : playback 32 : capture 1
-
-
-cat /proc/asound/card0/codec97#0/ac97#0-0+regs (identical output
-regardless of idle, playing pcm or playing ac3):
-0:00 = 6940
-0:02 = 0303
-0:04 = 9f1f
-0:06 = 801f
-0:08 = 0000
-0:0a = 801e
-0:0c = 801f
-0:0e = 801f
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 9f1f
-0:16 = 9f1f
-0:18 = 0303
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0080
-0:2a = 0080
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 0000
-0:38 = 9f9f
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 8000
-0:74 = 0380
-0:76 = abba
-0:78 = 9381
-0:7a = 0000
-0:7c = 8384
-0:7e = 7608
+spdif=-1
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-24-06 23:44 nikke          New Issue                                    
-05-24-06 23:44 nikke          Distribution              => Debian          
-05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
-05-24-06 23:47 nikke          Issue Monitored: nikke                       
-06-02-06 04:23 Raymond        Note Added: 0010045                          
-06-02-06 04:25 Raymond        Note Edited: 0010045                         
-06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
-06-14-06 22:32 nikke          Note Added: 0010216                          
-06-15-06 02:18 Raymond        Note Added: 0010221                          
-06-15-06 02:27 Raymond        Note Edited: 0010221                         
-06-15-06 11:03 Mimosius       Note Added: 0010237                          
-06-15-06 23:43 nikke          Note Added: 0010246                          
+05-17-06 19:54 bzbarsky       New Issue                                    
+05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
+05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
+05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
+05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
+05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
+05-17-06 19:56 bzbarsky       File Added: scsound.log                      
+05-17-06 19:57 bzbarsky       Note Added: 0009857                          
+05-20-06 05:31 Raymond        Note Added: 0009882                          
+05-20-06 21:43 bzbarsky       Note Added: 0009893                          
+05-21-06 03:41 Raymond        Note Added: 0009894                          
+05-21-06 03:48 Raymond        Note Edited: 0009894                         
+05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
+05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
+05-22-06 02:53 bzbarsky       Note Added: 0009901                          
+05-22-06 04:14 Raymond        Note Added: 0009902                          
+05-23-06 09:00 Raymond        Note Added: 0009929                          
+05-23-06 09:03 Raymond        Note Edited: 0009929                         
+05-23-06 09:07 Raymond        Note Edited: 0009929                         
+06-02-06 20:08 bzbarsky       Note Added: 0010053                          
+06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
+06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
+06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
+ 
+06-02-06 20:35 bzbarsky       Note Added: 0010054                          
+06-03-06 02:44 Raymond        Note Added: 0010058                          
+06-05-06 01:29 bzbarsky       Note Added: 0010066                          
+06-05-06 03:31 Raymond        Note Added: 0010067                          
+06-05-06 03:56 bzbarsky       File Added: dmesg                            
+06-05-06 03:57 bzbarsky       Note Added: 0010068                          
+06-06-06 06:35 Raymond        Note Added: 0010071                          
+06-06-06 06:43 Raymond        Note Edited: 0010071                         
+06-06-06 08:59 Raymond        Note Edited: 0010071                         
+06-10-06 07:42 bzbarsky       Note Added: 0010144                          
+06-11-06 05:24 Raymond        Note Added: 0010150                          
+06-11-06 05:29 Raymond        Note Edited: 0010150                         
+06-11-06 22:37 bzbarsky       File Added: dmesg+kprint                     
+06-11-06 22:37 bzbarsky       File Added: codec_lines.txt                    
+06-11-06 22:38 bzbarsky       Note Added: 0010154                          
+06-12-06 03:31 Raymond        Note Added: 0010157                          
+06-12-06 03:41 rlrevell       Note Added: 0010158                          
+06-12-06 04:36 bzbarsky       Note Added: 0010161                          
+06-12-06 05:18 Raymond        Note Added: 0010164                          
+06-12-06 05:20 Raymond        Note Edited: 0010164                         
+06-12-06 05:23 Raymond        Note Edited: 0010164                         
+06-12-06 05:23 Raymond        Note Edited: 0010164                         
+06-12-06 05:26 rlrevell       Note Added: 0010165                          
+06-12-06 13:23 Raymond        Note Added: 0010168                          
+06-12-06 18:12 bzbarsky       Note Added: 0010172                          
+06-13-06 04:43 Raymond        Note Added: 0010185                          
+06-13-06 04:45 Raymond        Note Edited: 0010185                         
+06-13-06 05:39 bzbarsky       Note Added: 0010187                          
+06-13-06 07:20 Raymond        Note Added: 0010190                          
+06-13-06 07:25 Raymond        Note Edited: 0010190                         
+06-14-06 05:00 Raymond        Note Added: 0010204                          
+06-15-06 02:16 bzbarsky       Note Added: 0010220                          
+06-15-06 02:27 bzbarsky       Note Edited: 0010220                         
+06-15-06 02:36 Raymond        Note Added: 0010223                          
+06-15-06 02:53 Raymond        Note Added: 0010225                          
+06-15-06 02:59 bzbarsky       Note Added: 0010226                          
+06-15-06 03:03 Raymond        Note Edited: 0010225                         
+06-15-06 03:19 Raymond        Note Added: 0010227                          
+06-15-06 03:53 rlrevell       Note Added: 0010228                          
+06-15-06 03:55 rlrevell       Note Added: 0010229                          
+06-15-06 04:19 bzbarsky       Note Added: 0010231                          
+06-15-06 05:54 Raymond        Note Added: 0010232                          
+06-15-06 05:57 Raymond        Note Edited: 0010232                         
+06-15-06 05:59 Raymond        Note Edited: 0010232                         
+06-15-06 06:02 Raymond        Note Edited: 0010232                         
+06-15-06 08:06 bzbarsky       Note Added: 0010234                          
+06-15-06 08:59 Raymond        Note Added: 0010235                          
+06-15-06 09:09 Raymond        Note Edited: 0010235                         
+06-15-06 17:07 rlrevell       Note Added: 0010239                          
+06-16-06 03:53 Raymond        Note Added: 0010247                          
 ======================================================================
