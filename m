@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002214]: Problem recording sound from
-	an USB device.
-Date: Sat, 17 Jun 2006 00:08:01 +0200
-Message-ID: <edef4ad308e8c2ded523a01da9686738@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002159]: ac3 passthrough not working
+	on recent versions
+Date: Sat, 17 Jun 2006 01:17:26 +0200
+Message-ID: <810578ab90a629ff2aadc50f443b8792@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EC99D181
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B80A181
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 00:08:01 +0200 (MEST)
+	Sat, 17 Jun 2006 01:17:26 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,87 +26,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2214> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
 ======================================================================
-Reported By:                nbaggus
-Assigned To:                Clemens Ladisch
+Reported By:                nikke
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2214
-Category:                   USB - usb-audio
+Issue ID:                   2159
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               gentoo
-Kernel Version:             2.6.16-r9
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             06-16-2006 23:41 CEST
-Last Modified:              06-17-2006 00:08 CEST
+Date Submitted:             05-24-2006 23:44 CEST
+Last Modified:              06-17-2006 01:17 CEST
 ======================================================================
-Summary:                    Problem recording sound from an USB device.
+Summary:                    ac3 passthrough not working on recent versions
 Description: 
-Equipment used: yealink usb Cyber phone
-Sound applications just hang when trying to read from the device.
+Using the following AC3 passthrough with mplayer works:
+Linux 2.4.31
+alsa-driver 1.0.8-7 (debian stable packaged)
 
-(kphone, arecord etc.) 
-This is equivalent to bug 1903, except that now the kernel standard
-version is used and not a whole range of alsa-driver kits.
+Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
+kernel and
+alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
+stays quiet.
 
+The only change is booting with different kernels, no other config or
+hardware is touched, so this must be a driver regression.
 
+The card is YMF-754 based, connected with coax spdif to my HK reciever.
+
+If you need more info, just tell me and I'll dig it up.
 ======================================================================
 
 ----------------------------------------------------------------------
- nbaggus - 06-16-06 23:53 
+ Raymond - 06-16-06 16:25 
 ----------------------------------------------------------------------
-Dmesg output...
+I don't have this card.
 
-usb 2-2: new full speed USB device using ohci_hcd and address 6
-usb 2-2: new full speed USB device using ohci_hcd and address 7
-usb 2-2: configuration #1 chosen from 1 choice
-usbaudio: device 7 audiocontrol interface 0 has 1 input and 1 output
-AudioStreaming interfaces
-usbaudio: valid input sample rate 8000
-usbaudio: device 7 interface 1 altsetting 1: format 0x00000010 sratelo
-8000 sratehi 8000 attributes 0x00
-usbaudio: valid output sample rate 8000
-usbaudio: device 7 interface 2 altsetting 1: format 0x00000010 sratelo
-8000 sratehi 8000 attributes 0x00
-usbaudio: registered dsp 14,19
-usbaudio: constructing mixer for Terminal 3 type 0x0301
-usbaudio: registered mixer 14,16
-usbaudio: constructing mixer for Terminal 4 type 0x0101
-usbaudio: registered mixer 14,32
-usb_audio_parsecontrol: usb_audio_state at d9cf0360
-input: Yealink usb-p1k as /class/input/input4
+The DAC resolution of STAC9708 is 18-bit , this may mean that there is
+2-bit gain when 16-bit audio pass through the hardware mixer.
 
-Here the kphone program just hangs....
-after kill kphone nothing happens:
-
-Unplugging the device gives:
-
-drivers/usb/input/yealink.c: urb_irq_callback - urb status -110
-drivers/usb/input/yealink.c: urb_ctl_callback - urb status -110
-usb 2-2: USB disconnect, address 7
-drivers/usb/input/yealink.c: urb_irq_callback - urb status -108
-drivers/usb/input/yealink.c: urb_irq_callback - usb_submit_urb failed -19
-usbaudio: unregister dsp 14,19
-usbaudio: unregister mixer 14,16
-usbaudio: unregister mixer 14,32
+But AC3 stream (passthrough) don't need any gain/attenutation.
 
 ----------------------------------------------------------------------
- rlrevell - 06-17-06 00:08 
+ nikke - 06-17-06 01:17 
 ----------------------------------------------------------------------
-Those messages are from the OSS USB audio driver.  You should be using the
-ALSA USB audio driver, snd-usb-audio.
+I tried to do a quick revert of just that patch from 1.0.11, but there was
+too many conflicts... However, I noticed that the
+rear-channel-swapping-thingie shows up in the same function that this
+patch modifies the most. And since AC3 passthrough works in 1.0.9 this
+suggests that the patch really breaks things that the
+rear-channel-swap-patch tries to fix...
+
+Mimosius: Can you make a patch between stock 1.0.11 and your
+1.0.11-with-working-ac3 so I can test too, and other people really can see
+that it's the mentioned patch that breaks things?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-16-06 23:41 nbaggus        New Issue                                    
-06-16-06 23:41 nbaggus        Distribution              => gentoo          
-06-16-06 23:41 nbaggus        Kernel Version            => 2.6.16-r9       
-06-16-06 23:53 nbaggus        Note Added: 0010260                          
-06-16-06 23:53 nbaggus        Issue Monitored: nbaggus                     
-06-17-06 00:08 rlrevell       Note Added: 0010261                          
+05-24-06 23:44 nikke          New Issue                                    
+05-24-06 23:44 nikke          Distribution              => Debian          
+05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
+05-24-06 23:47 nikke          Issue Monitored: nikke                       
+06-02-06 04:23 Raymond        Note Added: 0010045                          
+06-02-06 04:25 Raymond        Note Edited: 0010045                         
+06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
+06-14-06 22:32 nikke          Note Added: 0010216                          
+06-15-06 02:18 Raymond        Note Added: 0010221                          
+06-15-06 02:27 Raymond        Note Edited: 0010221                         
+06-15-06 11:03 Mimosius       Note Added: 0010237                          
+06-15-06 23:43 nikke          Note Added: 0010246                          
+06-16-06 13:01 Mimosius       Note Added: 0010250                          
+06-16-06 13:16 Mimosius       Note Edited: 0010250                         
+06-16-06 13:26 Raymond        Note Added: 0010251                          
+06-16-06 13:31 Raymond        Note Edited: 0010251                         
+06-16-06 13:37 Mimosius       Note Added: 0010252                          
+06-16-06 16:25 Raymond        Note Added: 0010255                          
+06-17-06 01:17 nikke          Note Added: 0010262                          
 ======================================================================
