@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002156]: Geode support still not
-	ported from OSS
-Date: Sat, 17 Jun 2006 22:01:50 +0200
-Message-ID: <993ffbd392d45633f2379242394d71b7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001988]: No microphone input on Dell
+	Inspiron 6400
+Date: Sun, 18 Jun 2006 00:03:49 +0200
+Message-ID: <d7839b80c6267c86e81152319fdb8d49@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B885615A
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5433161
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 22:01:50 +0200 (MEST)
+	Sun, 18 Jun 2006 00:03:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,64 +26,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2156> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1988> 
 ======================================================================
-Reported By:                Quietti
-Assigned To:                
+Reported By:                tbecker37
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2156
-Category:                   ISA - sb16/sbawe
+Issue ID:                   1988
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
-Date Submitted:             05-24-2006 09:50 CEST
-Last Modified:              06-17-2006 22:01 CEST
+Date Submitted:             03-31-2006 21:28 CEST
+Last Modified:              06-18-2006 00:03 CEST
 ======================================================================
-Summary:                    Geode support still not ported from OSS
+Summary:                    No microphone input on Dell Inspiron 6400
 Description: 
-According to http://www.ussg.iu.edu/hypermail/linux/kernel/0601.2/1636.html
-the Geode series all provide a sb16-compatible card. Yet, I notice that
-the OSS "sb" module works, while the ALSA "snd-sb16" module doesn't.
+Installing the 1.0.11rc4 driver enabled sound output both for extenal and
+headphone jack. However microphone input does not work.  Mic input is
+displayed in alsamixer but is not adjustable.
 
-Meanwhle, documentation for the more recent Geode SCx200 hardware suggests
-an AC97-compatible chip. I notice that e.g. the snd-via82xx driver offer
-both AC97 support and a Soundblaster compatibility mode, but that doesn't
-work with this Geode either.
-
-Feel free to reassing this to the appropriate driver, if this has been
-ported already, or if a documented solution exists.
+I have also compiled and tried the driver from CVS on 3-31 with no
+success.
 ======================================================================
 
 ----------------------------------------------------------------------
- Quietti - 05-24-06 12:56 
+ tbecker37 - 04-17-06 19:28 
 ----------------------------------------------------------------------
-AMD publishes complete specs for the whole Geode series at: 
-http://www.amd.com/us-en/ConnectivitySolutions/ProductInformation/0,,50_2330_9863_9919,00.html
+Just tried alsa-driver-1.0.11rc5 w/ no effect in this issue.  Mic control
+is present is alsamixer but isn't ajustable and mic still doesn't work. 
+Is there anything else I can provie from my system to help resolve this
+issue?
 
-They also offer OSS drivers that could be ported to ALSA and merged:
-http://www.amd.com/us-en/ConnectivitySolutions/TechnicalResources/0,,50_2334_2452_11363,00.html
+After trying alsa-driver-1.0.11rc5 a little harder (like unmuting the
+capture) mic inputs work.  Setting the capture levels to ~75% prevents
+scratchy recordings.
 
-Unless I misunderstood, at this time, ALSA only supports current Geodes
-based on the CS5535 and CS5536 companion chips. What is missing is support
-for the original CS5530 that was on early Geodes and for the subsequent
-SCx200 products.
+Thanks guys!
+
+
 
 ----------------------------------------------------------------------
- Quietti - 06-17-06 22:01 
+ maiquel - 06-18-06 00:03 
 ----------------------------------------------------------------------
-I have found what might be an ALSA port for some older ALSA release at
-http://www.jumptec.de/SW_DB/PAGES/Board80.htm (look for alsa-geode.zip at
-the bottom of the page).
+I can reproduce this on a Dell Latitude 120L laptop (Sigmatel 9200 chip),
+with Mandriva Linux 2006, kernels: 2.6.12-18mdk (rpm from 'cooker'
+repository), 2.6.12.18 (compiled by me) and 2.6.12-18mdk (rpm from de
+official DVD).
+
+I have compiled the alsa 1.0.11 against the kernel 2.6.12.18. 
+
+The command:
+cat /proc/asound/version
+
+Returned:
+Advanced Linux Sound Architecture Driver Version 1.0.11.
+Compiled on May 30 2006 for kernel 2.6.16.18.
+
+One interesting thing is that with 1.0.11 there is some noise when I
+unmute line-in (external microphone, in this model there isn't a internal
+one) and try to record something. The amplitude response is ok and actualy
+I'm able to hear my voice (when a speak loud) but there is a lot of noise.
+
+
+I think this issue is replicated by 0002038.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-24-06 09:50 Quietti        New Issue                                    
-05-24-06 12:56 Quietti        Note Added: 0009954                          
-06-17-06 22:01 Quietti        Note Added: 0010290                          
+03-31-06 21:28 tbecker37      New Issue                                    
+03-31-06 21:28 tbecker37      Distribution              => Fedora Core 5   
+03-31-06 21:28 tbecker37      Kernel Version            => 2.6.16-1.2080_FC5smp
+03-31-06 23:39 tbecker37      Issue Monitored: tbecker37                    
+04-03-06 08:03 anarki         Note Added: 0009087                          
+04-03-06 19:31 rlrevell       Note Added: 0009104                          
+04-03-06 19:43 anarki         Note Added: 0009105                          
+04-12-06 16:00 tbecker37      Note Added: 0009244                          
+04-17-06 19:28 tbecker37      Note Edited: 0009244                         
+04-17-06 19:30 tbecker37      Issue End Monitor: tbecker37                    
+06-18-06 00:03 maiquel        Note Added: 0010291                          
 ======================================================================
