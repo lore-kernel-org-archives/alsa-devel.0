@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Sat, 17 Jun 2006 17:24:59 +0200
-Message-ID: <646750b9bde44ddf53650da3f3b778ce@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 17:46:15 +0200
+Message-ID: <ad1bb56d775e89de1d599f4de18df356@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A825157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A745157
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 17:24:59 +0200 (MEST)
+	Sat, 17 Jun 2006 17:46:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-17-2006 17:24 CEST
+Last Modified:              06-17-2006 17:46 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,20 +117,27 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- friser - 06-17-06 17:19 
-----------------------------------------------------------------------
-I would like to specify...
-
-After recreating the link I've launched configure command without
---with-kernel option and then I've launched make, make install, snddevices
-commands without any error.
-Only when I run alsaconf or modprobe I get the error I reported in
-previous note.
-
-----------------------------------------------------------------------
- Raymond - 06-17-06 17:24 
+ Raymond - 06-17-06 17:34 
 ----------------------------------------------------------------------
 Have you installed the kernel source ?
+
+To check whether you have installed kernel source
+
+rpm -q kernel-source
+
+
+make sure the kernel-source is same version as the boot kernel
+
+
+
+----------------------------------------------------------------------
+ friser - 06-17-06 17:46 
+----------------------------------------------------------------------
+I've not installed kernel source. 
+Is there a package called "kernel-source"?
+I don't find it in package list
+
+thanks
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -155,4 +162,7 @@ Date Modified  Username       Field                    Change
 06-17-06 17:14 Raymond        Note Edited: 0010273                         
 06-17-06 17:19 friser         Note Added: 0010274                          
 06-17-06 17:24 Raymond        Note Added: 0010275                          
+06-17-06 17:26 Raymond        Note Edited: 0010275                         
+06-17-06 17:34 Raymond        Note Edited: 0010275                         
+06-17-06 17:46 friser         Note Added: 0010276                          
 ======================================================================
