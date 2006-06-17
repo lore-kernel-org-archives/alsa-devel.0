@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001988]: No microphone input on Dell
 	Inspiron 6400
-Date: Sun, 18 Jun 2006 00:11:47 +0200
-Message-ID: <6de1eadf1e7fc0fcf60cee50486aee8c@bugtrack.alsa-project.org>
+Date: Sun, 18 Jun 2006 00:12:16 +0200
+Message-ID: <4bec90e56bd80b739cc11e92bf25eb0a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3E82AEB
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 727EC127
 	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Jun 2006 00:11:47 +0200 (MEST)
+	Sun, 18 Jun 2006 00:12:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1988> 
 ======================================================================
@@ -37,12 +37,14 @@ Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     closed
 Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-31-2006 21:28 CEST
-Last Modified:              06-18-2006 00:11 CEST
+Last Modified:              06-18-2006 00:12 CEST
 ======================================================================
 Summary:                    No microphone input on Dell Inspiron 6400
 Description: 
@@ -55,35 +57,15 @@ success.
 ======================================================================
 
 ----------------------------------------------------------------------
- maiquel - 06-18-06 00:03 
-----------------------------------------------------------------------
-I can reproduce this on a Dell Latitude 120L laptop (Sigmatel 9200 chip),
-with Mandriva Linux 2006, kernels: 2.6.12-18mdk (rpm from 'cooker'
-repository), 2.6.12.18 (compiled by me) and 2.6.12-18mdk (rpm from de
-official DVD).
-
-I have compiled the alsa 1.0.11 against the kernel 2.6.12.18. 
-
-The command:
-cat /proc/asound/version
-
-Returned:
-Advanced Linux Sound Architecture Driver Version 1.0.11.
-Compiled on May 30 2006 for kernel 2.6.16.18.
-
-One interesting thing is that with 1.0.11 there is some noise when I
-unmute line-in (external microphone, in this model there isn't a internal
-one) and try to record something. The amplitude response is ok and actualy
-I'm able to hear my voice (when a speak loud) but there is a lot of noise.
-
-
-I think this issue is replicated by 0002038.
-
-----------------------------------------------------------------------
  rlrevell - 06-18-06 00:11 
 ----------------------------------------------------------------------
 Please add your comment to #2038, I am closing this bug - the problem was
 bad mixer settings.
+
+----------------------------------------------------------------------
+ rlrevell - 06-18-06 00:12 
+----------------------------------------------------------------------
+Mixer settings
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -101,4 +83,6 @@ Date Modified  Username       Field                    Change
 06-18-06 00:03 maiquel        Note Added: 0010291                          
 06-18-06 00:06 maiquel        Issue Monitored: maiquel                     
 06-18-06 00:11 rlrevell       Note Added: 0010292                          
+06-18-06 00:12 rlrevell       Status                   assigned => closed  
+06-18-06 00:12 rlrevell       Note Added: 0010293                          
 ======================================================================
