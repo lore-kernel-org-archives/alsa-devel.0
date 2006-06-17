@@ -1,15 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Sat, 17 Jun 2006 18:56:26 +0200
-Message-ID: <aa01f859144d7c897f9012707e007afd@bugtrack.alsa-project.org>
+From: Andrew Morton <akpm@osdl.org>
+Subject: Re: alsa 1.0.11, 2.6.17-rc6-mm2, kernel BUG
+Date: Sat, 17 Jun 2006 10:07:38 -0700
+Message-ID: <20060617100738.cd40f0bf.akpm@osdl.org>
+References: <20060614210553.GC13054@gamma.logic.tuwien.ac.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D09B140
-	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 18:56:27 +0200 (MEST)
+In-Reply-To: <20060614210553.GC13054@gamma.logic.tuwien.ac.at>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,165 +17,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Norbert Preining <preining@logic.at>
+Cc: alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 14 Jun 2006 23:05:53 +0200
+Norbert Preining <preining@logic.at> wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2163> 
-======================================================================
-Reported By:                friser
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2163
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               fedora core 5
-Kernel Version:             2.6.16-1.2080_FC5
-======================================================================
-Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-17-2006 18:56 CEST
-======================================================================
-Summary:                    error running alsaconf
-Description: 
-Hello, 
-when I try to confugure the alsa driver with alsaconf on my sony vaio I
-obtain this error:
+> Hi all!
+> 
+> I have 2.6.17-rc6-mm2 running, and I wanted to try alsa drivers 1.0.11
+> final to get my hda-intel sound device running.
+> 
+> I compiled the drivers (changing system_utsname.xxx to utsname()->xxx)
+> and wanted to load the modules, but when I load the module snd:
+> BUG: unable to handle kernel paging request at virtual address 07400041
+>  printing eip:
+> c01c1509
+> *pde = 00000000
+> Oops: 0000 [#1]
+> 8K_STACKS PREEMPT SMP 
+> last sysfs file: /devices/system/cpu/cpu0/cpufreq/scaling_cur_freq
+> Modules linked in: snd_timer snd snd_page_alloc isofs zlib_inflate udf usb_storage ipt_MASQUERADE iptable_nat ip_nat ip_conntrack ip_tables x_tables i2c_i801 joydev i2c_core
+> CPU:    0
+> EIP:    0060:[<c01c1509>]    Not tainted VLI
+> EFLAGS: 00010286   (2.6.17-rc6-mm2 #10) 
+> EIP is at kref_get+0x6/0x3d
+> eax: 07400041   ebx: 07400041   ecx: 00000005   edx: 00000000
+> esi: f6dde604   edi: f6dde60a   ebp: f388af60   esp: d58bbe00
+> ds: 007b   es: 007b   ss: 0068
+> Process modprobe (pid: 11478, threadinfo=d58ba000 task=d95b6000)
+> Stack: 00000007 d95b6114 e5a63aa0 e5a63aa0 07400029 c01c0b17 f6dde580 c0220966 
+>        c0220ce9 000000d0 dffff4c0 dfffd2c0 c03634d8 c01c0b17 dfead1c0 c01c0e52 
+>        d58ba000 f6dde617 d95b6000 00000000 ffffffea f6dde580 fffffff4 dfead1c0 
+> Call Trace:
+>  [<c01c0b17>] kobject_get+0xf/0x13
+>  [<c0220966>] class_device_get+0xe/0x14
+>  [<c0220ce9>] class_device_add+0x54/0x3a8
+>  [<c02210cc>] class_device_create+0x7f/0x9f
+>  [<f899c1cd>] snd_register_device+0x129/0x153 [snd]
+>  [<f88f3107>] alsa_timer_init+0x107/0x170 [snd_timer]
+>  [<c0133846>] sys_init_module+0x16b7/0x188d
+>  [<c02f4c5b>] syscall_call+0x7/0xb
+> Code: 10 e9 8e 31 c0 89 f0 83 7e 28 00 0f 85 a8 fc ff ff e9 82 fc ff ff 83 c4 3c
+>  5b 5e 5f 5d c3 c7 00 01 00 00 00 c3 53 83 ec 10 89 c3 <8b> 00 85 c0 75 29 c7 44
+>  24 0c 11 fc 2f c0 c7 44 24 08 20 00 00 
+> EIP: [<c01c1509>] kref_get+0x6/0x3d SS:ESP 0068:d58bbe00
+>  
+> 
+> Does this ring a bell for someone?
+> 
 
-Loading driver...
-Starting sound driver: snd-hda-intel WARNING: Error inserting
-snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-WARNING: Error inserting snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-FATAL: Error inserting snd_pcm
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
-module format
-WARNING: Error running install command for snd_pcm
-WARNING: Error inserting snd_hda_codec
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
-Invalid module format
-FATAL: Error inserting snd_hda_intel
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
-Invalid module format
-done
-Starting sound driver: snd-hda-intel WARNING: Error inserting
-snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-WARNING: Error inserting snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-FATAL: Error inserting snd_pcm
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
-module format
-WARNING: Error running install command for snd_pcm
-WARNING: Error inserting snd_hda_codec
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
-Invalid module format
-FATAL: Error inserting snd_hda_intel
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
-Invalid module format
-done
-Setting default volumes...
+Judging from the response: no.
 
-Thanks 
-
-======================================================================
-
-----------------------------------------------------------------------
- friser - 06-17-06 18:45 
-----------------------------------------------------------------------
-[root@umberto ~]# modinfo
-/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko
-filename:       /lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko
-author:         Jaroslav Kysela <perex@suse.cz>
-description:    Advanced Linux Sound Architecture driver for soundcards.
-license:        GPL
-alias:          char-major-116-*
-vermagic:       2.6.16-1.2080_FC5 586 REGPARM 4KSTACKS gcc-4.1
-depends:        soundcore
-srcversion:     055DA448A05CECF53694583
-parm:           cards_limit:Count of auto-loadable soundcards. (int)
-parm:           major:Major # for sound driver. (int)
-
-----------------------------------------------------------------------
- rlrevell - 06-17-06 18:56 
-----------------------------------------------------------------------
-You are running a kernel compiled for 686 but your ALSA modules are
-compiled for 586.  You need to remove kernel-devel.i586 and install the
-kernel-devel.i686 package.
-
-vermagic: 2.6.16-1.2080_FC5 686 REGPARM 4KSTACKS gcc-4.1
-
-vermagic: 2.6.16-1.2080_FC5 586 REGPARM 4KSTACKS gcc-4.1
-
-Unfortunately I don't run Fedora so I can't tell you exactly how.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-26-06 16:27 friser         New Issue                                    
-05-26-06 16:27 friser         Distribution              => fedora core 5   
-05-26-06 16:27 friser         Kernel Version            => 2.6.16-1.2080_FC5
-06-14-06 17:17 friser         Issue Monitored: djdeath                     
-06-14-06 17:17 friser         Note Added: 0010213                          
-06-14-06 17:18 friser         Note Deleted: 0010213                        
-06-14-06 17:19 friser         Note Added: 0010214                          
-06-15-06 10:10 friser         Note Added: 0010236                          
-06-15-06 17:50 rlrevell       Note Added: 0010240                          
-06-16-06 14:14 friser         Note Added: 0010253                          
-06-16-06 14:15 friser         File Added: alsa-output.txt                    
-06-16-06 14:18 friser         File Added: modprobe.conf                    
-06-16-06 14:19 friser         Note Added: 0010254                          
-06-16-06 20:00 rlrevell       Note Added: 0010259                          
-06-17-06 16:35 friser         Note Added: 0010271                          
-06-17-06 17:06 friser         Note Added: 0010272                          
-06-17-06 17:13 Raymond        Note Added: 0010273                          
-06-17-06 17:14 Raymond        Note Edited: 0010273                         
-06-17-06 17:19 friser         Note Added: 0010274                          
-06-17-06 17:24 Raymond        Note Added: 0010275                          
-06-17-06 17:26 Raymond        Note Edited: 0010275                         
-06-17-06 17:34 Raymond        Note Edited: 0010275                         
-06-17-06 17:46 friser         Note Added: 0010276                          
-06-17-06 17:57 Raymond        Note Added: 0010277                          
-06-17-06 17:59 Raymond        Note Edited: 0010277                         
-06-17-06 18:07 friser         Note Added: 0010278                          
-06-17-06 18:11 friser         Note Added: 0010279                          
-06-17-06 18:25 rlrevell       Note Added: 0010281                          
-06-17-06 18:36 friser         Note Added: 0010282                          
-06-17-06 18:39 rlrevell       Note Added: 0010283                          
-06-17-06 18:45 friser         Note Added: 0010284                          
-06-17-06 18:56 rlrevell       Note Added: 0010285                          
-======================================================================
+If you would, please keep a close eye on -mm's over the next few weeks, let
+us know if/when this bug propagates into -mm.  Thanks.
