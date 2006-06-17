@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002216]: Install problem and more
-Date: Sat, 17 Jun 2006 13:38:20 +0200
-Message-ID: <1728fb7744e7ac3b30294473abbb7b1b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002159]: ac3 passthrough not working
+	on recent versions
+Date: Sat, 17 Jun 2006 14:25:04 +0200
+Message-ID: <3a8a50d8c8be286bf31b2a85bca5aaef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CE5CB3
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C2D716F
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 13:38:21 +0200 (MEST)
+	Sat, 17 Jun 2006 14:25:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,66 +24,100 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2216> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
 ======================================================================
-Reported By:                hexer
-Assigned To:                jcdutton
+Reported By:                nikke
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2216
-Category:                   PCI - ca0106
+Issue ID:                   2159
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora core 4
-Kernel Version:             2.6.11-1.1369_FC4
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             06-17-2006 13:38 CEST
-Last Modified:              06-17-2006 13:38 CEST
+Date Submitted:             05-24-2006 23:44 CEST
+Last Modified:              06-17-2006 14:25 CEST
 ======================================================================
-Summary:                    Install problem and more
+Summary:                    ac3 passthrough not working on recent versions
 Description: 
+Using the following AC3 passthrough with mplayer works:
+Linux 2.4.31
+alsa-driver 1.0.8-7 (debian stable packaged)
 
-on your page says to do the following:
-I opend a terminal, su, and created the dirs. Some worked fine, but I got
-errors. Here they are:
+Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
+kernel and
+alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
+stays quiet.
 
-modinfo soundcore
-when I run this, it says: bash: modinfo: command not found
+The only change is booting with different kernels, no other config or
+hardware is touched, so this must be a driver regression.
 
-the chmod a+rw /dev/dsp /dev/mixer /dev/sequencer /dev/midi gives the
-following error:
-chmod: cannot access `/dev/dsp': No such file or directory
-chmod: cannot access `/dev/mixer': No such file or directory
-chmod: cannot access `/dev/sequencer': No such file or directory
-chmod: cannot access `/dev/midi': No such file or directory
+The card is YMF-754 based, connected with coax spdif to my HK reciever.
 
-and after installing the driver, lib and utils, and runing "modprobe
-snd-ca0106;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
-snd-seq-oss"
-it says 
-bash: modprobe: command not found
-bash: modprobe: command not found
-bash: modprobe: command not found
-bash: modprobe: command not found
-
-I did this once before, as root (logedin as root from the begining, not
-using su), but with a wrong driver (a 5.1 creative), while I actualy had a
-7.1 Creative. then only the first modeprobe didn't work, and the chown
-giving the exact same error. oh, and alsamixer didn't start.
-
-what can I do? I don't know to much about compiling kernels,  but am
-willing to learn. Please help.
-
+If you need more info, just tell me and I'll dig it up.
 ======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 06-17-06 11:02 
+----------------------------------------------------------------------
+Mimosius
+
+There is a patch which supposed to fix AC3 output
+
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=fac92b1b0699;style=gitweb
+
+Do this patch fix the problem ?
+
+However there is another patch which add an module parameter
+
+MODULE_PARM_DESC(rear_swap, "Swap rear channels (must be enabled for
+correct IEC958 (S/PDIF)) output");
+
+http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=2e21f4940a0f;style=gitweb
+
+----------------------------------------------------------------------
+ Raymond - 06-17-06 14:25 
+----------------------------------------------------------------------
+Are you sure that your patch in
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1447 does not break AC3
+pass through ?
+
+It seem that there are 3 sources for SPDIF out
+1) AC3
+2) Digital Mixer
+3) SPDIF in
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-17-06 13:38 hexer          New Issue                                    
-06-17-06 13:38 hexer          Distribution              => Fedora core 4   
-06-17-06 13:38 hexer          Kernel Version            => 2.6.11-1.1369_FC4
+05-24-06 23:44 nikke          New Issue                                    
+05-24-06 23:44 nikke          Distribution              => Debian          
+05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
+05-24-06 23:47 nikke          Issue Monitored: nikke                       
+06-02-06 04:23 Raymond        Note Added: 0010045                          
+06-02-06 04:25 Raymond        Note Edited: 0010045                         
+06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
+06-14-06 22:32 nikke          Note Added: 0010216                          
+06-15-06 02:18 Raymond        Note Added: 0010221                          
+06-15-06 02:27 Raymond        Note Edited: 0010221                         
+06-15-06 11:03 Mimosius       Note Added: 0010237                          
+06-15-06 23:43 nikke          Note Added: 0010246                          
+06-16-06 13:01 Mimosius       Note Added: 0010250                          
+06-16-06 13:16 Mimosius       Note Edited: 0010250                         
+06-16-06 13:26 Raymond        Note Added: 0010251                          
+06-16-06 13:31 Raymond        Note Edited: 0010251                         
+06-16-06 13:37 Mimosius       Note Added: 0010252                          
+06-16-06 16:25 Raymond        Note Added: 0010255                          
+06-17-06 01:17 nikke          Note Added: 0010262                          
+06-17-06 02:43 Raymond        Note Edited: 0010251                         
+06-17-06 10:21 Raymond        Note Added: 0010266                          
+06-17-06 10:24 Raymond        Note Edited: 0010266                         
+06-17-06 11:02 Raymond        Note Added: 0010267                          
+06-17-06 14:25 Raymond        Note Added: 0010268                          
 ======================================================================
