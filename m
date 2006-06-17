@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002215]: Agere softmodem attached to
-	Intel HDA does not work
-Date: Sat, 17 Jun 2006 07:45:50 +0200
-Message-ID: <8d22620c247001799ac6300c926745ae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001603]: via8235 no sound since kernel
+	2.6.13
+Date: Sat, 17 Jun 2006 09:06:16 +0200
+Message-ID: <87a51b87bb1a0013c976a81df0b2ac2e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 24C39183
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9BE8F17C
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 07:45:51 +0200 (MEST)
+	Sat, 17 Jun 2006 09:06:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,53 +24,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2215> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1603> 
 ======================================================================
-Reported By:                bluebottle
-Assigned To:                tiwai
+Reported By:                picobyte
+Assigned To:                rlrevell
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2215
-Category:                   PCI - hda-intel
+Issue ID:                   1603
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             
+Status:                     feedback
+Distribution:               slackware 10.2
+Kernel Version:             2.6.13 - 2.6.14.2
 ======================================================================
-Date Submitted:             06-17-2006 07:45 CEST
-Last Modified:              06-17-2006 07:45 CEST
+Date Submitted:             11-27-2005 15:06 CET
+Last Modified:              06-17-2006 09:06 CEST
 ======================================================================
-Summary:                    Agere softmodem attached to Intel HDA does not work
+Summary:                    via8235 no sound since kernel 2.6.13
 Description: 
-I have an MSI 1057 notebook with an Agere winmodem attached to the Intel
-HDA device. It does not function with the latest release of ALSA
-(currently 1.0.11). I attempted to modify patch_si3054.c and changed the
-last device ID from 3026 to 3055 so that it loads and IDs the modem
-(incorrectly) as a Si3054. That was just to prove that it *could* be
-identified. When dialling via slmodemd though, nothing happens. KPPP or
-any other app just gets no response from slmodemd after an ATDT.
-
-# cat /proc/asound/card0/codec#1
-Codec: Generic 11c1 Si3054        (before my hack, "Si3054" was "ID
-3055")
-Address: 1
-Vendor Id: 0x11c13055
-Subsystem Id: 0x11c11601
-Revision Id: 0x100700
-
-I have a .INF from the windows drivers CD with lots of device command
-codes in it, if that would help. I'm not sure about license issues so I
-won't post it initially. Windows is not installed on this machine so I
-can't test it with Windows without swapping out the disk, sorry.
+I have no sound after a kernel upgrade. I seem to have lost it in 2.6.13.
+Sound was available in 2.6.12. 2.6.14.2 didn't give sound either. The
+problem is in 1.0.9b and 1.0.10. The modules are loaded as supposed
+without error messages and alsamixer is set to volume.
 ======================================================================
+
+----------------------------------------------------------------------
+ picobyte - 06-03-06 16:02 
+----------------------------------------------------------------------
+I am afraid to have to report that it is still not working, running Alsa
+1.0.11 and kernel 2.6.16.19. Also I bought another sound device: A
+creative audigy platinum ex, which installs allright (the audigy device is
+shown when running alsaconf) but won't work.
+Can it be that the bug in via 8235 affects this device as well, or is the
+not-working via 8235 chosen as a sound system rather than the Audigy? The
+Audigy device seems to be the second choice of sound device: I can only
+access its mixer settings by doing a "alsamixer -c 2". Is there a way to
+reverse this order? Any other suggestions?
+TIA
+
+----------------------------------------------------------------------
+ PitSid - 06-17-06 09:06 
+----------------------------------------------------------------------
+VIA8235 is still not working, running Alsa 1.0.11 and kernel 2.6.16.19,
+Slackware-10.2. Everything looks to be allright but there is no sound at
+all.
+Any ideas ???
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-17-06 07:45 bluebottle     New Issue                                    
-06-17-06 07:45 bluebottle     Distribution              => Ubuntu          
+11-27-05 15:06 picobyte       New Issue                                    
+11-27-05 15:06 picobyte       Distribution              => slackware 10.2  
+11-27-05 15:06 picobyte       Kernel Version            => 2.6.13 - 2.6.14.2
+12-31-05 03:38 rlrevell       Note Added: 0007330                          
+01-18-06 00:38 picobyte       Note Added: 0007704                          
+01-18-06 00:38 picobyte       Issue Monitored: picobyte                    
+01-18-06 00:39 picobyte       Issue End Monitor: picobyte                    
+01-18-06 00:41 picobyte       Note Edited: 0007704                         
+03-01-06 19:27 picobyte       Note Added: 0008287                          
+03-01-06 19:39 rlrevell       Status                   new => resolved     
+03-01-06 19:39 rlrevell       Fixed in Version          => 1.0.11rc3       
+03-01-06 19:39 rlrevell       Resolution               open => fixed       
+03-01-06 19:39 rlrevell       Assigned To               => rlrevell        
+03-04-06 14:23 picobyte       Status                   resolved => feedback
+03-04-06 14:23 picobyte       Resolution               fixed => reopened   
+03-04-06 14:23 picobyte       Note Added: 0008348                          
+06-03-06 16:02 picobyte       Note Added: 0010062                          
+06-17-06 09:06 PitSid         Note Added: 0010264                          
 ======================================================================
