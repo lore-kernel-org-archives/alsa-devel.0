@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Sat, 17 Jun 2006 18:45:33 +0200
-Message-ID: <932470c72ec94f941f14126b4f3f03f0@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 18:56:26 +0200
+Message-ID: <aa01f859144d7c897f9012707e007afd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC496157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3D09B140
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 18:45:33 +0200 (MEST)
+	Sat, 17 Jun 2006 18:56:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-17-2006 18:45 CEST
+Last Modified:              06-17-2006 18:56 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,14 +117,6 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-17-06 18:39 
-----------------------------------------------------------------------
-Great, Fedora uses a non-standard location for ALSA modules.
-
-Post modinfo output for
-/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko
-
-----------------------------------------------------------------------
  friser - 06-17-06 18:45 
 ----------------------------------------------------------------------
 [root@umberto ~]# modinfo
@@ -139,6 +131,19 @@ depends:        soundcore
 srcversion:     055DA448A05CECF53694583
 parm:           cards_limit:Count of auto-loadable soundcards. (int)
 parm:           major:Major # for sound driver. (int)
+
+----------------------------------------------------------------------
+ rlrevell - 06-17-06 18:56 
+----------------------------------------------------------------------
+You are running a kernel compiled for 686 but your ALSA modules are
+compiled for 586.  You need to remove kernel-devel.i586 and install the
+kernel-devel.i686 package.
+
+vermagic: 2.6.16-1.2080_FC5 686 REGPARM 4KSTACKS gcc-4.1
+
+vermagic: 2.6.16-1.2080_FC5 586 REGPARM 4KSTACKS gcc-4.1
+
+Unfortunately I don't run Fedora so I can't tell you exactly how.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -174,4 +179,5 @@ Date Modified  Username       Field                    Change
 06-17-06 18:36 friser         Note Added: 0010282                          
 06-17-06 18:39 rlrevell       Note Added: 0010283                          
 06-17-06 18:45 friser         Note Added: 0010284                          
+06-17-06 18:56 rlrevell       Note Added: 0010285                          
 ======================================================================
