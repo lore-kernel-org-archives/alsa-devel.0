@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Sat, 17 Jun 2006 17:19:31 +0200
-Message-ID: <8e077e197c02c935dfebf087cee2711a@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 17:24:59 +0200
+Message-ID: <646750b9bde44ddf53650da3f3b778ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6727C13E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A825157
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 17:19:31 +0200 (MEST)
+	Sat, 17 Jun 2006 17:24:59 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-17-2006 17:19 CEST
+Last Modified:              06-17-2006 17:24 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,19 +117,6 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-17-06 17:14 
-----------------------------------------------------------------------
-Please install the package with full kernel sources for your distribution
-
-Have you installed the kernel source ?
-
-After you installed kernel source
-
-./configure --with-cards=hda-intel
-
-
-
-----------------------------------------------------------------------
  friser - 06-17-06 17:19 
 ----------------------------------------------------------------------
 I would like to specify...
@@ -139,6 +126,11 @@ After recreating the link I've launched configure command without
 commands without any error.
 Only when I run alsaconf or modprobe I get the error I reported in
 previous note.
+
+----------------------------------------------------------------------
+ Raymond - 06-17-06 17:24 
+----------------------------------------------------------------------
+Have you installed the kernel source ?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -162,4 +154,5 @@ Date Modified  Username       Field                    Change
 06-17-06 17:13 Raymond        Note Added: 0010273                          
 06-17-06 17:14 Raymond        Note Edited: 0010273                         
 06-17-06 17:19 friser         Note Added: 0010274                          
+06-17-06 17:24 Raymond        Note Added: 0010275                          
 ======================================================================
