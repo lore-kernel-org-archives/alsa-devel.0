@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001603]: via8235 no sound since kernel
-	2.6.13
-Date: Sat, 17 Jun 2006 10:14:42 +0200
-Message-ID: <2b5cc987b5a163bb0f5b94df4db65937@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002159]: ac3 passthrough not working
+	on recent versions
+Date: Sat, 17 Jun 2006 10:21:07 +0200
+Message-ID: <3e2d5ec5f75c9c8a2cd136bee75dd3c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 14E0917C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A366117A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 10:14:42 +0200 (MEST)
+	Sat, 17 Jun 2006 10:21:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,68 +26,98 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1603> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
 ======================================================================
-Reported By:                picobyte
-Assigned To:                rlrevell
+Reported By:                nikke
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1603
-Category:                   PCI - via82xx
+Issue ID:                   2159
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
-Distribution:               slackware 10.2
-Kernel Version:             2.6.13 - 2.6.14.2
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             11-27-2005 15:06 CET
-Last Modified:              06-17-2006 10:14 CEST
+Date Submitted:             05-24-2006 23:44 CEST
+Last Modified:              06-17-2006 10:21 CEST
 ======================================================================
-Summary:                    via8235 no sound since kernel 2.6.13
+Summary:                    ac3 passthrough not working on recent versions
 Description: 
-I have no sound after a kernel upgrade. I seem to have lost it in 2.6.13.
-Sound was available in 2.6.12. 2.6.14.2 didn't give sound either. The
-problem is in 1.0.9b and 1.0.10. The modules are loaded as supposed
-without error messages and alsamixer is set to volume.
+Using the following AC3 passthrough with mplayer works:
+Linux 2.4.31
+alsa-driver 1.0.8-7 (debian stable packaged)
+
+Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
+kernel and
+alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
+stays quiet.
+
+The only change is booting with different kernels, no other config or
+hardware is touched, so this must be a driver regression.
+
+The card is YMF-754 based, connected with coax spdif to my HK reciever.
+
+If you need more info, just tell me and I'll dig it up.
 ======================================================================
 
 ----------------------------------------------------------------------
- PitSid - 06-17-06 09:06 
+ nikke - 06-17-06 01:17 
 ----------------------------------------------------------------------
-VIA8235 is still not working, running Alsa 1.0.11 and kernel 2.6.16.19,
-Slackware-10.2. Everything looks to be allright but there is no sound at
-all.
-Any ideas ???
+I tried to do a quick revert of just that patch from 1.0.11, but there was
+too many conflicts... However, I noticed that the
+rear-channel-swapping-thingie shows up in the same function that this
+patch modifies the most. And since AC3 passthrough works in 1.0.9 this
+suggests that the patch really breaks things that the
+rear-channel-swap-patch tries to fix...
+
+Mimosius: Can you make a patch between stock 1.0.11 and your
+1.0.11-with-working-ac3 so I can test too, and other people really can see
+that it's the mentioned patch that breaks things?
 
 ----------------------------------------------------------------------
- Raymond - 06-17-06 10:14 
+ Raymond - 06-17-06 10:21 
 ----------------------------------------------------------------------
-Please post the output of
+Which application change those undocumented registers of STAC9708 ?
 
+0:68 = 0000
+ 0:6a = 0000
+ 0:6c = 0000
+-0:6e = 0004
++0:6e = 0008
+ 0:70 = 0000
+-0:72 = 8000
++0:72 = ffef
+ 0:74 = 0380
+ 0:76 = abba
+ 0:78 = 9381
 
-cat /proc/asound/card0/codec97#0/ac97#0-0+regs
+Are all channels correct when you run speaker-test -c 4 -t wav ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-27-05 15:06 picobyte       New Issue                                    
-11-27-05 15:06 picobyte       Distribution              => slackware 10.2  
-11-27-05 15:06 picobyte       Kernel Version            => 2.6.13 - 2.6.14.2
-12-31-05 03:38 rlrevell       Note Added: 0007330                          
-01-18-06 00:38 picobyte       Note Added: 0007704                          
-01-18-06 00:38 picobyte       Issue Monitored: picobyte                    
-01-18-06 00:39 picobyte       Issue End Monitor: picobyte                    
-01-18-06 00:41 picobyte       Note Edited: 0007704                         
-03-01-06 19:27 picobyte       Note Added: 0008287                          
-03-01-06 19:39 rlrevell       Status                   new => resolved     
-03-01-06 19:39 rlrevell       Fixed in Version          => 1.0.11rc3       
-03-01-06 19:39 rlrevell       Resolution               open => fixed       
-03-01-06 19:39 rlrevell       Assigned To               => rlrevell        
-03-04-06 14:23 picobyte       Status                   resolved => feedback
-03-04-06 14:23 picobyte       Resolution               fixed => reopened   
-03-04-06 14:23 picobyte       Note Added: 0008348                          
-06-03-06 16:02 picobyte       Note Added: 0010062                          
-06-17-06 09:06 PitSid         Note Added: 0010264                          
-06-17-06 10:14 Raymond        Note Added: 0010265                          
+05-24-06 23:44 nikke          New Issue                                    
+05-24-06 23:44 nikke          Distribution              => Debian          
+05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
+05-24-06 23:47 nikke          Issue Monitored: nikke                       
+06-02-06 04:23 Raymond        Note Added: 0010045                          
+06-02-06 04:25 Raymond        Note Edited: 0010045                         
+06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
+06-14-06 22:32 nikke          Note Added: 0010216                          
+06-15-06 02:18 Raymond        Note Added: 0010221                          
+06-15-06 02:27 Raymond        Note Edited: 0010221                         
+06-15-06 11:03 Mimosius       Note Added: 0010237                          
+06-15-06 23:43 nikke          Note Added: 0010246                          
+06-16-06 13:01 Mimosius       Note Added: 0010250                          
+06-16-06 13:16 Mimosius       Note Edited: 0010250                         
+06-16-06 13:26 Raymond        Note Added: 0010251                          
+06-16-06 13:31 Raymond        Note Edited: 0010251                         
+06-16-06 13:37 Mimosius       Note Added: 0010252                          
+06-16-06 16:25 Raymond        Note Added: 0010255                          
+06-17-06 01:17 nikke          Note Added: 0010262                          
+06-17-06 02:43 Raymond        Note Edited: 0010251                         
+06-17-06 10:21 Raymond        Note Added: 0010266                          
 ======================================================================
