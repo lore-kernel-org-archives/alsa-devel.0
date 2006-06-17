@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Sat, 17 Jun 2006 17:06:11 +0200
-Message-ID: <81e092e4b70cba6f05ab37a858028cc4@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 17:13:17 +0200
+Message-ID: <9a1ad52de7ac0354fc7544c32df2a3d4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED7F9157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 82074157
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 17:06:11 +0200 (MEST)
+	Sat, 17 Jun 2006 17:13:17 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-17-2006 17:06 CEST
+Last Modified:              06-17-2006 17:13 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,44 +117,6 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- friser - 06-17-06 16:35 
-----------------------------------------------------------------------
-If I omit the --with-kernel option I have an error
-
-
-[root@umberto alsa-driver-1.0.11]# ./configure
-checking for gcc... gcc
-checking for C compiler default output file name... a.out
-checking whether the C compiler works... yes
-checking whether we are cross compiling... no
-checking for suffix of executables...
-checking for suffix of object files... o
-checking whether we are using the GNU C compiler... yes
-checking whether gcc accepts -g... yes
-checking for gcc option to accept ANSI C... none needed
-checking for ranlib... ranlib
-checking for a BSD-compatible install... /usr/bin/install -c
-checking how to run the C preprocessor... gcc -E
-checking for egrep... grep -E
-checking for ANSI C header files... yes
-checking for an ANSI C-conforming const... yes
-checking for inline... inline
-checking whether time.h and sys/time.h may both be included... yes
-checking whether gcc needs -traditional... no
-checking for current directory... /usr/local/alsa-driver-1.0.11
-checking cross compile...
-checking for directory with kernel source...
-/lib/modules/2.6.16-1.2080_FC5/source
-checking for directory with kernel build...
-/lib/modules/2.6.16-1.2080_FC5/build
-checking for kernel linux/version.h... no
-The file /lib/modules/2.6.16-1.2080_FC5/source/include/linux/version.h
-does not exist.
-Please install the package with full kernel sources for your distribution
-or use --with-kernel=dir option to specify another directory with kernel
-sources (default is /lib/modules/2.6.16-1.2080_FC5/source).
-
-----------------------------------------------------------------------
  friser - 06-17-06 17:06 
 ----------------------------------------------------------------------
 I've found a broken link in kernel dir.
@@ -191,6 +153,13 @@ FATAL: Error inserting snd_hda_intel
 (/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
 Invalid module format
 
+----------------------------------------------------------------------
+ Raymond - 06-17-06 17:13 
+----------------------------------------------------------------------
+Please install the package with full kernel sources for your distribution
+
+Have you installed the kernel source ?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -210,4 +179,5 @@ Date Modified  Username       Field                    Change
 06-16-06 20:00 rlrevell       Note Added: 0010259                          
 06-17-06 16:35 friser         Note Added: 0010271                          
 06-17-06 17:06 friser         Note Added: 0010272                          
+06-17-06 17:13 Raymond        Note Added: 0010273                          
 ======================================================================
