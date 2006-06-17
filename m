@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Sat, 17 Jun 2006 19:10:58 +0200
-Message-ID: <e25275cfacbaa3a7c90efcd0a8d3312e@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 19:19:37 +0200
+Message-ID: <bc11d4d7b937d8905ba1170e6a09589a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D40C2159
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E8318156
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 19:10:58 +0200 (MEST)
+	Sat, 17 Jun 2006 19:19:37 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-17-2006 19:10 CEST
+Last Modified:              06-17-2006 19:19 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,19 +117,6 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-17-06 18:56 
-----------------------------------------------------------------------
-You are running a kernel compiled for 686 but your ALSA modules are
-compiled for 586.  You need to remove kernel-devel.i586 and install the
-kernel-devel.i686 package.
-
-vermagic: 2.6.16-1.2080_FC5 686 REGPARM 4KSTACKS gcc-4.1
-
-vermagic: 2.6.16-1.2080_FC5 586 REGPARM 4KSTACKS gcc-4.1
-
-Unfortunately I don't run Fedora so I can't tell you exactly how.
-
-----------------------------------------------------------------------
  friser - 06-17-06 19:10 
 ----------------------------------------------------------------------
 I can't do this now because my laptop doesn't have enaugh battery and I
@@ -139,6 +126,13 @@ Is this operation "dangerous"? Do you think that something could stop to
 work after the change of kernel-devel package?
 
 Thank you so much
+
+----------------------------------------------------------------------
+ rlrevell - 06-17-06 19:19 
+----------------------------------------------------------------------
+No, it's perfectly safe.
+
+BTW what issue are you trying to solve by installing ALSA 1.0.11?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -176,4 +170,5 @@ Date Modified  Username       Field                    Change
 06-17-06 18:45 friser         Note Added: 0010284                          
 06-17-06 18:56 rlrevell       Note Added: 0010285                          
 06-17-06 19:10 friser         Note Added: 0010286                          
+06-17-06 19:19 rlrevell       Note Added: 0010287                          
 ======================================================================
