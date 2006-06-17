@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Sat, 17 Jun 2006 17:13:17 +0200
-Message-ID: <9a1ad52de7ac0354fc7544c32df2a3d4@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 17:19:31 +0200
+Message-ID: <8e077e197c02c935dfebf087cee2711a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 82074157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6727C13E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 17:13:17 +0200 (MEST)
+	Sat, 17 Jun 2006 17:19:31 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-17-2006 17:13 CEST
+Last Modified:              06-17-2006 17:19 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,48 +117,28 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- friser - 06-17-06 17:06 
-----------------------------------------------------------------------
-I've found a broken link in kernel dir.
-I've re-create the link and now the configure find the version.h.
-I' ve re-installed alla again but when I run modprobe  I get:
-
-[root@umberto alsa-driver-1.0.11]# modprobe snd-hda-intel
-WARNING: Error inserting snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-WARNING: Error inserting snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-FATAL: Error inserting snd_pcm
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
-module format
-WARNING: Error running install command for snd_pcm
-WARNING: Error inserting snd_hda_codec
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
-Invalid module format
-FATAL: Error inserting snd_hda_intel
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
-Invalid module format
-
-----------------------------------------------------------------------
- Raymond - 06-17-06 17:13 
+ Raymond - 06-17-06 17:14 
 ----------------------------------------------------------------------
 Please install the package with full kernel sources for your distribution
 
 Have you installed the kernel source ?
+
+After you installed kernel source
+
+./configure --with-cards=hda-intel
+
+
+
+----------------------------------------------------------------------
+ friser - 06-17-06 17:19 
+----------------------------------------------------------------------
+I would like to specify...
+
+After recreating the link I've launched configure command without
+--with-kernel option and then I've launched make, make install, snddevices
+commands without any error.
+Only when I run alsaconf or modprobe I get the error I reported in
+previous note.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -180,4 +160,6 @@ Date Modified  Username       Field                    Change
 06-17-06 16:35 friser         Note Added: 0010271                          
 06-17-06 17:06 friser         Note Added: 0010272                          
 06-17-06 17:13 Raymond        Note Added: 0010273                          
+06-17-06 17:14 Raymond        Note Edited: 0010273                         
+06-17-06 17:19 friser         Note Added: 0010274                          
 ======================================================================
