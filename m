@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002159]: ac3 passthrough not working
 	on recent versions
-Date: Sat, 17 Jun 2006 15:16:09 +0200
-Message-ID: <e2c84f388e4eaa9cb20617ff4f2b0d34@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 16:10:01 +0200
+Message-ID: <7d66d7e4903a5d41da02349cc062d485@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CC8D167
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C65CB147
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 15:16:09 +0200 (MEST)
+	Sat, 17 Jun 2006 16:10:01 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-24-2006 23:44 CEST
-Last Modified:              06-17-2006 15:16 CEST
+Last Modified:              06-17-2006 16:10 CEST
 ======================================================================
 Summary:                    ac3 passthrough not working on recent versions
 Description: 
@@ -64,18 +64,6 @@ If you need more info, just tell me and I'll dig it up.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-17-06 14:25 
-----------------------------------------------------------------------
-Are you sure that your patch in
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1447 does not break AC3
-pass through ?
-
-It seem that there are 3 sources for SPDIF out
-1) AC3
-2) Digital Mixer
-3) SPDIF in
-
-----------------------------------------------------------------------
  nikke - 06-17-06 15:16 
 ----------------------------------------------------------------------
 Being less tired than yesterday, I tried the following:
@@ -89,6 +77,17 @@ reverting said patch makes AC3 work on my normal setup too.
 
 To conclude, I agree that "ymfpci: add per-voice volume controls" breaks
 AC3 passthrough.
+
+----------------------------------------------------------------------
+ Raymond - 06-17-06 16:10 
+----------------------------------------------------------------------
+It seem that is a bug related to "ymfpci: add per-voice volume controls" 
+
+It should assign kctl->private_value = substream in
+snd_ymfpci_playback_open() instead of snd_ymfpci_mixer()
+
+I had upload a small program (iface_pcm.c) to test this feature for au88x0
+in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -118,4 +117,5 @@ Date Modified  Username       Field                    Change
 06-17-06 11:02 Raymond        Note Added: 0010267                          
 06-17-06 14:25 Raymond        Note Added: 0010268                          
 06-17-06 15:16 nikke          Note Added: 0010269                          
+06-17-06 16:10 Raymond        Note Added: 0010270                          
 ======================================================================
