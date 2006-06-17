@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002159]: ac3 passthrough not working
-	on recent versions
-Date: Sat, 17 Jun 2006 16:10:01 +0200
-Message-ID: <7d66d7e4903a5d41da02349cc062d485@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002163]: error running alsaconf
+Date: Sat, 17 Jun 2006 16:35:13 +0200
+Message-ID: <4ba84b2b13bb6dcb5a5ea1520c4a10ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C65CB147
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48C2A157
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 16:10:01 +0200 (MEST)
+	Sat, 17 Jun 2006 16:35:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,96 +25,160 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2163> 
 ======================================================================
-Reported By:                nikke
-Assigned To:                
+Reported By:                friser
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2159
-Category:                   PCI - ymfpci
+Issue ID:                   2163
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.15
+Status:                     assigned
+Distribution:               fedora core 5
+Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
-Date Submitted:             05-24-2006 23:44 CEST
-Last Modified:              06-17-2006 16:10 CEST
+Date Submitted:             05-26-2006 16:27 CEST
+Last Modified:              06-17-2006 16:35 CEST
 ======================================================================
-Summary:                    ac3 passthrough not working on recent versions
+Summary:                    error running alsaconf
 Description: 
-Using the following AC3 passthrough with mplayer works:
-Linux 2.4.31
-alsa-driver 1.0.8-7 (debian stable packaged)
+Hello, 
+when I try to confugure the alsa driver with alsaconf on my sony vaio I
+obtain this error:
 
-Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
-kernel and
-alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
-stays quiet.
+Loading driver...
+Starting sound driver: snd-hda-intel WARNING: Error inserting
+snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+FATAL: Error inserting snd_pcm
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
+module format
+WARNING: Error running install command for snd_pcm
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
+Invalid module format
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
+Invalid module format
+done
+Starting sound driver: snd-hda-intel WARNING: Error inserting
+snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+FATAL: Error inserting snd_pcm
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
+module format
+WARNING: Error running install command for snd_pcm
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
+Invalid module format
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
+Invalid module format
+done
+Setting default volumes...
 
-The only change is booting with different kernels, no other config or
-hardware is touched, so this must be a driver regression.
+Thanks 
 
-The card is YMF-754 based, connected with coax spdif to my HK reciever.
-
-If you need more info, just tell me and I'll dig it up.
 ======================================================================
 
 ----------------------------------------------------------------------
- nikke - 06-17-06 15:16 
+ rlrevell - 06-16-06 20:00 
 ----------------------------------------------------------------------
-Being less tired than yesterday, I tried the following:
+alsaconf should be completely unnecessary unless you have an old ISA card -
+hotplug/udev should load the correct driver automatically.
 
-Using Linux 2.6.8: ALSA 1.0.9b AC3 works, 1.0.10 AC3 does NOT work. When
-reverting the "ymfpci: add per-voice volume controls" patch from 1.0.10
-AC3 passthrough started to work.
-
-Since 1.0.10 compiles on Linux 2.6.15 I have been able to verify that
-reverting said patch makes AC3 work on my normal setup too.
-
-To conclude, I agree that "ymfpci: add per-voice volume controls" breaks
-AC3 passthrough.
+Try omitting the --with-kernel argument, the build should detect the
+kernel source directory.
 
 ----------------------------------------------------------------------
- Raymond - 06-17-06 16:10 
+ friser - 06-17-06 16:35 
 ----------------------------------------------------------------------
-It seem that is a bug related to "ymfpci: add per-voice volume controls" 
+If I omit the --with-kernel option I have an error
 
-It should assign kctl->private_value = substream in
-snd_ymfpci_playback_open() instead of snd_ymfpci_mixer()
 
-I had upload a small program (iface_pcm.c) to test this feature for au88x0
-in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1835
+[root@umberto alsa-driver-1.0.11]# ./configure
+checking for gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ANSI C... none needed
+checking for ranlib... ranlib
+checking for a BSD-compatible install... /usr/bin/install -c
+checking how to run the C preprocessor... gcc -E
+checking for egrep... grep -E
+checking for ANSI C header files... yes
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking whether time.h and sys/time.h may both be included... yes
+checking whether gcc needs -traditional... no
+checking for current directory... /usr/local/alsa-driver-1.0.11
+checking cross compile...
+checking for directory with kernel source...
+/lib/modules/2.6.16-1.2080_FC5/source
+checking for directory with kernel build...
+/lib/modules/2.6.16-1.2080_FC5/build
+checking for kernel linux/version.h... no
+The file /lib/modules/2.6.16-1.2080_FC5/source/include/linux/version.h
+does not exist.
+Please install the package with full kernel sources for your distribution
+or use --with-kernel=dir option to specify another directory with kernel
+sources (default is /lib/modules/2.6.16-1.2080_FC5/source).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-24-06 23:44 nikke          New Issue                                    
-05-24-06 23:44 nikke          Distribution              => Debian          
-05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
-05-24-06 23:47 nikke          Issue Monitored: nikke                       
-06-02-06 04:23 Raymond        Note Added: 0010045                          
-06-02-06 04:25 Raymond        Note Edited: 0010045                         
-06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
-06-14-06 22:32 nikke          Note Added: 0010216                          
-06-15-06 02:18 Raymond        Note Added: 0010221                          
-06-15-06 02:27 Raymond        Note Edited: 0010221                         
-06-15-06 11:03 Mimosius       Note Added: 0010237                          
-06-15-06 23:43 nikke          Note Added: 0010246                          
-06-16-06 13:01 Mimosius       Note Added: 0010250                          
-06-16-06 13:16 Mimosius       Note Edited: 0010250                         
-06-16-06 13:26 Raymond        Note Added: 0010251                          
-06-16-06 13:31 Raymond        Note Edited: 0010251                         
-06-16-06 13:37 Mimosius       Note Added: 0010252                          
-06-16-06 16:25 Raymond        Note Added: 0010255                          
-06-17-06 01:17 nikke          Note Added: 0010262                          
-06-17-06 02:43 Raymond        Note Edited: 0010251                         
-06-17-06 10:21 Raymond        Note Added: 0010266                          
-06-17-06 10:24 Raymond        Note Edited: 0010266                         
-06-17-06 11:02 Raymond        Note Added: 0010267                          
-06-17-06 14:25 Raymond        Note Added: 0010268                          
-06-17-06 15:16 nikke          Note Added: 0010269                          
-06-17-06 16:10 Raymond        Note Added: 0010270                          
+05-26-06 16:27 friser         New Issue                                    
+05-26-06 16:27 friser         Distribution              => fedora core 5   
+05-26-06 16:27 friser         Kernel Version            => 2.6.16-1.2080_FC5
+06-14-06 17:17 friser         Issue Monitored: djdeath                     
+06-14-06 17:17 friser         Note Added: 0010213                          
+06-14-06 17:18 friser         Note Deleted: 0010213                        
+06-14-06 17:19 friser         Note Added: 0010214                          
+06-15-06 10:10 friser         Note Added: 0010236                          
+06-15-06 17:50 rlrevell       Note Added: 0010240                          
+06-16-06 14:14 friser         Note Added: 0010253                          
+06-16-06 14:15 friser         File Added: alsa-output.txt                    
+06-16-06 14:18 friser         File Added: modprobe.conf                    
+06-16-06 14:19 friser         Note Added: 0010254                          
+06-16-06 20:00 rlrevell       Note Added: 0010259                          
+06-17-06 16:35 friser         Note Added: 0010271                          
 ======================================================================
