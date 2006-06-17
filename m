@@ -1,16 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Sat, 17 Jun 2006 19:57:47 +0200
-Message-ID: <864d1fee27000be36abe8b4871907353@bugtrack.alsa-project.org>
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: Re: Status of pinnacle/fiji driver
+Date: Sat, 17 Jun 2006 23:14:51 +0400
+Message-ID: <20060617191451.GC14563@procyon.home>
+References: <1147966154.12531.62.camel@mindpipe> <s5h64k32v9q.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0257807189=="
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8EED4167
-	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 19:57:47 +0200 (MEST)
+In-Reply-To: <s5h64k32v9q.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,102 +16,124 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
-======================================================================
-Reported By:                carllivitt
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2174
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
-======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-17-2006 19:57 CEST
-======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
-Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
+--===============0257807189==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="z4+8/lEcDcG5Ke9S"
+Content-Disposition: inline
 
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
 
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
+--z4+8/lEcDcG5Ke9S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I've also tried using the 'single_cmd=1' module loading option. 
+On Thu, May 18, 2006 at 05:43:45PM +0200, Takashi Iwai wrote:
+> At Thu, 18 May 2006 11:29:14 -0400,
+> Lee Revell wrote:
+> >=20
+> > Someone pointed out on IRC that this driver has bitrotted and doesn't
+> > compile with recent kernels.
+> >=20
+> > alsa/alsa-driver-1.0.11/isa/msnd/msnd_pinnacle.c:117: error: expected )
+> > before string constant
+> >=20
+> > I think it's due to use of MODULE_PARM which seems to have been removed?
+>=20
+> Already fixed on HG repo.
 
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
+With this fix the driver seems to compile, but won't load because of
+undefined symbols - trying to compile it for 2.6.17-rc6-git7 gives
+these warnings:
 
-======================================================================
+  CC [M]  .../isa/msnd/msnd.o
+=2E../isa/msnd/msnd.c: In function `snd_msnd_init_queue':
+=2E../isa/msnd/msnd.c:134: warning: implicit declaration of function `isa_w=
+ritew'
+  CC [M]  .../isa/msnd/msnd_pinnacle.o
+=2E../isa/msnd/msnd_pinnacle.c: In function `snd_msnd_play_reset_queue':
+=2E../isa/msnd/msnd_pinnacle.c:166: warning: implicit declaration of functi=
+on `isa_writew'
+=2E../isa/msnd/msnd_pinnacle.c: In function `snd_msnd_DARQ':
+=2E../isa/msnd/msnd_pinnacle.c:313: warning: implicit declaration of functi=
+on `isa_readw'
+=2E../isa/msnd/msnd_pinnacle.c: In function `snd_msnd_init_sma':
+=2E../isa/msnd/msnd_pinnacle.c:623: warning: implicit declaration of functi=
+on `isa_memset_io'
+=2E../isa/msnd/msnd_pinnacle.c:670: warning: implicit declaration of functi=
+on `isa_writel'
+=2E../isa/msnd/msnd_pinnacle.c: In function `upload_dsp_code':
+=2E../isa/msnd/msnd_pinnacle.c:720: warning: implicit declaration of functi=
+on `isa_memcpy_toio'
+  CC [M]  .../isa/msnd/msnd_pinnacle_mixer.o
+=2E../isa/msnd/msnd_pinnacle_mixer.c: In function `snd_msndmix_set':
+=2E../isa/msnd/msnd_pinnacle_mixer.c:204: warning: implicit declaration of =
+function `isa_writeb'
+=2E../isa/msnd/msnd_pinnacle_mixer.c:219: warning: implicit declaration of =
+function `isa_writew'
+=2E../isa/msnd/msnd_pinnacle_mixer.c:241: warning: implicit declaration of =
+function `isa_readw'
+  CC [M]  .../isa/msnd/msnd_midi.o
+=2E../isa/msnd/msnd_midi.c: In function `snd_msndmidi_input_drop':
+=2E../isa/msnd/msnd_midi.c:312: warning: implicit declaration of function `=
+isa_readw'
+=2E../isa/msnd/msnd_midi.c:313: warning: implicit declaration of function `=
+isa_writew'
 
-----------------------------------------------------------------------
- carllivitt - 06-17-06 19:51 
-----------------------------------------------------------------------
-Well, it's seems like this has stalled. I'm quite willing to dive in and
-have a go at sorting it if somebody can offer guidance. I'm very familiar
-with Linux, have done some kernel dev before (designed and coded a rootkit
-about 4 years ago) and know C very well.
+WARNING: "isa_memcpy_toio" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
+WARNING: "isa_memset_io" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
+WARNING: "isa_writeb" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
+WARNING: "isa_writel" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
+WARNING: "isa_writew" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
+WARNING: "isa_readw" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
 
-Any offers of help of where to start?
+Apparently the isa_* functions were removed from kernel:
 
-Thanks, 
-Carl
+http://kernel.org/git/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dcomm=
+it;h=3D57f3ebccaa560d1eeb40b5c719773bed5cb0df46
 
-----------------------------------------------------------------------
- rlrevell - 06-17-06 19:57 
-----------------------------------------------------------------------
-Um, 3 days without an update is not exactly "stalled".
+> > I also notice that this driver is not in the kernel.  Could it be added?
+> > It would allow the OSS driver to be deprecated.
+>=20
+> No, the driver code is too ugly to include to kernel tree.
 
-As far as next steps, it's hard - often the problem is lack of hardware
-information.  Read the ALSA source code and alsa-devel archives.  Maybe
-you can create a test model for your soundcard.
+Does someone really maintain this driver?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
-06-12-06 21:51 carllivitt     Note Added: 0010174                          
-06-12-06 22:03 rlrevell       Note Added: 0010175                          
-06-12-06 22:52 carllivitt     Note Added: 0010176                          
-06-12-06 22:54 rlrevell       Note Added: 0010177                          
-06-12-06 23:10 carllivitt     Note Added: 0010178                          
-06-12-06 23:14 rlrevell       Note Added: 0010179                          
-06-12-06 23:29 carllivitt     Note Added: 0010180                          
-06-12-06 23:35 rlrevell       Note Added: 0010181                          
-06-12-06 23:49 carllivitt     Note Added: 0010182                          
-06-12-06 23:58 rlrevell       Note Added: 0010183                          
-06-13-06 15:33 godeater       Note Added: 0010193                          
-06-13-06 18:13 rlrevell       Note Added: 0010198                          
-06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
-06-13-06 18:58 rlrevell       Note Added: 0010200                          
-06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
-06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
-06-14-06 10:12 carllivitt     Note Added: 0010207                          
-06-14-06 10:21 carllivitt     File Added: codec0.txt                       
-06-14-06 10:21 carllivitt     Note Added: 0010208                          
-06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
-06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
-06-17-06 19:51 carllivitt     Note Added: 0010288                          
-06-17-06 19:57 rlrevell       Note Added: 0010289                          
-======================================================================
+--z4+8/lEcDcG5Ke9S
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2.2 (GNU/Linux)
+
+iD8DBQFElFSrW82GfkQfsqIRAlFrAJwLIwk5Kt6c5/IwC2xWBZvV8wK9ngCfc/pt
+Qg/EHAvdTjDFDN1asjCx+QY=
+=JsAp
+-----END PGP SIGNATURE-----
+
+--z4+8/lEcDcG5Ke9S--
+
+
+--===============0257807189==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0257807189==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+--===============0257807189==--
