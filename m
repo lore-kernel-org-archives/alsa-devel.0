@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002159]: ac3 passthrough not working
 	on recent versions
-Date: Sat, 17 Jun 2006 14:25:04 +0200
-Message-ID: <3a8a50d8c8be286bf31b2a85bca5aaef@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 15:16:09 +0200
+Message-ID: <e2c84f388e4eaa9cb20617ff4f2b0d34@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3C2D716F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6CC8D167
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 14:25:05 +0200 (MEST)
+	Sat, 17 Jun 2006 15:16:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Debian
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-24-2006 23:44 CEST
-Last Modified:              06-17-2006 14:25 CEST
+Last Modified:              06-17-2006 15:16 CEST
 ======================================================================
 Summary:                    ac3 passthrough not working on recent versions
 Description: 
@@ -64,24 +64,6 @@ If you need more info, just tell me and I'll dig it up.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-17-06 11:02 
-----------------------------------------------------------------------
-Mimosius
-
-There is a patch which supposed to fix AC3 output
-
-http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=fac92b1b0699;style=gitweb
-
-Do this patch fix the problem ?
-
-However there is another patch which add an module parameter
-
-MODULE_PARM_DESC(rear_swap, "Swap rear channels (must be enabled for
-correct IEC958 (S/PDIF)) output");
-
-http://hg-mirror.alsa-project.org/alsa-kernel?cmd=changeset;node=2e21f4940a0f;style=gitweb
-
-----------------------------------------------------------------------
  Raymond - 06-17-06 14:25 
 ----------------------------------------------------------------------
 Are you sure that your patch in
@@ -92,6 +74,21 @@ It seem that there are 3 sources for SPDIF out
 1) AC3
 2) Digital Mixer
 3) SPDIF in
+
+----------------------------------------------------------------------
+ nikke - 06-17-06 15:16 
+----------------------------------------------------------------------
+Being less tired than yesterday, I tried the following:
+
+Using Linux 2.6.8: ALSA 1.0.9b AC3 works, 1.0.10 AC3 does NOT work. When
+reverting the "ymfpci: add per-voice volume controls" patch from 1.0.10
+AC3 passthrough started to work.
+
+Since 1.0.10 compiles on Linux 2.6.15 I have been able to verify that
+reverting said patch makes AC3 work on my normal setup too.
+
+To conclude, I agree that "ymfpci: add per-voice volume controls" breaks
+AC3 passthrough.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -120,4 +117,5 @@ Date Modified  Username       Field                    Change
 06-17-06 10:24 Raymond        Note Edited: 0010266                         
 06-17-06 11:02 Raymond        Note Added: 0010267                          
 06-17-06 14:25 Raymond        Note Added: 0010268                          
+06-17-06 15:16 nikke          Note Added: 0010269                          
 ======================================================================
