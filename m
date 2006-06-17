@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Sat, 17 Jun 2006 16:35:13 +0200
-Message-ID: <4ba84b2b13bb6dcb5a5ea1520c4a10ed@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 17:06:11 +0200
+Message-ID: <81e092e4b70cba6f05ab37a858028cc4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 48C2A157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED7F9157
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 16:35:13 +0200 (MEST)
+	Sat, 17 Jun 2006 17:06:11 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-17-2006 16:35 CEST
+Last Modified:              06-17-2006 17:06 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,15 +117,6 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-16-06 20:00 
-----------------------------------------------------------------------
-alsaconf should be completely unnecessary unless you have an old ISA card -
-hotplug/udev should load the correct driver automatically.
-
-Try omitting the --with-kernel argument, the build should detect the
-kernel source directory.
-
-----------------------------------------------------------------------
  friser - 06-17-06 16:35 
 ----------------------------------------------------------------------
 If I omit the --with-kernel option I have an error
@@ -163,6 +154,43 @@ Please install the package with full kernel sources for your distribution
 or use --with-kernel=dir option to specify another directory with kernel
 sources (default is /lib/modules/2.6.16-1.2080_FC5/source).
 
+----------------------------------------------------------------------
+ friser - 06-17-06 17:06 
+----------------------------------------------------------------------
+I've found a broken link in kernel dir.
+I've re-create the link and now the configure find the version.h.
+I' ve re-installed alla again but when I run modprobe  I get:
+
+[root@umberto alsa-driver-1.0.11]# modprobe snd-hda-intel
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+FATAL: Error inserting snd_pcm
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
+module format
+WARNING: Error running install command for snd_pcm
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
+Invalid module format
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
+Invalid module format
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -181,4 +209,5 @@ Date Modified  Username       Field                    Change
 06-16-06 14:19 friser         Note Added: 0010254                          
 06-16-06 20:00 rlrevell       Note Added: 0010259                          
 06-17-06 16:35 friser         Note Added: 0010271                          
+06-17-06 17:06 friser         Note Added: 0010272                          
 ======================================================================
