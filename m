@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Sat, 17 Jun 2006 18:39:43 +0200
-Message-ID: <604950dfd67b8739e6c95cf7322c9abb@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 18:45:33 +0200
+Message-ID: <932470c72ec94f941f14126b4f3f03f0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8B6D13E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC496157
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 18:39:43 +0200 (MEST)
+	Sat, 17 Jun 2006 18:45:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-17-2006 18:39 CEST
+Last Modified:              06-17-2006 18:45 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,83 +117,28 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- friser - 06-17-06 18:36 
-----------------------------------------------------------------------
-[root@umberto ~]# /sbin/modinfo /lib/modules/`uname
--r`/kernel/sound/core/snd.ko
-modinfo: could not find module
-/lib/modules/2.6.16-1.2080_FC5/kernel/sound/core/snd.ko
-
-
-[root@umberto ~]# /sbin/lsmod
-Module                  Size  Used by
-ppdev                   8645  0
-autofs4                19013  1
-sunrpc                136573  1
-ip_conntrack_ftp        7601  0
-ip_conntrack_netbios_ns     3009  0
-ipt_REJECT              5441  1
-xt_state                2241  7
-ip_conntrack           49261  3
-ip_conntrack_ftp,ip_conntrack_netbios_ns,xt_state
-nfnetlink               6489  1 ip_conntrack
-xt_tcpudp               3265  9
-iptable_filter          3137  1
-ip_tables              11657  1 iptable_filter
-x_tables               12613  4 ipt_REJECT,xt_state,xt_tcpudp,ip_tables
-nls_utf8                2241  1
-ntfs                  187924  1
-ipv6                  225569  12
-lp                     12296  0
-parport_pc             25445  0
-parport                34313  3 ppdev,lp,parport_pc
-nvram                   8393  0
-sg                     32348  0
-ohci1394               31749  0
-ieee1394              288665  1 ohci1394
-joydev                  9473  0
-ipw2200                95633  0
-ehci_hcd               29005  0
-ieee80211              28681  1 ipw2200
-ieee80211_crypt         6081  1 ieee80211
-nvidia               4544884  12
-uhci_hcd               28881  0
-e100                   33093  0
-mii                     5313  1 e100
-soundcore               9377  0
-i2c_i801                8397  0
-i2c_core               20673  2 nvidia,i2c_i801
-hw_random               5849  0
-dm_snapshot            15981  0
-dm_zero                 2113  0
-dm_mirror              19729  0
-dm_mod                 50137  5 dm_snapshot,dm_zero,dm_mirror
-ahci                   12613  0
-ext3                  116169  2
-jbd                    52693  1 ext3
-ata_piix                9925  4
-libata                 53969  2 ahci,ata_piix
-sd_mod                 16449  5
-scsi_mod              124649  4 sg,ahci,libata,sd_mod
-
-
-[root@umberto ~]# modinfo soundcore
-filename:       /lib/modules/2.6.16-1.2080_FC5/kernel/sound/soundcore.ko
-description:    Core sound module
-author:         Alan Cox
-license:        GPL
-alias:          char-major-14-*
-vermagic:       2.6.16-1.2080_FC5 686 REGPARM 4KSTACKS gcc-4.1
-depends:
-srcversion:     DD426F1CCA2CC5F060F6F92
-
-----------------------------------------------------------------------
  rlrevell - 06-17-06 18:39 
 ----------------------------------------------------------------------
 Great, Fedora uses a non-standard location for ALSA modules.
 
 Post modinfo output for
 /lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko
+
+----------------------------------------------------------------------
+ friser - 06-17-06 18:45 
+----------------------------------------------------------------------
+[root@umberto ~]# modinfo
+/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko
+filename:       /lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko
+author:         Jaroslav Kysela <perex@suse.cz>
+description:    Advanced Linux Sound Architecture driver for soundcards.
+license:        GPL
+alias:          char-major-116-*
+vermagic:       2.6.16-1.2080_FC5 586 REGPARM 4KSTACKS gcc-4.1
+depends:        soundcore
+srcversion:     055DA448A05CECF53694583
+parm:           cards_limit:Count of auto-loadable soundcards. (int)
+parm:           major:Major # for sound driver. (int)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -228,4 +173,5 @@ Date Modified  Username       Field                    Change
 06-17-06 18:25 rlrevell       Note Added: 0010281                          
 06-17-06 18:36 friser         Note Added: 0010282                          
 06-17-06 18:39 rlrevell       Note Added: 0010283                          
+06-17-06 18:45 friser         Note Added: 0010284                          
 ======================================================================
