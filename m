@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002174]: No sound at all using
 	snd-hda-intel / alsa-1.0.11
-Date: Sat, 17 Jun 2006 19:51:57 +0200
-Message-ID: <7404b869a192eba02a9edb0b8faa28f8@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 19:57:47 +0200
+Message-ID: <864d1fee27000be36abe8b4871907353@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A8D74157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8EED4167
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 19:51:57 +0200 (MEST)
+	Sat, 17 Jun 2006 19:57:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
 Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-17-2006 19:51 CEST
+Last Modified:              06-17-2006 19:57 CEST
 ======================================================================
 Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
@@ -66,35 +66,6 @@ were unresolved symbols that I couldn't resolve. I'm back to using the
 ======================================================================
 
 ----------------------------------------------------------------------
- jlpedrosa - 06-14-06 16:13 
-----------------------------------------------------------------------
-i used to know english... 
-
-Here's mine.... the subsystem insn't the same. I don't know if its the
-same ALCXXX... Maybe it's related to #2035...
-
-i cheked the BIOS update... but were only related to Booting from lan and
-adding support to celeron... so I din't update
-
-in realtek there are the pin and signals diagrams for alc861...
-
-00:1b.0 Class 0403: 8086:27d8 (rev 02)
-        Subsystem: 1584:9072
-        Flags: bus master, fast devsel, latency 0, IRQ 169
-        Memory at fe0f8000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable -
-        Capabilities: [70] Express Unknown type IRQ 0
-
-
-Hope it's useful...
-(if somebody need more info or testing just mailme jlpedrosa at gmail)
-Jose Luis Pedrosa
-
-
-
-----------------------------------------------------------------------
  carllivitt - 06-17-06 19:51 
 ----------------------------------------------------------------------
 Well, it's seems like this has stalled. I'm quite willing to dive in and
@@ -106,6 +77,15 @@ Any offers of help of where to start?
 
 Thanks, 
 Carl
+
+----------------------------------------------------------------------
+ rlrevell - 06-17-06 19:57 
+----------------------------------------------------------------------
+Um, 3 days without an update is not exactly "stalled".
+
+As far as next steps, it's hard - often the problem is lack of hardware
+information.  Read the ALSA source code and alsa-devel archives.  Maybe
+you can create a test model for your soundcard.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -137,4 +117,5 @@ Date Modified  Username       Field                    Change
 06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
 06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
 06-17-06 19:51 carllivitt     Note Added: 0010288                          
+06-17-06 19:57 rlrevell       Note Added: 0010289                          
 ======================================================================
