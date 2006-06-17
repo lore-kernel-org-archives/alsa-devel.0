@@ -1,12 +1,16 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: Re: Status of pinnacle/fiji driver
-Date: Sat, 17 Jun 2006 23:14:51 +0400
-Message-ID: <20060617191451.GC14563@procyon.home>
-References: <1147966154.12531.62.camel@mindpipe> <s5h64k32v9q.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002156]: Geode support still not
+	ported from OSS
+Date: Sat, 17 Jun 2006 22:01:50 +0200
+Message-ID: <993ffbd392d45633f2379242394d71b7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0257807189=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h64k32v9q.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B885615A
+	for <alsa-devel@alsa-project.org>;
+	Sat, 17 Jun 2006 22:01:50 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,124 +20,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0257807189==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="z4+8/lEcDcG5Ke9S"
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2156> 
+======================================================================
+Reported By:                Quietti
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2156
+Category:                   ISA - sb16/sbawe
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             05-24-2006 09:50 CEST
+Last Modified:              06-17-2006 22:01 CEST
+======================================================================
+Summary:                    Geode support still not ported from OSS
+Description: 
+According to http://www.ussg.iu.edu/hypermail/linux/kernel/0601.2/1636.html
+the Geode series all provide a sb16-compatible card. Yet, I notice that
+the OSS "sb" module works, while the ALSA "snd-sb16" module doesn't.
 
+Meanwhle, documentation for the more recent Geode SCx200 hardware suggests
+an AC97-compatible chip. I notice that e.g. the snd-via82xx driver offer
+both AC97 support and a Soundblaster compatibility mode, but that doesn't
+work with this Geode either.
 
---z4+8/lEcDcG5Ke9S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Feel free to reassing this to the appropriate driver, if this has been
+ported already, or if a documented solution exists.
+======================================================================
 
-On Thu, May 18, 2006 at 05:43:45PM +0200, Takashi Iwai wrote:
-> At Thu, 18 May 2006 11:29:14 -0400,
-> Lee Revell wrote:
-> >=20
-> > Someone pointed out on IRC that this driver has bitrotted and doesn't
-> > compile with recent kernels.
-> >=20
-> > alsa/alsa-driver-1.0.11/isa/msnd/msnd_pinnacle.c:117: error: expected )
-> > before string constant
-> >=20
-> > I think it's due to use of MODULE_PARM which seems to have been removed?
->=20
-> Already fixed on HG repo.
+----------------------------------------------------------------------
+ Quietti - 05-24-06 12:56 
+----------------------------------------------------------------------
+AMD publishes complete specs for the whole Geode series at: 
+http://www.amd.com/us-en/ConnectivitySolutions/ProductInformation/0,,50_2330_9863_9919,00.html
 
-With this fix the driver seems to compile, but won't load because of
-undefined symbols - trying to compile it for 2.6.17-rc6-git7 gives
-these warnings:
+They also offer OSS drivers that could be ported to ALSA and merged:
+http://www.amd.com/us-en/ConnectivitySolutions/TechnicalResources/0,,50_2334_2452_11363,00.html
 
-  CC [M]  .../isa/msnd/msnd.o
-=2E../isa/msnd/msnd.c: In function `snd_msnd_init_queue':
-=2E../isa/msnd/msnd.c:134: warning: implicit declaration of function `isa_w=
-ritew'
-  CC [M]  .../isa/msnd/msnd_pinnacle.o
-=2E../isa/msnd/msnd_pinnacle.c: In function `snd_msnd_play_reset_queue':
-=2E../isa/msnd/msnd_pinnacle.c:166: warning: implicit declaration of functi=
-on `isa_writew'
-=2E../isa/msnd/msnd_pinnacle.c: In function `snd_msnd_DARQ':
-=2E../isa/msnd/msnd_pinnacle.c:313: warning: implicit declaration of functi=
-on `isa_readw'
-=2E../isa/msnd/msnd_pinnacle.c: In function `snd_msnd_init_sma':
-=2E../isa/msnd/msnd_pinnacle.c:623: warning: implicit declaration of functi=
-on `isa_memset_io'
-=2E../isa/msnd/msnd_pinnacle.c:670: warning: implicit declaration of functi=
-on `isa_writel'
-=2E../isa/msnd/msnd_pinnacle.c: In function `upload_dsp_code':
-=2E../isa/msnd/msnd_pinnacle.c:720: warning: implicit declaration of functi=
-on `isa_memcpy_toio'
-  CC [M]  .../isa/msnd/msnd_pinnacle_mixer.o
-=2E../isa/msnd/msnd_pinnacle_mixer.c: In function `snd_msndmix_set':
-=2E../isa/msnd/msnd_pinnacle_mixer.c:204: warning: implicit declaration of =
-function `isa_writeb'
-=2E../isa/msnd/msnd_pinnacle_mixer.c:219: warning: implicit declaration of =
-function `isa_writew'
-=2E../isa/msnd/msnd_pinnacle_mixer.c:241: warning: implicit declaration of =
-function `isa_readw'
-  CC [M]  .../isa/msnd/msnd_midi.o
-=2E../isa/msnd/msnd_midi.c: In function `snd_msndmidi_input_drop':
-=2E../isa/msnd/msnd_midi.c:312: warning: implicit declaration of function `=
-isa_readw'
-=2E../isa/msnd/msnd_midi.c:313: warning: implicit declaration of function `=
-isa_writew'
+Unless I misunderstood, at this time, ALSA only supports current Geodes
+based on the CS5535 and CS5536 companion chips. What is missing is support
+for the original CS5530 that was on early Geodes and for the subsequent
+SCx200 products.
 
-WARNING: "isa_memcpy_toio" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
-WARNING: "isa_memset_io" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
-WARNING: "isa_writeb" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
-WARNING: "isa_writel" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
-WARNING: "isa_writew" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
-WARNING: "isa_readw" [.../isa/msnd/snd-msnd-pinnacle.ko] undefined!
+----------------------------------------------------------------------
+ Quietti - 06-17-06 22:01 
+----------------------------------------------------------------------
+I have found what might be an ALSA port for some older ALSA release at
+http://www.jumptec.de/SW_DB/PAGES/Board80.htm (look for alsa-geode.zip at
+the bottom of the page).
 
-Apparently the isa_* functions were removed from kernel:
-
-http://kernel.org/git/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dcomm=
-it;h=3D57f3ebccaa560d1eeb40b5c719773bed5cb0df46
-
-> > I also notice that this driver is not in the kernel.  Could it be added?
-> > It would allow the OSS driver to be deprecated.
->=20
-> No, the driver code is too ugly to include to kernel tree.
-
-Does someone really maintain this driver?
-
---z4+8/lEcDcG5Ke9S
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
-
-iD8DBQFElFSrW82GfkQfsqIRAlFrAJwLIwk5Kt6c5/IwC2xWBZvV8wK9ngCfc/pt
-Qg/EHAvdTjDFDN1asjCx+QY=
-=JsAp
------END PGP SIGNATURE-----
-
---z4+8/lEcDcG5Ke9S--
-
-
---===============0257807189==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0257807189==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============0257807189==--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-24-06 09:50 Quietti        New Issue                                    
+05-24-06 12:56 Quietti        Note Added: 0009954                          
+06-17-06 22:01 Quietti        Note Added: 0010290                          
+======================================================================
