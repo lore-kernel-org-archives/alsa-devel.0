@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Sat, 17 Jun 2006 17:57:45 +0200
-Message-ID: <0ecc21d00d62018ea03d80b42da23c0b@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 18:07:27 +0200
+Message-ID: <db18e9b7e45a81022d316662ad844f9a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B75B157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0AE9134
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 17:57:45 +0200 (MEST)
+	Sat, 17 Jun 2006 18:07:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-17-2006 17:57 CEST
+Last Modified:              06-17-2006 18:07 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,18 +117,24 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- friser - 06-17-06 17:46 
+ Raymond - 06-17-06 17:59 
 ----------------------------------------------------------------------
-I've not installed kernel source. 
-Is there a package called "kernel-source"?
-I don't find it in package list
+What is your cpu ?
 
-thanks
+i686 or x86_64 
 
-----------------------------------------------------------------------
- Raymond - 06-17-06 17:57 
-----------------------------------------------------------------------
 kernel-devel
+
+
+
+----------------------------------------------------------------------
+ friser - 06-17-06 18:07 
+----------------------------------------------------------------------
+i686
+
+with yum I find:
+kernel-devel.i586 2.6.16-1.2080_FC5 installed
+is there another package to install?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -157,4 +163,6 @@ Date Modified  Username       Field                    Change
 06-17-06 17:34 Raymond        Note Edited: 0010275                         
 06-17-06 17:46 friser         Note Added: 0010276                          
 06-17-06 17:57 Raymond        Note Added: 0010277                          
+06-17-06 17:59 Raymond        Note Edited: 0010277                         
+06-17-06 18:07 friser         Note Added: 0010278                          
 ======================================================================
