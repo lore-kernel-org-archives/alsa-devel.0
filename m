@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Sat, 17 Jun 2006 18:36:46 +0200
-Message-ID: <11b787960a7f5270508ee602ecfc04d4@bugtrack.alsa-project.org>
+Date: Sat, 17 Jun 2006 18:39:43 +0200
+Message-ID: <604950dfd67b8739e6c95cf7322c9abb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C453B157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B8B6D13E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jun 2006 18:36:46 +0200 (MEST)
+	Sat, 17 Jun 2006 18:39:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-17-2006 18:36 CEST
+Last Modified:              06-17-2006 18:39 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,16 +117,6 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-17-06 18:25 
-----------------------------------------------------------------------
-Please post the output of:
-
-/sbin/modinfo /lib/modules/`uname -r`/kernel/sound/core/snd.ko
-
-Then find a working non-ALSA module (check lsmod) and post the modinfo
-output for that.
-
-----------------------------------------------------------------------
  friser - 06-17-06 18:36 
 ----------------------------------------------------------------------
 [root@umberto ~]# /sbin/modinfo /lib/modules/`uname
@@ -197,6 +187,14 @@ vermagic:       2.6.16-1.2080_FC5 686 REGPARM 4KSTACKS gcc-4.1
 depends:
 srcversion:     DD426F1CCA2CC5F060F6F92
 
+----------------------------------------------------------------------
+ rlrevell - 06-17-06 18:39 
+----------------------------------------------------------------------
+Great, Fedora uses a non-standard location for ALSA modules.
+
+Post modinfo output for
+/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -229,4 +227,5 @@ Date Modified  Username       Field                    Change
 06-17-06 18:11 friser         Note Added: 0010279                          
 06-17-06 18:25 rlrevell       Note Added: 0010281                          
 06-17-06 18:36 friser         Note Added: 0010282                          
+06-17-06 18:39 rlrevell       Note Added: 0010283                          
 ======================================================================
