@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002218]: Everything ok but no sound.
-Date: Sun, 18 Jun 2006 16:55:58 +0200
-Message-ID: <172b0878c0b75480e6f0be5d3150a08d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
+Date: Sun, 18 Jun 2006 17:41:22 +0200
+Message-ID: <cf8ec2bb2e1e1dfd918260e83e72c2c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C8500162
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 833AC153
 	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Jun 2006 16:55:58 +0200 (MEST)
+	Sun, 18 Jun 2006 17:41:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,38 +25,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2218> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
 ======================================================================
-Reported By:                Layn
-Assigned To:                tiwai
+Reported By:                El Santo
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2218
-Category:                   PCI - hda-intel
-Reproducibility:            unable to duplicate
+Issue ID:                   2219
+Category:                   GENERIC - mpu401
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.16
+Status:                     new
+Distribution:               Debian etch (2006-06-18)
+Kernel Version:             2.6.15-1-686
 ======================================================================
-Date Submitted:             06-18-2006 16:55 CEST
-Last Modified:              06-18-2006 16:55 CEST
+Date Submitted:             06-18-2006 17:41 CEST
+Last Modified:              06-18-2006 17:41 CEST
 ======================================================================
-Summary:                    Everything ok but no sound.
+Summary:                    snd-mpu401 don't load
 Description: 
-I have installed the lasted driver for my soundcard from hg, also i have
-try with ubuntu dapper beta live-cd and finally i have the stable 1.0.11
-driver, lib and utils from alsa repository.
-Everything look fine, with alsamixer the pcm volume is in 100%, but there
-isnt sound, i have probe with mpg123, mplayer and aplay, and never play
-anything. No error, nothing...
+I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
+driver. It loads all necesary modules, includind snd-mpu401-uart, but no
+snd-mpu401
+The audio part of the driver works perfectly, but the midi port doesn't
+work.
+
+In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
+not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
+(setting the port accordingly to BIOS) it doesnt work. I don't know the
+mpu401 irq setting but i tryed them all. None of them worked. The driver
+says "device not found".
+
+Under windows xp the port works perfectly, so the hardware is ok. Anyway
+under windows xp, i use a "system inspector" to monitor ioports and irq
+usage, and i didnt see any irq assigned for mpu401 port, and the port
+(0x330) wasn't occupied neither.
+
+any idea?
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-18-06 16:55 Layn           New Issue                                    
-06-18-06 16:55 Layn           Distribution              => Debian          
-06-18-06 16:55 Layn           Kernel Version            => 2.6.16          
+06-18-06 17:41 El Santo       New Issue                                    
+06-18-06 17:41 El Santo       Distribution              => Debian etch
+(2006-06-18)
+06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
 ======================================================================
