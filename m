@@ -1,15 +1,18 @@
-From: Norbert Preining <preining@logic.at>
-Subject: Re: alsa 1.0.11, 2.6.17-rc6-mm2, kernel BUG
-Date: Sun, 18 Jun 2006 19:39:07 +0200
-Message-ID: <20060618173907.GB16212@gamma.logic.tuwien.ac.at>
-References: <20060614210553.GC13054@gamma.logic.tuwien.ac.at>
-	<20060617100738.cd40f0bf.akpm@osdl.org>
+From: Rene Herman <rene.herman@keyaccess.nl>
+Subject: Re: Driver model ISA bus
+Date: Sun, 18 Jun 2006 20:51:20 +0200
+Message-ID: <4495A0A8.3080607__21829.9514301636$1150656685$gmane$org@keyaccess.nl>
+References: <4485F97A.6020205@keyaccess.nl> <20060616234218.GC25127@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20060617100738.cd40f0bf.akpm@osdl.org>
+Received: from smtpq1.groni1.gr.home.nl (smtpq1.groni1.gr.home.nl
+	[213.51.130.200])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0F6CE142
+	for <alsa-devel@alsa-project.org>;
+	Sun, 18 Jun 2006 20:50:57 +0200 (MEST)
+In-Reply-To: <20060616234218.GC25127@kroah.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,33 +22,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Andrew Morton <akpm@osdl.org>
-Cc: alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+To: Greg KH <greg@kroah.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>, Greg Kroah-Hartman <gregkh@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Sam, 17 Jun 2006, Andrew Morton wrote:
-> > I have 2.6.17-rc6-mm2 running, and I wanted to try alsa drivers 1.0.11
-> > final to get my hda-intel sound device running.
+Greg KH wrote:
 
-> If you would, please keep a close eye on -mm's over the next few weeks, l=
-et
-> us know if/when this bug propagates into -mm.  Thanks.
+> Sorry for the delay.  It looks great to me so I've added it to my
+> tree and will push it upstream when I can.
 
-Will do.
+Okay, lovely, thanks.
 
-Best wishes
+Takashi: I'll be converting ALSA ISA drivers over to this now. What I'd 
+in fact would like to do is do that one driver at a time. I have a 
+metric buttload of these old ISA soundcards and believe it would be a 
+nice opportunity to actually test these old drivers (and possibly do 
+some cleanups) as I go along. Would you mind that?
 
-Norbert
+If you'd rather the isa_bus thing was one discrete change, that's also 
+okay though. I'd then just do that as a somewhat mechanical change and 
+then revisit those drivers at some later time for additional testing 
+and/or cleanup.
 
----------------------------------------------------------------------------=
-----
-Dr. Norbert Preining <preining AT logic DOT at>             Universit=E0 di=
- Siena
-gpg DSA: 0x09C5B094      fp: 14DF 2E6C 0307 BE6D AD76  A9C0 D2BF 4AA3 09C5 =
-B094
----------------------------------------------------------------------------=
-----
-HUTTOFT (n.)
-The fibrous algae which grows in the dark, moist environment of
-trouser turn-ups.
-			--- Douglas Adams, The Meaning of Liff
+In either case, I'll ofcourse not submit anything untill this thing has 
+made -mm.
+
+Rene.
