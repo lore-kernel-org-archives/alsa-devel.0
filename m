@@ -1,16 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002199]: No sound from M-AUDIO
-	Revolution 5.1
-Date: Sun, 18 Jun 2006 18:51:35 +0200
-Message-ID: <9da6f9d1add473620e0eef7a223e0297@bugtrack.alsa-project.org>
+From: Norbert Preining <preining@logic.at>
+Subject: Re: alsa 1.0.11, 2.6.17-rc6-mm2, kernel BUG
+Date: Sun, 18 Jun 2006 19:39:07 +0200
+Message-ID: <20060618173907.GB16212@gamma.logic.tuwien.ac.at>
+References: <20060614210553.GC13054@gamma.logic.tuwien.ac.at>
+	<20060617100738.cd40f0bf.akpm@osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6C9A15A
-	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Jun 2006 18:51:35 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <20060617100738.cd40f0bf.akpm@osdl.org>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,62 +19,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sam, 17 Jun 2006, Andrew Morton wrote:
+> > I have 2.6.17-rc6-mm2 running, and I wanted to try alsa drivers 1.0.11
+> > final to get my hda-intel sound device running.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2199> 
-======================================================================
-Reported By:                hlabs
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2199
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             06-09-2006 21:25 CEST
-Last Modified:              06-18-2006 18:51 CEST
-======================================================================
-Summary:                    No sound from M-AUDIO Revolution 5.1
-Description: 
-M-AUDIO Revo 5.1
-kernel 2.6.16
-alsa 1.0.11
+> If you would, please keep a close eye on -mm's over the next few weeks, l=
+et
+> us know if/when this bug propagates into -mm.  Thanks.
 
-I got sound only from front channel.
-Other channels doesn't works at all.
+Will do.
 
-In alsamixer all outs unmuted and routed to pcm out.
+Best wishes
 
-======================================================================
+Norbert
 
-----------------------------------------------------------------------
- wollschaf - 06-11-06 22:01 
-----------------------------------------------------------------------
-The headphone output is not supported (yet), sadly. I use the rear channels
-to drive my headphones which works fine (less noise than front speaker
-output), but the built-in amplifier would be useful sometimes.
-
-----------------------------------------------------------------------
- hlabs - 06-18-06 18:51 
-----------------------------------------------------------------------
-Whether there is a chance of HP support in next ALSA release ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-09-06 21:25 hlabs          New Issue                                    
-06-09-06 21:34 hlabs          Issue Monitored: hlabs                       
-06-11-06 00:06 wollschaf      Note Added: 0010149                          
-06-11-06 19:40 hlabs          Note Added: 0010152                          
-06-11-06 22:01 wollschaf      Note Added: 0010153                          
-06-18-06 18:51 hlabs          Note Added: 0010300                          
-======================================================================
+---------------------------------------------------------------------------=
+----
+Dr. Norbert Preining <preining AT logic DOT at>             Universit=E0 di=
+ Siena
+gpg DSA: 0x09C5B094      fp: 14DF 2E6C 0307 BE6D AD76  A9C0 D2BF 4AA3 09C5 =
+B094
+---------------------------------------------------------------------------=
+----
+HUTTOFT (n.)
+The fibrous algae which grows in the dark, moist environment of
+trouser turn-ups.
+			--- Douglas Adams, The Meaning of Liff
