@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Sun, 18 Jun 2006 17:41:22 +0200
-Message-ID: <cf8ec2bb2e1e1dfd918260e83e72c2c3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002199]: No sound from M-AUDIO
+	Revolution 5.1
+Date: Sun, 18 Jun 2006 18:51:35 +0200
+Message-ID: <9da6f9d1add473620e0eef7a223e0297@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 833AC153
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6C9A15A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Jun 2006 17:41:22 +0200 (MEST)
+	Sun, 18 Jun 2006 18:51:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,53 +24,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2199> 
 ======================================================================
-Reported By:                El Santo
+Reported By:                hlabs
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2219
-Category:                   GENERIC - mpu401
+Issue ID:                   2199
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian etch (2006-06-18)
-Kernel Version:             2.6.15-1-686
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-18-2006 17:41 CEST
+Date Submitted:             06-09-2006 21:25 CEST
+Last Modified:              06-18-2006 18:51 CEST
 ======================================================================
-Summary:                    snd-mpu401 don't load
+Summary:                    No sound from M-AUDIO Revolution 5.1
 Description: 
-I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
-driver. It loads all necesary modules, includind snd-mpu401-uart, but no
-snd-mpu401
-The audio part of the driver works perfectly, but the midi port doesn't
-work.
+M-AUDIO Revo 5.1
+kernel 2.6.16
+alsa 1.0.11
 
-In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
-not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
-(setting the port accordingly to BIOS) it doesnt work. I don't know the
-mpu401 irq setting but i tryed them all. None of them worked. The driver
-says "device not found".
+I got sound only from front channel.
+Other channels doesn't works at all.
 
-Under windows xp the port works perfectly, so the hardware is ok. Anyway
-under windows xp, i use a "system inspector" to monitor ioports and irq
-usage, and i didnt see any irq assigned for mpu401 port, and the port
-(0x330) wasn't occupied neither.
+In alsamixer all outs unmuted and routed to pcm out.
 
-any idea?
 ======================================================================
+
+----------------------------------------------------------------------
+ wollschaf - 06-11-06 22:01 
+----------------------------------------------------------------------
+The headphone output is not supported (yet), sadly. I use the rear channels
+to drive my headphones which works fine (less noise than front speaker
+output), but the built-in amplifier would be useful sometimes.
+
+----------------------------------------------------------------------
+ hlabs - 06-18-06 18:51 
+----------------------------------------------------------------------
+Whether there is a chance of HP support in next ALSA release ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-18-06 17:41 El Santo       New Issue                                    
-06-18-06 17:41 El Santo       Distribution              => Debian etch
-(2006-06-18)
-06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
+06-09-06 21:25 hlabs          New Issue                                    
+06-09-06 21:34 hlabs          Issue Monitored: hlabs                       
+06-11-06 00:06 wollschaf      Note Added: 0010149                          
+06-11-06 19:40 hlabs          Note Added: 0010152                          
+06-11-06 22:01 wollschaf      Note Added: 0010153                          
+06-18-06 18:51 hlabs          Note Added: 0010300                          
 ======================================================================
