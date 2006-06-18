@@ -1,11 +1,10 @@
-From: karsten wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH] Default to variable samplerate enabled for MSI
-	K8T Neo2-FI
-Date: Sun, 18 Jun 2006 14:24:51 +0200 (CEST)
-Message-ID: <20060618122451.72075.qmail@web26509.mail.ukl.yahoo.com>
+From: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Subject: [PATCH] Disable AC97 AUX and VIDEO controls for WM9705
+	touchscreen
+Date: Sun, 18 Jun 2006 14:13:36 +0100
+Message-ID: <1150636416.2625.15.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-18643206-1150633491=:72064"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-Kl5Yapo6WuKIUAwq7Pkk"
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,63 +15,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Devel Alsa <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: Rodolfo Giometti <giometti@linux.it>
 List-Id: alsa-devel@alsa-project.org
 
---0-18643206-1150633491=:72064
-Content-Type: text/plain; charset=iso-8859-1
-Content-Id: 
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Takashi,
+--=-Kl5Yapo6WuKIUAwq7Pkk
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-please apply.
+This patch by Rodolfo Giometti disables the AC97 AUX and VIDEO controls
+on the WM9705 when the touchscreen is selected as the AUX and VIDEO
+lines are shared with the touch controller.
 
-Thanks, Karsten
+Changes:-
 
+ o Added AC97_HAS_NO_AUX flag
+ o Test for AC97_HAS_NO_AUX flag in snd_ac97_mixer_build()
+ o Sets AC97_HAS_NO_VIDEO and AC97_HAS_NO_AUX in patch_wolfson05() when
+WM9705 touch driver is selected.  
 
-=09
-
-=09
-	=09
-___________________________________________________________=20
-Gesendet von Yahoo! Mail - Jetzt mit 1GB Speicher kostenlos - Hier anmeld=
-en: http://mail.yahoo.de
---0-18643206-1150633491=:72064
-Content-Type: text/x-diff; name="enable_VIA_DXS_SRC_on_MSI K8T Neo2-FI.patch"
-Content-Description: 3667490657-enable_VIA_DXS_SRC_on_MSI K8T Neo2-FI.patch
-Content-Disposition: inline;
-	filename="enable_VIA_DXS_SRC_on_MSI K8T Neo2-FI.patch"
-
-Default to variable samplerate enabled for MSI K8T Neo2-FI
-
-No crackles here with 44100.
-
-Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
+Signed-off-by: Rodolfo Giometti <giometti@linux.it>
+Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
 
 
---- /tmp/via82xx.c~	2006-06-18 14:11:59.000000000 +0200
-+++ /tmp/via82xx.c	2006-06-18 14:11:59.000000000 +0200
-@@ -2356,7 +2356,7 @@
- 		{ .subvendor = 0x1462, .subdevice = 0x0470, .action = VIA_DXS_SRC }, /* MSI KT880 Delta-FSR */
- 		{ .subvendor = 0x1462, .subdevice = 0x3800, .action = VIA_DXS_ENABLE }, /* MSI KT266 */
- 		{ .subvendor = 0x1462, .subdevice = 0x5901, .action = VIA_DXS_NO_VRA }, /* MSI KT6 Delta-SR */
--		{ .subvendor = 0x1462, .subdevice = 0x7023, .action = VIA_DXS_NO_VRA }, /* MSI K8T Neo2-FI */
-+		{ .subvendor = 0x1462, .subdevice = 0x7023, .action = VIA_DXS_SRC }, /* MSI K8T Neo2-FI */
- 		{ .subvendor = 0x1462, .subdevice = 0x7120, .action = VIA_DXS_ENABLE }, /* MSI KT4V */
- 		{ .subvendor = 0x1462, .subdevice = 0x7142, .action = VIA_DXS_ENABLE }, /* MSI K8MM-V */
- 		{ .subvendor = 0x1462, .subdevice = 0xb012, .action = VIA_DXS_SRC }, /* P4M800/VIA8237R */
 
---0-18643206-1150633491=:72064
+--=-Kl5Yapo6WuKIUAwq7Pkk
+Content-Disposition: attachment; filename=wm9705-video.patch
+Content-Type: text/x-patch; name=wm9705-video.patch; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Index: linux-2.6-asoc/include/sound/ac97_codec.h
+===================================================================
+--- linux-2.6-asoc.orig/include/sound/ac97_codec.h
++++ linux-2.6-asoc/include/sound/ac97_codec.h
+@@ -378,6 +378,7 @@
+ #define AC97_HAS_NO_MIC	(1<<15) /* no MIC volume */
+ #define AC97_HAS_NO_TONE	(1<<16) /* no Tone volume */
+ #define AC97_HAS_NO_STD_PCM	(1<<17)	/* no standard AC97 PCM volume and mute */
++#define AC97_HAS_NO_AUX		(1<<18) /* no standard AC97 AUX volume and mute */
+ 
+ /* rates indexes */
+ #define AC97_RATES_FRONT_DAC	0
+Index: linux-2.6-asoc/sound/pci/ac97/ac97_codec.c
+===================================================================
+--- linux-2.6-asoc.orig/sound/pci/ac97/ac97_codec.c
++++ linux-2.6-asoc/sound/pci/ac97/ac97_codec.c
+@@ -1335,9 +1335,11 @@ static int snd_ac97_mixer_build(struct s
+ 	}
+ 
+ 	/* build Aux controls */
+-	if (snd_ac97_try_volume_mix(ac97, AC97_AUX)) {
+-		if ((err = snd_ac97_cmix_new(card, "Aux Playback", AC97_AUX, ac97)) < 0)
+-			return err;
++	if (!(ac97->flags & AC97_HAS_NO_AUX)) {
++		if (snd_ac97_try_volume_mix(ac97, AC97_AUX)) {
++			if ((err = snd_ac97_cmix_new(card, "Aux Playback", AC97_AUX, ac97)) < 0)
++				return err;
++		}
+ 	}
+ 
+ 	/* build PCM controls */
+Index: linux-2.6-asoc/sound/pci/ac97/ac97_patch.c
+===================================================================
+--- linux-2.6-asoc.orig/sound/pci/ac97/ac97_patch.c
++++ linux-2.6-asoc/sound/pci/ac97/ac97_patch.c
+@@ -464,6 +464,10 @@ int patch_wolfson05(struct snd_ac97 * ac
+ {
+ 	/* WM9705, WM9710 */
+ 	ac97->build_ops = &patch_wolfson_wm9705_ops;
++#ifdef CONFIG_TOUCHSCREEN_WM9705
++	/* WM9705 touchscreen uses AUX and VIDEO for touch */
++	ac97->flags |=3D AC97_HAS_NO_VIDEO | AC97_HAS_NO_AUX;
++#endif
+ 	return 0;
+ }
+ 
+
+--=-Kl5Yapo6WuKIUAwq7Pkk
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---0-18643206-1150633491=:72064
+--=-Kl5Yapo6WuKIUAwq7Pkk
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -83,4 +110,4 @@ Alsa-devel mailing list
 Alsa-devel@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
---0-18643206-1150633491=:72064--
+--=-Kl5Yapo6WuKIUAwq7Pkk--
