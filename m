@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002214]: Problem recording sound from
 	an USB device.
-Date: Sun, 18 Jun 2006 21:46:50 +0200
-Message-ID: <802ea58ce40c9d484e1eb1466ae448ee@bugtrack.alsa-project.org>
+Date: Sun, 18 Jun 2006 21:51:17 +0200
+Message-ID: <d4e41de63a2c8a6292b76ac518bcac28@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AB8D7153
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 836BD153
 	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Jun 2006 21:46:50 +0200 (MEST)
+	Sun, 18 Jun 2006 21:51:18 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.16-r9
 ======================================================================
 Date Submitted:             06-16-2006 23:41 CEST
-Last Modified:              06-18-2006 21:46 CEST
+Last Modified:              06-18-2006 21:51 CEST
 ======================================================================
 Summary:                    Problem recording sound from an USB device.
 Description: 
@@ -55,12 +55,6 @@ version is used and not a whole range of alsa-driver kits.
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 06-17-06 00:08 
-----------------------------------------------------------------------
-Those messages are from the OSS USB audio driver.  You should be using the
-ALSA USB audio driver, snd-usb-audio.
 
 ----------------------------------------------------------------------
  nbaggus - 06-18-06 21:46 
@@ -335,6 +329,12 @@ Device Descriptor:
         wMaxPacketSize     0x0010  1x 16 bytes
         bInterval              20
 
+----------------------------------------------------------------------
+ nbaggus - 06-18-06 21:51 
+----------------------------------------------------------------------
+btw, with removed I mean removed from kernelconfig, make modules & make
+modules_install
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -345,4 +345,5 @@ Date Modified  Username       Field                    Change
 06-16-06 23:53 nbaggus        Issue Monitored: nbaggus                     
 06-17-06 00:08 rlrevell       Note Added: 0010261                          
 06-18-06 21:46 nbaggus        Note Added: 0010301                          
+06-18-06 21:51 nbaggus        Note Added: 0010302                          
 ======================================================================
