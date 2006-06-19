@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002159]: ac3 passthrough not working
 	on recent versions
-Date: Mon, 19 Jun 2006 21:43:29 +0200
-Message-ID: <1ccf95f31bd5534b1c07057ba521868a@bugtrack.alsa-project.org>
+Date: Mon, 19 Jun 2006 22:10:22 +0200
+Message-ID: <993458a8c657e2791aa741f2f45bf56b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 25EB2153
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 09589153
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jun 2006 21:43:30 +0200 (MEST)
+	Mon, 19 Jun 2006 22:10:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
 ======================================================================
@@ -42,7 +42,7 @@ Distribution:               Debian
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-24-2006 23:44 CEST
-Last Modified:              06-19-2006 21:43 CEST
+Last Modified:              06-19-2006 22:10 CEST
 ======================================================================
 Summary:                    ac3 passthrough not working on recent versions
 Description: 
@@ -64,24 +64,6 @@ If you need more info, just tell me and I'll dig it up.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 06-19-06 13:33 
-----------------------------------------------------------------------
-My patch indeed broke AC3 passthrough.  However, it fixed the incorrect
-channel routing of the rear analog output.
-
-The problem of the swapped rear channels is a bug in either the hardware
-or in the firmware Yamaha provided to us, so the driver has to work around
-it by swapping the rear channels before playing them.  The rear channels
-are a resource shared between the rear analog output and the digital
-output, so the channel swapping workaround affects both outputs (although
-the bug itself affects only the analog output).
-
-A later patch added the rear_swap module option so that the user can
-choose which one of the outputs is right.  Use "rear_swap=1" to get
-correct AC3 output.
-(This module option probably should be a mixer option.)
-
-----------------------------------------------------------------------
  nikke - 06-19-06 21:43 
 ----------------------------------------------------------------------
 Euh. Now I'm confused.
@@ -96,6 +78,18 @@ Also, I have tried 1.0.11 both with rear_swap=0 and =1
 and neither works.
 
 Am I missing something obvious?
+
+----------------------------------------------------------------------
+ Mimosius - 06-19-06 22:10 
+----------------------------------------------------------------------
+Hi nikke, Clemens, Raymond, ...
+
+I totally agree, module option "rear_swap", doesn't fix the problem. I had
+already send a mail to the alsa-devel mailinglist with CC to Clemens.
+At the moment I'm very busy, so I've not much time, maybe next week...
+
+greets from Magdeburg - Germany,
+Glen
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -140,4 +134,5 @@ Date Modified  Username       Field                    Change
 06-19-06 21:43 nikke          Status                   resolved => feedback
 06-19-06 21:43 nikke          Resolution               not fixable => reopened
 06-19-06 21:43 nikke          Note Added: 0010320                          
+06-19-06 22:10 Mimosius       Note Added: 0010321                          
 ======================================================================
