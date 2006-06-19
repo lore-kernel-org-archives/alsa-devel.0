@@ -1,12 +1,16 @@
-From: Bo Thorsen <bo@thorsen-consulting.dk>
-Subject: Sound distortion with snd_pcm_writei
-Date: Mon, 19 Jun 2006 14:37:46 +0200
-Message-ID: <200606191437.46716.bo@thorsen-consulting.dk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0002203]: Segmentation fault and exact
+	rate : nan (0/0)
+Date: Mon, 19 Jun 2006 14:57:38 +0200
+Message-ID: <417774930a4c81140a12b7f8dbf2fc1a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19505163
+	for <alsa-devel@alsa-project.org>;
+	Mon, 19 Jun 2006 14:57:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,199 +20,176 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi people,
 
-I'm currently writing a small player application using alsa, and it's been 
-going reasonably well. However, I have hit a problem I don't know how to fix.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2203> 
+======================================================================
+Reported By:                Raymond
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   2203
+Category:                   1_pcm_d - direct PCM plugins (dmix+)
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     feedback
+======================================================================
+Date Submitted:             06-12-2006 16:44 CEST
+Last Modified:              06-19-2006 14:57 CEST
+======================================================================
+Summary:                    Segmentation fault and exact rate   : nan (0/0)
+Description: 
+Running two instance of aplay in two different terminals, the second
+instance of aplay segmentation fault.
 
-I'm using async callbacks to write the sound data. I have the data from a 
-bunch of wav files that are stored using 8 bit per sample, and I have set the 
-hardware options to this. They have different sample rates, but I read this 
-from the file and set it also.
 
-The sound plays as it's supposed to but it's very distorted, and I have no 
-clue why that is. I am using an existing wav player to compare my output 
-with, and they are similar, but not the same. If one of you have an idea, I'd 
-be very happy to hear about it.
+aplay -v -Ddefault:1 *.wav
 
-I hope you can help me.
+Playing WAVE 'test.wav' : Unsigned 8 bit, Rate 8000 Hz, Mono
+Plug PCM: Rate conversion PCM (48000, sformat=U8)
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : U8
+  subformat    : STD
+  channels     : 1
+  rate         : 8000
+  exact rate   : 8000 (8000/1)
+  msbits       : 8
+  buffer_size  : 2730
+  period_size  : 170
+  period_time  : 21333
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 170
+  xfer_align   : 170
+  start_threshold  : 2720
+  stop_threshold   : 2730
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 178913280
+Slave: Route conversion PCM (sformat=S16_LE)
+  Transformation table:
+    0 <- 0
+    1 <- 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : U8
+  subformat    : STD
+  channels     : 1
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 8
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 21333
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: Direct Stream Mixing PCM
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 1024
+  period_time  : 21333
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 1024
+  xfer_align   : 1024
+  start_threshold  : 16384
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Hardware PCM card 1 'Intel 82801BA-ICH2' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 0
+  exact rate   : nan (0/0)
+  msbits       : 0
+  buffer_size  : 16384
+  period_size  : 0
+  period_time  : 0
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 0
+  sleep_min    : 0
+  avail_min    : 0
+  xfer_align   : 0
+  start_threshold  : 0
+  stop_threshold   : 0
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Mono
+Segmentation fault
 
-Bo Thorsen.
+======================================================================
 
-For completeness, here's the code I use to set up alsa:
+----------------------------------------------------------------------
+ Raymond - 06-17-06 04:51 
+----------------------------------------------------------------------
+It seem that your patch break dmix/dsnoop
 
-    int err;
-    if ((err = snd_pcm_open(&mPlaybackHandle, "default",
-                            SND_PCM_STREAM_PLAYBACK, 0)) < 0)
-        qFatal("Can't open audio device. Error: %s", snd_strerror(err));
+aplay -v -Ddefault:1 *.wav
+ALSA lib pcm_dmix.c:914:(snd_pcm_dmix_open) unable to open slave
+aplay: main:548: audio open error: Device or resource busy
 
-    snd_pcm_hw_params_t* hwParams;
-    if ((err = snd_pcm_hw_params_malloc(&hwParams)) < 0)
-        qFatal("Can't allocate hardware parameters. Error: %s",
-               snd_strerror(err));
+----------------------------------------------------------------------
+ Raymond - 06-19-06 14:57 
+----------------------------------------------------------------------
+There is no segmentation fault when 
+aplay -Ddefault:1 atmos30.wav
+aplay -Ddefault:1 beat2.wav
+aplay -Dplughw:1 *.wav 
 
-    if ((err = snd_pcm_hw_params_any(mPlaybackHandle, hwParams)) < 0)
-        qFatal("Can't initialize hardware parameter structure. Error: %s",
-               snd_strerror(err));
+Since aplay use snd_pcm_drain() between different files ,the segmentation
+fault seem related to "Warning: format is changed to U8" and dmix
 
-    PlayWave* thread = m_AudioPlayer->GetPlayWaveTool();
-    if ((err = snd_pcm_hw_params_set_access(mPlaybackHandle, hwParams,
-                                            SND_PCM_ACCESS_RW_INTERLEAVED)
-            ) < 0)
-        qFatal("Can't set access type. Error: %s", snd_strerror(err));
-
-    _snd_pcm_format format;
-    switch(thread->WaveBitsPerSample()) {
-    case 8: format = SND_PCM_FORMAT_S8; break;
-    case 16: format = SND_PCM_FORMAT_U16_LE; break;
-    case 24: format = SND_PCM_FORMAT_U24_LE; break;
-    case 32: format = SND_PCM_FORMAT_U32_LE; break;
-    default: format = SND_PCM_FORMAT_UNKNOWN; break;
-    }
-    if ((err = snd_pcm_hw_params_set_format(mPlaybackHandle, hwParams,
-                                            format)) < 0)
-        qFatal("Can't set sample format. Error: %s", snd_strerror(err));
-
-    unsigned int rate = thread->GetWaveAvgBytesPerSec();
-    if ((err = snd_pcm_hw_params_set_rate_near(mPlaybackHandle, hwParams,
-                                               &rate, 0)) < 0)
-        qFatal("Can't set sample rate. Error: %s",  snd_strerror(err));
-    mPlaybackRate = rate;
-
-    if ((err = snd_pcm_hw_params_set_channels(mPlaybackHandle, hwParams,
-                                              thread->WaveChannels())) < 0)
-        qFatal("Can't set channel count. Error: %s", snd_strerror(err));
-
-    unsigned int bufferTime = 500000;
-    int dir = 0;
-    if ((err = snd_pcm_hw_params_set_buffer_time_near(mPlaybackHandle,
-                                                      hwParams, &bufferTime,
-                                                      &dir)) < 0)
-        qFatal("Error setting buffer time. Error: %s\n", snd_strerror(err));
-
-    mBufferSize = thread->WaveDataSize();
-
-    unsigned int periodTime = 100000;
-    if ((err = snd_pcm_hw_params_set_period_time_near(mPlaybackHandle,
-                                                      hwParams, &periodTime,
-                                                      &dir)) < 0)
-        qFatal("Error setting period time. Error: %s\n", snd_strerror(err));
-
-    snd_pcm_uframes_t periodSize;
-    if ((err = snd_pcm_hw_params_get_period_size(hwParams, &periodSize, &dir))
-        < 0)
-        qFatal("Error getting the playback period size. Error: %s\n",
-               snd_strerror(err));
-    mPeriodSize = periodSize;
-
-    if ((err = snd_pcm_hw_params(mPlaybackHandle, hwParams)) < 0)
-        qFatal("Can't set hardware parameters. Error: %s", snd_strerror(err));
-
-    // End of hw params
-    snd_pcm_hw_params_free(hwParams);
-
-    // Software params
-    snd_pcm_sw_params_t* swParams;
-    if ((err = snd_pcm_sw_params_malloc(&swParams)) < 0)
-        qDebug("Error making the sw params struct. Error: %s",
-               snd_strerror(err));
-
-    if ((err = snd_pcm_sw_params_current(mPlaybackHandle, swParams)) < 0)
-        qDebug("Unable to determine current swParams for playback: %s\n",
-               snd_strerror(err));
-
-    if ((err = snd_pcm_sw_params_set_start_threshold(mPlaybackHandle,
-                                                     swParams,
-                                                     (mBufferSize/periodSize)
-                                                     * periodSize)
-            ) < 0)
-        qDebug("Unable to set start threshold mode for playback: %s\n",
-               snd_strerror(err));
-
-    if ((err = snd_pcm_sw_params_set_avail_min(mPlaybackHandle, swParams,
-                                               periodSize)) < 0)
-        qDebug("Unable to set avail min for playback: %s\n",
-               snd_strerror(err));
-
-    if ((err = snd_pcm_sw_params_set_xfer_align(mPlaybackHandle,
-                                                swParams, 1)) < 0)
-        qDebug("Unable to set transfer align for playback: %s\n",
-               snd_strerror(err));
-
-    if ((err = snd_pcm_sw_params(mPlaybackHandle, swParams)) < 0)
-        qDebug("Unable to set sw params for playback: %s\n",
-               snd_strerror(err));
-
-    // End of software params
-    snd_pcm_sw_params_free(swParams);
-
-    if ((err = snd_pcm_prepare(mPlaybackHandle)) < 0)
-        qFatal("Can't prepare audio interface for playback. Error: %s",
-               snd_strerror(err));
-
-    // Set the async callback handler
-    if ((err = snd_async_add_pcm_handler(&mCallbackHandle, mPlaybackHandle,
-                                         alsaCallback,
-                                         static_cast<void*>(this))) < 0)
-        qFatal("Unable to register Alsa callback handler. Error: %s\n",
-               snd_strerror(err));
-
-And the callback code:
-
-    char* data = m_AudioPlayer->GetPlayWaveTool()->WaveData();
-    char* frame = &data[mFramePointer];
-
-    int bytes =
-        m_AudioPlayer->GetPlayWaveTool()->WaveDataSize() - mFramePointer;
-    if (bytes > mPeriodSize) bytes = mPeriodSize;
-    if (bytes < 0) bytes = 0;
-
-    // Update the pointer
-    mFramePointer += bytes;
-
-    if (mVolume != 100 || bytes < mPeriodSize) {
-        // If the volume isn't 100 or the sound is done, we need to use
-        // our own sound buffer
-        if (mSoundBufferSize != mPeriodSize)
-        {
-            mSoundBufferSize = mPeriodSize;
-            delete mSoundBuffer;
-            mSoundBuffer = new char[mSoundBufferSize];
-        }
-
-        if (bytes > 0 )
-        {
-            // There is sound to play
-            if (mVolume >= 100)
-            {
-                // No need for volume adjustment, so we can use memcpy
-                memcpy(mSoundBuffer, frame, bytes);
-            }
-            else
-            {
-                // Do the slow volume setting
-                float adjust = mVolume / 100.0f;
-
-                for (int i=0; i<bytes; ++i)
-                    // TODO: Handle non-char wide sounds
-                    mSoundBuffer[i] = (char)(frame[i] * adjust);
-            }
-        }
-
-        // Fill out the remining time with the sound of silence
-        while (bytes < mPeriodSize)
-            mSoundBuffer[bytes++] = 0;
-
-        // Set to play the buffer
-        frame = mSoundBuffer;
-    }
-
-    int rc = snd_pcm_writei(mPlaybackHandle, frame, bytes);
-
--- 
-
-Thorsen Consulting ApS - Qt consulting services
-http://www.thorsen-consulting.dk
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-12-06 16:44 Raymond        New Issue                                    
+06-12-06 17:19 rlrevell       Note Added: 0010171                          
+06-13-06 04:13 Raymond        Note Added: 0010184                          
+06-14-06 14:14 Raymond        Note Added: 0010211                          
+06-16-06 11:27 Raymond        Note Added: 0010249                          
+06-16-06 18:55 tiwai          Status                   assigned => resolved
+06-16-06 18:55 tiwai          Resolution               open => fixed       
+06-16-06 18:55 tiwai          Note Added: 0010257                          
+06-17-06 04:51 Raymond        Assigned To              perex => tiwai      
+06-17-06 04:51 Raymond        Status                   resolved => feedback
+06-17-06 04:51 Raymond        Resolution               fixed => reopened   
+06-17-06 04:51 Raymond        Note Added: 0010263                          
+06-19-06 14:57 Raymond        Note Added: 0010312                          
+======================================================================
