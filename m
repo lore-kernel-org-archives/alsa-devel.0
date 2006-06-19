@@ -1,16 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Mon, 19 Jun 2006 08:42:53 +0200
-Message-ID: <ad5918db41078ddfcce7c524100d8b4d@bugtrack.alsa-project.org>
+From: =?iso-2022-jp?B?GyRCRnlCTk54MCYbKEI=?= <54soku_love_hurendo@we.ho.jp>
+Subject: =?iso-2022-jp?b?GyRCRnlCTk54MCYkckE0JEZMNU5BJEcbKEI=?=
+	=?iso-2022-jp?b?GyRCJEgkaiREJC4kXiQ5ISobKEI=?=
+Date: Mon, 19 Jun 2006 19:04:51 +0900
+Message-ID: <20060619101107.CA164155@alsa.jcu.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E73F0F9
+Received: from osugi2.com (OFSfa-02p7-200.ppp11.odn.ad.jp [61.209.166.200])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with SMTP id CA164155
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jun 2006 08:42:53 +0200 (MEST)
+	Mon, 19 Jun 2006 12:11:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,104 +23,17 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+肉体恋愛、つまり少し恋愛感情の混ざったエッチ友達。
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
-======================================================================
-Reported By:                carllivitt
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2174
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
-======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-19-2006 08:42 CEST
-======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
-Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
+ほぼ確実に即日紹介可能！！
+お住まいの地域に合わせて、個人的な紹介を行う事によって確実性が高まり、時間短縮にもなっています。
 
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
+http://lovelief.net/index.html?media=pc432
 
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
+感情のこもったセックスフレンドほドキドキして楽しいものはありません！
 
-I've also tried using the 'single_cmd=1' module loading option. 
+一度も経験した事の無い方には是非お勧め！！
 
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
+http://lovelief.net/index.html?media=pc432
 
-======================================================================
-
-----------------------------------------------------------------------
- jlpedrosa - 06-18-06 12:44 
-----------------------------------------------------------------------
-Hi again...
-
-if the problem is the same of 2035, from the ALC861, in realtek there is a
-very complete hardware specifications, with pin and signal diagrams. I
-don't know if it said in english.. but here it goes.. "chronograms" and a
-lot of documentation...
-
-http://www.realtek.com.tw/downloads/downloads1-3.aspx?Keyword=861
-
-if anyone needs to do some testing i offer my computer.
-
-(Wanna hear music!!) :)
-
-----------------------------------------------------------------------
- fatman - 06-19-06 08:42 
-----------------------------------------------------------------------
-Hi there
-
-I'm having the same problem with Intel HDA sound card in Toshiba Satellite
-P100. I would like to add that if you pass acpi=off to the kernel you can
-hear music but it's silent.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
-06-12-06 21:51 carllivitt     Note Added: 0010174                          
-06-12-06 22:03 rlrevell       Note Added: 0010175                          
-06-12-06 22:52 carllivitt     Note Added: 0010176                          
-06-12-06 22:54 rlrevell       Note Added: 0010177                          
-06-12-06 23:10 carllivitt     Note Added: 0010178                          
-06-12-06 23:14 rlrevell       Note Added: 0010179                          
-06-12-06 23:29 carllivitt     Note Added: 0010180                          
-06-12-06 23:35 rlrevell       Note Added: 0010181                          
-06-12-06 23:49 carllivitt     Note Added: 0010182                          
-06-12-06 23:58 rlrevell       Note Added: 0010183                          
-06-13-06 15:33 godeater       Note Added: 0010193                          
-06-13-06 18:13 rlrevell       Note Added: 0010198                          
-06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
-06-13-06 18:58 rlrevell       Note Added: 0010200                          
-06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
-06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
-06-14-06 10:12 carllivitt     Note Added: 0010207                          
-06-14-06 10:21 carllivitt     File Added: codec0.txt                       
-06-14-06 10:21 carllivitt     Note Added: 0010208                          
-06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
-06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
-06-17-06 19:51 carllivitt     Note Added: 0010288                          
-06-17-06 19:57 rlrevell       Note Added: 0010289                          
-06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
-06-19-06 08:42 fatman         Note Added: 0010306                          
-======================================================================
+そして好きなときに求めたい求められたい方、絶対的に満足頂けると思います！！
