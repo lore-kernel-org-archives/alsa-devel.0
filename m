@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002221]: Volume entirely too faint on
-	82801g ich7
-Date: Mon, 19 Jun 2006 02:19:49 +0200
-Message-ID: <7a33c70f701989126ee519e24857109d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
+Date: Mon, 19 Jun 2006 03:45:02 +0200
+Message-ID: <efa935610b30f8af76f8b1a1de0e6642@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 479E1157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EFA0D158
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jun 2006 02:19:49 +0200 (MEST)
+	Mon, 19 Jun 2006 03:45:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,52 +23,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2221> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
 ======================================================================
-Reported By:                mlfarrell
-Assigned To:                tiwai
+Reported By:                El Santo
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2221
-Category:                   PCI - hda-intel
+Issue ID:                   2219
+Category:                   GENERIC - mpu401
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Suse 10.1
-Kernel Version:             2.6.16.13-4-smp
+Status:                     new
+Distribution:               Debian etch (2006-06-18)
+Kernel Version:             2.6.15-1-686
 ======================================================================
-Date Submitted:             06-19-2006 02:19 CEST
-Last Modified:              06-19-2006 02:19 CEST
+Date Submitted:             06-18-2006 17:41 CEST
+Last Modified:              06-19-2006 03:45 CEST
 ======================================================================
-Summary:                    Volume entirely too faint on 82801g ich7
+Summary:                    snd-mpu401 don't load
 Description: 
-I've seen this bug online many times with a resolution of upgrading to alsa
-1.0.11, but I upgaded and am still having the issue.
+I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
+driver. It loads all necesary modules, includind snd-mpu401-uart, but no
+snd-mpu401
+The audio part of the driver works perfectly, but the midi port doesn't
+work.
 
-I'm using an hp pavilion dv8000 laptop with built-in altec lansing
-speakers.
+In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
+not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
+(setting the port accordingly to BIOS) it doesnt work. I don't know the
+mpu401 irq setting but i tryed them all. None of them worked. The driver
+says "device not found".
 
-Windows reports the soundcard as conexant high definition audio, linux as
-82801g (ich7).  I've tried setting every model I know in the
-/etc/modprobe.d/sound file for the hda-intel driver and am still having a
-lack of useful volume sliders.  The key ones that I need are "pc speaker"
-to turn it down cause its way too loud and "external amplifier" to turn up
-the laptop's altec lansing speakers (sound volume is decent out of the
-headphone jack).
+Under windows xp the port works perfectly, so the hardware is ok. Anyway
+under windows xp, i use a "system inspector" to monitor ioports and irq
+usage, and i didnt see any irq assigned for mpu401 port, and the port
+(0x330) wasn't occupied neither.
 
-Even with the volume all the way up (both master and pcm) I'm getting
-sound thats almost too faint to hear.  
-
-
+any idea?
 ======================================================================
+
+----------------------------------------------------------------------
+ Raymond - 06-19-06 03:45 
+----------------------------------------------------------------------
+Post output of 
+
+aplaymidi -l
+
+cat /proc/asound/cards
+
+lspci -vn
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-19-06 02:19 mlfarrell      New Issue                                    
-06-19-06 02:19 mlfarrell      Distribution              => Suse 10.1       
-06-19-06 02:19 mlfarrell      Kernel Version            => 2.6.16.13-4-smp 
+06-18-06 17:41 El Santo       New Issue                                    
+06-18-06 17:41 El Santo       Distribution              => Debian etch
+(2006-06-18)
+06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
+06-19-06 03:45 Raymond        Note Added: 0010305                          
 ======================================================================
