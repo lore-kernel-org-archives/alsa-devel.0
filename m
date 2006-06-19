@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002159]: ac3 passthrough not working
-	on recent versions
-Date: Mon, 19 Jun 2006 13:33:52 +0200
-Message-ID: <9bf77025a623d4cebd0491303f7f6f65@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Mon, 19 Jun 2006 13:36:08 +0200
+Message-ID: <f5ef4e02898e7455aea2c5b447ce5ba5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2154F157
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1864613B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jun 2006 13:33:53 +0200 (MEST)
+	Mon, 19 Jun 2006 13:36:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,120 +24,99 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
 ======================================================================
-Reported By:                nikke
-Assigned To:                Clemens Ladisch
+Reported By:                carllivitt
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2159
-Category:                   PCI - ymfpci
+Issue ID:                   2174
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian
-Kernel Version:             2.6.15
-Resolution:                 not fixable
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
-Date Submitted:             05-24-2006 23:44 CEST
-Last Modified:              06-19-2006 13:33 CEST
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              06-19-2006 13:36 CEST
 ======================================================================
-Summary:                    ac3 passthrough not working on recent versions
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
-Using the following AC3 passthrough with mplayer works:
-Linux 2.4.31
-alsa-driver 1.0.8-7 (debian stable packaged)
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
 
-Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
-kernel and
-alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
-stays quiet.
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
 
-The only change is booting with different kernels, no other config or
-hardware is touched, so this must be a driver regression.
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
 
-The card is YMF-754 based, connected with coax spdif to my HK reciever.
+I've also tried using the 'single_cmd=1' module loading option. 
 
-If you need more info, just tell me and I'll dig it up.
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-18-06 13:30 
+ fatman - 06-19-06 08:42 
 ----------------------------------------------------------------------
-I don't have this card, you better wait Clemens Ladisch's review.
+Hi there
 
-BTW, Is there any reason why dsnoop is not eanbled ?
-
-The volume per voice feature is hard to use, especially when different
-drivers implement this feature in different ways
-1) emu10k1 - use index
-2) ymfpci  - use subdevice
-
-Can any of you try speaker-test -Dsurround40 -c 4 -t wav  ?
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2026
-
-
+I'm having the same problem with Intel HDA sound card in Toshiba Satellite
+P100. I would like to add that if you pass acpi=off to the kernel you can
+hear music but it's silent.
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 06-19-06 13:33 
+ jlpedrosa - 06-19-06 13:36 
 ----------------------------------------------------------------------
-My patch indeed broke AC3 passthrough.  However, it fixed the incorrect
-channel routing of the rear analog output.
+humm....
 
-The problem of the swapped rear channels is a bug in either the hardware
-or in the firmware Yamaha provided to us, so the driver has to work around
-it by swapping the rear channels before playing them.  The rear channels
-are a resource shared between the rear analog output and the digital
-output, so the channel swapping workaround affects both outputs (although
-the bug itself affects only the analog output).
+I'm sorry but i don't understand hear music, but it's silent....
 
-A later patch added the rear_swap module option so that the user can
-choose which one of the outputs is right.  Use "rear_swap=1" to get
-correct AC3 output.
-(This module option probably should be a mixer option.)
+Right know i'm gonna trie
+
+i'll be back :)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-24-06 23:44 nikke          New Issue                                    
-05-24-06 23:44 nikke          Distribution              => Debian          
-05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
-05-24-06 23:47 nikke          Issue Monitored: nikke                       
-06-02-06 04:23 Raymond        Note Added: 0010045                          
-06-02-06 04:25 Raymond        Note Edited: 0010045                         
-06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
-06-14-06 22:32 nikke          Note Added: 0010216                          
-06-15-06 02:18 Raymond        Note Added: 0010221                          
-06-15-06 02:27 Raymond        Note Edited: 0010221                         
-06-15-06 11:03 Mimosius       Note Added: 0010237                          
-06-15-06 23:43 nikke          Note Added: 0010246                          
-06-16-06 13:01 Mimosius       Note Added: 0010250                          
-06-16-06 13:16 Mimosius       Note Edited: 0010250                         
-06-16-06 13:26 Raymond        Note Added: 0010251                          
-06-16-06 13:31 Raymond        Note Edited: 0010251                         
-06-16-06 13:37 Mimosius       Note Added: 0010252                          
-06-16-06 16:25 Raymond        Note Added: 0010255                          
-06-17-06 01:17 nikke          Note Added: 0010262                          
-06-17-06 02:43 Raymond        Note Edited: 0010251                         
-06-17-06 10:21 Raymond        Note Added: 0010266                          
-06-17-06 10:24 Raymond        Note Edited: 0010266                         
-06-17-06 11:02 Raymond        Note Added: 0010267                          
-06-17-06 14:25 Raymond        Note Added: 0010268                          
-06-17-06 15:16 nikke          Note Added: 0010269                          
-06-17-06 16:10 Raymond        Note Added: 0010270                          
-06-17-06 16:23 Raymond        Note Edited: 0010270                         
-06-17-06 18:22 rlrevell       Note Added: 0010280                          
-06-18-06 04:03 Raymond        Note Added: 0010295                          
-06-18-06 04:08 Raymond        Note Edited: 0010295                         
-06-18-06 04:14 Raymond        Note Edited: 0010295                         
-06-18-06 13:30 Raymond        Note Edited: 0010295                         
-06-19-06 13:11 Clemens LadischStatus                   new => assigned     
-06-19-06 13:11 Clemens LadischAssigned To               => Clemens Ladisch 
-06-19-06 13:33 Clemens LadischStatus                   assigned => resolved
-06-19-06 13:33 Clemens LadischResolution               open => not fixable 
-06-19-06 13:33 Clemens LadischNote Added: 0010307                          
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
+06-12-06 22:52 carllivitt     Note Added: 0010176                          
+06-12-06 22:54 rlrevell       Note Added: 0010177                          
+06-12-06 23:10 carllivitt     Note Added: 0010178                          
+06-12-06 23:14 rlrevell       Note Added: 0010179                          
+06-12-06 23:29 carllivitt     Note Added: 0010180                          
+06-12-06 23:35 rlrevell       Note Added: 0010181                          
+06-12-06 23:49 carllivitt     Note Added: 0010182                          
+06-12-06 23:58 rlrevell       Note Added: 0010183                          
+06-13-06 15:33 godeater       Note Added: 0010193                          
+06-13-06 18:13 rlrevell       Note Added: 0010198                          
+06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
+06-13-06 18:58 rlrevell       Note Added: 0010200                          
+06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
+06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
+06-14-06 10:12 carllivitt     Note Added: 0010207                          
+06-14-06 10:21 carllivitt     File Added: codec0.txt                       
+06-14-06 10:21 carllivitt     Note Added: 0010208                          
+06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
+06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
+06-17-06 19:51 carllivitt     Note Added: 0010288                          
+06-17-06 19:57 rlrevell       Note Added: 0010289                          
+06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
+06-19-06 08:42 fatman         Note Added: 0010306                          
+06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
 ======================================================================
