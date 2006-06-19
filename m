@@ -1,15 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Mon, 19 Jun 2006 03:45:02 +0200
-Message-ID: <efa935610b30f8af76f8b1a1de0e6642@bugtrack.alsa-project.org>
+From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
+Subject: Re: Hg instructions
+Date: Mon, 19 Jun 2006 14:47:08 +1200
+Message-ID: <200606191447.08952.linux@blennerhassett.gen.nz>
+References: <1150566488.26252.72.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EFA0D158
-	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jun 2006 03:45:02 +0200 (MEST)
+In-Reply-To: <1150566488.26252.72.camel@mindpipe>
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,69 +18,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 18 Jun 2006 05:48, Lee Revell wrote:
+> Can someone please post Hg repo usage instructions on
+> http://hg-mirror.alsa-project.org/?  I am getting tired of explaining it
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
-======================================================================
-Reported By:                El Santo
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2219
-Category:                   GENERIC - mpu401
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian etch (2006-06-18)
-Kernel Version:             2.6.15-1-686
-======================================================================
-Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-19-2006 03:45 CEST
-======================================================================
-Summary:                    snd-mpu401 don't load
-Description: 
-I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
-driver. It loads all necesary modules, includind snd-mpu401-uart, but no
-snd-mpu401
-The audio part of the driver works perfectly, but the midi port doesn't
-work.
+Until it gets there...
+http://thread.gmane.org/gmane.linux.alsa.devel/35763
 
-In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
-not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
-(setting the port accordingly to BIOS) it doesnt work. I don't know the
-mpu401 irq setting but i tryed them all. None of them worked. The driver
-says "device not found".
-
-Under windows xp the port works perfectly, so the hardware is ok. Anyway
-under windows xp, i use a "system inspector" to monitor ioports and irq
-usage, and i didnt see any irq assigned for mpu401 port, and the port
-(0x330) wasn't occupied neither.
-
-any idea?
-======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-19-06 03:45 
-----------------------------------------------------------------------
-Post output of 
-
-aplaymidi -l
-
-cat /proc/asound/cards
-
-lspci -vn
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-18-06 17:41 El Santo       New Issue                                    
-06-18-06 17:41 El Santo       Distribution              => Debian etch
-(2006-06-18)
-06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
-06-19-06 03:45 Raymond        Note Added: 0010305                          
-======================================================================
+--
+Eliot
