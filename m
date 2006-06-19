@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002103]: Sound goes off when adjusting
-	volume from alsa-mixer
-Date: Mon, 19 Jun 2006 19:07:49 +0200
-Message-ID: <68e86f9b3b764799193313a7733e8a2f@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Hg instructions
+Date: Mon, 19 Jun 2006 13:16:29 -0400
+Message-ID: <1150737390.4428.193.camel@mindpipe>
+References: <1150566488.26252.72.camel@mindpipe> <s5hy7vti08m.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD4FB11E
-	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jun 2006 19:07:49 +0200 (MEST)
+In-Reply-To: <s5hy7vti08m.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,92 +17,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2006-06-19 at 18:22 +0200, Takashi Iwai wrote:
+> At Sat, 17 Jun 2006 13:48:08 -0400,
+> Lee Revell wrote:
+> > 
+> > Can someone please post Hg repo usage instructions on
+> > http://hg-mirror.alsa-project.org/?  I am getting tired of explaining it
+> > to newbies.
+> 
+> IMO, we should have a daily tarball for people who don't use (have) hg
+> on their systems.  In most cases, you don't need to track down the
+> history but just unpack and compile suffice.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2103> 
-======================================================================
-Reported By:                raddy
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2103
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Suse
-Kernel Version:             2.6.13-15
-======================================================================
-Date Submitted:             05-08-2006 11:28 CEST
-Last Modified:              06-19-2006 19:07 CEST
-======================================================================
-Summary:                    Sound goes off when adjusting volume from alsa-mixer
-Description: 
-i have an Asus P5RD2-VM motherboard equipped with Uli M5461 integrated 
-sound card supporting HD-Audio,
-it uses snd_hda_intel driver,
-it was detected fine,
-Alsa played a test sound that itself produced no sound from speakers,
-sound is going off in many curcomstance,
-they are,
-1 > when adjusting volume,
-2 > switching to several songs intermittently.
+Can we take down the old CVS?  Many users are not aware that it's dead.
 
-======================================================================
-
-----------------------------------------------------------------------
- mariourk - 06-19-06 16:53 
-----------------------------------------------------------------------
-I have a 'ASUS P5GPL-X SE' mainboard with this soundchip onboard.
-'cat /proc/asound/card0/codec#0' says: Codec: "Analog Devices AD1986A"
-
-I does play sounds but only one app can access the device.
-I hear an annoying high frequecy peep while playing sounds.
-The sound stops working as soon as I change the volume.
-
-On the Gentoo-forums I found a trhread where people are complaining
-about the same issues as I experience:
-http://forums.gentoo.org/viewtopic-t-420628.html
-
-I know this is OpenSource and I'm not demanding anything here, so
-please, don't get me wrong. The point is that I have 6 computers
-here who I needs to have up and running in 2 weeks, tops. Is there
-any change this is going to be fixed soon? If not, I would like to
-know. If that's the case I just order some cheap PCI-cards to replace
-the onboard sound :)
-
-Anyway, I would probaply be a lot easier if those companies would
-be more open about their product. Notice the name of my mobo, it
-has 'GPL' in it's name. How ironic.... :/
-
-----------------------------------------------------------------------
- tiwai - 06-19-06 19:07 
-----------------------------------------------------------------------
-For mobos, try model=3stack rather than other models.
-For laptops, either model=laptop or model=laptop-eapd might help better.
-
-But, above all, you should use the latest ALSA version (for drivers and
-lib).  Using older versions is simply a waste of time.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-08-06 11:28 raddy          New Issue                                    
-05-08-06 11:28 raddy          Distribution              => Suse            
-05-08-06 11:28 raddy          Kernel Version            => 2.6.13-15       
-05-10-06 07:54 raddy          Issue Monitored: raddy                       
-05-12-06 10:42 UMMO           Note Added: 0009774                          
-05-12-06 10:43 UMMO           Issue Monitored: UMMO                        
-05-12-06 16:04 tiwai          Note Added: 0009776                          
-05-12-06 17:09 UMMO           Note Added: 0009781                          
-05-12-06 17:13 UMMO           Note Edited: 0009781                         
-05-23-06 16:21 shadoweel      Issue Monitored: shadoweel                    
-06-18-06 09:26 raddy          Note Added: 0010296                          
-06-19-06 16:53 mariourk       Note Added: 0010317                          
-06-19-06 19:07 tiwai          Note Added: 0010318                          
-======================================================================
+Lee
