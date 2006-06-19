@@ -1,14 +1,16 @@
-From: Glen Masgai <mimosius@gmx.de>
-Subject: Re: [ALSA - driver 0002159]: ac3 passthrough not
- working on recent versions
-Date: Mon, 19 Jun 2006 19:00:39 +0200
-Message-ID: <4496D837.9070609@gmx.de>
-References: <9bf77025a623d4cebd0491303f7f6f65@bugtrack.alsa-project.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002103]: Sound goes off when adjusting
+	volume from alsa-mixer
+Date: Mon, 19 Jun 2006 19:07:49 +0200
+Message-ID: <68e86f9b3b764799193313a7733e8a2f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <9bf77025a623d4cebd0491303f7f6f65@bugtrack.alsa-project.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD4FB11E
+	for <alsa-devel@alsa-project.org>;
+	Mon, 19 Jun 2006 19:07:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,142 +20,92 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
 
-I already tried this "rear_swap=1" but AC3-passthrough doesn't work, so
-there must be another bug which breaks it.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2103> 
+======================================================================
+Reported By:                raddy
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2103
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Suse
+Kernel Version:             2.6.13-15
+======================================================================
+Date Submitted:             05-08-2006 11:28 CEST
+Last Modified:              06-19-2006 19:07 CEST
+======================================================================
+Summary:                    Sound goes off when adjusting volume from alsa-mixer
+Description: 
+i have an Asus P5RD2-VM motherboard equipped with Uli M5461 integrated 
+sound card supporting HD-Audio,
+it uses snd_hda_intel driver,
+it was detected fine,
+Alsa played a test sound that itself produced no sound from speakers,
+sound is going off in many curcomstance,
+they are,
+1 > when adjusting volume,
+2 > switching to several songs intermittently.
 
+======================================================================
 
-bugtrack@alsa-project.org schrieb:
-> The following issue has been RESOLVED.
-> ======================================================================
-> <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
-> ======================================================================
-> Reported By:                nikke
-> Assigned To:                Clemens Ladisch
-> ======================================================================
-> Project:                    ALSA - driver
-> Issue ID:                   2159
-> Category:                   PCI - ymfpci
-> Reproducibility:            always
-> Severity:                   minor
-> Priority:                   normal
-> Status:                     resolved
-> Distribution:               Debian
-> Kernel Version:             2.6.15
-> Resolution:                 not fixable
-> Fixed in Version:           
-> ======================================================================
-> Date Submitted:             05-24-2006 23:44 CEST
-> Last Modified:              06-19-2006 13:33 CEST
-> ======================================================================
-> Summary:                    ac3 passthrough not working on recent versions
-> Description: 
-> Using the following AC3 passthrough with mplayer works:
-> Linux 2.4.31
-> alsa-driver 1.0.8-7 (debian stable packaged)
->
-> Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
-> kernel and
-> alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
-> stays quiet.
->
-> The only change is booting with different kernels, no other config or
-> hardware is touched, so this must be a driver regression.
->
-> The card is YMF-754 based, connected with coax spdif to my HK reciever.
->
-> If you need more info, just tell me and I'll dig it up.
-> ======================================================================
->
-> ----------------------------------------------------------------------
->  Raymond - 06-18-06 13:30 
-> ----------------------------------------------------------------------
-> I don't have this card, you better wait Clemens Ladisch's review.
->
-> BTW, Is there any reason why dsnoop is not eanbled ?
->
-> The volume per voice feature is hard to use, especially when different
-> drivers implement this feature in different ways
-> 1) emu10k1 - use index
-> 2) ymfpci  - use subdevice
->
-> Can any of you try speaker-test -Dsurround40 -c 4 -t wav  ?
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2026
->
->
->
-> ----------------------------------------------------------------------
->  Clemens Ladisch - 06-19-06 13:33 
-> ----------------------------------------------------------------------
-> My patch indeed broke AC3 passthrough.  However, it fixed the incorrect
-> channel routing of the rear analog output.
->
-> The problem of the swapped rear channels is a bug in either the hardware
-> or in the firmware Yamaha provided to us, so the driver has to work around
-> it by swapping the rear channels before playing them.  The rear channels
-> are a resource shared between the rear analog output and the digital
-> output, so the channel swapping workaround affects both outputs (although
-> the bug itself affects only the analog output).
->
-> A later patch added the rear_swap module option so that the user can
-> choose which one of the outputs is right.  Use "rear_swap=1" to get
-> correct AC3 output.
-> (This module option probably should be a mixer option.)
->
-> Issue History
-> Date Modified  Username       Field                    Change              
-> ======================================================================
-> 05-24-06 23:44 nikke          New Issue                                    
-> 05-24-06 23:44 nikke          Distribution              => Debian          
-> 05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
-> 05-24-06 23:47 nikke          Issue Monitored: nikke                       
-> 06-02-06 04:23 Raymond        Note Added: 0010045                          
-> 06-02-06 04:25 Raymond        Note Edited: 0010045                         
-> 06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
-> 06-14-06 22:32 nikke          Note Added: 0010216                          
-> 06-15-06 02:18 Raymond        Note Added: 0010221                          
-> 06-15-06 02:27 Raymond        Note Edited: 0010221                         
-> 06-15-06 11:03 Mimosius       Note Added: 0010237                          
-> 06-15-06 23:43 nikke          Note Added: 0010246                          
-> 06-16-06 13:01 Mimosius       Note Added: 0010250                          
-> 06-16-06 13:16 Mimosius       Note Edited: 0010250                         
-> 06-16-06 13:26 Raymond        Note Added: 0010251                          
-> 06-16-06 13:31 Raymond        Note Edited: 0010251                         
-> 06-16-06 13:37 Mimosius       Note Added: 0010252                          
-> 06-16-06 16:25 Raymond        Note Added: 0010255                          
-> 06-17-06 01:17 nikke          Note Added: 0010262                          
-> 06-17-06 02:43 Raymond        Note Edited: 0010251                         
-> 06-17-06 10:21 Raymond        Note Added: 0010266                          
-> 06-17-06 10:24 Raymond        Note Edited: 0010266                         
-> 06-17-06 11:02 Raymond        Note Added: 0010267                          
-> 06-17-06 14:25 Raymond        Note Added: 0010268                          
-> 06-17-06 15:16 nikke          Note Added: 0010269                          
-> 06-17-06 16:10 Raymond        Note Added: 0010270                          
-> 06-17-06 16:23 Raymond        Note Edited: 0010270                         
-> 06-17-06 18:22 rlrevell       Note Added: 0010280                          
-> 06-18-06 04:03 Raymond        Note Added: 0010295                          
-> 06-18-06 04:08 Raymond        Note Edited: 0010295                         
-> 06-18-06 04:14 Raymond        Note Edited: 0010295                         
-> 06-18-06 13:30 Raymond        Note Edited: 0010295                         
-> 06-19-06 13:11 Clemens LadischStatus                   new => assigned     
-> 06-19-06 13:11 Clemens LadischAssigned To               => Clemens Ladisch 
-> 06-19-06 13:33 Clemens LadischStatus                   assigned => resolved
-> 06-19-06 13:33 Clemens LadischResolution               open => not fixable 
-> 06-19-06 13:33 Clemens LadischNote Added: 0010307                          
-> ======================================================================
->
->
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->
->   
+----------------------------------------------------------------------
+ mariourk - 06-19-06 16:53 
+----------------------------------------------------------------------
+I have a 'ASUS P5GPL-X SE' mainboard with this soundchip onboard.
+'cat /proc/asound/card0/codec#0' says: Codec: "Analog Devices AD1986A"
+
+I does play sounds but only one app can access the device.
+I hear an annoying high frequecy peep while playing sounds.
+The sound stops working as soon as I change the volume.
+
+On the Gentoo-forums I found a trhread where people are complaining
+about the same issues as I experience:
+http://forums.gentoo.org/viewtopic-t-420628.html
+
+I know this is OpenSource and I'm not demanding anything here, so
+please, don't get me wrong. The point is that I have 6 computers
+here who I needs to have up and running in 2 weeks, tops. Is there
+any change this is going to be fixed soon? If not, I would like to
+know. If that's the case I just order some cheap PCI-cards to replace
+the onboard sound :)
+
+Anyway, I would probaply be a lot easier if those companies would
+be more open about their product. Notice the name of my mobo, it
+has 'GPL' in it's name. How ironic.... :/
+
+----------------------------------------------------------------------
+ tiwai - 06-19-06 19:07 
+----------------------------------------------------------------------
+For mobos, try model=3stack rather than other models.
+For laptops, either model=laptop or model=laptop-eapd might help better.
+
+But, above all, you should use the latest ALSA version (for drivers and
+lib).  Using older versions is simply a waste of time.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-08-06 11:28 raddy          New Issue                                    
+05-08-06 11:28 raddy          Distribution              => Suse            
+05-08-06 11:28 raddy          Kernel Version            => 2.6.13-15       
+05-10-06 07:54 raddy          Issue Monitored: raddy                       
+05-12-06 10:42 UMMO           Note Added: 0009774                          
+05-12-06 10:43 UMMO           Issue Monitored: UMMO                        
+05-12-06 16:04 tiwai          Note Added: 0009776                          
+05-12-06 17:09 UMMO           Note Added: 0009781                          
+05-12-06 17:13 UMMO           Note Edited: 0009781                         
+05-23-06 16:21 shadoweel      Issue Monitored: shadoweel                    
+06-18-06 09:26 raddy          Note Added: 0010296                          
+06-19-06 16:53 mariourk       Note Added: 0010317                          
+06-19-06 19:07 tiwai          Note Added: 0010318                          
+======================================================================
