@@ -1,11 +1,13 @@
-From: "yvan chenard" <mte_multi@hotmail.com>
-Subject: loopback with hda-intel
-Date: Mon, 19 Jun 2006 11:26:49 -0400
-Message-ID: <BAY20-F146F1DFE9D67B23CD23EFF85860@phx.gbl>
+From: alejandro <alejandro@openstudionetworks.com>
+Subject: IO streams sync
+Date: Mon, 19 Jun 2006 18:17:14 +0200
+Message-ID: <4496CE0A.2000109@openstudionetworks.com>
+References: <mailman.3908.1150727591.2958.alsa-devel@lists.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <mailman.3908.1150727591.2958.alsa-devel@lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,29 +20,15 @@ Errors-To: alsa-devel-bounces@lists.sourceforge.net
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi, maybe someone can help me,
+Hello,
 
-I find no ways to route (loop_back) the Line-in(where I have my tv-tuner =
+Is there any document describing the ALSA components and functions?
+Particularly the link between audio I/O and timers, in order to frame 
+accurate sync multiple audio cards and video.
 
-pluged in) to
-the headphone jack, maybe someone know how to do it or know any links on
-documentation on how to do it.
+Thank you,
 
-The sound card is onboard Intel D945GTP
-the chipset is STAC9220 (from sigmatel) (HDA_intel compatible)
-I am runing ALSA 1.0.11 not in the kernel(as module).
-kernel 2.6.16.5.
-
-The only way to get sound from LineIn to HeadPhone right now is
-"cat /dev/dsp > /dev/audio", but the quality is realy bad( with this
-command I know that the configuration of the input and output is OK).
-
-Thank You for your time.
-
-Yvan
-
-_________________________________________________________________
-Regardez des vid=E9oclips sur Sympatico / MSN Vid=E9o! =
-
-http://video.msn.com/v/fr-ca/v.htm?t=3Dc275&f=3D38/82&p=3DFRCAmusique_FRCAv=
-ideos
+-- 
+Alejandro Palencia
+Open Studio Networks
++34 932054354
