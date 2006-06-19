@@ -1,14 +1,20 @@
-From: Eliot Blennerhassett <linux@blennerhassett.gen.nz>
-Subject: Re: Hg instructions
-Date: Mon, 19 Jun 2006 14:47:08 +1200
-Message-ID: <200606191447.08952.linux@blennerhassett.gen.nz>
-References: <1150566488.26252.72.camel@mindpipe>
+From: =?iso-2022-jp?B?GyRCMkNGIxsoQg==?= <xiaospider20032000@yahoo.co.jp>
+Subject: =?iso-2022-jp?b?GyRCJCYkXiQvJCQkQyRGJCQkXiQ5JCsbKEI=?=
+Date: Mon, 19 Jun 2006 06:47:40 +0200 (MEST)
+Message-ID: <20060619044740.7724B994F3@mail.perex.cz>
+Reply-To: xiaospider20032000@yahoo.co.jp
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <1150566488.26252.72.camel@mindpipe>
-Content-Disposition: inline
+Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 109A4157
+	for <alsa-devel@alsa-project.org>;
+	Mon, 19 Jun 2006 06:47:44 +0200 (MEST)
+Received: from alsa-project.org (unknown [61.47.176.103])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
+	7724B994F3 for <alsa-devel@alsa-project.org>;
+	Mon, 19 Jun 2006 06:47:40 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,15 +24,13 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 18 Jun 2006 05:48, Lee Revell wrote:
-> Can someone please post Hg repo usage instructions on
-> http://hg-mirror.alsa-project.org/?  I am getting tired of explaining it
+加藤です。
 
-Until it gets there...
-http://thread.gmane.org/gmane.linux.alsa.devel/35763
-
---
-Eliot
+そちらはどうですか、上手くいっていますか。
+別のところも探しておきますが、とりあえずが、無料紹介サイトからの
+参加が安全です。タダだし、セキュリティの安全なメール箱なので、
+彼女にばれる心配ないし。
+http://www.shinemoon.net/yeah
