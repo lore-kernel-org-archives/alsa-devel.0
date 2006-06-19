@@ -1,16 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Mon, 19 Jun 2006 13:36:08 +0200
-Message-ID: <f5ef4e02898e7455aea2c5b447ce5ba5@bugtrack.alsa-project.org>
+From: jayakumar.alsa@gmail.com
+Subject: [PATCH 2.6.17-rc5 1/1] ALSA: AD1888 suspend/resume fix
+Date: Mon, 19 Jun 2006 19:40:08 +0800
+Message-ID: <200606191140.k5JBe8Ie019357@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1864613B
-	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jun 2006 13:36:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,103 +15,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net, marcelo@kvack.org, jordan.crouse@amd.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi, Jaroslav,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
-======================================================================
-Reported By:                carllivitt
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2174
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
-======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-19-2006 13:36 CEST
-======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
-Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
+This patch adds a write to an undocumented register, 0x60 Extended
+Codec Register Page in the AD1888 codec. It is neccessary in order
+to make suspend/resume work with the AD1888. 
 
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
+Thanks,
+Jaya Kumar
 
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
+Signed-off-by: Jaya Kumar <jayakumar.alsa@gmail.com>
 
-I've also tried using the 'single_cmd=1' module loading option. 
+---
+ 
+ ac97_patch.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
+---
 
-======================================================================
-
-----------------------------------------------------------------------
- fatman - 06-19-06 08:42 
-----------------------------------------------------------------------
-Hi there
-
-I'm having the same problem with Intel HDA sound card in Toshiba Satellite
-P100. I would like to add that if you pass acpi=off to the kernel you can
-hear music but it's silent.
-
-----------------------------------------------------------------------
- jlpedrosa - 06-19-06 13:36 
-----------------------------------------------------------------------
-humm....
-
-I'm sorry but i don't understand hear music, but it's silent....
-
-Right know i'm gonna trie
-
-i'll be back :)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
-06-12-06 21:51 carllivitt     Note Added: 0010174                          
-06-12-06 22:03 rlrevell       Note Added: 0010175                          
-06-12-06 22:52 carllivitt     Note Added: 0010176                          
-06-12-06 22:54 rlrevell       Note Added: 0010177                          
-06-12-06 23:10 carllivitt     Note Added: 0010178                          
-06-12-06 23:14 rlrevell       Note Added: 0010179                          
-06-12-06 23:29 carllivitt     Note Added: 0010180                          
-06-12-06 23:35 rlrevell       Note Added: 0010181                          
-06-12-06 23:49 carllivitt     Note Added: 0010182                          
-06-12-06 23:58 rlrevell       Note Added: 0010183                          
-06-13-06 15:33 godeater       Note Added: 0010193                          
-06-13-06 18:13 rlrevell       Note Added: 0010198                          
-06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
-06-13-06 18:58 rlrevell       Note Added: 0010200                          
-06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
-06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
-06-14-06 10:12 carllivitt     Note Added: 0010207                          
-06-14-06 10:21 carllivitt     File Added: codec0.txt                       
-06-14-06 10:21 carllivitt     Note Added: 0010208                          
-06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
-06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
-06-17-06 19:51 carllivitt     Note Added: 0010288                          
-06-17-06 19:57 rlrevell       Note Added: 0010289                          
-06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
-06-19-06 08:42 fatman         Note Added: 0010306                          
-06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
-======================================================================
+diff -X linux-2.6.17-rc5/Documentation/dontdiff -uprN linux-2.6.17-rc5-ltv/sound/pci/ac97/ac97_patch.c linux-2.6.17-rc5-noad1888pm/sound/pci/ac97/ac97_patch.c
+--- linux-2.6.17-rc5-ltv/sound/pci/ac97/ac97_patch.c	2006-05-25 19:27:30.000000000 +0800
++++ linux-2.6.17-rc5-noad1888pm/sound/pci/ac97/ac97_patch.c	2006-06-18 12:41:38.000000000 +0800
+@@ -1367,6 +1367,13 @@ static void ad18xx_resume(struct snd_ac9
+ 
+ 	snd_ac97_restore_iec958(ac97);
+ }
++
++static void ad1888_resume(struct snd_ac97 *ac97)
++{
++	ad18xx_resume(ac97);
++	snd_ac97_write_cache(ac97, AC97_CODEC_CLASS_REV, 0x8080);
++}
++
+ #endif
+ 
+ int patch_ad1819(struct snd_ac97 * ac97)
+@@ -1839,7 +1846,7 @@ static struct snd_ac97_build_ops patch_a
+ 	.build_post_spdif = patch_ad198x_post_spdif,
+ 	.build_specific = patch_ad1888_specific,
+ #ifdef CONFIG_PM
+-	.resume = ad18xx_resume,
++	.resume = ad1888_resume,
+ #endif
+ 	.update_jacks = ad1888_update_jacks,
+ };
