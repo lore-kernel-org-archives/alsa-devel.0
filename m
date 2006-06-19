@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0002203]: Segmentation fault and exact
 	rate : nan (0/0)
-Date: Mon, 19 Jun 2006 14:57:38 +0200
-Message-ID: <417774930a4c81140a12b7f8dbf2fc1a@bugtrack.alsa-project.org>
+Date: Mon, 19 Jun 2006 15:02:56 +0200
+Message-ID: <beacb30095a982c2eb21171c4be1855f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 19505163
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E7C6E163
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jun 2006 14:57:39 +0200 (MEST)
+	Mon, 19 Jun 2006 15:02:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,7 +24,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2203> 
 ======================================================================
@@ -37,10 +37,12 @@ Category:                   1_pcm_d - direct PCM plugins (dmix+)
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             06-12-2006 16:44 CEST
-Last Modified:              06-19-2006 14:57 CEST
+Last Modified:              06-19-2006 15:02 CEST
 ======================================================================
 Summary:                    Segmentation fault and exact rate   : nan (0/0)
 Description: 
@@ -157,15 +159,6 @@ Segmentation fault
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-17-06 04:51 
-----------------------------------------------------------------------
-It seem that your patch break dmix/dsnoop
-
-aplay -v -Ddefault:1 *.wav
-ALSA lib pcm_dmix.c:914:(snd_pcm_dmix_open) unable to open slave
-aplay: main:548: audio open error: Device or resource busy
-
-----------------------------------------------------------------------
  Raymond - 06-19-06 14:57 
 ----------------------------------------------------------------------
 There is no segmentation fault when 
@@ -175,6 +168,12 @@ aplay -Dplughw:1 *.wav
 
 Since aplay use snd_pcm_drain() between different files ,the segmentation
 fault seem related to "Warning: format is changed to U8" and dmix
+
+----------------------------------------------------------------------
+ tiwai - 06-19-06 15:02 
+----------------------------------------------------------------------
+The shmem record was changed due to this fix, hence you need to close once
+apps.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -192,4 +191,7 @@ Date Modified  Username       Field                    Change
 06-17-06 04:51 Raymond        Resolution               fixed => reopened   
 06-17-06 04:51 Raymond        Note Added: 0010263                          
 06-19-06 14:57 Raymond        Note Added: 0010312                          
+06-19-06 15:02 tiwai          Status                   feedback => resolved
+06-19-06 15:02 tiwai          Resolution               reopened => fixed   
+06-19-06 15:02 tiwai          Note Added: 0010313                          
 ======================================================================
