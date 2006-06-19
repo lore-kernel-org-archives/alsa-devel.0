@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001943]: No sound since ~2.6.3
-Date: Tue, 20 Jun 2006 00:29:26 +0200
-Message-ID: <78524052a897c4338b23ab4cf9114361@bugtrack.alsa-project.org>
+Date: Tue, 20 Jun 2006 00:33:08 +0200
+Message-ID: <8aadf46c7bcf50039bf4117a4a3a3325@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 00E83153
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 42E58153
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 00:29:26 +0200 (MEST)
+	Tue, 20 Jun 2006 00:33:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Debian etch
 Kernel Version:             2.6.8 through 2.6.15-rc5
 ======================================================================
 Date Submitted:             03-19-2006 16:15 CET
-Last Modified:              06-20-2006 00:29 CEST
+Last Modified:              06-20-2006 00:33 CEST
 ======================================================================
 Summary:                    No sound since ~2.6.3
 Description: 
@@ -119,6 +119,14 @@ problem.
 
 -Adam Powell
 
+----------------------------------------------------------------------
+ rlrevell - 06-20-06 00:33 
+----------------------------------------------------------------------
+"Hmm... Three months with no help on this bug."
+
+Um, maybe you could try searching between 2.6.3 and 2.6.8 to identify the
+change that broke it?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -127,4 +135,5 @@ Date Modified  Username       Field                    Change
 03-19-06 16:15 hazelsct       Kernel Version            => 2.6.8 through
 2.6.15-rc5
 06-20-06 00:29 hazelsct       Note Added: 0010322                          
+06-20-06 00:33 rlrevell       Note Added: 0010323                          
 ======================================================================
