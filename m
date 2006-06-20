@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Wed, 21 Jun 2006 00:18:21 +0200
-Message-ID: <a952fd6f9a31bfe0f61e0a2199bf0cf1@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 00:36:47 +0200
+Message-ID: <563a1fc814a40148353e27926695fc8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8CB5E187
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7527318A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 00:18:21 +0200 (MEST)
+	Wed, 21 Jun 2006 00:36:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Debian etch (2006-06-18)
 Kernel Version:             2.6.15-1-686
 ======================================================================
 Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-21-2006 00:18 CEST
+Last Modified:              06-21-2006 00:36 CEST
 ======================================================================
 Summary:                    snd-mpu401 don't load
 Description: 
@@ -66,19 +66,18 @@ any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- El Santo - 06-21-06 00:12 
-----------------------------------------------------------------------
-i can set (or see) the MPU401 io port in BIOS but i can not set (or see)
-the MPU401 IRQ.
-
-The port is enabled and it works with windows xp
-
-----------------------------------------------------------------------
  rlrevell - 06-21-06 00:18 
 ----------------------------------------------------------------------
 It must be a kernel bug if the port does not appear in /proc/ioports.
 
 Please attach dmesg output (do not paste it inline)
+
+----------------------------------------------------------------------
+ El Santo - 06-21-06 00:36 
+----------------------------------------------------------------------
+i attached the dmesg output... i thing that the entries in ioports are
+addresses managed by kernel modules... if the module is not loaded i think
+that the port will not be in ioports.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,4 +95,6 @@ Date Modified  Username       Field                    Change
 06-21-06 00:04 rlrevell       Note Added: 0010364                          
 06-21-06 00:12 El Santo       Note Added: 0010365                          
 06-21-06 00:18 rlrevell       Note Added: 0010366                          
+06-21-06 00:33 El Santo       File Added: dmesg.log                        
+06-21-06 00:36 El Santo       Note Added: 0010367                          
 ======================================================================
