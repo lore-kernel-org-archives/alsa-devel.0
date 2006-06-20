@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002159]: ac3 passthrough not working
-	on recent versions
-Date: Tue, 20 Jun 2006 04:56:49 +0200
-Message-ID: <0ffc443707c81cebdbf4b9c2bd2568ea@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002132]: No sound from speakers
+Date: Tue, 20 Jun 2006 05:02:53 +0200
+Message-ID: <4ed343a61038eac7fa68891b4cb1cff5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CDF2716D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 814C916D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 04:56:49 +0200 (MEST)
+	Tue, 20 Jun 2006 05:02:53 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,127 +25,127 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2159> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
 ======================================================================
-Reported By:                nikke
-Assigned To:                Clemens Ladisch
+Reported By:                bzbarsky
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2159
-Category:                   PCI - ymfpci
+Issue ID:                   2132
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     feedback
-Distribution:               Debian
+Status:                     new
+Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
-Date Submitted:             05-24-2006 23:44 CEST
-Last Modified:              06-20-2006 04:56 CEST
+Date Submitted:             05-17-2006 19:54 CEST
+Last Modified:              06-20-2006 05:02 CEST
 ======================================================================
-Summary:                    ac3 passthrough not working on recent versions
+Summary:                    No sound from speakers
 Description: 
-Using the following AC3 passthrough with mplayer works:
-Linux 2.4.31
-alsa-driver 1.0.8-7 (debian stable packaged)
-
-Using Linux 2.6.15 (both with alsa-driver 1.10rc3 that ships with the
-kernel and
-alsa-driver 1.0.11) it doesn't work. The reciever just says "unlock" and
-stays quiet.
-
-The only change is booting with different kernels, no other config or
-hardware is touched, so this must be a driver regression.
-
-The card is YMF-754 based, connected with coax spdif to my HK reciever.
-
-If you need more info, just tell me and I'll dig it up.
+Alsa seems to detect the sound card, but when I try to actually play
+something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- Mimosius - 06-19-06 22:10 
+ Raymond - 06-16-06 04:31 
 ----------------------------------------------------------------------
-Hi nikke, Clemens, Raymond, ...
+Since ens137x does not support modem, those controls of "Caller ID" and
+"off hook" will not be created when you add AC97_SCAP_SKIP_MODEM
 
-I totally agree, module option "rear_swap", doesn't fix the problem. I had
-already send a mail to the alsa-devel mailinglist with CC to Clemens.
-At the moment I'm very busy, so I've not much time, maybe next week...
-
-greets from Magdeburg - Germany,
-Glen
+	ac97.scaps = AC97_SCAP_AUDIO | AC97_SCAP_SKIP_MODEM;
+	if ((err = snd_ac97_mixer(pbus, &ac97, &ensoniq->u.es1371.ac97)) < 0)
 
 ----------------------------------------------------------------------
- Raymond - 06-20-06 04:56 
+ bzbarsky - 06-20-06 05:02 
 ----------------------------------------------------------------------
-Please post /etc/asound.state
-
-Are you sure that all controls are created ? 
-
-YMFPCI_DOUBLE(SNDRV_CTL_NAME_IEC958("AC97 ", PLAYBACK,VOLUME), 0,
-YDSXGR_ZVOUTVOL),
-1591 YMFPCI_DOUBLE(SNDRV_CTL_NAME_IEC958("", CAPTURE,VOLUME), 0,
-YDSXGR_ZVLOOPVOL),
-1592 YMFPCI_DOUBLE(SNDRV_CTL_NAME_IEC958("AC97 ",PLAYBACK,VOLUME), 1,
-YDSXGR_SPDIFOUTVOL),
-1593 YMFPCI_DOUBLE(SNDRV_CTL_NAME_IEC958("",CAPTURE,VOLUME), 1,
-YDSXGR_SPDIFLOOPVOL),
-1594 YMFPCI_SINGLE(SNDRV_CTL_NAME_IEC958("",PLAYBACK,SWITCH), 0,
-YDSXGR_SPDIFOUTCTRL, 0),
-1595 YMFPCI_SINGLE(SNDRV_CTL_NAME_IEC958("",CAPTURE,SWITCH), 0,
-YDSXGR_SPDIFINCTRL, 0),
-1596 YMFPCI_SINGLE(SNDRV_CTL_NAME_IEC958("Loop",NONE,NONE), 0,
-YDSXGR_SPDIFINCTRL, 4), 
-
-
-for (idx = 0; idx < ARRAY_SIZE(snd_ymfpci_controls); idx++) {
-     if ((err = snd_ctl_add(chip->card,
-snd_ctl_new1(&snd_ymfpci_controls[idx], chip))) < 0)
-     return err;
-}
+Raymond, were those last two comments addressed to me?  If so, and if you
+want me to try something, could you please explain in a little more
+detail?  I'm not particularly familiar with either the ALSA codebase or
+ALSA configuration, so I'm really not sure what I need to do with those
+two comments, if anything.  Thank you in advance for your time!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-24-06 23:44 nikke          New Issue                                    
-05-24-06 23:44 nikke          Distribution              => Debian          
-05-24-06 23:44 nikke          Kernel Version            => 2.6.15          
-05-24-06 23:47 nikke          Issue Monitored: nikke                       
-06-02-06 04:23 Raymond        Note Added: 0010045                          
-06-02-06 04:25 Raymond        Note Edited: 0010045                         
-06-12-06 13:14 Mimosius       Issue Monitored: Mimosius                    
-06-14-06 22:32 nikke          Note Added: 0010216                          
-06-15-06 02:18 Raymond        Note Added: 0010221                          
-06-15-06 02:27 Raymond        Note Edited: 0010221                         
-06-15-06 11:03 Mimosius       Note Added: 0010237                          
-06-15-06 23:43 nikke          Note Added: 0010246                          
-06-16-06 13:01 Mimosius       Note Added: 0010250                          
-06-16-06 13:16 Mimosius       Note Edited: 0010250                         
-06-16-06 13:26 Raymond        Note Added: 0010251                          
-06-16-06 13:31 Raymond        Note Edited: 0010251                         
-06-16-06 13:37 Mimosius       Note Added: 0010252                          
-06-16-06 16:25 Raymond        Note Added: 0010255                          
-06-17-06 01:17 nikke          Note Added: 0010262                          
-06-17-06 02:43 Raymond        Note Edited: 0010251                         
-06-17-06 10:21 Raymond        Note Added: 0010266                          
-06-17-06 10:24 Raymond        Note Edited: 0010266                         
-06-17-06 11:02 Raymond        Note Added: 0010267                          
-06-17-06 14:25 Raymond        Note Added: 0010268                          
-06-17-06 15:16 nikke          Note Added: 0010269                          
-06-17-06 16:10 Raymond        Note Added: 0010270                          
-06-17-06 16:23 Raymond        Note Edited: 0010270                         
-06-17-06 18:22 rlrevell       Note Added: 0010280                          
-06-18-06 04:03 Raymond        Note Added: 0010295                          
-06-18-06 04:08 Raymond        Note Edited: 0010295                         
-06-18-06 04:14 Raymond        Note Edited: 0010295                         
-06-18-06 13:30 Raymond        Note Edited: 0010295                         
-06-19-06 13:11 Clemens LadischStatus                   new => assigned     
-06-19-06 13:11 Clemens LadischAssigned To               => Clemens Ladisch 
-06-19-06 13:33 Clemens LadischStatus                   assigned => resolved
-06-19-06 13:33 Clemens LadischResolution               open => not fixable 
-06-19-06 13:33 Clemens LadischNote Added: 0010307                          
-06-19-06 21:43 nikke          Status                   resolved => feedback
-06-19-06 21:43 nikke          Resolution               not fixable => reopened
-06-19-06 21:43 nikke          Note Added: 0010320                          
-06-19-06 22:10 Mimosius       Note Added: 0010321                          
-06-20-06 04:56 Raymond        Note Added: 0010325                          
+05-17-06 19:54 bzbarsky       New Issue                                    
+05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
+05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
+05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
+05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
+05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
+05-17-06 19:56 bzbarsky       File Added: scsound.log                      
+05-17-06 19:57 bzbarsky       Note Added: 0009857                          
+05-20-06 05:31 Raymond        Note Added: 0009882                          
+05-20-06 21:43 bzbarsky       Note Added: 0009893                          
+05-21-06 03:41 Raymond        Note Added: 0009894                          
+05-21-06 03:48 Raymond        Note Edited: 0009894                         
+05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
+05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
+05-22-06 02:53 bzbarsky       Note Added: 0009901                          
+05-22-06 04:14 Raymond        Note Added: 0009902                          
+05-23-06 09:00 Raymond        Note Added: 0009929                          
+05-23-06 09:03 Raymond        Note Edited: 0009929                         
+05-23-06 09:07 Raymond        Note Edited: 0009929                         
+06-02-06 20:08 bzbarsky       Note Added: 0010053                          
+06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
+06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
+06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
+ 
+06-02-06 20:35 bzbarsky       Note Added: 0010054                          
+06-03-06 02:44 Raymond        Note Added: 0010058                          
+06-05-06 01:29 bzbarsky       Note Added: 0010066                          
+06-05-06 03:31 Raymond        Note Added: 0010067                          
+06-05-06 03:56 bzbarsky       File Added: dmesg                            
+06-05-06 03:57 bzbarsky       Note Added: 0010068                          
+06-06-06 06:35 Raymond        Note Added: 0010071                          
+06-06-06 06:43 Raymond        Note Edited: 0010071                         
+06-06-06 08:59 Raymond        Note Edited: 0010071                         
+06-10-06 07:42 bzbarsky       Note Added: 0010144                          
+06-11-06 05:24 Raymond        Note Added: 0010150                          
+06-11-06 05:29 Raymond        Note Edited: 0010150                         
+06-11-06 22:37 bzbarsky       File Added: dmesg+kprint                     
+06-11-06 22:37 bzbarsky       File Added: codec_lines.txt                    
+06-11-06 22:38 bzbarsky       Note Added: 0010154                          
+06-12-06 03:31 Raymond        Note Added: 0010157                          
+06-12-06 03:41 rlrevell       Note Added: 0010158                          
+06-12-06 04:36 bzbarsky       Note Added: 0010161                          
+06-12-06 05:18 Raymond        Note Added: 0010164                          
+06-12-06 05:20 Raymond        Note Edited: 0010164                         
+06-12-06 05:23 Raymond        Note Edited: 0010164                         
+06-12-06 05:23 Raymond        Note Edited: 0010164                         
+06-12-06 05:26 rlrevell       Note Added: 0010165                          
+06-12-06 13:23 Raymond        Note Added: 0010168                          
+06-12-06 18:12 bzbarsky       Note Added: 0010172                          
+06-13-06 04:43 Raymond        Note Added: 0010185                          
+06-13-06 04:45 Raymond        Note Edited: 0010185                         
+06-13-06 05:39 bzbarsky       Note Added: 0010187                          
+06-13-06 07:20 Raymond        Note Added: 0010190                          
+06-13-06 07:25 Raymond        Note Edited: 0010190                         
+06-14-06 05:00 Raymond        Note Added: 0010204                          
+06-15-06 02:16 bzbarsky       Note Added: 0010220                          
+06-15-06 02:27 bzbarsky       Note Edited: 0010220                         
+06-15-06 02:36 Raymond        Note Added: 0010223                          
+06-15-06 02:53 Raymond        Note Added: 0010225                          
+06-15-06 02:59 bzbarsky       Note Added: 0010226                          
+06-15-06 03:03 Raymond        Note Edited: 0010225                         
+06-15-06 03:19 Raymond        Note Added: 0010227                          
+06-15-06 03:53 rlrevell       Note Added: 0010228                          
+06-15-06 03:55 rlrevell       Note Added: 0010229                          
+06-15-06 04:19 bzbarsky       Note Added: 0010231                          
+06-15-06 05:54 Raymond        Note Added: 0010232                          
+06-15-06 05:57 Raymond        Note Edited: 0010232                         
+06-15-06 05:59 Raymond        Note Edited: 0010232                         
+06-15-06 06:02 Raymond        Note Edited: 0010232                         
+06-15-06 08:06 bzbarsky       Note Added: 0010234                          
+06-15-06 08:59 Raymond        Note Added: 0010235                          
+06-15-06 09:09 Raymond        Note Edited: 0010235                         
+06-15-06 17:07 rlrevell       Note Added: 0010239                          
+06-16-06 03:53 Raymond        Note Added: 0010247                          
+06-16-06 03:56 Raymond        Note Edited: 0010247                         
+06-16-06 04:10 Raymond        Note Edited: 0010247                         
+06-16-06 04:31 Raymond        Note Added: 0010248                          
+06-20-06 05:02 bzbarsky       Note Added: 0010326                          
 ======================================================================
