@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Tue, 20 Jun 2006 06:57:15 +0200
-Message-ID: <4a709b7816f0ef8db9dc703b41312811@bugtrack.alsa-project.org>
+Date: Tue, 20 Jun 2006 08:45:07 +0200
+Message-ID: <368aff4d0ac2bf1064ca0477dfdb504b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D5D7168
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D59A4186
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 06:57:16 +0200 (MEST)
+	Tue, 20 Jun 2006 08:45:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-20-2006 06:57 CEST
+Last Modified:              06-20-2006 08:45 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
@@ -50,20 +50,20 @@ something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-20-06 06:35 
-----------------------------------------------------------------------
-There is no jumper or bios setting to disable the onboard ens1373, there is
-risk if any patch of the ens1371 driver may lockup the computer.
-
-What you can try is don't let ens1373 share irq with the network card
-
-----------------------------------------------------------------------
  bzbarsky - 06-20-06 06:57 
 ----------------------------------------------------------------------
 Locking the computer while testing is ok -- I have a safe kernel I can boot
 to and recover....
 
 Any idea how I'd go about changing the IRQs?
+
+----------------------------------------------------------------------
+ Raymond - 06-20-06 08:45 
+----------------------------------------------------------------------
+add module parameter in /etc/modprobe.conf to disable SPDIF
+
+
+options snd-ens1371 index=0 spdif=-1
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -150,4 +150,5 @@ Date Modified  Username       Field                    Change
 06-20-06 06:23 bzbarsky       Note Added: 0010328                          
 06-20-06 06:35 Raymond        Note Added: 0010329                          
 06-20-06 06:57 bzbarsky       Note Added: 0010330                          
+06-20-06 08:45 Raymond        Note Added: 0010331                          
 ======================================================================
