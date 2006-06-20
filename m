@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Tue, 20 Jun 2006 19:38:47 +0200
-Message-ID: <10cf56f14143bba454429655b1efdacd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002211]: No sound using snd-hda-intel
+	drivers
+Date: Tue, 20 Jun 2006 19:38:53 +0200
+Message-ID: <fae9b5eae6e0f3624c9cc009978c9159@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03E1E171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF4DF17B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 19:38:47 +0200 (MEST)
+	Tue, 20 Jun 2006 19:38:53 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,97 +26,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2211> 
 ======================================================================
-Reported By:                carllivitt
+Reported By:                jmclennan
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2174
+Issue ID:                   2211
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
 Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
+Kernel Version:             2.6.16-1.2133_FC5smp
 ======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
+Date Submitted:             06-15-2006 20:33 CEST
 Last Modified:              06-20-2006 19:38 CEST
 ======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
+Summary:                    No sound using snd-hda-intel drivers
 Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
+On a new HP DC7600 dual core Pentium D, sound card is detected, but no
+sound from either the front jack, rear jack or even the system speaker.
 
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
+kernel: 2.6.16-1.2133_FC5smp
+alsa-driver version: 1.0.11
 
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
-
-I've also tried using the 'single_cmd=1' module loading option. 
-
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
-
+Everything is unmuted, alsamixer can turn the volume controls up and down
+(all levels set to 100%.)
 ======================================================================
 
 ----------------------------------------------------------------------
- legoguy - 06-20-06 17:38 
+ tiwai - 06-20-06 19:35 
 ----------------------------------------------------------------------
-FYI this issue was already noted in bug #1957, but didn't get this far in
-discussions. Different laptop, same chip and codec. Hoping to see some
-progress on this.
+This should have been already fixed on HG version...
 
 ----------------------------------------------------------------------
- tiwai - 06-20-06 19:38 
+ gvidal - 06-20-06 19:38 
 ----------------------------------------------------------------------
-It's a conexant codec chip and we have no datasheet for this chip at all.
-Thus it's hard to implement properly if the auto-detection code doesn't
-work.
+but I've just noticed that I cannot hear the system beeps
+(visual beeps work but sound is off)
+
+any idea?
+
+(BTW, what is the 'HG version' ?)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
-06-12-06 21:51 carllivitt     Note Added: 0010174                          
-06-12-06 22:03 rlrevell       Note Added: 0010175                          
-06-12-06 22:52 carllivitt     Note Added: 0010176                          
-06-12-06 22:54 rlrevell       Note Added: 0010177                          
-06-12-06 23:10 carllivitt     Note Added: 0010178                          
-06-12-06 23:14 rlrevell       Note Added: 0010179                          
-06-12-06 23:29 carllivitt     Note Added: 0010180                          
-06-12-06 23:35 rlrevell       Note Added: 0010181                          
-06-12-06 23:49 carllivitt     Note Added: 0010182                          
-06-12-06 23:58 rlrevell       Note Added: 0010183                          
-06-13-06 15:33 godeater       Note Added: 0010193                          
-06-13-06 18:13 rlrevell       Note Added: 0010198                          
-06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
-06-13-06 18:58 rlrevell       Note Added: 0010200                          
-06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
-06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
-06-14-06 10:12 carllivitt     Note Added: 0010207                          
-06-14-06 10:21 carllivitt     File Added: codec0.txt                       
-06-14-06 10:21 carllivitt     Note Added: 0010208                          
-06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
-06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
-06-17-06 19:51 carllivitt     Note Added: 0010288                          
-06-17-06 19:57 rlrevell       Note Added: 0010289                          
-06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
-06-19-06 08:42 fatman         Note Added: 0010306                          
-06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
-06-19-06 13:49 jlpedrosa      Note Edited: 0010308                         
-06-20-06 11:04 carllivitt     Note Added: 0010332                          
-06-20-06 11:21 fatman         Note Added: 0010333                          
-06-20-06 17:38 legoguy        Note Added: 0010338                          
-06-20-06 17:39 legoguy        Issue Monitored: legoguy                     
-06-20-06 19:38 tiwai          Note Added: 0010341                          
+06-15-06 20:33 jmclennan      New Issue                                    
+06-15-06 20:33 jmclennan      File Added: scsound.log                      
+06-15-06 20:33 jmclennan      Distribution              => Fedora Core 5   
+06-15-06 20:33 jmclennan      Kernel Version            => 2.6.16-1.2133_FC5smp
+06-15-06 20:34 jmclennan      Note Added: 0010244                          
+06-15-06 20:37 jmclennan      Note Added: 0010245                          
+06-20-06 00:38 jmclennan      Note Added: 0010324                          
+06-20-06 18:22 gvidal         Note Added: 0010339                          
+06-20-06 19:35 tiwai          Note Added: 0010340                          
+06-20-06 19:38 gvidal         Note Added: 0010342                          
 ======================================================================
