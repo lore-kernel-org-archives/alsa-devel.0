@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001943]: No sound since ~2.6.3
-Date: Tue, 20 Jun 2006 19:49:53 +0200
-Message-ID: <d33a290e6eed2669030f671427edd628@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
+Date: Tue, 20 Jun 2006 19:49:57 +0200
+Message-ID: <d0eb0a74546aab10fc1da8cb3a9cff76@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29E1C171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47B36171
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 19:49:54 +0200 (MEST)
+	Tue, 20 Jun 2006 19:49:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,88 +25,69 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1943> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
 ======================================================================
-Reported By:                hazelsct
+Reported By:                El Santo
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1943
-Category:                   PCI - ali5451
+Issue ID:                   2219
+Category:                   GENERIC - mpu401
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian etch
-Kernel Version:             2.6.8 through 2.6.15-rc5
+Distribution:               Debian etch (2006-06-18)
+Kernel Version:             2.6.15-1-686
 ======================================================================
-Date Submitted:             03-19-2006 16:15 CET
+Date Submitted:             06-18-2006 17:41 CEST
 Last Modified:              06-20-2006 19:49 CEST
 ======================================================================
-Summary:                    No sound since ~2.6.3
+Summary:                    snd-mpu401 don't load
 Description: 
- Greetings,
+I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
+driver. It loads all necesary modules, includind snd-mpu401-uart, but no
+snd-mpu401
+The audio part of the driver works perfectly, but the midi port doesn't
+work.
 
-Running Debian woody/sarge/etch, the last time sound worked on my Fujitsu
-Lifebook P2120 was with 2.6.3 (or maybe 2.6.5, but not with 2.6.8 or
-anything since).  Esd doesn't work, nor do system beeps, and GNOME volume
-control says no volume control elements are found.  I can get ALSA working
-with 2.6.8 on all of my other machines, and with 2.6.15 on all that I have
-tried.  alsamixer runs and shows levels which I can change, but still no
-sound.
+In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
+not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
+(setting the port accordingly to BIOS) it doesnt work. I don't know the
+mpu401 irq setting but i tryed them all. None of them worked. The driver
+says "device not found".
 
-An identical ALSA setup worked with sarge under 2.6.3 but not 2.6.8. Tried
-running alsaconf again to no avail.  Under 2.6.3, at least when doing
-hardware mute and then un-mute (Fn-F3), un-mute beeps; on newer kernels,
-there's no beep.
+Under windows xp the port works perfectly, so the hardware is ok. Anyway
+under windows xp, i use a "system inspector" to monitor ioports and irq
+usage, and i didnt see any irq assigned for mpu401 port, and the port
+(0x330) wasn't occupied neither.
 
-Now under Debian etch (testing), even 2.6.3 no longer works properly:
-sounds played through esd simply repeat the first second or so over and
-over again. I keep upgrading the kernel (most recently to 2.6.16-rc5 in
-experimental) hoping that this time it will finally work, but it hasn't in
-that long...
-
-Debian etch has alsa 1.0.10-3, and lsmod shows the following sound modules
-installed:
-snd_ali5451 20172 1
-snd_ac97_codec 82784 1 snd_ali5451
-snd_ac97_bus 2048 1 snd_ac97_codec
-soundcore 8672 1 snd
-snd_page_alloc 9800 1 snd_pcm
-
-lspci shows:
-0000:00:04.0 Multimedia audio controller: ALi Corporation M5451 PCI
-AC-Link Controller Audio Device (rev 01)
-
-What other information would help to diagnose/fix this problem?
-
-Thanks,
-Adam
+any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- hazelsct - 06-20-06 19:47 
+ Raymond - 06-19-06 03:45 
 ----------------------------------------------------------------------
-Thanks, that's a lot of work.
+Post output of 
 
-Oh, cool.  On the Debian alioth alsa list, someone suggested something
-which fixed the problem, so all done.
+aplaymidi -l
+
+cat /proc/asound/cards
+
+lspci -vn
 
 ----------------------------------------------------------------------
- hazelsct - 06-20-06 19:49 
+ tiwai - 06-20-06 19:49 
 ----------------------------------------------------------------------
-Now how to close this bug?
+Usually snd-mpu401 can be loaded without module options using ACPI PnP.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-19-06 16:15 hazelsct       New Issue                                    
-03-19-06 16:15 hazelsct       Distribution              => Debian etch     
-03-19-06 16:15 hazelsct       Kernel Version            => 2.6.8 through
-2.6.15-rc5
-06-20-06 00:29 hazelsct       Note Added: 0010322                          
-06-20-06 00:33 rlrevell       Note Added: 0010323                          
-06-20-06 19:41 tiwai          Note Added: 0010343                          
-06-20-06 19:47 hazelsct       Note Added: 0010346                          
-06-20-06 19:49 hazelsct       Note Added: 0010348                          
+06-18-06 17:41 El Santo       New Issue                                    
+06-18-06 17:41 El Santo       Distribution              => Debian etch
+(2006-06-18)
+06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
+06-19-06 03:45 Raymond        Note Added: 0010305                          
+06-20-06 19:49 tiwai          Note Added: 0010349                          
 ======================================================================
