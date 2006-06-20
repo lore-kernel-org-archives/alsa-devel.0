@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Tue, 20 Jun 2006 23:51:32 +0200
-Message-ID: <c9b1a4c8c47be609890bfe70846486d0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
+Date: Tue, 20 Jun 2006 23:54:55 +0200
+Message-ID: <5d510343ca86c8a1b45c5b598ad3681c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED76818F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E830716F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 23:51:32 +0200 (MEST)
+	Tue, 20 Jun 2006 23:54:55 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,110 +25,192 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
 ======================================================================
-Reported By:                carllivitt
-Assigned To:                tiwai
+Reported By:                El Santo
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2174
-Category:                   PCI - hda-intel
+Issue ID:                   2219
+Category:                   GENERIC - mpu401
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
+Status:                     new
+Distribution:               Debian etch (2006-06-18)
+Kernel Version:             2.6.15-1-686
 ======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-20-2006 23:51 CEST
+Date Submitted:             06-18-2006 17:41 CEST
+Last Modified:              06-20-2006 23:54 CEST
 ======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
+Summary:                    snd-mpu401 don't load
 Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
-
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
-
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
-
-I've also tried using the 'single_cmd=1' module loading option. 
-
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0001957 HP dv8000t hda-intel codec not recognized
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-20-06 19:38 
-----------------------------------------------------------------------
-It's a conexant codec chip and we have no datasheet for this chip at all.
-Thus it's hard to implement properly if the auto-detection code doesn't
+I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
+driver. It loads all necesary modules, includind snd-mpu401-uart, but no
+snd-mpu401
+The audio part of the driver works perfectly, but the midi port doesn't
 work.
 
+In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
+not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
+(setting the port accordingly to BIOS) it doesnt work. I don't know the
+mpu401 irq setting but i tryed them all. None of them worked. The driver
+says "device not found".
+
+Under windows xp the port works perfectly, so the hardware is ok. Anyway
+under windows xp, i use a "system inspector" to monitor ioports and irq
+usage, and i didnt see any irq assigned for mpu401 port, and the port
+(0x330) wasn't occupied neither.
+
+any idea?
+======================================================================
+
 ----------------------------------------------------------------------
- jlpedrosa - 06-20-06 23:51 
+ rlrevell - 06-20-06 23:39 
 ----------------------------------------------------------------------
-carllivitt: lpedrosa: I think your computer has a different chipset and is
-confusing things in this bug report.
+What is the output of "cat /proc/ioports" and "lsmod"?
 
-I really didn't express myself, i'm forgetting my english.
+----------------------------------------------------------------------
+ El Santo - 06-20-06 23:54 
+----------------------------------------------------------------------
+-------------------
+cat /proc/ioports
 
-I was trying to say that the "symptoms" are almost equal and the lspci was
-pretty similar, and suggested it might be the same issue but i don't know,
-now you told me it is not the same i won't post again. 
+0000-001f : dma1
+0020-0021 : pic1
+0040-0043 : timer0
+0050-0053 : timer1
+0060-006f : keyboard
+0070-0077 : rtc
+0080-008f : dma page reg
+00a0-00a1 : pic2
+00c0-00df : dma2
+00f0-00ff : fpu
+0170-0177 : ide1
+01f0-01f7 : ide0
+02e8-02ef : serial
+02f8-02ff : serial
+0376-0376 : ide1
+0378-037a : parport0
+037b-037f : parport0
+03c0-03df : vga+
+03e8-03ef : serial
+03f6-03f6 : ide0
+03f8-03ff : serial
+0cf8-0cff : PCI conf1
+4000-4003 : PM1a_EVT_BLK
+4008-400b : PM_TMR
+4010-4015 : ACPI CPU throttle
+4020-4023 : GPE0_BLK
+40f0-40f1 : PM1a_CNT_BLK
+5000-500f : 0000:00:07.4
+  5000-5007 : vt596_smbus
+6000-607f : 0000:00:07.4
+  6000-607f : via686a
+d000-d00f : 0000:00:07.1
+  d000-d007 : ide0
+  d008-d00f : ide1
+d400-d41f : 0000:00:07.2
+  d400-d41f : uhci_hcd
+d800-d81f : 0000:00:07.3
+  d800-d81f : uhci_hcd
+dc00-dcff : 0000:00:07.5
+  dc00-dcff : VIA686A
+e000-e003 : 0000:00:07.5
+  e000-e003 : VIA686A
+e400-e403 : 0000:00:07.5
+  e400-e403 : VIA686A
+ec00-ec7f : 0000:00:09.0
+-------------------
 
-Sorry for the possible missunderstanding.
+-------------------
+lsmod
+
+Module                  Size  Used by
+ipv6                  221696  8
+nls_iso8859_1           3936  1
+isofs                  32792  1
+loop                   15176  2
+dm_mod                 51160  0
+snd_seq_dummy           3556  0
+snd_seq_oss            28896  0
+snd_seq_midi            8384  0
+snd_seq_midi_event      6368  2 snd_seq_oss,snd_seq_midi
+snd_seq                44432  6
+snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq_midi_event
+shpchp                 39712  0
+pci_hotplug            24756  1 shpchp
+via_agp                 9280  1
+agpgart                31400  1 via_agp
+snd_via82xx            25688  1
+gameport               13928  1 snd_via82xx
+snd_ac97_codec         82464  1 snd_via82xx
+snd_ac97_bus            2048  1 snd_ac97_codec
+snd_pcm_oss            45536  0
+snd_mixer_oss          16448  1 snd_pcm_oss
+snd_pcm                77576  3 snd_via82xx,snd_ac97_codec,snd_pcm_oss
+snd_timer              21316  2 snd_seq,snd_pcm
+snd_page_alloc          9928  2 snd_via82xx,snd_pcm
+snd_mpu401_uart         6592  1 snd_via82xx
+via686a                15368  0
+bt878                   9656  0
+snd_rawmidi            22240  2 snd_seq_midi,snd_mpu401_uart
+snd_seq_device          7916  5
+snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_seq,snd_rawmidi
+i2c_isa                 4608  1 via686a
+i2c_viapro              7924  0
+snd                    48420  13
+snd_seq_oss,snd_seq,snd_via82xx,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
+soundcore               8928  1 snd
+tuner                  36644  0
+bttv                  151600  1 bt878
+video_buf              19748  1 bttv
+firmware_class          9696  1 bttv
+i2c_algo_bit            8296  1 bttv
+v4l2_common             5632  1 bttv
+btcx_risc               4520  1 bttv
+tveeprom               13744  1 bttv
+i2c_core               19280  7
+via686a,i2c_isa,i2c_viapro,tuner,bttv,i2c_algo_bit,tveeprom
+videodev                8768  1 bttv
+parport_pc             32036  0
+parport                31624  1 parport_pc
+pcspkr                  1668  0
+psmouse                32356  0
+serio_raw               6468  0
+rtc                    11316  0
+floppy                 54628  0
+joydev                  8864  0
+evdev                   8800  2
+mousedev               10496  1
+ext3                  117768  2
+jbd                    48404  1 ext3
+mbcache                 8484  1 ext3
+ide_disk               15712  4
+ide_cd                 36484  0
+cdrom                  33280  1 ide_cd
+via82cxxx               8164  0 [permanent]
+generic                 4260  0 [permanent]
+ide_core              112800  4 ide_disk,ide_cd,via82cxxx,generic
+uhci_hcd               28016  0
+usbcore               113284  2 uhci_hcd
+3c59x                  39432  0
+mii                     5056  1 3c59x
+thermal                13416  0
+processor              22912  1 thermal
+fan                     4580  0
+-------------------
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
-06-12-06 21:51 carllivitt     Note Added: 0010174                          
-06-12-06 22:03 rlrevell       Note Added: 0010175                          
-06-12-06 22:52 carllivitt     Note Added: 0010176                          
-06-12-06 22:54 rlrevell       Note Added: 0010177                          
-06-12-06 23:10 carllivitt     Note Added: 0010178                          
-06-12-06 23:14 rlrevell       Note Added: 0010179                          
-06-12-06 23:29 carllivitt     Note Added: 0010180                          
-06-12-06 23:35 rlrevell       Note Added: 0010181                          
-06-12-06 23:49 carllivitt     Note Added: 0010182                          
-06-12-06 23:58 rlrevell       Note Added: 0010183                          
-06-13-06 15:33 godeater       Note Added: 0010193                          
-06-13-06 18:13 rlrevell       Note Added: 0010198                          
-06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
-06-13-06 18:58 rlrevell       Note Added: 0010200                          
-06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
-06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
-06-14-06 10:12 carllivitt     Note Added: 0010207                          
-06-14-06 10:21 carllivitt     File Added: codec0.txt                       
-06-14-06 10:21 carllivitt     Note Added: 0010208                          
-06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
-06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
-06-17-06 19:51 carllivitt     Note Added: 0010288                          
-06-17-06 19:57 rlrevell       Note Added: 0010289                          
-06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
-06-19-06 08:42 fatman         Note Added: 0010306                          
-06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
-06-19-06 13:49 jlpedrosa      Note Edited: 0010308                         
-06-20-06 11:04 carllivitt     Note Added: 0010332                          
-06-20-06 11:21 fatman         Note Added: 0010333                          
-06-20-06 17:38 legoguy        Note Added: 0010338                          
-06-20-06 17:39 legoguy        Issue Monitored: legoguy                     
-06-20-06 19:38 tiwai          Note Added: 0010341                          
-06-20-06 19:45 rlrevell       Relationship added       duplicate of 0001957
-06-20-06 23:51 jlpedrosa      Note Added: 0010361                          
+06-18-06 17:41 El Santo       New Issue                                    
+06-18-06 17:41 El Santo       Distribution              => Debian etch
+(2006-06-18)
+06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
+06-19-06 03:45 Raymond        Note Added: 0010305                          
+06-20-06 19:49 tiwai          Note Added: 0010349                          
+06-20-06 23:30 El Santo       Note Added: 0010357                          
+06-20-06 23:39 rlrevell       Note Added: 0010359                          
+06-20-06 23:54 El Santo       Note Added: 0010362                          
 ======================================================================
