@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: latency.c and delay related questions
-Date: Tue, 20 Jun 2006 19:38:21 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0606201924250.9219@tm8103.perex-int.cz>
-References: <b6251a620606200310q7b532513s1aa6542368568460@mail.gmail.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Tue, 20 Jun 2006 19:38:47 +0200
+Message-ID: <10cf56f14143bba454429655b1efdacd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <b6251a620606200310q7b532513s1aa6542368568460@mail.gmail.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 03E1E171
+	for <alsa-devel@alsa-project.org>;
+	Tue, 20 Jun 2006 19:38:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -17,44 +20,103 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Christophe Osuna <christophe.osuna@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Jun 2006, Christophe Osuna wrote:
 
-> The current delay with "latency" is equal to a minimum (that depends
-> on the sound card) plus *two* times the period time.  If I disable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
+======================================================================
+Reported By:                carllivitt
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2174
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
+======================================================================
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              06-20-2006 19:38 CEST
+======================================================================
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
+Description: 
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
 
-Yes, it's correct. Basically, you cannot avoid double buffering, so the 
-total latency is:
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
 
-1) one capture period
-2) one playback period (actually being played)
-3) moved captured period to playback buffer (not counted)
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
 
-So the latency should be 2 * period plus a hw latency as you noted. 
-Everything is correct. Of course, you may get better latencies if you run 
-"busy loop" on not-loaded system and immediately put captured data to 
-playback stream, but it's not a correct behaviour in *nix.
+I've also tried using the 'single_cmd=1' module loading option. 
 
-> * why is snd_pcm_link() mandatory? (no sound otherwise)
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
 
-It links playback and capture streams so only one start() is called. On 
-hardware which supports hardware syncing, the DMA operation is started at 
-same time for both stream.
+======================================================================
 
-> * why two buffers of silence and not just one?
+----------------------------------------------------------------------
+ legoguy - 06-20-06 17:38 
+----------------------------------------------------------------------
+FYI this issue was already noted in bug #1957, but didn't get this far in
+discussions. Different laptop, same chip and codec. Hoping to see some
+progress on this.
 
-You must wait one period to get data from the capture direction and then 
-you have exactly one period time to put these data to the playback. As I 
-said, you can get better results with busy-loop but it's bad 
-implementation (but if you have a spare dedicated machine without other 
-tasks, it might be an option).
+----------------------------------------------------------------------
+ tiwai - 06-20-06 19:38 
+----------------------------------------------------------------------
+It's a conexant codec chip and we have no datasheet for this chip at all.
+Thus it's hard to implement properly if the auto-detection code doesn't
+work.
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
+06-12-06 22:52 carllivitt     Note Added: 0010176                          
+06-12-06 22:54 rlrevell       Note Added: 0010177                          
+06-12-06 23:10 carllivitt     Note Added: 0010178                          
+06-12-06 23:14 rlrevell       Note Added: 0010179                          
+06-12-06 23:29 carllivitt     Note Added: 0010180                          
+06-12-06 23:35 rlrevell       Note Added: 0010181                          
+06-12-06 23:49 carllivitt     Note Added: 0010182                          
+06-12-06 23:58 rlrevell       Note Added: 0010183                          
+06-13-06 15:33 godeater       Note Added: 0010193                          
+06-13-06 18:13 rlrevell       Note Added: 0010198                          
+06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
+06-13-06 18:58 rlrevell       Note Added: 0010200                          
+06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
+06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
+06-14-06 10:12 carllivitt     Note Added: 0010207                          
+06-14-06 10:21 carllivitt     File Added: codec0.txt                       
+06-14-06 10:21 carllivitt     Note Added: 0010208                          
+06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
+06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
+06-17-06 19:51 carllivitt     Note Added: 0010288                          
+06-17-06 19:57 rlrevell       Note Added: 0010289                          
+06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
+06-19-06 08:42 fatman         Note Added: 0010306                          
+06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
+06-19-06 13:49 jlpedrosa      Note Edited: 0010308                         
+06-20-06 11:04 carllivitt     Note Added: 0010332                          
+06-20-06 11:21 fatman         Note Added: 0010333                          
+06-20-06 17:38 legoguy        Note Added: 0010338                          
+06-20-06 17:39 legoguy        Issue Monitored: legoguy                     
+06-20-06 19:38 tiwai          Note Added: 0010341                          
+======================================================================
