@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Wed, 21 Jun 2006 00:52:37 +0200
-Message-ID: <06470bd6a1966e2b2587e5d052b656b1@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 00:56:56 +0200
+Message-ID: <156f39aafb69d769145d7bba6d4858da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CCEC318B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 02FC818B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 00:52:37 +0200 (MEST)
+	Wed, 21 Jun 2006 00:56:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Debian etch (2006-06-18)
 Kernel Version:             2.6.15-1-686
 ======================================================================
 Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-21-2006 00:52 CEST
+Last Modified:              06-21-2006 00:56 CEST
 ======================================================================
 Summary:                    snd-mpu401 don't load
 Description: 
@@ -66,13 +66,6 @@ any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- El Santo - 06-21-06 00:36 
-----------------------------------------------------------------------
-i attached the dmesg output... i thing that the entries in ioports are
-addresses managed by kernel modules... if the module is not loaded i think
-that the port will not be in ioports.
-
-----------------------------------------------------------------------
  rlrevell - 06-21-06 00:52 
 ----------------------------------------------------------------------
 No, they would still show up.  For example I have no Firewire driver
@@ -91,6 +84,18 @@ $ lspci
 AGP]
 0000:00:0d.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
 Controller (rev 80)
+
+----------------------------------------------------------------------
+ rlrevell - 06-21-06 00:56 
+----------------------------------------------------------------------
+Kernel command line: root=/dev/hda2 ro pci=routeirq
+Local APIC disabled by BIOS -- you can enable it with "lapic"
+
+Try booting without "pci=routeirq".  Try enabling "lapic".  Try kernel
+2.6.17.
+
+If all of the above fail, report the bug on the kernel mailing list
+(including dmesg output)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -111,4 +116,5 @@ Date Modified  Username       Field                    Change
 06-21-06 00:33 El Santo       File Added: dmesg.log                        
 06-21-06 00:36 El Santo       Note Added: 0010367                          
 06-21-06 00:52 rlrevell       Note Added: 0010369                          
+06-21-06 00:56 rlrevell       Note Added: 0010370                          
 ======================================================================
