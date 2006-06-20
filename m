@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002221]: Volume entirely too faint on
 	82801g ich7
-Date: Wed, 21 Jun 2006 00:58:44 +0200
-Message-ID: <79ed47d1df7836d9d28f2f378576fdcf@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 01:06:42 +0200
+Message-ID: <317fecdb446932d17546055264ead465@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63954EB
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A32018C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 00:58:44 +0200 (MEST)
+	Wed, 21 Jun 2006 01:06:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Suse 10.1
 Kernel Version:             2.6.16.13-4-smp
 ======================================================================
 Date Submitted:             06-19-2006 02:19 CEST
-Last Modified:              06-21-2006 00:58 CEST
+Last Modified:              06-21-2006 01:06 CEST
 ======================================================================
 Summary:                    Volume entirely too faint on 82801g ich7
 Description: 
@@ -67,13 +67,6 @@ sound thats almost too faint to hear.
 ======================================================================
 
 ----------------------------------------------------------------------
- mlfarrell - 06-21-06 00:46 
-----------------------------------------------------------------------
-Damn.  Its the only piece of hardware I don't have working yet in linux on
-my new laptop.  Connexant doesn't have commercial linux drivers available
-either?
-
-----------------------------------------------------------------------
  rlrevell - 06-21-06 00:58 
 ----------------------------------------------------------------------
 No, they don't, and that's no solution anyway - they never integrate
@@ -83,6 +76,12 @@ miserably.
 
 Ask Conexant for a datasheet.  In the meantime get an external USB audio
 device.
+
+----------------------------------------------------------------------
+ mlfarrell - 06-21-06 01:06 
+----------------------------------------------------------------------
+What exactly do I send to conexant to request for the datasheet?  Ask them
+for the info on conexant high definition audio 82801g (ich7) device?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,4 +95,5 @@ Date Modified  Username       Field                    Change
 06-20-06 23:42 rlrevell       Note Added: 0010360                          
 06-21-06 00:46 mlfarrell      Note Added: 0010368                          
 06-21-06 00:58 rlrevell       Note Added: 0010371                          
+06-21-06 01:06 mlfarrell      Note Added: 0010372                          
 ======================================================================
