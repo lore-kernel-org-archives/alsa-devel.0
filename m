@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001943]: No sound since ~2.6.3
-Date: Tue, 20 Jun 2006 19:47:26 +0200
-Message-ID: <4d714d0726dadd24785ef53e33d42874@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002221]: Volume entirely too faint on
+	82801g ich7
+Date: Tue, 20 Jun 2006 19:49:05 +0200
+Message-ID: <dc5fd9f4a3c53a14461c1c7a48364f74@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 269D4171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF895171
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 19:47:27 +0200 (MEST)
+	Tue, 20 Jun 2006 19:49:05 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,91 +26,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1943> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2221> 
 ======================================================================
-Reported By:                hazelsct
-Assigned To:                
+Reported By:                mlfarrell
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1943
-Category:                   PCI - ali5451
+Issue ID:                   2221
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian etch
-Kernel Version:             2.6.8 through 2.6.15-rc5
+Status:                     assigned
+Distribution:               Suse 10.1
+Kernel Version:             2.6.16.13-4-smp
 ======================================================================
-Date Submitted:             03-19-2006 16:15 CET
-Last Modified:              06-20-2006 19:47 CEST
+Date Submitted:             06-19-2006 02:19 CEST
+Last Modified:              06-20-2006 19:49 CEST
 ======================================================================
-Summary:                    No sound since ~2.6.3
+Summary:                    Volume entirely too faint on 82801g ich7
 Description: 
- Greetings,
+I've seen this bug online many times with a resolution of upgrading to alsa
+1.0.11, but I upgaded and am still having the issue.
 
-Running Debian woody/sarge/etch, the last time sound worked on my Fujitsu
-Lifebook P2120 was with 2.6.3 (or maybe 2.6.5, but not with 2.6.8 or
-anything since).  Esd doesn't work, nor do system beeps, and GNOME volume
-control says no volume control elements are found.  I can get ALSA working
-with 2.6.8 on all of my other machines, and with 2.6.15 on all that I have
-tried.  alsamixer runs and shows levels which I can change, but still no
-sound.
+I'm using an hp pavilion dv8000 laptop with built-in altec lansing
+speakers.
 
-An identical ALSA setup worked with sarge under 2.6.3 but not 2.6.8. Tried
-running alsaconf again to no avail.  Under 2.6.3, at least when doing
-hardware mute and then un-mute (Fn-F3), un-mute beeps; on newer kernels,
-there's no beep.
+Windows reports the soundcard as conexant high definition audio, linux as
+82801g (ich7).  I've tried setting every model I know in the
+/etc/modprobe.d/sound file for the hda-intel driver and am still having a
+lack of useful volume sliders.  The key ones that I need are "pc speaker"
+to turn it down cause its way too loud and "external amplifier" to turn up
+the laptop's altec lansing speakers (sound volume is decent out of the
+headphone jack).
 
-Now under Debian etch (testing), even 2.6.3 no longer works properly:
-sounds played through esd simply repeat the first second or so over and
-over again. I keep upgrading the kernel (most recently to 2.6.16-rc5 in
-experimental) hoping that this time it will finally work, but it hasn't in
-that long...
+Even with the volume all the way up (both master and pcm) I'm getting
+sound thats almost too faint to hear.  
 
-Debian etch has alsa 1.0.10-3, and lsmod shows the following sound modules
-installed:
-snd_ali5451 20172 1
-snd_ac97_codec 82784 1 snd_ali5451
-snd_ac97_bus 2048 1 snd_ac97_codec
-soundcore 8672 1 snd
-snd_page_alloc 9800 1 snd_pcm
 
-lspci shows:
-0000:00:04.0 Multimedia audio controller: ALi Corporation M5451 PCI
-AC-Link Controller Audio Device (rev 01)
-
-What other information would help to diagnose/fix this problem?
-
-Thanks,
-Adam
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-20-06 19:41 
+ tiwai - 06-20-06 19:49 
 ----------------------------------------------------------------------
-Check whether it's a driver but or another system regression.
-If you see the entry in /proc/asound/cards after loading snd-ali5451
-module, the driver is mostly OK.  If not, you should have kernel error
-messages.  Compile with debug option, --with-debug=full for alsa-driver
-configure script.
-
-----------------------------------------------------------------------
- hazelsct - 06-20-06 19:47 
-----------------------------------------------------------------------
-Thanks, that's a lot of work.
-
-Oh, cool.  On the Debian alioth alsa list, someone suggested something
-which fixed the problem, so all done.
+It's a conexant codec chip and not properly supported because of lack of
+datasheet.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-19-06 16:15 hazelsct       New Issue                                    
-03-19-06 16:15 hazelsct       Distribution              => Debian etch     
-03-19-06 16:15 hazelsct       Kernel Version            => 2.6.8 through
-2.6.15-rc5
-06-20-06 00:29 hazelsct       Note Added: 0010322                          
-06-20-06 00:33 rlrevell       Note Added: 0010323                          
-06-20-06 19:41 tiwai          Note Added: 0010343                          
-06-20-06 19:47 hazelsct       Note Added: 0010346                          
+06-19-06 02:19 mlfarrell      New Issue                                    
+06-19-06 02:19 mlfarrell      Distribution              => Suse 10.1       
+06-19-06 02:19 mlfarrell      Kernel Version            => 2.6.16.13-4-smp 
+06-19-06 21:59 mlfarrell      Issue Monitored: mlfarrell                    
+06-20-06 19:49 tiwai          Note Added: 0010347                          
 ======================================================================
