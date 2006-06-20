@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Tue, 20 Jun 2006 06:20:29 +0200
-Message-ID: <1485a12b1a3474bbaa7b495a7f532c29@bugtrack.alsa-project.org>
+Date: Tue, 20 Jun 2006 06:24:00 +0200
+Message-ID: <654d825c9b76058b481b20838c441f5a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 89C12168
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 500DF168
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 06:20:29 +0200 (MEST)
+	Tue, 20 Jun 2006 06:24:01 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,22 +41,13 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-20-2006 06:20 CEST
+Last Modified:              06-20-2006 06:23 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
 Alsa seems to detect the sound card, but when I try to actually play
 something there is no sound from the speakers.
 ======================================================================
-
-----------------------------------------------------------------------
- bzbarsky - 06-20-06 05:02 
-----------------------------------------------------------------------
-Raymond, were those last two comments addressed to me?  If so, and if you
-want me to try something, could you please explain in a little more
-detail?  I'm not particularly familiar with either the ALSA codebase or
-ALSA configuration, so I'm really not sure what I need to do with those
-two comments, if anything.  Thank you in advance for your time!
 
 ----------------------------------------------------------------------
  Raymond - 06-20-06 06:20 
@@ -71,6 +62,16 @@ Simple mixer control 'PCM',0
   Mono:
   Front Left: Playback 0 [0%] [off]
   Front Right: Playback 0 [0%] [off]
+
+----------------------------------------------------------------------
+ bzbarsky - 06-20-06 06:23 
+----------------------------------------------------------------------
+That doesn't really answer my question.  Is that for my information only,
+or do you expect me to do something with it?  If the latter, what do you
+want me to do?  I'm happy to help debug this, test patches, and so forth,
+but I really can't read minds very well, and I'm not familiar enough with
+this codebase to read between the lines and translate comments about
+output into code changes...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -154,4 +155,5 @@ Date Modified  Username       Field                    Change
 06-16-06 04:31 Raymond        Note Added: 0010248                          
 06-20-06 05:02 bzbarsky       Note Added: 0010326                          
 06-20-06 06:20 Raymond        Note Added: 0010327                          
+06-20-06 06:23 bzbarsky       Note Added: 0010328                          
 ======================================================================
