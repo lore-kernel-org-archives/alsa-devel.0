@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Tue, 20 Jun 2006 06:35:24 +0200
-Message-ID: <615f23433ddc290ede25ee4d5a7925ab@bugtrack.alsa-project.org>
+Date: Tue, 20 Jun 2006 06:57:15 +0200
+Message-ID: <4a709b7816f0ef8db9dc703b41312811@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 43F03168
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2D5D7168
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 06:35:25 +0200 (MEST)
+	Tue, 20 Jun 2006 06:57:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-20-2006 06:35 CEST
+Last Modified:              06-20-2006 06:57 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
@@ -50,22 +50,20 @@ something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- bzbarsky - 06-20-06 06:23 
-----------------------------------------------------------------------
-That doesn't really answer my question.  Is that for my information only,
-or do you expect me to do something with it?  If the latter, what do you
-want me to do?  I'm happy to help debug this, test patches, and so forth,
-but I really can't read minds very well, and I'm not familiar enough with
-this codebase to read between the lines and translate comments about
-output into code changes...
-
-----------------------------------------------------------------------
  Raymond - 06-20-06 06:35 
 ----------------------------------------------------------------------
 There is no jumper or bios setting to disable the onboard ens1373, there is
 risk if any patch of the ens1371 driver may lockup the computer.
 
 What you can try is don't let ens1373 share irq with the network card
+
+----------------------------------------------------------------------
+ bzbarsky - 06-20-06 06:57 
+----------------------------------------------------------------------
+Locking the computer while testing is ok -- I have a safe kernel I can boot
+to and recover....
+
+Any idea how I'd go about changing the IRQs?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -151,4 +149,5 @@ Date Modified  Username       Field                    Change
 06-20-06 06:20 Raymond        Note Added: 0010327                          
 06-20-06 06:23 bzbarsky       Note Added: 0010328                          
 06-20-06 06:35 Raymond        Note Added: 0010329                          
+06-20-06 06:57 bzbarsky       Note Added: 0010330                          
 ======================================================================
