@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Tue, 20 Jun 2006 15:28:58 +0200
-Message-ID: <54a449fd434a8baec6cb1deefa5a9bf4@bugtrack.alsa-project.org>
+Date: Tue, 20 Jun 2006 15:47:44 +0200
+Message-ID: <d8bf83b6c277d2f57b6e622cb894cb58@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E040316D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB59B16D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 15:28:58 +0200 (MEST)
+	Tue, 20 Jun 2006 15:47:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-20-2006 15:28 CEST
+Last Modified:              06-20-2006 15:47 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,34 +117,6 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- friser - 06-20-06 13:00 
-----------------------------------------------------------------------
-I removed kernel-devel.i586 and installed kernel-devel.i686.
-Then I run configure, make, make install, snddevices but I have the same
-problem.
-
-Taking a look to modinfo I still see 2.6.16-1.2080_FC5 586 :
-
-root@umberto linux]# modinfo
-/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko
-filename:       /lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko
-author:         Jaroslav Kysela <perex@suse.cz>
-description:    Advanced Linux Sound Architecture driver for soundcards.
-license:        GPL
-alias:          char-major-116-*
-vermagic:       2.6.16-1.2080_FC5 586 REGPARM 4KSTACKS gcc-4.1
-depends:        soundcore
-srcversion:     055DA448A05CECF53694583
-parm:           cards_limit:Count of auto-loadable soundcards. (int)
-parm:           major:Major # for sound driver. (int)
-
-What is wrong?
-
-
-p.s the reason why I want to use alsa driver is that fedora doesn't
-recognize my soundcard and I cannot hear any sound....
-
-----------------------------------------------------------------------
  Raymond - 06-20-06 15:28 
 ----------------------------------------------------------------------
 Post output of
@@ -154,6 +126,33 @@ uname -a
 cat /proc/version
 
 gcc -v
+
+----------------------------------------------------------------------
+ friser - 06-20-06 15:47 
+----------------------------------------------------------------------
+[root@umberto linux]# uname -a
+Linux umberto.exentrica.it 2.6.16-1.2080_FC5 #1 Tue Mar 28 03:38:34 EST
+2006 i686 i686 i386 GNU/Linux
+
+[root@umberto linux]# cat /proc/version
+Linux version 2.6.16-1.2080_FC5 (bhcompile@hs20-bc1-5.build.redhat.com)
+(gcc version 4.1.0 20060304 (Red Hat 4.1.0-3)) #1 Tue Mar 28 03:38:34 EST
+2006
+
+
+[root@umberto linux]# gcc -v
+Using built-in specs.
+Target: i386-redhat-linux
+Configured with: ../configure --prefix=/usr --mandir=/usr/share/man
+--infodir=/usr/share/info --enable-shared --enable-threads=posix
+--enable-checking=release --with-system-zlib --enable-__cxa_atexit
+--disable-libunwind-exceptions --enable-libgcj-multifile
+--enable-languages=c,c++,objc,obj-c++,java,fortran,ada
+--enable-java-awt=gtk --disable-dssi
+--with-java-home=/usr/lib/jvm/java-1.4.2-gcj-1.4.2.0/jre
+--with-cpu=generic --host=i386-redhat-linux
+Thread model: posix
+gcc version 4.1.0 20060304 (Red Hat 4.1.0-3)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -194,4 +193,5 @@ Date Modified  Username       Field                    Change
 06-17-06 19:19 rlrevell       Note Added: 0010287                          
 06-20-06 13:00 friser         Note Added: 0010334                          
 06-20-06 15:28 Raymond        Note Added: 0010335                          
+06-20-06 15:47 friser         Note Added: 0010336                          
 ======================================================================
