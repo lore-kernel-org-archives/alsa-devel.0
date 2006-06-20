@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001943]: No sound since ~2.6.3
-Date: Tue, 20 Jun 2006 19:41:32 +0200
-Message-ID: <706532ec481ce42ffe27aa7fbe157fce@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002103]: Sound goes off when adjusting
+	volume from alsa-mixer
+Date: Tue, 20 Jun 2006 19:44:43 +0200
+Message-ID: <4924de1cf81bda8f4a79993f8b59626e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A615176
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0FB77176
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 19:41:32 +0200 (MEST)
+	Tue, 20 Jun 2006 19:44:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,90 +26,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1943> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2103> 
 ======================================================================
-Reported By:                hazelsct
-Assigned To:                
+Reported By:                raddy
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1943
-Category:                   PCI - ali5451
+Issue ID:                   2103
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian etch
-Kernel Version:             2.6.8 through 2.6.15-rc5
+Status:                     assigned
+Distribution:               Suse
+Kernel Version:             2.6.13-15
 ======================================================================
-Date Submitted:             03-19-2006 16:15 CET
-Last Modified:              06-20-2006 19:41 CEST
+Date Submitted:             05-08-2006 11:28 CEST
+Last Modified:              06-20-2006 19:44 CEST
 ======================================================================
-Summary:                    No sound since ~2.6.3
+Summary:                    Sound goes off when adjusting volume from alsa-mixer
 Description: 
- Greetings,
+i have an Asus P5RD2-VM motherboard equipped with Uli M5461 integrated 
+sound card supporting HD-Audio,
+it uses snd_hda_intel driver,
+it was detected fine,
+Alsa played a test sound that itself produced no sound from speakers,
+sound is going off in many curcomstance,
+they are,
+1 > when adjusting volume,
+2 > switching to several songs intermittently.
 
-Running Debian woody/sarge/etch, the last time sound worked on my Fujitsu
-Lifebook P2120 was with 2.6.3 (or maybe 2.6.5, but not with 2.6.8 or
-anything since).  Esd doesn't work, nor do system beeps, and GNOME volume
-control says no volume control elements are found.  I can get ALSA working
-with 2.6.8 on all of my other machines, and with 2.6.15 on all that I have
-tried.  alsamixer runs and shows levels which I can change, but still no
-sound.
-
-An identical ALSA setup worked with sarge under 2.6.3 but not 2.6.8. Tried
-running alsaconf again to no avail.  Under 2.6.3, at least when doing
-hardware mute and then un-mute (Fn-F3), un-mute beeps; on newer kernels,
-there's no beep.
-
-Now under Debian etch (testing), even 2.6.3 no longer works properly:
-sounds played through esd simply repeat the first second or so over and
-over again. I keep upgrading the kernel (most recently to 2.6.16-rc5 in
-experimental) hoping that this time it will finally work, but it hasn't in
-that long...
-
-Debian etch has alsa 1.0.10-3, and lsmod shows the following sound modules
-installed:
-snd_ali5451 20172 1
-snd_ac97_codec 82784 1 snd_ali5451
-snd_ac97_bus 2048 1 snd_ac97_codec
-soundcore 8672 1 snd
-snd_page_alloc 9800 1 snd_pcm
-
-lspci shows:
-0000:00:04.0 Multimedia audio controller: ALi Corporation M5451 PCI
-AC-Link Controller Audio Device (rev 01)
-
-What other information would help to diagnose/fix this problem?
-
-Thanks,
-Adam
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-20-06 00:33 
+ mariourk - 06-19-06 20:05 
 ----------------------------------------------------------------------
-"Hmm... Three months with no help on this bug."
+Adding "options snd-hda-intel model=3stack"  to
+'/etc/modules.d/alsa' solved the problem.
+Just to let you know.
 
-Um, maybe you could try searching between 2.6.3 and 2.6.8 to identify the
-change that broke it?
+Thanks a lot for your help :)
 
 ----------------------------------------------------------------------
- tiwai - 06-20-06 19:41 
+ tiwai - 06-20-06 19:44 
 ----------------------------------------------------------------------
-Check whether it's a driver but or another system regression.
-If you see the entry in /proc/asound/cards after loading snd-ali5451
-module, the driver is mostly OK.  If not, you should have kernel error
-messages.  Compile with debug option, --with-debug=full for alsa-driver
-configure script.
+If a certain model option solves the problem, please inform the following
+information:
+
+- the HD-audio codec chip (you can find in /proc/asound/card0/codec#*
+files)
+- the product name of laptop, machine or mobo
+- the model option you used
+- "lspci -nv" entry (only for class 0403)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-19-06 16:15 hazelsct       New Issue                                    
-03-19-06 16:15 hazelsct       Distribution              => Debian etch     
-03-19-06 16:15 hazelsct       Kernel Version            => 2.6.8 through
-2.6.15-rc5
-06-20-06 00:29 hazelsct       Note Added: 0010322                          
-06-20-06 00:33 rlrevell       Note Added: 0010323                          
-06-20-06 19:41 tiwai          Note Added: 0010343                          
+05-08-06 11:28 raddy          New Issue                                    
+05-08-06 11:28 raddy          Distribution              => Suse            
+05-08-06 11:28 raddy          Kernel Version            => 2.6.13-15       
+05-10-06 07:54 raddy          Issue Monitored: raddy                       
+05-12-06 10:42 UMMO           Note Added: 0009774                          
+05-12-06 10:43 UMMO           Issue Monitored: UMMO                        
+05-12-06 16:04 tiwai          Note Added: 0009776                          
+05-12-06 17:09 UMMO           Note Added: 0009781                          
+05-12-06 17:13 UMMO           Note Edited: 0009781                         
+05-23-06 16:21 shadoweel      Issue Monitored: shadoweel                    
+06-18-06 09:26 raddy          Note Added: 0010296                          
+06-19-06 16:53 mariourk       Note Added: 0010317                          
+06-19-06 19:07 tiwai          Note Added: 0010318                          
+06-19-06 20:05 mariourk       Note Added: 0010319                          
+06-20-06 19:44 tiwai          Note Added: 0010344                          
 ======================================================================
