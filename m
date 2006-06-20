@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002221]: Volume entirely too faint on
 	82801g ich7
-Date: Wed, 21 Jun 2006 01:06:42 +0200
-Message-ID: <317fecdb446932d17546055264ead465@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 01:23:43 +0200
+Message-ID: <d5d4e445b1ed1484c3149a3b0f127b4e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1A32018C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6BC03168
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 01:06:43 +0200 (MEST)
+	Wed, 21 Jun 2006 01:23:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Suse 10.1
 Kernel Version:             2.6.16.13-4-smp
 ======================================================================
 Date Submitted:             06-19-2006 02:19 CEST
-Last Modified:              06-21-2006 01:06 CEST
+Last Modified:              06-21-2006 01:23 CEST
 ======================================================================
 Summary:                    Volume entirely too faint on 82801g ich7
 Description: 
@@ -67,21 +67,18 @@ sound thats almost too faint to hear.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-21-06 00:58 
-----------------------------------------------------------------------
-No, they don't, and that's no solution anyway - they never integrate
-properly with the rest of the system.  Realtek tried forking ALSA rather
-than just posting a patch to get their hardware working and it failed
-miserably.
-
-Ask Conexant for a datasheet.  In the meantime get an external USB audio
-device.
-
-----------------------------------------------------------------------
  mlfarrell - 06-21-06 01:06 
 ----------------------------------------------------------------------
 What exactly do I send to conexant to request for the datasheet?  Ask them
 for the info on conexant high definition audio 82801g (ich7) device?
+
+----------------------------------------------------------------------
+ rlrevell - 06-21-06 01:23 
+----------------------------------------------------------------------
+I don't know, forward them a link to this bug report or something.  They
+will almost certainly ignore you, but it's worth a try.
+
+You could also bug the laptop vendor about it.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,4 +93,5 @@ Date Modified  Username       Field                    Change
 06-21-06 00:46 mlfarrell      Note Added: 0010368                          
 06-21-06 00:58 rlrevell       Note Added: 0010371                          
 06-21-06 01:06 mlfarrell      Note Added: 0010372                          
+06-21-06 01:23 rlrevell       Note Added: 0010373                          
 ======================================================================
