@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001943]: No sound since ~2.6.3
-Date: Tue, 20 Jun 2006 19:58:54 +0200
-Message-ID: <200f5adb221bf7fa77e238f28c9b7e52@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002217]: Problems with ASUS A6Km
+Date: Tue, 20 Jun 2006 20:16:27 +0200
+Message-ID: <93d87c8815a2c1927554264fc4b1bc4e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 62CD813E
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 29FDC130
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 19:58:54 +0200 (MEST)
+	Tue, 20 Jun 2006 20:16:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,86 +25,103 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1943> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2217> 
 ======================================================================
-Reported By:                hazelsct
+Reported By:                mafm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1943
-Category:                   PCI - ali5451
+Issue ID:                   2217
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian etch
-Kernel Version:             2.6.8 through 2.6.15-rc5
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-19-2006 16:15 CET
-Last Modified:              06-20-2006 19:58 CEST
+Date Submitted:             06-18-2006 05:06 CEST
+Last Modified:              06-20-2006 20:16 CEST
 ======================================================================
-Summary:                    No sound since ~2.6.3
+Summary:                    Problems with ASUS A6Km
 Description: 
- Greetings,
+I have the same problems described here:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898 , but I'm
+opening a new report because I can't find a way to add a comment there.
 
-Running Debian woody/sarge/etch, the last time sound worked on my Fujitsu
-Lifebook P2120 was with 2.6.3 (or maybe 2.6.5, but not with 2.6.8 or
-anything since).  Esd doesn't work, nor do system beeps, and GNOME volume
-control says no volume control elements are found.  I can get ALSA working
-with 2.6.8 on all of my other machines, and with 2.6.15 on all that I have
-tried.  alsamixer runs and shows levels which I can change, but still no
-sound.
-
-An identical ALSA setup worked with sarge under 2.6.3 but not 2.6.8. Tried
-running alsaconf again to no avail.  Under 2.6.3, at least when doing
-hardware mute and then un-mute (Fn-F3), un-mute beeps; on newer kernels,
-there's no beep.
-
-Now under Debian etch (testing), even 2.6.3 no longer works properly:
-sounds played through esd simply repeat the first second or so over and
-over again. I keep upgrading the kernel (most recently to 2.6.16-rc5 in
-experimental) hoping that this time it will finally work, but it hasn't in
-that long...
-
-Debian etch has alsa 1.0.10-3, and lsmod shows the following sound modules
-installed:
-snd_ali5451 20172 1
-snd_ac97_codec 82784 1 snd_ali5451
-snd_ac97_bus 2048 1 snd_ac97_codec
-soundcore 8672 1 snd
-snd_page_alloc 9800 1 snd_pcm
-
-lspci shows:
-0000:00:04.0 Multimedia audio controller: ALi Corporation M5451 PCI
-AC-Link Controller Audio Device (rev 01)
-
-What other information would help to diagnose/fix this problem?
-
-Thanks,
-Adam
+I tried that asus-a6km-fix.diff but it doesn't work, in fact it doesn't
+appear to have any effect at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- hazelsct - 06-20-06 19:49 
+ tiwai - 06-20-06 19:46 
 ----------------------------------------------------------------------
-Now how to close this bug?
+You should check the PCI SSID whether it really matches with the one added
+in the patch.
 
 ----------------------------------------------------------------------
- rlrevell - 06-20-06 19:58 
+ mafm - 06-20-06 20:16 
 ----------------------------------------------------------------------
-Please tell us what you did to solve it and I will close the bug.
+Do you mean subsystem_vendor and subsystem_device? Despite the hexadecimal
+0x before the numbers in the patch, it looks like the same -- I assume
+that lspci uses hexadecimals too but doesn't print the 0x in front of the
+numbers.
+
+My model is A6KM Q0012H, with amd64 and DDR instead of DDRII of the Intel
+models; and currently I use "acpi=ht" because it has some problems with
+the BIOS (it won't boot with the USB attached otherwise). Doing 'echo "7a
+57c1" > /proc/asound/card0/codec97#0/ac97#0-0+regs' doesn't work saying
+that the device doesn't exists, but I can't think of any other difference
+with the other bug reports talking about the same problem: symptoms are
+the same, the models of the hardware seem to be the same too, etc.
+
+The patch:
+------------------------------------------------------------------------------
+diff -r 10a2ea6ebebc pci/ac97/ac97_patch.c
+--- a/pci/ac97/ac97_patch.c	Thu Apr 20 12:37:00 2006 +0200
++++ b/pci/ac97/ac97_patch.c	Thu Apr 20 14:55:55 2006 +0200
+@@ -2048,7 +2048,10 @@ int patch_alc650(struct snd_ac97 * ac97)
+ 	/* Enable SPDIF-IN only on Rev.E and above */
+ 	val = snd_ac97_read(ac97, AC97_ALC650_CLOCK);
+ 	/* SPDIF IN with pin 47 */
+-	if (ac97->spec.dev_flags)
++	if (ac97->spec.dev_flags &&
++	    /* ASUS A6KM requires EAPD */
++	    ! (ac97->subsystem_vendor == 0x1043 &&
++	       ac97->subsystem_device == 0x1103))
+ 		val |= 0x03; /* enable */
+ 	else
+ 		val &= ~0x03; /* disable */
+------------------------------------------------------------------------------
+
+lspci -v
+------------------------------------------------------------------------------
+00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
+AC'97 Sound Controller (rev a0)
+        Subsystem: ASUSTeK Computer Inc. Unknown device 1103
+        Flags: bus master, medium devsel, latency 64, IRQ 11
+        I/O ports at e400 [size=256]
+        I/O ports at e000 [size=128]
+        Capabilities: [48] Power Management version 2
+------------------------------------------------------------------------------
+
+lspci -v -n
+------------------------------------------------------------------------------
+00:02.7 0401: 1039:7012 (rev a0)
+        Subsystem: 1043:1103
+        Flags: bus master, medium devsel, latency 64, IRQ 11
+        I/O ports at e400 [size=256]
+        I/O ports at e000 [size=128]
+        Capabilities: [48] Power Management version 2
+------------------------------------------------------------------------------
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-19-06 16:15 hazelsct       New Issue                                    
-03-19-06 16:15 hazelsct       Distribution              => Debian etch     
-03-19-06 16:15 hazelsct       Kernel Version            => 2.6.8 through
-2.6.15-rc5
-06-20-06 00:29 hazelsct       Note Added: 0010322                          
-06-20-06 00:33 rlrevell       Note Added: 0010323                          
-06-20-06 19:41 tiwai          Note Added: 0010343                          
-06-20-06 19:47 hazelsct       Note Added: 0010346                          
-06-20-06 19:49 hazelsct       Note Added: 0010348                          
-06-20-06 19:58 rlrevell       Note Added: 0010353                          
+06-18-06 05:06 mafm           New Issue                                    
+06-18-06 16:51 ryswic         Issue Monitored: ryswic                      
+06-19-06 15:49 mafm           Issue Monitored: mafm                        
+06-19-06 15:50 mafm           Note Added: 0010315                          
+06-20-06 19:46 tiwai          Note Added: 0010345                          
+06-20-06 20:16 mafm           Note Added: 0010354                          
 ======================================================================
