@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002174]: No sound at all using
-	snd-hda-intel / alsa-1.0.11
-Date: Tue, 20 Jun 2006 17:38:46 +0200
-Message-ID: <4789bba73644beb5bbd180d2a4b29cec@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: latency.c and delay related questions
+Date: Tue, 20 Jun 2006 12:15:26 -0400
+Message-ID: <1150820127.2754.116.camel@mindpipe>
+References: <b6251a620606200310q7b532513s1aa6542368568460@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B5818171
-	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 17:38:46 +0200 (MEST)
+In-Reply-To: <b6251a620606200310q7b532513s1aa6542368568460@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,107 +17,149 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Christophe Osuna <christophe.osuna@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2006-06-20 at 12:10 +0200, Christophe Osuna wrote:
+> Hi,
+> 
+> I am trying to get small delays with my application and I have been
+> playing with "latency" from alsa-lib/test.
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
-======================================================================
-Reported By:                carllivitt
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2174
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2122_FC5smp
-======================================================================
-Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-20-2006 17:38 CEST
-======================================================================
-Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
-Description: 
-On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
-speakers or headphone jack. It has never worked.
+Can you please not post HTML to this list?
 
-I've used the standard FC5 kernel and the updated kernel
-(2.6.16-1.2122FC5smp) without success. 
+Lee
 
-I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
-sound. Everything is unmuted, alsamixer can turn the volume controls up
-and down, KDE's kmix also works fine but still no sound. There are no
-error messages in the syslog. 
-
-I've also tried using the 'single_cmd=1' module loading option. 
-
-I tried the CVS version of ALSA, but it didn't work with my kernel - there
-were unresolved symbols that I couldn't resolve. I'm back to using the
-1.0.11 version.
-
-======================================================================
-
-----------------------------------------------------------------------
- fatman - 06-20-06 11:21 
-----------------------------------------------------------------------
-I'm sorry for misunderstanding - I was tired. I ment that there is sound
-but it's hardly audible. In alsa mixer everything is at maximum level.
-Passing pciacpi=off makes nothing, only acpi=off helps at all. If you do
-some google search you should found a topic on Ubuntu group AFAIR that
-it's a problem with kernel IRQ routing. 
-
-That's great that you have P100 - there is few people having P100 with
-Linux onboard. Feel free to ask me for help and testing.
-I'm using Gentoo with latest vanilla kernel 2.6.17
-
-----------------------------------------------------------------------
- legoguy - 06-20-06 17:38 
-----------------------------------------------------------------------
-FYI this issue was already noted in bug #1957, but didn't get this far in
-discussions. Different laptop, same chip and codec. Hoping to see some
-progress on this.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-30-06 17:11 carllivitt     New Issue                                    
-05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
-05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
-06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
-06-04-06 23:37 carllivitt     Note Added: 0010065                          
-06-12-06 21:51 carllivitt     Note Added: 0010174                          
-06-12-06 22:03 rlrevell       Note Added: 0010175                          
-06-12-06 22:52 carllivitt     Note Added: 0010176                          
-06-12-06 22:54 rlrevell       Note Added: 0010177                          
-06-12-06 23:10 carllivitt     Note Added: 0010178                          
-06-12-06 23:14 rlrevell       Note Added: 0010179                          
-06-12-06 23:29 carllivitt     Note Added: 0010180                          
-06-12-06 23:35 rlrevell       Note Added: 0010181                          
-06-12-06 23:49 carllivitt     Note Added: 0010182                          
-06-12-06 23:58 rlrevell       Note Added: 0010183                          
-06-13-06 15:33 godeater       Note Added: 0010193                          
-06-13-06 18:13 rlrevell       Note Added: 0010198                          
-06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
-06-13-06 18:58 rlrevell       Note Added: 0010200                          
-06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
-06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
-06-14-06 10:12 carllivitt     Note Added: 0010207                          
-06-14-06 10:21 carllivitt     File Added: codec0.txt                       
-06-14-06 10:21 carllivitt     Note Added: 0010208                          
-06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
-06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
-06-17-06 19:51 carllivitt     Note Added: 0010288                          
-06-17-06 19:57 rlrevell       Note Added: 0010289                          
-06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
-06-19-06 08:42 fatman         Note Added: 0010306                          
-06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
-06-19-06 13:49 jlpedrosa      Note Edited: 0010308                         
-06-20-06 11:04 carllivitt     Note Added: 0010332                          
-06-20-06 11:21 fatman         Note Added: 0010333                          
-06-20-06 17:38 legoguy        Note Added: 0010338                          
-======================================================================
+> The current delay with "latency" is equal to a minimum (that depends
+> on the sound card) plus *two* times the period time.  If I disable
+> manual change of sound card state as described in the patch below the
+> delay becomes equal to a minimum *higher than the previous* plus *one*
+> time the period time.
+> 
+> The delay has been measured with an external box plugged on the sound
+> card.
+> 
+> I would like to mix both settings to get a delay of the lowest minimum
+> plus one time the period time. But for this I need to understand what
+> is happening, and more precisely:
+> 
+> * why is snd_pcm_link() mandatory? (no sound otherwise)
+> * why two buffers of silence and not just one?
+> * why is there no snd_pcm_start() for the playback device?
+> * why is the minimum delay lower with manual handling of the sound 
+> card state?
+> 
+> Help is welcome :-)
+> 
+> Thanxs in advance.
+> 
+> 
+> 
+> --- latency.c.orig      2006-06-20 10:21:57.000000000 +0200
+> +++ latency.c   2006-06-20 11:06:10.000000000 +0200
+> @@ -148,11 +148,11 @@
+>                 printf("Unable to determine current swparams for %s: %
+> s\n", id, snd_strerror(err
+> ));
+>                 return err;
+>         }
+> -       err = snd_pcm_sw_params_set_start_threshold(handle, swparams,
+> 0x7fffffff);
+> -       if (err < 0) {
+> -               printf("Unable to set start threshold mode for %s: %s
+> \n", id, snd_strerror(err))
+> ;
+> -               return err;
+> -       }
+> +/*     err = snd_pcm_sw_params_set_start_threshold(handle, swparams,
+> 0x7fffffff); */
+> +/*     if (err < 0) { */
+> +/*             printf("Unable to set start threshold mode for %s: %s
+> \n", id, snd_strerror(err))
+> ; */
+> +/*             return err; */
+> +/*     } */
+>         tick_time_ok = 0;
+>         if (tick_time > 0) {
+>                 unsigned int time, ttime;
+> @@ -273,10 +273,10 @@
+>                 exit(0);
+>         }
+> 
+> -       if ((err = snd_pcm_prepare(phandle)) < 0) {
+> -               printf("Prepare error: %s\n", snd_strerror(err));
+> -               exit(0);
+> -       }
+> +/*     if ((err = snd_pcm_prepare(phandle)) < 0) { */
+> +/*             printf("Prepare error: %s\n", snd_strerror(err)); */
+> +/*             exit(0); */
+> +/*     } */
+> 
+>         snd_pcm_dump(phandle, output);
+>         snd_pcm_dump(chandle, output);
+> @@ -646,27 +646,27 @@
+>                 showlatency(latency);
+>                 if (tick_time_ok)
+>                         printf("Using tick time %ius\n",
+> tick_time_ok);
+> -               if ((err = snd_pcm_link(chandle, phandle)) < 0) {
+> -                       printf("Streams link error: %s\n",
+> snd_strerror(err));
+> -                       exit(0);
+> -               }
+> -               if (snd_pcm_format_set_silence(format, buffer,
+> latency*channels) < 0) {
+> -                       fprintf(stderr, "silence error\n");
+> -                       break;
+> -               }
+> -               if (writebuf(phandle, buffer, latency, &frames_out) <
+> 0) {
+> -                       fprintf(stderr, "write error\n");
+> -                       break;
+> -               }
+> -               if (writebuf(phandle, buffer, latency, &frames_out) <
+> 0) {
+> -                       fprintf(stderr, "write error\n");
+> -                       break;
+> -               }
+> -
+> -               if ((err = snd_pcm_start(chandle)) < 0) {
+> -                       printf("Go error: %s\n", snd_strerror(err));
+> -                       exit(0);
+> -               }
+> +/*             if ((err = snd_pcm_link(chandle, phandle)) < 0) { */
+> +/*                     printf("Streams link error: %s\n",
+> snd_strerror(err)); */
+> +/*                     exit(0); */
+> +/*             } */
+> +/*             if (snd_pcm_format_set_silence(format, buffer,
+> latency*channels) < 0) { */
+> +/*                     fprintf(stderr, "silence error\n"); */
+> +/*                     break; */
+> +/*             } */
+> +/*             if (writebuf(phandle, buffer, latency, &frames_out) <
+> 0) { */
+> +/*                     fprintf(stderr, "write error\n"); */
+> +/*                     break; */
+> +/*             } */
+> +/*             if (writebuf(phandle, buffer, latency, &frames_out) <
+> 0) { */
+> +/*                     fprintf(stderr, "write error\n"); */
+> +/*                     break; */
+> +/*             } */
+> +
+> +/*             if ((err = snd_pcm_start(chandle)) < 0) { */
+> +/*                     printf("Go error: %s\n", snd_strerror(err));
+> */
+> +/*                     exit(0); */
+> +/*             } */
+>                 gettimestamp(phandle, &p_tstamp);
+>                 gettimestamp(chandle, &c_tstamp);
+>  #if 0
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
