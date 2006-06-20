@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Tue, 20 Jun 2006 19:49:57 +0200
-Message-ID: <d0eb0a74546aab10fc1da8cb3a9cff76@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002189]: No sound on speakers,
+	low volume on the headphones, Packard bell V7900
+Date: Tue, 20 Jun 2006 19:52:01 +0200
+Message-ID: <d432b866cd9d3c2ab064d33bcaf8d2c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 47B36171
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 31E4C171
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 19:49:57 +0200 (MEST)
+	Tue, 20 Jun 2006 19:52:02 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,69 +26,167 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2189> 
 ======================================================================
-Reported By:                El Santo
-Assigned To:                
+Reported By:                bettored
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2219
-Category:                   GENERIC - mpu401
+Issue ID:                   2189
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian etch (2006-06-18)
-Kernel Version:             2.6.15-1-686
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.15-23-386
 ======================================================================
-Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-20-2006 19:49 CEST
+Date Submitted:             06-07-2006 19:47 CEST
+Last Modified:              06-20-2006 19:52 CEST
 ======================================================================
-Summary:                    snd-mpu401 don't load
+Summary:                    No sound on speakers, low volume on the headphones,
+Packard bell V7900
 Description: 
-I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
-driver. It loads all necesary modules, includind snd-mpu401-uart, but no
-snd-mpu401
-The audio part of the driver works perfectly, but the midi port doesn't
-work.
+Hi,
+I have a Packard Bell with a soundcard Realtek ALC260 HD Audio, with Intel
+hda-intel, with problems.
+I have no sound on speakers and very low on the headphones.
+In the alsamixer all is on.
+Recently i actualized to Alsa 1.0.11 but with same problem.
 
-In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
-not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
-(setting the port accordingly to BIOS) it doesnt work. I don't know the
-mpu401 irq setting but i tryed them all. None of them worked. The driver
-says "device not found".
+In the Volumen Control, i have two:
+1. HDA intel (alsa mixer)
+2. Realtek ALC260 (oss mixer)
+And it is correct.
 
-Under windows xp the port works perfectly, so the hardware is ok. Anyway
-under windows xp, i use a "system inspector" to monitor ioports and irq
-usage, and i didnt see any irq assigned for mpu401 port, and the port
-(0x330) wasn't occupied neither.
+Here leave same test:
 
-any idea?
+
+janek@janek-laptop:~$ lsmod | grep snd
+snd_hda_intel          19348  2
+snd_hda_codec         143152  1 snd_hda_intel
+snd_pcm_oss            43936  0
+snd_mixer_oss          18944  2 snd_pcm_oss
+snd_pcm                89352  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
+snd_timer              25348  1 snd_pcm
+snd                    55396  8
+snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixe r_oss,snd_pcm,snd_timer
+soundcore              10208  2 snd
+snd_page_alloc         10760  2 snd_hda_intel,snd_pcm
+
+--------------------------------------------------------------------------------
+
+janek@janek-laptop:~$ lspci
+0000:00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub
+(rev 03)
+0000:00:01.0 PCI bridge: Intel Corporation Mobile PCI Express Graphics
+Port (rev 03)
+0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition
+Audio Controller (rev 02)
+0000:00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 1 (rev 02)
+0000:00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 2 (rev 02)
+0000:00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 3 (rev 02)
+0000:00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
+Express Port 4 (rev 02)
+0000:00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #1 (rev 02)
+0000:00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #2 (rev 02)
+0000:00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #3 (rev 02)
+0000:00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
+UHCI #4 (rev 02)
+0000:00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2
+EHCI Controller (rev 02)
+0000:00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev
+e2)
+0000:00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
+Bridge (rev 02)
+0000:00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
+Controller (rev 02)
+0000:00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus
+Controller (rev 02)
+0000:01:00.0 VGA compatible controller: ATI Technologies Inc: Unknown
+device 71c5
+0000:03:00.0 Network controller: Intel Corporation: Unknown device 4222
+(rev 02)
+0000:06:02.0 FireWire (IEEE 1394): O2 Micro, Inc.: Unknown device 00f7
+(rev 02)
+0000:06:02.2 0805: O2 Micro, Inc.: Unknown device 7120 (rev 01)
+0000:06:02.3 Mass storage controller: O2 Micro, Inc.: Unknown device 7130
+(rev 01)
+0000:06:08.0 Ethernet controller: Intel Corporation: Unknown device 1092
+(rev 02)
+
+
+-------------------------------------------------------------------------------
+
+janek@janek-laptop:~$ modinfo soundcore
+filename:       /lib/modules/2.6.15-23-386/kernel/sound/soundcore.ko
+description:    Core sound module
+author:         Alan Cox
+license:        GPL
+alias:          char-major-14-*
+vermagic:       2.6.15-23-386 preempt 486 gcc-4.0
+depends:
+srcversion:     DD426F1CCA2CC5F060F6F92
+
+
+---------------------------------------------------------------------------
+
+
+Thanks for your time 
+
+
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-19-06 03:45 
+ ixM - 06-18-06 23:59 
 ----------------------------------------------------------------------
-Post output of 
+Hi, 
 
-aplaymidi -l
+I'm having the same problem as you. My Computer is a PB Easynote 7909
+Laptop and I have very, very low sound out the speakers or out the
+headphones (I had to connect my computer to my stereo hifi with very high
+sound to hear something). I tried each model (with modprobe). I also tried
+official (forked ?) drivers available at realtek, without success.
 
-cat /proc/asound/cards
+No result. I've been on #lad and #alsa, some people helped me and I'm now
+sure it isn't a mixer problem.
 
-lspci -vn
+I've also checked the BIOS
+I'm using alsa-driver 1.11 
+I've tried with two kernels : 2.6.17 (knopix) and 2.6.15 (ubuntu). It
+hasn't fixed anything.
+
+Thank you.
+Best regards,
+`ixM
+
+P.S. If something is missing, I'll add it :)
 
 ----------------------------------------------------------------------
- tiwai - 06-20-06 19:49 
+ tiwai - 06-20-06 19:52 
 ----------------------------------------------------------------------
-Usually snd-mpu401 can be loaded without module options using ACPI PnP.
+Try different model option like model=hp or model=basic, as described in
+ALSA-Configuration.txt (see ALC260).
+
+If it doesn't work, you can use model=test after building with debug
+option (--with-debug=full of alsa-driver configure), then you can adjust
+almost every mixer setting.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-18-06 17:41 El Santo       New Issue                                    
-06-18-06 17:41 El Santo       Distribution              => Debian etch
-(2006-06-18)
-06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
-06-19-06 03:45 Raymond        Note Added: 0010305                          
-06-20-06 19:49 tiwai          Note Added: 0010349                          
+06-07-06 19:47 bettored       New Issue                                    
+06-07-06 19:47 bettored       Kernel Version            => 2.6.15-23-386   
+06-15-06 20:25 bonobo         Note Added: 0010243                          
+06-15-06 20:32 bonobo         Note Edited: 0010243                         
+06-18-06 23:59 ixM            Note Added: 0010304                          
+06-20-06 19:52 tiwai          Note Added: 0010350                          
 ======================================================================
