@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002221]: Volume entirely too faint on
-	82801g ich7
-Date: Tue, 20 Jun 2006 23:42:34 +0200
-Message-ID: <077991f1a8ac56b03faee61257c5357a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Tue, 20 Jun 2006 23:51:32 +0200
+Message-ID: <c9b1a4c8c47be609890bfe70846486d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6F85418F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id ED76818F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 23:42:34 +0200 (MEST)
+	Tue, 20 Jun 2006 23:51:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,68 +26,110 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2221> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
 ======================================================================
-Reported By:                mlfarrell
+Reported By:                carllivitt
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2221
+Issue ID:                   2174
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Suse 10.1
-Kernel Version:             2.6.16.13-4-smp
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
-Date Submitted:             06-19-2006 02:19 CEST
-Last Modified:              06-20-2006 23:42 CEST
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              06-20-2006 23:51 CEST
 ======================================================================
-Summary:                    Volume entirely too faint on 82801g ich7
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
-I've seen this bug online many times with a resolution of upgrading to alsa
-1.0.11, but I upgaded and am still having the issue.
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
 
-I'm using an hp pavilion dv8000 laptop with built-in altec lansing
-speakers.
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
 
-Windows reports the soundcard as conexant high definition audio, linux as
-82801g (ich7).  I've tried setting every model I know in the
-/etc/modprobe.d/sound file for the hda-intel driver and am still having a
-lack of useful volume sliders.  The key ones that I need are "pc speaker"
-to turn it down cause its way too loud and "external amplifier" to turn up
-the laptop's altec lansing speakers (sound volume is decent out of the
-headphone jack).
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
 
-Even with the volume all the way up (both master and pcm) I'm getting
-sound thats almost too faint to hear.  
+I've also tried using the 'single_cmd=1' module loading option. 
 
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
 
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001957 HP dv8000t hda-intel codec not recognized
 ======================================================================
 
 ----------------------------------------------------------------------
- mlfarrell - 06-20-06 23:38 
+ tiwai - 06-20-06 19:38 
 ----------------------------------------------------------------------
-Is there anything I can do to help the process along?
-The card will be supported eventually right?
+It's a conexant codec chip and we have no datasheet for this chip at all.
+Thus it's hard to implement properly if the auto-detection code doesn't
+work.
 
 ----------------------------------------------------------------------
- rlrevell - 06-20-06 23:42 
+ jlpedrosa - 06-20-06 23:51 
 ----------------------------------------------------------------------
-Probably not.  It will "eventually" be supported if someone reverse
-engineers it, or Conexant provides a datasheet.
+carllivitt: lpedrosa: I think your computer has a different chipset and is
+confusing things in this bug report.
 
-Don't hold your breath.
+I really didn't express myself, i'm forgetting my english.
+
+I was trying to say that the "symptoms" are almost equal and the lspci was
+pretty similar, and suggested it might be the same issue but i don't know,
+now you told me it is not the same i won't post again. 
+
+Sorry for the possible missunderstanding.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-19-06 02:19 mlfarrell      New Issue                                    
-06-19-06 02:19 mlfarrell      Distribution              => Suse 10.1       
-06-19-06 02:19 mlfarrell      Kernel Version            => 2.6.16.13-4-smp 
-06-19-06 21:59 mlfarrell      Issue Monitored: mlfarrell                    
-06-20-06 19:49 tiwai          Note Added: 0010347                          
-06-20-06 23:38 mlfarrell      Note Added: 0010358                          
-06-20-06 23:42 rlrevell       Note Added: 0010360                          
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
+06-12-06 22:52 carllivitt     Note Added: 0010176                          
+06-12-06 22:54 rlrevell       Note Added: 0010177                          
+06-12-06 23:10 carllivitt     Note Added: 0010178                          
+06-12-06 23:14 rlrevell       Note Added: 0010179                          
+06-12-06 23:29 carllivitt     Note Added: 0010180                          
+06-12-06 23:35 rlrevell       Note Added: 0010181                          
+06-12-06 23:49 carllivitt     Note Added: 0010182                          
+06-12-06 23:58 rlrevell       Note Added: 0010183                          
+06-13-06 15:33 godeater       Note Added: 0010193                          
+06-13-06 18:13 rlrevell       Note Added: 0010198                          
+06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
+06-13-06 18:58 rlrevell       Note Added: 0010200                          
+06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
+06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
+06-14-06 10:12 carllivitt     Note Added: 0010207                          
+06-14-06 10:21 carllivitt     File Added: codec0.txt                       
+06-14-06 10:21 carllivitt     Note Added: 0010208                          
+06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
+06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
+06-17-06 19:51 carllivitt     Note Added: 0010288                          
+06-17-06 19:57 rlrevell       Note Added: 0010289                          
+06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
+06-19-06 08:42 fatman         Note Added: 0010306                          
+06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
+06-19-06 13:49 jlpedrosa      Note Edited: 0010308                         
+06-20-06 11:04 carllivitt     Note Added: 0010332                          
+06-20-06 11:21 fatman         Note Added: 0010333                          
+06-20-06 17:38 legoguy        Note Added: 0010338                          
+06-20-06 17:39 legoguy        Issue Monitored: legoguy                     
+06-20-06 19:38 tiwai          Note Added: 0010341                          
+06-20-06 19:45 rlrevell       Relationship added       duplicate of 0001957
+06-20-06 23:51 jlpedrosa      Note Added: 0010361                          
 ======================================================================
