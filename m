@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002211]: No sound using snd-hda-intel
-	drivers
-Date: Tue, 20 Jun 2006 19:38:53 +0200
-Message-ID: <fae9b5eae6e0f3624c9cc009978c9159@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001943]: No sound since ~2.6.3
+Date: Tue, 20 Jun 2006 19:41:32 +0200
+Message-ID: <706532ec481ce42ffe27aa7fbe157fce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF4DF17B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6A615176
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 19:38:53 +0200 (MEST)
+	Tue, 20 Jun 2006 19:41:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,62 +25,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2211> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1943> 
 ======================================================================
-Reported By:                jmclennan
-Assigned To:                tiwai
+Reported By:                hazelsct
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2211
-Category:                   PCI - hda-intel
+Issue ID:                   1943
+Category:                   PCI - ali5451
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2133_FC5smp
+Status:                     new
+Distribution:               Debian etch
+Kernel Version:             2.6.8 through 2.6.15-rc5
 ======================================================================
-Date Submitted:             06-15-2006 20:33 CEST
-Last Modified:              06-20-2006 19:38 CEST
+Date Submitted:             03-19-2006 16:15 CET
+Last Modified:              06-20-2006 19:41 CEST
 ======================================================================
-Summary:                    No sound using snd-hda-intel drivers
+Summary:                    No sound since ~2.6.3
 Description: 
-On a new HP DC7600 dual core Pentium D, sound card is detected, but no
-sound from either the front jack, rear jack or even the system speaker.
+ Greetings,
 
-kernel: 2.6.16-1.2133_FC5smp
-alsa-driver version: 1.0.11
+Running Debian woody/sarge/etch, the last time sound worked on my Fujitsu
+Lifebook P2120 was with 2.6.3 (or maybe 2.6.5, but not with 2.6.8 or
+anything since).  Esd doesn't work, nor do system beeps, and GNOME volume
+control says no volume control elements are found.  I can get ALSA working
+with 2.6.8 on all of my other machines, and with 2.6.15 on all that I have
+tried.  alsamixer runs and shows levels which I can change, but still no
+sound.
 
-Everything is unmuted, alsamixer can turn the volume controls up and down
-(all levels set to 100%.)
+An identical ALSA setup worked with sarge under 2.6.3 but not 2.6.8. Tried
+running alsaconf again to no avail.  Under 2.6.3, at least when doing
+hardware mute and then un-mute (Fn-F3), un-mute beeps; on newer kernels,
+there's no beep.
+
+Now under Debian etch (testing), even 2.6.3 no longer works properly:
+sounds played through esd simply repeat the first second or so over and
+over again. I keep upgrading the kernel (most recently to 2.6.16-rc5 in
+experimental) hoping that this time it will finally work, but it hasn't in
+that long...
+
+Debian etch has alsa 1.0.10-3, and lsmod shows the following sound modules
+installed:
+snd_ali5451 20172 1
+snd_ac97_codec 82784 1 snd_ali5451
+snd_ac97_bus 2048 1 snd_ac97_codec
+soundcore 8672 1 snd
+snd_page_alloc 9800 1 snd_pcm
+
+lspci shows:
+0000:00:04.0 Multimedia audio controller: ALi Corporation M5451 PCI
+AC-Link Controller Audio Device (rev 01)
+
+What other information would help to diagnose/fix this problem?
+
+Thanks,
+Adam
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-20-06 19:35 
+ rlrevell - 06-20-06 00:33 
 ----------------------------------------------------------------------
-This should have been already fixed on HG version...
+"Hmm... Three months with no help on this bug."
+
+Um, maybe you could try searching between 2.6.3 and 2.6.8 to identify the
+change that broke it?
 
 ----------------------------------------------------------------------
- gvidal - 06-20-06 19:38 
+ tiwai - 06-20-06 19:41 
 ----------------------------------------------------------------------
-but I've just noticed that I cannot hear the system beeps
-(visual beeps work but sound is off)
-
-any idea?
-
-(BTW, what is the 'HG version' ?)
+Check whether it's a driver but or another system regression.
+If you see the entry in /proc/asound/cards after loading snd-ali5451
+module, the driver is mostly OK.  If not, you should have kernel error
+messages.  Compile with debug option, --with-debug=full for alsa-driver
+configure script.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-15-06 20:33 jmclennan      New Issue                                    
-06-15-06 20:33 jmclennan      File Added: scsound.log                      
-06-15-06 20:33 jmclennan      Distribution              => Fedora Core 5   
-06-15-06 20:33 jmclennan      Kernel Version            => 2.6.16-1.2133_FC5smp
-06-15-06 20:34 jmclennan      Note Added: 0010244                          
-06-15-06 20:37 jmclennan      Note Added: 0010245                          
-06-20-06 00:38 jmclennan      Note Added: 0010324                          
-06-20-06 18:22 gvidal         Note Added: 0010339                          
-06-20-06 19:35 tiwai          Note Added: 0010340                          
-06-20-06 19:38 gvidal         Note Added: 0010342                          
+03-19-06 16:15 hazelsct       New Issue                                    
+03-19-06 16:15 hazelsct       Distribution              => Debian etch     
+03-19-06 16:15 hazelsct       Kernel Version            => 2.6.8 through
+2.6.15-rc5
+06-20-06 00:29 hazelsct       Note Added: 0010322                          
+06-20-06 00:33 rlrevell       Note Added: 0010323                          
+06-20-06 19:41 tiwai          Note Added: 0010343                          
 ======================================================================
