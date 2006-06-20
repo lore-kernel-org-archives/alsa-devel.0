@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002211]: No sound using snd-hda-intel
-	drivers
-Date: Tue, 20 Jun 2006 19:35:11 +0200
-Message-ID: <82e1179bffb6218c493bd26b3b70cd37@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: latency.c and delay related questions
+Date: Tue, 20 Jun 2006 19:38:21 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0606201924250.9219@tm8103.perex-int.cz>
+References: <b6251a620606200310q7b532513s1aa6542368568460@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D8115171
-	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 19:35:11 +0200 (MEST)
+In-Reply-To: <b6251a620606200310q7b532513s1aa6542368568460@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,73 +17,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Christophe Osuna <christophe.osuna@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 20 Jun 2006, Christophe Osuna wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2211> 
-======================================================================
-Reported By:                jmclennan
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2211
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2133_FC5smp
-======================================================================
-Date Submitted:             06-15-2006 20:33 CEST
-Last Modified:              06-20-2006 19:35 CEST
-======================================================================
-Summary:                    No sound using snd-hda-intel drivers
-Description: 
-On a new HP DC7600 dual core Pentium D, sound card is detected, but no
-sound from either the front jack, rear jack or even the system speaker.
+> The current delay with "latency" is equal to a minimum (that depends
+> on the sound card) plus *two* times the period time.  If I disable
 
-kernel: 2.6.16-1.2133_FC5smp
-alsa-driver version: 1.0.11
+Yes, it's correct. Basically, you cannot avoid double buffering, so the 
+total latency is:
 
-Everything is unmuted, alsamixer can turn the volume controls up and down
-(all levels set to 100%.)
-======================================================================
+1) one capture period
+2) one playback period (actually being played)
+3) moved captured period to playback buffer (not counted)
 
-----------------------------------------------------------------------
- gvidal - 06-20-06 18:22 
-----------------------------------------------------------------------
-I had exactly the same problem (on the same machine), and I've solved it
-by adding the line:
+So the latency should be 2 * period plus a hw latency as you noted. 
+Everything is correct. Of course, you may get better latencies if you run 
+"busy loop" on not-loaded system and immediately put captured data to 
+playback stream, but it's not a correct behaviour in *nix.
 
-  options snd-hda-intel model=basic
+> * why is snd_pcm_link() mandatory? (no sound otherwise)
 
-to the file
+It links playback and capture streams so only one start() is called. On 
+hardware which supports hardware syncing, the DMA operation is started at 
+same time for both stream.
 
-  /etc/modprobe.conf
+> * why two buffers of silence and not just one?
 
-(then reboot and adjust the volume with alsamixer)
+You must wait one period to get data from the capture direction and then 
+you have exactly one period time to put these data to the playback. As I 
+said, you can get better results with busy-loop but it's bad 
+implementation (but if you have a spare dedicated machine without other 
+tasks, it might be an option).
 
-good lock!
+						Jaroslav
 
-----------------------------------------------------------------------
- tiwai - 06-20-06 19:35 
-----------------------------------------------------------------------
-This should have been already fixed on HG version...
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-15-06 20:33 jmclennan      New Issue                                    
-06-15-06 20:33 jmclennan      File Added: scsound.log                      
-06-15-06 20:33 jmclennan      Distribution              => Fedora Core 5   
-06-15-06 20:33 jmclennan      Kernel Version            => 2.6.16-1.2133_FC5smp
-06-15-06 20:34 jmclennan      Note Added: 0010244                          
-06-15-06 20:37 jmclennan      Note Added: 0010245                          
-06-20-06 00:38 jmclennan      Note Added: 0010324                          
-06-20-06 18:22 gvidal         Note Added: 0010339                          
-06-20-06 19:35 tiwai          Note Added: 0010340                          
-======================================================================
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
