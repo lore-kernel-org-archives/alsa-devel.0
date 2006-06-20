@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002174]: No sound at all using
 	snd-hda-intel / alsa-1.0.11
-Date: Tue, 20 Jun 2006 11:04:28 +0200
-Message-ID: <3244da1ecbdd7942fe5ce41fc568c6b8@bugtrack.alsa-project.org>
+Date: Tue, 20 Jun 2006 11:21:13 +0200
+Message-ID: <9c81d037527a7250fca18f3f0b3b703e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 637D4170
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8D08D17B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jun 2006 11:04:28 +0200 (MEST)
+	Tue, 20 Jun 2006 11:21:13 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
 Date Submitted:             05-30-2006 17:11 CEST
-Last Modified:              06-20-2006 11:04 CEST
+Last Modified:              06-20-2006 11:21 CEST
 ======================================================================
 Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
@@ -66,26 +66,6 @@ were unresolved symbols that I couldn't resolve. I'm back to using the
 ======================================================================
 
 ----------------------------------------------------------------------
- jlpedrosa - 06-19-06 13:49 
-----------------------------------------------------------------------
-humm....
-
-I'm sorry but i don't understand hear music, but it's silent....
-
-Right know i'm gonna trie
-
-i'll be back :)
-
-I'm back.
-
-It didn't worked for me.. i booted with acpi=off and doesent emit any
-sound.
-
-thanks anyway
-
-
-
-----------------------------------------------------------------------
  carllivitt - 06-20-06 11:04 
 ----------------------------------------------------------------------
 jlpedrosa: I think your computer has a different chipset and is confusing
@@ -94,6 +74,19 @@ things in this bug report.
 fatman: You have the same laptop as me - good! I don't understand "if you
 pass acpi=off to the kernel you can hear music but it's silent." Hmm, you
 can hear music but you can't...? Please explain!
+
+----------------------------------------------------------------------
+ fatman - 06-20-06 11:21 
+----------------------------------------------------------------------
+I'm sorry for misunderstanding - I was tired. I ment that there is sound
+but it's hardly audible. In alsa mixer everything is at maximum level.
+Passing pciacpi=off makes nothing, only acpi=off helps at all. If you do
+some google search you should found a topic on Ubuntu group AFAIR that
+it's a problem with kernel IRQ routing. 
+
+That's great that you have P100 - there is few people having P100 with
+Linux onboard. Feel free to ask me for help and testing.
+I'm using Gentoo with latest vanilla kernel 2.6.17
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -131,4 +124,5 @@ Date Modified  Username       Field                    Change
 06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
 06-19-06 13:49 jlpedrosa      Note Edited: 0010308                         
 06-20-06 11:04 carllivitt     Note Added: 0010332                          
+06-20-06 11:21 fatman         Note Added: 0010333                          
 ======================================================================
