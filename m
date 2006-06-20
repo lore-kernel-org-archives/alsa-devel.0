@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Wed, 21 Jun 2006 00:04:04 +0200
-Message-ID: <11976ff8910aecadad0562b540d67238@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 00:12:30 +0200
+Message-ID: <10026a540aeb47a7832cf092757764dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BB74816F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DD9CE187
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 00:04:04 +0200 (MEST)
+	Wed, 21 Jun 2006 00:12:30 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Debian etch (2006-06-18)
 Kernel Version:             2.6.15-1-686
 ======================================================================
 Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-21-2006 00:04 CEST
+Last Modified:              06-21-2006 00:12 CEST
 ======================================================================
 Summary:                    snd-mpu401 don't load
 Description: 
@@ -66,18 +66,19 @@ any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-21-06 00:00 
-----------------------------------------------------------------------
-Doesn't "gameport" conflict with "snd-mpu401"?
-
-Try blacklisting gameport and/or snd-mpu401-uart, reboot and try again
-
-----------------------------------------------------------------------
  rlrevell - 06-21-06 00:04 
 ----------------------------------------------------------------------
 Actually never mind - neither 0x300 nor 0x330 appear in ioports.
 
 Does this mean the BIOS is disabling the device?
+
+----------------------------------------------------------------------
+ El Santo - 06-21-06 00:12 
+----------------------------------------------------------------------
+i can set (or see) the MPU401 io port in BIOS but i can not set (or see)
+the MPU401 IRQ.
+
+The port is enabled and it works with windows xp
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -93,4 +94,5 @@ Date Modified  Username       Field                    Change
 06-20-06 23:54 El Santo       Note Added: 0010362                          
 06-21-06 00:00 rlrevell       Note Added: 0010363                          
 06-21-06 00:04 rlrevell       Note Added: 0010364                          
+06-21-06 00:12 El Santo       Note Added: 0010365                          
 ======================================================================
