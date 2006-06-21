@@ -1,14 +1,16 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Update: emu1212m
-Date: Wed, 21 Jun 2006 13:01:02 +0100
-Message-ID: <449934FE.8070904@superbug.co.uk>
-References: <44951964.9020509@superbug.co.uk>	<4498FBC4.5090900@superbug.co.uk>	<20060621091447.GW3206@master.mivlgu.local>
-	<s5hirmueqvi.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002211]: No sound using snd-hda-intel
+	drivers
+Date: Wed, 21 Jun 2006 14:35:43 +0200
+Message-ID: <46c1e7e6e9b2fd07cb913b4b77f1a98b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hirmueqvi.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E6708148
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Jun 2006 14:35:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -18,46 +20,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Sergey Vlasov <vsu@altlinux.ru>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 21 Jun 2006 13:14:47 +0400,
-> Sergey Vlasov wrote:
->   
->>> The trouble is, that if one changes some controls on the device, e.g.
->>> switching from SPDIF to ADAT digital outputs, a whole new different
->>> firmware image is loaded. So, one has multiple different firmware
->>> images, with one swapping between them. Should these firmware images be
->>> left in the kernel then, instead of using the userspace firmware api?
->>>       
->> There are some drivers in the kernel which load different firmware images
->> in different modes.  E.g., the ipw2200 driver can load ipw2200-bss.fw,
->> ipw2200-ibss.fw or ipw2200-sniffer.fw depending on the mode set by
->> iwconfig (and can switch between them at runtime).
->>
->> There is also an option to use a single firmware file consisting of
->> multiple parts used for different modes, but this obviously has a higher
->> memory overhead.  IMHO this should be used only when there are some
->> latency restrictions for switching modes (so that a driver can request all
->> firmware parts during initialization and then load different parts without
->> waiting for userspace helpers).
->>     
->
-> Well, from programming perspective, keeping all firmware images
-> would be easier, so I would implement the cached images at first.
-> In addition, these images are also useful to implement
-> suspend/resume.
->
->
-> Takashi
->   
 
-Ok, but if I am going to cache the images, I might as well just include 
-them in the driver .c code. The space taken up will be the same.
-I suppose the advantage of using the cache, it that the images are then 
-only loaded for the card variants that need it. I.e. loaded for 
-emu1212m, but not loaded to Audigy2.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2211> 
+======================================================================
+Reported By:                jmclennan
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2211
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2133_FC5smp
+======================================================================
+Date Submitted:             06-15-2006 20:33 CEST
+Last Modified:              06-21-2006 14:35 CEST
+======================================================================
+Summary:                    No sound using snd-hda-intel drivers
+Description: 
+On a new HP DC7600 dual core Pentium D, sound card is detected, but no
+sound from either the front jack, rear jack or even the system speaker.
 
-James
+kernel: 2.6.16-1.2133_FC5smp
+alsa-driver version: 1.0.11
+
+Everything is unmuted, alsamixer can turn the volume controls up and down
+(all levels set to 100%.)
+======================================================================
+
+----------------------------------------------------------------------
+ gvidal - 06-20-06 19:38 
+----------------------------------------------------------------------
+but I've just noticed that I cannot hear the system beeps
+(visual beeps work but sound is off)
+
+any idea?
+
+(BTW, what is the 'HG version' ?)
+
+----------------------------------------------------------------------
+ jmclennan - 06-21-06 14:35 
+----------------------------------------------------------------------
+I tried gvidal's suggestion of adding the line:
+
+  options snd-hda-intel model=basic
+
+and was able to get sound, although not properly. (Everything was going
+through the pc speaker, volume controls worked erratically.) After soem
+searching, I tried:
+
+  options snd-hda-intel model=auto
+
+and my problem was resolved. It looks like the default (model=auto) is not
+being applied properly (or at all) when modprobe loads the driver.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-15-06 20:33 jmclennan      New Issue                                    
+06-15-06 20:33 jmclennan      File Added: scsound.log                      
+06-15-06 20:33 jmclennan      Distribution              => Fedora Core 5   
+06-15-06 20:33 jmclennan      Kernel Version            => 2.6.16-1.2133_FC5smp
+06-15-06 20:34 jmclennan      Note Added: 0010244                          
+06-15-06 20:37 jmclennan      Note Added: 0010245                          
+06-20-06 00:38 jmclennan      Note Added: 0010324                          
+06-20-06 18:22 gvidal         Note Added: 0010339                          
+06-20-06 19:35 tiwai          Note Added: 0010340                          
+06-20-06 19:38 gvidal         Note Added: 0010342                          
+06-21-06 14:35 jmclennan      Note Added: 0010397                          
+======================================================================
