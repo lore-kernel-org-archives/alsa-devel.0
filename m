@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002189]: No sound on speakers,
 	low volume on the headphones, Packard bell V7900
-Date: Wed, 21 Jun 2006 19:02:11 +0200
-Message-ID: <4f2b59498151fc6812cc2b91dbda55c7@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 19:16:26 +0200
+Message-ID: <02341e2cc6ae1d5492e4d4fee2f92f6e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A1EC512C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3081B175
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 19:02:11 +0200 (MEST)
+	Wed, 21 Jun 2006 19:16:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:
 Kernel Version:             2.6.15-23-386
 ======================================================================
 Date Submitted:             06-07-2006 19:47 CEST
-Last Modified:              06-21-2006 19:02 CEST
+Last Modified:              06-21-2006 19:16 CEST
 ======================================================================
 Summary:                    No sound on speakers, low volume on the headphones,
 Packard bell V7900
@@ -146,16 +146,6 @@ Thanks for your time
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-20-06 19:52 
-----------------------------------------------------------------------
-Try different model option like model=hp or model=basic, as described in
-ALSA-Configuration.txt (see ALC260).
-
-If it doesn't work, you can use model=test after building with debug
-option (--with-debug=full of alsa-driver configure), then you can adjust
-almost every mixer setting.
-
-----------------------------------------------------------------------
  ixM - 06-21-06 19:02 
 ----------------------------------------------------------------------
 tiwai,
@@ -167,6 +157,11 @@ Maybe it worked for someone but not for me :)
 
 Bye
 
+----------------------------------------------------------------------
+ tiwai - 06-21-06 19:16 
+----------------------------------------------------------------------
+Did you really try test model, too?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -177,4 +172,5 @@ Date Modified  Username       Field                    Change
 06-18-06 23:59 ixM            Note Added: 0010304                          
 06-20-06 19:52 tiwai          Note Added: 0010350                          
 06-21-06 19:02 ixM            Note Added: 0010402                          
+06-21-06 19:16 tiwai          Note Added: 0010403                          
 ======================================================================
