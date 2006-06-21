@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002217]: Problems with ASUS A6Km
-Date: Wed, 21 Jun 2006 22:33:55 +0200
-Message-ID: <7a077f88c64b0f9b26d3ad31e04484f6@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 22:48:52 +0200
+Message-ID: <f3e3f465fe6cc5d14079a2148ea577f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F16F517C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B0C317C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 22:33:55 +0200 (MEST)
+	Wed, 21 Jun 2006 22:48:52 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             06-18-2006 05:06 CEST
-Last Modified:              06-21-2006 22:33 CEST
+Last Modified:              06-21-2006 22:48 CEST
 ======================================================================
 Summary:                    Problems with ASUS A6Km
 Description: 
@@ -52,11 +52,6 @@ opening a new report because I can't find a way to add a comment there.
 I tried that asus-a6km-fix.diff but it doesn't work, in fact it doesn't
 appear to have any effect at all.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 06-21-06 22:24 
-----------------------------------------------------------------------
-Any improvement with ALSA 1.0.12-rc1?
 
 ----------------------------------------------------------------------
  mafm - 06-21-06 22:33 
@@ -77,6 +72,20 @@ Maybe the patches that the distributions apply to their kernels packages
 or the BIOS make the difference, because the kernel versions are the same,
 and apparently the hardware too...
 
+----------------------------------------------------------------------
+ eNTi - 06-21-06 22:48 
+----------------------------------------------------------------------
+i'm currently using 209A as bios. i never actually had many problems with
+usb, even though i read a lot of people do. i also use a fixed dsdt from
+acpi.sourceforge.net.
+
+my kernel versions vary from stock arch linux builds, community built to
+self made. a self made vanilla+beyond patchset kernel + the patch against
+ac97_patch.c made my speakers work. i don't know what it is, that changed
+it to non-working again. i'm currently on 2.6.17-ck1 (community built).
+maybe i'll compile another kernel tomorrow or so. i'll tell you the
+outcome, even though i doubt, that it will work.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -89,6 +98,7 @@ Date Modified  Username       Field                    Change
 06-21-06 21:37 eNTi           Note Added: 0010405                          
 06-21-06 22:24 rlrevell       Note Added: 0010406                          
 06-21-06 22:33 mafm           Note Added: 0010407                          
+06-21-06 22:48 eNTi           Note Added: 0010408                          
 ======================================================================
 
 
