@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low
-	volume (both in and out)
-Date: Wed, 21 Jun 2006 23:18:33 +0200
-Message-ID: <bf19a2b8307c900a6b6a960a722496d1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002217]: Problems with ASUS A6Km
+Date: Thu, 22 Jun 2006 00:10:31 +0200
+Message-ID: <2f38243d2baaceff176beecd22febbb6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1730717C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C193A17E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 23:18:33 +0200 (MEST)
+	Thu, 22 Jun 2006 00:10:31 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,82 +25,105 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2217> 
 ======================================================================
-Reported By:                garden
-Assigned To:                pzad
+Reported By:                mafm
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   324
-Category:                   PCI - emu10k1
+Issue ID:                   2217
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sid
-Kernel Version:             2.6.5
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-06-2004 13:17 CEST
-Last Modified:              06-21-2006 23:18 CEST
+Date Submitted:             06-18-2006 05:06 CEST
+Last Modified:              06-22-2006 00:10 CEST
 ======================================================================
-Summary:                    Audigy2 Platinum: very low volume (both in and out)
+Summary:                    Problems with ASUS A6Km
 Description: 
-Both the input and output levels of my Audigy2 Platinum seem to be very low
-if compared to the same card with Windows (win98se). For example, I
-connected an external source (a MD player with very loud music in the
-disc) to the optical input, then to the aux input, then to the aux2 input.
-With the mixer settings to 100% the input level still does not go over
-20-25% of the maximum amplitude (while with Windows I have to lower the
-input level or it will be too high). The same thing applies to the output
-level of my analog speakers. [I must be *very* careful when I reboot with
-Windows and must not forget to turn the volume knob from 10 to 2]. I had
-exactly the same problem when I used the emu10k1 drivers from sourceforge.
+I have the same problems described here:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898 , but I'm
+opening a new report because I can't find a way to add a comment there.
+
+I tried that asus-a6km-fix.diff but it doesn't work, in fact it doesn't
+appear to have any effect at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- killrbuckeye - 06-19-06 16:33 
+ eNTi - 06-21-06 22:48 
 ----------------------------------------------------------------------
-pzad made me aware of this issue after I reported the problem in the
-Creative forum.  I have the same symptoms as garden: very low capture
-volumes with the Line-level inputs Aux2 (stereo RCA) and Line2 (1/4"),
-even with all the ALSA capture volumes set to 100%.  I can make the
-signals clip in Windows, so I know my source levels are more than
-adequate.
+i'm currently using 209A as bios. i never actually had many problems with
+usb, even though i read a lot of people do. i also use a fixed dsdt from
+acpi.sourceforge.net.
+
+my kernel versions vary from stock arch linux builds, community built to
+self made. a self made vanilla+beyond patchset kernel + the patch against
+ac97_patch.c made my speakers work. i don't know what it is, that changed
+it to non-working again. i'm currently on 2.6.17-ck1 (community built).
+maybe i'll compile another kernel tomorrow or so. i'll tell you the
+outcome, even though i doubt, that it will work.
 
 ----------------------------------------------------------------------
- snover - 06-21-06 23:18 
+ mafm - 06-22-06 00:10 
 ----------------------------------------------------------------------
-I am experiencing a similar issue running 2.6.15 (2.6.15-25-amd64-k8) and
-ALSA 1.0.10rc3 (Kubuntu Dapper 6.06) where the input levels are very very
-low. Also, the "Line In 1/Mic 1" on the breakout box is mapped to Line2 in
-ALSA, so "Mic Boost" does not work.
+With 1.0.12-rc1, same problems, it doesn't appear to happen anything at
+all.
+
+It's the first time that I compile ALSA by hand, so don't know if this is
+correct, by I only compiled and installed alsa-driver module, is that
+correct? Or do I also need the libraries and other stuff, or that
+alsa-kernel repository?
+
+The output of the following commands is the same as before, just that it
+uses 1.0.12-rc1.
+
+dmes:
+[   29.136132] intel8x0_measure_ac97_clock: measured 59453 usecs
+[   29.136250] intel8x0: clocking to 48000
+
+cat /proc/asound/oss/sndstat
+Sound Driver:3.8.1a-980706 (ALSA v1.0.12rc1 emulation code)
+Kernel: Linux cernunnos 2.6.17 #1 PREEMPT Wed Jun 21 23:17:53 CEST 2006
+x86_64
+Config options: 0
+
+Installed drivers:
+Type 10: ALSA emulation
+
+Card config:
+SiS SI7012 with ALC650F at 0xe400, irq 11
+
+Audio devices:
+0: SiS SI7012 (DUPLEX)
+
+Synth devices: NOT ENABLED IN CONFIG
+
+Midi devices: NOT ENABLED IN CONFIG
+
+Timers:
+31: system timer
+
+Mixers:
+0: Realtek ALC650F
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-04 13:17 garden         New Issue                                    
-06-06-04 13:17 garden         Distribution              => Debian sid      
-06-06-04 13:17 garden         Kernel Version            => 2.6.5           
-06-28-04 09:17 pzad           Status                   new => assigned     
-06-28-04 09:17 pzad           Assigned To               => pzad            
-09-14-04 15:24 garden         Note Added: 0001758                          
-09-16-04 10:16 pzad           Note Added: 0001766                          
-09-16-04 11:32 garden         File Added: amixer.out                       
-09-16-04 11:37 garden         Note Added: 0001769                          
-09-16-04 12:17 pzad           Note Added: 0001772                          
-09-16-04 13:23 garden         Note Added: 0001773                          
-08-30-05 12:23 jdthood        Note Added: 0005975                          
-08-30-05 12:32 garden         Note Added: 0005978                          
-08-30-05 20:21 rlrevell       Note Added: 0005981                          
-08-31-05 14:01 pzad           Note Added: 0005988                          
-08-31-05 18:54 rlrevell       Note Added: 0005990                          
-01-26-06 21:52 pzad           Note Added: 0007789                          
-01-26-06 21:55 rlrevell       Note Added: 0007790                          
-01-26-06 22:03 pzad           Note Added: 0007791                          
-01-28-06 23:11 andred         Issue Monitored: andred                      
-06-19-06 16:33 killrbuckeye   Note Added: 0010316                          
-06-19-06 16:34 killrbuckeye   Issue Monitored: killrbuckeye                    
-06-21-06 23:18 snover         Note Added: 0010409                          
+06-18-06 05:06 mafm           New Issue                                    
+06-18-06 16:51 ryswic         Issue Monitored: ryswic                      
+06-19-06 15:49 mafm           Issue Monitored: mafm                        
+06-19-06 15:50 mafm           Note Added: 0010315                          
+06-20-06 19:46 tiwai          Note Added: 0010345                          
+06-20-06 20:16 mafm           Note Added: 0010354                          
+06-21-06 21:37 eNTi           Note Added: 0010405                          
+06-21-06 22:24 rlrevell       Note Added: 0010406                          
+06-21-06 22:33 mafm           Note Added: 0010407                          
+06-21-06 22:48 eNTi           Note Added: 0010408                          
+06-22-06 00:10 mafm           Note Added: 0010410                          
 ======================================================================
 
 
