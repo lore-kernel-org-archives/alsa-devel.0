@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Wed, 21 Jun 2006 10:35:14 +0200
-Message-ID: <2f8f9c01549b2aa19ac5c503a3082aaa@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 10:51:52 +0200
+Message-ID: <99d49bb98fa812c7548edc6b895e70ef@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D671318B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB55A18B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 10:35:14 +0200 (MEST)
+	Wed, 21 Jun 2006 10:51:52 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-21-2006 10:35 CEST
+Last Modified:              06-21-2006 10:51 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,16 +117,19 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-21-06 03:44 
-----------------------------------------------------------------------
-I am still using FC1, you better send you question to fedora user
-mailing-list or fedora forum, or invite other FC5 hda-intel reporters in
-ALSA BTS by sending reminder
-
-----------------------------------------------------------------------
  friser - 06-21-06 10:35 
 ----------------------------------------------------------------------
 ok, thanks
+
+----------------------------------------------------------------------
+ Raymond - 06-21-06 10:51 
+----------------------------------------------------------------------
+The file /lib/modules/2.6.16-1.2080_FC5/source/include/linux/version.h does
+not exist.
+
+Do you find the version.h somewhere ?
+
+http://fedora.redhat.com/docs/release-notes/fc5/release-notes-ISO/
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -170,4 +173,5 @@ Date Modified  Username       Field                    Change
 06-20-06 15:47 friser         Note Added: 0010336                          
 06-21-06 03:44 Raymond        Note Added: 0010375                          
 06-21-06 10:35 friser         Note Added: 0010390                          
+06-21-06 10:51 Raymond        Note Added: 0010391                          
 ======================================================================
