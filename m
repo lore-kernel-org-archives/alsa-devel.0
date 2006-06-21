@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Wed, 21 Jun 2006 18:00:53 +0200
-Message-ID: <7f645fcfff41495519e94689695b8733@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Wed, 21 Jun 2006 18:44:54 +0200
+Message-ID: <a4f4630cdffdd351e314bfd6320f1ed7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AD8FC158
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9EA35158
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 18:00:53 +0200 (MEST)
+	Wed, 21 Jun 2006 18:44:54 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,91 +26,110 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
 ======================================================================
-Reported By:                El Santo
-Assigned To:                
+Reported By:                carllivitt
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2219
-Category:                   GENERIC - mpu401
+Issue ID:                   2174
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian etch (2006-06-18)
-Kernel Version:             2.6.15-1-686
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
 ======================================================================
-Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-21-2006 18:00 CEST
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              06-21-2006 18:44 CEST
 ======================================================================
-Summary:                    snd-mpu401 don't load
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
 Description: 
-I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
-driver. It loads all necesary modules, includind snd-mpu401-uart, but no
-snd-mpu401
-The audio part of the driver works perfectly, but the midi port doesn't
-work.
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
 
-In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
-not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
-(setting the port accordingly to BIOS) it doesnt work. I don't know the
-mpu401 irq setting but i tryed them all. None of them worked. The driver
-says "device not found".
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
 
-Under windows xp the port works perfectly, so the hardware is ok. Anyway
-under windows xp, i use a "system inspector" to monitor ioports and irq
-usage, and i didnt see any irq assigned for mpu401 port, and the port
-(0x330) wasn't occupied neither.
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
 
-any idea?
+I've also tried using the 'single_cmd=1' module loading option. 
+
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001957 HP dv8000t hda-intel codec not recognized
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-21-06 04:51 
+ carllivitt - 06-21-06 17:47 
 ----------------------------------------------------------------------
-The mpu_port value must match with BIOS setup, it seem that the driver is
-unable to obtain BIOS setup in snd_via82xx_init_misc()
+So what's the best way to apply pressure to Conexant to release some specs?
+I take it reverse-engineering it is out of the question...
 
-
-Module snd-via82xx
-------------------
-
-Module for AC'97 motherboards based on VIA 82C686A/686B, 8233,
-8233A, 8233C, 8235, 8237 (south) bridge.
-
-mpu_port - 0x300,0x310,0x320,0x330, otherwise obtain BIOS setup
-[VIA686A/686B only]
+Is there any other way to make it work?
 
 ----------------------------------------------------------------------
- El Santo - 06-21-06 18:00 
+ rlrevell - 06-21-06 18:44 
 ----------------------------------------------------------------------
-I tryed with and without "pci=routeirq" and "lapic".
-I also set mpu_port parameter for snd-via82xx module.
+Ask Conexant for a datasheet, and bug the laptop vendor.
 
-The result is the same: no midi port
+Reverse engineering would require someone with those skills to have this
+hardware - if that were the case it would be fixed already.
+
+Don't expect this to be fixed anytime soon.  Get an external USB device or
+something.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-18-06 17:41 El Santo       New Issue                                    
-06-18-06 17:41 El Santo       Distribution              => Debian etch
-(2006-06-18)
-06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
-06-19-06 03:45 Raymond        Note Added: 0010305                          
-06-20-06 19:49 tiwai          Note Added: 0010349                          
-06-20-06 23:30 El Santo       Note Added: 0010357                          
-06-20-06 23:39 rlrevell       Note Added: 0010359                          
-06-20-06 23:54 El Santo       Note Added: 0010362                          
-06-21-06 00:00 rlrevell       Note Added: 0010363                          
-06-21-06 00:04 rlrevell       Note Added: 0010364                          
-06-21-06 00:12 El Santo       Note Added: 0010365                          
-06-21-06 00:18 rlrevell       Note Added: 0010366                          
-06-21-06 00:33 El Santo       File Added: dmesg.log                        
-06-21-06 00:36 El Santo       Note Added: 0010367                          
-06-21-06 00:52 rlrevell       Note Added: 0010369                          
-06-21-06 00:56 rlrevell       Note Added: 0010370                          
-06-21-06 02:02 rlrevell       Note Added: 0010374                          
-06-21-06 04:51 Raymond        Note Added: 0010379                          
-06-21-06 18:00 El Santo       Note Added: 0010400                          
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
+06-12-06 22:52 carllivitt     Note Added: 0010176                          
+06-12-06 22:54 rlrevell       Note Added: 0010177                          
+06-12-06 23:10 carllivitt     Note Added: 0010178                          
+06-12-06 23:14 rlrevell       Note Added: 0010179                          
+06-12-06 23:29 carllivitt     Note Added: 0010180                          
+06-12-06 23:35 rlrevell       Note Added: 0010181                          
+06-12-06 23:49 carllivitt     Note Added: 0010182                          
+06-12-06 23:58 rlrevell       Note Added: 0010183                          
+06-13-06 15:33 godeater       Note Added: 0010193                          
+06-13-06 18:13 rlrevell       Note Added: 0010198                          
+06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
+06-13-06 18:58 rlrevell       Note Added: 0010200                          
+06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
+06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
+06-14-06 10:12 carllivitt     Note Added: 0010207                          
+06-14-06 10:21 carllivitt     File Added: codec0.txt                       
+06-14-06 10:21 carllivitt     Note Added: 0010208                          
+06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
+06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
+06-17-06 19:51 carllivitt     Note Added: 0010288                          
+06-17-06 19:57 rlrevell       Note Added: 0010289                          
+06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
+06-19-06 08:42 fatman         Note Added: 0010306                          
+06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
+06-19-06 13:49 jlpedrosa      Note Edited: 0010308                         
+06-20-06 11:04 carllivitt     Note Added: 0010332                          
+06-20-06 11:21 fatman         Note Added: 0010333                          
+06-20-06 17:38 legoguy        Note Added: 0010338                          
+06-20-06 17:39 legoguy        Issue Monitored: legoguy                     
+06-20-06 19:38 tiwai          Note Added: 0010341                          
+06-20-06 19:45 rlrevell       Relationship added       duplicate of 0001957
+06-20-06 23:51 jlpedrosa      Note Added: 0010361                          
+06-21-06 17:47 carllivitt     Note Added: 0010399                          
+06-21-06 18:44 rlrevell       Note Added: 0010401                          
 ======================================================================
