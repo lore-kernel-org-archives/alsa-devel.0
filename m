@@ -1,15 +1,17 @@
-From: "Christophe Osuna" <christophe.osuna@gmail.com>
-Subject: Re: latency.c and delay related questions
-Date: Wed, 21 Jun 2006 12:16:55 +0200
-Message-ID: <b6251a620606210316y6c721997o96e570861f0cb114@mail.gmail.com>
-References: <b6251a620606200310q7b532513s1aa6542368568460@mail.gmail.com>
-	<Pine.LNX.4.61.0606201924250.9219@tm8103.perex-int.cz>
+From: Andreas Mohr <andim2@users.sourceforge.net>
+Subject: Re: [PATCH] azt3328 fatal deadlock fix (very rare,
+	though)
+Date: Wed, 21 Jun 2006 13:48:20 +0200
+Message-ID: <20060621114820.GA11212@rhlx01.fht-esslingen.de>
+References: <20060621083234.GA25022@rhlx01.fht-esslingen.de>
+	<s5hk67aer2z.wl%tiwai@suse.de>
+Reply-To: andi@lisas.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.61.0606201924250.9219@tm8103.perex-int.cz>
 Content-Disposition: inline
+In-Reply-To: <s5hk67aer2z.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,56 +21,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-(I apologize for the previous message with HTML - I am a new gmail
-user and was expecting it not to send HTML for a basic text message. I
-have disabled text formatting - hope it works now.)
+Hi,
 
-Thanks for your help. The linking of capture and playback devices
-explains everything; if I remove linking and use snd_pcm_start() on
-the playback device I get the expected behaviour.
+On Wed, Jun 21, 2006 at 12:33:08PM +0200, Takashi Iwai wrote:
+> At Wed, 21 Jun 2006 10:32:34 +0200,
+> Andreas Mohr wrote:
+> > 
+> > Hi all,
+> > 
+> > while listening to my 315th MP3 file played on this soundcard I had the
+> > extreme mispleasure of experiencing a complete lockup of my box right
+> > during shutdown of this file's playback, not even Magic SysRq worked
+> > (characteristic sign of spinlock conflicts).
+> > 
+> > I determined that it must have been the combination of not doing the _irqsave()
+> > variant in the playback trigger function and then having another IRQ occur
+> > (which tried to spinlock again, against the active lock in the playback trigger
+> > function). By always doing _irqsave() everywhere we also don't need separate
+> > locking in the IRQ handler any more (managed to reduce CPU load, too).
+> 
+> I don't understand this.  The local irq is already disabled in either
+> snd_pcm_lib_write1() or snd_pcm_lib_read1() that are the sole callers
+> of snd_pcm_start().  Ditto for snd_pcm_stop().
 
-Here is a little drawing (requires fixed font) to illustrate what you
-have said and what I have understood (useless for you but some people
-like me might find it useful).
+Argh, then I'm not sure what's wrong.
+Facts:
+- my fix is a best guess about the crash cause, not true knowledge
+- there's no way to prove that my fix corrected the problem (very rare bug)
+- the system locked up *directly* during closing of this MP3 file's playback
+  (this would strongly point towards trigger functions)
+- Magic SysRq didn't work -> locking problem. Hmm, or does an IRQ storm also
+  block SysRq processing totally? If so, then that may have been the problem here
+  (maybe there's an interrupt reason which I'm not properly ACKing yet)
 
-When capture and playback devices are linked, the following happens:
-
-         +-------------------------
-Capture  | C0 | C1 | C2 | C3 | ...
-         +-------------------------
-
-         +-------------------------
-Playback | -- | -- | C0 | C1 | ...
-         +-------------------------
-
-Capture and playback start simultaneously and so playback device needs
-something to play. When the first capture is finished, another is
-started. We would like to play the captured audio, but another
-playback has already started. Only after the latter is finished can
-the captured audio be played.
-
-This explains why the playback device needs two buffers of silence.
-
-The total delay is hw_delay + 2 * period
-
-When the devices are not linked, we can start the playback device
-after the first buffer has been captured:
-
-         +-------------------------
-Capture  | C0 | C1 | C2 | C3 | ...
-         +-------------------------
-
-                 +-----------------
-Playback         | C0 | C1 | C2 | .
-                 +-----------------
-
-Starting the playback device and copying data takes some time, so the
-total delay becomes hw_delay + 1 * period + start_delay + copy_delay.
-For large periods, with period > start_delay + copy_delay, this can
-lead to a lower latency, but who would use large periods for low
-latency?
-
-Thanks again for your help.
+Andreas
