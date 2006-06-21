@@ -1,12 +1,15 @@
-From: Sergey Vlasov <vsu@altlinux.ru>
-Subject: Re: Update: emu1212m
-Date: Wed, 21 Jun 2006 13:14:47 +0400
-Message-ID: <20060621091447.GW3206@master.mivlgu.local>
-References: <44951964.9020509@superbug.co.uk> <4498FBC4.5090900@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002163]: error running alsaconf
+Date: Wed, 21 Jun 2006 11:26:07 +0200
+Message-ID: <013a9608fcbeaa642a34a865a7fce578@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1232400684=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <4498FBC4.5090900@superbug.co.uk>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB0F018B
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Jun 2006 11:26:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,77 +19,193 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1232400684==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="c7rykKtsZvepKFKR"
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2163> 
+======================================================================
+Reported By:                friser
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2163
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               fedora core 5
+Kernel Version:             2.6.16-1.2080_FC5
+======================================================================
+Date Submitted:             05-26-2006 16:27 CEST
+Last Modified:              06-21-2006 11:26 CEST
+======================================================================
+Summary:                    error running alsaconf
+Description: 
+Hello, 
+when I try to confugure the alsa driver with alsaconf on my sony vaio I
+obtain this error:
 
+Loading driver...
+Starting sound driver: snd-hda-intel WARNING: Error inserting
+snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+FATAL: Error inserting snd_pcm
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
+module format
+WARNING: Error running install command for snd_pcm
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
+Invalid module format
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
+Invalid module format
+done
+Starting sound driver: snd-hda-intel WARNING: Error inserting
+snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+FATAL: Error inserting snd_pcm
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
+module format
+WARNING: Error running install command for snd_pcm
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
+Invalid module format
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
+Invalid module format
+done
+Setting default volumes...
 
---c7rykKtsZvepKFKR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks 
 
-On Wed, Jun 21, 2006 at 08:56:52AM +0100, James Courtier-Dutton wrote:
-> For (1), the FPGA array is filled with 78756 bytes of netlist code.
-> I suppose one could consider this 78756 bytes as firmware.
-> Should this firmware sit somewhere in userspace?
+======================================================================
 
-Probably must, due to license issues :(
+----------------------------------------------------------------------
+ Raymond - 06-21-06 10:51 
+----------------------------------------------------------------------
+The file /lib/modules/2.6.16-1.2080_FC5/source/include/linux/version.h does
+not exist.
 
-> The trouble is, that if one changes some controls on the device, e.g.
-> switching from SPDIF to ADAT digital outputs, a whole new different
-> firmware image is loaded. So, one has multiple different firmware
-> images, with one swapping between them. Should these firmware images be
-> left in the kernel then, instead of using the userspace firmware api?
+Do you find the version.h somewhere ?
 
-There are some drivers in the kernel which load different firmware images
-in different modes.  E.g., the ipw2200 driver can load ipw2200-bss.fw,
-ipw2200-ibss.fw or ipw2200-sniffer.fw depending on the mode set by
-iwconfig (and can switch between them at runtime).
+http://fedora.redhat.com/docs/release-notes/fc5/release-notes-ISO/
 
-There is also an option to use a single firmware file consisting of
-multiple parts used for different modes, but this obviously has a higher
-memory overhead.  IMHO this should be used only when there are some
-latency restrictions for switching modes (so that a driver can request all
-firmware parts during initialization and then load different parts without
-waiting for userspace helpers).
+----------------------------------------------------------------------
+ friser - 06-21-06 11:26 
+----------------------------------------------------------------------
+The problem of version.h is resolved (there were 2 broken links).
+Now the installation find the file but after the installation I have the
+same problem.
 
---c7rykKtsZvepKFKR
-Content-Type: application/pgp-signature
-Content-Disposition: inline
+[root@umberto ~]# modprobe snd-hda-intel
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+FATAL: Error inserting snd_pcm
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
+module format
+WARNING: Error running install command for snd_pcm
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
+Invalid module format
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
+Invalid module format
+[root@umberto ~]#
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFEmQ4GW82GfkQfsqIRAiJ4AJ4xCSHx6X7ewCuakPyC5q1vMAI2lwCdFjVv
-kesLTB+EIRwRKA9FF2otLVE=
-=rRUs
------END PGP SIGNATURE-----
-
---c7rykKtsZvepKFKR--
-
-
---===============1232400684==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1232400684==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---===============1232400684==--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-26-06 16:27 friser         New Issue                                    
+05-26-06 16:27 friser         Distribution              => fedora core 5   
+05-26-06 16:27 friser         Kernel Version            => 2.6.16-1.2080_FC5
+06-14-06 17:17 friser         Issue Monitored: djdeath                     
+06-14-06 17:17 friser         Note Added: 0010213                          
+06-14-06 17:18 friser         Note Deleted: 0010213                        
+06-14-06 17:19 friser         Note Added: 0010214                          
+06-15-06 10:10 friser         Note Added: 0010236                          
+06-15-06 17:50 rlrevell       Note Added: 0010240                          
+06-16-06 14:14 friser         Note Added: 0010253                          
+06-16-06 14:15 friser         File Added: alsa-output.txt                    
+06-16-06 14:18 friser         File Added: modprobe.conf                    
+06-16-06 14:19 friser         Note Added: 0010254                          
+06-16-06 20:00 rlrevell       Note Added: 0010259                          
+06-17-06 16:35 friser         Note Added: 0010271                          
+06-17-06 17:06 friser         Note Added: 0010272                          
+06-17-06 17:13 Raymond        Note Added: 0010273                          
+06-17-06 17:14 Raymond        Note Edited: 0010273                         
+06-17-06 17:19 friser         Note Added: 0010274                          
+06-17-06 17:24 Raymond        Note Added: 0010275                          
+06-17-06 17:26 Raymond        Note Edited: 0010275                         
+06-17-06 17:34 Raymond        Note Edited: 0010275                         
+06-17-06 17:46 friser         Note Added: 0010276                          
+06-17-06 17:57 Raymond        Note Added: 0010277                          
+06-17-06 17:59 Raymond        Note Edited: 0010277                         
+06-17-06 18:07 friser         Note Added: 0010278                          
+06-17-06 18:11 friser         Note Added: 0010279                          
+06-17-06 18:25 rlrevell       Note Added: 0010281                          
+06-17-06 18:36 friser         Note Added: 0010282                          
+06-17-06 18:39 rlrevell       Note Added: 0010283                          
+06-17-06 18:45 friser         Note Added: 0010284                          
+06-17-06 18:56 rlrevell       Note Added: 0010285                          
+06-17-06 19:10 friser         Note Added: 0010286                          
+06-17-06 19:19 rlrevell       Note Added: 0010287                          
+06-20-06 13:00 friser         Note Added: 0010334                          
+06-20-06 15:28 Raymond        Note Added: 0010335                          
+06-20-06 15:47 friser         Note Added: 0010336                          
+06-21-06 03:44 Raymond        Note Added: 0010375                          
+06-21-06 10:35 friser         Note Added: 0010390                          
+06-21-06 10:51 Raymond        Note Added: 0010391                          
+06-21-06 11:26 friser         Note Added: 0010392                          
+======================================================================
