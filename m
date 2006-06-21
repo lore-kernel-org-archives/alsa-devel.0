@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Wed, 21 Jun 2006 12:07:07 +0200
-Message-ID: <8cbafd1b3a95efec83ee9d18e116d4bd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002103]: Sound goes off when adjusting
+	volume from alsa-mixer
+Date: Wed, 21 Jun 2006 12:15:32 +0200
+Message-ID: <50f9c08ada0a8452a3abda641907d5ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7E32169
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 3518D18B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 12:07:07 +0200 (MEST)
+	Wed, 21 Jun 2006 12:15:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,158 +24,87 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2163> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2103> 
 ======================================================================
-Reported By:                friser
+Reported By:                raddy
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2163
+Issue ID:                   2103
 Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               fedora core 5
-Kernel Version:             2.6.16-1.2080_FC5
+Status:                     resolved
+Distribution:               Suse
+Kernel Version:             2.6.13-15
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-21-2006 12:07 CEST
+Date Submitted:             05-08-2006 11:28 CEST
+Last Modified:              06-21-2006 12:15 CEST
 ======================================================================
-Summary:                    error running alsaconf
+Summary:                    Sound goes off when adjusting volume from alsa-mixer
 Description: 
-Hello, 
-when I try to confugure the alsa driver with alsaconf on my sony vaio I
-obtain this error:
-
-Loading driver...
-Starting sound driver: snd-hda-intel WARNING: Error inserting
-snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-WARNING: Error inserting snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-FATAL: Error inserting snd_pcm
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
-module format
-WARNING: Error running install command for snd_pcm
-WARNING: Error inserting snd_hda_codec
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
-Invalid module format
-FATAL: Error inserting snd_hda_intel
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
-Invalid module format
-done
-Starting sound driver: snd-hda-intel WARNING: Error inserting
-snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-WARNING: Error inserting snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-FATAL: Error inserting snd_pcm
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
-module format
-WARNING: Error running install command for snd_pcm
-WARNING: Error inserting snd_hda_codec
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
-Invalid module format
-FATAL: Error inserting snd_hda_intel
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
-Invalid module format
-done
-Setting default volumes...
-
-Thanks 
+i have an Asus P5RD2-VM motherboard equipped with Uli M5461 integrated 
+sound card supporting HD-Audio,
+it uses snd_hda_intel driver,
+it was detected fine,
+Alsa played a test sound that itself produced no sound from speakers,
+sound is going off in many curcomstance,
+they are,
+1 > when adjusting volume,
+2 > switching to several songs intermittently.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-21-06 11:42 
+ mariourk - 06-21-06 09:23 
 ----------------------------------------------------------------------
-Refer to alsa-output.txt , it' strange that
+- the HD-audio codec chip is AD1986A
+- the product name of mobo is 'Asus P5GPL-X SE' (assembled machine)
+- the model option i used "3stack"
+- lspci output for class 0403 follows,
 
-checking for Red Hat kernel... auto
-checking for Red Hat kernel... no
+0403: 8086:2668 (rev 04)
+Subsystem: 1043:81b3
+Flags: bus master, fast devsel, latency 0, IRQ 16
+Memory at cddf8000 (64-bit, non-prefetchable) [size=16K]
+Capabilities: [50] Power Management version 2
+Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0 Enable-
+Capabilities: [70] Express Unknown type IRQ 0
+Capabilities: [100] Virtual Channel
+Capabilities: [130] Unknown (5)
 
 ----------------------------------------------------------------------
- Raymond - 06-21-06 12:07 
+ tiwai - 06-21-06 12:15 
 ----------------------------------------------------------------------
-You should file a bug report "Invalid module format" in bugzilla.redhat
-
-http://people.redhat.com/stransky/alsa/
+Thanks, fixed on HG.  3stack model is chosen automatically for your devices
+now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-26-06 16:27 friser         New Issue                                    
-05-26-06 16:27 friser         Distribution              => fedora core 5   
-05-26-06 16:27 friser         Kernel Version            => 2.6.16-1.2080_FC5
-06-14-06 17:17 friser         Issue Monitored: djdeath                     
-06-14-06 17:17 friser         Note Added: 0010213                          
-06-14-06 17:18 friser         Note Deleted: 0010213                        
-06-14-06 17:19 friser         Note Added: 0010214                          
-06-15-06 10:10 friser         Note Added: 0010236                          
-06-15-06 17:50 rlrevell       Note Added: 0010240                          
-06-16-06 14:14 friser         Note Added: 0010253                          
-06-16-06 14:15 friser         File Added: alsa-output.txt                    
-06-16-06 14:18 friser         File Added: modprobe.conf                    
-06-16-06 14:19 friser         Note Added: 0010254                          
-06-16-06 20:00 rlrevell       Note Added: 0010259                          
-06-17-06 16:35 friser         Note Added: 0010271                          
-06-17-06 17:06 friser         Note Added: 0010272                          
-06-17-06 17:13 Raymond        Note Added: 0010273                          
-06-17-06 17:14 Raymond        Note Edited: 0010273                         
-06-17-06 17:19 friser         Note Added: 0010274                          
-06-17-06 17:24 Raymond        Note Added: 0010275                          
-06-17-06 17:26 Raymond        Note Edited: 0010275                         
-06-17-06 17:34 Raymond        Note Edited: 0010275                         
-06-17-06 17:46 friser         Note Added: 0010276                          
-06-17-06 17:57 Raymond        Note Added: 0010277                          
-06-17-06 17:59 Raymond        Note Edited: 0010277                         
-06-17-06 18:07 friser         Note Added: 0010278                          
-06-17-06 18:11 friser         Note Added: 0010279                          
-06-17-06 18:25 rlrevell       Note Added: 0010281                          
-06-17-06 18:36 friser         Note Added: 0010282                          
-06-17-06 18:39 rlrevell       Note Added: 0010283                          
-06-17-06 18:45 friser         Note Added: 0010284                          
-06-17-06 18:56 rlrevell       Note Added: 0010285                          
-06-17-06 19:10 friser         Note Added: 0010286                          
-06-17-06 19:19 rlrevell       Note Added: 0010287                          
-06-20-06 13:00 friser         Note Added: 0010334                          
-06-20-06 15:28 Raymond        Note Added: 0010335                          
-06-20-06 15:47 friser         Note Added: 0010336                          
-06-21-06 03:44 Raymond        Note Added: 0010375                          
-06-21-06 10:35 friser         Note Added: 0010390                          
-06-21-06 10:51 Raymond        Note Added: 0010391                          
-06-21-06 11:26 friser         Note Added: 0010392                          
-06-21-06 11:42 Raymond        Note Added: 0010393                          
-06-21-06 12:07 Raymond        Note Added: 0010394                          
+05-08-06 11:28 raddy          New Issue                                    
+05-08-06 11:28 raddy          Distribution              => Suse            
+05-08-06 11:28 raddy          Kernel Version            => 2.6.13-15       
+05-10-06 07:54 raddy          Issue Monitored: raddy                       
+05-12-06 10:42 UMMO           Note Added: 0009774                          
+05-12-06 10:43 UMMO           Issue Monitored: UMMO                        
+05-12-06 16:04 tiwai          Note Added: 0009776                          
+05-12-06 17:09 UMMO           Note Added: 0009781                          
+05-12-06 17:13 UMMO           Note Edited: 0009781                         
+05-23-06 16:21 shadoweel      Issue Monitored: shadoweel                    
+06-18-06 09:26 raddy          Note Added: 0010296                          
+06-19-06 16:53 mariourk       Note Added: 0010317                          
+06-19-06 19:07 tiwai          Note Added: 0010318                          
+06-19-06 20:05 mariourk       Note Added: 0010319                          
+06-20-06 19:44 tiwai          Note Added: 0010344                          
+06-21-06 07:28 raddy          Note Added: 0010383                          
+06-21-06 09:23 mariourk       Note Added: 0010386                          
+06-21-06 12:15 tiwai          Status                   assigned => resolved
+06-21-06 12:15 tiwai          Resolution               open => fixed       
+06-21-06 12:15 tiwai          Note Added: 0010395                          
 ======================================================================
