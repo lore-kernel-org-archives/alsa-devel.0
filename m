@@ -1,17 +1,14 @@
-From: Andreas Mohr <andim2@users.sourceforge.net>
-Subject: Re: [PATCH] azt3328 fatal deadlock fix (very rare,
-	though)
-Date: Wed, 21 Jun 2006 13:48:20 +0200
-Message-ID: <20060621114820.GA11212@rhlx01.fht-esslingen.de>
-References: <20060621083234.GA25022@rhlx01.fht-esslingen.de>
-	<s5hk67aer2z.wl%tiwai@suse.de>
-Reply-To: andi@lisas.de
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Update: emu1212m
+Date: Wed, 21 Jun 2006 12:58:27 +0100
+Message-ID: <44993463.9040600@superbug.co.uk>
+References: <44951964.9020509@superbug.co.uk> <4498FBC4.5090900@superbug.co.uk>
+	<20060621091447.GW3206@master.mivlgu.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hk67aer2z.wl%tiwai@suse.de>
+In-Reply-To: <20060621091447.GW3206@master.mivlgu.local>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -21,41 +18,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Sergey Vlasov <vsu@altlinux.ru>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Sergey Vlasov wrote:
+> On Wed, Jun 21, 2006 at 08:56:52AM +0100, James Courtier-Dutton wrote:
+>   
+>> For (1), the FPGA array is filled with 78756 bytes of netlist code.
+>> I suppose one could consider this 78756 bytes as firmware.
+>> Should this firmware sit somewhere in userspace?
+>>     
+>
+> Probably must, due to license issues :(
+>   
+Fortunately, licensing is not an issue. They donated the emu1212m card 
+to me. I have a signed agreement with them that I can write source code 
+for the creative sound cards and publish them as GPL. I just can't 
+publish or pass on any documents they might have sent me to help me in 
+that task.
 
-On Wed, Jun 21, 2006 at 12:33:08PM +0200, Takashi Iwai wrote:
-> At Wed, 21 Jun 2006 10:32:34 +0200,
-> Andreas Mohr wrote:
-> > 
-> > Hi all,
-> > 
-> > while listening to my 315th MP3 file played on this soundcard I had the
-> > extreme mispleasure of experiencing a complete lockup of my box right
-> > during shutdown of this file's playback, not even Magic SysRq worked
-> > (characteristic sign of spinlock conflicts).
-> > 
-> > I determined that it must have been the combination of not doing the _irqsave()
-> > variant in the playback trigger function and then having another IRQ occur
-> > (which tried to spinlock again, against the active lock in the playback trigger
-> > function). By always doing _irqsave() everywhere we also don't need separate
-> > locking in the IRQ handler any more (managed to reduce CPU load, too).
-> 
-> I don't understand this.  The local irq is already disabled in either
-> snd_pcm_lib_write1() or snd_pcm_lib_read1() that are the sole callers
-> of snd_pcm_start().  Ditto for snd_pcm_stop().
+>   
+>> The trouble is, that if one changes some controls on the device, e.g.
+>> switching from SPDIF to ADAT digital outputs, a whole new different
+>> firmware image is loaded. So, one has multiple different firmware
+>> images, with one swapping between them. Should these firmware images be
+>> left in the kernel then, instead of using the userspace firmware api?
+>>     
+>
+> There are some drivers in the kernel which load different firmware images
+> in different modes.  E.g., the ipw2200 driver can load ipw2200-bss.fw,
+> ipw2200-ibss.fw or ipw2200-sniffer.fw depending on the mode set by
+> iwconfig (and can switch between them at runtime).
+>
+> There is also an option to use a single firmware file consisting of
+> multiple parts used for different modes, but this obviously has a higher
+> memory overhead.  IMHO this should be used only when there are some
+> latency restrictions for switching modes (so that a driver can request all
+> firmware parts during initialization and then load different parts without
+> waiting for userspace helpers).
+>   
 
-Argh, then I'm not sure what's wrong.
-Facts:
-- my fix is a best guess about the crash cause, not true knowledge
-- there's no way to prove that my fix corrected the problem (very rare bug)
-- the system locked up *directly* during closing of this MP3 file's playback
-  (this would strongly point towards trigger functions)
-- Magic SysRq didn't work -> locking problem. Hmm, or does an IRQ storm also
-  block SysRq processing totally? If so, then that may have been the problem here
-  (maybe there's an interrupt reason which I'm not properly ACKing yet)
+Are all those threee fw images loaded into the driver cache memory from 
+userspace at modprobe time, or is each one loaded from userspace each 
+time a iwconfig mode changes?
+I don't yet know how many different images I will have to play with. I 
+have so far counted the presence of 2.
+Is leaving them cached in driver kernel memory considered bad practice, 
+and wasteful of memory space?
 
-Andreas
+James
