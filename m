@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Wed, 21 Jun 2006 03:51:29 +0200
-Message-ID: <efe9e5b7185713634993845506303f97@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 03:54:41 +0200
+Message-ID: <ef05444666e386992dfb4025e6bcfef1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4D98D18B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E43118B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 03:51:29 +0200 (MEST)
+	Wed, 21 Jun 2006 03:54:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,21 +41,13 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-21-2006 03:51 CEST
+Last Modified:              06-21-2006 03:54 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
 Alsa seems to detect the sound card, but when I try to actually play
 something there is no sound from the speakers.
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-20-06 08:45 
-----------------------------------------------------------------------
-add module parameter in /etc/modprobe.conf to disable SPDIF
-
-
-options snd-ens1371 index=0 spdif=-1
 
 ----------------------------------------------------------------------
  Raymond - 06-21-06 03:51 
@@ -65,6 +57,12 @@ options snd-ens1371 index=0 spdif=-1
 You better ask this equestion on fedora user mailing list.
 
 kudzu is a hardware probing utility of Fedora
+
+----------------------------------------------------------------------
+ rlrevell - 06-21-06 03:54 
+----------------------------------------------------------------------
+If the sound chip and network are onboard, there's no way to change the IRQ
+assignment.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -153,4 +151,5 @@ Date Modified  Username       Field                    Change
 06-20-06 06:57 bzbarsky       Note Added: 0010330                          
 06-20-06 08:45 Raymond        Note Added: 0010331                          
 06-21-06 03:51 Raymond        Note Added: 0010376                          
+06-21-06 03:54 rlrevell       Note Added: 0010377                          
 ======================================================================
