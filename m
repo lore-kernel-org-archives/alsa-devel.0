@@ -1,12 +1,15 @@
-From: Andreas Mohr <andi@rhlx01.fht-esslingen.de>
-Subject: [PATCH] azt3328 fatal deadlock fix (very rare, though)
-Date: Wed, 21 Jun 2006 10:32:34 +0200
-Message-ID: <20060621083234.GA25022@rhlx01.fht-esslingen.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002163]: error running alsaconf
+Date: Wed, 21 Jun 2006 10:35:14 +0200
+Message-ID: <2f8f9c01549b2aa19ac5c503a3082aaa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D671318B
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Jun 2006 10:35:14 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,209 +19,155 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-while listening to my 315th MP3 file played on this soundcard I had the
-extreme mispleasure of experiencing a complete lockup of my box right
-during shutdown of this file's playback, not even Magic SysRq worked
-(characteristic sign of spinlock conflicts).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2163> 
+======================================================================
+Reported By:                friser
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2163
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               fedora core 5
+Kernel Version:             2.6.16-1.2080_FC5
+======================================================================
+Date Submitted:             05-26-2006 16:27 CEST
+Last Modified:              06-21-2006 10:35 CEST
+======================================================================
+Summary:                    error running alsaconf
+Description: 
+Hello, 
+when I try to confugure the alsa driver with alsaconf on my sony vaio I
+obtain this error:
 
-I determined that it must have been the combination of not doing the _irqsave()
-variant in the playback trigger function and then having another IRQ occur
-(which tried to spinlock again, against the active lock in the playback trigger
-function). By always doing _irqsave() everywhere we also don't need separate
-locking in the IRQ handler any more (managed to reduce CPU load, too).
+Loading driver...
+Starting sound driver: snd-hda-intel WARNING: Error inserting
+snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+FATAL: Error inserting snd_pcm
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
+module format
+WARNING: Error running install command for snd_pcm
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
+Invalid module format
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
+Invalid module format
+done
+Starting sound driver: snd-hda-intel WARNING: Error inserting
+snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+FATAL: Error inserting snd_pcm
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
+module format
+WARNING: Error running install command for snd_pcm
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
+Invalid module format
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
+Invalid module format
+done
+Setting default volumes...
 
-ChangeLog:
-- fix spinlocks to avoid entering spinlocking IRQ with lock held in non-IRQ part
+Thanks 
 
-Note that at least als4000.c has the same issue in the trigger functions,
-so this deadlock has the potential of happening there, too.
-I have an ALS4000, so I could do further work if needed.
+======================================================================
 
-Also, with this change switching from console to X11 will cause playback
-to click, most likely due to interrupting the app during spinlock held in
-non-IRQ part, so no IRQ possible during that time to handle buffer updating
-(I don't think it clicked before, and this is most likely due to weird interrupt
-fiddling of X11 during a console switch).
+----------------------------------------------------------------------
+ Raymond - 06-21-06 03:44 
+----------------------------------------------------------------------
+I am still using FC1, you better send you question to fedora user
+mailing-list or fedora forum, or invite other FC5 hda-intel reporters in
+ALSA BTS by sending reminder
 
-Changes extensively tested on 2.6.17-rc6-mm2 (but not nearly enough to have
-at least the same amount of testing as in the time range before this
-*very rare* lockup, to be able to determine whether this truly fixed it!!).
+----------------------------------------------------------------------
+ friser - 06-21-06 10:35 
+----------------------------------------------------------------------
+ok, thanks
 
-Diff against current rsynced version (had some unexpected rejects,
-but should be fine).
-
-Signed-off-by: Andreas Mohr <andi@lisas.de>
-
-
---- alsa-kernel/pci/azt3328.c.orig	2006-04-24 12:32:48.000000000 +0200
-+++ alsa-kernel/pci/azt3328.c	2006-06-21 10:11:33.000000000 +0200
-@@ -899,6 +899,7 @@
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int result = 0;
- 	unsigned int status1;
-+	unsigned long flags;
- 
- 	snd_azf3328_dbgcalls("snd_azf3328_playback_trigger cmd %d\n", cmd);
- 
-@@ -914,7 +915,7 @@
- 			snd_pcm_format_width(runtime->format),
- 			runtime->channels);
- 
--		spin_lock(&chip->reg_lock);
-+		spin_lock_irqsave(&chip->reg_lock, flags);
- 		/* stop playback */
- 		status1 = snd_azf3328_codec_inw(chip, IDX_IO_PLAY_FLAGS);
- 		status1 &= ~DMA_RESUME;
-@@ -922,14 +923,14 @@
- 	    
- 		/* FIXME: clear interrupts or what??? */
- 		snd_azf3328_codec_outw(chip, IDX_IO_PLAY_IRQTYPE, 0xffff);
--		spin_unlock(&chip->reg_lock);
-+		spin_unlock_irqrestore(&chip->reg_lock, flags);
- 
- 		snd_azf3328_setdmaa(chip, runtime->dma_addr,
- 			snd_pcm_lib_period_bytes(substream),
- 			snd_pcm_lib_buffer_bytes(substream),
- 			0);
- 
--		spin_lock(&chip->reg_lock);
-+		spin_lock_irqsave(&chip->reg_lock, flags);
- #ifdef WIN9X
- 		/* FIXME: enable playback/recording??? */
- 		status1 |= DMA_PLAY_SOMETHING1 | DMA_PLAY_SOMETHING2;
-@@ -953,7 +954,7 @@
- 			DMA_EPILOGUE_SOMETHING |
- 			DMA_SOMETHING_ELSE);
- #endif
--		spin_unlock(&chip->reg_lock);
-+		spin_unlock_irqrestore(&chip->reg_lock, flags);
- 
- 		/* now unmute WaveOut */
- 		snd_azf3328_mixer_set_mute(chip, IDX_MIXER_WAVEOUT, 0);
-@@ -967,7 +968,7 @@
- 		/* mute WaveOut */
- 		snd_azf3328_mixer_set_mute(chip, IDX_MIXER_WAVEOUT, 1);
- 
--		spin_lock(&chip->reg_lock);
-+		spin_lock_irqsave(&chip->reg_lock, flags);
- 		/* stop playback */
- 		status1 = snd_azf3328_codec_inw(chip, IDX_IO_PLAY_FLAGS);
- 
-@@ -981,7 +982,7 @@
- 
- 		status1 &= ~DMA_PLAY_SOMETHING1;
- 		snd_azf3328_codec_outw(chip, IDX_IO_PLAY_FLAGS, status1);
--		spin_unlock(&chip->reg_lock);
-+		spin_unlock_irqrestore(&chip->reg_lock, flags);
- 	    
- 		/* now unmute WaveOut */
- 		snd_azf3328_mixer_set_mute(chip, IDX_MIXER_WAVEOUT, 0);
-@@ -1011,6 +1012,7 @@
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int result = 0;
- 	unsigned int status1;
-+	unsigned long flags;
- 
- 	snd_azf3328_dbgcalls("snd_azf3328_capture_trigger cmd %d\n", cmd);
- 
-@@ -1024,7 +1026,7 @@
- 			snd_pcm_format_width(runtime->format),
- 			runtime->channels);
- 
--		spin_lock(&chip->reg_lock);
-+		spin_lock_irqsave(&chip->reg_lock, flags);
- 		/* stop recording */
- 		status1 = snd_azf3328_codec_inw(chip, IDX_IO_REC_FLAGS);
- 		status1 &= ~DMA_RESUME;
-@@ -1032,14 +1034,14 @@
- 	    
- 		/* FIXME: clear interrupts or what??? */
- 		snd_azf3328_codec_outw(chip, IDX_IO_REC_IRQTYPE, 0xffff);
--		spin_unlock(&chip->reg_lock);
-+		spin_unlock_irqrestore(&chip->reg_lock, flags);
- 
- 		snd_azf3328_setdmaa(chip, runtime->dma_addr,
- 			snd_pcm_lib_period_bytes(substream),
- 			snd_pcm_lib_buffer_bytes(substream),
- 			1);
- 
--		spin_lock(&chip->reg_lock);
-+		spin_lock_irqsave(&chip->reg_lock, flags);
- #ifdef WIN9X
- 		/* FIXME: enable playback/recording??? */
- 		status1 |= DMA_PLAY_SOMETHING1 | DMA_PLAY_SOMETHING2;
-@@ -1063,7 +1065,7 @@
- 			DMA_EPILOGUE_SOMETHING |
- 			DMA_SOMETHING_ELSE);
- #endif
--		spin_unlock(&chip->reg_lock);
-+		spin_unlock_irqrestore(&chip->reg_lock, flags);
- 
- 		chip->is_recording = 1;
- 		snd_azf3328_dbgplay("STARTED CAPTURE\n");
-@@ -1071,7 +1073,7 @@
-         case SNDRV_PCM_TRIGGER_STOP:
- 		snd_azf3328_dbgplay("STOP CAPTURE\n");
- 
--		spin_lock(&chip->reg_lock);
-+		spin_lock_irqsave(&chip->reg_lock, flags);
- 		/* stop recording */
- 		status1 = snd_azf3328_codec_inw(chip, IDX_IO_REC_FLAGS);
- 
-@@ -1083,7 +1085,7 @@
- 
- 		status1 &= ~DMA_PLAY_SOMETHING1;
- 		snd_azf3328_codec_outw(chip, IDX_IO_REC_FLAGS, status1);
--		spin_unlock(&chip->reg_lock);
-+		spin_unlock_irqrestore(&chip->reg_lock, flags);
- 	    
- 		chip->is_recording = 0;
- 		snd_azf3328_dbgplay("STOPPED CAPTURE\n");
-@@ -1151,6 +1153,10 @@
- 	u8 status, which;
- 	static unsigned long irq_count;
- 
-+	/* no need to lock I/O accesses here, since we're in IRQ section.
-+	 * However this means that all non-IRQ users must lock via _irqsave()
-+	 * to prevent our IRQ I/O here while they're doing their I/O. */
-+
- 	status = snd_azf3328_codec_inb(chip, IDX_IO_IRQSTATUS);
- 
-         /* fast path out, to ease interrupt sharing */
-@@ -1169,18 +1175,14 @@
- 		if (chip->timer)
- 			snd_timer_interrupt(chip->timer, chip->timer->sticks);
- 		/* ACK timer */
--                spin_lock(&chip->reg_lock);
- 		snd_azf3328_codec_outb(chip, IDX_IO_TIMER_VALUE + 3, 0x07);
--		spin_unlock(&chip->reg_lock);
- 		snd_azf3328_dbgplay("azt3328: timer IRQ\n");
- 	}
- 	if (status & IRQ_PLAYBACK)
- 	{
--		spin_lock(&chip->reg_lock);
- 		which = snd_azf3328_codec_inb(chip, IDX_IO_PLAY_IRQTYPE);
- 		/* ack all IRQ types immediately */
- 		snd_azf3328_codec_outb(chip, IDX_IO_PLAY_IRQTYPE, which);
--               	spin_unlock(&chip->reg_lock);
- 
- 		if (chip->pcm && chip->playback_substream)
- 		{
-@@ -1196,11 +1198,9 @@
- 	}
- 	if (status & IRQ_RECORDING)
- 	{
--                spin_lock(&chip->reg_lock);
- 		which = snd_azf3328_codec_inb(chip, IDX_IO_REC_IRQTYPE);
- 		/* ack all IRQ types immediately */
- 		snd_azf3328_codec_outb(chip, IDX_IO_REC_IRQTYPE, which);
--		spin_unlock(&chip->reg_lock);
- 
- 		if (chip->pcm && chip->capture_substream)
- 		{
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-26-06 16:27 friser         New Issue                                    
+05-26-06 16:27 friser         Distribution              => fedora core 5   
+05-26-06 16:27 friser         Kernel Version            => 2.6.16-1.2080_FC5
+06-14-06 17:17 friser         Issue Monitored: djdeath                     
+06-14-06 17:17 friser         Note Added: 0010213                          
+06-14-06 17:18 friser         Note Deleted: 0010213                        
+06-14-06 17:19 friser         Note Added: 0010214                          
+06-15-06 10:10 friser         Note Added: 0010236                          
+06-15-06 17:50 rlrevell       Note Added: 0010240                          
+06-16-06 14:14 friser         Note Added: 0010253                          
+06-16-06 14:15 friser         File Added: alsa-output.txt                    
+06-16-06 14:18 friser         File Added: modprobe.conf                    
+06-16-06 14:19 friser         Note Added: 0010254                          
+06-16-06 20:00 rlrevell       Note Added: 0010259                          
+06-17-06 16:35 friser         Note Added: 0010271                          
+06-17-06 17:06 friser         Note Added: 0010272                          
+06-17-06 17:13 Raymond        Note Added: 0010273                          
+06-17-06 17:14 Raymond        Note Edited: 0010273                         
+06-17-06 17:19 friser         Note Added: 0010274                          
+06-17-06 17:24 Raymond        Note Added: 0010275                          
+06-17-06 17:26 Raymond        Note Edited: 0010275                         
+06-17-06 17:34 Raymond        Note Edited: 0010275                         
+06-17-06 17:46 friser         Note Added: 0010276                          
+06-17-06 17:57 Raymond        Note Added: 0010277                          
+06-17-06 17:59 Raymond        Note Edited: 0010277                         
+06-17-06 18:07 friser         Note Added: 0010278                          
+06-17-06 18:11 friser         Note Added: 0010279                          
+06-17-06 18:25 rlrevell       Note Added: 0010281                          
+06-17-06 18:36 friser         Note Added: 0010282                          
+06-17-06 18:39 rlrevell       Note Added: 0010283                          
+06-17-06 18:45 friser         Note Added: 0010284                          
+06-17-06 18:56 rlrevell       Note Added: 0010285                          
+06-17-06 19:10 friser         Note Added: 0010286                          
+06-17-06 19:19 rlrevell       Note Added: 0010287                          
+06-20-06 13:00 friser         Note Added: 0010334                          
+06-20-06 15:28 Raymond        Note Added: 0010335                          
+06-20-06 15:47 friser         Note Added: 0010336                          
+06-21-06 03:44 Raymond        Note Added: 0010375                          
+06-21-06 10:35 friser         Note Added: 0010390                          
+======================================================================
