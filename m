@@ -1,15 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: latency.c and delay related questions
-Date: Wed, 21 Jun 2006 20:35:49 +0200 (CEST)
-Message-ID: <Pine.LNX.4.61.0606212028030.11678@tm8103-a.perex-int.cz>
-References: <b6251a620606200310q7b532513s1aa6542368568460@mail.gmail.com>
-	<Pine.LNX.4.61.0606201924250.9219@tm8103.perex-int.cz>
-	<b6251a620606210316y6c721997o96e570861f0cb114@mail.gmail.com>
+From: mw-u2@gmx.de
+Subject: default model for snd-hda-intel doesnt work
+Date: Wed, 21 Jun 2006 21:17:16 +0200
+Message-ID: <20060621191716.295260@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <b6251a620606210316y6c721997o96e570861f0cb114@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,76 +15,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Christophe Osuna <christophe.osuna@gmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21 Jun 2006, Christophe Osuna wrote:
+Hi,
 
-> (I apologize for the previous message with HTML - I am a new gmail
-> user and was expecting it not to send HTML for a basic text message. I
-> have disabled text formatting - hope it works now.)
-> 
-> Thanks for your help. The linking of capture and playback devices
-> explains everything; if I remove linking and use snd_pcm_start() on
-> the playback device I get the expected behaviour.
-> 
-> Here is a little drawing (requires fixed font) to illustrate what you
-> have said and what I have understood (useless for you but some people
-> like me might find it useful).
-> 
-> When capture and playback devices are linked, the following happens:
-> 
->          +-------------------------
-> Capture  | C0 | C1 | C2 | C3 | ...
->          +-------------------------
-> 
->          +-------------------------
-> Playback | -- | -- | C0 | C1 | ...
->          +-------------------------
-> 
-> Capture and playback start simultaneously and so playback device needs
-> something to play. When the first capture is finished, another is
-> started. We would like to play the captured audio, but another
-> playback has already started. Only after the latter is finished can
-> the captured audio be played.
-> 
-> This explains why the playback device needs two buffers of silence.
-> 
-> The total delay is hw_delay + 2 * period
+> If the default configuration doesn't work and one of the above
+> matches with your device, report it together with the PCI
+> subsystem ID (output of "lspci -nv") to ALSA BTS or alsa-devel
+> ML (see the section "Links and Addresses").
 
-Exactly. Well explained.
+I had to use options snd-hda-intel model=3D6stack position_fix=3D1 index=3D0
 
-> When the devices are not linked, we can start the playback device
-> after the first buffer has been captured:
-> 
->          +-------------------------
-> Capture  | C0 | C1 | C2 | C3 | ...
->          +-------------------------
-> 
->                  +-----------------
-> Playback         | C0 | C1 | C2 | .
->                  +-----------------
-> 
-> Starting the playback device and copying data takes some time, so the
-> total delay becomes hw_delay + 1 * period + start_delay + copy_delay.
-> For large periods, with period > start_delay + copy_delay, this can
-> lead to a lower latency, but who would use large periods for low
-> latency?
+$ lspci
+0000:00:14.2 0403: ATI Technologies Inc: Unknown device 437b (rev 01)
 
-Yes, this buffering schema is also possible, but note that the time window 
-for the data copy must satisfy the system scheduler requirements and 
-capabilities to get continous playback. In the "stream linked" case this 
-time window is exactly one period time.
+$ lspci -nv
 
-						Jaroslav
+0000:00:14.2 0403: 1002:437b (rev 01)
+        Subsystem: 1462:7173
+        Flags: bus master, slow devsel, latency 64, IRQ 201
+        Memory at febf8000 (64-bit, non-prefetchable) [size=3D16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=3D0/0=
+ Enable-
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Hope that helps!
+
+I still got a very annoying problem left though: I cant change the volume u=
+sing the PCM channel I have to change the volume of Front channel. This is =
+very annoying since all programs with a volume control change the PCM chann=
+el which is of no effect.
+
+I would be very glad if you could help me with that.
+
+Please CC me since I am not on the list.
+
+Thanks, Micha
+-- =
+
+
+
+Der GMX SmartSurfer hilft bis zu 70% Ihrer Onlinekosten zu sparen!
+Ideal f=FCr Modem und ISDN: http://www.gmx.net/de/go/smartsurfer
 
 All the advantages of Linux Managed Hosting--Without the Cost and Risk!
 Fully trained technicians. The highest number of Red Hat certifications in
 the hosting industry. Fanatical Support. Click to learn more
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=107521&bid=248729&dat=121642
+http://sel.as-us.falkag.net/sel?cmd=3Dlnk&kid=3D107521&bid=3D248729&dat=3D1=
+21642
