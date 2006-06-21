@@ -1,16 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002213]: hda-intel: no sound on nForce
-	ALC880 (10de:026c)
-Date: Wed, 21 Jun 2006 19:46:27 +0200
-Message-ID: <31dae27699a62a4b3d6f0000da382c06@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: latency.c and delay related questions
+Date: Wed, 21 Jun 2006 20:35:49 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0606212028030.11678@tm8103-a.perex-int.cz>
+References: <b6251a620606200310q7b532513s1aa6542368568460@mail.gmail.com>
+	<Pine.LNX.4.61.0606201924250.9219@tm8103.perex-int.cz>
+	<b6251a620606210316y6c721997o96e570861f0cb114@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0AA7156
-	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 19:46:27 +0200 (MEST)
+In-Reply-To: <b6251a620606210316y6c721997o96e570861f0cb114@mail.gmail.com>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,72 +19,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Christophe Osuna <christophe.osuna@gmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 21 Jun 2006, Christophe Osuna wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2213> 
-======================================================================
-Reported By:                gmaynard
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2213
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.16.20
-======================================================================
-Date Submitted:             06-16-2006 20:55 CEST
-Last Modified:              06-21-2006 19:46 CEST
-======================================================================
-Summary:                    hda-intel: no sound on nForce ALC880 (10de:026c)
-Description: 
-aplay says: "underrun!!! (at least 0.033 ms long)" continuously.  First
-sound played causes:
+> (I apologize for the previous message with HTML - I am a new gmail
+> user and was expecting it not to send HTML for a basic text message. I
+> have disabled text formatting - hope it works now.)
+> 
+> Thanks for your help. The linking of capture and playback devices
+> explains everything; if I remove linking and use snd_pcm_start() on
+> the playback device I get the expected behaviour.
+> 
+> Here is a little drawing (requires fixed font) to illustrate what you
+> have said and what I have understood (useless for you but some people
+> like me might find it useful).
+> 
+> When capture and playback devices are linked, the following happens:
+> 
+>          +-------------------------
+> Capture  | C0 | C1 | C2 | C3 | ...
+>          +-------------------------
+> 
+>          +-------------------------
+> Playback | -- | -- | C0 | C1 | ...
+>          +-------------------------
+> 
+> Capture and playback start simultaneously and so playback device needs
+> something to play. When the first capture is finished, another is
+> started. We would like to play the captured audio, but another
+> playback has already started. Only after the latter is finished can
+> the captured audio be played.
+> 
+> This explains why the playback device needs two buffers of silence.
+> 
+> The total delay is hw_delay + 2 * period
 
-  hda-intel: Invalid position buffer, using LPIB read method instead.
+Exactly. Well explained.
 
-in kmsg.  Dumping the results of azx_pcm_pointer shows pos to always be 0,
-even after that.  No change with model, position_fix, single_cmd
-parameters, or either 2.6.12rc3 and 2.6.16.20 kernels (always using ALSA
-1.0.11).
+> When the devices are not linked, we can start the playback device
+> after the first buffer has been captured:
+> 
+>          +-------------------------
+> Capture  | C0 | C1 | C2 | C3 | ...
+>          +-------------------------
+> 
+>                  +-----------------
+> Playback         | C0 | C1 | C2 | .
+>                  +-----------------
+> 
+> Starting the playback device and copying data takes some time, so the
+> total delay becomes hw_delay + 1 * period + start_delay + copy_delay.
+> For large periods, with period > start_delay + copy_delay, this can
+> lead to a lower latency, but who would use large periods for low
+> latency?
 
-(The motherboard is Gigabyte "GA-K8N51PVM9-RH", nForce 430 based.)
+Yes, this buffering schema is also possible, but note that the time window 
+for the data copy must satisfy the system scheduler requirements and 
+capabilities to get continous playback. In the "stream linked" case this 
+time window is exactly one period time.
 
-Similar to #2174, but that has no mention of aplay messages or kernel
-logs, and is Intel.
+						Jaroslav
 
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 06-20-06 19:56 
-----------------------------------------------------------------------
-It's likely a hardware or a BIOS problem.
-
-----------------------------------------------------------------------
- gmaynard - 06-21-06 19:46 
-----------------------------------------------------------------------
-I'm seeing it on a second motherboard, from a different manufacturer.  This
-one's a FoxConn 6150BK8MC-KRSH.  aplay and kmsg show the same.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-16-06 20:55 gmaynard       New Issue                                    
-06-16-06 20:55 gmaynard       Kernel Version            => 2.6.16.20       
-06-16-06 20:55 gmaynard       File Added: codec#0                          
-06-16-06 20:55 gmaynard       File Added: lspci                            
-06-20-06 19:56 tiwai          Note Added: 0010352                          
-06-21-06 19:46 gmaynard       Note Added: 0010404                          
-======================================================================
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 All the advantages of Linux Managed Hosting--Without the Cost and Risk!
 Fully trained technicians. The highest number of Red Hat certifications in
