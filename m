@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Wed, 21 Jun 2006 11:26:07 +0200
-Message-ID: <013a9608fcbeaa642a34a865a7fce578@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 11:42:57 +0200
+Message-ID: <43b040d72179dce3fef9be6be314ef80@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB0F018B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AFA6E18B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 11:26:07 +0200 (MEST)
+	Wed, 21 Jun 2006 11:42:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-21-2006 11:26 CEST
+Last Modified:              06-21-2006 11:42 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,16 +117,6 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-21-06 10:51 
-----------------------------------------------------------------------
-The file /lib/modules/2.6.16-1.2080_FC5/source/include/linux/version.h does
-not exist.
-
-Do you find the version.h somewhere ?
-
-http://fedora.redhat.com/docs/release-notes/fc5/release-notes-ISO/
-
-----------------------------------------------------------------------
  friser - 06-21-06 11:26 
 ----------------------------------------------------------------------
 The problem of version.h is resolved (there were 2 broken links).
@@ -163,6 +153,14 @@ FATAL: Error inserting snd_hda_intel
 (/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
 Invalid module format
 [root@umberto ~]#
+
+----------------------------------------------------------------------
+ Raymond - 06-21-06 11:42 
+----------------------------------------------------------------------
+Refer to alsa-output.txt , it' strange that
+
+checking for Red Hat kernel... auto
+checking for Red Hat kernel... no
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -208,4 +206,5 @@ Date Modified  Username       Field                    Change
 06-21-06 10:35 friser         Note Added: 0010390                          
 06-21-06 10:51 Raymond        Note Added: 0010391                          
 06-21-06 11:26 friser         Note Added: 0010392                          
+06-21-06 11:42 Raymond        Note Added: 0010393                          
 ======================================================================
