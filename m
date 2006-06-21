@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Wed, 21 Jun 2006 03:54:41 +0200
-Message-ID: <ef05444666e386992dfb4025e6bcfef1@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 04:51:27 +0200
+Message-ID: <b9c715d9c48b8f517afb5f40e2f0b4a9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7E43118B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 01F61191
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 03:54:41 +0200 (MEST)
+	Wed, 21 Jun 2006 04:51:27 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-21-2006 03:54 CEST
+Last Modified:              06-21-2006 04:51 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
@@ -50,19 +50,16 @@ something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-21-06 03:51 
-----------------------------------------------------------------------
-"Any idea how I'd go about changing the IRQs?"
-
-You better ask this equestion on fedora user mailing list.
-
-kudzu is a hardware probing utility of Fedora
-
-----------------------------------------------------------------------
  rlrevell - 06-21-06 03:54 
 ----------------------------------------------------------------------
 If the sound chip and network are onboard, there's no way to change the IRQ
 assignment.
+
+----------------------------------------------------------------------
+ bzbarsky - 06-21-06 04:51 
+----------------------------------------------------------------------
+Network is a PCI card, not onboard.  I'll poke around at changing the IRQ
+for it...  I'll also try the SPDIF thing.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -152,4 +149,5 @@ Date Modified  Username       Field                    Change
 06-20-06 08:45 Raymond        Note Added: 0010331                          
 06-21-06 03:51 Raymond        Note Added: 0010376                          
 06-21-06 03:54 rlrevell       Note Added: 0010377                          
+06-21-06 04:51 bzbarsky       Note Added: 0010378                          
 ======================================================================
