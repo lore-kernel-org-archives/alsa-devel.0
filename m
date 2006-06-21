@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002163]: error running alsaconf
-Date: Wed, 21 Jun 2006 11:42:57 +0200
-Message-ID: <43b040d72179dce3fef9be6be314ef80@bugtrack.alsa-project.org>
+Date: Wed, 21 Jun 2006 12:07:07 +0200
+Message-ID: <8cbafd1b3a95efec83ee9d18e116d4bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AFA6E18B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A7E32169
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 11:42:57 +0200 (MEST)
+	Wed, 21 Jun 2006 12:07:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               fedora core 5
 Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
 Date Submitted:             05-26-2006 16:27 CEST
-Last Modified:              06-21-2006 11:42 CEST
+Last Modified:              06-21-2006 12:07 CEST
 ======================================================================
 Summary:                    error running alsaconf
 Description: 
@@ -117,50 +117,19 @@ Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- friser - 06-21-06 11:26 
-----------------------------------------------------------------------
-The problem of version.h is resolved (there were 2 broken links).
-Now the installation find the file but after the installation I have the
-same problem.
-
-[root@umberto ~]# modprobe snd-hda-intel
-WARNING: Error inserting snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-WARNING: Error inserting snd_page_alloc
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
-Invalid module format
-WARNING: Error inserting snd
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
-format
-WARNING: Error inserting snd_timer
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
-module format
-FATAL: Error inserting snd_pcm
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
-module format
-WARNING: Error running install command for snd_pcm
-WARNING: Error inserting snd_hda_codec
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
-Invalid module format
-FATAL: Error inserting snd_hda_intel
-(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
-Invalid module format
-[root@umberto ~]#
-
-----------------------------------------------------------------------
  Raymond - 06-21-06 11:42 
 ----------------------------------------------------------------------
 Refer to alsa-output.txt , it' strange that
 
 checking for Red Hat kernel... auto
 checking for Red Hat kernel... no
+
+----------------------------------------------------------------------
+ Raymond - 06-21-06 12:07 
+----------------------------------------------------------------------
+You should file a bug report "Invalid module format" in bugzilla.redhat
+
+http://people.redhat.com/stransky/alsa/
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -207,4 +176,5 @@ Date Modified  Username       Field                    Change
 06-21-06 10:51 Raymond        Note Added: 0010391                          
 06-21-06 11:26 friser         Note Added: 0010392                          
 06-21-06 11:42 Raymond        Note Added: 0010393                          
+06-21-06 12:07 Raymond        Note Added: 0010394                          
 ======================================================================
