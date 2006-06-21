@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Wed, 21 Jun 2006 05:48:29 +0200
-Message-ID: <b9af80ab5197fae08e37b28f27bf3b80@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002103]: Sound goes off when adjusting
+	volume from alsa-mixer
+Date: Wed, 21 Jun 2006 07:28:35 +0200
+Message-ID: <107d2e208a7ee9e23c100c35f98e35c9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C9C3191
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0D5CD18C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 05:48:30 +0200 (MEST)
+	Wed, 21 Jun 2006 07:28:35 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,152 +26,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2103> 
 ======================================================================
-Reported By:                bzbarsky
-Assigned To:                
+Reported By:                raddy
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2132
-Category:                   PCI - ens1371
+Issue ID:                   2103
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15
+Status:                     assigned
+Distribution:               Suse
+Kernel Version:             2.6.13-15
 ======================================================================
-Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-21-2006 05:48 CEST
+Date Submitted:             05-08-2006 11:28 CEST
+Last Modified:              06-21-2006 07:28 CEST
 ======================================================================
-Summary:                    No sound from speakers
+Summary:                    Sound goes off when adjusting volume from alsa-mixer
 Description: 
-Alsa seems to detect the sound card, but when I try to actually play
-something there is no sound from the speakers.
+i have an Asus P5RD2-VM motherboard equipped with Uli M5461 integrated 
+sound card supporting HD-Audio,
+it uses snd_hda_intel driver,
+it was detected fine,
+Alsa played a test sound that itself produced no sound from speakers,
+sound is going off in many curcomstance,
+they are,
+1 > when adjusting volume,
+2 > switching to several songs intermittently.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-21-06 05:05 
+ tiwai - 06-20-06 19:44 
 ----------------------------------------------------------------------
-Then you can probably change the network card's IRQ by moving it to a
-different PCI slot.
+If a certain model option solves the problem, please inform the following
+information:
 
-(I really doubt this will help with your problem though)
+- the HD-audio codec chip (you can find in /proc/asound/card0/codec#*
+files)
+- the product name of laptop, machine or mobo
+- the model option you used
+- "lspci -nv" entry (only for class 0403)
 
 ----------------------------------------------------------------------
- Raymond - 06-21-06 05:48 
+ raddy - 06-21-06 07:28 
 ----------------------------------------------------------------------
-There is a new feature in alsa-plugin-1.0.11, but it may be hard for you to
-use OSS driver in FC4 because of kudzu. 
+Hi tiwai
 
-This feature has rather limited usage since device "hw" is not available
-for most ALSA application.
+thank you, your solution worked like a charm,
+i am informing you the information you asked in previous comment,
 
+- the HD-audio codec chip is AD1986A
+- the product name of mobo is Asus P5RD2-VM (assembled machine)
+- the model option i used "3stack"
+- lspci output for class 0403 follows,
 
-
-OSS <--> ALSA PCM plugin
-========================
-
-This plugin converts the ALSA API over OSS API.  With this plugin,
-ALSA native apps can run on OSS drivers.
-
-This plugin provides the PCM type "oss".  The typical configuration
-looks like below:
-
-	pcm.oss {
-		type oss
-		device /dev/dsp
-	}
+Class 0403: 10b9:5461 (rev 02)
+Subsystem: 1043:81b3
+Flags: bus master, medium devsel, latency 64, IRQ 7
+Memory at bfff8000 (32-bit, non-prefetchable) [size=16K]
+Capabilities: [50] Power Management version 2
+Capabilities: [60] Message Signalled Interrupts: 64bit- Queue=0/0 Enable
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-06 19:54 bzbarsky       New Issue                                    
-05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
-05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
-05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
-05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
-05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
-05-17-06 19:56 bzbarsky       File Added: scsound.log                      
-05-17-06 19:57 bzbarsky       Note Added: 0009857                          
-05-20-06 05:31 Raymond        Note Added: 0009882                          
-05-20-06 21:43 bzbarsky       Note Added: 0009893                          
-05-21-06 03:41 Raymond        Note Added: 0009894                          
-05-21-06 03:48 Raymond        Note Edited: 0009894                         
-05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
-05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
-05-22-06 02:53 bzbarsky       Note Added: 0009901                          
-05-22-06 04:14 Raymond        Note Added: 0009902                          
-05-23-06 09:00 Raymond        Note Added: 0009929                          
-05-23-06 09:03 Raymond        Note Edited: 0009929                         
-05-23-06 09:07 Raymond        Note Edited: 0009929                         
-06-02-06 20:08 bzbarsky       Note Added: 0010053                          
-06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
-06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
-06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
- 
-06-02-06 20:35 bzbarsky       Note Added: 0010054                          
-06-03-06 02:44 Raymond        Note Added: 0010058                          
-06-05-06 01:29 bzbarsky       Note Added: 0010066                          
-06-05-06 03:31 Raymond        Note Added: 0010067                          
-06-05-06 03:56 bzbarsky       File Added: dmesg                            
-06-05-06 03:57 bzbarsky       Note Added: 0010068                          
-06-06-06 06:35 Raymond        Note Added: 0010071                          
-06-06-06 06:43 Raymond        Note Edited: 0010071                         
-06-06-06 08:59 Raymond        Note Edited: 0010071                         
-06-10-06 07:42 bzbarsky       Note Added: 0010144                          
-06-11-06 05:24 Raymond        Note Added: 0010150                          
-06-11-06 05:29 Raymond        Note Edited: 0010150                         
-06-11-06 22:37 bzbarsky       File Added: dmesg+kprint                     
-06-11-06 22:37 bzbarsky       File Added: codec_lines.txt                    
-06-11-06 22:38 bzbarsky       Note Added: 0010154                          
-06-12-06 03:31 Raymond        Note Added: 0010157                          
-06-12-06 03:41 rlrevell       Note Added: 0010158                          
-06-12-06 04:36 bzbarsky       Note Added: 0010161                          
-06-12-06 05:18 Raymond        Note Added: 0010164                          
-06-12-06 05:20 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:26 rlrevell       Note Added: 0010165                          
-06-12-06 13:23 Raymond        Note Added: 0010168                          
-06-12-06 18:12 bzbarsky       Note Added: 0010172                          
-06-13-06 04:43 Raymond        Note Added: 0010185                          
-06-13-06 04:45 Raymond        Note Edited: 0010185                         
-06-13-06 05:39 bzbarsky       Note Added: 0010187                          
-06-13-06 07:20 Raymond        Note Added: 0010190                          
-06-13-06 07:25 Raymond        Note Edited: 0010190                         
-06-14-06 05:00 Raymond        Note Added: 0010204                          
-06-15-06 02:16 bzbarsky       Note Added: 0010220                          
-06-15-06 02:27 bzbarsky       Note Edited: 0010220                         
-06-15-06 02:36 Raymond        Note Added: 0010223                          
-06-15-06 02:53 Raymond        Note Added: 0010225                          
-06-15-06 02:59 bzbarsky       Note Added: 0010226                          
-06-15-06 03:03 Raymond        Note Edited: 0010225                         
-06-15-06 03:19 Raymond        Note Added: 0010227                          
-06-15-06 03:53 rlrevell       Note Added: 0010228                          
-06-15-06 03:55 rlrevell       Note Added: 0010229                          
-06-15-06 04:19 bzbarsky       Note Added: 0010231                          
-06-15-06 05:54 Raymond        Note Added: 0010232                          
-06-15-06 05:57 Raymond        Note Edited: 0010232                         
-06-15-06 05:59 Raymond        Note Edited: 0010232                         
-06-15-06 06:02 Raymond        Note Edited: 0010232                         
-06-15-06 08:06 bzbarsky       Note Added: 0010234                          
-06-15-06 08:59 Raymond        Note Added: 0010235                          
-06-15-06 09:09 Raymond        Note Edited: 0010235                         
-06-15-06 17:07 rlrevell       Note Added: 0010239                          
-06-16-06 03:53 Raymond        Note Added: 0010247                          
-06-16-06 03:56 Raymond        Note Edited: 0010247                         
-06-16-06 04:10 Raymond        Note Edited: 0010247                         
-06-16-06 04:31 Raymond        Note Added: 0010248                          
-06-20-06 05:02 bzbarsky       Note Added: 0010326                          
-06-20-06 06:20 Raymond        Note Added: 0010327                          
-06-20-06 06:23 bzbarsky       Note Added: 0010328                          
-06-20-06 06:35 Raymond        Note Added: 0010329                          
-06-20-06 06:57 bzbarsky       Note Added: 0010330                          
-06-20-06 08:45 Raymond        Note Added: 0010331                          
-06-21-06 03:51 Raymond        Note Added: 0010376                          
-06-21-06 03:54 rlrevell       Note Added: 0010377                          
-06-21-06 04:51 bzbarsky       Note Added: 0010378                          
-06-21-06 05:05 rlrevell       Note Added: 0010380                          
-06-21-06 05:48 Raymond        Note Added: 0010381                          
+05-08-06 11:28 raddy          New Issue                                    
+05-08-06 11:28 raddy          Distribution              => Suse            
+05-08-06 11:28 raddy          Kernel Version            => 2.6.13-15       
+05-10-06 07:54 raddy          Issue Monitored: raddy                       
+05-12-06 10:42 UMMO           Note Added: 0009774                          
+05-12-06 10:43 UMMO           Issue Monitored: UMMO                        
+05-12-06 16:04 tiwai          Note Added: 0009776                          
+05-12-06 17:09 UMMO           Note Added: 0009781                          
+05-12-06 17:13 UMMO           Note Edited: 0009781                         
+05-23-06 16:21 shadoweel      Issue Monitored: shadoweel                    
+06-18-06 09:26 raddy          Note Added: 0010296                          
+06-19-06 16:53 mariourk       Note Added: 0010317                          
+06-19-06 19:07 tiwai          Note Added: 0010318                          
+06-19-06 20:05 mariourk       Note Added: 0010319                          
+06-20-06 19:44 tiwai          Note Added: 0010344                          
+06-21-06 07:28 raddy          Note Added: 0010383                          
 ======================================================================
