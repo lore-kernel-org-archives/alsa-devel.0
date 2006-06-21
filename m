@@ -1,11 +1,16 @@
-From: hurricane <hurricane@barmusic.com>
-Subject: [Fwd: [Alsa-user] Fedora Core 5 and more than 8 audio
-	devices]
-Date: Wed, 21 Jun 2006 17:13:46 -0400
-Message-ID: <1150924426.8499.0.camel@lnx.rgptech.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low
+	volume (both in and out)
+Date: Wed, 21 Jun 2006 23:18:33 +0200
+Message-ID: <bf19a2b8307c900a6b6a960a722496d1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-1LZYGU1gMxUy/uTLIzaQ"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1730717C
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Jun 2006 23:18:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -15,118 +20,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-1LZYGU1gMxUy/uTLIzaQ
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=324> 
+======================================================================
+Reported By:                garden
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   324
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian sid
+Kernel Version:             2.6.5
+======================================================================
+Date Submitted:             06-06-2004 13:17 CEST
+Last Modified:              06-21-2006 23:18 CEST
+======================================================================
+Summary:                    Audigy2 Platinum: very low volume (both in and out)
+Description: 
+Both the input and output levels of my Audigy2 Platinum seem to be very low
+if compared to the same card with Windows (win98se). For example, I
+connected an external source (a MD player with very loud music in the
+disc) to the optical input, then to the aux input, then to the aux2 input.
+With the mixer settings to 100% the input level still does not go over
+20-25% of the maximum amplitude (while with Windows I have to lower the
+input level or it will be too high). The same thing applies to the output
+level of my analog speakers. [I must be *very* careful when I reboot with
+Windows and must not forget to turn the volume knob from 10 to 2]. I had
+exactly the same problem when I used the emu10k1 drivers from sourceforge.
+======================================================================
+
+----------------------------------------------------------------------
+ killrbuckeye - 06-19-06 16:33 
+----------------------------------------------------------------------
+pzad made me aware of this issue after I reported the problem in the
+Creative forum.  I have the same symptoms as garden: very low capture
+volumes with the Line-level inputs Aux2 (stereo RCA) and Line2 (1/4"),
+even with all the ALSA capture volumes set to 100%.  I can make the
+signals clip in Windows, so I know my source levels are more than
+adequate.
+
+----------------------------------------------------------------------
+ snover - 06-21-06 23:18 
+----------------------------------------------------------------------
+I am experiencing a similar issue running 2.6.15 (2.6.15-25-amd64-k8) and
+ALSA 1.0.10rc3 (Kubuntu Dapper 6.06) where the input levels are very very
+low. Also, the "Line In 1/Mic 1" on the breakout box is mapped to Line2 in
+ALSA, so "Mic Boost" does not work.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-06-04 13:17 garden         New Issue                                    
+06-06-04 13:17 garden         Distribution              => Debian sid      
+06-06-04 13:17 garden         Kernel Version            => 2.6.5           
+06-28-04 09:17 pzad           Status                   new => assigned     
+06-28-04 09:17 pzad           Assigned To               => pzad            
+09-14-04 15:24 garden         Note Added: 0001758                          
+09-16-04 10:16 pzad           Note Added: 0001766                          
+09-16-04 11:32 garden         File Added: amixer.out                       
+09-16-04 11:37 garden         Note Added: 0001769                          
+09-16-04 12:17 pzad           Note Added: 0001772                          
+09-16-04 13:23 garden         Note Added: 0001773                          
+08-30-05 12:23 jdthood        Note Added: 0005975                          
+08-30-05 12:32 garden         Note Added: 0005978                          
+08-30-05 20:21 rlrevell       Note Added: 0005981                          
+08-31-05 14:01 pzad           Note Added: 0005988                          
+08-31-05 18:54 rlrevell       Note Added: 0005990                          
+01-26-06 21:52 pzad           Note Added: 0007789                          
+01-26-06 21:55 rlrevell       Note Added: 0007790                          
+01-26-06 22:03 pzad           Note Added: 0007791                          
+01-28-06 23:11 andred         Issue Monitored: andred                      
+06-19-06 16:33 killrbuckeye   Note Added: 0010316                          
+06-19-06 16:34 killrbuckeye   Issue Monitored: killrbuckeye                    
+06-21-06 23:18 snover         Note Added: 0010409                          
+======================================================================
 
 
-
---=-1LZYGU1gMxUy/uTLIzaQ
-Content-Disposition: inline
-Content-Description: Forwarded message - [Alsa-user] Fedora Core 5 and more
-	than 8 audio devices
-Content-Type: message/rfc822
-
-Return-Path: <alsa-user-bounces@lists.sourceforge.net>
-Received: from lists-outbound.sourceforge.net
-	(lists-outbound.sourceforge.net [66.35.250.225]) by bsd.rgptech.com
-	(8.9.3/8.9.3) with ESMTP id LAA13820 for <hurricane@barmusic.com>;
-	Wed, 21 Jun 2006 11:22:25 -0700 (PDT) (envelope-from
-	alsa-user-bounces@lists.sourceforge.net)
-Received: from sc8-sf-list2-new.sourceforge.net (unknown [10.3.1.94]) by
-	sc8-sf-spam2.sourceforge.net (Postfix) with ESMTP id 33FA216B69; Wed, 21
-	Jun 2006 11:21:54 -0700 (PDT)
-Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.92]
-	helo=mail.sourceforge.net) by sc8-sf-list2-new.sourceforge.net with
-	esmtp
-	(Exim 4.43) id 1Ft7Kp-00050v-Gc for alsa-user@lists.sourceforge.net;
-	Wed, 21 Jun 2006 11:21:51 -0700
-Received: from rrcs-67-78-145-166.se.biz.rr.com ([67.78.145.166]
-	helo=lnx.rgptech.com) by mail.sourceforge.net with esmtps
-	(TLSv1:AES256-SHA:256) (Exim 4.44) id 1Ft7Ko-0003DT-EP for
-	alsa-user@lists.sourceforge.net; Wed, 21 Jun 2006 11:21:51 -0700
-Received: from lnx.rgptech.com (localhost.localdomain [127.0.0.1]) by
-	lnx.rgptech.com (8.13.1/8.13.1) with ESMTP id k5LILHta008068 for
-	<alsa-user@lists.sourceforge.net>; Wed, 21 Jun 2006 14:21:17 -0400
-Received: (from root@localhost) by lnx.rgptech.com (8.13.1/8.13.1/Submit)
-	id k5LILH2T008067 for alsa-user@lists.sourceforge.net; Wed, 21 Jun 2006
-	14:21:17 -0400
-From: hurricane <hurricane@barmusic.com>
-To: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>
-Date: Wed, 21 Jun 2006 14:21:16 -0400
-Message-Id: <1150914077.8041.5.camel@lnx.rgptech.com>
-Mime-Version: 1.0
-X-Mailer: Evolution 2.0.4 (2.0.4-4) 
-X-Spam-Score: 1.5 (+)
-X-Spam-Report: Spam Filtering performed by sourceforge.net. See
-	http://spamassassin.org/tag/ for more details. Report problems to
-	http://sf.net/tracker/?func=add&group_id=1&atid=200001 0.5
-	TO_ADDRESS_EQ_REAL     To: repeats address as real name 1.0
-	FORGED_RCVD_HELO       Received: contains a forged HELO
-Subject: [Alsa-user] Fedora Core 5 and more than 8 audio devices
-X-BeenThere: alsa-user@lists.sourceforge.net
-X-Mailman-Version: 2.1.8
-Precedence: list
-List-Id: Advanced Linux Sound Architecture - User
-	<alsa-user.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: alsa-user-bounces@lists.sourceforge.net
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-
-Folks,
-
-	I have bombed out on getting smart enough to enable more than 8 usb
-based audio devices to work on FC4, despite some help from others. My
-question is "Does Fedora Core 5 include in the default installation the
-newest ALSA driver that will see more than 8 of my USB video/audio
-boards?". If so, how many could it theoretically see, if they are
-physically present??
-
-Thanks,
-
-Gordon
 
 All the advantages of Linux Managed Hosting--Without the Cost and Risk!
 Fully trained technicians. The highest number of Red Hat certifications in
 the hosting industry. Fanatical Support. Click to learn more
 http://sel.as-us.falkag.net/sel?cmd=lnk&kid=107521&bid=248729&dat=121642
-_______________________________________________
-Alsa-user mailing list
-Alsa-user@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-user
-
-
---=-1LZYGU1gMxUy/uTLIzaQ
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-All the advantages of Linux Managed Hosting--Without the Cost and Risk!
-Fully trained technicians. The highest number of Red Hat certifications in
-the hosting industry. Fanatical Support. Click to learn more
-http://sel.as-us.falkag.net/sel?cmd=lnk&kid=107521&bid=248729&dat=121642
---=-1LZYGU1gMxUy/uTLIzaQ
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
---=-1LZYGU1gMxUy/uTLIzaQ--
