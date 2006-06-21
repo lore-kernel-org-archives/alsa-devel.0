@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Wed, 21 Jun 2006 02:02:34 +0200
-Message-ID: <8c12eb6ec14f6bead0988e03258f3392@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002163]: error running alsaconf
+Date: Wed, 21 Jun 2006 03:44:06 +0200
+Message-ID: <89ce3c6852bb1e08e8f294f0032f30fa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 77D0C175
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 63F6617C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jun 2006 02:02:34 +0200 (MEST)
+	Wed, 21 Jun 2006 03:44:06 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,87 +25,170 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2163> 
 ======================================================================
-Reported By:                El Santo
-Assigned To:                
+Reported By:                friser
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2219
-Category:                   GENERIC - mpu401
+Issue ID:                   2163
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Debian etch (2006-06-18)
-Kernel Version:             2.6.15-1-686
+Status:                     assigned
+Distribution:               fedora core 5
+Kernel Version:             2.6.16-1.2080_FC5
 ======================================================================
-Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-21-2006 02:02 CEST
+Date Submitted:             05-26-2006 16:27 CEST
+Last Modified:              06-21-2006 03:44 CEST
 ======================================================================
-Summary:                    snd-mpu401 don't load
+Summary:                    error running alsaconf
 Description: 
-I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
-driver. It loads all necesary modules, includind snd-mpu401-uart, but no
-snd-mpu401
-The audio part of the driver works perfectly, but the midi port doesn't
-work.
+Hello, 
+when I try to confugure the alsa driver with alsaconf on my sony vaio I
+obtain this error:
 
-In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
-not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
-(setting the port accordingly to BIOS) it doesnt work. I don't know the
-mpu401 irq setting but i tryed them all. None of them worked. The driver
-says "device not found".
+Loading driver...
+Starting sound driver: snd-hda-intel WARNING: Error inserting
+snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+FATAL: Error inserting snd_pcm
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
+module format
+WARNING: Error running install command for snd_pcm
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
+Invalid module format
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
+Invalid module format
+done
+Starting sound driver: snd-hda-intel WARNING: Error inserting
+snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+WARNING: Error inserting snd_page_alloc
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-page-alloc.ko):
+Invalid module format
+WARNING: Error inserting snd
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd.ko): Invalid module
+format
+WARNING: Error inserting snd_timer
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-timer.ko): Invalid
+module format
+FATAL: Error inserting snd_pcm
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/acore/snd-pcm.ko): Invalid
+module format
+WARNING: Error running install command for snd_pcm
+WARNING: Error inserting snd_hda_codec
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-codec.ko):
+Invalid module format
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.16-1.2080_FC5/kernel/sound/pci/hda/snd-hda-intel.ko):
+Invalid module format
+done
+Setting default volumes...
 
-Under windows xp the port works perfectly, so the hardware is ok. Anyway
-under windows xp, i use a "system inspector" to monitor ioports and irq
-usage, and i didnt see any irq assigned for mpu401 port, and the port
-(0x330) wasn't occupied neither.
+Thanks 
 
-any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-21-06 00:56 
+ friser - 06-20-06 15:47 
 ----------------------------------------------------------------------
-Kernel command line: root=/dev/hda2 ro pci=routeirq
-Local APIC disabled by BIOS -- you can enable it with "lapic"
+[root@umberto linux]# uname -a
+Linux umberto.exentrica.it 2.6.16-1.2080_FC5 #1 Tue Mar 28 03:38:34 EST
+2006 i686 i686 i386 GNU/Linux
 
-Try booting without "pci=routeirq".  Try enabling "lapic".  Try kernel
-2.6.17.
+[root@umberto linux]# cat /proc/version
+Linux version 2.6.16-1.2080_FC5 (bhcompile@hs20-bc1-5.build.redhat.com)
+(gcc version 4.1.0 20060304 (Red Hat 4.1.0-3)) #1 Tue Mar 28 03:38:34 EST
+2006
 
-If all of the above fail, report the bug on the kernel mailing list
-(including dmesg output)
+
+[root@umberto linux]# gcc -v
+Using built-in specs.
+Target: i386-redhat-linux
+Configured with: ../configure --prefix=/usr --mandir=/usr/share/man
+--infodir=/usr/share/info --enable-shared --enable-threads=posix
+--enable-checking=release --with-system-zlib --enable-__cxa_atexit
+--disable-libunwind-exceptions --enable-libgcj-multifile
+--enable-languages=c,c++,objc,obj-c++,java,fortran,ada
+--enable-java-awt=gtk --disable-dssi
+--with-java-home=/usr/lib/jvm/java-1.4.2-gcj-1.4.2.0/jre
+--with-cpu=generic --host=i386-redhat-linux
+Thread model: posix
+gcc version 4.1.0 20060304 (Red Hat 4.1.0-3)
 
 ----------------------------------------------------------------------
- rlrevell - 06-21-06 02:02 
+ Raymond - 06-21-06 03:44 
 ----------------------------------------------------------------------
-Please disregard my last message - try this instead (from Rene Herman)
-
-"Looking at the driver, please make him provide "mpu_port=0x330" as a 
-parameter to snd-via82xx and check if it then works (if it does, there 
-is a "VIA82xx MPU401" at 0x330 in /proc/ioports, and aplaymidi -l will 
-list the MPU401 UART)."
+I am still using FC1, you better send you question to fedora user
+mailing-list or fedora forum, or invite other FC5 hda-intel reporters in
+ALSA BTS by sending reminder
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-18-06 17:41 El Santo       New Issue                                    
-06-18-06 17:41 El Santo       Distribution              => Debian etch
-(2006-06-18)
-06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
-06-19-06 03:45 Raymond        Note Added: 0010305                          
-06-20-06 19:49 tiwai          Note Added: 0010349                          
-06-20-06 23:30 El Santo       Note Added: 0010357                          
-06-20-06 23:39 rlrevell       Note Added: 0010359                          
-06-20-06 23:54 El Santo       Note Added: 0010362                          
-06-21-06 00:00 rlrevell       Note Added: 0010363                          
-06-21-06 00:04 rlrevell       Note Added: 0010364                          
-06-21-06 00:12 El Santo       Note Added: 0010365                          
-06-21-06 00:18 rlrevell       Note Added: 0010366                          
-06-21-06 00:33 El Santo       File Added: dmesg.log                        
-06-21-06 00:36 El Santo       Note Added: 0010367                          
-06-21-06 00:52 rlrevell       Note Added: 0010369                          
-06-21-06 00:56 rlrevell       Note Added: 0010370                          
-06-21-06 02:02 rlrevell       Note Added: 0010374                          
+05-26-06 16:27 friser         New Issue                                    
+05-26-06 16:27 friser         Distribution              => fedora core 5   
+05-26-06 16:27 friser         Kernel Version            => 2.6.16-1.2080_FC5
+06-14-06 17:17 friser         Issue Monitored: djdeath                     
+06-14-06 17:17 friser         Note Added: 0010213                          
+06-14-06 17:18 friser         Note Deleted: 0010213                        
+06-14-06 17:19 friser         Note Added: 0010214                          
+06-15-06 10:10 friser         Note Added: 0010236                          
+06-15-06 17:50 rlrevell       Note Added: 0010240                          
+06-16-06 14:14 friser         Note Added: 0010253                          
+06-16-06 14:15 friser         File Added: alsa-output.txt                    
+06-16-06 14:18 friser         File Added: modprobe.conf                    
+06-16-06 14:19 friser         Note Added: 0010254                          
+06-16-06 20:00 rlrevell       Note Added: 0010259                          
+06-17-06 16:35 friser         Note Added: 0010271                          
+06-17-06 17:06 friser         Note Added: 0010272                          
+06-17-06 17:13 Raymond        Note Added: 0010273                          
+06-17-06 17:14 Raymond        Note Edited: 0010273                         
+06-17-06 17:19 friser         Note Added: 0010274                          
+06-17-06 17:24 Raymond        Note Added: 0010275                          
+06-17-06 17:26 Raymond        Note Edited: 0010275                         
+06-17-06 17:34 Raymond        Note Edited: 0010275                         
+06-17-06 17:46 friser         Note Added: 0010276                          
+06-17-06 17:57 Raymond        Note Added: 0010277                          
+06-17-06 17:59 Raymond        Note Edited: 0010277                         
+06-17-06 18:07 friser         Note Added: 0010278                          
+06-17-06 18:11 friser         Note Added: 0010279                          
+06-17-06 18:25 rlrevell       Note Added: 0010281                          
+06-17-06 18:36 friser         Note Added: 0010282                          
+06-17-06 18:39 rlrevell       Note Added: 0010283                          
+06-17-06 18:45 friser         Note Added: 0010284                          
+06-17-06 18:56 rlrevell       Note Added: 0010285                          
+06-17-06 19:10 friser         Note Added: 0010286                          
+06-17-06 19:19 rlrevell       Note Added: 0010287                          
+06-20-06 13:00 friser         Note Added: 0010334                          
+06-20-06 15:28 Raymond        Note Added: 0010335                          
+06-20-06 15:47 friser         Note Added: 0010336                          
+06-21-06 03:44 Raymond        Note Added: 0010375                          
 ======================================================================
