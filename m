@@ -1,10 +1,16 @@
-From: Matthias Koenig <mk@phasorlab.de>
-Subject: [PATCH] alsa-utils: amidi: Fix device list
-Date: Wed, 21 Jun 2006 15:27:22 +0200
-Message-ID: <87u06e3ah1.fsf@zebra.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002174]: No sound at all using
+	snd-hda-intel / alsa-1.0.11
+Date: Wed, 21 Jun 2006 17:47:41 +0200
+Message-ID: <3a7a0ade2c0fd7bce43ec434bc72b0b1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-=-="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 71F64156
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Jun 2006 17:47:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -14,216 +20,118 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@suse.cz>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---=-=-=
 
-Hi,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2174> 
+======================================================================
+Reported By:                carllivitt
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2174
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2122_FC5smp
+======================================================================
+Date Submitted:             05-30-2006 17:11 CEST
+Last Modified:              06-21-2006 17:47 CEST
+======================================================================
+Summary:                    No sound at all using snd-hda-intel / alsa-1.0.11
+Description: 
+On my new Toshiba Satellite Pro P100 laptop, I cannot get sound from the
+speakers or headphone jack. It has never worked.
 
-amidi does not show all devices with the --list-devices option. 
-It assumes that all output ports equals input ports and does not
-show an input only port.
-This patch extends the output of amidi -l by one column which shows
-the input/output direction of each port.
-E.g.
+I've used the standard FC5 kernel and the updated kernel
+(2.6.16-1.2122FC5smp) without success. 
 
-zebra:amidi # ./amidi -l
-Dir Device    Name
-IO  hw:1,0    MPU-401 MIDI 1-0
-IO  hw:2,0,0  Keystation MIDI 1
-IO  hw:3,0,0  Miditerminal 1
-IO  hw:3,0,1  Miditerminal 2
-IO  hw:3,0,2  Miditerminal 3
-IO  hw:3,0,3  Miditerminal 4
-I   hw:3,0,4  Miditerminal SMPTE
+I've downloaded and installed the alsa-*-1.0.11 drivers etc, but still no
+sound. Everything is unmuted, alsamixer can turn the volume controls up
+and down, KDE's kmix also works fine but still no sound. There are no
+error messages in the syslog. 
 
-The patch still assumes, if input and output are present, both have the
-same name. Maybe it would be better to do two separate lists, but I
-wanted to change the behavior of the tool as little as possible.
-What do you think?
+I've also tried using the 'single_cmd=1' module loading option. 
 
-Matthias
+I tried the CVS version of ALSA, but it didn't work with my kernel - there
+were unresolved symbols that I couldn't resolve. I'm back to using the
+1.0.11 version.
 
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0001957 HP dv8000t hda-intel codec not recognized
+======================================================================
 
---=-=-=
-Content-Type: text/x-patch
-Content-Disposition: inline; filename=amidi-ports.patch
-Content-Description: amidi-ports.patch
+----------------------------------------------------------------------
+ jlpedrosa - 06-20-06 23:51 
+----------------------------------------------------------------------
+carllivitt: lpedrosa: I think your computer has a different chipset and is
+confusing things in this bug report.
 
-diff -r 26d52a2cc952 amidi/amidi.c
---- a/amidi/amidi.c	Thu May 18 12:33:35 2006 +0200
-+++ b/amidi/amidi.c	Wed Jun 21 14:19:03 2006 +0200
-@@ -95,56 +95,119 @@ static void *my_malloc(size_t size)
- 	return p;
- }
- 
-+static int is_input(snd_ctl_t *ctl, int card, int device, int sub)
-+{
-+	snd_rawmidi_info_t *info;
-+	int err;
-+
-+	snd_rawmidi_info_alloca(&info);
-+	snd_rawmidi_info_set_device(info, device);
-+	snd_rawmidi_info_set_subdevice(info, sub);
-+	snd_rawmidi_info_set_stream(info, SND_RAWMIDI_STREAM_INPUT);
-+	
-+	if ((err = snd_ctl_rawmidi_info(ctl, info)) < 0 && err != -ENXIO)
-+		return err;
-+	else if (err == 0)
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static int is_output(snd_ctl_t *ctl, int card, int device, int sub)
-+{
-+	snd_rawmidi_info_t *info;
-+	int err;
-+
-+	snd_rawmidi_info_alloca(&info);
-+	snd_rawmidi_info_set_device(info, device);
-+	snd_rawmidi_info_set_subdevice(info, sub);
-+	snd_rawmidi_info_set_stream(info, SND_RAWMIDI_STREAM_OUTPUT);
-+	
-+	if ((err = snd_ctl_rawmidi_info(ctl, info)) < 0 && err != -ENXIO)
-+		return err;
-+	else if (err == 0)
-+		return 1;
-+
-+	return 0;
-+}
-+
- static void list_device(snd_ctl_t *ctl, int card, int device)
- {
- 	snd_rawmidi_info_t *info;
- 	const char *name;
- 	const char *sub_name;
--	int subs;
-+	int subs, subs_in, subs_out;
-+	int sub, in, out;
- 	int err;
- 
- 	snd_rawmidi_info_alloca(&info);
- 	snd_rawmidi_info_set_device(info, device);
--	snd_rawmidi_info_set_subdevice(info, 0);
-+
-+	snd_rawmidi_info_set_stream(info, SND_RAWMIDI_STREAM_INPUT);
-+	snd_ctl_rawmidi_info(ctl, info);
-+	subs_in = snd_rawmidi_info_get_subdevices_count(info);
- 	snd_rawmidi_info_set_stream(info, SND_RAWMIDI_STREAM_OUTPUT);
--	if ((err = snd_ctl_rawmidi_info(ctl, info)) < 0 &&
--	    err != -ENOENT) {
-+	snd_ctl_rawmidi_info(ctl, info);
-+	subs_out = snd_rawmidi_info_get_subdevices_count(info);
-+	subs = subs_in > subs_out ? subs_in : subs_out;
-+
-+	sub = 0;
-+	in = out = 0;
-+	if ((err = is_output(ctl, card, device, sub)) < 0) {
- 		error("cannot get rawmidi information %d:%d: %s",
- 		      card, device, snd_strerror(err));
- 		return;
--	}
--	if (err == -ENOENT) {
--		snd_rawmidi_info_set_stream(info, SND_RAWMIDI_STREAM_INPUT);
--		if ((err = snd_ctl_rawmidi_info(ctl, info)) < 0 &&
--		    err != -ENOENT) {
-+	} else if (err)
-+		out = 1;
-+
-+	if (err == 0) {
-+		if ((err = is_input(ctl, card, device, sub)) < 0) {
- 			error("cannot get rawmidi information %d:%d: %s",
- 			      card, device, snd_strerror(err));
- 			return;
- 		}
--	}
--	if (err == -ENOENT)
--		return;
-+	} else if (err) 
-+		in = 1;
-+
-+	if (err == 0)
-+		return;
-+
- 	name = snd_rawmidi_info_get_name(info);
- 	sub_name = snd_rawmidi_info_get_subdevice_name(info);
--	subs = snd_rawmidi_info_get_subdevices_count(info);
- 	if (sub_name[0] == '\0') {
--		if (subs == 1)
--			printf("hw:%d,%d    %s\n", card, device, name);
--		else
--			printf("hw:%d,%d    %s (%d subdevices)\n",
-+		if (subs == 1) {
-+			printf("%c%c  hw:%d,%d    %s\n", 
-+			       in ? 'I' : ' ', out ? 'O' : ' ',
-+			       card, device, name);
-+		} else
-+			printf("      hw:%d,%d    %s (%d subdevices)\n",
- 			       card, device, name, subs);
- 	} else {
--		int sub = 0;
-+		sub = 0;
- 		for (;;) {
--			printf("hw:%d,%d,%d  %s\n",
-+			printf("%c%c  hw:%d,%d,%d  %s\n",
-+			       in ? 'I' : ' ', out ? 'O' : ' ',
- 			       card, device, sub, sub_name);
- 			if (++sub >= subs)
- 				break;
-+
-+			in = is_input(ctl, card, device, sub);
-+			out = is_output(ctl, card, device, sub);
- 			snd_rawmidi_info_set_subdevice(info, sub);
--			if ((err = snd_ctl_rawmidi_info(ctl, info)) < 0) {
--				error("cannot get rawmidi information %d:%d:%d: %s",
--				      card, device, sub, snd_strerror(err));
--				break;
-+			if (out) {
-+				snd_rawmidi_info_set_stream(info, SND_RAWMIDI_STREAM_OUTPUT);
-+				if ((err = snd_ctl_rawmidi_info(ctl, info)) < 0) {
-+					error("cannot get rawmidi information %d:%d:%d: %s",
-+					      card, device, sub, snd_strerror(err));
-+					break;
-+				} 
-+			} else {
-+				snd_rawmidi_info_set_stream(info, SND_RAWMIDI_STREAM_INPUT);
-+				if ((err = snd_ctl_rawmidi_info(ctl, info)) < 0) {
-+					error("cannot get rawmidi information %d:%d:%d: %s",
-+					      card, device, sub, snd_strerror(err));
-+					break;
-+				}
- 			}
- 			sub_name = snd_rawmidi_info_get_subdevice_name(info);
- 		}
-@@ -189,7 +252,7 @@ static void device_list(void)
- 		error("no sound card found");
- 		return;
- 	}
--	puts("Device    Name");
-+	puts("Dir Device    Name");
- 	do {
- 		list_card_devices(card);
- 		if ((err = snd_card_next(&card)) < 0) {
+I really didn't express myself, i'm forgetting my english.
 
---=-=-=
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I was trying to say that the "symptoms" are almost equal and the lspci was
+pretty similar, and suggested it might be the same issue but i don't know,
+now you told me it is not the same i won't post again. 
 
+Sorry for the possible missunderstanding.
 
---=-=-=
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+----------------------------------------------------------------------
+ carllivitt - 06-21-06 17:47 
+----------------------------------------------------------------------
+So what's the best way to apply pressure to Conexant to release some specs?
+I take it reverse-engineering it is out of the question...
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
+Is there any other way to make it work?
 
---=-=-=--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-30-06 17:11 carllivitt     New Issue                                    
+05-30-06 17:11 carllivitt     Distribution              => Fedora Core 5   
+05-30-06 17:11 carllivitt     Kernel Version            => 2.6.16-1.2122_FC5smp
+06-04-06 23:36 carllivitt     Issue Monitored: carllivitt                    
+06-04-06 23:37 carllivitt     Note Added: 0010065                          
+06-12-06 21:51 carllivitt     Note Added: 0010174                          
+06-12-06 22:03 rlrevell       Note Added: 0010175                          
+06-12-06 22:52 carllivitt     Note Added: 0010176                          
+06-12-06 22:54 rlrevell       Note Added: 0010177                          
+06-12-06 23:10 carllivitt     Note Added: 0010178                          
+06-12-06 23:14 rlrevell       Note Added: 0010179                          
+06-12-06 23:29 carllivitt     Note Added: 0010180                          
+06-12-06 23:35 rlrevell       Note Added: 0010181                          
+06-12-06 23:49 carllivitt     Note Added: 0010182                          
+06-12-06 23:58 rlrevell       Note Added: 0010183                          
+06-13-06 15:33 godeater       Note Added: 0010193                          
+06-13-06 18:13 rlrevell       Note Added: 0010198                          
+06-13-06 18:53 jlpedrosa      Note Added: 0010199                          
+06-13-06 18:58 rlrevell       Note Added: 0010200                          
+06-13-06 19:17 jlpedrosa      Note Added: 0010202                          
+06-14-06 10:11 carllivitt     File Added: lspci-nv.txt                     
+06-14-06 10:12 carllivitt     Note Added: 0010207                          
+06-14-06 10:21 carllivitt     File Added: codec0.txt                       
+06-14-06 10:21 carllivitt     Note Added: 0010208                          
+06-14-06 13:17 jlpedrosa      Note Added: 0010210                          
+06-14-06 16:13 jlpedrosa      Note Edited: 0010210                         
+06-17-06 19:51 carllivitt     Note Added: 0010288                          
+06-17-06 19:57 rlrevell       Note Added: 0010289                          
+06-18-06 12:44 jlpedrosa      Note Added: 0010299                          
+06-19-06 08:42 fatman         Note Added: 0010306                          
+06-19-06 13:36 jlpedrosa      Note Added: 0010308                          
+06-19-06 13:49 jlpedrosa      Note Edited: 0010308                         
+06-20-06 11:04 carllivitt     Note Added: 0010332                          
+06-20-06 11:21 fatman         Note Added: 0010333                          
+06-20-06 17:38 legoguy        Note Added: 0010338                          
+06-20-06 17:39 legoguy        Issue Monitored: legoguy                     
+06-20-06 19:38 tiwai          Note Added: 0010341                          
+06-20-06 19:45 rlrevell       Relationship added       duplicate of 0001957
+06-20-06 23:51 jlpedrosa      Note Added: 0010361                          
+06-21-06 17:47 carllivitt     Note Added: 0010399                          
+======================================================================
