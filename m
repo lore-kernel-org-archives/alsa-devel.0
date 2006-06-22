@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002216]: Install problem and more
-Date: Thu, 22 Jun 2006 17:38:23 +0200
-Message-ID: <7cf7b9dde3f739637ed1950b0223f615@bugtrack.alsa-project.org>
+Date: Thu, 22 Jun 2006 17:39:20 +0200
+Message-ID: <f6ec1f9bffe03619c60ebe45ac819c91@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5DA4E220
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C6E9229
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jun 2006 17:38:24 +0200 (MEST)
+	Thu, 22 Jun 2006 17:39:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Fedora core 4
 Kernel Version:             2.6.11-1.1369_FC4
 ======================================================================
 Date Submitted:             06-17-2006 13:38 CEST
-Last Modified:              06-22-2006 17:38 CEST
+Last Modified:              06-22-2006 17:39 CEST
 ======================================================================
 Summary:                    Install problem and more
 Description: 
@@ -87,6 +87,17 @@ live! 24 bit. I am worse then you.
 Can you help me which driver and from where you downloaded the driver,
 plus the lib and utils.
 
+----------------------------------------------------------------------
+ adeel - 06-22-06 17:39 
+----------------------------------------------------------------------
+Hi man i am also using fedora care 4. and had also creative sound blaster
+live! 24 bit. I am worse then you.
+Can you help me which driver and from where you downloaded the driver,
+plus the lib and utils. 
+
+My email address is neoresearcher@gmail.com
+(It will very helpful if you send me a mail).
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -95,6 +106,7 @@ Date Modified  Username       Field                    Change
 06-17-06 13:38 hexer          Kernel Version            => 2.6.11-1.1369_FC4
 06-18-06 10:47 hexer          Issue Monitored: hexer                       
 06-22-06 17:38 adeel          Note Added: 0010423                          
+06-22-06 17:39 adeel          Note Added: 0010424                          
 ======================================================================
 
 
