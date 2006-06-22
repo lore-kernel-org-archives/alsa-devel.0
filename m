@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002225]: which driver to download
-Date: Thu, 22 Jun 2006 18:26:32 +0200
-Message-ID: <64788f63a96eae1c447cdca5a0ebafc6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002224]: Which driver to download
+Date: Thu, 22 Jun 2006 18:27:09 +0200
+Message-ID: <63f9936f8c143245bcb4b8e6fafbfbe8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 986D9227
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B522A227
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jun 2006 18:26:32 +0200 (MEST)
+	Thu, 22 Jun 2006 18:27:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -23,27 +23,29 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2225> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2224> 
 ======================================================================
 Reported By:                adeel
-Assigned To:                jcdutton
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2225
-Category:                   PCI - ca0106
+Issue ID:                   2224
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               redhad
+Status:                     closed
+Distribution:               redhat
 Kernel Version:             2.6.11-1.1369_FC
+Resolution:                 open
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-22-2006 17:54 CEST
-Last Modified:              06-22-2006 18:26 CEST
+Date Submitted:             06-22-2006 17:23 CEST
+Last Modified:              06-22-2006 18:27 CEST
 ======================================================================
-Summary:                    which driver to download
+Summary:                    Which driver to download
 Description: 
 Hi guys,
 
@@ -64,26 +66,24 @@ alsa-2002-02-11-1-linux-2.5.4.patch.gz
 But which one should I had downloaded?
 
 Please guide me.
-My email address is neoresearcher@gmail.com . 
-It would be very helpful if some tell me which 
-driver, lib and utils should I download. 
-
-i posted this issue in the wrong category previously. Sorry for that.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-22-06 18:26 
+ adeel - 06-22-06 17:43 
 ----------------------------------------------------------------------
-The latest ALSA release is 1.0.12-rc1.
+My email address is neoresearcher@gmail.com . 
+It would be very helpful if some tell me which 
+driver, lib and utils should I download.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-22-06 17:54 adeel          New Issue                                    
-06-22-06 17:54 adeel          Distribution              => redhad          
-06-22-06 17:54 adeel          Kernel Version            => 2.6.11-1.1369_FC
-06-22-06 18:26 rlrevell       Note Added: 0010427                          
+06-22-06 17:23 adeel          New Issue                                    
+06-22-06 17:23 adeel          Distribution              => redhat          
+06-22-06 17:23 adeel          Kernel Version            => 2.6.11-1.1369_FC
+06-22-06 17:43 adeel          Note Added: 0010425                          
+06-22-06 18:27 rlrevell       Status                   new => closed       
 ======================================================================
 
 
