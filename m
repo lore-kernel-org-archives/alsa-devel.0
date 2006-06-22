@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Thu, 22 Jun 2006 03:19:16 +0200
-Message-ID: <1f63a351c89257fb9034dc36b443a3cc@bugtrack.alsa-project.org>
+Date: Thu, 22 Jun 2006 03:29:28 +0200
+Message-ID: <31d5d7a6d93a4eaed287116da8f038fc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B95F118C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 77AE418C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jun 2006 03:19:16 +0200 (MEST)
+	Thu, 22 Jun 2006 03:29:28 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Debian etch (2006-06-18)
 Kernel Version:             2.6.15-1-686
 ======================================================================
 Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-22-2006 03:19 CEST
+Last Modified:              06-22-2006 03:29 CEST
 ======================================================================
 Summary:                    snd-mpu401 don't load
 Description: 
@@ -66,15 +66,7 @@ any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- El Santo - 06-21-06 18:00 
-----------------------------------------------------------------------
-I tryed with and without "pci=routeirq" and "lapic".
-I also set mpu_port parameter for snd-via82xx module.
-
-The result is the same: no midi port
-
-----------------------------------------------------------------------
- Raymond - 06-22-06 03:19 
+ Raymond - 06-22-06 03:27 
 ----------------------------------------------------------------------
 If you are using ALSA-1.0.11, snd-seq-dummy (midi through) should be at
 port 14.
@@ -83,6 +75,15 @@ port 14.
 aplaymidi -l
  Port Client name Port name
  14:0 Midi Through Midi Through Port-0
+
+How do you install alsa-driver, alsa-lib, alsa-utils ?
+
+
+
+----------------------------------------------------------------------
+ rlrevell - 06-22-06 03:29 
+----------------------------------------------------------------------
+What does that have to do with the driver failing to detect the MPU port?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -108,6 +109,8 @@ Date Modified  Username       Field                    Change
 06-21-06 04:51 Raymond        Note Added: 0010379                          
 06-21-06 18:00 El Santo       Note Added: 0010400                          
 06-22-06 03:19 Raymond        Note Added: 0010412                          
+06-22-06 03:27 Raymond        Note Edited: 0010412                         
+06-22-06 03:29 rlrevell       Note Added: 0010413                          
 ======================================================================
 
 
