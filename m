@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002216]: Install problem and more
-Date: Thu, 22 Jun 2006 17:39:20 +0200
-Message-ID: <f6ec1f9bffe03619c60ebe45ac819c91@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002224]: Which driver to download
+Date: Thu, 22 Jun 2006 17:43:54 +0200
+Message-ID: <654696a38a6b5239f1ce42232b62e5f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C6E9229
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 353D1227
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jun 2006 17:39:20 +0200 (MEST)
+	Thu, 22 Jun 2006 17:43:54 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,88 +25,62 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2216> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2224> 
 ======================================================================
-Reported By:                hexer
-Assigned To:                jcdutton
+Reported By:                adeel
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2216
-Category:                   PCI - ca0106
+Issue ID:                   2224
+Category:                   1_OTHERS
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora core 4
-Kernel Version:             2.6.11-1.1369_FC4
+Status:                     new
+Distribution:               redhat
+Kernel Version:             2.6.11-1.1369_FC
 ======================================================================
-Date Submitted:             06-17-2006 13:38 CEST
-Last Modified:              06-22-2006 17:39 CEST
+Date Submitted:             06-22-2006 17:23 CEST
+Last Modified:              06-22-2006 17:43 CEST
 ======================================================================
-Summary:                    Install problem and more
+Summary:                    Which driver to download
 Description: 
+Hi guys,
 
-on your page says to do the following:
-I opend a terminal, su, and created the dirs. Some worked fine, but I got
-errors. Here they are:
+I had creative sound blaster live! 24 bit. To download a driver for it I
+go alsa. On its main ftp there is a driver folder. With lots of driver
+which driver should I download? 
 
-modinfo soundcore
-when I run this, it says: bash: modinfo: command not found
+Although I had downloaded blindly some drivers,
+alsa-driver-1.0.11rc5.tar.bz2
+alsa-driver-0.4.0.tar.gz
+alsa-driver-1.0.11.tar.bz2
+ Tools,
+alsa-tools-0.9.8.tar.bz2
+alsa-tools-1.0.11.tar.bz2
+ Patches:
+alsa-2002-02-11-1-linux-2.5.4.patch.gz
 
-the chmod a+rw /dev/dsp /dev/mixer /dev/sequencer /dev/midi gives the
-following error:
-chmod: cannot access `/dev/dsp': No such file or directory
-chmod: cannot access `/dev/mixer': No such file or directory
-chmod: cannot access `/dev/sequencer': No such file or directory
-chmod: cannot access `/dev/midi': No such file or directory
+But which one should I had downloaded?
 
-and after installing the driver, lib and utils, and runing "modprobe
-snd-ca0106;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
-snd-seq-oss"
-it says 
-bash: modprobe: command not found
-bash: modprobe: command not found
-bash: modprobe: command not found
-bash: modprobe: command not found
-
-I did this once before, as root (logedin as root from the begining, not
-using su), but with a wrong driver (a 5.1 creative), while I actualy had a
-7.1 Creative. then only the first modeprobe didn't work, and the chown
-giving the exact same error. oh, and alsamixer didn't start.
-
-what can I do? I don't know to much about compiling kernels,  but am
-willing to learn. Please help.
+Please guide me.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- adeel - 06-22-06 17:38 
+ adeel - 06-22-06 17:43 
 ----------------------------------------------------------------------
-Hi man i am also using fedora care 4. and had also creative sound blaster
-live! 24 bit. I am worse then you.
-Can you help me which driver and from where you downloaded the driver,
-plus the lib and utils.
-
-----------------------------------------------------------------------
- adeel - 06-22-06 17:39 
-----------------------------------------------------------------------
-Hi man i am also using fedora care 4. and had also creative sound blaster
-live! 24 bit. I am worse then you.
-Can you help me which driver and from where you downloaded the driver,
-plus the lib and utils. 
-
-My email address is neoresearcher@gmail.com
-(It will very helpful if you send me a mail).
+My email address is neoresearcher@gmail.com . 
+It would be very helpful if some tell me which 
+driver, lib and utils should I download.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-17-06 13:38 hexer          New Issue                                    
-06-17-06 13:38 hexer          Distribution              => Fedora core 4   
-06-17-06 13:38 hexer          Kernel Version            => 2.6.11-1.1369_FC4
-06-18-06 10:47 hexer          Issue Monitored: hexer                       
-06-22-06 17:38 adeel          Note Added: 0010423                          
-06-22-06 17:39 adeel          Note Added: 0010424                          
+06-22-06 17:23 adeel          New Issue                                    
+06-22-06 17:23 adeel          Distribution              => redhat          
+06-22-06 17:23 adeel          Kernel Version            => 2.6.11-1.1369_FC
+06-22-06 17:43 adeel          Note Added: 0010425                          
 ======================================================================
 
 
