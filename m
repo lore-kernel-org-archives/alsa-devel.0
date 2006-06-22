@@ -1,15 +1,15 @@
-From: Ian Malone <ibmalone@gmail.com>
-Subject: Re: Fwd: [Alsa-user] Recording spdif/iec958 on	ice1724
- terratec aureon 7.1 space
-Date: Thu, 22 Jun 2006 17:17:00 +0100
-Message-ID: <449AC27C.1000403@gmail.com>
-References: <124299980606190740v47ab8c9dgedbb88a9f607a572@mail.gmail.com>	<s5hwtbdi02g.wl%tiwai@suse.de>	<4497355D.80704@gmail.com>	<1150761326.2754.75.camel@mindpipe>	<4497A8E6.9020002@gmail.com>	<s5hfyi0i1u5.wl%tiwai@suse.de>	<44982662.1030502@gmail.com>
-	<s5hzmg5baii.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002225]: which driver to download
+Date: Thu, 22 Jun 2006 18:26:32 +0200
+Message-ID: <64788f63a96eae1c447cdca5a0ebafc6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5hzmg5baii.wl%tiwai@suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 986D9227
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 Jun 2006 18:26:32 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -19,62 +19,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 20 Jun 2006 17:46:26 +0100,
-> Ian Malone wrote:
->> Takashi Iwai wrote:
->>> At Tue, 20 Jun 2006 08:51:02 +0100,
->>> Ian Malone wrote:
->>>> That's it!  Thanks very much.
->>>> I had to use alsactl restore to make the change though;
->>>> toggling the IEC958 capture source in alsamixer doesn't
->>>> seem to have any effect.
->>>> Anyway, working nicely now, thanks again.
->>> "IEC958 capture switch" should exist independently from "IEC958
->>> capture source".  There might some confliction in the mixer
->>> abstraction.  Could you show the output of amixer?
->>>
->>>
->>
->> Attached.
-> 
-> (snip)
-> 
->> Simple mixer control 'IEC958',0
->>   Capabilities: cswitch cswitch-joined enum
->>   Items: 'PCM Out' 'H/W In 0' 'H/W In 1' 'IEC958 In L' 'IEC958 In R'
->>   Item0: 'PCM Out'
-> 
-> OK, the problem is the confliction of "IEC958 Playback Route" and
-> "IEC958 Capture Switch".
-> 
-> We need to fix either mixer layer or rename it, e.g. from "Playback
-> Route" to "Playback Source".
-> 
-> The patch below (for alsa-lib) is a temporary workaround to add the
-> automatic toggle of "IEC958 Capture Switch" over iec958 (spdif) PCM.
-> This makes the spdif recording working even without the fix suggested
-> in the above.
-> 
-> Please try the patch, and once turn off "IEC958 Capture Switch"
-> manually (via alsactl store and restore), then record via "spdif" PCM,
-> such as
-> 	% arecord -Dplug:spdif -fdat foo.wav
-> 
-> If it's confirmed to work, I'll commit to HG repo.
-> 
-> 
 
-Works here (except that setting HW 1&2 to IEC958 will still only
-send SPDIF in directly to the speakers if IEC958 Capture Switch
-is turned on in asound.state, although I'm not sure whether
-that's by design, but recording works).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2225> 
+======================================================================
+Reported By:                adeel
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2225
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               redhad
+Kernel Version:             2.6.11-1.1369_FC
+======================================================================
+Date Submitted:             06-22-2006 17:54 CEST
+Last Modified:              06-22-2006 18:26 CEST
+======================================================================
+Summary:                    which driver to download
+Description: 
+Hi guys,
 
--- 
-imalone
+I had creative sound blaster live! 24 bit. To download a driver for it I
+go alsa. On its main ftp there is a driver folder. With lots of driver
+which driver should I download? 
+
+Although I had downloaded blindly some drivers,
+alsa-driver-1.0.11rc5.tar.bz2
+alsa-driver-0.4.0.tar.gz
+alsa-driver-1.0.11.tar.bz2
+ Tools,
+alsa-tools-0.9.8.tar.bz2
+alsa-tools-1.0.11.tar.bz2
+ Patches:
+alsa-2002-02-11-1-linux-2.5.4.patch.gz
+
+But which one should I had downloaded?
+
+Please guide me.
+My email address is neoresearcher@gmail.com . 
+It would be very helpful if some tell me which 
+driver, lib and utils should I download. 
+
+i posted this issue in the wrong category previously. Sorry for that.
+
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 06-22-06 18:26 
+----------------------------------------------------------------------
+The latest ALSA release is 1.0.12-rc1.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-22-06 17:54 adeel          New Issue                                    
+06-22-06 17:54 adeel          Distribution              => redhad          
+06-22-06 17:54 adeel          Kernel Version            => 2.6.11-1.1369_FC
+06-22-06 18:26 rlrevell       Note Added: 0010427                          
+======================================================================
+
+
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
