@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002035]: Realtek 861 card not
 	functional using included alsa drivers
-Date: Thu, 22 Jun 2006 21:41:39 +0200
-Message-ID: <2846d5ac629a8e319b1d8c42d467ea6a@bugtrack.alsa-project.org>
+Date: Thu, 22 Jun 2006 22:28:57 +0200
+Message-ID: <c6c283cd0f663834c344ae97f9b2e0ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 38FE2227
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E1B1B227
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jun 2006 21:41:40 +0200 (MEST)
+	Thu, 22 Jun 2006 22:28:57 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 5
 Kernel Version:             2.6.16-1.2080_FC5smp
 ======================================================================
 Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              06-22-2006 21:41 CEST
+Last Modified:              06-22-2006 22:28 CEST
 ======================================================================
 Summary:                    Realtek 861 card not functional using included alsa
 drivers
@@ -73,31 +73,6 @@ Please let me know if there is something more I can provide.
 ======================================================================
 
 ----------------------------------------------------------------------
- jlpedrosa - 06-19-06 14:00 
-----------------------------------------------------------------------
-hummm.. Hi!
-
-I suppose you're pretty busy, I'd like to know if its posible:
-
-Q1:Can this issue be fixed?
-if (Q1)
-    Q2:it will be in the next alsa release?
-    Q3:there's any patch we could use?
-    if (Q3)
-        Q4: In the FTP i saw only old cvs(2005). there's acual CVS
-aviable
-            for installing?
-    end
-else
-  thanks for your time!
-end
-
-no jokes: Thanks for your time. (i'm not used to forums, and i don't know
-how bugs are closed)
-
-Jose Luis Pedrosa
-
-----------------------------------------------------------------------
  vertex - 06-22-06 21:41 
 ----------------------------------------------------------------------
 What is going on with this? Please attach the files given to you by
@@ -106,6 +81,11 @@ please attach original files given to you. Others would like the chance to
 make our systems work.
 
 Thanks
+
+----------------------------------------------------------------------
+ taschenorakel - 06-22-06 22:28 
+----------------------------------------------------------------------
+Thats the source code PeiSen Hou (pshou) of Realtek created for Intervideo.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -153,6 +133,9 @@ Date Modified  Username       Field                    Change
 06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
 06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
 06-22-06 21:41 vertex         Note Added: 0010429                          
+06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
+            
+06-22-06 22:28 taschenorakel  Note Added: 0010430                          
 ======================================================================
 
 
