@@ -1,12 +1,16 @@
-From: jayakumar.alsa@gmail.com
-Subject: [PATCH 2.6.17-rc5 1/1] ALSA: AD1888 mixer controls for
-	DC mode
-Date: Thu, 22 Jun 2006 11:47:54 +0800
-Message-ID: <200606220347.k5M3lsoV022328@localhost.localdomain>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000321]: Left front channel always
+	muted on boot
+Date: Thu, 22 Jun 2006 06:30:47 +0200
+Message-ID: <10ed9f9fe31a2c8581db8f3fc66a7a3d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F0CB61A9
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 Jun 2006 06:30:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -16,54 +20,228 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi, Jaroslav,
 
-This patch adds two mixer controls. The V_REFOUT disable is a 
-documented register that is used to decouple the microphone input 
-lines from the DC source. The High Pass Filter disable in the
-AC97_AD_TEST2 (0x5c) is an undocumented register provided by 
-Miller Puckette via Analog Devices that is used to prevent the
-AD codec from applying a high pass filter to the input.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=321> 
+======================================================================
+Reported By:                64bitten
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   321
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     acknowledged
+Distribution:               gentoo
+Kernel Version:             2.6.6
+======================================================================
+Date Submitted:             06-02-2004 08:09 CEST
+Last Modified:              06-22-2006 06:30 CEST
+======================================================================
+Summary:                    Left front channel always muted on boot
+Description: 
+ice1724 (M Audio Revolution 7.1 in my case) always restores the mixer
+settings at boot, but the left front channel is muted regardless.  The fix
+is to run alsamixer and adjust the slider again.  This forces the channel
+to unmute.  Should I be worried "amixer scontrols" reports everything as
+"Mono" as well?
+======================================================================
 
-Thanks,
-Jaya Kumar
-
-Signed-off-by: Jaya Kumar <jayakumar.alsa@gmail.com>
-
----
+----------------------------------------------------------------------
+ Raymond - 06-21-06 14:25 
+----------------------------------------------------------------------
+alsamixer expect index controls are continuous, but the driver implemented
+in non-standard way (i.e. Deemphasis appear between DAC volume controls).
+You will need special tool (e.g envy24control) to handle this special
+implementation
  
- include/sound/ac97_codec.h  |    1 +
- sound/pci/ac97/ac97_patch.c |    2 ++
- 2 files changed, 3 insertions(+)
 
----
+static inline unsigned int snd_ctl_get_ioffnum(struct snd_kcontrol *kctl,
+struct snd_ctl_elem_id *id)
+{
+	return id->numid - kctl->id.numid;
+}
 
-diff -X cs5535audio.dontdiff -X linux-2.6.17-rc5/Documentation/dontdiff -uprN linux-2.6.17-rc5-ad1888pm/include/sound/ac97_codec.h linux-2.6.17-rc5-ad1888vref/include/sound/ac97_codec.h
---- linux-2.6.17-rc5-ad1888pm/include/sound/ac97_codec.h	2006-06-18 15:50:59.000000000 +0800
-+++ linux-2.6.17-rc5-ad1888vref/include/sound/ac97_codec.h	2006-06-22 04:06:35.000000000 +0800
-@@ -265,6 +265,7 @@
- 
- /* specific - Analog Devices */
- #define AC97_AD_TEST		0x5a	/* test register */
-+#define AC97_AD_TEST2		0x5c	/* undocumented test register 2 */
- #define AC97_AD_CODEC_CFG	0x70	/* codec configuration */
- #define AC97_AD_JACK_SPDIF	0x72	/* Jack Sense & S/PDIF */
- #define AC97_AD_SERIAL_CFG	0x74	/* Serial Configuration */
-diff -X cs5535audio.dontdiff -X linux-2.6.17-rc5/Documentation/dontdiff -uprN linux-2.6.17-rc5-ad1888pm/sound/pci/ac97/ac97_patch.c linux-2.6.17-rc5-ad1888vref/sound/pci/ac97/ac97_patch.c
---- linux-2.6.17-rc5-ad1888pm/sound/pci/ac97/ac97_patch.c	2006-06-18 15:40:03.000000000 +0800
-+++ linux-2.6.17-rc5-ad1888vref/sound/pci/ac97/ac97_patch.c	2006-06-22 04:10:25.000000000 +0800
-@@ -1873,6 +1873,8 @@ static const struct snd_kcontrol_new snd
- 		.get = snd_ac97_ad1888_lohpsel_get,
- 		.put = snd_ac97_ad1888_lohpsel_put
- 	},
-+	AC97_SINGLE("V_REFOUT Disable", AC97_AD_MISC, 2, 1, 0),
-+	AC97_SINGLE("High Pass Filter Disable", AC97_AD_TEST2, 12, 1, 0),
- 	AC97_SINGLE("Spread Front to Surround and Center/LFE", AC97_AD_MISC, 7, 1, 0),
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+static inline unsigned int snd_ctl_get_ioffidx(struct snd_kcontrol *kctl,
+struct snd_ctl_elem_id *id)
+{
+	return id->index - kctl->id.index;
+}
+
+static inline unsigned int snd_ctl_get_ioff(struct snd_kcontrol *kctl,
+struct snd_ctl_elem_id *id)
+{
+	if (id->numid) {
+		return snd_ctl_get_ioffnum(kctl, id);
+	} else {
+		return snd_ctl_get_ioffidx(kctl, id);
+	}
+}
+
+static inline struct snd_ctl_elem_id *snd_ctl_build_ioff(struct
+snd_ctl_elem_id *dst_id,
+						    struct snd_kcontrol *src_kctl,
+						    unsigned int offset)
+{
+	*dst_id = src_kctl->id;
+	dst_id->index += offset;
+	dst_id->numid += offset;
+	return dst_id;
+}
+
+control.20 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 255'
+		iface MIXER
+		name 'DAC Volume'
+		value 15
+	}
+	control.21 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 255'
+		iface MIXER
+		name 'DAC Volume'
+		index 1
+		value 15
+	}
+	control.22 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 '44.1kHz'
+		comment.item.1 Off
+		comment.item.2 '48kHz'
+		comment.item.3 '32kHz'
+		iface MIXER
+		name Deemphasis
+		value Off
+	}
+	control.23 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 255'
+		iface MIXER
+		name 'DAC Volume'
+		index 2
+		value 0
+	}
+	control.24 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 255'
+		iface MIXER
+		name 'DAC Volume'
+		index 3
+		value 0
+	}
+	control.25 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 255'
+		iface MIXER
+		name 'DAC Volume'
+		index 4
+		value 0
+	}
+	control.26 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 255'
+		iface MIXER
+		name 'DAC Volume'
+		index 5
+		value 0
+	}
+	control.27 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 255'
+		iface MIXER
+		name 'DAC Volume'
+		index 6
+		value 0
+	}
+	control.28 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 255'
+		iface MIXER
+		name 'DAC Volume'
+		index 7
+		value 0
+	}
+	control.29 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 '44.1kHz'
+		comment.item.1 Off
+		comment.item.2 '48kHz'
+		comment.item.3 '32kHz'
+		iface MIXER
+		name Deemphasis
+		index 1
+		value Off
+	}
+
+
+
+----------------------------------------------------------------------
+ Raymond - 06-22-06 06:30 
+----------------------------------------------------------------------
+I don't have this card, alsactl most likely cannot restore the correct
+values for those controls build by snd_akm4xxx_build_controls()
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-02-04 08:09 64bitten       New Issue                                    
+06-02-04 08:09 64bitten       Distribution              => gentoo          
+06-02-04 08:09 64bitten       Kernel Version            => 2.6.6           
+12-17-04 03:15 K6-III         Note Added: 0002845                          
+12-17-04 06:46 herby          Note Added: 0002846                          
+12-17-04 06:51 rlrevell       Note Added: 0002847                          
+12-21-04 07:09 64bitten       File Added: amixer.bad                       
+12-21-04 07:10 64bitten       Note Added: 0002896                          
+04-09-05 17:24 jdthood        Status                   new => acknowledged 
+10-20-05 02:36 sst4           Note Added: 0006497                          
+10-20-05 05:18 Fran           Note Added: 0006498                          
+10-21-05 03:51 64bitten       Note Added: 0006509                          
+11-18-05 21:03 goldenfish     Note Added: 0006758                          
+11-18-05 21:04 goldenfish     File Added: proc_changes.diff                    
+06-20-06 22:55 effie          Issue Monitored: effie                       
+06-20-06 23:05 effie          Issue End Monitor: effie                     
+06-20-06 23:29 effie          Note Added: 0010356                          
+06-20-06 23:31 effie          Note Edited: 0010356                         
+06-21-06 06:10 Raymond        Note Added: 0010382                          
+06-21-06 09:05 goldenfish     Note Added: 0010384                          
+06-21-06 09:07 goldenfish     File Added: asound.state                     
+06-21-06 09:37 herby          Note Added: 0010388                          
+06-21-06 10:00 Raymond        Note Added: 0010389                          
+06-21-06 10:01 Raymond        Note Edited: 0010389                         
+06-21-06 10:17 Raymond        Note Edited: 0010389                         
+06-21-06 10:36 Raymond        Note Edited: 0010389                         
+06-21-06 14:25 Raymond        Note Edited: 0010389                         
+06-22-06 06:30 Raymond        Note Added: 0010417                          
+======================================================================
+
+
 
 All the advantages of Linux Managed Hosting--Without the Cost and Risk!
 Fully trained technicians. The highest number of Red Hat certifications in
