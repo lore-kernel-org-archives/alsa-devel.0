@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002035]: Realtek 861 card not
-	functional using included alsa drivers
-Date: Thu, 22 Jun 2006 22:28:57 +0200
-Message-ID: <c6c283cd0f663834c344ae97f9b2e0ee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002225]: which driver to download
+Date: Fri, 23 Jun 2006 01:37:01 +0200
+Message-ID: <a7486994abaf1efac25980aee5f43605@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E1B1B227
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B6C0F165
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jun 2006 22:28:57 +0200 (MEST)
+	Fri, 23 Jun 2006 01:37:01 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,116 +25,76 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2035> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2225> 
 ======================================================================
-Reported By:                vertex
-Assigned To:                tiwai
+Reported By:                adeel
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2035
-Category:                   PCI - hda-intel
+Issue ID:                   2225
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 5
-Kernel Version:             2.6.16-1.2080_FC5smp
+Distribution:               redhad
+Kernel Version:             2.6.11-1.1369_FC
 ======================================================================
-Date Submitted:             04-18-2006 20:00 CEST
-Last Modified:              06-22-2006 22:28 CEST
+Date Submitted:             06-22-2006 17:54 CEST
+Last Modified:              06-23-2006 01:37 CEST
 ======================================================================
-Summary:                    Realtek 861 card not functional using included alsa
-drivers
+Summary:                    which driver to download
 Description: 
-I am using the FC5 drivers to begin with.  The packages are labeled version
-1.0.11rc2.  There are only a few options when I run alsamixer. Using the
-stock drivers, I have these options:
+Hi guys,
 
-Headphone switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+I had creative sound blaster live! 24 bit. To download a driver for it I
+go alsa. On its main ftp there is a driver folder. With lots of driver
+which driver should I download? 
 
-I compiled the 1.0.11rc5 drivers from source and rebooted. I now have
-these channels when I run alsamixer:
+Although I had downloaded blindly some drivers,
+alsa-driver-1.0.11rc5.tar.bz2
+alsa-driver-0.4.0.tar.gz
+alsa-driver-1.0.11.tar.bz2
+ Tools,
+alsa-tools-0.9.8.tar.bz2
+alsa-tools-1.0.11.tar.bz2
+ Patches:
+alsa-2002-02-11-1-linux-2.5.4.patch.gz
 
-Front switch
-CD level
-Mic level
-Input Source switch(Mic/CD)
+But which one should I had downloaded?
 
-I tried compiling the 1.0.9 drivers from Realtek's website(said nothing
-about the 861), but they did not build.  In fact, the install script
-overwrote my asound libraries requiring a package replacement to get back
-to a sane state.
+Please guide me.
+My email address is neoresearcher@gmail.com . 
+It would be very helpful if some tell me which 
+driver, lib and utils should I download. 
 
-Please let me know if there is something more I can provide.
+i posted this issue in the wrong category previously. Sorry for that.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- vertex - 06-22-06 21:41 
+ rlrevell - 06-22-06 18:26 
 ----------------------------------------------------------------------
-What is going on with this? Please attach the files given to you by
-Intervideo. Even if you have not completed a nice, cleaned-up patch,
-please attach original files given to you. Others would like the chance to
-make our systems work.
-
-Thanks
+The latest ALSA release is 1.0.12-rc1.
 
 ----------------------------------------------------------------------
- taschenorakel - 06-22-06 22:28 
+ Raymond - 06-23-06 01:37 
 ----------------------------------------------------------------------
-Thats the source code PeiSen Hou (pshou) of Realtek created for Intervideo.
+Do alsa developer forget to put alsa-xxx-1.0.12-rc1.tar.bz2 in
+http://www.alsa-project.org/
+? 
+
+I am still using FC1 and cannot use hgcompile
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1641#7504
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-18-06 20:00 vertex         New Issue                                    
-04-18-06 20:00 vertex         Distribution              => Fedora Core 5   
-04-18-06 20:00 vertex         Kernel Version            => 2.6.16-1.2080_FC5smp
-04-18-06 20:09 rlrevell       Note Added: 0009339                          
-04-18-06 20:25 pzad           Note Added: 0009340                          
-04-18-06 20:40 vertex         Note Added: 0009342                          
-04-18-06 20:50 vertex         Note Added: 0009343                          
-04-18-06 22:25 rlrevell       Note Added: 0009345                          
-04-18-06 22:32 vertex         Note Added: 0009346                          
-04-18-06 22:45 rlrevell       Note Added: 0009347                          
-04-18-06 23:02 vertex         Note Added: 0009348                          
-04-20-06 14:41 tiwai          Note Added: 0009375                          
-04-20-06 20:21 vertex         File Added: modprobe.hda.intel.txt                
-   
-04-20-06 20:22 vertex         File Added: codec0.during.playback                
-   
-04-20-06 20:23 vertex         Note Added: 0009398                          
-04-21-06 16:50 tiwai          Note Added: 0009416                          
-04-21-06 16:51 tiwai          Note Added: 0009417                          
-04-21-06 16:54 tiwai          Note Added: 0009418                          
-04-21-06 18:56 vertex         Note Added: 0009428                          
-04-26-06 00:37 vertex         Note Added: 0009499                          
-05-11-06 00:44 vertex         Note Added: 0009755                          
-05-11-06 00:46 vertex         File Added: dmesg.debug.txt                    
-05-11-06 00:47 vertex         File Added: codec0.noplayback.new                 
-  
-05-29-06 23:33 taschenorakel  Note Added: 0010015                          
-05-30-06 19:11 vertex         Note Added: 0010021                          
-05-31-06 20:20 taschenorakel  Note Added: 0010028                          
-05-31-06 21:02 vertex         Note Added: 0010029                          
-05-31-06 21:06 vertex         Note Added: 0010030                          
-05-31-06 22:43 rlrevell       Note Added: 0010032                          
-05-31-06 22:51 rlrevell       Note Added: 0010033                          
-05-31-06 23:23 vertex         Note Added: 0010035                          
-06-01-06 00:30 taschenorakel  Note Added: 0010036                          
-06-10-06 14:04 taschenorakel  Note Added: 0010146                          
-06-11-06 11:56 jlpedrosa      Note Added: 0010151                          
-06-12-06 18:22 jlpedrosa      Note Edited: 0010151                         
-06-13-06 11:32 jlpedrosa      Note Added: 0010191                          
-06-13-06 14:18 jlpedrosa      Note Edited: 0010191                         
-06-19-06 14:00 jlpedrosa      Note Added: 0010311                          
-06-20-06 17:45 legoguy        Issue Monitored: legoguy                     
-06-22-06 21:41 vertex         Note Added: 0010429                          
-06-22-06 22:25 taschenorakel  File Added: alsa-driver-1.0.9b_24a.diff.bz2       
-            
-06-22-06 22:28 taschenorakel  Note Added: 0010430                          
+06-22-06 17:54 adeel          New Issue                                    
+06-22-06 17:54 adeel          Distribution              => redhad          
+06-22-06 17:54 adeel          Kernel Version            => 2.6.11-1.1369_FC
+06-22-06 18:26 rlrevell       Note Added: 0010427                          
+06-23-06 01:37 Raymond        Note Added: 0010431                          
 ======================================================================
 
 
