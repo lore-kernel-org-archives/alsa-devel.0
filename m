@@ -1,23 +1,16 @@
-From: "Sam Revitch" <sam.revitch@gmail.com>
-Subject: Re: stateful reconnect with snd-usb-audio
-Date: Wed, 21 Jun 2006 23:20:29 -0700
-Message-ID: <8d4807d50606212320t29d03c02sdee19658527b013a@mail.gmail.com>
-References: <8d4807d50606121405n51edef2au3de163b01029aaf5@mail.gmail.com>
-	<Pine.LNX.4.61.0606141543260.10637@tm8103.perex-int.cz>
-	<s5hodwv961d.wl%tiwai@suse.de>
-	<Pine.LNX.4.61.0606141645450.10637@tm8103.perex-int.cz>
-	<8d4807d50606141020w8e29a50t6b97528d7e82a0c5@mail.gmail.com>
-	<8d4807d50606150304o5ae2ccd0xf7af2f4ccf38ec4c@mail.gmail.com>
-	<s5hver1777i.wl%tiwai@suse.de>
-	<8d4807d50606170123k51bf2db5ma673b071c8e18d4b@mail.gmail.com>
-	<8d4807d50606170201t4922fd68x9fed2694657ae594@mail.gmail.com>
-	<s5h1wtkhva7.wl%tiwai@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002221]: Volume entirely too faint on
+	82801g ich7
+Date: Thu, 22 Jun 2006 08:34:20 +0200
+Message-ID: <420a6b45759c283b4b0f37da032c6476@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <s5h1wtkhva7.wl%tiwai@suse.de>
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AE43220
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 Jun 2006 08:34:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -27,27 +20,89 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@suse.cz>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 6/20/06, Takashi Iwai <tiwai@suse.de> wrote:
-> The patch still has a problem with ac97_codec.c that has also own
-> lowlevel device.  opl3 and opl4 have to be fixed.
->
-> Looking through the patch, I found that unregister callback can be
-> replaced simply with disconnect + free.  This will remove the
-> complexity a bit.  I'll try to make another patch based on yours.
 
-Thanks for looking at this and fixing it, and sorry to take so long to
-get back to ya.  I tried out the patch that you sent out earlier and
-it definitely behaves correctly when pulling cables with my USB card
-and also seems to pass the alsasound restart loop test.  Eliminating
-dev_unregister seems appropriate, as dev_disconnect was being called
-every time anyway and the former certainly became redundant.  IMHO the
-patch you sent is complete or very close.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2221> 
+======================================================================
+Reported By:                mlfarrell
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2221
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Suse 10.1
+Kernel Version:             2.6.16.13-4-smp
+======================================================================
+Date Submitted:             06-19-2006 02:19 CEST
+Last Modified:              06-22-2006 08:34 CEST
+======================================================================
+Summary:                    Volume entirely too faint on 82801g ich7
+Description: 
+I've seen this bug online many times with a resolution of upgrading to alsa
+1.0.11, but I upgaded and am still having the issue.
 
--Sam Revitch
+I'm using an hp pavilion dv8000 laptop with built-in altec lansing
+speakers.
+
+Windows reports the soundcard as conexant high definition audio, linux as
+82801g (ich7).  I've tried setting every model I know in the
+/etc/modprobe.d/sound file for the hda-intel driver and am still having a
+lack of useful volume sliders.  The key ones that I need are "pc speaker"
+to turn it down cause its way too loud and "external amplifier" to turn up
+the laptop's altec lansing speakers (sound volume is decent out of the
+headphone jack).
+
+Even with the volume all the way up (both master and pcm) I'm getting
+sound thats almost too faint to hear.  
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 06-22-06 05:38 
+----------------------------------------------------------------------
+I DON'T KNOW.  Didn't you read tiwai's comment?
+
+"It's a conexant codec chip and not properly supported because of lack of
+datasheet. "
+
+----------------------------------------------------------------------
+ nellson - 06-22-06 08:34 
+----------------------------------------------------------------------
+FWIW: I have an HP dv8000t, same issue, so i opened a support case with HP
+to see if they will help. I have had a few Linux friendly techs in the
+past.. 
+
+Nick
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-19-06 02:19 mlfarrell      New Issue                                    
+06-19-06 02:19 mlfarrell      Distribution              => Suse 10.1       
+06-19-06 02:19 mlfarrell      Kernel Version            => 2.6.16.13-4-smp 
+06-19-06 21:59 mlfarrell      Issue Monitored: mlfarrell                    
+06-20-06 19:49 tiwai          Note Added: 0010347                          
+06-20-06 23:38 mlfarrell      Note Added: 0010358                          
+06-20-06 23:42 rlrevell       Note Added: 0010360                          
+06-21-06 00:46 mlfarrell      Note Added: 0010368                          
+06-21-06 00:58 rlrevell       Note Added: 0010371                          
+06-21-06 01:06 mlfarrell      Note Added: 0010372                          
+06-21-06 01:23 rlrevell       Note Added: 0010373                          
+06-22-06 05:01 mlfarrell      Note Added: 0010414                          
+06-22-06 05:38 rlrevell       Note Added: 0010416                          
+06-22-06 08:34 nellson        Note Added: 0010418                          
+======================================================================
+
+
 
 All the advantages of Linux Managed Hosting--Without the Cost and Risk!
 Fully trained technicians. The highest number of Red Hat certifications in
