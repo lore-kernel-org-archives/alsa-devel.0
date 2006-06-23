@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Fri, 23 Jun 2006 03:01:06 +0200
-Message-ID: <b8d1bd196765ea90facf36dabddf2357@bugtrack.alsa-project.org>
+Date: Fri, 23 Jun 2006 03:04:33 +0200
+Message-ID: <b29a9c62d8ae941c6f7509d3b1eee036@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37699235
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C184235
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 03:01:07 +0200 (MEST)
+	Fri, 23 Jun 2006 03:04:33 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,22 +41,13 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-23-2006 03:01 CEST
+Last Modified:              06-23-2006 03:04 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
 Alsa seems to detect the sound card, but when I try to actually play
 something there is no sound from the speakers.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 06-23-06 02:36 
-----------------------------------------------------------------------
-Do you use a sound server?  Do you have a Gnome or KDE mixer applet?  Any
-of this will make module unload impossible.
-
-Do "fuser /dev/dsp", "fuser /dev/mixer", or "fuser /dev/snd/*" as root
-output anything?
 
 ----------------------------------------------------------------------
  bzbarsky - 06-23-06 03:01 
@@ -66,6 +57,11 @@ terms of making the module unloadable.  Thanks!
 
 So I'm still wondering how the log you want differs from the logs I've
 attached.
+
+----------------------------------------------------------------------
+ rlrevell - 06-23-06 03:04 
+----------------------------------------------------------------------
+You'll have to ask Raymond.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -169,6 +165,7 @@ Date Modified  Username       Field                    Change
 06-23-06 02:28 bzbarsky       Note Added: 0010436                          
 06-23-06 02:36 rlrevell       Note Added: 0010437                          
 06-23-06 03:01 bzbarsky       Note Added: 0010438                          
+06-23-06 03:04 rlrevell       Note Added: 0010439                          
 ======================================================================
 
 
