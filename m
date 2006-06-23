@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Fri, 23 Jun 2006 01:54:43 +0200
-Message-ID: <607b8765ed505b377840a9f610d67ef7@bugtrack.alsa-project.org>
+Date: Fri, 23 Jun 2006 02:02:42 +0200
+Message-ID: <43b70df5849119f25b2cea09522ddd0b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6D134184
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F2E62231
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 01:54:43 +0200 (MEST)
+	Fri, 23 Jun 2006 02:02:42 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-23-2006 01:54 CEST
+Last Modified:              06-23-2006 02:02 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
@@ -50,42 +50,17 @@ something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-21-06 05:58 
-----------------------------------------------------------------------
-There is a new feature in alsa-plugin-1.0.11, but it may be hard for you to
-use OSS driver in FC4 because of kudzu. 
-
-This feature has rather limited usage since device "hw" is not available
-and most common ALSA applications need to use device "hw"
-
-
-
-OSS <--> ALSA PCM plugin
-========================
-
-This plugin converts the ALSA API over OSS API.  With this plugin,
-ALSA native apps can run on OSS drivers.
-
-This plugin provides the PCM type "oss".  The typical configuration
-looks like below:
-
-	pcm.oss {
-		type oss
-		device /dev/dsp
-	}
-
-
-
-----------------------------------------------------------------------
- Raymond - 06-23-06 01:54 
+ Raymond - 06-23-06 02:00 
 ----------------------------------------------------------------------
 Please post output of dmesg (when driver is loaded) to find out whether
 codec_write() work or not ?
 
+Don't forget the printk statement in codec_write()
+
 static unsigned short snd_es1371_codec_read(struct snd_ac97 *ac97,
 					    unsigned short reg)
 {
-
+...
  		/* now wait for the stinkin' data (RDY) */
 			for (t = 0; t < POLL_COUNT; t++) {
 				if ((x = inl(ES_REG(ensoniq, 1371_CODEC))) & ES_1371_CODEC_RDY) {
@@ -109,6 +84,16 @@ registers of LM4548
                                                 }
 					}
 					return ES_1371_CODEC_READ(x);
+
+
+
+----------------------------------------------------------------------
+ bzbarsky - 06-23-06 02:02 
+----------------------------------------------------------------------
+I assume the output you want is under some sort of conditions other than
+the ones for which I already posted the logs?  If so, which ones?  If you
+mean that you want me to add some other printk's, it would be easiest if
+you could just attach a diff that I could apply with "patch"...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -205,6 +190,9 @@ Date Modified  Username       Field                    Change
 06-22-06 03:18 Raymond        Note Added: 0010411                          
 06-22-06 03:18 Raymond        Note Deleted: 0010411                        
 06-23-06 01:54 Raymond        Note Added: 0010433                          
+06-23-06 01:57 Raymond        Note Edited: 0010433                         
+06-23-06 02:00 Raymond        Note Edited: 0010433                         
+06-23-06 02:02 bzbarsky       Note Added: 0010434                          
 ======================================================================
 
 
