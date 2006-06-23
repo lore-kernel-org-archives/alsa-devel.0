@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Fri, 23 Jun 2006 02:28:46 +0200
-Message-ID: <e8a516e0c140171e11b56a05c7faa60c@bugtrack.alsa-project.org>
+Date: Fri, 23 Jun 2006 02:36:14 +0200
+Message-ID: <8f1a0c65ebf2b453b87a5504a23e58c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50037233
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0709F233
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 02:28:47 +0200 (MEST)
+	Fri, 23 Jun 2006 02:36:14 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,49 +41,13 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-23-2006 02:28 CEST
+Last Modified:              06-23-2006 02:36 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
 Alsa seems to detect the sound card, but when I try to actually play
 something there is no sound from the speakers.
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-23-06 02:14 
-----------------------------------------------------------------------
-Just want to trace codec read/write during the driver is loaded and alsactl
-restore
-
-If you know how to stop ALSA and re-start ALSA, you don't need to reboot
-
-Same place in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132#10150
-
-snd_es1371_codec_write()
-
-                  printk(KERN_INFO "codec write %.2x = %.4x\n",reg,val);
-
-
-snd_es1371_codec_write()
-
-                    printk(KERN_INFO "codec read %.2x : %x\n",reg, x);
-                    if ( (( x >> 16 ) & 0x7f ) != reg ) {
-                                        /* hack the return value for some
-registers of LM4548
-                       when es1373 cannot read correct values */
-                        switch(reg){
-                        case 0: return 0x0d50;
-                        case 8:
-                        case 0x1e:
-                        case 0x22: return 0;
-                        case 0x28: return 1;
-                        case 0x3c: return 0;
-                        case 0x7c: return 0x4e53;
-                        case 0x7e: return 0x4300;
-                        default: break;
-                        }
-                    }
-                    return ES_1371_CODEC_READ(x);
 
 ----------------------------------------------------------------------
  bzbarsky - 06-23-06 02:28 
@@ -95,6 +59,15 @@ particular, I can never seem to unload the ens1371 module because it's
 claimed to be in use.  If you can tell me how to do that, it'd be a huge
 help, because I could test whenever, not just when I can take the machine
 down...
+
+----------------------------------------------------------------------
+ rlrevell - 06-23-06 02:36 
+----------------------------------------------------------------------
+Do you use a sound server?  Do you have a Gnome or KDE mixer applet?  Any
+of this will make module unload impossible.
+
+Do "fuser /dev/dsp", "fuser /dev/mixer", or "fuser /dev/snd/*" as root
+output anything?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -196,6 +169,7 @@ Date Modified  Username       Field                    Change
 06-23-06 02:02 bzbarsky       Note Added: 0010434                          
 06-23-06 02:14 Raymond        Note Added: 0010435                          
 06-23-06 02:28 bzbarsky       Note Added: 0010436                          
+06-23-06 02:36 rlrevell       Note Added: 0010437                          
 ======================================================================
 
 
