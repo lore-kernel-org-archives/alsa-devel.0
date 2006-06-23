@@ -1,20 +1,19 @@
-From: =?iso-2022-jp?B?GyRCPVAycSQkJE4lKiUiJTclORsoQg==?= <6451_as_free@kobeya-info-red.net>
-Subject: =?iso-2022-jp?b?GyRCOkc/NyEqNDBBNEw1TkEkTj4uSXQbKEI=?=
-	=?iso-2022-jp?b?GyRCMjAbKEI=?=
-Date: Fri, 23 Jun 2006 18:05:51 +0900
-Message-ID: <20060623090957.72408992A9@mail.perex.cz>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: TLV
+Date: Fri, 23 Jun 2006 11:16:06 +0200 (CEST)
+Message-ID: <Pine.LNX.4.61.0606231103050.10283@tm8103-a.perex-int.cz>
+References: <Pine.LNX.4.61.0606212015120.11678@tm8103-a.perex-int.cz>
+	<449A7BED.8010402@superbug.co.uk> <s5hbqslcr25.wl%tiwai@suse.de>
+	<449A8D98.1060303@superbug.co.uk> <s5h8xnpcqji.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from gate.perex.cz (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C210422F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B66622F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 11:09:57 +0200 (MEST)
-Received: from osugi2.com (OFSfa-08p2-114.ppp11.odn.ad.jp [211.3.113.114])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id
-	72408992A9 for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 11:09:57 +0200 (MEST)
+	Fri, 23 Jun 2006 11:16:06 +0200 (MEST)
+In-Reply-To: <s5h8xnpcqji.wl%tiwai@suse.de>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,26 +23,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-大人の出会いを応援します！
-時代はセフレとして気軽に遊ぶ時代に！
+On Thu, 22 Jun 2006, Takashi Iwai wrote:
 
-希望者、再利用者殺到！
-地域検索、趣味検索、その他出会いのサポート完全装備！
-…全て無料！！！！
+> > Or worse, finding out that we have to be backwards compatible with an 
+> > API that was never used!
+> 
+> If it was never used, we can simply abandon the old ioctl :)
+> (Of course, better not to have such one.)
 
-http://lovelief.net/index.html?media=pc432
+I think that the situation with the out-of-tree development is not ideal. 
+I commited my first TLV patch as soon as possible to show the way. It's 
+really a smart patch without any additonal code to show the simplest way 
+to implement TLV. The callback enhancement is also a quick and smart 
+evolution for the TLV implementation so I'd like to commit it also now, 
+but reactions like "we should wait more time" prevents me to do it. I 
+think that the policy should be: Send a patch proposal to alsa-devel and 
+if none has serious objections in two weeks, put it to the HG repo, 
+otherwise we'll end with huge changes which can be hardly verified in the 
+commit time. I would prefer a step-by-step evolution and bug-fixing in 
+several commits rather than a big patch which does all at once.
 
-初めての方でも安心、親切簡単なチュートリアル付き！
-満足度120％のご利用者の声を是非お聞き下さい！
+						Jaroslav
 
-自身を持ってお勧め致します！
-
-http://lovelief.net/index.html?media=pc432
-
-ここまで無かった最新システム満載の完全無料！是非お試しあれ！
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
