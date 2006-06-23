@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Fri, 23 Jun 2006 02:36:14 +0200
-Message-ID: <8f1a0c65ebf2b453b87a5504a23e58c3@bugtrack.alsa-project.org>
+Date: Fri, 23 Jun 2006 03:01:06 +0200
+Message-ID: <b8d1bd196765ea90facf36dabddf2357@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0709F233
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 37699235
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 02:36:14 +0200 (MEST)
+	Fri, 23 Jun 2006 03:01:07 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,24 +41,13 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-23-2006 02:36 CEST
+Last Modified:              06-23-2006 03:01 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
 Alsa seems to detect the sound card, but when I try to actually play
 something there is no sound from the speakers.
 ======================================================================
-
-----------------------------------------------------------------------
- bzbarsky - 06-23-06 02:28 
-----------------------------------------------------------------------
-OK... but how does that differ from the logs I've already attached, then?
-
-And I don't know how to stop and restart alsa without rebooting.  In
-particular, I can never seem to unload the ens1371 module because it's
-claimed to be in use.  If you can tell me how to do that, it'd be a huge
-help, because I could test whenever, not just when I can take the machine
-down...
 
 ----------------------------------------------------------------------
  rlrevell - 06-23-06 02:36 
@@ -68,6 +57,15 @@ of this will make module unload impossible.
 
 Do "fuser /dev/dsp", "fuser /dev/mixer", or "fuser /dev/snd/*" as root
 output anything?
+
+----------------------------------------------------------------------
+ bzbarsky - 06-23-06 03:01 
+----------------------------------------------------------------------
+Ah, I did find a mixer running.  Getting rid of that looks like it helps in
+terms of making the module unloadable.  Thanks!
+
+So I'm still wondering how the log you want differs from the logs I've
+attached.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -170,6 +168,7 @@ Date Modified  Username       Field                    Change
 06-23-06 02:14 Raymond        Note Added: 0010435                          
 06-23-06 02:28 bzbarsky       Note Added: 0010436                          
 06-23-06 02:36 rlrevell       Note Added: 0010437                          
+06-23-06 03:01 bzbarsky       Note Added: 0010438                          
 ======================================================================
 
 
