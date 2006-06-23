@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002227]: Creative Audigy Platinum
 	mixer problems
-Date: Fri, 23 Jun 2006 18:33:53 +0200
-Message-ID: <652725181bb3434baaa2fbcdbfb889e5@bugtrack.alsa-project.org>
+Date: Fri, 23 Jun 2006 18:45:19 +0200
+Message-ID: <ec044a48dd4ce79ea9665d6288ab776d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB99D15D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 161D3240
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 18:33:53 +0200 (MEST)
+	Fri, 23 Jun 2006 18:45:20 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -43,7 +43,7 @@ Kernel Version:             Linux teevee 2.6.15-25-k7 #1 SMP PREEMPT Wed Jun 14
 11:43:20 UTC 2006 i686 GNU/Linux
 ======================================================================
 Date Submitted:             06-23-2006 15:39 CEST
-Last Modified:              06-23-2006 18:33 CEST
+Last Modified:              06-23-2006 18:45 CEST
 ======================================================================
 Summary:                    Creative Audigy Platinum mixer problems
 Description: 
@@ -61,18 +61,16 @@ me, the problem is just the mixer.
 ======================================================================
 
 ----------------------------------------------------------------------
- lzap - 06-23-06 18:31 
-----------------------------------------------------------------------
-I have run init_audigy and it fixes the problem, please close the
-bugreport.
-
-Should I use the ld01k1? Do I need it for normal use?
-
-----------------------------------------------------------------------
  lzap - 06-23-06 18:33 
 ----------------------------------------------------------------------
 I mean - when I uninstall it, will the mixer be ok? I do not need the DSP
 effects...
+
+----------------------------------------------------------------------
+ pzad - 06-23-06 18:45 
+----------------------------------------------------------------------
+For normal use is not needed. After uninstall of ld10k1 you will have same
+mixer as you have after running init_audigy script.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -86,6 +84,7 @@ Date Modified  Username       Field                    Change
 06-23-06 18:29 pzad           Note Added: 0010460                          
 06-23-06 18:31 lzap           Note Added: 0010461                          
 06-23-06 18:33 lzap           Note Added: 0010462                          
+06-23-06 18:45 pzad           Note Added: 0010463                          
 ======================================================================
 
 
