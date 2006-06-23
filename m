@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Fri, 23 Jun 2006 02:14:41 +0200
-Message-ID: <5f7046fe53e9e8b97a74c423f733e93f@bugtrack.alsa-project.org>
+Date: Fri, 23 Jun 2006 02:28:46 +0200
+Message-ID: <e8a516e0c140171e11b56a05c7faa60c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id A73C5233
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 50037233
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 02:14:41 +0200 (MEST)
+	Fri, 23 Jun 2006 02:28:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,21 +41,13 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-23-2006 02:14 CEST
+Last Modified:              06-23-2006 02:28 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
 Alsa seems to detect the sound card, but when I try to actually play
 something there is no sound from the speakers.
 ======================================================================
-
-----------------------------------------------------------------------
- bzbarsky - 06-23-06 02:02 
-----------------------------------------------------------------------
-I assume the output you want is under some sort of conditions other than
-the ones for which I already posted the logs?  If so, which ones?  If you
-mean that you want me to add some other printk's, it would be easiest if
-you could just attach a diff that I could apply with "patch"...
 
 ----------------------------------------------------------------------
  Raymond - 06-23-06 02:14 
@@ -92,6 +84,17 @@ registers of LM4548
                         }
                     }
                     return ES_1371_CODEC_READ(x);
+
+----------------------------------------------------------------------
+ bzbarsky - 06-23-06 02:28 
+----------------------------------------------------------------------
+OK... but how does that differ from the logs I've already attached, then?
+
+And I don't know how to stop and restart alsa without rebooting.  In
+particular, I can never seem to unload the ens1371 module because it's
+claimed to be in use.  If you can tell me how to do that, it'd be a huge
+help, because I could test whenever, not just when I can take the machine
+down...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -192,6 +195,7 @@ Date Modified  Username       Field                    Change
 06-23-06 02:00 Raymond        Note Edited: 0010433                         
 06-23-06 02:02 bzbarsky       Note Added: 0010434                          
 06-23-06 02:14 Raymond        Note Added: 0010435                          
+06-23-06 02:28 bzbarsky       Note Added: 0010436                          
 ======================================================================
 
 
