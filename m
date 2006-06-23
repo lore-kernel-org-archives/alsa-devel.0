@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Fri, 23 Jun 2006 03:04:33 +0200
-Message-ID: <b29a9c62d8ae941c6f7509d3b1eee036@bugtrack.alsa-project.org>
+Date: Fri, 23 Jun 2006 03:28:47 +0200
+Message-ID: <02d0aee73f39417f11d460d538ce9ad3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8C184235
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4B52239
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 03:04:33 +0200 (MEST)
+	Fri, 23 Jun 2006 03:28:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-23-2006 03:04 CEST
+Last Modified:              06-23-2006 03:28 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
@@ -50,18 +50,42 @@ something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- bzbarsky - 06-23-06 03:01 
+ Raymond - 06-23-06 03:18 
 ----------------------------------------------------------------------
-Ah, I did find a mixer running.  Getting rid of that looks like it helps in
-terms of making the module unloadable.  Thanks!
+http://www.national.com/pf/LM/LM4548.html
 
-So I'm still wondering how the log you want differs from the logs I've
-attached.
+
+cat /proc/asound/card0/codec97#0/ac97#0-0
+
+should return name of the codec
+
+
+alsactl restore 
+
+should return error since "Caller ID" and "off hook" cannot be restored
+
+alsactl store may fix this one-time error
+
+
+
+dmesg
+
+expect driver to skip modem codec probing
+may find out whether snd_es1371_codec_write() work or not when driver call
+check_volume_resolution()
+
+
 
 ----------------------------------------------------------------------
- rlrevell - 06-23-06 03:04 
+ bzbarsky - 06-23-06 03:28 
 ----------------------------------------------------------------------
-You'll have to ask Raymond.
+Raymond, maybe it's a mental block on my part, but I'm really just not
+understanding what you want me to do.
+
+If possible, could you just give me the list of patches to apply and
+commands to type (assume bash, but I can use some other shell if that
+would help) to get you the information you want?  That would be much
+appreciated...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -166,6 +190,9 @@ Date Modified  Username       Field                    Change
 06-23-06 02:36 rlrevell       Note Added: 0010437                          
 06-23-06 03:01 bzbarsky       Note Added: 0010438                          
 06-23-06 03:04 rlrevell       Note Added: 0010439                          
+06-23-06 03:08 Raymond        Note Added: 0010440                          
+06-23-06 03:18 Raymond        Note Edited: 0010440                         
+06-23-06 03:28 bzbarsky       Note Added: 0010441                          
 ======================================================================
 
 
