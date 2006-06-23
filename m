@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Fri, 23 Jun 2006 04:00:41 +0200
-Message-ID: <ab87860f7e2cea61e06a85e84298d3c2@bugtrack.alsa-project.org>
+Date: Fri, 23 Jun 2006 04:50:09 +0200
+Message-ID: <847e8ca6defc0f5be33a0f32df8fcf34@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D2B5C239
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C1B56239
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 04:00:41 +0200 (MEST)
+	Fri, 23 Jun 2006 04:50:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -41,7 +41,7 @@ Distribution:               Fedora Core 4
 Kernel Version:             2.6.15
 ======================================================================
 Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-23-2006 04:00 CEST
+Last Modified:              06-23-2006 04:50 CEST
 ======================================================================
 Summary:                    No sound from speakers
 Description: 
@@ -50,33 +50,23 @@ something there is no sound from the speakers.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-23-06 03:55 
-----------------------------------------------------------------------
-Please note that this is a hack , it is not a fix 
-
-I am using FC1, I cannot give you any HG diff
-
-I assume you have already upgraded to alsa-driver-1.0.11
- 
-you just copy and paste those printk statements and switch() statement to
-the right place
-
-you don't need wood's hack at this moment since our aim is find out
-snd_es1371_codec_write() work or not by examing the output of dmesg when
-the driver is loaded
-
-
-stop ALSA, make , make install, restart ALSA
-
-
-
-----------------------------------------------------------------------
- Raymond - 06-23-06 04:00 
+ Raymond - 06-23-06 04:01 
 ----------------------------------------------------------------------
 On FC1 (Kernel 2.4.x), I am using /etc/init.d/alsasound to start and stop
 ALSA.
 
+Please note that this script will kill any tasks which are using ALSA !!!
+
 You should ask rlrevell how to start/stop ALSA on a 2.6.x kernel.
+
+
+
+----------------------------------------------------------------------
+ bzbarsky - 06-23-06 04:50 
+----------------------------------------------------------------------
+With that change to the module, just unloading and reloading the module,
+then unmuting things makes sound work.  The corresponding log from the
+module being reloaded is attached as dmesg-hacked.txt
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -187,6 +177,9 @@ Date Modified  Username       Field                    Change
 06-23-06 03:48 Raymond        Note Added: 0010443                          
 06-23-06 03:55 Raymond        Note Edited: 0010443                         
 06-23-06 04:00 Raymond        Note Added: 0010444                          
+06-23-06 04:01 Raymond        Note Edited: 0010444                         
+06-23-06 04:45 bzbarsky       File Added: dmesg-hacked.txt                    
+06-23-06 04:50 bzbarsky       Note Added: 0010445                          
 ======================================================================
 
 
