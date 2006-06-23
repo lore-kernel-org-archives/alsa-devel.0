@@ -1,124 +1,103 @@
-From: Dave Jones <davej@redhat.com>
-Subject: list corruption on removal of snd_seq_dummy
-Date: Thu, 22 Jun 2006 23:15:26 -0400
-Message-ID: <20060623031526.GB19461@redhat.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002226]: Intel 82801G / ASUSTeK 1153 -
+	driver snd_hda_loads but no sound and freeze when doing
+	alsasound restart
+Date: Fri, 23 Jun 2006 07:58:47 +0200
+Message-ID: <13adc1958574e2d1a904569fed9ddf3c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751140AbWFWDP3@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@projects.sourceforge.net
-Cc: Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 0B518137
+	for <alsa-devel@alsa-project.org>;
+	Fri, 23 Jun 2006 07:58:47 +0200 (MEST)
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+Sender: alsa-devel-bounces@lists.sourceforge.net
+Errors-To: alsa-devel-bounces@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-If you apply the debugging patch below (based on one from -mm)
-and rmmod snd_seq_dummy, you get this spew:
-(based on a 2.6.17rc6 kernel, but likely still there in todays -git)
 
-The code in question is doing..
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2226> 
+======================================================================
+Reported By:                bgrieder
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2226
+Category:                   PCI - hda-intel
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 5
+Kernel Version:             2.6.16-1.2133_FC5smp #1 SMP
+======================================================================
+Date Submitted:             06-23-2006 07:58 CEST
+Last Modified:              06-23-2006 07:58 CEST
+======================================================================
+Summary:                    Intel 82801G / ASUSTeK 1153 - driver snd_hda_loads
+but no sound and freeze when doing alsasound restart
+Description: 
+Hi,
 
-        __list_add(&deleted_list,
-               client->ports_list_head.prev,
-               client->ports_list_head.next);
+I upgraded to alsa-driver 1.0.11 but to no avail.
 
-which looks fishy, as those two elements aren't going to be consecutive,
-as __list_add expects.
-
-		Dave
-
-List corruption. next->prev should be f76896e8, but was f70acbcc
-------------[ cut here ]------------
-kernel BUG at include/linux/list.h:58!
-invalid opcode: 0000 [#1]
-SMP
-last sysfs file: /devices/pci0000:00/0000:00:1f.3/i2c-0/0-002e/pwm3
-Modules linked in: lm85 hwmon_vid hwmon i2c_isa ipv6 nls_utf8 loop snd_seq_dummy snd_seq_oss snd_seq_midi_event snd_seq snd_seq_device snd_pcm_oss matroxfb_base matroxfb_DAC1064 snd_mixer_oss matroxfb_accel matroxfb_Ti3026 matroxfb_g450 g450_pll matroxfb_misc snd_pcm 3w_9xxx e1000 snd_timer snd i2c_i801 soundcore i2c_core snd_page_alloc ext3 jbd 3w_xxxx ata_piix libata sd_mod scsi_mod
-CPU:    1
-EIP:    0060:[<f8a1a56d>]    Not tainted VLI
-EFLAGS: 00010092   (2.6.16-1.2232_FC6 #1)
-EIP is at snd_seq_delete_all_ports+0x57/0x167 [snd_seq]
-eax: 00000044   ebx: f76896e8   ecx: c06c77d0   edx: 00000096
-esi: f76896e8   edi: f70acbcc   ebp: f70acb50   esp: f772cf08
-ds: 007b   es: 007b   ss: 0068
-Process rmmod (pid: 6274, threadinfo=f772c000 task=df26f550)
-Stack: f8a1b83b f76896e8 f70acbcc f70acbe4 f70acbd4 00000282 22222222 22222222
-       f70acb50 00000020 00000000 f772c000 f8a1521e f70acb50 f8a152e2 c043df66
-       f772c000 c0445bf0 f70acb50 f8a1778b f89b4e00 c043e177 5f646e73 5f716573
-Call Trace:
- <f8a1521e> seq_free_client1+0x8/0x90 [snd_seq]  <f8a152e2> seq_free_client+0x3c/0x78 [snd_seq]
- <c043df66> __try_stop_module+0x0/0x44  <c0445bf0> stop_machine_run+0x2e/0x34
- <f8a1778b> snd_seq_delete_kernel_client+0x1a/0x2c [snd_seq]  <c043e177> sys_delete_module+0x192/0x1bb
- <c060f020> do_page_fault+0x235/0x5ba  <c045ab3f> do_munmap+0x196/0x1af
- <c0403e1f> syscall_call+0x7/0xb
-Code: 24 14 39 7d 7c 74 67 8b 5d 7c 8b b5 80 00 00 00 8b 43 04 39 f0 74 1c 89 74 24 04 89 44 24 08 c7 04 24 3b b8 a1 f8 e8 e7 ab a0 c7 <0f> 0b 3a 00 26 b8 a1 f8 8b 06 39 d8 74 1c 89 5c 24 04 89 44 24
-EIP: [<f8a1a56d>] snd_seq_delete_all_ports+0x57/0x167 [snd_seq] SS:ESP 0068:f772cf08
- <3>BUG: sleeping function called from invalid context at include/linux/rwsem.h:43
-in_atomic():0, irqs_disabled():1
- <c042ffa2> blocking_notifier_call_chain+0x18/0x4b  <c0427387> do_exit+0x19/0x7a5
- <c053a76b> do_unblank_screen+0x2a/0x127  <c040549a> die+0x2a5/0x2ca
- <c0405b30> do_invalid_op+0x0/0xab  <c0405bd2> do_invalid_op+0xa2/0xab
- <f8a1a56d> snd_seq_delete_all_ports+0x57/0x167 [snd_seq]  <c041e25f> find_busiest_group+0xfc/0x29c
- <c060dfd0> _spin_unlock_irq+0x5/0x7  <c04390ef> debug_mutex_add_waiter+0x97/0xa9
- <f8a1a531> snd_seq_delete_all_ports+0x1b/0x167 [snd_seq]  <c04049b7> error_code+0x4f/0x54
- <f8a1a56d> snd_seq_delete_all_ports+0x57/0x167 [snd_seq]  <f8a1521e> seq_free_client1+0x8/0x90 [snd_seq]
- <f8a152e2> seq_free_client+0x3c/0x78 [snd_seq]  <c043df66> __try_stop_module+0x0/0x44
- <c0445bf0> stop_machine_run+0x2e/0x34  <f8a1778b> snd_seq_delete_kernel_client+0x1a/0x2c [snd_seq]
- <c043e177> sys_delete_module+0x192/0x1bb  <c060f020> do_page_fault+0x235/0x5ba
- <c045ab3f> do_munmap+0x196/0x1af  <c0403e1f> syscall_call+0x7/0xb
-BUG: rmmod/6274, lock held at task exit time!
- [f8a21fa0] {register_mutex}
-.. held by:             rmmod: 6274 [df26f550, 117]
-... acquired at:               seq_free_client+0x10/0x78 [snd_seq]
+My card is running on an ASUS A8JM laptop
+00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+Definition Aud io Controller (rev 02)
+        Subsystem: ASUSTeK Computer Inc. Unknown device 1153
+        Flags: bus master, fast devsel, latency 0, IRQ 23
+        Memory at febfc000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable -
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
 
+Th driver was compiled with debug flags; a modprobe snd_hda_intel produces
+the following entry in /var/log/messages
+Jun 23 07:55:15 asusbg kernel: ACPI: PCI Interrupt 0000:00:1b.0[A] -> GSI
+21 (level, low) -> IRQ 23
+Jun 23 07:55:15 asusbg kernel: ALSA
+/tmp/alsa-driver-1.0.11/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:654:
+codec_mask = 0x3
+Jun 23 07:55:17 asusbg kernel: ALSA
+/tmp/alsa-driver-1.0.11/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:516:
+hda_intel: azx_get_response timeout, switching to single_cmd mode..
 
---- linux-2.6.12/include/linux/list.h~	2005-08-08 15:34:50.000000000 -0400
-+++ linux-2.6.12/include/linux/list.h	2005-08-08 15:35:22.000000000 -0400
-@@ -5,7 +5,9 @@
- 
- #include <linux/stddef.h>
- #include <linux/prefetch.h>
-+#include <linux/kernel.h>
- #include <asm/system.h>
-+#include <asm/bug.h>
- 
- /*
-  * These are non-NULL pointers that will result in page faults
-@@ -52,6 +52,16 @@ static inline void __list_add(struct lis
- 			      struct list_head *prev,
- 			      struct list_head *next)
- {
-+	if (next->prev != prev) {
-+		printk("List corruption. next->prev should be %p, but was %p\n",
-+				prev, next->prev);
-+		BUG();
-+	}
-+	if (prev->next != next) {
-+		printk("List corruption. prev->next should be %p, but was %p\n",
-+				next, prev->next);
-+		BUG();
-+	}
- 	next->prev = new;
- 	new->next = next;
- 	new->prev = prev;
-@@ -162,6 +162,16 @@ static inline void __list_del(struct lis
-  */
- static inline void list_del(struct list_head *entry)
- {
-+	if (entry->prev->next != entry) {
-+		printk("List corruption. prev->next should be %p, but was %p\n",
-+				entry, entry->prev->next);
-+		BUG();
-+	}
-+	if (entry->next->prev != entry) {
-+		printk("List corruption. next->prev should be %p, but was %p\n",
-+				entry, entry->next->prev);
-+		BUG();
-+	}
- 	__list_del(entry->prev, entry->next);
- 	entry->next = LIST_POISON1;
- 	entry->prev = LIST_POISON2;
+Issuing /etc/init.d/alsasound restart will freeze the machine.
+No signififcant entry in /var/log/messages
+
+Let me know if you need additional details
+Many Thanks and Best Regards
 
 
--- 
-http://www.codemonkey.org.uk
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-23-06 07:58 bgrieder       New Issue                                    
+06-23-06 07:58 bgrieder       Distribution              => Fedora Core 5   
+06-23-06 07:58 bgrieder       Kernel Version            => 2.6.16-1.2133_FC5smp
+#1 SMP
+======================================================================
+
+
+
+Using Tomcat but need to do more? Need to support web services, security?
+Get stuff done quickly with pre-integrated technology to make your job easier
+Download IBM WebSphere Application Server v.1.0.1 based on Apache Geronimo
+http://sel.as-us.falkag.net/sel?cmd=lnk&kid=120709&bid=263057&dat=121642
