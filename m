@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002132]: No sound from speakers
-Date: Fri, 23 Jun 2006 03:28:47 +0200
-Message-ID: <02d0aee73f39417f11d460d538ce9ad3@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001641]: "error: cannot find input file:
+	src/pcm/Makefile.in" when building under Linux 2.4
+Date: Fri, 23 Jun 2006 03:31:09 +0200
+Message-ID: <5a49f9dd748b9de836a9c4dcb682f5ac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C4B52239
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7802D239
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 03:28:47 +0200 (MEST)
+	Fri, 23 Jun 2006 03:31:09 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,174 +26,210 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1641> 
 ======================================================================
-Reported By:                bzbarsky
-Assigned To:                
+Reported By:                Raymond
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2132
-Category:                   PCI - ens1371
+Project:                    ALSA - lib
+Issue ID:                   1641
+Category:                   0_general
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 4
-Kernel Version:             2.6.15
+Status:                     feedback
 ======================================================================
-Date Submitted:             05-17-2006 19:54 CEST
-Last Modified:              06-23-2006 03:28 CEST
+Date Submitted:             12-11-2005 11:12 CET
+Last Modified:              06-23-2006 03:31 CEST
 ======================================================================
-Summary:                    No sound from speakers
+Summary:                    "error: cannot find input file: src/pcm/Makefile.in"
+when building under Linux 2.4
 Description: 
-Alsa seems to detect the sound card, but when I try to actually play
-something there is no sound from the speakers.
+I can compile alsa-lib-1.0.10 on Kernel 2.4
+
+alsa-lib CVS 11/Dec/2005
+
+./cvscompile
+./cvscompile: line 7:  9376 Terminated              automake --foreign
+--copy --add-missing
+CFLAGS=-O2 -Wall -W -pipe -g
+./configure
+checking build system type... i686-redhat-linux-gnu
+checking host system type... i686-redhat-linux-gnu
+checking target system type... i686-redhat-linux-gnu
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking for gcc... gcc32
+checking for C compiler default output... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc32 accepts -g... yes
+checking for gcc32 option to accept ANSI C... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc32... gcc3
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether ln -s works... yes
+checking for a sed that does not truncate output... /bin/sed
+checking for egrep... grep -E
+checking for ld used by gcc32... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for /usr/bin/ld option to reload object files... -r
+checking for BSD-compatible nm... /usr/bin/nm -B
+checking how to recognise dependent libraries... pass_all
+checking how to run the C preprocessor... gcc32 -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking dlfcn.h usability... yes
+checking dlfcn.h presence... yes
+checking for dlfcn.h... yes
+checking for g++... g++
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking dependency style of g++... gcc3
+checking how to run the C++ preprocessor... g++ -E
+checking for g77... g77
+checking whether we are using the GNU Fortran 77 compiler... yes
+checking whether g77 accepts -g... yes
+checking the maximum length of command line arguments... 32768
+checking command to parse /usr/bin/nm -B output from gcc32 object... ok
+checking for objdir... .libs
+checking for ar... ar
+checking for ranlib... ranlib
+checking for strip... strip
+checking if gcc32 static flag  works... yes
+checking if gcc32 supports -fno-rtti -fno-exceptions... no
+checking for gcc32 option to produce PIC... -fPIC
+checking if gcc32 PIC flag -fPIC works... yes
+checking if gcc32 supports -c -o file.o... yes
+checking whether the gcc32 linker (/usr/bin/ld) supports shared
+libraries... yeschecking whether -lc should be explicitly linked in... no
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking for shl_load... no
+checking for shl_load in -ldld... no
+checking for dlopen... no
+checking for dlopen in -ldl... yes
+checking whether a program can dlopen itself... yes
+checking whether a statically linked program can dlopen itself... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+configure: creating libtool
+appending configuration tag "CXX" to libtool
+checking for ld used by g++... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking whether the g++ linker (/usr/bin/ld) supports shared libraries...
+yes
+checking for g++ option to produce PIC... -fPIC
+checking if g++ PIC flag -fPIC works... yes
+checking if g++ supports -c -o file.o... yes
+checking whether the g++ linker (/usr/bin/ld) supports shared libraries...
+yes
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking for shl_load... (cached) no
+checking for shl_load in -ldld... (cached) no
+checking for dlopen... (cached) no
+checking for dlopen in -ldl... (cached) yes
+checking whether a program can dlopen itself... (cached) yes
+checking whether a statically linked program can dlopen itself... (cached)
+yes
+appending configuration tag "F77" to libtool
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... no
+checking for g77 option to produce PIC... -fPIC
+checking if g77 PIC flag -fPIC works... yes
+checking if g77 supports -c -o file.o... yes
+checking whether the g77 linker (/usr/bin/ld) supports shared libraries...
+yes
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking for ANSI C header files... (cached) yes
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking whether time.h and sys/time.h may both be included... yes
+checking whether gcc32 needs -traditional... no
+checking for hsearch_r... yes
+checking for library version... major 1 minor 0 subminor 10 extrastr 
+extraver 1000000
+checking for versioned symbols... yes
+checking for debug... yes
+checking for tmpdir... /tmp
+checking for softfloat... no
+checking for architecture... x86
+checking wordexp.h usability... yes
+checking wordexp.h presence... yes
+checking for wordexp.h... yes
+checking for resmgr support... no
+checking for aload* support... yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating doc/Makefile
+config.status: creating doc/pictures/Makefile
+config.status: creating include/Makefile
+config.status: creating include/sound/Makefile
+config.status: creating src/Makefile
+config.status: creating src/control/Makefile
+config.status: creating src/mixer/Makefile
+config.status: creating src/pcm/Makefile
+config.status: error: cannot find input file: src/pcm/Makefile.in
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-23-06 03:18 
+ rlrevell - 06-23-06 01:39 
 ----------------------------------------------------------------------
-http://www.national.com/pf/LM/LM4548.html
-
-
-cat /proc/asound/card0/codec97#0/ac97#0-0
-
-should return name of the codec
-
-
-alsactl restore 
-
-should return error since "Caller ID" and "off hook" cannot be restored
-
-alsactl store may fix this one-time error
-
-
-
-dmesg
-
-expect driver to skip modem codec probing
-may find out whether snd_es1371_codec_write() work or not when driver call
-check_volume_resolution()
-
-
+I don't think that this will be fixed.  FC1 is old.
 
 ----------------------------------------------------------------------
- bzbarsky - 06-23-06 03:28 
+ Raymond - 06-23-06 03:31 
 ----------------------------------------------------------------------
-Raymond, maybe it's a mental block on my part, but I'm really just not
-understanding what you want me to do.
+Does it mean that alsa-driver-1.0.12rc1.tar.bz2 will not be available in
+http://www.alsa-project.org/ anymore ?
 
-If possible, could you just give me the list of patches to apply and
-commands to type (assume bash, but I can use some other shell if that
-would help) to get you the information you want?  That would be much
-appreciated...
+I need ./configure in alsa-xxx.tar.bz2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-17-06 19:54 bzbarsky       New Issue                                    
-05-17-06 19:54 bzbarsky       File Added: lspci.txt                        
-05-17-06 19:54 bzbarsky       Distribution              => Fedora Core 4   
-05-17-06 19:54 bzbarsky       Kernel Version            => 2.6.15          
-05-17-06 19:55 bzbarsky       File Added: lspci-n.txt                      
-05-17-06 19:55 bzbarsky       Issue Monitored: bzbarsky                    
-05-17-06 19:56 bzbarsky       File Added: scsound.log                      
-05-17-06 19:57 bzbarsky       Note Added: 0009857                          
-05-20-06 05:31 Raymond        Note Added: 0009882                          
-05-20-06 21:43 bzbarsky       Note Added: 0009893                          
-05-21-06 03:41 Raymond        Note Added: 0009894                          
-05-21-06 03:48 Raymond        Note Edited: 0009894                         
-05-22-06 02:47 bzbarsky       File Added: ac97#0-0                         
-05-22-06 02:48 bzbarsky       File Added: ac97#0-0+regs                    
-05-22-06 02:53 bzbarsky       Note Added: 0009901                          
-05-22-06 04:14 Raymond        Note Added: 0009902                          
-05-23-06 09:00 Raymond        Note Added: 0009929                          
-05-23-06 09:03 Raymond        Note Edited: 0009929                         
-05-23-06 09:07 Raymond        Note Edited: 0009929                         
-06-02-06 20:08 bzbarsky       Note Added: 0010053                          
-06-02-06 20:09 bzbarsky       File Added: scsound-1.0.11.log                    
-06-02-06 20:09 bzbarsky       File Added: ac97#0-0-1.0.11                    
-06-02-06 20:10 bzbarsky       File Added: ac97#0-0+regs-1.0.11                  
- 
-06-02-06 20:35 bzbarsky       Note Added: 0010054                          
-06-03-06 02:44 Raymond        Note Added: 0010058                          
-06-05-06 01:29 bzbarsky       Note Added: 0010066                          
-06-05-06 03:31 Raymond        Note Added: 0010067                          
-06-05-06 03:56 bzbarsky       File Added: dmesg                            
-06-05-06 03:57 bzbarsky       Note Added: 0010068                          
-06-06-06 06:35 Raymond        Note Added: 0010071                          
-06-06-06 06:43 Raymond        Note Edited: 0010071                         
-06-06-06 08:59 Raymond        Note Edited: 0010071                         
-06-10-06 07:42 bzbarsky       Note Added: 0010144                          
-06-11-06 05:24 Raymond        Note Added: 0010150                          
-06-11-06 05:29 Raymond        Note Edited: 0010150                         
-06-11-06 22:37 bzbarsky       File Added: dmesg+kprint                     
-06-11-06 22:37 bzbarsky       File Added: codec_lines.txt                    
-06-11-06 22:38 bzbarsky       Note Added: 0010154                          
-06-12-06 03:31 Raymond        Note Added: 0010157                          
-06-12-06 03:41 rlrevell       Note Added: 0010158                          
-06-12-06 04:36 bzbarsky       Note Added: 0010161                          
-06-12-06 05:18 Raymond        Note Added: 0010164                          
-06-12-06 05:20 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:23 Raymond        Note Edited: 0010164                         
-06-12-06 05:26 rlrevell       Note Added: 0010165                          
-06-12-06 13:23 Raymond        Note Added: 0010168                          
-06-12-06 18:12 bzbarsky       Note Added: 0010172                          
-06-13-06 04:43 Raymond        Note Added: 0010185                          
-06-13-06 04:45 Raymond        Note Edited: 0010185                         
-06-13-06 05:39 bzbarsky       Note Added: 0010187                          
-06-13-06 07:20 Raymond        Note Added: 0010190                          
-06-13-06 07:25 Raymond        Note Edited: 0010190                         
-06-14-06 05:00 Raymond        Note Added: 0010204                          
-06-15-06 02:16 bzbarsky       Note Added: 0010220                          
-06-15-06 02:27 bzbarsky       Note Edited: 0010220                         
-06-15-06 02:36 Raymond        Note Added: 0010223                          
-06-15-06 02:53 Raymond        Note Added: 0010225                          
-06-15-06 02:59 bzbarsky       Note Added: 0010226                          
-06-15-06 03:03 Raymond        Note Edited: 0010225                         
-06-15-06 03:19 Raymond        Note Added: 0010227                          
-06-15-06 03:53 rlrevell       Note Added: 0010228                          
-06-15-06 03:55 rlrevell       Note Added: 0010229                          
-06-15-06 04:19 bzbarsky       Note Added: 0010231                          
-06-15-06 05:54 Raymond        Note Added: 0010232                          
-06-15-06 05:57 Raymond        Note Edited: 0010232                         
-06-15-06 05:59 Raymond        Note Edited: 0010232                         
-06-15-06 06:02 Raymond        Note Edited: 0010232                         
-06-15-06 08:06 bzbarsky       Note Added: 0010234                          
-06-15-06 08:59 Raymond        Note Added: 0010235                          
-06-15-06 09:09 Raymond        Note Edited: 0010235                         
-06-15-06 17:07 rlrevell       Note Added: 0010239                          
-06-16-06 03:53 Raymond        Note Added: 0010247                          
-06-16-06 03:56 Raymond        Note Edited: 0010247                         
-06-16-06 04:10 Raymond        Note Edited: 0010247                         
-06-16-06 04:31 Raymond        Note Added: 0010248                          
-06-20-06 05:02 bzbarsky       Note Added: 0010326                          
-06-20-06 06:20 Raymond        Note Added: 0010327                          
-06-20-06 06:23 bzbarsky       Note Added: 0010328                          
-06-20-06 06:35 Raymond        Note Added: 0010329                          
-06-20-06 06:57 bzbarsky       Note Added: 0010330                          
-06-20-06 08:45 Raymond        Note Added: 0010331                          
-06-21-06 03:51 Raymond        Note Added: 0010376                          
-06-21-06 03:54 rlrevell       Note Added: 0010377                          
-06-21-06 04:51 bzbarsky       Note Added: 0010378                          
-06-21-06 05:05 rlrevell       Note Added: 0010380                          
-06-21-06 05:48 Raymond        Note Added: 0010381                          
-06-21-06 05:58 Raymond        Note Edited: 0010381                         
-06-22-06 03:18 Raymond        Note Added: 0010411                          
-06-22-06 03:18 Raymond        Note Deleted: 0010411                        
-06-23-06 01:54 Raymond        Note Added: 0010433                          
-06-23-06 01:57 Raymond        Note Edited: 0010433                         
-06-23-06 02:00 Raymond        Note Edited: 0010433                         
-06-23-06 02:02 bzbarsky       Note Added: 0010434                          
-06-23-06 02:14 Raymond        Note Added: 0010435                          
-06-23-06 02:28 bzbarsky       Note Added: 0010436                          
-06-23-06 02:36 rlrevell       Note Added: 0010437                          
-06-23-06 03:01 bzbarsky       Note Added: 0010438                          
-06-23-06 03:04 rlrevell       Note Added: 0010439                          
-06-23-06 03:08 Raymond        Note Added: 0010440                          
-06-23-06 03:18 Raymond        Note Edited: 0010440                         
-06-23-06 03:28 bzbarsky       Note Added: 0010441                          
+12-11-05 11:12 Raymond        New Issue                                    
+12-13-05 12:36 jdthood        Summary                  error: cannot find input
+file: src/pcm/Makefile.in => "error: cannot find input file:
+src/pcm/Makefile.in" when building under Linux 2.4
+12-13-05 18:21 Raymond        Note Added: 0007020                          
+12-15-05 10:08 perex          Status                   new => resolved     
+12-15-05 10:08 perex          Resolution               open => fixed       
+12-15-05 10:08 perex          Assigned To               => perex           
+12-15-05 10:08 perex          Note Added: 0007048                          
+12-15-05 13:30 Raymond        Status                   resolved => feedback
+12-15-05 13:30 Raymond        Resolution               fixed => reopened   
+12-15-05 13:30 Raymond        Note Added: 0007049                          
+12-15-05 13:38 Raymond        Note Added: 0007050                          
+12-15-05 13:50 Raymond        Note Added: 0007051                          
+01-07-06 03:16 Raymond        Note Added: 0007504                          
+01-07-06 05:04 Raymond        Note Added: 0007507                          
+01-11-06 03:24 Raymond        Note Added: 0007557                          
+04-25-06 09:45 Raymond        Note Deleted: 0007557                        
+04-25-06 09:46 Raymond        Note Deleted: 0007050                        
+06-23-06 01:39 rlrevell       Note Added: 0010432                          
+06-23-06 03:31 Raymond        Note Added: 0010442                          
 ======================================================================
 
 
