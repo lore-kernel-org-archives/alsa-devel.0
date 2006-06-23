@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000321]: Left front channel always
 	muted on boot
-Date: Fri, 23 Jun 2006 14:20:02 +0200
-Message-ID: <06b69d4dc6ec902406eba751d6d9f941@bugtrack.alsa-project.org>
+Date: Fri, 23 Jun 2006 14:52:08 +0200
+Message-ID: <134357fb51de57333f3a6dd3a5c3d94a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F001623C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id D27DC23D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 14:20:02 +0200 (MEST)
+	Fri, 23 Jun 2006 14:52:08 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               gentoo
 Kernel Version:             2.6.6
 ======================================================================
 Date Submitted:             06-02-2004 08:09 CEST
-Last Modified:              06-23-2006 14:20 CEST
+Last Modified:              06-23-2006 14:52 CEST
 ======================================================================
 Summary:                    Left front channel always muted on boot
 Description: 
@@ -54,18 +54,21 @@ to unmute.  Should I be worried "amixer scontrols" reports everything as
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-23-06 14:10 
-----------------------------------------------------------------------
-hlabs,
-
-Can you post /etc/asound.state ( after alsactl store ) ?
-
-----------------------------------------------------------------------
  hlabs - 06-23-06 14:20 
 ----------------------------------------------------------------------
 Hi Raymond,
 
 in attachment my /etc/asound.state. as asound.state.1
+
+----------------------------------------------------------------------
+ hlabs - 06-23-06 14:52 
+----------------------------------------------------------------------
+Hi Raymond,
+
+After alinja patch and rebooting left channel not muted completely, but
+has much less volume level than right channel.
+I must manually change linked l/r volume slider to
+restore equial volume level.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -103,6 +106,7 @@ Date Modified  Username       Field                    Change
 06-23-06 14:10 Raymond        Note Added: 0010448                          
 06-23-06 14:18 hlabs          File Added: asound.state.1                    
 06-23-06 14:20 hlabs          Note Added: 0010449                          
+06-23-06 14:52 hlabs          Note Added: 0010450                          
 ======================================================================
 
 
