@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002227]: Creative Audigy Platinum
 	mixer problems
-Date: Fri, 23 Jun 2006 18:17:28 +0200
-Message-ID: <4719da8471379c477e2bfafbda419bef@bugtrack.alsa-project.org>
+Date: Fri, 23 Jun 2006 18:22:36 +0200
+Message-ID: <145d5cbcd62adec9c326ec80ee17fb64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C35A823F
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E19E3240
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 18:17:28 +0200 (MEST)
+	Fri, 23 Jun 2006 18:22:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -43,7 +43,7 @@ Kernel Version:             Linux teevee 2.6.15-25-k7 #1 SMP PREEMPT Wed Jun 14
 11:43:20 UTC 2006 i686 GNU/Linux
 ======================================================================
 Date Submitted:             06-23-2006 15:39 CEST
-Last Modified:              06-23-2006 18:17 CEST
+Last Modified:              06-23-2006 18:22 CEST
 ======================================================================
 Summary:                    Creative Audigy Platinum mixer problems
 Description: 
@@ -66,6 +66,11 @@ me, the problem is just the mixer.
 You are using ld10k1. Your DSP program is cleared.
 Do not use ld01k1 or use init_audigy to initialize DSP program.
 
+----------------------------------------------------------------------
+ lzap - 06-23-06 18:22 
+----------------------------------------------------------------------
+I do not understand. What should I do? Do you need more information?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -74,6 +79,7 @@ Date Modified  Username       Field                    Change
 06-23-06 15:39 lzap           Kernel Version            => Linux teevee
 2.6.15-25-k7 #1 SMP PREEMPT Wed Jun 14 11:43:20 UTC 2006 i686 GNU/Linux
 06-23-06 18:17 pzad           Note Added: 0010457                          
+06-23-06 18:22 lzap           Note Added: 0010458                          
 ======================================================================
 
 
