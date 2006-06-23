@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002227]: Creative Audigy Platinum
 	mixer problems
-Date: Fri, 23 Jun 2006 18:31:13 +0200
-Message-ID: <07a037b129b7b4f0eac49af9e982d85c@bugtrack.alsa-project.org>
+Date: Fri, 23 Jun 2006 18:33:53 +0200
+Message-ID: <652725181bb3434baaa2fbcdbfb889e5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1603F240
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DB99D15D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jun 2006 18:31:13 +0200 (MEST)
+	Fri, 23 Jun 2006 18:33:53 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -43,7 +43,7 @@ Kernel Version:             Linux teevee 2.6.15-25-k7 #1 SMP PREEMPT Wed Jun 14
 11:43:20 UTC 2006 i686 GNU/Linux
 ======================================================================
 Date Submitted:             06-23-2006 15:39 CEST
-Last Modified:              06-23-2006 18:31 CEST
+Last Modified:              06-23-2006 18:33 CEST
 ======================================================================
 Summary:                    Creative Audigy Platinum mixer problems
 Description: 
@@ -61,24 +61,18 @@ me, the problem is just the mixer.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 06-23-06 18:29 
-----------------------------------------------------------------------
-There is application (ld01k1) which is used to modify DSP program (and
-mixer too) on Augidy (routing, effects,...). When this application
-(daemon) is started, it will clear DSP (and mixer) of audigy. You are
-needed to reinitialize it (running init_audigy script) or you should
-dissable it (it should be run from init.d).
-
-ld10k1 is part of alsa-tools and I think, it is not installed by default
-(it can installed by default, but not installed in init.d).
-
-----------------------------------------------------------------------
  lzap - 06-23-06 18:31 
 ----------------------------------------------------------------------
 I have run init_audigy and it fixes the problem, please close the
 bugreport.
 
 Should I use the ld01k1? Do I need it for normal use?
+
+----------------------------------------------------------------------
+ lzap - 06-23-06 18:33 
+----------------------------------------------------------------------
+I mean - when I uninstall it, will the mixer be ok? I do not need the DSP
+effects...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -91,6 +85,7 @@ Date Modified  Username       Field                    Change
 06-23-06 18:22 lzap           Note Added: 0010458                          
 06-23-06 18:29 pzad           Note Added: 0010460                          
 06-23-06 18:31 lzap           Note Added: 0010461                          
+06-23-06 18:33 lzap           Note Added: 0010462                          
 ======================================================================
 
 
