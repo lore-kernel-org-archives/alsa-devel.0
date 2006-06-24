@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002217]: Problems with ASUS A6Km
-Date: Sat, 24 Jun 2006 10:26:36 +0200
-Message-ID: <791539ce51959aeb3b5b5bac7d1f9506@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Sat, 24 Jun 2006 10:39:53 +0200
+Message-ID: <a8c29403b93b4eba9482a234a53ce8e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C700249
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0A26129
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 10:26:36 +0200 (MEST)
+	Sat, 24 Jun 2006 10:39:54 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,85 +26,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2217> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
 ======================================================================
-Reported By:                mafm
+Reported By:                Cimmo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2217
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             06-18-2006 05:06 CEST
-Last Modified:              06-24-2006 10:26 CEST
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              06-24-2006 10:39 CEST
 ======================================================================
-Summary:                    Problems with ASUS A6Km
+Summary:                    Alsa mixer lack of some functions
 Description: 
-I have the same problems described here:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898 , but I'm
-opening a new report because I can't find a way to add a comment there.
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
 
-I tried that asus-a6km-fix.diff but it doesn't work, in fact it doesn't
-appear to have any effect at all.
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
+
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
+
+thanx for attention
+Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- eNTi - 06-24-06 09:12 
+ Cimmo - 06-09-06 11:20 
 ----------------------------------------------------------------------
-i'm honestly not sure, what you want me to check. yes i've ONCE made my
-speakers work and the external amplifier setting had to be turned on.
+Yes, it works!
+One time I have done it and it worked, but all via editing file config.
 
-the patch you've posted, is already in 2.6.17, so there won't be any
-changes of course. just check the files for yourself, i wonder, that you
-didn't get any errors, from your patch.
-
-i've currently compiled another vanilla 2.6.17 kernel and still had no
-luck whatsoever with that stupid sound chip. i'm starting to think, that
-i'll never buy another asus notebook again, they really suck hard. broken
-sound, broken bios/acpi. sucky touchpad... next time i'll pay the 1000
-bucks extra for an ibm :(.
+What I want to say it will be great have all these stuffs via alsamixer
+and then guis like kmix will reflects changes.
 
 ----------------------------------------------------------------------
- Raymond - 06-24-06 10:26 
+ Cimmo - 06-24-06 10:39 
 ----------------------------------------------------------------------
-According to the notebook specification
-
-Integrated V.92 MDC Fax/Modem, with AC-Link Version. 2.1 Compliant
-AC 97 s/w MODEM 
-
-lsmod
-
-Does snd-intel8x0m loaded ?
-
-cat /proc/asound/cards
-
-cat /proc/asound/pcm
+Hey don't forget about these feature, will be better for alsa 1.0.12!
+The problem is Linux have to be user friendly, and for now putting on
+surround, speakers duplication, change high and basses is not user
+friendly at all!!!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-18-06 05:06 mafm           New Issue                                    
-06-18-06 16:51 ryswic         Issue Monitored: ryswic                      
-06-19-06 15:49 mafm           Issue Monitored: mafm                        
-06-19-06 15:50 mafm           Note Added: 0010315                          
-06-20-06 19:46 tiwai          Note Added: 0010345                          
-06-20-06 20:16 mafm           Note Added: 0010354                          
-06-21-06 21:37 eNTi           Note Added: 0010405                          
-06-21-06 22:24 rlrevell       Note Added: 0010406                          
-06-21-06 22:33 mafm           Note Added: 0010407                          
-06-21-06 22:48 eNTi           Note Added: 0010408                          
-06-22-06 00:10 mafm           Note Added: 0010410                          
-06-23-06 15:27 mafm           Note Added: 0010451                          
-06-23-06 15:55 mafm           File Added: asus-a6km-fix.diff                    
-06-23-06 16:23 mafm           Note Added: 0010454                          
-06-24-06 09:12 eNTi           Note Added: 0010467                          
-06-24-06 10:26 Raymond        Note Added: 0010470                          
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
 ======================================================================
 
 
