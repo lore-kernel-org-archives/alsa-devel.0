@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sat, 24 Jun 2006 18:33:22 +0200
-Message-ID: <ac95da610abaab854240c73e9b3c824b@bugtrack.alsa-project.org>
+Date: Sat, 24 Jun 2006 18:38:18 +0200
+Message-ID: <8d65cd407195d639aeff0332c7bebf85@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2244C18B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9B1A218B
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 18:33:22 +0200 (MEST)
+	Sat, 24 Jun 2006 18:38:18 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-24-2006 18:33 CEST
+Last Modified:              06-24-2006 18:38 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,18 +60,6 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-24-06 18:26 
-----------------------------------------------------------------------
-The alsa version is 1.0.10 like filed in this bug.
-I've Kubuntu 6.06 final with default installed alsa config, no
-modification!
-
-I've an usb webcam with audio mic registered as 'Camera' and the CA0106
-module for SBLive 24 bit.
-
-I've to report something else?
-
-----------------------------------------------------------------------
  rlrevell - 06-24-06 18:33 
 ----------------------------------------------------------------------
 Strange - I did not see any reference to a USB audio device in the device
@@ -79,6 +67,13 @@ list you sent me.
 
 Try "aplay -D surround40:1 file.wav" or "aplay -D surround51:1 file.wav"
 if the CA0106 card is device 1.
+
+----------------------------------------------------------------------
+ Cimmo - 06-24-06 18:38 
+----------------------------------------------------------------------
+Yes there are some problems, don't know.
+Tested channel: 0, 1, 2 and 3 no sound at all!
+See alsa-test file
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,6 +92,8 @@ Date Modified  Username       Field                    Change
 06-24-06 18:11 rlrevell       Note Added: 0010480                          
 06-24-06 18:26 Cimmo          Note Added: 0010482                          
 06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
 ======================================================================
 
 
