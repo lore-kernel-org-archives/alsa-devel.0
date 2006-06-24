@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002217]: Problems with ASUS A6Km
-Date: Sat, 24 Jun 2006 09:12:40 +0200
-Message-ID: <f9c3f22cf427e0109a1394ff34befe7d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002221]: Volume entirely too faint on
+	82801g ich7
+Date: Sat, 24 Jun 2006 09:12:43 +0200
+Message-ID: <2d2907134399adcaf65f0d7ce2f280ff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B982248
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB04C24D
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 09:12:41 +0200 (MEST)
+	Sat, 24 Jun 2006 09:12:43 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,121 +26,134 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2217> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2221> 
 ======================================================================
-Reported By:                mafm
-Assigned To:                
+Reported By:                mlfarrell
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2217
-Category:                   PCI - intel8x0
+Issue ID:                   2221
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Suse 10.1
+Kernel Version:             2.6.16.13-4-smp
 ======================================================================
-Date Submitted:             06-18-2006 05:06 CEST
+Date Submitted:             06-19-2006 02:19 CEST
 Last Modified:              06-24-2006 09:12 CEST
 ======================================================================
-Summary:                    Problems with ASUS A6Km
+Summary:                    Volume entirely too faint on 82801g ich7
 Description: 
-I have the same problems described here:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898 , but I'm
-opening a new report because I can't find a way to add a comment there.
+I've seen this bug online many times with a resolution of upgrading to alsa
+1.0.11, but I upgaded and am still having the issue.
 
-I tried that asus-a6km-fix.diff but it doesn't work, in fact it doesn't
-appear to have any effect at all.
+I'm using an hp pavilion dv8000 laptop with built-in altec lansing
+speakers.
+
+Windows reports the soundcard as conexant high definition audio, linux as
+82801g (ich7).  I've tried setting every model I know in the
+/etc/modprobe.d/sound file for the hda-intel driver and am still having a
+lack of useful volume sliders.  The key ones that I need are "pc speaker"
+to turn it down cause its way too loud and "external amplifier" to turn up
+the laptop's altec lansing speakers (sound volume is decent out of the
+headphone jack).
+
+Even with the volume all the way up (both master and pcm) I'm getting
+sound thats almost too faint to hear.  
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- mafm - 06-23-06 16:23 
+ nellson - 06-23-06 18:28 
 ----------------------------------------------------------------------
-I got it working with 1.0.11 and 1.0.12, so I'll repeat the steps to make
-it clear:
+I wrote teh folks at Linuxant Wednesday and they said it is possible that 
+they would write an asla driver as well.. in the future.
 
-0- These instructions work for me in ASUS A6KM-Q0012H model (note that
-slightly different configurations seem to lead to slightly different
-problems with ACPI, sound, things that work with some BIOS versions but
-not with other, etc).  In my case, the problem was that to get any kind of
-sound being emitted I had to connect the headphones and put Master and PCM
-volumes at > 70% values, and then I got to hear something, but with a lot
-of distorsion, making it unusable.  Most/all A6KM models seem to have this
-issue.  The output of lspci -v is:
----------------------------------------------------------------------------
-00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
-AC'97 Sound Controller (rev a0)
-        Subsystem: ASUSTeK Computer Inc. Unknown device 1103
-        Flags: bus master, medium devsel, latency 64, IRQ 22
-        I/O ports at e400 [size=256]
-        I/O ports at e000 [size=128]
-        Capabilities: [48] Power Management version 2
----------------------------------------------------------------------------
+I guess if the OSS license is BSD, perhaps I know a few clever folks on
+the Gentoo dev team that might look at it as well. 
 
-1- If you're using up to 2.6.17 vanilla kernels (as opposed to kernels
-including additional patches, most distributions do this, as well as
-snapshots in kernel.org site), you'll need the patch attached (grabbed
-from https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898 ).  Apply
-the patch with:
----------------------------------------------------------------------------
-# cd /usr/src/linux-VERSION/sound
-# patch -p1 < /PATH/asus-a6km-fix.diff
----------------------------------------------------------------------------
-Then configure and compile as usual.
+I'll try the headphone jack, but I suspect that it will be OK as it is
+neither the PC Speaker (man that thing is loud) or the Altec AMP.
 
-2- At this point I had it still working as before.  As opposed to comments
-in other bug reports, in my case I don't need to mess with echo commands
-to alter registers of the cards, nor altering surround configurations or
-anything like that (in fact, I couldn't get it working with any of those
-tricks).  Instead, what I had to do is to enable External Amplifier, in
-KDE mixer is in the Switches tab.  Note that the alsamixer interface is a
-bit confusing: it's a switch, so "MM" means muted, and when enabled shows
-"00" (when using alsamixer I thought that it was another regular slider,
-so since I could only get it to show MM or 00 I thought that it was
-another symptom of the driver not setting up the device properly).
-
-3- Please comment here whether this works for you or not, including
-meaningful information (in the case that it's not working, pleae include
-kernel versions and who distributes it, alsa version that the kernel use,
-exact model of the laptop, output of the device with lspci -v, etc), so
-hopefully ALSA guys can put the instructions in their site, maybe I make a
-guide with configuration instructions for this laptop, etc.
+Nick
 
 ----------------------------------------------------------------------
- eNTi - 06-24-06 09:12 
+ mlfarrell - 06-24-06 09:12 
 ----------------------------------------------------------------------
-i'm honestly not sure, what you want me to check. yes i've ONCE made my
-speakers work and the external amplifier setting had to be turned on.
+Major confusion here:
 
-the patch you've posted, is already in 2.6.17, so there won't be any
-changes of course. just check the files for yourself, i wonder, that you
-didn't get any errors, from your patch.
+I downloaded the linuxant installer "cnxinstall.run" file and ran it.  It
+detected my card, replaced my snd-hda-intel, snd-hda-code modules, and
+then they failed to load with massive errors like so:
 
-i've currently compiled another vanilla 2.6.17 kernel and still had no
-luck whatsoever with that stupid sound chip. i'm starting to think, that
-i'll never buy another asus notebook again, they really suck hard. broken
-sound, broken bios/acpi. sucky touchpad... next time i'll pay the 1000
-bucks extra for an ibm :(.
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_lib_ioctl
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
+symbol snd_pcm_lib_free_pages
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_lib_free_pages
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_hda_calc_stream_format
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
+symbol snd_pcm_set_ops
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_set_ops
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_hda_suspend
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_hda_codec_remove_notify_all
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
+symbol snd_pcm_suspend_all
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_suspend_all
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_hda_resume
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
+symbol snd_pcm_hw_constraint_integer
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_hw_constraint_integer
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_hda_build_controls
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
+symbol snd_pcm_period_elapsed
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_period_elapsed
+
+My kernel source IS set up right for compiling modules, thats how I
+installed my nvidia driver.  Secondly, the changelog for the driver says
+they merged with alsa 1.0.11 final (the alsa version I'm using) which
+leads me to believe the update would be futile (still no external
+amplifier control).
+
+I guess the best thing to do for me is to wait for the next alsa release
+which may be a long way off.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-18-06 05:06 mafm           New Issue                                    
-06-18-06 16:51 ryswic         Issue Monitored: ryswic                      
-06-19-06 15:49 mafm           Issue Monitored: mafm                        
-06-19-06 15:50 mafm           Note Added: 0010315                          
-06-20-06 19:46 tiwai          Note Added: 0010345                          
-06-20-06 20:16 mafm           Note Added: 0010354                          
-06-21-06 21:37 eNTi           Note Added: 0010405                          
-06-21-06 22:24 rlrevell       Note Added: 0010406                          
-06-21-06 22:33 mafm           Note Added: 0010407                          
-06-21-06 22:48 eNTi           Note Added: 0010408                          
-06-22-06 00:10 mafm           Note Added: 0010410                          
-06-23-06 15:27 mafm           Note Added: 0010451                          
-06-23-06 15:55 mafm           File Added: asus-a6km-fix.diff                    
-06-23-06 16:23 mafm           Note Added: 0010454                          
-06-24-06 09:12 eNTi           Note Added: 0010467                          
+06-19-06 02:19 mlfarrell      New Issue                                    
+06-19-06 02:19 mlfarrell      Distribution              => Suse 10.1       
+06-19-06 02:19 mlfarrell      Kernel Version            => 2.6.16.13-4-smp 
+06-19-06 21:59 mlfarrell      Issue Monitored: mlfarrell                    
+06-20-06 19:49 tiwai          Note Added: 0010347                          
+06-20-06 23:38 mlfarrell      Note Added: 0010358                          
+06-20-06 23:42 rlrevell       Note Added: 0010360                          
+06-21-06 00:46 mlfarrell      Note Added: 0010368                          
+06-21-06 00:58 rlrevell       Note Added: 0010371                          
+06-21-06 01:06 mlfarrell      Note Added: 0010372                          
+06-21-06 01:23 rlrevell       Note Added: 0010373                          
+06-22-06 05:01 mlfarrell      Note Added: 0010414                          
+06-22-06 05:38 rlrevell       Note Added: 0010416                          
+06-22-06 08:34 nellson        Note Added: 0010418                          
+06-22-06 09:00 nellson        Note Added: 0010419                          
+06-22-06 20:58 mlfarrell      Note Added: 0010428                          
+06-23-06 10:15 sockenschuss   Note Added: 0010446                          
+06-23-06 10:21 sockenschuss   Issue Monitored: sockenschuss                    
+06-23-06 18:28 nellson        Note Added: 0010459                          
+06-24-06 09:12 mlfarrell      Note Added: 0010468                          
 ======================================================================
 
 
