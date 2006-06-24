@@ -1,17 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002228]: error recovery when the no of
-	available src is not enough (FATAL: ResManager: resource type
-	1 exhaust)
-Date: Sat, 24 Jun 2006 05:37:59 +0200
-Message-ID: <6d7647f9a3140e67ca8e63584e0dc271@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002217]: Problems with ASUS A6Km
+Date: Sat, 24 Jun 2006 09:12:40 +0200
+Message-ID: <f9c3f22cf427e0109a1394ff34befe7d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C779A241
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 5B982248
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 05:37:59 +0200 (MEST)
+	Sat, 24 Jun 2006 09:12:41 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,78 +23,123 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2228> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2217> 
 ======================================================================
-Reported By:                Raymond
-Assigned To:                mjander
+Reported By:                mafm
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2228
-Category:                   PCI - au88x0
+Issue ID:                   2217
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             06-24-2006 05:37 CEST
-Last Modified:              06-24-2006 05:37 CEST
+Date Submitted:             06-18-2006 05:06 CEST
+Last Modified:              06-24-2006 09:12 CEST
 ======================================================================
-Summary:                    error recovery when the no of available src is not
-enough (FATAL: ResManager: resource type 1 exhaust)
+Summary:                    Problems with ASUS A6Km
 Description: 
-This is simulated by reducing the no of available SRC to 3.
+I have the same problems described here:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898 , but I'm
+opening a new report because I can't find a way to add a comment there.
 
-static int __devinit vortex_core_init(vortex_t * vortex)
-{
-+        vortex->fixed_res[VORTEX_RESOURCE_SRC] = 0x0000fff8;
-
-
-aplay out1lq.wav   
-Playing WAVE 'out1lq.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
-Channels 4
-aplay: set_params:962: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 64
-CHANNELS: 4
-RATE: 22050
-PERIOD_TIME: (23219 23220)
-PERIOD_SIZE: 512
-PERIOD_BYTES: 4096
-PERIODS: 16
-BUFFER_TIME: (371519 371520)
-BUFFER_SIZE: 8192
-BUFFER_BYTES: 65536
-TICK_TIME: 10000
-
-dmesg
-vortex: FATAL: ResManager: resource type 1 exhausted.
-
-aplay outls.wav
-Playing WAVE 'outls.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
-Stereo
-
-dmesg
-vortex_adb_delroutes: route not found! 0x2060
-vortex_adb_delroutes: route not found! 0x2161
-
-It seem that the driver need to check the no of available SRC is enough
-before the SRC are checked out one by one from ResManager, the driver seem
-unable to perform error recovery           
-
- 
+I tried that asus-a6km-fix.diff but it doesn't work, in fact it doesn't
+appear to have any effect at all.
 ======================================================================
+
+----------------------------------------------------------------------
+ mafm - 06-23-06 16:23 
+----------------------------------------------------------------------
+I got it working with 1.0.11 and 1.0.12, so I'll repeat the steps to make
+it clear:
+
+0- These instructions work for me in ASUS A6KM-Q0012H model (note that
+slightly different configurations seem to lead to slightly different
+problems with ACPI, sound, things that work with some BIOS versions but
+not with other, etc).  In my case, the problem was that to get any kind of
+sound being emitted I had to connect the headphones and put Master and PCM
+volumes at > 70% values, and then I got to hear something, but with a lot
+of distorsion, making it unusable.  Most/all A6KM models seem to have this
+issue.  The output of lspci -v is:
+---------------------------------------------------------------------------
+00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS]
+AC'97 Sound Controller (rev a0)
+        Subsystem: ASUSTeK Computer Inc. Unknown device 1103
+        Flags: bus master, medium devsel, latency 64, IRQ 22
+        I/O ports at e400 [size=256]
+        I/O ports at e000 [size=128]
+        Capabilities: [48] Power Management version 2
+---------------------------------------------------------------------------
+
+1- If you're using up to 2.6.17 vanilla kernels (as opposed to kernels
+including additional patches, most distributions do this, as well as
+snapshots in kernel.org site), you'll need the patch attached (grabbed
+from https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898 ).  Apply
+the patch with:
+---------------------------------------------------------------------------
+# cd /usr/src/linux-VERSION/sound
+# patch -p1 < /PATH/asus-a6km-fix.diff
+---------------------------------------------------------------------------
+Then configure and compile as usual.
+
+2- At this point I had it still working as before.  As opposed to comments
+in other bug reports, in my case I don't need to mess with echo commands
+to alter registers of the cards, nor altering surround configurations or
+anything like that (in fact, I couldn't get it working with any of those
+tricks).  Instead, what I had to do is to enable External Amplifier, in
+KDE mixer is in the Switches tab.  Note that the alsamixer interface is a
+bit confusing: it's a switch, so "MM" means muted, and when enabled shows
+"00" (when using alsamixer I thought that it was another regular slider,
+so since I could only get it to show MM or 00 I thought that it was
+another symptom of the driver not setting up the device properly).
+
+3- Please comment here whether this works for you or not, including
+meaningful information (in the case that it's not working, pleae include
+kernel versions and who distributes it, alsa version that the kernel use,
+exact model of the laptop, output of the device with lspci -v, etc), so
+hopefully ALSA guys can put the instructions in their site, maybe I make a
+guide with configuration instructions for this laptop, etc.
+
+----------------------------------------------------------------------
+ eNTi - 06-24-06 09:12 
+----------------------------------------------------------------------
+i'm honestly not sure, what you want me to check. yes i've ONCE made my
+speakers work and the external amplifier setting had to be turned on.
+
+the patch you've posted, is already in 2.6.17, so there won't be any
+changes of course. just check the files for yourself, i wonder, that you
+didn't get any errors, from your patch.
+
+i've currently compiled another vanilla 2.6.17 kernel and still had no
+luck whatsoever with that stupid sound chip. i'm starting to think, that
+i'll never buy another asus notebook again, they really suck hard. broken
+sound, broken bios/acpi. sucky touchpad... next time i'll pay the 1000
+bucks extra for an ibm :(.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-24-06 05:37 Raymond        New Issue                                    
+06-18-06 05:06 mafm           New Issue                                    
+06-18-06 16:51 ryswic         Issue Monitored: ryswic                      
+06-19-06 15:49 mafm           Issue Monitored: mafm                        
+06-19-06 15:50 mafm           Note Added: 0010315                          
+06-20-06 19:46 tiwai          Note Added: 0010345                          
+06-20-06 20:16 mafm           Note Added: 0010354                          
+06-21-06 21:37 eNTi           Note Added: 0010405                          
+06-21-06 22:24 rlrevell       Note Added: 0010406                          
+06-21-06 22:33 mafm           Note Added: 0010407                          
+06-21-06 22:48 eNTi           Note Added: 0010408                          
+06-22-06 00:10 mafm           Note Added: 0010410                          
+06-23-06 15:27 mafm           Note Added: 0010451                          
+06-23-06 15:55 mafm           File Added: asus-a6km-fix.diff                    
+06-23-06 16:23 mafm           Note Added: 0010454                          
+06-24-06 09:12 eNTi           Note Added: 0010467                          
 ======================================================================
 
 
