@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Sat, 24 Jun 2006 10:39:53 +0200
-Message-ID: <a8c29403b93b4eba9482a234a53ce8e9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001728]: Modification of volume
+	control for M-Audio Revolution 5.1
+Date: Sat, 24 Jun 2006 10:43:45 +0200
+Message-ID: <2e8655a0dc0d294e168d4c5abebf7208@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id B0A26129
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BC80C249
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 10:39:54 +0200 (MEST)
+	Sat, 24 Jun 2006 10:43:46 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,65 +26,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1728> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                cyan
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1728
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
+Distribution:               gentoo testing
+Kernel Version:             2.6.14-gentoo-r5
 ======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-24-2006 10:39 CEST
+Date Submitted:             01-09-2006 23:35 CET
+Last Modified:              06-24-2006 10:43 CEST
 ======================================================================
-Summary:                    Alsa mixer lack of some functions
+Summary:                    Modification of volume control for M-Audio
+Revolution 5.1
 Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
-
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
-
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
-
-thanx for attention
-Marco
+In Alsamixer (and KMix) is not possible to change volume of both chanels at
+once. Slides with names "DAC" and "DAC1" corresponds to left and right
+chanel. 
+I would like to make a suggestion to merge them together.
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-09-06 11:20 
+ tiwai - 06-16-06 18:50 
 ----------------------------------------------------------------------
-Yes, it works!
-One time I have done it and it worked, but all via editing file config.
+The new patch looks better.  Still something (minor) to be fixed:
 
-What I want to say it will be great have all these stuffs via alsamixer
-and then guis like kmix will reflects changes.
+- Use "LFE" instead of "Sub".
+- Add static to each stereo[] and channel_names[] array
+- Keep the codecs for ice1712 as is.  Changing this will break
+envy24control.
+  (If you'd like to change them, fix envy24control, too.)
+
+Then please give a proper changelog and a signed-off-by line for commit.
 
 ----------------------------------------------------------------------
- Cimmo - 06-24-06 10:39 
+ Raymond - 06-24-06 10:43 
 ----------------------------------------------------------------------
-Hey don't forget about these feature, will be better for alsa 1.0.12!
-The problem is Linux have to be user friendly, and for now putting on
-surround, speakers duplication, change high and basses is not user
-friendly at all!!!
+When you change the name of these controls to different name, is there any
+reason to assign index ?
+
++		ctl->id.index = mixer_ch + ak->idx_offset * 2;
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
+01-09-06 23:35 cyan           New Issue                                    
+01-09-06 23:35 cyan           Distribution              => gentoo testing  
+01-09-06 23:35 cyan           Kernel Version            => 2.6.14-gentoo-r5
+01-14-06 22:31 wollschaf      Note Added: 0007656                          
+01-25-06 00:07 wollschaf      Issue Monitored: wollschaf                    
+01-25-06 00:09 wollschaf      File Added: ak4xxx-adda-stereomixer.patch         
+          
+01-25-06 00:29 wollschaf      Note Added: 0007776                          
+01-27-06 15:20 tiwai          Note Added: 0007804                          
+02-02-06 15:15 alinja         Note Added: 0007877                          
+03-28-06 14:22 alinja         Issue Monitored: alinja                      
+06-15-06 19:41 alinja         File Added: ak4xx-volumes.patch                   
+
+06-15-06 19:47 alinja         Note Added: 0010242                          
+06-16-06 18:50 tiwai          Note Added: 0010256                          
+06-24-06 10:43 Raymond        Note Added: 0010472                          
 ======================================================================
 
 
