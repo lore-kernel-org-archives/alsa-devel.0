@@ -1,16 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002221]: Volume entirely too faint on
-	82801g ich7
-Date: Sat, 24 Jun 2006 09:12:43 +0200
-Message-ID: <2d2907134399adcaf65f0d7ce2f280ff@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
+Date: Sat, 24 Jun 2006 09:43:38 +0200
+Message-ID: <bc2c78b8c9a5783175aa8b5aaf8a9173@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id EB04C24D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2CA69249
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 09:12:43 +0200 (MEST)
+	Sat, 24 Jun 2006 09:43:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,134 +25,91 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2221> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
 ======================================================================
-Reported By:                mlfarrell
-Assigned To:                tiwai
+Reported By:                El Santo
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2221
-Category:                   PCI - hda-intel
+Issue ID:                   2219
+Category:                   GENERIC - mpu401
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Suse 10.1
-Kernel Version:             2.6.16.13-4-smp
+Status:                     new
+Distribution:               Debian etch (2006-06-18)
+Kernel Version:             2.6.15-1-686
 ======================================================================
-Date Submitted:             06-19-2006 02:19 CEST
-Last Modified:              06-24-2006 09:12 CEST
+Date Submitted:             06-18-2006 17:41 CEST
+Last Modified:              06-24-2006 09:43 CEST
 ======================================================================
-Summary:                    Volume entirely too faint on 82801g ich7
+Summary:                    snd-mpu401 don't load
 Description: 
-I've seen this bug online many times with a resolution of upgrading to alsa
-1.0.11, but I upgaded and am still having the issue.
+I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
+driver. It loads all necesary modules, includind snd-mpu401-uart, but no
+snd-mpu401
+The audio part of the driver works perfectly, but the midi port doesn't
+work.
 
-I'm using an hp pavilion dv8000 laptop with built-in altec lansing
-speakers.
+In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
+not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
+(setting the port accordingly to BIOS) it doesnt work. I don't know the
+mpu401 irq setting but i tryed them all. None of them worked. The driver
+says "device not found".
 
-Windows reports the soundcard as conexant high definition audio, linux as
-82801g (ich7).  I've tried setting every model I know in the
-/etc/modprobe.d/sound file for the hda-intel driver and am still having a
-lack of useful volume sliders.  The key ones that I need are "pc speaker"
-to turn it down cause its way too loud and "external amplifier" to turn up
-the laptop's altec lansing speakers (sound volume is decent out of the
-headphone jack).
+Under windows xp the port works perfectly, so the hardware is ok. Anyway
+under windows xp, i use a "system inspector" to monitor ioports and irq
+usage, and i didnt see any irq assigned for mpu401 port, and the port
+(0x330) wasn't occupied neither.
 
-Even with the volume all the way up (both master and pcm) I'm getting
-sound thats almost too faint to hear.  
-
-
+any idea?
 ======================================================================
 
 ----------------------------------------------------------------------
- nellson - 06-23-06 18:28 
+ Raymond - 06-22-06 14:30 
 ----------------------------------------------------------------------
-I wrote teh folks at Linuxant Wednesday and they said it is possible that 
-they would write an asla driver as well.. in the future.
+May be via82c686b cannot use PCI BAR2 as mpu port when it BAR2 is > 0x1000
 
-I guess if the OSS license is BSD, perhaps I know a few clever folks on
-the Gentoo dev team that might look at it as well. 
 
-I'll try the headphone jack, but I suspect that it will be OK as it is
-neither the PC Speaker (man that thing is loud) or the Altec AMP.
-
-Nick
+e400-e403 : 0000:00:07.5
+  e400-e403 : VIA686A
 
 ----------------------------------------------------------------------
- mlfarrell - 06-24-06 09:12 
+ Raymond - 06-24-06 09:43 
 ----------------------------------------------------------------------
-Major confusion here:
+Refer to
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg08016.html
 
-I downloaded the linuxant installer "cnxinstall.run" file and ran it.  It
-detected my card, replaced my snd-hda-intel, snd-hda-code modules, and
-then they failed to load with massive errors like so:
-
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
-snd_pcm_lib_ioctl
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
-symbol snd_pcm_lib_free_pages
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
-snd_pcm_lib_free_pages
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
-snd_hda_calc_stream_format
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
-symbol snd_pcm_set_ops
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
-snd_pcm_set_ops
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
-snd_hda_suspend
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
-snd_hda_codec_remove_notify_all
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
-symbol snd_pcm_suspend_all
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
-snd_pcm_suspend_all
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
-snd_hda_resume
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
-symbol snd_pcm_hw_constraint_integer
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
-snd_pcm_hw_constraint_integer
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
-snd_hda_build_controls
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
-symbol snd_pcm_period_elapsed
-Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
-snd_pcm_period_elapsed
-
-My kernel source IS set up right for compiling modules, thats how I
-installed my nvidia driver.  Secondly, the changelog for the driver says
-they merged with alsa 1.0.11 final (the alsa version I'm using) which
-leads me to believe the update would be futile (still no external
-amplifier control).
-
-I guess the best thing to do for me is to wait for the next alsa release
-which may be a long way off.
+Are the BIOS setting (onboard sound) of your MX36LE similar to KT3-AV ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-19-06 02:19 mlfarrell      New Issue                                    
-06-19-06 02:19 mlfarrell      Distribution              => Suse 10.1       
-06-19-06 02:19 mlfarrell      Kernel Version            => 2.6.16.13-4-smp 
-06-19-06 21:59 mlfarrell      Issue Monitored: mlfarrell                    
-06-20-06 19:49 tiwai          Note Added: 0010347                          
-06-20-06 23:38 mlfarrell      Note Added: 0010358                          
-06-20-06 23:42 rlrevell       Note Added: 0010360                          
-06-21-06 00:46 mlfarrell      Note Added: 0010368                          
-06-21-06 00:58 rlrevell       Note Added: 0010371                          
-06-21-06 01:06 mlfarrell      Note Added: 0010372                          
-06-21-06 01:23 rlrevell       Note Added: 0010373                          
-06-22-06 05:01 mlfarrell      Note Added: 0010414                          
-06-22-06 05:38 rlrevell       Note Added: 0010416                          
-06-22-06 08:34 nellson        Note Added: 0010418                          
-06-22-06 09:00 nellson        Note Added: 0010419                          
-06-22-06 20:58 mlfarrell      Note Added: 0010428                          
-06-23-06 10:15 sockenschuss   Note Added: 0010446                          
-06-23-06 10:21 sockenschuss   Issue Monitored: sockenschuss                    
-06-23-06 18:28 nellson        Note Added: 0010459                          
-06-24-06 09:12 mlfarrell      Note Added: 0010468                          
+06-18-06 17:41 El Santo       New Issue                                    
+06-18-06 17:41 El Santo       Distribution              => Debian etch
+(2006-06-18)
+06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
+06-19-06 03:45 Raymond        Note Added: 0010305                          
+06-20-06 19:49 tiwai          Note Added: 0010349                          
+06-20-06 23:30 El Santo       Note Added: 0010357                          
+06-20-06 23:39 rlrevell       Note Added: 0010359                          
+06-20-06 23:54 El Santo       Note Added: 0010362                          
+06-21-06 00:00 rlrevell       Note Added: 0010363                          
+06-21-06 00:04 rlrevell       Note Added: 0010364                          
+06-21-06 00:12 El Santo       Note Added: 0010365                          
+06-21-06 00:18 rlrevell       Note Added: 0010366                          
+06-21-06 00:33 El Santo       File Added: dmesg.log                        
+06-21-06 00:36 El Santo       Note Added: 0010367                          
+06-21-06 00:52 rlrevell       Note Added: 0010369                          
+06-21-06 00:56 rlrevell       Note Added: 0010370                          
+06-21-06 02:02 rlrevell       Note Added: 0010374                          
+06-21-06 04:51 Raymond        Note Added: 0010379                          
+06-21-06 18:00 El Santo       Note Added: 0010400                          
+06-22-06 03:19 Raymond        Note Added: 0010412                          
+06-22-06 03:27 Raymond        Note Edited: 0010412                         
+06-22-06 03:29 rlrevell       Note Added: 0010413                          
+06-22-06 14:30 Raymond        Note Added: 0010422                          
+06-24-06 09:43 Raymond        Note Added: 0010469                          
 ======================================================================
 
 
