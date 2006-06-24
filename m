@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
-Date: Sat, 24 Jun 2006 09:43:38 +0200
-Message-ID: <bc2c78b8c9a5783175aa8b5aaf8a9173@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002217]: Problems with ASUS A6Km
+Date: Sat, 24 Jun 2006 10:26:36 +0200
+Message-ID: <791539ce51959aeb3b5b5bac7d1f9506@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2CA69249
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6C700249
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 09:43:39 +0200 (MEST)
+	Sat, 24 Jun 2006 10:26:36 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,91 +25,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2217> 
 ======================================================================
-Reported By:                El Santo
+Reported By:                mafm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2219
-Category:                   GENERIC - mpu401
+Issue ID:                   2217
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian etch (2006-06-18)
-Kernel Version:             2.6.15-1-686
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-18-2006 17:41 CEST
-Last Modified:              06-24-2006 09:43 CEST
+Date Submitted:             06-18-2006 05:06 CEST
+Last Modified:              06-24-2006 10:26 CEST
 ======================================================================
-Summary:                    snd-mpu401 don't load
+Summary:                    Problems with ASUS A6Km
 Description: 
-I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
-driver. It loads all necesary modules, includind snd-mpu401-uart, but no
-snd-mpu401
-The audio part of the driver works perfectly, but the midi port doesn't
-work.
+I have the same problems described here:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898 , but I'm
+opening a new report because I can't find a way to add a comment there.
 
-In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
-not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
-(setting the port accordingly to BIOS) it doesnt work. I don't know the
-mpu401 irq setting but i tryed them all. None of them worked. The driver
-says "device not found".
-
-Under windows xp the port works perfectly, so the hardware is ok. Anyway
-under windows xp, i use a "system inspector" to monitor ioports and irq
-usage, and i didnt see any irq assigned for mpu401 port, and the port
-(0x330) wasn't occupied neither.
-
-any idea?
+I tried that asus-a6km-fix.diff but it doesn't work, in fact it doesn't
+appear to have any effect at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-22-06 14:30 
+ eNTi - 06-24-06 09:12 
 ----------------------------------------------------------------------
-May be via82c686b cannot use PCI BAR2 as mpu port when it BAR2 is > 0x1000
+i'm honestly not sure, what you want me to check. yes i've ONCE made my
+speakers work and the external amplifier setting had to be turned on.
 
+the patch you've posted, is already in 2.6.17, so there won't be any
+changes of course. just check the files for yourself, i wonder, that you
+didn't get any errors, from your patch.
 
-e400-e403 : 0000:00:07.5
-  e400-e403 : VIA686A
+i've currently compiled another vanilla 2.6.17 kernel and still had no
+luck whatsoever with that stupid sound chip. i'm starting to think, that
+i'll never buy another asus notebook again, they really suck hard. broken
+sound, broken bios/acpi. sucky touchpad... next time i'll pay the 1000
+bucks extra for an ibm :(.
 
 ----------------------------------------------------------------------
- Raymond - 06-24-06 09:43 
+ Raymond - 06-24-06 10:26 
 ----------------------------------------------------------------------
-Refer to
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg08016.html
+According to the notebook specification
 
-Are the BIOS setting (onboard sound) of your MX36LE similar to KT3-AV ?
+Integrated V.92 MDC Fax/Modem, with AC-Link Version. 2.1 Compliant
+AC 97 s/w MODEM 
+
+lsmod
+
+Does snd-intel8x0m loaded ?
+
+cat /proc/asound/cards
+
+cat /proc/asound/pcm
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-18-06 17:41 El Santo       New Issue                                    
-06-18-06 17:41 El Santo       Distribution              => Debian etch
-(2006-06-18)
-06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
-06-19-06 03:45 Raymond        Note Added: 0010305                          
-06-20-06 19:49 tiwai          Note Added: 0010349                          
-06-20-06 23:30 El Santo       Note Added: 0010357                          
-06-20-06 23:39 rlrevell       Note Added: 0010359                          
-06-20-06 23:54 El Santo       Note Added: 0010362                          
-06-21-06 00:00 rlrevell       Note Added: 0010363                          
-06-21-06 00:04 rlrevell       Note Added: 0010364                          
-06-21-06 00:12 El Santo       Note Added: 0010365                          
-06-21-06 00:18 rlrevell       Note Added: 0010366                          
-06-21-06 00:33 El Santo       File Added: dmesg.log                        
-06-21-06 00:36 El Santo       Note Added: 0010367                          
-06-21-06 00:52 rlrevell       Note Added: 0010369                          
-06-21-06 00:56 rlrevell       Note Added: 0010370                          
-06-21-06 02:02 rlrevell       Note Added: 0010374                          
-06-21-06 04:51 Raymond        Note Added: 0010379                          
-06-21-06 18:00 El Santo       Note Added: 0010400                          
-06-22-06 03:19 Raymond        Note Added: 0010412                          
-06-22-06 03:27 Raymond        Note Edited: 0010412                         
-06-22-06 03:29 rlrevell       Note Added: 0010413                          
-06-22-06 14:30 Raymond        Note Added: 0010422                          
-06-24-06 09:43 Raymond        Note Added: 0010469                          
+06-18-06 05:06 mafm           New Issue                                    
+06-18-06 16:51 ryswic         Issue Monitored: ryswic                      
+06-19-06 15:49 mafm           Issue Monitored: mafm                        
+06-19-06 15:50 mafm           Note Added: 0010315                          
+06-20-06 19:46 tiwai          Note Added: 0010345                          
+06-20-06 20:16 mafm           Note Added: 0010354                          
+06-21-06 21:37 eNTi           Note Added: 0010405                          
+06-21-06 22:24 rlrevell       Note Added: 0010406                          
+06-21-06 22:33 mafm           Note Added: 0010407                          
+06-21-06 22:48 eNTi           Note Added: 0010408                          
+06-22-06 00:10 mafm           Note Added: 0010410                          
+06-23-06 15:27 mafm           Note Added: 0010451                          
+06-23-06 15:55 mafm           File Added: asus-a6km-fix.diff                    
+06-23-06 16:23 mafm           Note Added: 0010454                          
+06-24-06 09:12 eNTi           Note Added: 0010467                          
+06-24-06 10:26 Raymond        Note Added: 0010470                          
 ======================================================================
 
 
