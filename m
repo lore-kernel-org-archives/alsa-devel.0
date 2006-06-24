@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Sat, 24 Jun 2006 19:18:00 +0200
-Message-ID: <8b4af2bec4217672a965ea879325b83a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002221]: Volume entirely too faint on
+	82801g ich7
+Date: Sat, 24 Jun 2006 21:35:39 +0200
+Message-ID: <0eee052ee7cff62877638f6f21231c7d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85B44234
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF56413E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 19:18:00 +0200 (MEST)
+	Sat, 24 Jun 2006 21:35:39 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,77 +26,96 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2221> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                
+Reported By:                mlfarrell
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   2221
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Suse 10.1
+Kernel Version:             2.6.16.13-4-smp
 ======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-24-2006 19:17 CEST
+Date Submitted:             06-19-2006 02:19 CEST
+Last Modified:              06-24-2006 21:35 CEST
 ======================================================================
-Summary:                    Alsa mixer lack of some functions
+Summary:                    Volume entirely too faint on 82801g ich7
 Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
+I've seen this bug online many times with a resolution of upgrading to alsa
+1.0.11, but I upgaded and am still having the issue.
 
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
+I'm using an hp pavilion dv8000 laptop with built-in altec lansing
+speakers.
 
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
+Windows reports the soundcard as conexant high definition audio, linux as
+82801g (ich7).  I've tried setting every model I know in the
+/etc/modprobe.d/sound file for the hda-intel driver and am still having a
+lack of useful volume sliders.  The key ones that I need are "pc speaker"
+to turn it down cause its way too loud and "external amplifier" to turn up
+the laptop's altec lansing speakers (sound volume is decent out of the
+headphone jack).
 
-thanx for attention
-Marco
+Even with the volume all the way up (both master and pcm) I'm getting
+sound thats almost too faint to hear.  
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-24-06 19:05 
+ rlrevell - 06-24-06 16:59 
 ----------------------------------------------------------------------
-yes it works, but sound is only for front speakers not for rear.
-tried plug:surround40:1, 41, 50 and 51
+Those errors indicate that you tried to install new ALSA modules without
+removing the old ones first.  Try rebooting.
+
+Where is the source to Conexant's driver?
 
 ----------------------------------------------------------------------
- rlrevell - 06-24-06 19:17 
+ sockenschuss - 06-24-06 21:35 
 ----------------------------------------------------------------------
-Make sure you have the rear channels unmuted and turned up.
+The OSS-driver source can be found at
 
-Try upgrading to ALSA 1.0.11.
+http://www.linuxant.com/drivers/riptide/downloads.php
 
-There's no easy solution - your card is basically Win-hardware - unlike a
-real SBLive, it relies on the driver to do everything.
+(Gerneric packages with source)
+
+The ALSA-driver source for the *modem* is under
+
+http://www.linuxant.com/drivers/hsf/full/downloads.php
+
+I already tried the "cnxinstall.run" but this installs a driver for the
+softmodem (which I don't need as long as I have ADSL ;-) )  but this does
+not enable audio-support.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
-06-24-06 17:04 rlrevell       Note Added: 0010476                          
-06-24-06 17:11 Cimmo          Note Added: 0010477                          
-06-24-06 17:20 rlrevell       Note Added: 0010478                          
-06-24-06 18:01 Cimmo          File Added: alsa                             
-06-24-06 18:02 Cimmo          Note Added: 0010479                          
-06-24-06 18:11 rlrevell       Note Added: 0010480                          
-06-24-06 18:26 Cimmo          Note Added: 0010482                          
-06-24-06 18:33 rlrevell       Note Added: 0010483                          
-06-24-06 18:37 Cimmo          File Added: alsa-test                        
-06-24-06 18:38 Cimmo          Note Added: 0010484                          
-06-24-06 18:55 rlrevell       Note Added: 0010485                          
-06-24-06 19:05 Cimmo          Note Added: 0010486                          
-06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-19-06 02:19 mlfarrell      New Issue                                    
+06-19-06 02:19 mlfarrell      Distribution              => Suse 10.1       
+06-19-06 02:19 mlfarrell      Kernel Version            => 2.6.16.13-4-smp 
+06-19-06 21:59 mlfarrell      Issue Monitored: mlfarrell                    
+06-20-06 19:49 tiwai          Note Added: 0010347                          
+06-20-06 23:38 mlfarrell      Note Added: 0010358                          
+06-20-06 23:42 rlrevell       Note Added: 0010360                          
+06-21-06 00:46 mlfarrell      Note Added: 0010368                          
+06-21-06 00:58 rlrevell       Note Added: 0010371                          
+06-21-06 01:06 mlfarrell      Note Added: 0010372                          
+06-21-06 01:23 rlrevell       Note Added: 0010373                          
+06-22-06 05:01 mlfarrell      Note Added: 0010414                          
+06-22-06 05:38 rlrevell       Note Added: 0010416                          
+06-22-06 08:34 nellson        Note Added: 0010418                          
+06-22-06 09:00 nellson        Note Added: 0010419                          
+06-22-06 20:58 mlfarrell      Note Added: 0010428                          
+06-23-06 10:15 sockenschuss   Note Added: 0010446                          
+06-23-06 10:21 sockenschuss   Issue Monitored: sockenschuss                    
+06-23-06 18:28 nellson        Note Added: 0010459                          
+06-24-06 09:12 mlfarrell      Note Added: 0010468                          
+06-24-06 16:59 rlrevell       Note Added: 0010475                          
+06-24-06 21:35 sockenschuss   Note Added: 0010488                          
 ======================================================================
 
 
