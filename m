@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sat, 24 Jun 2006 18:55:43 +0200
-Message-ID: <4b13ca3cf0027e4ecae59f57d9f2c4a9@bugtrack.alsa-project.org>
+Date: Sat, 24 Jun 2006 19:05:29 +0200
+Message-ID: <0656b82d45ac44fe71f135505f75288a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id AA35718B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18782234
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 18:55:43 +0200 (MEST)
+	Sat, 24 Jun 2006 19:05:29 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-24-2006 18:55 CEST
+Last Modified:              06-24-2006 19:05 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,13 +60,6 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-24-06 18:38 
-----------------------------------------------------------------------
-Yes there are some problems, don't know.
-Tested channel: 0, 1, 2 and 3 no sound at all!
-See alsa-test file
-
-----------------------------------------------------------------------
  rlrevell - 06-24-06 18:55 
 ----------------------------------------------------------------------
 "aplay -D surround40:1 Clock/Battito.wav"
@@ -74,6 +67,12 @@ See alsa-test file
 Device 1 is the correct soundcard.  Try:
 
 "aplay -D plug:surround40:1 Clock/Battito.wav"
+
+----------------------------------------------------------------------
+ Cimmo - 06-24-06 19:05 
+----------------------------------------------------------------------
+yes it works, but sound is only for front speakers not for rear.
+tried plug:surround40:1, 41, 50 and 51
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,6 +94,7 @@ Date Modified  Username       Field                    Change
 06-24-06 18:37 Cimmo          File Added: alsa-test                        
 06-24-06 18:38 Cimmo          Note Added: 0010484                          
 06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
 ======================================================================
 
 
