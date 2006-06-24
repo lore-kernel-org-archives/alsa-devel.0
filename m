@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002221]: Volume entirely too faint on
 	82801g ich7
-Date: Sat, 24 Jun 2006 22:28:24 +0200
-Message-ID: <17fed8ae68867cc3e8a249030297f321@bugtrack.alsa-project.org>
+Date: Sat, 24 Jun 2006 23:26:52 +0200
+Message-ID: <e5051e06572e0fc54871adb63b1baf76@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2AA9E232
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 57CCF238
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 22:28:24 +0200 (MEST)
+	Sat, 24 Jun 2006 23:26:52 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Suse 10.1
 Kernel Version:             2.6.16.13-4-smp
 ======================================================================
 Date Submitted:             06-19-2006 02:19 CEST
-Last Modified:              06-24-2006 22:28 CEST
+Last Modified:              06-24-2006 23:26 CEST
 ======================================================================
 Summary:                    Volume entirely too faint on 82801g ich7
 Description: 
@@ -67,23 +67,6 @@ sound thats almost too faint to hear.
 ======================================================================
 
 ----------------------------------------------------------------------
- sockenschuss - 06-24-06 21:35 
-----------------------------------------------------------------------
-The OSS-driver source can be found at
-
-http://www.linuxant.com/drivers/riptide/downloads.php
-
-(Gerneric packages with source)
-
-The ALSA-driver source for the *modem* is under
-
-http://www.linuxant.com/drivers/hsf/full/downloads.php
-
-I already tried the "cnxinstall.run" but this installs a driver for the
-softmodem (which I don't need as long as I have ADSL ;-) )  but this does
-not enable audio-support.
-
-----------------------------------------------------------------------
  mlfarrell - 06-24-06 22:28 
 ----------------------------------------------------------------------
 On mine, it detects the softmodem (no riptide), but apparently the modem
@@ -96,6 +79,14 @@ load even after completely removing all alsa modules
 lsmod|grep snd giving nothing after that step.
 
 Do I need to physically remove my alsa 1.0.11 modules out of the way?
+
+----------------------------------------------------------------------
+ rlrevell - 06-24-06 23:26 
+----------------------------------------------------------------------
+No idea, the bug is in Conexant's installer.
+
+Make sure you have kernel source installed that matches the running
+kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -123,6 +114,7 @@ Date Modified  Username       Field                    Change
 06-24-06 16:59 rlrevell       Note Added: 0010475                          
 06-24-06 21:35 sockenschuss   Note Added: 0010488                          
 06-24-06 22:28 mlfarrell      Note Added: 0010490                          
+06-24-06 23:26 rlrevell       Note Added: 0010491                          
 ======================================================================
 
 
