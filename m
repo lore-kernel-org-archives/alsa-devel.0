@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sat, 24 Jun 2006 17:20:21 +0200
-Message-ID: <5288c0aea40217b7cfa58c0cd966bd44@bugtrack.alsa-project.org>
+Date: Sat, 24 Jun 2006 18:02:14 +0200
+Message-ID: <d0e556cb66d9edd49e11c61964706bb3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2703324C
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C963524E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 17:20:22 +0200 (MEST)
+	Sat, 24 Jun 2006 18:02:14 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-24-2006 17:20 CEST
+Last Modified:              06-24-2006 18:02 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,16 +60,6 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-24-06 17:11 
-----------------------------------------------------------------------
-amarok 1.3.9 under Kubuntu with my sound blaster live 24 bit doesn't work
-with any  surround_xy
-
-The other 90% of applications doesn't have surround options at all.
-In my opinion it's stupid implement for example speakers replication 100
-times for 100 apps when one time in alsa-mixed can do the job for all!
-
-----------------------------------------------------------------------
  rlrevell - 06-24-06 17:20 
 ----------------------------------------------------------------------
 You don't have to implement it in every app.  All they need to do is output
@@ -79,6 +69,11 @@ On Windows every app that uses sound has a menu to select the sound device
 to use.  This is exactly the same.
 
 Does "aplay -D surround40 file.wav" work?  "aplay -D surround51 file.wav"?
+
+----------------------------------------------------------------------
+ Cimmo - 06-24-06 18:02 
+----------------------------------------------------------------------
+Give me errors, see file attached
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -92,6 +87,8 @@ Date Modified  Username       Field                    Change
 06-24-06 17:04 rlrevell       Note Added: 0010476                          
 06-24-06 17:11 Cimmo          Note Added: 0010477                          
 06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
 ======================================================================
 
 
