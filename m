@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sat, 24 Jun 2006 18:26:12 +0200
-Message-ID: <66e8e6bd22ad83ea4467df419fdfd596@bugtrack.alsa-project.org>
+Date: Sat, 24 Jun 2006 18:33:22 +0200
+Message-ID: <ac95da610abaab854240c73e9b3c824b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1D0F418B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2244C18B
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 18:26:12 +0200 (MEST)
+	Sat, 24 Jun 2006 18:33:22 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-24-2006 18:26 CEST
+Last Modified:              06-24-2006 18:33 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,15 +60,6 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-24-06 18:11 
-----------------------------------------------------------------------
-Um.... did you modify your ALSA config?  Are you using a USB audio device? 
-It looks like it's trying to use the device definitions for USB
-audio?!?!?!?
-
-How did you install ALSA and what version are you using?
-
-----------------------------------------------------------------------
  Cimmo - 06-24-06 18:26 
 ----------------------------------------------------------------------
 The alsa version is 1.0.10 like filed in this bug.
@@ -79,6 +70,15 @@ I've an usb webcam with audio mic registered as 'Camera' and the CA0106
 module for SBLive 24 bit.
 
 I've to report something else?
+
+----------------------------------------------------------------------
+ rlrevell - 06-24-06 18:33 
+----------------------------------------------------------------------
+Strange - I did not see any reference to a USB audio device in the device
+list you sent me.
+
+Try "aplay -D surround40:1 file.wav" or "aplay -D surround51:1 file.wav"
+if the CA0106 card is device 1.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +96,7 @@ Date Modified  Username       Field                    Change
 06-24-06 18:02 Cimmo          Note Added: 0010479                          
 06-24-06 18:11 rlrevell       Note Added: 0010480                          
 06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
 ======================================================================
 
 
