@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Sat, 24 Jun 2006 18:11:11 +0200
-Message-ID: <cdac1c0770994dd9b21f4712fdc0d454@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002223]: there no sound in pc speakers
+	and in headphone sound disapear after few minutes
+Date: Sat, 24 Jun 2006 18:17:47 +0200
+Message-ID: <c93a515821f3bcda654d62f0441facdd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 20B3F18B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 6671918B
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 18:11:11 +0200 (MEST)
+	Sat, 24 Jun 2006 18:17:47 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,68 +26,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2223> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                
+Reported By:                gleboo
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   2223
+Category:                   PCI - hda-intel
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               RedHat
+Kernel Version:             2.6.16-1.2133_FC5smp
 ======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-24-2006 18:11 CEST
+Date Submitted:             06-22-2006 13:35 CEST
+Last Modified:              06-24-2006 18:17 CEST
 ======================================================================
-Summary:                    Alsa mixer lack of some functions
+Summary:                    there no sound in pc speakers and in headphone sound
+disapear after few minutes
 Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
+sound work only few minutes after clean restart and on headphone only.
+aslamixer all up
+removed and installed againg all drivers from your site
+updated kernel after clean FC5 installation and once (to 2.6.16-2111) it
+work perfectely - after another installation and updating to more newer
+kernel (on 2.6.16-2022 or current) its never worked on .
 
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
-
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
-
-thanx for attention
-Marco
+hardware - Lenovo 3000 N100 1.66Ghz Dual Core,1gb memory
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-24-06 18:02 
+ gleboo - 06-24-06 18:17 
 ----------------------------------------------------------------------
-Give me errors, see file attached
-
-----------------------------------------------------------------------
- rlrevell - 06-24-06 18:11 
-----------------------------------------------------------------------
-Um.... did you modify your ALSA config?  Are you using a USB audio device? 
-It looks like it's trying to use the device definitions for USB
-audio?!?!?!?
-
-How did you install ALSA and what version are you using?
+after updating kernel to 2.6.17-1.2139_FC5smp
+situation the same - no sound
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
-06-24-06 17:04 rlrevell       Note Added: 0010476                          
-06-24-06 17:11 Cimmo          Note Added: 0010477                          
-06-24-06 17:20 rlrevell       Note Added: 0010478                          
-06-24-06 18:01 Cimmo          File Added: alsa                             
-06-24-06 18:02 Cimmo          Note Added: 0010479                          
-06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-22-06 13:35 gleboo         New Issue                                    
+06-22-06 13:35 gleboo         Distribution              => RedHat          
+06-22-06 13:35 gleboo         Kernel Version            => 2.6.16-1.2133_FC5smp
+06-24-06 18:17 gleboo         Note Added: 0010481                          
 ======================================================================
 
 
