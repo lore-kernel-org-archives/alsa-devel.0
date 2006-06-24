@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002221]: Volume entirely too faint on
-	82801g ich7
-Date: Sun, 25 Jun 2006 00:22:56 +0200
-Message-ID: <7bf86a815e34450bb9bc0a395aee311b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002223]: there no sound in pc speakers
+	and in headphone sound disapear after few minutes
+Date: Sun, 25 Jun 2006 00:26:18 +0200
+Message-ID: <2d3a6f83f6aaf6e020446112166adefc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CD4A149
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BF2B149
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 00:22:56 +0200 (MEST)
+	Sun, 25 Jun 2006 00:26:18 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,92 +26,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2221> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2223> 
 ======================================================================
-Reported By:                mlfarrell
+Reported By:                gleboo
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2221
+Issue ID:                   2223
 Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Suse 10.1
-Kernel Version:             2.6.16.13-4-smp
+Distribution:               RedHat
+Kernel Version:             2.6.16-1.2133_FC5smp
 ======================================================================
-Date Submitted:             06-19-2006 02:19 CEST
-Last Modified:              06-25-2006 00:22 CEST
+Date Submitted:             06-22-2006 13:35 CEST
+Last Modified:              06-25-2006 00:26 CEST
 ======================================================================
-Summary:                    Volume entirely too faint on 82801g ich7
+Summary:                    there no sound in pc speakers and in headphone sound
+disapear after few minutes
 Description: 
-I've seen this bug online many times with a resolution of upgrading to alsa
-1.0.11, but I upgaded and am still having the issue.
+sound work only few minutes after clean restart and on headphone only.
+aslamixer all up
+removed and installed againg all drivers from your site
+updated kernel after clean FC5 installation and once (to 2.6.16-2111) it
+work perfectely - after another installation and updating to more newer
+kernel (on 2.6.16-2022 or current) its never worked on .
 
-I'm using an hp pavilion dv8000 laptop with built-in altec lansing
-speakers.
-
-Windows reports the soundcard as conexant high definition audio, linux as
-82801g (ich7).  I've tried setting every model I know in the
-/etc/modprobe.d/sound file for the hda-intel driver and am still having a
-lack of useful volume sliders.  The key ones that I need are "pc speaker"
-to turn it down cause its way too loud and "external amplifier" to turn up
-the laptop's altec lansing speakers (sound volume is decent out of the
-headphone jack).
-
-Even with the volume all the way up (both master and pcm) I'm getting
-sound thats almost too faint to hear.  
-
-
+hardware - Lenovo 3000 N100 1.66Ghz Dual Core,1gb memory
 ======================================================================
 
 ----------------------------------------------------------------------
- mlfarrell - 06-25-06 00:08 
+ gleboo - 06-24-06 18:17 
 ----------------------------------------------------------------------
-My kernel source is set up right, I'm positive.  I just installed the new
-1.0.12 rc1 that was posted today, still didn't fix my problem.  My sound
-works, I just can't get a high enough volume out of my internal speakers. 
-I also notice that the "pcm" volume slider seems to do nothing when I
-change it up and down.
+after updating kernel to 2.6.17-1.2139_FC5smp
+situation the same - no sound
 
 ----------------------------------------------------------------------
- rlrevell - 06-25-06 00:22 
+ gleboo - 06-25-06 00:26 
 ----------------------------------------------------------------------
-It seems that the Linuxant driver does not touch the audio part of the code
-at all.  It just adds modem support.
+the problem solved by adding to /etc/modprobe.conf follow:
+options snd-hda-intel index=0 single_cmd=1 model=laptop-eapd
 
-I think you are out of luck.
+thanks to http://www.linuxquestions.org
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-19-06 02:19 mlfarrell      New Issue                                    
-06-19-06 02:19 mlfarrell      Distribution              => Suse 10.1       
-06-19-06 02:19 mlfarrell      Kernel Version            => 2.6.16.13-4-smp 
-06-19-06 21:59 mlfarrell      Issue Monitored: mlfarrell                    
-06-20-06 19:49 tiwai          Note Added: 0010347                          
-06-20-06 23:38 mlfarrell      Note Added: 0010358                          
-06-20-06 23:42 rlrevell       Note Added: 0010360                          
-06-21-06 00:46 mlfarrell      Note Added: 0010368                          
-06-21-06 00:58 rlrevell       Note Added: 0010371                          
-06-21-06 01:06 mlfarrell      Note Added: 0010372                          
-06-21-06 01:23 rlrevell       Note Added: 0010373                          
-06-22-06 05:01 mlfarrell      Note Added: 0010414                          
-06-22-06 05:38 rlrevell       Note Added: 0010416                          
-06-22-06 08:34 nellson        Note Added: 0010418                          
-06-22-06 09:00 nellson        Note Added: 0010419                          
-06-22-06 20:58 mlfarrell      Note Added: 0010428                          
-06-23-06 10:15 sockenschuss   Note Added: 0010446                          
-06-23-06 10:21 sockenschuss   Issue Monitored: sockenschuss                    
-06-23-06 18:28 nellson        Note Added: 0010459                          
-06-24-06 09:12 mlfarrell      Note Added: 0010468                          
-06-24-06 16:59 rlrevell       Note Added: 0010475                          
-06-24-06 21:35 sockenschuss   Note Added: 0010488                          
-06-24-06 22:28 mlfarrell      Note Added: 0010490                          
-06-24-06 23:26 rlrevell       Note Added: 0010491                          
-06-25-06 00:08 mlfarrell      Note Added: 0010492                          
-06-25-06 00:22 rlrevell       Note Added: 0010493                          
+06-22-06 13:35 gleboo         New Issue                                    
+06-22-06 13:35 gleboo         Distribution              => RedHat          
+06-22-06 13:35 gleboo         Kernel Version            => 2.6.16-1.2133_FC5smp
+06-24-06 18:17 gleboo         Note Added: 0010481                          
+06-25-06 00:26 gleboo         Note Added: 0010494                          
 ======================================================================
 
 
