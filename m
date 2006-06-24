@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002223]: there no sound in pc speakers
 	and in headphone sound disapear after few minutes
-Date: Sun, 25 Jun 2006 00:26:18 +0200
-Message-ID: <2d3a6f83f6aaf6e020446112166adefc@bugtrack.alsa-project.org>
+Date: Sun, 25 Jun 2006 00:33:20 +0200
+Message-ID: <432e762f079fd13edb91d76d98fec0be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 8BF2B149
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 1B7F7159
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 00:26:18 +0200 (MEST)
+	Sun, 25 Jun 2006 00:33:21 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               RedHat
 Kernel Version:             2.6.16-1.2133_FC5smp
 ======================================================================
 Date Submitted:             06-22-2006 13:35 CEST
-Last Modified:              06-25-2006 00:26 CEST
+Last Modified:              06-25-2006 00:33 CEST
 ======================================================================
 Summary:                    there no sound in pc speakers and in headphone sound
 disapear after few minutes
@@ -58,18 +58,19 @@ hardware - Lenovo 3000 N100 1.66Ghz Dual Core,1gb memory
 ======================================================================
 
 ----------------------------------------------------------------------
- gleboo - 06-24-06 18:17 
-----------------------------------------------------------------------
-after updating kernel to 2.6.17-1.2139_FC5smp
-situation the same - no sound
-
-----------------------------------------------------------------------
  gleboo - 06-25-06 00:26 
 ----------------------------------------------------------------------
 the problem solved by adding to /etc/modprobe.conf follow:
 options snd-hda-intel index=0 single_cmd=1 model=laptop-eapd
 
 thanks to http://www.linuxquestions.org
+
+----------------------------------------------------------------------
+ rlrevell - 06-25-06 00:33 
+----------------------------------------------------------------------
+I think this bug might also be fixed in ALSA 1.0.12-rc1.
+
+You should not need single_cmd=1 - model=laptop_eapd should be sufficient
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -79,6 +80,7 @@ Date Modified  Username       Field                    Change
 06-22-06 13:35 gleboo         Kernel Version            => 2.6.16-1.2133_FC5smp
 06-24-06 18:17 gleboo         Note Added: 0010481                          
 06-25-06 00:26 gleboo         Note Added: 0010494                          
+06-25-06 00:33 rlrevell       Note Added: 0010495                          
 ======================================================================
 
 
