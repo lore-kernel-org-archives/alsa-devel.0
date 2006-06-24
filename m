@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0002221]: Volume entirely too faint on
 	82801g ich7
-Date: Sun, 25 Jun 2006 00:08:50 +0200
-Message-ID: <e764f040883cf7277793808227c39375@bugtrack.alsa-project.org>
+Date: Sun, 25 Jun 2006 00:22:56 +0200
+Message-ID: <7bf86a815e34450bb9bc0a395aee311b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 27C92238
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 7CD4A149
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 00:08:50 +0200 (MEST)
+	Sun, 25 Jun 2006 00:22:56 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Suse 10.1
 Kernel Version:             2.6.16.13-4-smp
 ======================================================================
 Date Submitted:             06-19-2006 02:19 CEST
-Last Modified:              06-25-2006 00:08 CEST
+Last Modified:              06-25-2006 00:22 CEST
 ======================================================================
 Summary:                    Volume entirely too faint on 82801g ich7
 Description: 
@@ -67,14 +67,6 @@ sound thats almost too faint to hear.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-24-06 23:26 
-----------------------------------------------------------------------
-No idea, the bug is in Conexant's installer.
-
-Make sure you have kernel source installed that matches the running
-kernel.
-
-----------------------------------------------------------------------
  mlfarrell - 06-25-06 00:08 
 ----------------------------------------------------------------------
 My kernel source is set up right, I'm positive.  I just installed the new
@@ -82,6 +74,14 @@ My kernel source is set up right, I'm positive.  I just installed the new
 works, I just can't get a high enough volume out of my internal speakers. 
 I also notice that the "pcm" volume slider seems to do nothing when I
 change it up and down.
+
+----------------------------------------------------------------------
+ rlrevell - 06-25-06 00:22 
+----------------------------------------------------------------------
+It seems that the Linuxant driver does not touch the audio part of the code
+at all.  It just adds modem support.
+
+I think you are out of luck.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -111,6 +111,7 @@ Date Modified  Username       Field                    Change
 06-24-06 22:28 mlfarrell      Note Added: 0010490                          
 06-24-06 23:26 rlrevell       Note Added: 0010491                          
 06-25-06 00:08 mlfarrell      Note Added: 0010492                          
+06-25-06 00:22 rlrevell       Note Added: 0010493                          
 ======================================================================
 
 
