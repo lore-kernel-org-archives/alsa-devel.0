@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sat, 24 Jun 2006 19:05:29 +0200
-Message-ID: <0656b82d45ac44fe71f135505f75288a@bugtrack.alsa-project.org>
+Date: Sat, 24 Jun 2006 19:18:00 +0200
+Message-ID: <8b4af2bec4217672a965ea879325b83a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 18782234
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 85B44234
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 19:05:29 +0200 (MEST)
+	Sat, 24 Jun 2006 19:18:00 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-24-2006 19:05 CEST
+Last Modified:              06-24-2006 19:17 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,19 +60,20 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-24-06 18:55 
-----------------------------------------------------------------------
-"aplay -D surround40:1 Clock/Battito.wav"
-
-Device 1 is the correct soundcard.  Try:
-
-"aplay -D plug:surround40:1 Clock/Battito.wav"
-
-----------------------------------------------------------------------
  Cimmo - 06-24-06 19:05 
 ----------------------------------------------------------------------
 yes it works, but sound is only for front speakers not for rear.
 tried plug:surround40:1, 41, 50 and 51
+
+----------------------------------------------------------------------
+ rlrevell - 06-24-06 19:17 
+----------------------------------------------------------------------
+Make sure you have the rear channels unmuted and turned up.
+
+Try upgrading to ALSA 1.0.11.
+
+There's no easy solution - your card is basically Win-hardware - unlike a
+real SBLive, it relies on the driver to do everything.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,6 +96,7 @@ Date Modified  Username       Field                    Change
 06-24-06 18:38 Cimmo          Note Added: 0010484                          
 06-24-06 18:55 rlrevell       Note Added: 0010485                          
 06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
 ======================================================================
 
 
