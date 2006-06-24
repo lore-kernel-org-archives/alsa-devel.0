@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002225]: which driver to download
-Date: Sat, 24 Jun 2006 15:05:26 +0200
-Message-ID: <988bf40bd95b0a76af691991be1c91ff@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002221]: Volume entirely too faint on
+	82801g ich7
+Date: Sat, 24 Jun 2006 16:59:23 +0200
+Message-ID: <5f10a2a4051d2965df95ef5148da948c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CA5C5142
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id CAB3B24C
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jun 2006 15:05:26 +0200 (MEST)
+	Sat, 24 Jun 2006 16:59:23 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,93 +26,129 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2225> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2221> 
 ======================================================================
-Reported By:                adeel
-Assigned To:                jcdutton
+Reported By:                mlfarrell
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2225
-Category:                   PCI - ca0106
+Issue ID:                   2221
+Category:                   PCI - hda-intel
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               redhad
-Kernel Version:             2.6.11-1.1369_FC
+Distribution:               Suse 10.1
+Kernel Version:             2.6.16.13-4-smp
 ======================================================================
-Date Submitted:             06-22-2006 17:54 CEST
-Last Modified:              06-24-2006 15:05 CEST
+Date Submitted:             06-19-2006 02:19 CEST
+Last Modified:              06-24-2006 16:59 CEST
 ======================================================================
-Summary:                    which driver to download
+Summary:                    Volume entirely too faint on 82801g ich7
 Description: 
-Hi guys,
+I've seen this bug online many times with a resolution of upgrading to alsa
+1.0.11, but I upgaded and am still having the issue.
 
-I had creative sound blaster live! 24 bit. To download a driver for it I
-go alsa. On its main ftp there is a driver folder. With lots of driver
-which driver should I download? 
+I'm using an hp pavilion dv8000 laptop with built-in altec lansing
+speakers.
 
-Although I had downloaded blindly some drivers,
-alsa-driver-1.0.11rc5.tar.bz2
-alsa-driver-0.4.0.tar.gz
-alsa-driver-1.0.11.tar.bz2
- Tools,
-alsa-tools-0.9.8.tar.bz2
-alsa-tools-1.0.11.tar.bz2
- Patches:
-alsa-2002-02-11-1-linux-2.5.4.patch.gz
+Windows reports the soundcard as conexant high definition audio, linux as
+82801g (ich7).  I've tried setting every model I know in the
+/etc/modprobe.d/sound file for the hda-intel driver and am still having a
+lack of useful volume sliders.  The key ones that I need are "pc speaker"
+to turn it down cause its way too loud and "external amplifier" to turn up
+the laptop's altec lansing speakers (sound volume is decent out of the
+headphone jack).
 
-But which one should I had downloaded?
+Even with the volume all the way up (both master and pcm) I'm getting
+sound thats almost too faint to hear.  
 
-Please guide me.
-My email address is neoresearcher@gmail.com . 
-It would be very helpful if some tell me which 
-driver, lib and utils should I download. 
-
-i posted this issue in the wrong category previously. Sorry for that.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Raymond - 06-23-06 01:41 
+ mlfarrell - 06-24-06 09:12 
 ----------------------------------------------------------------------
-Do alsa developer forget to put alsa-xxx-1.0.12-rc1.tar.bz2 in
-http://www.alsa-project.org/
-? 
+Major confusion here:
 
-I am still using FC1 and cannot use hgcompile and need configure script in
-.tar.bz2  https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1641#7504
+I downloaded the linuxant installer "cnxinstall.run" file and ran it.  It
+detected my card, replaced my snd-hda-intel, snd-hda-code modules, and
+then they failed to load with massive errors like so:
 
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_lib_ioctl
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
+symbol snd_pcm_lib_free_pages
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_lib_free_pages
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_hda_calc_stream_format
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
+symbol snd_pcm_set_ops
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_set_ops
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_hda_suspend
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_hda_codec_remove_notify_all
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
+symbol snd_pcm_suspend_all
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_suspend_all
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_hda_resume
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
+symbol snd_pcm_hw_constraint_integer
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_hw_constraint_integer
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_hda_build_controls
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: disagrees about version of
+symbol snd_pcm_period_elapsed
+Jun 23 21:03:07 slickbox kernel: snd_hda_intel: Unknown symbol
+snd_pcm_period_elapsed
 
+My kernel source IS set up right for compiling modules, thats how I
+installed my nvidia driver.  Secondly, the changelog for the driver says
+they merged with alsa 1.0.11 final (the alsa version I'm using) which
+leads me to believe the update would be futile (still no external
+amplifier control).
+
+I guess the best thing to do for me is to wait for the next alsa release
+which may be a long way off.
 
 ----------------------------------------------------------------------
- adeel - 06-24-06 15:05 
+ rlrevell - 06-24-06 16:59 
 ----------------------------------------------------------------------
-I had blindly installed the 
-Driver "alsa-driver-1.0.11rc5.tar.bz2 driver",
-Lib "alsa-lib-1.0.11.tar.bz2 "
-util "alsa-utils-1.0.11.tar.bz2"
+Those errors indicate that you tried to install new ALSA modules without
+removing the old ones first.  Try rebooting.
 
-It all worked fine. On the positive note I had atleast sound on my system.
-
-but while I had not installed the lib and the util I can call the
-alsamixer and can changed the volume etc. 
-now when I put alsamixer on command prompt the console hang. What the
-hell??
-
-That for the information although. Guess I had to upgrade the driver.
+Where is the source to Conexant's driver?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-22-06 17:54 adeel          New Issue                                    
-06-22-06 17:54 adeel          Distribution              => redhad          
-06-22-06 17:54 adeel          Kernel Version            => 2.6.11-1.1369_FC
-06-22-06 18:26 rlrevell       Note Added: 0010427                          
-06-23-06 01:37 Raymond        Note Added: 0010431                          
-06-23-06 01:39 Raymond        Note Edited: 0010431                         
-06-23-06 01:41 Raymond        Note Edited: 0010431                         
-06-24-06 15:05 adeel          Note Added: 0010474                          
+06-19-06 02:19 mlfarrell      New Issue                                    
+06-19-06 02:19 mlfarrell      Distribution              => Suse 10.1       
+06-19-06 02:19 mlfarrell      Kernel Version            => 2.6.16.13-4-smp 
+06-19-06 21:59 mlfarrell      Issue Monitored: mlfarrell                    
+06-20-06 19:49 tiwai          Note Added: 0010347                          
+06-20-06 23:38 mlfarrell      Note Added: 0010358                          
+06-20-06 23:42 rlrevell       Note Added: 0010360                          
+06-21-06 00:46 mlfarrell      Note Added: 0010368                          
+06-21-06 00:58 rlrevell       Note Added: 0010371                          
+06-21-06 01:06 mlfarrell      Note Added: 0010372                          
+06-21-06 01:23 rlrevell       Note Added: 0010373                          
+06-22-06 05:01 mlfarrell      Note Added: 0010414                          
+06-22-06 05:38 rlrevell       Note Added: 0010416                          
+06-22-06 08:34 nellson        Note Added: 0010418                          
+06-22-06 09:00 nellson        Note Added: 0010419                          
+06-22-06 20:58 mlfarrell      Note Added: 0010428                          
+06-23-06 10:15 sockenschuss   Note Added: 0010446                          
+06-23-06 10:21 sockenschuss   Issue Monitored: sockenschuss                    
+06-23-06 18:28 nellson        Note Added: 0010459                          
+06-24-06 09:12 mlfarrell      Note Added: 0010468                          
+06-24-06 16:59 rlrevell       Note Added: 0010475                          
 ======================================================================
 
 
