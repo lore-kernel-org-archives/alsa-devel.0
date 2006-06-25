@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit,
-	no sound from line-in
-Date: Sun, 25 Jun 2006 17:37:48 +0200
-Message-ID: <acdabd4a5a53c6436ce710844413cf7f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
+	2.6.11 kernel
+Date: Sun, 25 Jun 2006 18:13:43 +0200
+Message-ID: <1aa08d606a873e2d81449008156635c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A9B821D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2862321D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 17:37:49 +0200 (MEST)
+	Sun, 25 Jun 2006 18:13:44 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,89 +26,139 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                Cimmo
-Assigned To:                jcdutton
+Reported By:                yafrank
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1331
-Category:                   PCI - ca0106
+Issue ID:                   1023
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   block
 Priority:                   normal
 Status:                     feedback
-Distribution:               Kubuntu 6.06
-Kernel Version:             2.6.15-25
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             08-13-2005 01:27 CEST
-Last Modified:              06-25-2006 17:37 CEST
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              06-25-2006 18:13 CEST
 ======================================================================
-Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
-I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
-integrated.
-(Un)fortunatelly this motherboard provide two different jacks for Mic and
-Line-In instead of one single jack like the pci version of the sb live 24
-bit.
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-With this card I cannot hear any sound that come from line-in.
-For Example I have a tv card, its output audio go into line-in: result is
-I cannot hear nothing from the tv, I can only see channels without audio.
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
 
-The "Capture feedback into playback" in the mixer change the mic's
-volume.
-There is nothing that change line-in's volume.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-25-06 17:34 
+ Raymond - 06-25-06 08:18 
 ----------------------------------------------------------------------
-Compiled alsa 1.0.11 final:
-line-in doesn't work but now also mic stop to work, with 1.0.10 it
-worked!
+Please add printk statements to trace read/write of ac97 codec as described
+in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132#10150 
 
-I can say this is a regression.
+and post the output of dmesg when the driver is loaded
 
 ----------------------------------------------------------------------
- Cimmo - 06-25-06 17:37 
+ bobcat98 - 06-25-06 18:13 
 ----------------------------------------------------------------------
-Compiled and installed:
-alsa-driver
-alsa-lib
-alsa-utils
-
-Need something else?
+Sorry--that's over my head.  I'd be glad to help, but I would need
+very detailed instructions from you.  I'm mainly a curious observer
+eager to get sound working.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-05 01:27 Cimmo          New Issue                                    
-08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
-08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
-08-13-05 01:41 jcdutton       Note Added: 0005798                          
-08-13-05 01:42 jcdutton       Status                   assigned => feedback
-08-13-05 18:30 Cimmo          Note Added: 0005807                          
-08-31-05 15:14 Cimmo          Note Added: 0005989                          
-08-31-05 18:59 rlrevell       Note Added: 0005991                          
-09-10-05 10:31 jcdutton       Note Added: 0006107                          
-10-19-05 19:13 Cimmo          Note Added: 0006496                          
-11-07-05 00:02 jcdutton       Note Added: 0006610                          
-11-07-05 11:07 Cimmo          Note Added: 0006612                          
-11-11-05 19:33 Cimmo          Note Added: 0006678                          
-12-13-05 13:16 jcdutton       Note Added: 0007007                          
-12-13-05 13:34 Cimmo          Note Added: 0007015                          
-04-09-06 21:40 jcdutton       Status                   feedback => assigned
-04-09-06 21:42 jcdutton       Status                   assigned => closed  
-04-09-06 21:42 jcdutton       Note Added: 0009185                          
-06-25-06 17:34 Cimmo          Distribution             Fedora Core 4 => Kubuntu
-6.06
-06-25-06 17:34 Cimmo          Kernel Version           2.6.12-1.1398-x86_64 =>
-2.6.15-25
-06-25-06 17:34 Cimmo          Status                   closed => feedback  
-06-25-06 17:34 Cimmo          Resolution               open => reopened    
-06-25-06 17:34 Cimmo          Note Added: 0010515                          
-06-25-06 17:37 Cimmo          Note Added: 0010516                          
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
+04-12-05 21:11 mmadore        Note Added: 0004463                          
+04-12-05 21:12 mmadore        File Added: asound.state.new                    
+04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
+06-17-05 09:55 yafrank        Note Added: 0005065                          
+06-17-05 11:45 yafrank        Note Added: 0005067                          
+06-17-05 14:44 tiwai          Note Added: 0005073                          
+06-18-05 04:26 yafrank        Note Added: 0005082                          
+06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
+06-18-05 05:19 yafrank        Note Added: 0005083                          
+06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
+
+06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
+ens1371
+06-20-05 11:00 perex          Note Added: 0005095                          
+06-20-05 11:01 perex          Status                   new => assigned     
+06-20-05 11:01 perex          Assigned To               => perex           
+06-23-05 16:48 yafrank        Note Added: 0005191                          
+07-08-05 10:24 perex          Note Added: 0005405                          
+07-08-05 10:25 perex          Note Edited: 0005405                         
+07-11-05 13:45 yafrank        Note Added: 0005444                          
+07-11-05 16:47 yafrank        Note Added: 0005449                          
+07-11-05 22:52 gwennou        Note Added: 0005451                          
+09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
+09-01-05 10:51 yafrank        Note Added: 0005995                          
+09-01-05 18:15 tiwai          Note Added: 0005997                          
+09-04-05 02:09 bobcat98       Note Added: 0006034                          
+09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
+10-25-05 13:55 rufusplant     Note Added: 0006539                          
+10-25-05 15:12 tiwai          Note Added: 0006542                          
+11-14-05 10:01 perex          Status                   assigned => feedback
+11-15-05 16:21 yafrank        Note Added: 0006730                          
+11-28-05 05:18 rufusplant     Note Added: 0006853                          
+12-11-05 06:43 yafrank        Note Added: 0006975                          
+02-02-06 12:58 pearma         Note Added: 0007876                          
+02-02-06 17:38 yafrank        Note Deleted: 0006975                        
+02-04-06 10:43 pearma         Note Added: 0007915                          
+02-04-06 19:18 rlrevell       Status                   feedback => resolved
+02-04-06 19:18 rlrevell       Resolution               open => fixed       
+02-04-06 20:57 yafrank        Status                   resolved => feedback
+02-04-06 20:57 yafrank        Resolution               fixed => reopened   
+02-04-06 20:57 yafrank        Note Added: 0007925                          
+02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
+06-06-06 09:07 Raymond        Note Added: 0010072                          
+06-09-06 06:51 Raymond        Note Added: 0010132                          
+06-14-06 15:01 Raymond        Note Deleted: 0010132                        
+06-14-06 15:13 Raymond        Note Deleted: 0010072                        
+06-24-06 04:14 Raymond        Note Added: 0010465                          
+06-24-06 21:51 bobcat98       Note Added: 0010489                          
+06-25-06 02:04 Raymond        Note Added: 0010497                          
+06-25-06 07:44 bobcat98       Note Added: 0010503                          
+06-25-06 08:18 Raymond        Note Added: 0010504                          
+06-25-06 18:13 bobcat98       Note Added: 0010517                          
 ======================================================================
 
 
