@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
-	functions
-Date: Sun, 25 Jun 2006 04:32:47 +0200
-Message-ID: <7fc1ceed1d3d5321a22a0f7da15939bb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0002229]: No stereo: sright channel is
+	dead
+Date: Sun, 25 Jun 2006 05:26:24 +0200
+Message-ID: <f7679201032e8b8e16add8c0e143466c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E0FA213B
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id C6D2821D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 04:32:47 +0200 (MEST)
+	Sun, 25 Jun 2006 05:26:24 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,82 +26,55 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2229> 
 ======================================================================
-Reported By:                Cimmo
+Reported By:                rshura
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   2188
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   2229
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.16 from Debian unstable
 ======================================================================
-Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-25-2006 04:32 CEST
+Date Submitted:             06-25-2006 03:55 CEST
+Last Modified:              06-25-2006 05:26 CEST
 ======================================================================
-Summary:                    Alsa mixer lack of some functions
+Summary:                    No stereo: sright channel is dead
 Description: 
-Is it possible to add to the alsa-mixer the possibility to change these
-things:
+Everything seems to work perfectly, except the right channel is dead. I
+checked speakers on another machine and everything is fine. This is the
+integrated sound on a new mobo and it's unlikely (although not impossible)
+that the right channel is physically broken.
 
-- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
-possibility to duplicate front sound to the rear speakers.
-- modify high and basses
+Is there any way to tell whether it is a driver problem or a broken mobo?
+It is on warranty, so I could exchange it if that's the case.
 
-best things is changes are immediatelly available without relogging.
-These feature are missing to linux community that have always to trouble
-with configuration files.
-
-thanx for attention
-Marco
+I am not a kernel hacker, but I would be glad to provide more info, just
+tell me what to do. Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 06-24-06 19:17 
+ rshura - 06-25-06 05:26 
 ----------------------------------------------------------------------
-Make sure you have the rear channels unmuted and turned up.
+Tried disabling ACPI in BIOS, and same thing: sound works except the right
+channel.
 
-Try upgrading to ALSA 1.0.11.
-
-There's no easy solution - your card is basically Win-hardware - unlike a
-real SBLive, it relies on the driver to do everything.
-
-----------------------------------------------------------------------
- Raymond - 06-25-06 04:32 
-----------------------------------------------------------------------
-It's better to put an alsa driver with playback device as card 0 instead of
-a webcam with only capture device unless your webcam application cannot
-select card 1 for capturing
-
-It allow those OSS applications (e.g. flash browser-plugin) able to use
-/dev/dsp through ALSA OSS enumeration
+Also tried with dxs_support=5 and it works. The right channel is dead
+though.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-07-06 16:56 Cimmo          New Issue                                    
-06-08-06 02:52 Raymond        Note Added: 0010104                          
-06-08-06 11:22 Cimmo          Note Added: 0010111                          
-06-09-06 07:08 Raymond        Note Added: 0010134                          
-06-09-06 11:20 Cimmo          Note Added: 0010139                          
-06-24-06 10:39 Cimmo          Note Added: 0010471                          
-06-24-06 17:04 rlrevell       Note Added: 0010476                          
-06-24-06 17:11 Cimmo          Note Added: 0010477                          
-06-24-06 17:20 rlrevell       Note Added: 0010478                          
-06-24-06 18:01 Cimmo          File Added: alsa                             
-06-24-06 18:02 Cimmo          Note Added: 0010479                          
-06-24-06 18:11 rlrevell       Note Added: 0010480                          
-06-24-06 18:26 Cimmo          Note Added: 0010482                          
-06-24-06 18:33 rlrevell       Note Added: 0010483                          
-06-24-06 18:37 Cimmo          File Added: alsa-test                        
-06-24-06 18:38 Cimmo          Note Added: 0010484                          
-06-24-06 18:55 rlrevell       Note Added: 0010485                          
-06-24-06 19:05 Cimmo          Note Added: 0010486                          
-06-24-06 19:17 rlrevell       Note Added: 0010487                          
-06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 03:55 rshura         New Issue                                    
+06-25-06 03:55 rshura         Distribution              => Debian unstable 
+06-25-06 03:55 rshura         Kernel Version            => 2.6.16 from Debian
+unstable
+06-25-06 05:26 rshura         Note Added: 0010499                          
 ======================================================================
 
 
