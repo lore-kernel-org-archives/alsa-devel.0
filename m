@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002232]: Compilation fails of
-	alsa-driver
-Date: Sun, 25 Jun 2006 17:36:26 +0200
-Message-ID: <0d01d1b29900300800dc1ed41a130dce@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001331]: MSI K8N's SB Live 24 bit,
+	no sound from line-in
+Date: Sun, 25 Jun 2006 17:37:48 +0200
+Message-ID: <acdabd4a5a53c6436ce710844413cf7f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2297721D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2A9B821D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 17:36:27 +0200 (MEST)
+	Sun, 25 Jun 2006 17:37:49 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -24,89 +24,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2232> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1331> 
 ======================================================================
-Reported By:                bNedjar
-Assigned To:                perex
+Reported By:                Cimmo
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   2232
-Category:                   0_compilation problem_!!!
+Issue ID:                   1331
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu
-Kernel Version:             2.6.15-25-686
+Status:                     feedback
+Distribution:               Kubuntu 6.06
+Kernel Version:             2.6.15-25
 ======================================================================
-Date Submitted:             06-25-2006 17:36 CEST
-Last Modified:              06-25-2006 17:36 CEST
+Date Submitted:             08-13-2005 01:27 CEST
+Last Modified:              06-25-2006 17:37 CEST
 ======================================================================
-Summary:                    Compilation fails of alsa-driver
+Summary:                    MSI K8N's SB Live 24 bit, no sound from line-in
 Description: 
-I would like to compile alsa-driver 1.0.11 ... I hope this can take into
-account my sound chipset (intel ICH7 / Realtek ALC882).
+I have a MSI K8N Platinum motherboard that has a SBLive! 24 bit
+integrated.
+(Un)fortunatelly this motherboard provide two different jacks for Mic and
+Line-In instead of one single jack like the pci version of the sb live 24
+bit.
 
-I followed the description in alsa projet site .. and also here :
-https://help.ubuntu.com/community/HdaIntelSoundHowto
+With this card I cannot hear any sound that come from line-in.
+For Example I have a tv card, its output audio go into line-in: result is
+I cannot hear nothing from the tv, I can only see channels without audio.
 
-But always the same problem ... after ./configure, the make compilation
-fails ... here is what I get : 
-
-In file included from
-/home/nedjar/tempo/alsa-driver-1.0.11/acore/memalloc.inc:1
-3,
-                 from
-/home/nedjar/tempo/alsa-driver-1.0.11/acore/memalloc.c:1:
-/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h:697: error:
-redefinition
- of 'jiffies_to_msecs'
-include/linux/jiffies.h:256: error: previous definition of
-'jiffies_to_msecs' wa
-s here
-/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h:716: error:
-redefinition
- of 'msecs_to_jiffies'
-include/linux/jiffies.h:278: error: previous definition of
-'msecs_to_jiffies' wa
-s here
-In file included from
-/home/nedjar/tempo/alsa-driver-1.0.11/acore/memalloc.inc:1
-3,
-                 from
-/home/nedjar/tempo/alsa-driver-1.0.11/acore/memalloc.c:1:
-/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h: In function
-'snd_pci_or
-ig_save_state':
-/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h:1048: error: too
-many ar
-guments to function 'pci_save_state'
-/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h: In function
-'snd_pci_or
-ig_restore_state':
-/home/nedjar/tempo/alsa-driver-1.0.11/include/adriver.h:1052: error: too
-many ar
-guments to function 'pci_restore_state'
-make[3]: *** [/home/nedjar/tempo/alsa-driver-1.0.11/acore/memalloc.o]
-Error 1
-make[2]: *** [/home/nedjar/tempo/alsa-driver-1.0.11/acore] Error 2
-make[1]: *** [_module_/home/nedjar/tempo/alsa-driver-1.0.11] Error 2
-make: *** [compile] Error 2
-
-
-
+The "Capture feedback into playback" in the mixer change the mic's
+volume.
+There is nothing that change line-in's volume.
 ======================================================================
+
+----------------------------------------------------------------------
+ Cimmo - 06-25-06 17:34 
+----------------------------------------------------------------------
+Compiled alsa 1.0.11 final:
+line-in doesn't work but now also mic stop to work, with 1.0.10 it
+worked!
+
+I can say this is a regression.
+
+----------------------------------------------------------------------
+ Cimmo - 06-25-06 17:37 
+----------------------------------------------------------------------
+Compiled and installed:
+alsa-driver
+alsa-lib
+alsa-utils
+
+Need something else?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-25-06 17:36 bNedjar        New Issue                                    
-06-25-06 17:36 bNedjar        File Added: config-and-make-results               
-    
-06-25-06 17:36 bNedjar        Distribution              => Ubuntu          
-06-25-06 17:36 bNedjar        Kernel Version            => 2.6.15-25-686   
+08-13-05 01:27 Cimmo          New Issue                                    
+08-13-05 01:27 Cimmo          Distribution              => Fedora Core 4   
+08-13-05 01:27 Cimmo          Kernel Version            => 2.6.12-1.1398-x86_64
+08-13-05 01:41 jcdutton       Note Added: 0005798                          
+08-13-05 01:42 jcdutton       Status                   assigned => feedback
+08-13-05 18:30 Cimmo          Note Added: 0005807                          
+08-31-05 15:14 Cimmo          Note Added: 0005989                          
+08-31-05 18:59 rlrevell       Note Added: 0005991                          
+09-10-05 10:31 jcdutton       Note Added: 0006107                          
+10-19-05 19:13 Cimmo          Note Added: 0006496                          
+11-07-05 00:02 jcdutton       Note Added: 0006610                          
+11-07-05 11:07 Cimmo          Note Added: 0006612                          
+11-11-05 19:33 Cimmo          Note Added: 0006678                          
+12-13-05 13:16 jcdutton       Note Added: 0007007                          
+12-13-05 13:34 Cimmo          Note Added: 0007015                          
+04-09-06 21:40 jcdutton       Status                   feedback => assigned
+04-09-06 21:42 jcdutton       Status                   assigned => closed  
+04-09-06 21:42 jcdutton       Note Added: 0009185                          
+06-25-06 17:34 Cimmo          Distribution             Fedora Core 4 => Kubuntu
+6.06
+06-25-06 17:34 Cimmo          Kernel Version           2.6.12-1.1398-x86_64 =>
+2.6.15-25
+06-25-06 17:34 Cimmo          Status                   closed => feedback  
+06-25-06 17:34 Cimmo          Resolution               open => reopened    
+06-25-06 17:34 Cimmo          Note Added: 0010515                          
+06-25-06 17:37 Cimmo          Note Added: 0010516                          
 ======================================================================
 
 
