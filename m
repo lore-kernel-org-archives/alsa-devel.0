@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
 	2.6.11 kernel
-Date: Sun, 25 Jun 2006 07:44:16 +0200
-Message-ID: <bb88f9b892b7c8c93b18dff9b6d967c2@bugtrack.alsa-project.org>
+Date: Sun, 25 Jun 2006 08:18:48 +0200
+Message-ID: <f2737c464afe8462e1c24c6a91c67d9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF2A621D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id E3332137
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 07:44:16 +0200 (MEST)
+	Sun, 25 Jun 2006 08:18:48 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -42,7 +42,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
 Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              06-25-2006 07:44 CEST
+Last Modified:              06-25-2006 08:18 CEST
 ======================================================================
 Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
@@ -69,17 +69,6 @@ alias eth0 8139too
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- Raymond - 06-25-06 02:04 
-----------------------------------------------------------------------
-bobcat98,
-
-please post output of
-
-cat /proc/asound/cards
-
-cat /proc/asound/card0/codec97#0/ac97#0-0+regs
 
 ----------------------------------------------------------------------
  bobcat98 - 06-25-06 07:44 
@@ -159,6 +148,14 @@ Here ya go . . .
 [root@vectra bob]#
 [root@vectra bob]#
 
+----------------------------------------------------------------------
+ Raymond - 06-25-06 08:18 
+----------------------------------------------------------------------
+Please add printk statements to trace read/write of ac97 codec as described
+in https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2132#10150 
+
+and post the output of dmesg when the driver is loaded
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -231,6 +228,7 @@ ens1371
 06-24-06 21:51 bobcat98       Note Added: 0010489                          
 06-25-06 02:04 Raymond        Note Added: 0010497                          
 06-25-06 07:44 bobcat98       Note Added: 0010503                          
+06-25-06 08:18 Raymond        Note Added: 0010504                          
 ======================================================================
 
 
