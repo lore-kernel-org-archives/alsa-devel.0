@@ -1,15 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002217]: Problems with ASUS A6Km
-Date: Sun, 25 Jun 2006 11:32:53 +0200
-Message-ID: <eec0f6b13efee1aaeb0a3877e89f96ff@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
+	functions
+Date: Sun, 25 Jun 2006 12:18:19 +0200
+Message-ID: <3b9eaee771d536e23810bd3aeec98817@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4F24C238
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9462A238
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 11:32:53 +0200 (MEST)
+	Sun, 25 Jun 2006 12:18:19 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -25,100 +26,90 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2217> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2188> 
 ======================================================================
-Reported By:                mafm
+Reported By:                Cimmo
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2217
-Category:                   PCI - intel8x0
+Project:                    ALSA - utils
+Issue ID:                   2188
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
 ======================================================================
-Date Submitted:             06-18-2006 05:06 CEST
-Last Modified:              06-25-2006 11:32 CEST
+Date Submitted:             06-07-2006 16:56 CEST
+Last Modified:              06-25-2006 12:18 CEST
 ======================================================================
-Summary:                    Problems with ASUS A6Km
+Summary:                    Alsa mixer lack of some functions
 Description: 
-I have the same problems described here:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1898 , but I'm
-opening a new report because I can't find a way to add a comment there.
+Is it possible to add to the alsa-mixer the possibility to change these
+things:
 
-I tried that asus-a6km-fix.diff but it doesn't work, in fact it doesn't
-appear to have any effect at all.
+- dolby surround configurations: 2.0, 2.1, 4.0, 4.1, 5.1, 7.1 and the
+possibility to duplicate front sound to the rear speakers.
+- modify high and basses
+
+best things is changes are immediatelly available without relogging.
+These feature are missing to linux community that have always to trouble
+with configuration files.
+
+thanx for attention
+Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- mafm - 06-24-06 14:32 
+ Raymond - 06-25-06 04:33 
 ----------------------------------------------------------------------
-enti:
-------------------------------------------------------------------------------
-$ tar xjf linux-2.6.17.tar.bz2
-$ cd linux-2.6.17/
-$ rgrep -i A6KM sound/pci/ac97/ac97_patch.c
-$ cd sound/
-$ patch -p1 < /usr/src/asus-a6km-fix.diff
-$ rgrep -i A6KM .
-./pci/ac97/ac97_patch.c:            /* ASUS A6KM requires EAPD */
-------------------------------------------------------------------------------
+It's better to put an alsa driver with playback device as card 0 instead of
+a webcam with only capture device unless your webcam application cannot
+select card 1 for capturing
 
-So you must be using kernels with additional sets of patches, even if it's
-from kernel.org -- I'm using the "official" one.  I can't tell you wheter
-those additional patches make a difference or not, but that's precisely
-what I'm trying to find out -- trying to isolate the problem, because I've
-seen too many posts for *similar* laptop models, talking about modifying
-registers of the card and enabling different switches to get it to work,
-that didn't work for me anyway. This method is pretty straightforward
-compared to the others, so it'll be easier to follow for people with
-problems, and it will help to isolate other possible problems; but I don't
-know if it works only for me, or only for my Q0012H model, or what.
+It allow those OSS applications (e.g. flash browser-plugin) able to use
+/dev/dsp for playback/capture through ALSA OSS enumeration
 
-If you had it working in the past with this patch, there are reasonable
-chances that your problem is in fact due to the additional patches (using
-ALSA 1.0.12-rcX, or some other stuff).  Also, what's your model, Q0012H
-too?
 
-Raymond: huh? What do you mean, do you get it working or not, etc?
 
 ----------------------------------------------------------------------
- eNTi - 06-25-06 11:32 
+ Cimmo - 06-25-06 12:18 
 ----------------------------------------------------------------------
-i obviously was mistaken. i must have looked in the wrong place???
+compiled and installed alsa 1.0.11 and... hey all it's changed for my
+soundcard!!!
+A lot of new items!!!
 
-after i applied the patch, it worked again, but i could have sworn, that
-i've seen the patch applied before. sorry for the confusion.
+Anyway surround still not work :(
+Thhis is the image from alsamixer, is it correct?
+IEC958 if not muted then no sound.
 
-then only 3 activated levers in alsamixer, are Master, PCM and External
-Amplifier.
+I need help!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-18-06 05:06 mafm           New Issue                                    
-06-18-06 16:51 ryswic         Issue Monitored: ryswic                      
-06-19-06 15:49 mafm           Issue Monitored: mafm                        
-06-19-06 15:50 mafm           Note Added: 0010315                          
-06-20-06 19:46 tiwai          Note Added: 0010345                          
-06-20-06 20:16 mafm           Note Added: 0010354                          
-06-21-06 21:37 eNTi           Note Added: 0010405                          
-06-21-06 22:24 rlrevell       Note Added: 0010406                          
-06-21-06 22:33 mafm           Note Added: 0010407                          
-06-21-06 22:48 eNTi           Note Added: 0010408                          
-06-22-06 00:10 mafm           Note Added: 0010410                          
-06-23-06 15:27 mafm           Note Added: 0010451                          
-06-23-06 15:55 mafm           File Added: asus-a6km-fix.diff                    
-06-23-06 16:23 mafm           Note Added: 0010454                          
-06-24-06 09:12 eNTi           Note Added: 0010467                          
-06-24-06 10:26 Raymond        Note Added: 0010470                          
-06-24-06 10:30 Raymond        Note Edited: 0010470                         
-06-24-06 14:32 mafm           Note Added: 0010473                          
-06-24-06 15:17 hongqn         Issue Monitored: hongqn                      
-06-25-06 11:32 eNTi           Note Added: 0010505                          
+06-07-06 16:56 Cimmo          New Issue                                    
+06-08-06 02:52 Raymond        Note Added: 0010104                          
+06-08-06 11:22 Cimmo          Note Added: 0010111                          
+06-09-06 07:08 Raymond        Note Added: 0010134                          
+06-09-06 11:20 Cimmo          Note Added: 0010139                          
+06-24-06 10:39 Cimmo          Note Added: 0010471                          
+06-24-06 17:04 rlrevell       Note Added: 0010476                          
+06-24-06 17:11 Cimmo          Note Added: 0010477                          
+06-24-06 17:20 rlrevell       Note Added: 0010478                          
+06-24-06 18:01 Cimmo          File Added: alsa                             
+06-24-06 18:02 Cimmo          Note Added: 0010479                          
+06-24-06 18:11 rlrevell       Note Added: 0010480                          
+06-24-06 18:26 Cimmo          Note Added: 0010482                          
+06-24-06 18:33 rlrevell       Note Added: 0010483                          
+06-24-06 18:37 Cimmo          File Added: alsa-test                        
+06-24-06 18:38 Cimmo          Note Added: 0010484                          
+06-24-06 18:55 rlrevell       Note Added: 0010485                          
+06-24-06 19:05 Cimmo          Note Added: 0010486                          
+06-24-06 19:17 rlrevell       Note Added: 0010487                          
+06-25-06 04:32 Raymond        Note Added: 0010498                          
+06-25-06 04:33 Raymond        Note Edited: 0010498                         
+06-25-06 12:16 Cimmo          File Added: alsamixer.png                    
+06-25-06 12:18 Cimmo          Note Added: 0010506                          
 ======================================================================
 
 
