@@ -1,16 +1,15 @@
-From: Andi Kleen <ak@suse.de>
-Subject: Alsa update in mainline broke ATI-IXP sound driver
-Date: Sun, 25 Jun 2006 21:39:35 +0200
-Message-ID: <200606252139.36002.ak@suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0002219]: snd-mpu401 don't load
+Date: Sun, 25 Jun 2006 22:02:03 +0200
+Message-ID: <7bc7dadfd92ac716df1e2ba7c8467fba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C9D3183
+Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 561B124D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 21:39:41 +0200 (MEST)
-Content-Disposition: inline
+	Sun, 25 Jun 2006 22:02:03 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,97 +19,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: perex@suse.cz
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Since I updated an ATI x86-64 box to 2.6.17-git6 sound doesn't work anymore.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2219> 
+======================================================================
+Reported By:                El Santo
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   2219
+Category:                   GENERIC - mpu401
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian etch (2006-06-18)
+Kernel Version:             2.6.15-1-686
+======================================================================
+Date Submitted:             06-18-2006 17:41 CEST
+Last Modified:              06-25-2006 22:02 CEST
+======================================================================
+Summary:                    snd-mpu401 don't load
+Description: 
+I have a Aopen MX63LE board with onboard sound managed by snd-via82xx
+driver. It loads all necesary modules, includind snd-mpu401-uart, but no
+snd-mpu401
+The audio part of the driver works perfectly, but the midi port doesn't
+work.
 
-I just get
+In BIOS i can set (and see) the mpu401 port (0x300 or 0x330) but there is
+not a MPU401 IRQ setting in bios. When i tried to manually load snd-mpu401
+(setting the port accordingly to BIOS) it doesnt work. I don't know the
+mpu401 irq setting but i tryed them all. None of them worked. The driver
+says "device not found".
 
-ALSA lib confmisc.c:672:(snd_func_card_driver) cannot find card '0'
-ALSA lib conf.c:3493:(_snd_config_evaluate) function snd_func_card_driver returned error: No such device
-ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
-ALSA lib conf.c:3493:(_snd_config_evaluate) function snd_func_concat returned error: No such device
-ALSA lib confmisc.c:955:(snd_func_refer) error evaluating name
-ALSA lib conf.c:3493:(_snd_config_evaluate) function snd_func_refer returned error: No such device
-ALSA lib conf.c:3962:(snd_config_expand) Evaluate error: No such device
-ALSA lib pcm.c:2099:(snd_pcm_open_noupdate) Unknown PCM default
+Under windows xp the port works perfectly, so the hardware is ok. Anyway
+under windows xp, i use a "system inspector" to monitor ioports and irq
+usage, and i didnt see any irq assigned for mpu401 port, and the port
+(0x330) wasn't occupied neither.
 
-no matter how often I try. OSS clients also don't seem to work.
-(in older kernels it sometimes didn't work on first try after boot, now it doesn't work 
-at all)
+any idea?
+======================================================================
 
-The module loaded ok:
+----------------------------------------------------------------------
+ Raymond - 06-24-06 09:43 
+----------------------------------------------------------------------
+Refer to
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg08016.html
 
-snd_pcm_oss            39328  0 
-snd_mixer_oss          14784  1 snd_pcm_oss
-snd_atiixp             16536  0 
-snd_ac97_codec         97980  1 snd_atiixp
-snd_ac97_bus            2688  1 snd_ac97_codec
-snd_pcm                72328  3 snd_pcm_oss,snd_atiixp,snd_ac97_codec
-snd_timer              19784  1 snd_pcm
-snd_page_alloc          7824  2 snd_atiixp,snd_pcm
-snd                    49280  6 snd_pcm_oss,snd_mixer_oss,snd_atiixp,snd_ac97_codec,snd_pcm,snd_timer
+Are the BIOS setting (onboard sound) of your MX36LE similar to KT3-AV ?
 
-00:14.5 Multimedia audio controller: ATI Technologies Inc IXP SB400 AC'97 Audio Controller
+----------------------------------------------------------------------
+ El Santo - 06-25-06 22:02 
+----------------------------------------------------------------------
+The BIOS setting are equal to those of the link
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg08016.html
 
-I can't find any output from alsa in the kernel log except for
+I follow the thread but i fond no solution there.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-18-06 17:41 El Santo       New Issue                                    
+06-18-06 17:41 El Santo       Distribution              => Debian etch
+(2006-06-18)
+06-18-06 17:41 El Santo       Kernel Version            => 2.6.15-1-686    
+06-19-06 03:45 Raymond        Note Added: 0010305                          
+06-20-06 19:49 tiwai          Note Added: 0010349                          
+06-20-06 23:30 El Santo       Note Added: 0010357                          
+06-20-06 23:39 rlrevell       Note Added: 0010359                          
+06-20-06 23:54 El Santo       Note Added: 0010362                          
+06-21-06 00:00 rlrevell       Note Added: 0010363                          
+06-21-06 00:04 rlrevell       Note Added: 0010364                          
+06-21-06 00:12 El Santo       Note Added: 0010365                          
+06-21-06 00:18 rlrevell       Note Added: 0010366                          
+06-21-06 00:33 El Santo       File Added: dmesg.log                        
+06-21-06 00:36 El Santo       Note Added: 0010367                          
+06-21-06 00:52 rlrevell       Note Added: 0010369                          
+06-21-06 00:56 rlrevell       Note Added: 0010370                          
+06-21-06 02:02 rlrevell       Note Added: 0010374                          
+06-21-06 04:51 Raymond        Note Added: 0010379                          
+06-21-06 18:00 El Santo       Note Added: 0010400                          
+06-22-06 03:19 Raymond        Note Added: 0010412                          
+06-22-06 03:27 Raymond        Note Edited: 0010412                         
+06-22-06 03:29 rlrevell       Note Added: 0010413                          
+06-22-06 14:30 Raymond        Note Added: 0010422                          
+06-24-06 09:43 Raymond        Note Added: 0010469                          
+06-25-06 22:02 El Santo       Note Added: 0010520                          
+======================================================================
 
 
-PCI: Enabling device 0000:00:14.5 (0000 -> 0002)
-ACPI: PCI Interrupt 0000:00:14.5[B] -> GSI 17 (level, low) -> IRQ 217
-
-when restarting rcalsasoudn
-
-User land is from SUSE 10.0
-
--Andi
-
-config:
-
-
-#
-CONFIG_SND=m
-CONFIG_SND_TIMER=m
-CONFIG_SND_PCM=m
-CONFIG_SND_RAWMIDI=m
-CONFIG_SND_SEQUENCER=m
-# CONFIG_SND_SEQ_DUMMY is not set
-CONFIG_SND_OSSEMUL=y
-CONFIG_SND_MIXER_OSS=m
-CONFIG_SND_PCM_OSS=m
-CONFIG_SND_PCM_OSS_PLUGINS=y
-CONFIG_SND_SEQUENCER_OSS=y
-CONFIG_SND_RTCTIMER=m
-CONFIG_SND_SEQ_RTCTIMER_DEFAULT=y
-# CONFIG_SND_DYNAMIC_MINORS is not set
-CONFIG_SND_SUPPORT_OLD_API=y
-CONFIG_SND_VERBOSE_PROCFS=y
-# CONFIG_SND_VERBOSE_PRINTK is not set
-# CONFIG_SND_DEBUG is not set
-
-#
-# Generic devices
-#
-CONFIG_SND_MPU401_UART=m
-CONFIG_SND_AC97_CODEC=m
-CONFIG_SND_AC97_BUS=m
-# CONFIG_SND_DUMMY is not set
-CONFIG_SND_VIRMIDI=m
-# CONFIG_SND_MTPAV is not set
-CONFIG_SND_SERIAL_U16550=m
-CONFIG_SND_MPU401=m
-
-#
-# PCI devices
-#
-# CONFIG_SND_AD1889 is not set
-# CONFIG_SND_ALS300 is not set
-# CONFIG_SND_ALS4000 is not set
-# CONFIG_SND_ALI5451 is not set
-CONFIG_SND_ATIIXP=m
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
