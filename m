@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0002188]: Alsa mixer lack of some
 	functions
-Date: Sun, 25 Jun 2006 15:24:38 +0200
-Message-ID: <a680f3c14b8d67e9b70f5ecb0ee6cb15@bugtrack.alsa-project.org>
+Date: Sun, 25 Jun 2006 15:32:53 +0200
+Message-ID: <1b952055670b9c69f398d1182d919766@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id BD09921D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 9F56B16B
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 15:24:38 +0200 (MEST)
+	Sun, 25 Jun 2006 15:32:53 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -40,7 +40,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             06-07-2006 16:56 CEST
-Last Modified:              06-25-2006 15:24 CEST
+Last Modified:              06-25-2006 15:32 CEST
 ======================================================================
 Summary:                    Alsa mixer lack of some functions
 Description: 
@@ -60,21 +60,28 @@ Marco
 ======================================================================
 
 ----------------------------------------------------------------------
- Cimmo - 06-25-06 14:47 
-----------------------------------------------------------------------
-I have no asound.state file in etc
-
-----------------------------------------------------------------------
- Raymond - 06-25-06 15:24 
+ Raymond - 06-25-06 15:26 
 ----------------------------------------------------------------------
 I don't have this card
 
 speaker-test -c 4 -Dsurround40 -t wav
 
+or
+
+speaker-test -c 4 -Dplug:surround40 -t wav
+
 If speaker-test don't work, you may need to upgrade to alsa-1.0.12rc1 
 
 You need to define a plugin in .asoundrc if you want to play stereo to 4
 speakers
+
+
+
+----------------------------------------------------------------------
+ Cimmo - 06-25-06 15:32 
+----------------------------------------------------------------------
+speaker-test works also for rear speakers!
+This is strange!
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -108,6 +115,8 @@ Date Modified  Username       Field                    Change
 06-25-06 14:46 Cimmo          File Added: cards                            
 06-25-06 14:47 Cimmo          Note Added: 0010509                          
 06-25-06 15:24 Raymond        Note Added: 0010511                          
+06-25-06 15:26 Raymond        Note Edited: 0010511                         
+06-25-06 15:32 Cimmo          Note Added: 0010512                          
 ======================================================================
 
 
