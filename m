@@ -1,16 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0002189]: No sound on speakers,
-	low volume on the headphones, Packard bell V7900
-Date: Sun, 25 Jun 2006 21:37:01 +0200
-Message-ID: <abcc6fb2f016534e1ec50404f8531960@bugtrack.alsa-project.org>
+From: Andi Kleen <ak@suse.de>
+Subject: Alsa update in mainline broke ATI-IXP sound driver
+Date: Sun, 25 Jun 2006 21:39:35 +0200
+Message-ID: <200606252139.36002.ak@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id F177B24D
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 2C9D3183
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 21:37:01 +0200 (MEST)
+	Sun, 25 Jun 2006 21:39:41 +0200 (MEST)
+Content-Disposition: inline
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -20,333 +20,97 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 Sender: alsa-devel-bounces@lists.sourceforge.net
 Errors-To: alsa-devel-bounces@lists.sourceforge.net
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2189> 
-======================================================================
-Reported By:                bettored
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   2189
-Category:                   PCI - hda-intel
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.15-23-386
-======================================================================
-Date Submitted:             06-07-2006 19:47 CEST
-Last Modified:              06-25-2006 21:37 CEST
-======================================================================
-Summary:                    No sound on speakers, low volume on the headphones,
-Packard bell V7900
-Description: 
-Hi,
-I have a Packard Bell with a soundcard Realtek ALC260 HD Audio, with Intel
-hda-intel, with problems.
-I have no sound on speakers and very low on the headphones.
-In the alsamixer all is on.
-Recently i actualized to Alsa 1.0.11 but with same problem.
+Since I updated an ATI x86-64 box to 2.6.17-git6 sound doesn't work anymore.
 
-In the Volumen Control, i have two:
-1. HDA intel (alsa mixer)
-2. Realtek ALC260 (oss mixer)
-And it is correct.
+I just get
 
-Here leave same test:
+ALSA lib confmisc.c:672:(snd_func_card_driver) cannot find card '0'
+ALSA lib conf.c:3493:(_snd_config_evaluate) function snd_func_card_driver returned error: No such device
+ALSA lib confmisc.c:392:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:3493:(_snd_config_evaluate) function snd_func_concat returned error: No such device
+ALSA lib confmisc.c:955:(snd_func_refer) error evaluating name
+ALSA lib conf.c:3493:(_snd_config_evaluate) function snd_func_refer returned error: No such device
+ALSA lib conf.c:3962:(snd_config_expand) Evaluate error: No such device
+ALSA lib pcm.c:2099:(snd_pcm_open_noupdate) Unknown PCM default
+
+no matter how often I try. OSS clients also don't seem to work.
+(in older kernels it sometimes didn't work on first try after boot, now it doesn't work 
+at all)
+
+The module loaded ok:
+
+snd_pcm_oss            39328  0 
+snd_mixer_oss          14784  1 snd_pcm_oss
+snd_atiixp             16536  0 
+snd_ac97_codec         97980  1 snd_atiixp
+snd_ac97_bus            2688  1 snd_ac97_codec
+snd_pcm                72328  3 snd_pcm_oss,snd_atiixp,snd_ac97_codec
+snd_timer              19784  1 snd_pcm
+snd_page_alloc          7824  2 snd_atiixp,snd_pcm
+snd                    49280  6 snd_pcm_oss,snd_mixer_oss,snd_atiixp,snd_ac97_codec,snd_pcm,snd_timer
+
+00:14.5 Multimedia audio controller: ATI Technologies Inc IXP SB400 AC'97 Audio Controller
+
+I can't find any output from alsa in the kernel log except for
 
 
-janek@janek-laptop:~$ lsmod | grep snd
-snd_hda_intel          19348  2
-snd_hda_codec         143152  1 snd_hda_intel
-snd_pcm_oss            43936  0
-snd_mixer_oss          18944  2 snd_pcm_oss
-snd_pcm                89352  3 snd_hda_intel,snd_hda_codec,snd_pcm_oss
-snd_timer              25348  1 snd_pcm
-snd                    55396  8
-snd_hda_intel,snd_hda_codec,snd_pcm_oss,snd_mixe r_oss,snd_pcm,snd_timer
-soundcore              10208  2 snd
-snd_page_alloc         10760  2 snd_hda_intel,snd_pcm
+PCI: Enabling device 0000:00:14.5 (0000 -> 0002)
+ACPI: PCI Interrupt 0000:00:14.5[B] -> GSI 17 (level, low) -> IRQ 217
 
---------------------------------------------------------------------------------
+when restarting rcalsasoudn
 
-janek@janek-laptop:~$ lspci
-0000:00:00.0 Host bridge: Intel Corporation Mobile Memory Controller Hub
-(rev 03)
-0000:00:01.0 PCI bridge: Intel Corporation Mobile PCI Express Graphics
-Port (rev 03)
-0000:00:1b.0 0403: Intel Corporation 82801G (ICH7 Family) High Definition
-Audio Controller (rev 02)
-0000:00:1c.0 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
-Express Port 1 (rev 02)
-0000:00:1c.1 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
-Express Port 2 (rev 02)
-0000:00:1c.2 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
-Express Port 3 (rev 02)
-0000:00:1c.3 PCI bridge: Intel Corporation 82801G (ICH7 Family) PCI
-Express Port 4 (rev 02)
-0000:00:1d.0 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #1 (rev 02)
-0000:00:1d.1 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #2 (rev 02)
-0000:00:1d.2 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #3 (rev 02)
-0000:00:1d.3 USB Controller: Intel Corporation 82801G (ICH7 Family) USB
-UHCI #4 (rev 02)
-0000:00:1d.7 USB Controller: Intel Corporation 82801G (ICH7 Family) USB2
-EHCI Controller (rev 02)
-0000:00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge (rev
-e2)
-0000:00:1f.0 ISA bridge: Intel Corporation 82801GBM (ICH7-M) LPC Interface
-Bridge (rev 02)
-0000:00:1f.1 IDE interface: Intel Corporation 82801G (ICH7 Family) IDE
-Controller (rev 02)
-0000:00:1f.3 SMBus: Intel Corporation 82801G (ICH7 Family) SMBus
-Controller (rev 02)
-0000:01:00.0 VGA compatible controller: ATI Technologies Inc: Unknown
-device 71c5
-0000:03:00.0 Network controller: Intel Corporation: Unknown device 4222
-(rev 02)
-0000:06:02.0 FireWire (IEEE 1394): O2 Micro, Inc.: Unknown device 00f7
-(rev 02)
-0000:06:02.2 0805: O2 Micro, Inc.: Unknown device 7120 (rev 01)
-0000:06:02.3 Mass storage controller: O2 Micro, Inc.: Unknown device 7130
-(rev 01)
-0000:06:08.0 Ethernet controller: Intel Corporation: Unknown device 1092
-(rev 02)
+User land is from SUSE 10.0
+
+-Andi
+
+config:
 
 
--------------------------------------------------------------------------------
+#
+CONFIG_SND=m
+CONFIG_SND_TIMER=m
+CONFIG_SND_PCM=m
+CONFIG_SND_RAWMIDI=m
+CONFIG_SND_SEQUENCER=m
+# CONFIG_SND_SEQ_DUMMY is not set
+CONFIG_SND_OSSEMUL=y
+CONFIG_SND_MIXER_OSS=m
+CONFIG_SND_PCM_OSS=m
+CONFIG_SND_PCM_OSS_PLUGINS=y
+CONFIG_SND_SEQUENCER_OSS=y
+CONFIG_SND_RTCTIMER=m
+CONFIG_SND_SEQ_RTCTIMER_DEFAULT=y
+# CONFIG_SND_DYNAMIC_MINORS is not set
+CONFIG_SND_SUPPORT_OLD_API=y
+CONFIG_SND_VERBOSE_PROCFS=y
+# CONFIG_SND_VERBOSE_PRINTK is not set
+# CONFIG_SND_DEBUG is not set
 
-janek@janek-laptop:~$ modinfo soundcore
-filename:       /lib/modules/2.6.15-23-386/kernel/sound/soundcore.ko
-description:    Core sound module
-author:         Alan Cox
-license:        GPL
-alias:          char-major-14-*
-vermagic:       2.6.15-23-386 preempt 486 gcc-4.0
-depends:
-srcversion:     DD426F1CCA2CC5F060F6F92
+#
+# Generic devices
+#
+CONFIG_SND_MPU401_UART=m
+CONFIG_SND_AC97_CODEC=m
+CONFIG_SND_AC97_BUS=m
+# CONFIG_SND_DUMMY is not set
+CONFIG_SND_VIRMIDI=m
+# CONFIG_SND_MTPAV is not set
+CONFIG_SND_SERIAL_U16550=m
+CONFIG_SND_MPU401=m
 
-
----------------------------------------------------------------------------
-
-
-Thanks for your time 
-
-
-
-
-======================================================================
-
-----------------------------------------------------------------------
- bonobo - 06-25-06 14:02 
-----------------------------------------------------------------------
-I have very weak output through S/PDIF. Didn't notice before
-
-----------------------------------------------------------------------
- bonobo - 06-25-06 21:37 
-----------------------------------------------------------------------
-lspci -nv :
-
-0000:00:00.0 0600: 8086:27a0 (rev 03)
-	Subsystem: 1631:c017
-	Flags: bus master, fast devsel, latency 0
-	Capabilities: [e0] #09 [5109]
-
-0000:00:01.0 0604: 8086:27a1 (rev 03)
-	Flags: bus master, fast devsel, latency 0
-	Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-	I/O behind bridge: 00006000-00006fff
-	Memory behind bridge: 5c200000-5c2fffff
-	Prefetchable memory behind bridge: 0000000048000000-000000004ff00000
-	Capabilities: [88] #0d [0000]
-	Capabilities: [80] Power Management version 2
-	Capabilities: [90] Message Signalled Interrupts: 64bit- Queue=0/0
-Enable+
-	Capabilities: [a0] #10 [0141]
-
-0000:00:1b.0 0403: 8086:27d8 (rev 02)
-	Subsystem: 1631:c017
-	Flags: bus master, fast devsel, latency 0, IRQ 58
-	Memory at 5c300000 (64-bit, non-prefetchable) [size=16K]
-	Capabilities: [50] Power Management version 2
-	Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-	Capabilities: [70] #10 [0091]
-
-0000:00:1c.0 0604: 8086:27d0 (rev 02)
-	Flags: bus master, fast devsel, latency 0
-	Bus: primary=00, secondary=02, subordinate=02, sec-latency=0
-	I/O behind bridge: 00005000-00005fff
-	Memory behind bridge: 5b200000-5c1fffff
-	Prefetchable memory behind bridge: 0000000054100000-0000000055000000
-	Capabilities: [40] #10 [0141]
-	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0
-Enable+
-	Capabilities: [90] #0d [0000]
-	Capabilities: [a0] Power Management version 2
-
-0000:00:1c.1 0604: 8086:27d2 (rev 02)
-	Flags: bus master, fast devsel, latency 0
-	Bus: primary=00, secondary=03, subordinate=03, sec-latency=0
-	I/O behind bridge: 00004000-00004fff
-	Memory behind bridge: 5a100000-5b1fffff
-	Prefetchable memory behind bridge: 0000000055100000-0000000056000000
-	Capabilities: [40] #10 [0141]
-	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0
-Enable+
-	Capabilities: [90] #0d [0000]
-	Capabilities: [a0] Power Management version 2
-
-0000:00:1c.2 0604: 8086:27d4 (rev 02)
-	Flags: bus master, fast devsel, latency 0
-	Bus: primary=00, secondary=04, subordinate=04, sec-latency=0
-	I/O behind bridge: 00003000-00003fff
-	Memory behind bridge: 59100000-5a0fffff
-	Prefetchable memory behind bridge: 0000000056100000-0000000057000000
-	Capabilities: [40] #10 [0141]
-	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0
-Enable+
-	Capabilities: [90] #0d [0000]
-	Capabilities: [a0] Power Management version 2
-
-0000:00:1c.3 0604: 8086:27d6 (rev 02)
-	Flags: bus master, fast devsel, latency 0
-	Bus: primary=00, secondary=05, subordinate=05, sec-latency=0
-	I/O behind bridge: 00002000-00002fff
-	Memory behind bridge: 58100000-590fffff
-	Prefetchable memory behind bridge: 0000000057100000-0000000058000000
-	Capabilities: [40] #10 [0141]
-	Capabilities: [80] Message Signalled Interrupts: 64bit- Queue=0/0
-Enable+
-	Capabilities: [90] #0d [0000]
-	Capabilities: [a0] Power Management version 2
-
-0000:00:1d.0 0c03: 8086:27c8 (rev 02)
-	Subsystem: 1631:c017
-	Flags: bus master, medium devsel, latency 0, IRQ 169
-	I/O ports at 7080 [size=32]
-
-0000:00:1d.1 0c03: 8086:27c9 (rev 02)
-	Subsystem: 1631:c017
-	Flags: bus master, medium devsel, latency 0, IRQ 177
-	I/O ports at 7060 [size=32]
-
-0000:00:1d.2 0c03: 8086:27ca (rev 02)
-	Subsystem: 1631:c017
-	Flags: bus master, medium devsel, latency 0, IRQ 185
-	I/O ports at 7040 [size=32]
-
-0000:00:1d.3 0c03: 8086:27cb (rev 02)
-	Subsystem: 1631:c017
-	Flags: bus master, medium devsel, latency 0, IRQ 193
-	I/O ports at 7020 [size=32]
-
-0000:00:1d.7 0c03: 8086:27cc (rev 02) (prog-if 20)
-	Subsystem: 1631:c017
-	Flags: bus master, medium devsel, latency 0, IRQ 169
-	Memory at 5c304000 (32-bit, non-prefetchable) [size=1K]
-	Capabilities: [50] Power Management version 2
-	Capabilities: [58] #0a [20a0]
-
-0000:00:1e.0 0604: 8086:2448 (rev e2) (prog-if 01)
-	Flags: bus master, fast devsel, latency 0
-	Bus: primary=00, secondary=06, subordinate=07, sec-latency=32
-	I/O behind bridge: 00001000-00001fff
-	Memory behind bridge: 52000000-540fffff
-	Prefetchable memory behind bridge: 0000000050000000-0000000051f00000
-	Capabilities: [50] #0d [0000]
-
-0000:00:1f.0 0601: 8086:27b9 (rev 02)
-	Subsystem: 1631:c017
-	Flags: bus master, medium devsel, latency 0
-	Capabilities: [e0] #09 [100c]
-
-0000:00:1f.1 0101: 8086:27df (rev 02) (prog-if 8a [Master SecP PriP])
-	Subsystem: 1631:c017
-	Flags: bus master, medium devsel, latency 0, IRQ 169
-	I/O ports at <unassigned>
-	I/O ports at <unassigned>
-	I/O ports at <unassigned>
-	I/O ports at <unassigned>
-	I/O ports at 70a0 [size=16]
-
-0000:00:1f.3 0c05: 8086:27da (rev 02)
-	Subsystem: 1631:c017
-	Flags: medium devsel, IRQ 11
-	I/O ports at 7000 [size=32]
-
-0000:01:00.0 0300: 1002:71c5
-	Subsystem: 1631:c017
-	Flags: bus master, fast devsel, latency 0, IRQ 169
-	Memory at 48000000 (32-bit, prefetchable) [size=128M]
-	I/O ports at 6000 [size=256]
-	Memory at 5c200000 (32-bit, non-prefetchable) [size=64K]
-	Expansion ROM at 5c220000 [disabled] [size=128K]
-	Capabilities: [50] Power Management version 2
-	Capabilities: [58] #10 [0011]
-	Capabilities: [80] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-
-0000:03:00.0 0280: 8086:4222 (rev 02)
-	Subsystem: 8086:1001
-	Flags: bus master, fast devsel, latency 0, IRQ 177
-	Memory at 5a100000 (32-bit, non-prefetchable) [size=4K]
-	Capabilities: [c8] Power Management version 2
-	Capabilities: [d0] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-	Capabilities: [e0] #10 [0011]
-
-0000:06:02.0 0c00: 1217:00f7 (rev 02) (prog-if 10)
-	Subsystem: 1631:c017
-	Flags: bus master, medium devsel, latency 64, IRQ 169
-	Memory at 54003000 (32-bit, non-prefetchable) [size=4K]
-	Memory at 54004000 (32-bit, non-prefetchable) [size=2K]
-	Capabilities: [60] Power Management version 2
-
-0000:06:02.2 0805: 1217:7120 (rev 01)
-	Subsystem: 1631:c017
-	Flags: slow devsel, IRQ 169
-	Memory at 54004800 (32-bit, non-prefetchable) [size=256]
-	Capabilities: [a0] Power Management version 2
-
-0000:06:02.3 0180: 1217:7130 (rev 01)
-	Subsystem: 1631:c017
-	Flags: slow devsel, IRQ 11
-	Memory at 54001000 (32-bit, non-prefetchable) [size=4K]
-	Capabilities: [a0] Power Management version 2
-
-0000:06:08.0 0200: 8086:1092 (rev 02)
-	Subsystem: 1631:c017
-	Flags: bus master, medium devsel, latency 64, IRQ 66
-	Memory at 54000000 (32-bit, non-prefetchable) [size=4K]
-	I/O ports at 1200 [size=64]
-	Capabilities: [dc] Power Management version 2
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-07-06 19:47 bettored       New Issue                                    
-06-07-06 19:47 bettored       Kernel Version            => 2.6.15-23-386   
-06-15-06 20:25 bonobo         Note Added: 0010243                          
-06-15-06 20:32 bonobo         Note Edited: 0010243                         
-06-18-06 23:59 ixM            Note Added: 0010304                          
-06-20-06 19:52 tiwai          Note Added: 0010350                          
-06-21-06 19:02 ixM            Note Added: 0010402                          
-06-21-06 19:16 tiwai          Note Added: 0010403                          
-06-22-06 23:18 urdle          Issue Monitored: urdle                       
-06-25-06 14:02 bonobo         Note Added: 0010507                          
-06-25-06 21:37 bonobo         Note Added: 0010519                          
-======================================================================
-
-
+#
+# PCI devices
+#
+# CONFIG_SND_AD1889 is not set
+# CONFIG_SND_ALS300 is not set
+# CONFIG_SND_ALS4000 is not set
+# CONFIG_SND_ALI5451 is not set
+CONFIG_SND_ATIIXP=m
 
 Using Tomcat but need to do more? Need to support web services, security?
 Get stuff done quickly with pre-integrated technology to make your job easier
