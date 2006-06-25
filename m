@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001047]: module hangs at seemingly
-	random times
-Date: Sun, 25 Jun 2006 07:04:46 +0200
-Message-ID: <3054783858dbba6abba1d559717fe3d0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in
+	2.6.11 kernel
+Date: Sun, 25 Jun 2006 07:44:16 +0200
+Message-ID: <bb88f9b892b7c8c93b18dff9b6d967c2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [85.132.177.35])
-	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id 4CC3321D
+	by alsa.jcu.cz (ALSA's E-mail Delivery System) with ESMTP id DF2A621D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Jun 2006 07:04:46 +0200 (MEST)
+	Sun, 25 Jun 2006 07:44:16 +0200 (MEST)
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
@@ -26,187 +26,211 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1047> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
 ======================================================================
-Reported By:                alien999999999
-Assigned To:                mjander
+Reported By:                yafrank
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1047
-Category:                   PCI - au88x0
-Reproducibility:            sometimes
+Issue ID:                   1023
+Category:                   PCI - ens1371
+Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake
-Kernel Version:             2.6.7
+Status:                     feedback
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
 ======================================================================
-Date Submitted:             04-12-2005 20:43 CEST
-Last Modified:              06-25-2006 07:04 CEST
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              06-25-2006 07:44 CEST
 ======================================================================
-Summary:                    module hangs at seemingly random times
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
 Description: 
-sometimes i start playing a song, and it starts playing a few second or so
-and hangs, then i kill the application and modprobe -r all sound modules
-and modprobe them again to make it work again.
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-BUT: sometimes not only that happens, but also when i try to kill the apps
-it will not kill. when that happens, all kill, killall, top, ps aux
-commands hang at the command line and cannot be killed by CTRL-C or
-otherwise, i have been able to see that when i stopped my display
-managener I did an lsmod and it gave something like this:
-
-snd-pcm-oss            59752  11
-snd-mixer-oss          20480  1 snd-pcm-oss
-snd-au8810             43760  220
-snd-ac97-codec         83408  1 snd-au8810
-snd-pcm               108172  112 snd-pcm-oss,snd-au8810,snd-ac97-codec
-snd-page-alloc         10384  1 snd-pcm
-gameport                3840  1 snd-au8810
-snd-mpu401-uart        11904  1 snd-au8810
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
 
 
-as you can see the snd-au8810 module seem to have an impossible number of
-"dependencies" (i think has to do with the number of unclosed sound-apps
-trying to be played; this could be since gaim is programmed to execute an
-'aplay %s')
-
-i've had this major crash below only 3 times; and the logs didn't detect
-anything specific at the time. the only thing the logs mentioned at that
-time was an ntpd sync going on; so the only thing i can think of is that
-at a certain moment when a sync is going on, some kind of lock is holding
-cause this to happen... the only thing that i can do to fix this is
-reset...
-
-it is interesting to note that i also have an snd-emu10k1 as second card,
-which never gave problems like this, and i am always able to "modprobe -r
-snd-emu10k1" ...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-11-06 18:54 
+ Raymond - 06-25-06 02:04 
 ----------------------------------------------------------------------
-That patch just fixed a wrong use of __devinit in the header file. 
-__devinit was declared in header but not used in the function definition. 
-__devinit must be in function definitions.  So, it was moved from header
-to *.c.  That's all.
+bobcat98,
 
-And, what is your point?  How can it be relevant with *THIS* bug report??
+please post output of
+
+cat /proc/asound/cards
+
+cat /proc/asound/card0/codec97#0/ac97#0-0+regs
 
 ----------------------------------------------------------------------
- Raymond - 06-25-06 07:04 
+ bobcat98 - 06-25-06 07:44 
 ----------------------------------------------------------------------
->> 1. ALSA has hardware mixing if the chipset/driver supports it (i know
-mine 
->> does).
+Here ya go . . .
 
->> 2. OSS does not do any multiple sounds
-
->> so, the OSS application is continually using soundcard. and aplay plays
-a 
->> short one... should it work or must aplay be denied???
-
-The au88xx driver in sourceforge also allow two or more instances of
-"mplayer -ao oss" or "play" running.
-
-For ALSA au88x0 driver, it depends on the application,
-
-By reducing the number of subdevice of au88x0 device 0 to 2 and have 2
-stereo PCM running. (i.e. no available subdevice )
-
-aplay *.wav
-aplay: main:548: audio open error: Device or resource busy
-
-mplayer -ao alsa=device=hw=0,0 *.wav
-alsa-init: using device hw:0
-alsa-lib: pcm_hw.c:1248:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed:
-Device or resource busy
-alsa-init: playback open error: Device or resource busy
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-Video: no video
- 
- 
-Exiting... (End of file)
-
-
-mplayer -ao oss *.wav
-  
-[AO OSS] audio_setup: Can't open audio device /dev/dsp: Device or resource
-busy
-alsa-init: using device default
-alsa-lib: pcm_hw.c:1248:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed:
-Device or resource busy
-alsa-init: playback open error: Device or resource busy
-[AO ARTS] can't connect to aRts soundserver
-[AO ESD] esd_open_sound failed: Connection reset by peer
-[JACK] cannot open server
-[AO SDL] Samplerate: 44100Hz Channels: Stereo Format s16le
-warning: leaving MCOP Dispatcher and still 143 types alive.
-[AO SDL] Unable to open audio: No available audio device
-open /dev/[sound/]dsp: Device or resource busy
-[OpenAL] could not open device
-AO: [null] 44100Hz 2ch s16le (2 bytes per sample)
+[root@vectra bob]# cat /proc/asound/cards
+ 0 [AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
+                      Ensoniq AudioPCI ENS1371 at 0xe800, irq 11
+[root@vectra bob]#
+[root@vectra bob]#
+[root@vectra bob]# cat /proc/asound/card0/codec97#0/ac97#0-0+regs
+0:00 = 0d50
+0:02 = 0d50
+0:04 = 0d0d
+0:06 = 8000
+0:08 = 000e
+0:0a = 0000
+0:0c = 0002
+0:0e = 0002
+0:10 = 801f
+0:12 = 0505
+0:14 = 0d0d
+0:16 = 0a0a
+0:18 = 0707
+0:1a = 0d0d
+0:1c = 0101
+0:1e = 0000
+0:20 = 0000
+0:22 = 2000
+0:24 = 0000
+0:26 = 0000
+0:28 = 800f
+0:2a = 0001
+0:2c = 0001
+0:2e = 0000
+0:30 = 0000
+0:32 = 0000
+0:34 = bb80
+0:36 = 0000
+0:38 = 0000
+0:3a = 0000
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0000
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 0000
+0:66 = 0000
+0:68 = 0000
+0:6a = 0000
+0:6c = 0000
+0:6e = 0000
+0:70 = 0000
+0:72 = 0000
+0:74 = 0000
+0:76 = 0000
+0:78 = 0000
+0:7a = 0000
+0:7c = 0000
+0:7e = 4e53
+[root@vectra bob]#
+[root@vectra bob]#
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-12-05 20:43 alien999999999 New Issue                                    
-04-12-05 20:43 alien999999999 Distribution              => Mandrake        
-04-12-05 20:43 alien999999999 Kernel Version            => 2.6.7           
-04-12-05 20:48 alien999999999 Note Added: 0004461                          
-04-12-05 20:49 alien999999999 File Added: au88x0.c                         
-04-12-05 20:49 alien999999999 File Added: au88x0.h                         
-04-12-05 20:50 alien999999999 File Added: au88x0_core.c                    
-04-12-05 20:50 alien999999999 File Added: au88x0_mixer.c                    
-04-12-05 20:51 alien999999999 Note Added: 0004462                          
-08-24-05 11:13 Raymond        Note Added: 0005928                          
-10-27-05 02:27 Raymond        Note Added: 0006564                          
-01-03-06 04:04 Raymond        Note Added: 0007397                          
-01-04-06 22:08 alien999999999 Note Added: 0007455                          
-01-05-06 07:21 Raymond        Note Added: 0007462                          
-01-05-06 20:32 shurick        Issue Monitored: shurick                     
-01-06-06 17:17 alien999999999 Note Added: 0007488                          
-01-06-06 17:33 alien999999999 File Added: alsa-cvs-2006-01-04.patch             
-      
-01-13-06 13:51 Raymond        Note Added: 0007639                          
-01-13-06 18:18 tiwai          Note Added: 0007648                          
-01-14-06 04:53 Raymond        Note Added: 0007653                          
-01-14-06 05:00 Raymond        Note Edited: 0007653                         
-01-17-06 12:27 Raymond        Note Added: 0007697                          
-01-18-06 15:51 Raymond        Note Added: 0007710                          
-01-18-06 15:52 Raymond        File Added: au88x0_codec.patch                    
-01-19-06 13:51 Raymond        Note Added: 0007719                          
-02-05-06 05:20 Raymond        Note Edited: 0007710                         
-02-05-06 05:28 Raymond        Note Added: 0007930                          
-02-13-06 16:38 Raymond        Note Deleted: 0006564                        
-02-13-06 16:41 Raymond        Note Added: 0008054                          
-03-01-06 07:39 Raymond        Note Added: 0008273                          
-03-18-06 12:28 Raymond        Note Deleted: 0008273                        
-03-20-06 17:54 Raymond        File Added: au88x0_conf.patch                    
-03-21-06 02:02 Raymond        Note Added: 0008734                          
-03-21-06 18:01 tiwai          Note Added: 0008754                          
-03-22-06 02:05 Raymond        File Added: au88x0_mpu401.patch                   
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+03-31-05 13:23 perex          Note Added: 0004280                          
+03-31-05 17:08 yafrank        Note Added: 0004282                          
+04-06-05 18:41 mmadore        Note Added: 0004350                          
+04-07-05 16:04 tiwai          Note Added: 0004357                          
+04-07-05 18:32 mmadore        Note Added: 0004362                          
+04-07-05 18:33 mmadore        File Added: asound.state                     
+04-07-05 18:37 mmadore        File Added: ac97#0-0                         
+04-07-05 18:38 mmadore        File Added: ac97#0-0+regs                    
+04-12-05 05:47 yafrank        Issue Monitored: yafrank                     
+04-12-05 06:02 yafrank        Note Added: 0004445                          
+04-12-05 16:29 tiwai          Note Added: 0004447                          
+04-12-05 19:46 yafrank        Note Added: 0004459                          
+04-12-05 20:00 yafrank        Note Added: 0004460                          
+04-12-05 21:11 mmadore        Note Added: 0004463                          
+04-12-05 21:12 mmadore        File Added: asound.state.new                    
+04-24-05 00:15 mycroft        Issue Monitored: mycroft                     
+06-17-05 09:55 yafrank        Note Added: 0005065                          
+06-17-05 11:45 yafrank        Note Added: 0005067                          
+06-17-05 14:44 tiwai          Note Added: 0005073                          
+06-18-05 04:26 yafrank        Note Added: 0005082                          
+06-18-05 04:52 yafrank        File Added: alsa-ac97-test                    
+06-18-05 05:19 yafrank        Note Added: 0005083                          
+06-20-05 10:59 perex          File Added: ens1371-reset.patch                   
 
-03-22-06 02:28 Raymond        Note Added: 0008779                          
-03-22-06 02:31 Raymond        Note Edited: 0008779                         
-03-22-06 02:38 rlrevell       Note Added: 0008782                          
-03-22-06 04:00 Raymond        Note Added: 0008836                          
-03-22-06 04:09 rlrevell       Note Added: 0008839                          
-03-26-06 09:55 Raymond        Note Added: 0008967                          
-03-29-06 17:48 Raymond        Note Added: 0008995                          
-03-31-06 06:52 Raymond        Note Edited: 0008995                         
-04-02-06 07:01 Raymond        Note Edited: 0008995                         
-04-10-06 16:07 Raymond        Note Added: 0009190                          
-04-10-06 16:39 tiwai          Note Added: 0009192                          
-04-10-06 16:43 Raymond        Note Added: 0009194                          
-04-10-06 16:45 tiwai          Note Added: 0009195                          
-04-10-06 19:01 Raymond        Note Added: 0009215                          
-04-10-06 19:04 Raymond        Note Edited: 0009215                         
-04-10-06 19:05 tiwai          Note Added: 0009216                          
-04-11-06 18:36 Raymond        Note Added: 0009234                          
-04-11-06 18:54 tiwai          Note Added: 0009235                          
-06-25-06 07:04 Raymond        Note Added: 0010502                          
+06-20-05 10:59 perex          Category                 CORE - pcm => PCI -
+ens1371
+06-20-05 11:00 perex          Note Added: 0005095                          
+06-20-05 11:01 perex          Status                   new => assigned     
+06-20-05 11:01 perex          Assigned To               => perex           
+06-23-05 16:48 yafrank        Note Added: 0005191                          
+07-08-05 10:24 perex          Note Added: 0005405                          
+07-08-05 10:25 perex          Note Edited: 0005405                         
+07-11-05 13:45 yafrank        Note Added: 0005444                          
+07-11-05 16:47 yafrank        Note Added: 0005449                          
+07-11-05 22:52 gwennou        Note Added: 0005451                          
+09-01-05 10:25 yafrank        File Added: config-2.6.13-snd                    
+09-01-05 10:51 yafrank        Note Added: 0005995                          
+09-01-05 18:15 tiwai          Note Added: 0005997                          
+09-04-05 02:09 bobcat98       Note Added: 0006034                          
+09-04-05 02:12 bobcat98       Issue Monitored: bobcat98                    
+10-25-05 13:55 rufusplant     Note Added: 0006539                          
+10-25-05 15:12 tiwai          Note Added: 0006542                          
+11-14-05 10:01 perex          Status                   assigned => feedback
+11-15-05 16:21 yafrank        Note Added: 0006730                          
+11-28-05 05:18 rufusplant     Note Added: 0006853                          
+12-11-05 06:43 yafrank        Note Added: 0006975                          
+02-02-06 12:58 pearma         Note Added: 0007876                          
+02-02-06 17:38 yafrank        Note Deleted: 0006975                        
+02-04-06 10:43 pearma         Note Added: 0007915                          
+02-04-06 19:18 rlrevell       Status                   feedback => resolved
+02-04-06 19:18 rlrevell       Resolution               open => fixed       
+02-04-06 20:57 yafrank        Status                   resolved => feedback
+02-04-06 20:57 yafrank        Resolution               fixed => reopened   
+02-04-06 20:57 yafrank        Note Added: 0007925                          
+02-13-06 00:16 ZEROplus       Issue Monitored: ZEROplus                    
+06-06-06 09:07 Raymond        Note Added: 0010072                          
+06-09-06 06:51 Raymond        Note Added: 0010132                          
+06-14-06 15:01 Raymond        Note Deleted: 0010132                        
+06-14-06 15:13 Raymond        Note Deleted: 0010072                        
+06-24-06 04:14 Raymond        Note Added: 0010465                          
+06-24-06 21:51 bobcat98       Note Added: 0010489                          
+06-25-06 02:04 Raymond        Note Added: 0010497                          
+06-25-06 07:44 bobcat98       Note Added: 0010503                          
 ======================================================================
 
 
